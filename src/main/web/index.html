@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+
+</head>
+<body>
+<form onsubmit="return false;">
+    <textarea id="json"></textarea>
+    <button onclick="send()" >hello</button>
+</form>
+
+
+
+</body>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+
+    $(function() {
+
+        $.get( "http://localhost:8080/data", function( data ) {
+            console.log(data)
+            $('#json').html(JSON.stringify(data));
+        });
+
+
+    });
+
+
+    function send()  {
+
+        $.ajax({
+            url:"/cats",
+            type:"POST",
+            data: JSON.stringify({
+                json:$('#json').val()
+            }),
+            contentType:"application/json; charset=utf-8",
+            dataType:"text"
+        }).done(function(){
+            console.log("Done!")
+        }).fail(function(jqXHR, textStatus){
+            alert(textStatus);
+        })
+    }
+
+</script>
+</html>
