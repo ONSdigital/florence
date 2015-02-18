@@ -109,19 +109,21 @@ function($) {
 		$('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
 		var bodycontent = $('body').html();
 		var florence_bar =
-			'<div class="florence-head">Florence v0.1</div>' +
+			'<div class="florence">'
+				'<div class="florence-head">Florence v0.1</div>' +
 				'<nav class="florence-nav">' +
 					'<ul>' +
-						'<li href="">Edit</li>' +
+						'<li><a href="#">Edit</a></li>' +
 							'<ul>' +
-								'<li>Save changes</li>' +
-								'<li>Cancel changes</li>' +
+								'<li><a href="#">Save changes</a></li>' +
+								'<li><a href="#">Cancel changes</a></li>' +
 							'</ul>' +
-						'<li href="">Versions</li>' +
-						'<li href="">Tasks</li>' +
-						'<li href="">Site map</li>' +
+						'<li>Versions</li>' +
+						'<li>Tasks</li>' +
+						'<li>Site map</li>' +
 					'</ul>' +
-				'</nav>';
+				'</nav>' +
+			'</div>';
 		$('body').wrapInner('<div class="florence-content-wrap"></div>');
 		$('body').prepend(florence_bar);
 
