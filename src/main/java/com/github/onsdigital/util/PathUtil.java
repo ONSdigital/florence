@@ -1,36 +1,17 @@
-package com.github.onsdigital.api;
+package com.github.onsdigital.util;
 
-import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.configuration.Configuration;
-import com.github.onsdigital.json.Content;
-import org.apache.commons.io.FileUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 
-@Api
-public class Cats
+public class PathUtil
 {
-    @GET
-    public List<String> cats(HttpServletRequest request, HttpServletResponse response)
+    public static Path fromUri(String uri)
     {
-        return Arrays.asList(new String[] { "meow here ", "meow there"});
-    }
-
-    @POST
-    public void cats(HttpServletRequest request, HttpServletResponse response, Content content) throws IOException {
-        System.out.println(content.json);
-        FileUtils.writeStringToFile(getDataPath(request.getHeader("referer")).toFile(), content.json, Charset.forName("utf8"));
+        return getDataPath(uri);
     }
 
     /**
@@ -61,10 +42,8 @@ public class Cats
      * @return The URI path, lowercasted, without the endpoint name or trailing
      *         slash.
      */
-    public static String cleanPath(URI uri) {
-
-        // It would be nice to use StringBuilder,
-        // but it doesn't have the manipulation methods we need
+    public static String cleanPath(URI uri)
+    {
         String result = uri.getPath();
 
         // Remove slashes:
