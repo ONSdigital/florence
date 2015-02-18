@@ -6,7 +6,7 @@ function($) {
 	var pageurl = window.location.href;
 
 	setupFlorence();
-	renderPage();
+	// renderPage();
 
 	var checkLocation = function() {
 		if (pageurl != window.location.href) {
@@ -113,21 +113,25 @@ function($) {
 				'<div class="florence-head">Florence v0.1</div>' +
 				'<nav class="florence-nav">' +
 					'<ul>' +
-						'<li><a href="#">Edit</a></li>' +
-							'<ul>' +
-								'<li><a href="#">Save changes</a></li>' +
-								'<li><a href="#">Cancel changes</a></li>' +
+						'<li><a href="#" class="fl-edit fl-top-menu-item">Edit</a></li>' +
+							'<ul class="fl-edit-sub">' +
+								'<li><a href="#" class="fl-save">Save changes</a></li>' +
+								'<li><a href="#" class="fl-cancel">Cancel changes</a></li>' +
 							'</ul>' +
-						'<li>Versions</li>' +
-						'<li>Tasks</li>' +
-						'<li>Site map</li>' +
+						'<li class="fl-versions fl-top-menu-item">Versions</li>' +
+						'<li class="fl-tasks fl-top-menu-item">Tasks</li>' +
+						'<li class="fl-sitemap fl-top-menu-item">Site map</li>' +
 					'</ul>' +
 				'</nav>' +
 			'</div>';
 		$('body').wrapInner('<div class="florence-content-wrap"></div>');
 		$('body').prepend(florence_bar);
 
-
+		$('.fl-edit').click(function(){
+			// console.log('Florence Edit clicked');
+			// $('.florence-editform').show();
+			getPageData();
+		});
 
 	}
 
