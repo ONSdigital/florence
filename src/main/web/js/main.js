@@ -20,15 +20,19 @@ function getPageData(){
 			// do stuff with json (in this case an array)
 			// console.log("Success");
 			console.log(data);
-			if(data.type === 'home'){
+			if(data.level === 't1'){
 				console.log('t1 page');
 				t1(data);
 			}
-			
+			if(data.level === 't2'){
+				console.log('t2 page');
+				t2(data);
+			}
+
 		},
 		error:function(){
 			console.log('Error');
-		}      
+		}
 	});
 }
 
@@ -40,7 +44,7 @@ function t1(data){
 
 	var editabledata;
 	$('.slate--home--hero-banner .grid-wrap').prepend('<div class="florence-editarea-home"><a href="#" class="florence-editbtn">Edit</a><div class="florence-editform"><a href="#" class="florence-cancelbtn">Cancel</a><form onsubmit="return false;"><textarea id="json"></textarea><button class="florence-update" >Update</button></form></div></div>');
-	
+
 	$('.florence-editbtn').click(function(){
 		$('.florence-editform').show();
 	});
@@ -55,8 +59,34 @@ function t1(data){
 
 	$("#json").val(JSON.stringify(data));
 
-	
+
 }
+
+function t2(data){
+	// var content;
+	// $.each(data.sections, function() {
+	// 	content += "<section><h1>" + this.name + "</h1><h2>" + this.items[0].name + "</h2>" + this.items[0].uri + "</section>";
+	// });
+
+	var editabledata;
+	$('.panel--pad-small').prepend('<div class="florence-editarea-home"><a href="#" class="florence-editbtn">Edit</a><div class="florence-editform"><a href="#" class="florence-cancelbtn">Cancel</a><form onsubmit="return false;"><textarea id="json"></textarea><button class="florence-update" >Update</button></form></div></div>');
+
+	$('.florence-editbtn').click(function(){
+		$('.florence-editform').show();
+	});
+
+	$('.florence-cancelbtn').click(function(){
+		$('.florence-editform').hide();
+	});
+
+	$('.florence-update').click(function(){
+		updatePage();
+	});
+
+	$("#json").val(JSON.stringify(data));
+
+}
+
 
 function renderPage(){
 	getPageData();
