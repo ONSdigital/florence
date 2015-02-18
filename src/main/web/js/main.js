@@ -109,7 +109,7 @@ function($) {
 		$('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
 		var bodycontent = $('body').html();
 		var florence_bar =
-			'<div class="florence">'
+			'<div class="florence">' +
 				'<div class="florence-head">Florence v0.1</div>' +
 				'<nav class="florence-nav">' +
 					'<ul>' +
