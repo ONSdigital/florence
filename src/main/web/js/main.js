@@ -16,7 +16,7 @@ function($) {
 			});
 			console.log("got here");
 		}
-	}
+	};
 
 	function getPageData(){
 		// var pageurl = window.location.href;
@@ -82,7 +82,7 @@ function($) {
 		// });
 
 		var editabledata;
-		$('.panel .grid-wrap').prepend('<div class="florence-editarea-home"><a href="#" class="florence-editbtn">Edit</a><div class="florence-editform"><a href="#" class="florence-cancelbtn">Cancel</a><form onsubmit="return false;"><textarea id="json"></textarea><button class="florence-update" >Update</button></form></div></div>');
+		$('.panel').prepend('<div class="florence-editarea-home"><a href="#" class="florence-editbtn">Edit</a><div class="florence-editform"><a href="#" class="florence-cancelbtn">Cancel</a><form onsubmit="return false;"><textarea id="json"></textarea><button class="florence-update" >Update</button></form></div></div>');
 
 		$('.florence-editbtn').click(function(){
 			$('.florence-editform').show();
@@ -140,7 +140,8 @@ function($) {
 	           url:"http://localhost:8081/data",
 	           type:"POST",
 	           data: JSON.stringify({
-	               json:$('#json').val()
+	               json:$('#json').val(),
+                   id:pageurl
 	           }),
 	           contentType:"application/json; charset=utf-8",
 	           dataType:"text"
