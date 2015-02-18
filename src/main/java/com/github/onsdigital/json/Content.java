@@ -1,6 +1,5 @@
-/**
- * Created by carl on 17/02/15.
- */
+package com.github.onsdigital.json;
+
 public class Content
 {
     public String json;
