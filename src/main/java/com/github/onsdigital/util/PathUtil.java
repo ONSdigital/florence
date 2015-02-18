@@ -11,20 +11,21 @@ public class PathUtil
 {
     public static Path fromUri(String uri)
     {
-        return getDataPath(uri);
+        Path taxonomy = FileSystems.getDefault().getPath(
+                Configuration.getTaxonomyPath());
+        return getDataPath(uri, taxonomy);
     }
 
     /**
      * Resolve the path the data is located from the uri.
      * @param uriString
+     * @param taxonomy
      * @return
      */
-    public static Path getDataPath(String uriString)
+    public static Path getDataPath(String uriString, Path taxonomy)
     {
         URI uri = URI.create(uriString);
         String uriPath = cleanPath(uri);
-        Path taxonomy = FileSystems.getDefault().getPath(
-                Configuration.getTaxonomyPath());
 
         // Look for a data.json file, or
         // fall back to adding a .json file extension
