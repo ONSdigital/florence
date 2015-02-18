@@ -115,7 +115,7 @@ function($) {
 
 	function updatePage(url){
 		$.ajax({
-	           url:"/cats",
+	           url:"http://localhost:8081/cats",
 	           type:"POST",
 	           data: JSON.stringify({
 	               json:$('#json').val()
