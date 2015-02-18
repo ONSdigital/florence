@@ -70,7 +70,7 @@ function($) {
 			updatePage();
 		});
 
-		$("#json").val(JSON.stringify(data));
+		$("#json").val(JSON.stringify(data, null, 3));
 
 
 	}

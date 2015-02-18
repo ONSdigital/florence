@@ -18,12 +18,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by carl on 17/02/15.
- */
 @Api
-public class Cats {
-
+public class Cats
+{
     @GET
     public List<String> cats(HttpServletRequest request, HttpServletResponse response)
     {
