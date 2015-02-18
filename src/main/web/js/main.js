@@ -70,7 +70,7 @@ function($) {
 			updatePage();
 		});
 
-		$("#json").val(JSON.stringify(data));
+		$("#json").val(JSON.stringify(data, null, 3));
 
 
 	}
@@ -131,7 +131,7 @@ function($) {
 
 	function updatePage(url){
 		$.ajax({
-	           url:"/cats",
+	           url:"http://localhost:8081/data",
 	           type:"POST",
 	           data: JSON.stringify({
 	               json:$('#json').val()
