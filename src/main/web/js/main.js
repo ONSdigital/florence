@@ -82,7 +82,7 @@ function($) {
 		// });
 
 		var editabledata;
-		$('.panel--pad-small').prepend('<div class="florence-editarea-home"><a href="#" class="florence-editbtn">Edit</a><div class="florence-editform"><a href="#" class="florence-cancelbtn">Cancel</a><form onsubmit="return false;"><textarea id="json"></textarea><button class="florence-update" >Update</button></form></div></div>');
+		$('.panel .grid-wrap').prepend('<div class="florence-editarea-home"><a href="#" class="florence-editbtn">Edit</a><div class="florence-editform"><a href="#" class="florence-cancelbtn">Cancel</a><form onsubmit="return false;"><textarea id="json"></textarea><button class="florence-update" >Update</button></form></div></div>');
 
 		$('.florence-editbtn').click(function(){
 			$('.florence-editform').show();
@@ -107,7 +107,23 @@ function($) {
 
 	function setupFlorence(){
 		$('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
-		$('body').prepend('<div class="florence-head">Florence enabled</div>');
+		var bodycontent = $('body').html();
+		var florence_bar =
+			'<div class="florence-head">Florence v0.1</div>' +
+				'<nav class="florence-nav">' +
+					'<ul>' +
+						'<li href="">Edit</li>' +
+							'<ul>' +
+								'<li>Save changes</li>' +
+								'<li>Cancel changes</li>' +
+							'</ul>' +
+						'<li href="">Versions</li>' +
+						'<li href="">Tasks</li>' +
+						'<li href="">Site map</li>' +
+					'</ul>' +
+				'</nav>';
+		$('body').wrapInner('<div class="florence-content-wrap"></div>');
+		$('body').prepend(florence_bar);
 
 
 
