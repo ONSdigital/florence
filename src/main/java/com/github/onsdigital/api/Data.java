@@ -11,6 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,12 +21,14 @@ public class Data
     @GET
     public List<String> getData(HttpServletRequest request, HttpServletResponse response)
     {
-        return Arrays.asList(new String[] { "meow here ", "meow there"});
+        return Arrays.asList("meow here ", "meow there");
     }
 
     @POST
-    public void postData(HttpServletRequest request, HttpServletResponse response, Content content) throws IOException {
-        System.out.println(content.json);
-        FileUtils.writeStringToFile(PathUtil.fromUri(request.getHeader("referer")).toFile(), content.json, Charset.forName("utf8"));
+    public void postData(HttpServletRequest request, HttpServletResponse response, Content content) throws IOException
+    {
+        Path path = PathUtil.fromUri(content.id);
+        System.out.println("saving to path: " + path.toString());
+        FileUtils.writeStringToFile(path.toFile(), content.json, Charset.forName("utf8"));
     }
 }
