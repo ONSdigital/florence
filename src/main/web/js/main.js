@@ -8,6 +8,17 @@ function($) {
 	setupFlorence();
 	// renderPage();
 
+	// URI simple parser
+	var parser = document.createElement('a');
+	parser.href = pageurl.replace("#!/", ""); //takes out #! from Angular.js
+	parser.protocol; // => "http:"
+	parser.hostname; // => "example.com"
+	parser.port;     // => "3000"
+	parser.pathname; // => "/pathname/"
+	parser.search;   // => "?search=test"
+	parser.hash;     // => "#hash"
+	parser.host;     // => "example.com:3000"
+
 	var checkLocation = function() {
 		if (pageurl != window.location.href) {
 			pageurl = window.location.href;
@@ -118,7 +129,7 @@ function($) {
 	           type:"POST",
 	           data: JSON.stringify({
 	               json: $('#json').val(),
-                   id: pageurl
+                   id: parser.pathname
 	           }),
 	           contentType:"application/json; charset=utf-8",
 	           dataType:"text"
