@@ -15,6 +15,7 @@ function($) {
 				newpage: getPageData()
 			});
 		}
+	}
 
 	function getPageData(){
 		pageurldata = pageurl.replace("#!", "data");
@@ -116,8 +117,8 @@ function($) {
 	           url:"http://localhost:8081/data",
 	           type:"POST",
 	           data: JSON.stringify({
-	               json:$('#json').val(),
-                   id:pageurl
+	               json: $('#json').val(),
+                   id: pageurl
 	           }),
 	           contentType:"application/json; charset=utf-8",
 	           dataType:"text"
