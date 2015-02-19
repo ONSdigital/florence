@@ -49,6 +49,18 @@ function($) {
 					console.log('t2 page');
 					t2(data);
 				}
+				else if(data.level === 't3'){
+					console.log('t3 page');
+					t3(data);
+				}
+				else if(data.type === 'bulletin'){
+					console.log('t4 page');
+					t4(data);
+				}
+				else if(data.type === 'timeseries'){
+					console.log('t5 page');
+					t5(data);
+				}
 			},
 			error:function(){
 				console.log('Error');
@@ -71,6 +83,25 @@ function($) {
 		$('.panel').prepend(florenceForm);
 		editableform(data);
 	}
+
+	function t3(data){
+		var editabledata;
+		$('#headline.box').prepend(florenceForm);
+		editableform(data);
+	}
+
+	function t4(data){
+		var editabledata;
+		$('.lede').prepend(florenceForm);
+		editableform(data);
+	}
+	function t5(data){
+		var editabledata;
+		$('.actionable-header--tight').prepend(florenceForm);
+		editableform(data);
+	}
+
+
 	// Create a form to modify text and pass JSON data
 	function editableform(data) {
 		$('.florence-editbtn').click(function(){
