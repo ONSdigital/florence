@@ -166,7 +166,7 @@ function($) {
 	           url:"http://localhost:8081/data",
 	           type:"POST",
 	           data: JSON.stringify({
-	               json: data,
+	               json: JSON.stringify(data),
                    id: parser.pathname
 	           }),
 	           contentType:"application/json; charset=utf-8",
