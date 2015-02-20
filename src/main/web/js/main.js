@@ -83,7 +83,7 @@ function($) {
 	function t1(){
 		var editabledata;
 		// first argument is css selector, second is the key in the json for the data
-		addEditSection('.slate--home--hero-banner .grid-col','name')
+		addEditSection('.slate--home--hero-banner .grid-col .navpanel_wrapper_home' ,'name')
 	}
 
 	function t2(){
@@ -110,10 +110,11 @@ function($) {
 	}
 
 	function addEditSection(selector, jsonKey){
-		var jsonPath;
 
 		$(selector)
 			.each(function(index,element){
+			var jsonUpdater;
+			var jsonPath;
 
 				setJsonPath(jsonKey);
 
@@ -125,30 +126,34 @@ function($) {
 				function setJsonPath(jsonKey){
 					// will eventually handle all the data paths
 					if(data.level === "t1"){
+
 						jsonPath = data['sections'][index]['items'][0][jsonKey]
+						jsonUpdater = function(newVal){
+							data['sections'][index]['items'][0][jsonKey] = newVal;
+						}
 					} else if( data.level === "t2"){
 						console.log(" error - t2 data path not implemented")
 					} else if(true){
 					 	console.log("error getting path to json data ")}
 				}
-			});
 
-	// Create a form to modify text and pass JSON data
-		function editableForm(element,index) {
-			$('.florence-editbtn',element).click(function(){
-				$('.florence-editform',element).show();
-			});
+			// Create a form to modify text and pass JSON data
+				function editableForm(element,index) {
+					$('.florence-editbtn',element).click(function(){
+						$('.florence-editform',element).show();
+					});
 
-			$('.florence-cancelbtn',element).click(function(){
-				$('.florence-editform',element).hide();
-			});
+					$('.florence-cancelbtn',element).click(function(){
+						$('.florence-editform',element).hide();
+					});
 
-			$('.florence-update',element).click(function(){
-				jsonPath = $('textarea',element).val()
-			updatePage()
-			});
-		}
+					$('.florence-update',element).click(function(){
+						jsonUpdater($('textarea',element).val());
+						updatePage();
+					});
+				}
 
+			});
 	}
 
 
@@ -156,20 +161,20 @@ function($) {
 		$('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
 		var bodycontent = $('body').html();
 		var florence_bar =
-			'<div class="florence">' +
-				'<div class="florence-head">Florence v0.1</div>' +
-				'<nav class="florence-nav">' +
-					'<ul>' +
+			'<div class="florence">'                                               +
+				'<div class="florence-head">Florence v0.1</div>'                     +
+				'<nav class="florence-nav">'                                         +
+					'<ul>'                                                             +
 						'<li><a href="#" class="fl-edit fl-top-menu-item">Edit</a></li>' +
-							'<ul class="fl-edit-sub">' +
-								'<li><a href="#" class="fl-save">Save changes</a></li>' +
-								'<li><a href="#" class="fl-cancel">Cancel changes</a></li>' +
-							'</ul>' +
-						'<li class="fl-versions fl-top-menu-item">Versions</li>' +
-						'<li class="fl-tasks fl-top-menu-item">Tasks</li>' +
-						'<li class="fl-sitemap fl-top-menu-item">Site map</li>' +
-					'</ul>' +
-				'</nav>' +
+							'<ul class="fl-edit-sub">'                                     +
+								'<li><a href="#" class="fl-save">Save changes</a></li>'      +
+								'<li><a href="#" class="fl-cancel">Cancel changes</a></li>'  +
+							'</ul>'                                                        +
+						'<li class="fl-versions fl-top-menu-item">Versions</li>'         +
+						'<li class="fl-tasks fl-top-menu-item">Tasks</li>'               +
+						'<li class="fl-sitemap fl-top-menu-item">Site map</li>'          +
+					'</ul>'                                                            +
+				'</nav>'                                                             +
 			'</div>';
 		$('body').wrapInner('<div class="florence-content-wrap"></div>');
 		$('body').prepend(florence_bar);
