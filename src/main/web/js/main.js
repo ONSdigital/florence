@@ -4,6 +4,7 @@ function($) {
 	var intIntervalTime = 100;
 	var newpage;
 	var pageurl = window.location.href;
+	var data;
 
 	setupFlorence();
 	// renderPage();
@@ -37,29 +38,30 @@ function($) {
 			crossDomain: true,
 			// jsonpCallback: 'callback',
 			// type: 'GET',
-			success:function(data){
+			success:function(response){
 				// do stuff with json (in this case an array)
 				// console.log("Success");
 				// console.log(data);
+				data = response
 				if(data.level === 't1'){
 					console.log('t1 page');
-					t1(data);
+					t1();
 				}
 				else if(data.level === 't2'){
 					console.log('t2 page');
-					t2(data);
+					t2();
 				}
 				else if(data.level === 't3'){
 					console.log('t3 page');
-					t3(data);
+					t3();
 				}
 				else if(data.type === 'bulletin'){
 					console.log('t4 page');
-					t4(data);
+					t4();
 				}
 				else if(data.type === 'timeseries'){
 					console.log('t5 page');
-					t5(data);
+					t5();
 				}
 			},
 			error:function(){
@@ -68,48 +70,58 @@ function($) {
 		});
 	}
 
-	var florenceForm = '<div class="florence-editarea-home"><a href="#" class="florence-editbtn">Edit</a>' +
-			'<div class="florence-editform"><a href="#" class="florence-cancelbtn">Cancel</a><form onsubmit="return false;"><textarea id="json"></textarea>' +
-			'<button class="florence-update" >Update</button></form></div></div>';
+	var florenceForm = '<div class="florence-editarea-home">'                   +
+	 											'<a href="#" class="florence-editbtn">Edit</a>'       +
+												'<div class="florence-editform">'                     +
+													'<a href="#" class="florence-cancelbtn">Cancel</a>' +
+													'<form onsubmit="return false;">'                   +
+														'<textarea id="json"></textarea>'                 +
+														'<button class="florence-update" >Update</button>'+
+													'</form>'                                           +
+												'</div>'                                              +
+											'</div>';
 
-	function t1(data){
+	function t1(){
 		var editabledata;
-		$('.slate--home--hero-banner .grid-col')
+		addEditSection('.slate--home--hero-banner .grid-col')
+	}
+
+	function t2(){
+		var editabledata;
+		$('.panel').prepend(florenceForm);
+		editableform();
+	}
+
+	function t3(){
+		var editabledata;
+		$('#headline.box').prepend(florenceForm);
+		editableform();
+	}
+
+	function t4(){
+		var editabledata;
+		$('.lede').prepend(florenceForm);
+		editableform();
+	}
+	function t5(){
+		var editabledata;
+		$('.actionable-header--tight').prepend(florenceForm);
+		editableform();
+	}
+
+	function addEditSection(selector){
+		$(selector)
 			.each(function(index,element){
 				var inputText = data['sections'][index]['items'][0]['name'];
 
 				$(element).prepend(florenceForm);
 				$('textarea',element).val(inputText);
-				editableform(data,element,index);
+				editableform(element,index);
 			});
-	}
 
-	function t2(data){
-		var editabledata;
-		$('.panel').prepend(florenceForm);
-		editableform(data);
 	}
-
-	function t3(data){
-		var editabledata;
-		$('#headline.box').prepend(florenceForm);
-		editableform(data);
-	}
-
-	function t4(data){
-		var editabledata;
-		$('.lede').prepend(florenceForm);
-		editableform(data);
-	}
-	function t5(data){
-		var editabledata;
-		$('.actionable-header--tight').prepend(florenceForm);
-		editableform(data);
-	}
-
-
 	// Create a form to modify text and pass JSON data
-	function editableform(data,element,index) {
+	function editableform(element,index) {
 		$('.florence-editbtn',element).click(function(){
 			$('.florence-editform',element).show();
 		});
@@ -119,17 +131,12 @@ function($) {
 		});
 
 		$('.florence-update',element).click(function(){
-			data['sections'][index]['items'][0]['name'] = $('.input',element).val()
-		console.log(data)
-		updatePage(data)
+			data['sections'][index]['items'][0]['name'] = $('textarea',element).val()
+		updatePage()
 		});
 	}
 
 
-
-	// function renderPage(){
-	// 	getPageData();
-	// }
 
 	function setupFlorence(){
 		$('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
@@ -161,7 +168,7 @@ function($) {
 
 	}
 
-	function updatePage(data){
+	function updatePage(){
 		$.ajax({
 	           url:"http://localhost:8081/data",
 	           type:"POST",
@@ -172,7 +179,8 @@ function($) {
 	           contentType:"application/json; charset=utf-8",
 	           dataType:"text"
 	       }).done(function(){
-	           console.log("Done!")
+	           console.log("Done!");
+	           location.reload();
 	       }).fail(function(jqXHR, textStatus){
 	           alert(textStatus);
 	       })
