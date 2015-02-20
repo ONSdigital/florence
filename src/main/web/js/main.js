@@ -74,8 +74,14 @@ function($) {
 
 	function t1(data){
 		var editabledata;
-		$('.slate--home--hero-banner .grid-wrap').prepend(florenceForm);
-		editableform(data);
+		$('.slate--home--hero-banner .grid-col')
+			.each(function(index,element){
+				var inputText = data['sections'][index]['items'][0]['name'];
+
+				$(element).prepend(florenceForm);
+				$('textarea',element).val(inputText);
+				editableform(data,element,index);
+			});
 	}
 
 	function t2(data){
@@ -103,19 +109,20 @@ function($) {
 
 
 	// Create a form to modify text and pass JSON data
-	function editableform(data) {
-		$('.florence-editbtn').click(function(){
-			$('.florence-editform').show();
+	function editableform(data,element,index) {
+		$('.florence-editbtn',element).click(function(){
+			$('.florence-editform',element).show();
 		});
 
-		$('.florence-cancelbtn').click(function(){
-			$('.florence-editform').hide();
+		$('.florence-cancelbtn',element).click(function(){
+			$('.florence-editform',element).hide();
 		});
 
-		$('.florence-update').click(function(){
-			updatePage();
+		$('.florence-update',element).click(function(){
+			data['sections'][index]['items'][0]['name'] = $('.input',element).val()
+		console.log(data)
+		updatePage(data)
 		});
-		$("#json").val(JSON.stringify(data, null, 3));
 	}
 
 
@@ -154,12 +161,12 @@ function($) {
 
 	}
 
-	function updatePage(url){
+	function updatePage(data){
 		$.ajax({
 	           url:"http://localhost:8081/data",
 	           type:"POST",
 	           data: JSON.stringify({
-	               json: $('#json').val(),
+	               json: data,
                    id: parser.pathname
 	           }),
 	           contentType:"application/json; charset=utf-8",
