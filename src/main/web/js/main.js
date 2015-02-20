@@ -41,7 +41,6 @@ function($) {
 			success:function(response){
 				// do stuff with json (in this case an array)
 				// console.log("Success");
-				// console.log(data);
 				data = response
 				if(data.level === 't1'){
 					console.log('t1 page');
@@ -83,59 +82,74 @@ function($) {
 
 	function t1(){
 		var editabledata;
-		addEditSection('.slate--home--hero-banner .grid-col')
+		// first argument is css selector, second is the key in the json for the data
+		addEditSection('.slate--home--hero-banner .grid-col','name')
 	}
 
 	function t2(){
 		var editabledata;
 		$('.panel').prepend(florenceForm);
-		editableform();
+		editableForm();
 	}
 
 	function t3(){
 		var editabledata;
 		$('#headline.box').prepend(florenceForm);
-		editableform();
+		editableForm();
 	}
 
 	function t4(){
 		var editabledata;
 		$('.lede').prepend(florenceForm);
-		editableform();
+		editableForm();
 	}
 	function t5(){
 		var editabledata;
 		$('.actionable-header--tight').prepend(florenceForm);
-		editableform();
+		editableForm();
 	}
 
-	function addEditSection(selector){
+	function addEditSection(selector, jsonKey){
+		var jsonPath;
+
 		$(selector)
 			.each(function(index,element){
-				var inputText = data['sections'][index]['items'][0]['name'];
+
+				setJsonPath(jsonKey);
 
 				$(element).prepend(florenceForm);
-				$('textarea',element).val(inputText);
-				editableform(element,index);
+				$('textarea',element).val(jsonPath);
+				editableForm(element,index);
+
+
+				function setJsonPath(jsonKey){
+					// will eventually handle all the data paths
+					if(data.level === "t1"){
+						jsonPath = data['sections'][index]['items'][0][jsonKey]
+					} else if( data.level === "t2"){
+						console.log(" error - t2 data path not implemented")
+					} else if(true){
+					 	console.log("error getting path to json data ")}
+				}
 			});
 
-	}
 	// Create a form to modify text and pass JSON data
-	function editableform(element,index) {
-		$('.florence-editbtn',element).click(function(){
-			$('.florence-editform',element).show();
-		});
+		function editableForm(element,index) {
+			$('.florence-editbtn',element).click(function(){
+				$('.florence-editform',element).show();
+			});
 
-		$('.florence-cancelbtn',element).click(function(){
-			$('.florence-editform',element).hide();
-		});
+			$('.florence-cancelbtn',element).click(function(){
+				$('.florence-editform',element).hide();
+			});
 
-		$('.florence-update',element).click(function(){
-			data['sections'][index]['items'][0]['name'] = $('textarea',element).val()
-		updatePage()
-		});
+			$('.florence-update',element).click(function(){
+				jsonPath = $('textarea',element).val()
+			updatePage()
+			});
+		}
+
 	}
-
 
 
 	function setupFlorence(){
@@ -189,7 +203,3 @@ function($) {
 	setInterval(checkLocation, intIntervalTime);
 
 })(jQuery);
-
-
-
-
