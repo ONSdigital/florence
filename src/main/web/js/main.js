@@ -83,7 +83,8 @@ function($) {
 	function t1(){
 		var editabledata;
 		// first argument is css selector, second is the key in the json for the data
-		addEditSection('.slate--home--hero-banner .grid-col .navpanel_wrapper_home' ,'name')
+		//addEditSection('.slate--home--hero-banner .grid-col .navpanel_wrapper_home' ,'name')
+		addEditSection('.slate--home--hero-banner .grid-col ' ,'uri')
 	}
 
 	function t2(){
@@ -113,8 +114,7 @@ function($) {
 
 		$(selector)
 			.each(function(index,element){
-			var jsonUpdater;
-			var jsonPath;
+				var jsonUpdater,jsonPath,uriUpdater;
 
 				setJsonPath(jsonKey);
 
@@ -126,10 +126,21 @@ function($) {
 				function setJsonPath(jsonKey){
 					// will eventually handle all the data paths
 					if(data.level === "t1"){
+						//find the old value to prepoulate the form
+						if(jsonKey !== "uri"){
+							jsonPath = data['sections'][index]['items'][0][jsonKey]
+						} else {
+							splitUrl = data['sections'][index]['items'][0][jsonKey].split("/")
+							jsonPath = splitUrl[splitUrl.length - 2]
+						}
 
-						jsonPath = data['sections'][index]['items'][0][jsonKey]
-						jsonUpdater = function(newVal){
-							data['sections'][index]['items'][0][jsonKey] = newVal;
+						// while we are here make a function that can update the
+						if(jsonKey !== "uri"){
+							jsonUpdater = function(newVal){
+								data['sections'][index]['items'][0][jsonKey] = newVal;
+							}
+						} else {
+							jsonUpdater = makeUriUpdater(index,jsonKey)
 						}
 					} else if( data.level === "t2"){
 						console.log(" error - t2 data path not implemented")
@@ -137,7 +148,7 @@ function($) {
 					 	console.log("error getting path to json data ")}
 				}
 
-			// Create a form to modify text and pass JSON data
+				// Create a form to modify text and pass JSON data
 				function editableForm(element,index) {
 					$('.florence-editbtn',element).click(function(){
 						$('.florence-editform',element).show();
@@ -152,6 +163,28 @@ function($) {
 						updatePage();
 					});
 				}
+
+				function makeUriUpdater(index,jsonKey){
+					return function uriUpdater(cdid){
+						var url
+						$.ajax({
+							url: "http://localhost:8080/search?cdid=" +cdid,
+							crossDomain: true,
+							dataType: "json",
+							async: false,
+							success:function(response){
+
+								url = response;
+								console.log(url)
+							},
+							error:function(){console.log( "error retrieving url from tredegar")}
+						})
+
+						data['sections'][index]['items'][0][jsonKey] = url;
+
+					}
+				}
+
 
 			});
 	}
