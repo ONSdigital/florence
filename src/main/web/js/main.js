@@ -1,10 +1,22 @@
-(
-function($) {
+(function($) {
 
-	var intIntervalTime = 100;
+  var intIntervalTime = 100;
 	var newpage;
 	var pageurl = window.location.href;
 	var data;
+	var editableData;
+	var pageType
+
+	editableData = {
+		"t1":[
+			{"class":'.slate--home--hero-banner .grid-col ',"jsonKey":"uri"},
+			//{"class":'.slate--home--hero-banner .grid-col ',"jsonKey":"name"},
+			],
+		"t2":[],
+		"t3":[],
+		"t4":[],
+		"t5":[]
+	}
 
 	setupFlorence();
 	// renderPage();
@@ -42,26 +54,8 @@ function($) {
 				// do stuff with json (in this case an array)
 				// console.log("Success");
 				data = response
-				if(data.level === 't1'){
-					console.log('t1 page');
-					t1();
-				}
-				else if(data.level === 't2'){
-					console.log('t2 page');
-					t2();
-				}
-				else if(data.level === 't3'){
-					console.log('t3 page');
-					t3();
-				}
-				else if(data.type === 'bulletin'){
-					console.log('t4 page');
-					t4();
-				}
-				else if(data.type === 'timeseries'){
-					console.log('t5 page');
-					t5();
-				}
+				pageType = data.level
+				addEditSections()
 			},
 			error:function(){
 				console.log('Error');
@@ -80,40 +74,14 @@ function($) {
 												'</div>'                                              +
 											'</div>';
 
-	function t1(){
-		var editabledata;
-		// first argument is css selector, second is the key in the json for the data
-		//addEditSection('.slate--home--hero-banner .grid-col .navpanel_wrapper_home' ,'name')
-		addEditSection('.slate--home--hero-banner .grid-col ' ,'uri')
-	}
 
-	function t2(){
-		var editabledata;
-		$('.panel').prepend(florenceForm);
-		editableForm();
-	}
+	function addEditSections(){
+		for(i = 0; i < editableData[pageType].length; i ++){
+			var selector, jsonKey
+			selector = editableData[pageType][i].class
+			jsonKey  = editableData[pageType][i].jsonKey
 
-	function t3(){
-		var editabledata;
-		$('#headline.box').prepend(florenceForm);
-		editableForm();
-	}
-
-	function t4(){
-		var editabledata;
-		$('.lede').prepend(florenceForm);
-		editableForm();
-	}
-	function t5(){
-		var editabledata;
-		$('.actionable-header--tight').prepend(florenceForm);
-		editableForm();
-	}
-
-	function addEditSection(selector, jsonKey){
-
-		$(selector)
-			.each(function(index,element){
+			$(selector).each(function(index,element){
 				var jsonUpdater,jsonPath,uriUpdater;
 
 				setJsonPath(jsonKey);
@@ -134,7 +102,7 @@ function($) {
 							jsonPath = splitUrl[splitUrl.length - 2]
 						}
 
-						// while we are here make a function that can update the
+						// while we are here make a function that can update the data
 						if(jsonKey !== "uri"){
 							jsonUpdater = function(newVal){
 								data['sections'][index]['items'][0][jsonKey] = newVal;
@@ -173,7 +141,6 @@ function($) {
 							dataType: "json",
 							async: false,
 							success:function(response){
-
 								url = response;
 								console.log(url)
 							},
@@ -181,36 +148,35 @@ function($) {
 						})
 
 						data['sections'][index]['items'][0][jsonKey] = url;
-
 					}
+
 				}
-
-
 			});
+		}
 	}
 
 
-	function setupFlorence(){
-		$('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
-		var bodycontent = $('body').html();
-		var florence_bar =
-			'<div class="florence">'                                               +
-				'<div class="florence-head">Florence v0.1</div>'                     +
-				'<nav class="florence-nav">'                                         +
-					'<ul>'                                                             +
-						'<li><a href="#" class="fl-edit fl-top-menu-item">Edit</a></li>' +
-							'<ul class="fl-edit-sub">'                                     +
-								'<li><a href="#" class="fl-save">Save changes</a></li>'      +
-								'<li><a href="#" class="fl-cancel">Cancel changes</a></li>'  +
-							'</ul>'                                                        +
-						'<li class="fl-versions fl-top-menu-item">Versions</li>'         +
-						'<li class="fl-tasks fl-top-menu-item">Tasks</li>'               +
-						'<li class="fl-sitemap fl-top-menu-item">Site map</li>'          +
-					'</ul>'                                                            +
-				'</nav>'                                                             +
-			'</div>';
-		$('body').wrapInner('<div class="florence-content-wrap"></div>');
-		$('body').prepend(florence_bar);
+  function setupFlorence(){
+  	$('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
+  	var bodycontent = $('body').html();
+  	var florence_bar =
+  		'<div class="florence">'                                               +
+  			'<div class="florence-head">Florence v0.1</div>'                     +
+  			'<nav class="florence-nav">'                                         +
+  				'<ul>'                                                             +
+  					'<li><a href="#" class="fl-edit fl-top-menu-item">Edit</a></li>' +
+  						'<ul class="fl-edit-sub">'                                     +
+  							'<li><a href="#" class="fl-save">Save changes</a></li>'      +
+  							'<li><a href="#" class="fl-cancel">Cancel changes</a></li>'  +
+  						'</ul>'                                                        +
+  					'<li class="fl-versions fl-top-menu-item">Versions</li>'         +
+  					'<li class="fl-tasks fl-top-menu-item">Tasks</li>'               +
+  					'<li class="fl-sitemap fl-top-menu-item">Site map</li>'          +
+  				'</ul>'                                                            +
+  			'</nav>'                                                             +
+  		'</div>';
+  	$('body').wrapInner('<div class="florence-content-wrap"></div>');
+  	$('body').prepend(florence_bar);
 
 		$('.fl-edit').click(function(){
 			// console.log('Florence Edit clicked');
@@ -230,12 +196,12 @@ function($) {
 	           }),
 	           contentType:"application/json; charset=utf-8",
 	           dataType:"text"
-	       }).done(function(){
+	       	}).done(function(){
 	           console.log("Done!");
 	           location.reload();
-	       }).fail(function(jqXHR, textStatus){
+	       	}).fail(function(jqXHR, textStatus){
 	           alert(textStatus);
-	       })
+	       	})
 	}
 
 	setInterval(checkLocation, intIntervalTime);
