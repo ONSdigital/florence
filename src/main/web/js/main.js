@@ -85,10 +85,10 @@
 				var jsonUpdater,jsonPath,uriUpdater;
 
 				setJsonPath(jsonKey);
-
+				jsonUpdater =makeUpdateFunction(jsonKey);
 				$(element).prepend(florenceForm);
 				$('textarea',element).val(jsonPath);
-				editableForm(element,index);
+				editableForm(element,index,jsonUpdater);
 
 
 				function setJsonPath(jsonKey){
@@ -99,37 +99,24 @@
 							jsonPath = data['sections'][index]['items'][0][jsonKey]
 						} else {
 							splitUrl = data['sections'][index]['items'][0][jsonKey].split("/")
-							jsonPath = splitUrl[splitUrl.length - 2]
+							jsonPath = splitUrl[splitUrl.length - 2] === "timeseries" ? splitUrl[splitUrl.length - 1] : splitUrl[splitUrl.length - 2]
 						}
 
-						// while we are here make a function that can update the data
-						if(jsonKey !== "uri"){
-							jsonUpdater = function(newVal){
-								data['sections'][index]['items'][0][jsonKey] = newVal;
-							}
-						} else {
-							jsonUpdater = makeUriUpdater(index,jsonKey)
-						}
 					} else if( data.level === "t2"){
 						console.log(" error - t2 data path not implemented")
 					} else if(true){
 					 	console.log("error getting path to json data ")}
 				}
 
-				// Create a form to modify text and pass JSON data
-				function editableForm(element,index) {
-					$('.florence-editbtn',element).click(function(){
-						$('.florence-editform',element).show();
-					});
+				function makeUpdateFunction(jsonKey){
 
-					$('.florence-cancelbtn',element).click(function(){
-						$('.florence-editform',element).hide();
-					});
-
-					$('.florence-update',element).click(function(){
-						jsonUpdater($('textarea',element).val());
-						updatePage();
-					});
+					if(jsonKey !== "uri"){
+						return function(newVal){
+							data['sections'][index]['items'][0][jsonKey] = newVal;
+						}
+					} else {
+							return makeUriUpdater(index,jsonKey)
+					}
 				}
 
 				function makeUriUpdater(index,jsonKey){
@@ -148,9 +135,24 @@
 						})
 
 						data['sections'][index]['items'][0][jsonKey] = url;
-					}
 
+					}
 				}
+			});
+		}
+
+		function editableForm(element,index,jsonUpdater) {
+			$('.florence-editbtn',element).click(function(){
+				$('.florence-editform',element).show();
+			});
+
+			$('.florence-cancelbtn',element).click(function(){
+				$('.florence-editform',element).hide();
+			});
+
+			$('.florence-update',element).click(function(){
+				jsonUpdater($('textarea',element).val());
+				updatePage();
 			});
 		}
 	}
