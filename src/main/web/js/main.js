@@ -119,6 +119,10 @@
 					}
 				}
 
+				// Create a form to modify text and pass JSON data
+
+				// TODO Kane editable form takes an update function and a  initial value as args
+
 				function makeUriUpdater(index,jsonKey){
 					return function uriUpdater(cdid){
 						var url
@@ -135,7 +139,18 @@
 						})
 
 						data['sections'][index]['items'][0][jsonKey] = url;
+						console.log(url)
 
+						$.ajax({
+							url:"http://localhost:8080/data"+url,
+							crossDomain:true,
+							dataType:"json",
+							async:false,
+							success:function(response){
+								data['sections'][index]['items'][0]["name"] = response["name"]
+							},
+							error:function(){console.log("error retrieving data from tredegar")}
+						})
 					}
 				}
 			});
