@@ -3,7 +3,9 @@ package com.github.onsdigital.api;
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.json.Content;
 import com.github.onsdigital.util.PathUtil;
+import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.io.FileUtils;
+import sun.tools.jar.CommandLine;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,5 +32,12 @@ public class Data
         Path path = PathUtil.fromUri(content.id);
         System.out.println("saving to path: " + path.toString());
         FileUtils.writeStringToFile(path.toFile(), content.json, Charset.forName("utf8"));
+        String[] line =  {"git add . "};
+        String[] cmdLine = CommandLine.parse(line);
+
+        DefaultExecutor executor = new DefaultExecutor();
+        int exitValue = executor.execute(cmdLine);
+
+
     }
 }
