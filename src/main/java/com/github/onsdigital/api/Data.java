@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 
-import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.io.FileUtils;
 
@@ -34,12 +33,7 @@ public class Data {
 		System.out.println("saving to path: " + path.toString());
 		FileUtils.writeStringToFile(path.toFile(), content.json,
 				Charset.forName("utf8"));
-		String line = "git add . ";
-		CommandLine cmdLine = CommandLine.parse(line);
-
-		DefaultExecutor executor = new DefaultExecutor();
-		int exitValue = executor.execute(cmdLine);
-		System.out.println(exitValue);
+        Runtime.getRuntime().exec("git add . && git commit -m 'foo' && git push ");
 
 	}
 }
