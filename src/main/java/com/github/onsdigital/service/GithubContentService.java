@@ -58,13 +58,15 @@ public class GithubContentService
 
     private static void submitContent(String content, String path, String note, String release, GHRepository repo) throws IOException {
         // commit the content to the branch
+        path = "taxonomy" + path;
+
         try {
-            GHContent repoContent = repo.getFileContent(path + "/data.json", release);
+            GHContent repoContent = repo.getFileContent(path + "data.json", release);
             repoContent.update(content, note, release);
         }
         catch (IOException exception)
         {
-            repo.createContent(content, note, path + "/data.json", release);
+            repo.createContent(content, note, path + "data.json", release);
         }
     }
 

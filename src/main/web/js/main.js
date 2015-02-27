@@ -211,8 +211,15 @@
   }
 
   function updatePage() {
+
+  document.cookie="owner=carlhuk";
+  document.cookie="release=myRelease3";
+
     $.ajax({
       url: "http://localhost:8081/data",
+      xhrFields: {
+          withCredentials: true
+      },
       type: "POST",
       data: JSON.stringify({
         json: JSON.stringify(data),

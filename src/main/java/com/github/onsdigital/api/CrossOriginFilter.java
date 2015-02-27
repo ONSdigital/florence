@@ -17,8 +17,9 @@ public class CrossOriginFilter implements Filter
     @Override
     public boolean filter(HttpServletRequest request, HttpServletResponse response)
     {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Origin", "http://localhost:8080");
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
         return true;
     }
 }

@@ -31,6 +31,9 @@
 
     function send()  {
 
+        document.cookie="owner=carlhuk";
+        document.cookie="release=myRelease";
+
         $.ajax({
             url:"/data",
             type:"POST",
