@@ -10,8 +10,8 @@ import java.io.IOException;
 
 public class GithubContentService
 {
-    private static final String username = "carlhuk";
-    private static final String pass = "temptemp1";
+    private static final String username = "";
+    private static final String pass = "";
 
     private static final String contentRepositoryName = "nightingale";
     private static final String contentRepositoryOwner = "ONSDigital";
