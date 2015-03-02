@@ -1,7 +1,6 @@
 package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
-import com.github.onsdigital.json.ReleaseContent;
 import com.github.onsdigital.service.GithubContentService;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -15,7 +14,7 @@ import java.io.IOException;
 public class Release {
 
     @POST
-    public void approveRelease(HttpServletRequest request, HttpServletResponse response, ReleaseContent content) throws IOException, UnirestException {
+    public void approveRelease(HttpServletRequest request, HttpServletResponse response) throws IOException, UnirestException {
         String owner = "ONSDigital"; // aka fork
         String release = "master"; // aka branch
 
