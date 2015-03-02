@@ -181,7 +181,7 @@
 
 
   function setupFlorence() {
-    $('head').prepend('<link href="http://localhost:8081/css/main.css" rel="stylesheet" type="text/css">');
+    $('head').prepend('<link href="http://localhost:8081/css/rapid-prototype-main.css" rel="stylesheet" type="text/css">');
     var bodycontent = $('body').html();
     var florence_bar =
       '<div class="florence">' +
@@ -211,8 +211,15 @@
   }
 
   function updatePage() {
+
+  document.cookie="owner=carlhuk";
+  document.cookie="release=myRelease3";
+
     $.ajax({
       url: "http://localhost:8081/data",
+      xhrFields: {
+          withCredentials: true
+      },
       type: "POST",
       data: JSON.stringify({
         json: JSON.stringify(data),

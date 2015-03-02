@@ -1,0 +1,130 @@
+// Modules and Variables
+
+
+//Partials
+@import "partials/grid";
+@import "partials/typography";
+
+
+// Third-party
+
+
+//Fonts
+@import url(http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic);
+/*@import url("../css/florence.css");*/
+
+html{
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+.fl-container {
+	overflow: hidden;
+	height: 100%;
+	h1, h2, h3, h4, h5 {
+		margin: 0;
+	}
+}
+
+.fl-brand {
+	font-size: 12px;
+	font-style: italic;
+	margin: 0;
+	/*background: #1d2026 url(../img/flo-logo.png) no-repeat center 10px;
+	background-size: 100px auto;
+	height: 120px;
+	margin: -15px !important;*/
+}
+
+.fl-main-menu {
+	/*border-top: 1px solid #111010;*/
+	/*border-bottom: 1px solid #282b31;*/
+	border-top: 1px solid #1d2026;
+	padding: 0;
+	margin-left: -15px;
+	margin-right: -15px;
+}
+
+.fl-main-menu__item {
+	display: block;
+	list-style: none;
+	/*border-top: 1px solid #282b31;*/
+	/*border-bottom: 1px solid #111010;*/
+	border-bottom: 1px solid #1d2026;
+	&--approve {
+		/*@extend .icon-edit;*/
+
+	}
+}
+
+.fl-main-menu__item {
+
+}
+
+.fl-main-menu-item-link {
+	display: block;
+	/*padding: 60px 15px 15px 15px;*/
+	padding: 20px 15px;
+	color: #6c727b;
+	text-decoration: none;
+	/*text-align: center;*/
+	&--active {
+		background-color: #2a2f39;
+		-webkit-box-shadow: 5px 0px 7px 5px rgba(0,0,0,0.1);
+		-moz-box-shadow: 5px 0px 7px 5px rgba(0,0,0,0.1);
+		box-shadow: 5px 0px 7px 5px rgba(0,0,0,0.1);
+		color: #d4d5d7;
+		border-top: 1px solid #2c313c;
+		border-left: 4px solid #d4d5d7;
+		padding-left: 11px;
+	}
+}
+
+.fl-panel {
+	@extend .col;
+	height: 100%;
+	&--menu {
+		@extend .col--1;
+		background-color: #232831;
+		color: #6c727b;
+		font-family: 'Lato', sans-serif;
+		font-weight: 300;
+		font-size: 14px;
+		-webkit-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
+		-moz-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
+		box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
+	}
+	&--menu-collapse {
+		@extend .col--1;
+	}
+	&--menu-inactive {
+	}
+	&--sub-menu {
+		@extend .col--3;
+		background-color: #4d5568;
+		color: #fff;
+		-webkit-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
+		-moz-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
+		box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
