@@ -85,6 +85,20 @@ body {
 	}
 }
 
+.fl-editor {
+	width: 100%;
+	height: 100%;
+	/*padding: 60px 15px;*/
+	padding: 15px;
+	/*margin: -15px;*/
+	border: 0px;
+	background-color: #e0e0e0;
+	-webkit-box-sizing: border-box;
+  	box-sizing: border-box;
+  	outline: none;
+  	resize: none;
+}
+
 .fl-panel {
 	@extend .col;
 	height: 100%;
@@ -112,6 +126,11 @@ body {
 		-moz-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
 		box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
 	}
+	&--editor{
+		@extend .col--4;
+		background-color: #e0e0e0;
+	}
+	&--preview{}
 }
 
 
