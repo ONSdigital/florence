@@ -11,7 +11,7 @@ import javax.ws.rs.POST;
 import java.io.IOException;
 
 @Api
-public class Release {
+public class ReleaseApproval {
 
     @POST
     public void approveRelease(HttpServletRequest request, HttpServletResponse response) throws IOException, UnirestException {

@@ -16,8 +16,8 @@ import org.kohsuke.github.GitHub;
 import java.io.IOException;
 
 public class GithubContentService {
-    private static final String username = "carlhuk";
-    private static final String pass = "temptemp1";
+    private static final String username = "";
+    private static final String pass = "";
 
     private static final String contentRepositoryName = "nightingale";
     private static final String contentRepositoryOwner = "ONSDigital";
@@ -33,6 +33,14 @@ public class GithubContentService {
         approveRelease(username, release);
 
         System.out.println("done...");
+    }
+
+    public static String getOriginalContent(String path, String owner, String release) throws UnirestException, IOException {
+
+        GitHub github = GitHub.connectUsingPassword(username, pass);
+        GHRepository repo = github.getRepository(contentRepositoryOwner + "/" + contentRepositoryName);
+        GHContent repoContent = repo.getFileContent(path + "/data.json");
+        return repoContent.getContent();
     }
 
     /**
