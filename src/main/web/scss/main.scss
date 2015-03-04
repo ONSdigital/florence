@@ -9,10 +9,6 @@
 // Third-party
 
 
-//Fonts
-@import url(http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic);
-/*@import url("../css/florence.css");*/
-
 html{
 	height: 100%;
 }
@@ -104,14 +100,22 @@ body {
 	width: 100%;
 	height: 100%;
 	/*padding: 60px 15px;*/
-	/*padding: 15px;*/
+	padding: 15px;
 	/*margin: -15px;*/
 	border: 0px;
-	background-color: #e0e0e0;
+	background-color: #272822;
+	color: #74cee7;
 	-webkit-box-sizing: border-box;
   	box-sizing: border-box;
+	border-radius: 0px;
   	outline: none;
   	resize: none;
+  	-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
+	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
+	font-family: 'Source Code Pro';
+	font-size: 13px;
+	border-top: 1px solid #3d3d3a;
 }
 
 .fl-panel {
@@ -131,28 +135,48 @@ body {
 	&--menu-inactive {
 	}
 	&--sub-menu {
-		@extend .col--3;
-		/*@extend .col--5*/
+		/*@extend .col--3;*/
+		padding: 0;
+		@extend .col--4;
 		display: none;
-		background-color: #4d5568;
+		background-color: #3d3d3a;
 		color: #fff;
 		-webkit-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
 		-moz-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
 		box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
 	}
-	&--editor{
-		@extend .col--4;
+	&--editor {
+		@extend .col--12;
 		display: none;
-		background-color: #e0e0e0;
+		/*background-color: #3d3d3a;*/
+		padding: 100px 0 50px 0;
+		overflow: hidden;
+		position: relative;
+
+		&__breadcrumb {
+			height: 50px;
+			overflow: hidden;
+			position: absolute;
+			top: 0;
+			width: 100%;
+		}
+
+		&__nav {
+			height: 50px;
+			overflow: hidden;
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			background: #272822;
+			border-top: 1px solid #111;
+		}
 	}
-	&--preview{
+
+	&--preview {
 		@extend .col--11;
 		/*position: relative;*/
 		padding: 0;
 		overflow-y: scroll;
-		
-
-		
 
 		&__inner {
 			position: relative;
@@ -167,12 +191,22 @@ body {
 				opacity: 0.75;*/
 				/*background: transparent url(../img/semi-transparent-bg.png) repeat 0 0;*/
 				position: absolute;
-				z-index: 100;
+				z-index: 10000;
 				top: 0;
 				left: 0;
 			}
+
+			&--active {
+
+				&:before {
+					display: none;
+			}
 		}
+		}
+
+
 	}
+
 }
 
 
