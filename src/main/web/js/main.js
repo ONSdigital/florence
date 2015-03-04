@@ -27,7 +27,8 @@
     '<section class="fl-panel fl-panel--sub-menu">' +
         '<section class="fl-panel fl-panel--editor">' +
             '<nav class="fl-panel--editor__breadcrumb">' +
-                '<p>Selected publish goes here...</p>' +
+                '<input type="text" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
+                '<input type="text" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
             '</nav>' +
             '<textarea class="fl-editor" name="fl-editor" cols="40" rows="5"></textarea>' +
             '<nav class="fl-panel--editor__nav">' +

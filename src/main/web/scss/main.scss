@@ -154,11 +154,12 @@ body {
 		position: relative;
 
 		&__breadcrumb {
-			height: 50px;
+			height: 100px;
 			overflow: hidden;
 			position: absolute;
 			top: 0;
 			width: 100%;
+			padding: 0px 15px;
 		}
 
 		&__nav {
@@ -169,6 +170,24 @@ body {
 			width: 100%;
 			background: #272822;
 			border-top: 1px solid #111;
+		}
+
+		&__publish-owner {
+			height: 35px;
+			width: 100%;
+			margin: 10px 0 5px 0;
+			padding: 5px;
+			font-family: 'Source Code Pro';
+			font-size: 13px;
+		}
+
+		&__publish-id {
+			height: 35px;
+			width: 100%;
+			margin: 5px 0;
+			padding: 5px;
+			font-family: 'Source Code Pro';
+			font-size: 13px;
 		}
 	}
 
@@ -226,6 +245,10 @@ h1.fl-brand {
 	font-family: 'Lato', sans-serif;
 	font-weight: 300;
 	font-size: 14px;
+}
+
+.fl-panel--editor__publish-owner, .fl-panel--editor__publish-id {
+	padding: 5px !important;
 }
 
 
