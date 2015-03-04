@@ -65,7 +65,7 @@
 
   function LoadPageDataIntoEditor(){
 
-    var pageurl = window.location.href;
+    // var pageurl = window.location.href;
 
     var pageurldata = pageurl.replace("#!", "data");
 
