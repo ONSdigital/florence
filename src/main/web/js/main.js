@@ -1,5 +1,19 @@
 (function($) {
 
+  var pageurl = window.location.href;
+  var pageData;
+
+  // URI simple parser
+  var parser = document.createElement('a');
+  parser.href = pageurl.replace("#!/", ""); //takes out #! from Angular.js
+  parser.protocol; // => "http:"
+  parser.hostname; // => "example.com"
+  parser.port; // => "3000"
+  parser.pathname; // => "/pathname/"
+  parser.search; // => "?search=test"
+  parser.hash; // => "#hash"
+  parser.host; // => "example.com:3000"
+
   setupFlorence();
 
 
@@ -27,8 +41,8 @@
     '<section class="fl-panel fl-panel--sub-menu">' +
         '<section class="fl-panel fl-panel--editor">' +
             '<nav class="fl-panel--editor__breadcrumb">' +
-                '<input type="text" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
-                '<input type="text" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
+                '<input type="text" value="carlhuk" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
+                '<input type="text" value="oc-release-1" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
             '</nav>' +
             '<textarea class="fl-editor" name="fl-editor" cols="40" rows="5"></textarea>' +
             '<nav class="fl-panel--editor__nav">' +
@@ -97,36 +111,36 @@
 
 
     if (caller.parent().hasClass('fl-main-menu__item--approve')){
-      // removePreviewColClasses();
-      // $('.fl-panel--preview').addClass('col--7');
-      // $('.fl-panel--sub-menu').show();
+      //
     }
 
     else if (caller.parent().hasClass('fl-main-menu__item--create')){
-      // removePreviewColClasses();
-      // $('.fl-panel--preview').addClass('col--7');
-      // $('.fl-panel--sub-menu').show();
+      //
     }
 
     else if (caller.parent().hasClass('fl-main-menu__item--edit')){
-      // removePreviewColClasses();
-      // $('.fl-panel--preview').addClass('col--7');
-      // $('.fl-panel--sub-menu').show();
+      //
       $('.fl-panel--editor').show();
       $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
       LoadPageDataIntoEditor();
+      $('.fl-panel--editor__nav__save').click(function() {
+        if($('.fl-panel--editor__publish-owner').val().length != 0 && $('.fl-panel--editor__publish-id').val().length != 0){
+          pageData = $('.fl-panel--editor__publish-owner').val();
+          updatePage();
+        } else {
+          alert('Publish owner and Publish id cannot be blank!');
+        }
+        
+      });
+      
     }
 
     else if (caller.parent().hasClass('fl-main-menu__item--users')){
-      // removePreviewColClasses();
-      // $('.fl-panel--preview').addClass('col--7');
-      // $('.fl-panel--sub-menu').show();
+      //
     }
 
     else if (caller.parent().hasClass('fl-main-menu__item--publish')){
-      // removePreviewColClasses();
-      // $('.fl-panel--preview').addClass('col--7');
-      // $('.fl-panel--sub-menu').show();
+      //
     }
 
     else {
@@ -148,28 +162,28 @@ function removePreviewColClasses(){
 
 function updatePage() {
 
- document.cookie="owner=carlhuk";
- document.cookie="release=myRelease3";
+  /*--cookie stuff - to be moved into a sepperate function eventually--*/
+  var owner = $('.fl-panel--editor__publish-owner').val();
+  var release = $('.fl-panel--editor__publish-id').val();
+  document.cookie = 'owner=' + owner;
+  document.cookie = 'release=' + release;
+  /*---*/
+
 
    $.ajax({
-     url: "http://localhost:8081/data",
-     xhrFields: {
-         withCredentials: true
-     },
-     type: "POST",
-     data: JSON.stringify({
-       json: JSON.stringify(data),
-       id: parser.pathname
-     }),
-     contentType: "application/json; charset=utf-8",
-     dataType: "text"
-   }).done(function() {
-     console.log("Done!");
-     location.reload();
-   }).fail(function(jqXHR, textStatus) {
-     alert(textStatus);
-   })
- }
+        url: "http://localhost:8081/data",
+        type: "POST",
+        data: JSON.stringify({
+            json: pageData
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "text"
+    }).done(function () {
+        console.log("Done!")
+    }).fail(function (jqXHR, textStatus) {
+        alert(textStatus);
+    })
+  }
 
 
 })(jQuery);
