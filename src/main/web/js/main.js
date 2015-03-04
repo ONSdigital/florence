@@ -1,7 +1,9 @@
 (function($) {
 
+  var intIntervalTime = 100;
   var pageurl = window.location.href;
   var pageData;
+
 
   // URI simple parser
   var parser = document.createElement('a');
@@ -41,8 +43,8 @@
     '<section class="fl-panel fl-panel--sub-menu">' +
         '<section class="fl-panel fl-panel--editor">' +
             '<nav class="fl-panel--editor__breadcrumb">' +
-                '<input type="text" value="carlhuk" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
-                '<input type="text" value="oc-release-1" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
+                '<input type="text" value="" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
+                '<input type="text" value="" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
             '</nav>' +
             '<textarea class="fl-editor" name="fl-editor" cols="40" rows="5"></textarea>' +
             '<nav class="fl-panel--editor__nav">' +
@@ -83,6 +85,7 @@
       },
       error: function() {
         console.log('Error');
+        $('.fl-editor').val('');
       }
     });
   }
@@ -119,15 +122,15 @@
     }
 
     else if (caller.parent().hasClass('fl-main-menu__item--edit')){
-      //
       $('.fl-panel--editor').show();
       $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
       LoadPageDataIntoEditor();
+      setInterval(checkEditPageLocation, intIntervalTime);
       $('.fl-panel--editor__nav__save').click(function() {
         if($('.fl-panel--editor__publish-owner').val().length != 0 && $('.fl-panel--editor__publish-id').val().length != 0){
           pageData = $('.fl-editor').val();
           updatePage();
-            //console.log(pageData);
+          //console.log(parser.pathname);
         } else {
           alert('Publish owner and Publish id cannot be blank!');
         }
@@ -159,6 +162,15 @@ function removeSubMenus(){
 function removePreviewColClasses(){
   $('.fl-panel--preview').removeClass('col--4');
   $('.fl-panel--preview').removeClass('col--8');
+}
+
+function checkEditPageLocation() {
+  if (pageurl != window.location.href) {
+    pageurl = window.location.href;
+    $(window.location).trigger("change", {
+      newpage: LoadPageDataIntoEditor()
+    });
+  }
 }
 
 function updatePage() {
