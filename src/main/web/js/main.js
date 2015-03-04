@@ -125,8 +125,9 @@
       LoadPageDataIntoEditor();
       $('.fl-panel--editor__nav__save').click(function() {
         if($('.fl-panel--editor__publish-owner').val().length != 0 && $('.fl-panel--editor__publish-id').val().length != 0){
-          pageData = $('.fl-panel--editor__publish-owner').val();
+          pageData = $('.fl-editor').val();
           updatePage();
+            //console.log(pageData);
         } else {
           alert('Publish owner and Publish id cannot be blank!');
         }
@@ -174,10 +175,15 @@ function updatePage() {
         url: "http://localhost:8081/data",
         type: "POST",
         data: JSON.stringify({
-            json: pageData
+            json: pageData,
+            id: parser.pathname
         }),
-        contentType: "application/json; charset=utf-8",
-        dataType: "text"
+           xhrFields: {
+               withCredentials: true
+           },
+           dataType: 'json', // Notice! JSONP <-- P (lowercase)
+           crossDomain: true,
+        contentType: "application/json; charset=utf-8"
     }).done(function () {
         console.log("Done!")
     }).fail(function (jqXHR, textStatus) {
