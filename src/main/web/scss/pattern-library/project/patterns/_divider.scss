@@ -1,0 +1,40 @@
+.divider {
+  @extend %cf;
+  clear: both;
+}
+
+.divider__half {
+  @extend %cf;
+  padding: 1.5rem 1rem;
+}
+
+%divider-border {
+  border-color: mix($grey, $white, 10%);
+  border-style: solid;
+}
+
+.divider__half--border-last {
+  @extend %divider-border;
+  border-width: 1px 0 0;
+}
+
+.divider__half--border-first {
+  @extend %divider-border;
+  border-width: 0 0 1px;
+}
+
+@include respond-min(47em) {
+  .divider__half {
+    float: left;
+    width: 50%;
+    padding: 0 3rem;
+  }
+
+  .divider__half--border-last {
+    border-width: 0 0 0 1px;
+  }
+
+  .divider__half--border-first {
+    border-width: 0 1px 0 0;
+  }
+}

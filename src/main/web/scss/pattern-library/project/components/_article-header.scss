@@ -1,0 +1,187 @@
+.page-header--article {
+  margin-bottom: 3rem;
+
+  &:after {
+    position: absolute;
+    right: 5%;
+    bottom: -.5rem;
+    left: 5%;
+    display: block;
+    width: auto;
+    height: .5rem;
+    margin: 0 auto;
+    content: "";
+
+    @include respond-min($bp-desktop+6) {
+      // Needs to be set back to relative to fix IE bug with pseudoelements &
+      // left-right widths not centering element
+      left: 0;
+      right: 0;
+      max-width: 91.2rem;
+      position: relative;
+      bottom: -1.5rem;
+    }
+  }
+}
+
+.page-header--stat-bulletin:after {
+  background-color: darken($azure, 10%);
+}
+
+.page-header--expert-analysis:after {
+  background-color: darken($grey-light, 10%);
+}
+
+.page-header--time-series:after {
+  background-color: $ons-green;
+}
+
+.page-header--expert-analysis-desc {
+  @extend %delta;
+
+  color: $grey;
+}
+
+.page-header--stat-bulletin-desc {
+  @extend %delta;
+
+  color: darken($azure, 10%);
+}
+
+.page-header--time-series-desc {
+  @extend %delta;
+
+  color: $ons-green;
+}
+
+.page-header--article__img {
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+.page-header--article__split {
+  @extend %cf;
+}
+
+.page-header--article__split__meta,
+.page-header--article__split__meta--narrow {
+  > dd {
+    margin-bottom: 1rem;
+  }
+}
+
+.page-header--article__split__actions {
+  font-size: 1.4rem;
+
+  > li {
+    margin-bottom: .75rem;
+  }
+
+  [class*="icon"] {
+    font-size: 2rem;
+    vertical-align: middle;
+  }
+
+  .link-complex__target,
+  .description {
+    vertical-align: middle;
+  }
+}
+
+@include respond-min(28em) {
+  .page-header--article__img {
+    float: left;
+    margin-top: .5rem;
+    margin-right: 2rem;
+  }
+
+  .page-header--article__body {
+    overflow: auto;
+  }
+
+  .page-header--article__split__meta {
+    margin-top: 0;
+  }
+}
+
+@include respond-min(44em) {
+  .page-header--article__split__meta,
+  .page-header--article__split__meta--narrow,
+  .page-header--article__split__actions {
+    float: left;
+  }
+
+  .page-header--article__split__meta {
+    width: 55%;
+  }
+
+  .page-header--article__split__actions,
+  .page-header--article__split__meta--narrow {
+    width: 42.5%;
+    margin-top: 0;
+    margin-left: 2.5%;
+  }
+
+  .page-header--article__split__meta--narrow {
+    .split--fixed__title {
+      width: 8.5rem;
+    }
+  }
+}
+
+// compensate for header above main header offsetting space a bit
+@include respond-min(50em) {
+  .page-header--article .page-header__icons {
+    top: -1.75rem;
+  }
+}
+
+@include respond-min(53em) {
+  .page-header--stat-bulletin,
+  .page-header--expert-analysis {
+    .split__multiline-break {
+      display: inline-block;
+      margin-left: 1rem;
+    }
+
+    .page-header--article__split__meta {
+      width: 66%;
+    }
+
+    .page-header--article__split__actions {
+      width: 30%;
+      margin-left: 3%;
+    }
+  }
+}
+
+@include respond-min(57em) {
+  .page-header--stat-bulletin,
+  .page-header--expert-analysis {
+    .page-header--article__img {
+      margin-right: 5%;
+    }
+  }
+
+  .page-header--time-series {
+    .split__multiline-break {
+      display: inline-block;
+      margin-left: 1rem;
+    }
+
+    .page-header--article__split__meta {
+      width: 66%;
+    }
+
+    .page-header--article__split__meta--narrow {
+      width: 30%;
+      margin-left: 3%;
+    }
+  }
+}
+
+@include respond-min(62em) {
+  .page-header--time-series .page-header--article__img {
+    margin-right: 5%;
+  }
+}

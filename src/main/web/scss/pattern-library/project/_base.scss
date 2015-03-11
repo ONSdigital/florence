@@ -1,0 +1,36 @@
+/* ======================================================
+   Project base (formerly 'Brand' styles)
+   Apply visual language to unclassed elements
+   ======================================================*/
+
+body {
+  font-size: 1.6rem;
+  line-height: 1.3333;
+  color: $body-color;
+  background: $body-bg;
+}
+
+
+// Solving Tooltipster issues
+// https://github.com/iamceege/tooltipster/issues/140#issuecomment-52503725
+html,
+body {
+  height: 100%;
+  overflow: auto !important;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: $font-regular;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}

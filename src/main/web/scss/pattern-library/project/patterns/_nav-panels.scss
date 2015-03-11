@@ -1,0 +1,143 @@
+.nav-panel {
+  display: table;
+  width: 100%;
+  margin-bottom: 2rem;
+  background-color: $white;
+}
+
+.nav-panel--statless {
+  background-color: lighten($blue-light, 55%);
+}
+
+.nav-panel__header {
+  padding-top: 2rem;
+  padding-bottom: .5rem;
+
+  @include respond-min($bp-tablet) {
+    padding-top: 3rem;
+    padding-bottom: 1rem;
+  }
+}
+
+.nav-panel__roomy {
+  padding-right: 1rem;
+  padding-left: 1rem;
+
+  @include respond-min($bp-tablet) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  @include respond-min($bp-desktop) {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+.nav-panel__body {
+  padding-bottom: 1.5rem;
+}
+
+.nav-panel__action {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  font-family: $font-bold;
+  font-size: 1.8rem;
+  background-color: lighten($blue-light, 55%);
+
+  &:hover:after {
+    color: lighten($link-color, 15%);
+  }
+
+  &:after {
+    position: absolute;
+    top: 50%;
+    right: 1.5rem;
+    z-index: 9;
+
+    font-family: "fontello";
+    font-size: 150%;
+    line-height: .85;
+    color: desaturate(lighten($blue-light, 45%), 25%);
+    text-decoration: none !important;
+    vertical-align: middle;
+
+    content: "\e80c";
+    transform: translateY(-50%);
+
+    @include respond-min($bp-tablet) {
+      right: 1.5rem;
+    }
+  }
+
+  > a {
+    position: relative;
+    z-index: 10;
+    display: block;
+    width: 100%;
+
+    padding-top: 1.5rem;
+    padding-right: 5rem;
+    padding-bottom: 1.5rem;
+
+    @include respond-min($bp-tablet) {
+      padding-right: 6rem;
+    }
+
+    @include respond-min($bp-desktop) {
+      padding-right: 7rem;
+    }
+  }
+}
+
+.nav-panel__footer {
+  .nav-panel__action:after {
+    font-size: 200%;
+  }
+
+  a {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+
+    @include respond-min($bp-tablet) {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+  }
+}
+
+
+.nav-panel__title,
+.nav-panel__value {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.nav-panel__title {
+  @extend %delta;
+
+  width: 100%; //will make space for the nav-panel__value
+  padding-right: 5%;
+  margin-bottom: 0;
+
+  font-family: $font-regular;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.nav-panel__value {
+  min-width: 10rem;
+  margin: 0;
+
+  @include respond-min($bp-desktop) {
+    min-width: 12rem;
+  }
+}
+
+.nav-panel__item {
+  border-top: 1px solid $grey-light;
+}

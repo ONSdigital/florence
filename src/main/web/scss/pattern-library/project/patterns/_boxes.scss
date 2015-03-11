@@ -1,0 +1,262 @@
+/*
+============================
+  boxes toolkit styles
+============================
+*/
+
+.box__inner {
+  overflow: hidden;
+}
+
+.offset-top {
+  margin-top: -2rem;
+}
+
+.box {
+  margin-bottom: 2rem;
+}
+
+.box--inline {
+  display: inline-block;
+}
+
+.box__content {
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.box__footer {
+  margin-top: 2rem;
+}
+
+.box__footer--right {
+  text-align: right;
+}
+
+/** padding classes               */
+
+%pad-large {
+  padding: 2.5rem;
+}
+
+%pad-large--vertical {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+%pad-large--top {
+  padding-top: 2.5rem;
+}
+
+%pad-med {
+  padding: 2rem;
+}
+
+.box--padded {
+  @extend %pad-large;
+}
+
+.box--padded-vertical {
+  @extend %pad-large--vertical;
+}
+
+.box--padded-top {
+  @extend %pad-large--top;
+}
+
+.box--padded--med {
+  @extend %pad-med;
+}
+
+.box--callout {
+  padding: 1rem 2rem 1rem 1rem;
+  margin: 2rem 0;
+  border-left: .5rem solid $ons-green;
+  background-color: $ons-green--light;
+
+  @include respond-min(30em) {
+    padding: 2rem;
+    margin: 3.5rem 0 3.5rem 3rem;
+    border-left-width: 1rem;
+  }
+
+  @include respond-min(40em) {
+    padding: 3rem 2em;
+  }
+}
+
+/** shading classes               */
+
+%muted {
+  background-color: lighten($off-white, 3%);
+}
+
+.muted {
+  @extend %muted;
+}
+
+%muted--dark {
+  background-color: lighten($grey-light, 1.5%);
+}
+
+.muted--dark {
+  @extend %muted--dark;
+}
+
+%solid {
+  background-color: $white;
+}
+
+.solid {
+  @extend %solid;
+}
+
+%sectioned {
+  border: 2px solid $grey-light;
+}
+
+.sectioned {
+  @extend %sectioned;
+}
+
+%lifted {
+  box-shadow: 0 5px 0 $off-white;
+}
+
+.lifted {
+  @extend %lifted;
+}
+
+%lifted--dark {
+  box-shadow: 0 5px 0 darken($off-white, 5%);
+}
+
+.lifted--dark {
+  @extend %lifted--dark;
+}
+
+%border {
+  border-color: $grey-light;
+  border-style: solid;
+  border-width: 2px;
+}
+
+%border-vertical {
+  border-color: $grey-light;
+  border-style: solid;
+  border-width: 2px 0;
+}
+
+.border {
+  @extend %border;
+}
+
+.border-vertical {
+  @extend %border-vertical;
+}
+
+%big-left {
+  position: relative;
+  border-left: 0;
+
+  &:before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    border-left-style: solid;
+    border-left-width: 6px;
+    content: " ";
+  }
+}
+
+.sectioned-ons-top {
+  position: relative;
+  border-top: 0;
+
+  &:before {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    left: -2px;
+    z-index: 1;
+    border-top: 6px solid $ons-green;
+    content: " ";
+  }
+}
+
+.box--orange--separated-left {
+  @extend %big-left;
+
+  &:before {
+    border-left-color: $orange;
+  }
+}
+
+.box--blue--separated--left {
+  @extend %big-left;
+
+  &:before {
+    border-left-color: $blue-alt;
+  }
+}
+
+%orange {
+  a {
+    color: $orange;
+
+    &:visited {
+      color: darken($orange, 5%);
+    }
+
+    &:hover,
+    &:focus {
+      color: darken($orange, 10%);
+    }
+  }
+}
+
+.box--orange {
+  @extend %orange;
+  @extend %solid;
+}
+
+.box__section {
+  margin-bottom: 3rem;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.box__section__header {
+  margin-bottom: 1rem;
+  font-family: $font-bold;
+  font-size: 1.9rem;
+}
+
+.has-icon {
+  position: relative;
+  padding-right: 6rem;
+}
+
+.has-icon--large {
+  float: left;
+  margin: 1.3rem 0 0 2.3rem;
+  font-size: 250%;
+  color: $grey-cold;
+}
+
+/*  this class is to  */
+.detached {
+  position: absolute;
+  top: 2.5rem;
+  right: 2rem;
+  font-size: 140%;
+}

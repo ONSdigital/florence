@@ -1,0 +1,30 @@
+.slate {
+  background-color: lighten($grey-light, 6.5%);
+}
+
+.slate--light {
+  background-color: $off-white;
+}
+
+.slate--grey {
+  background-color: $grey;
+}
+
+.slate--mid-grey {
+  background-color: lighten($grey-light, 2.5%);
+}
+
+.slate--blue {
+  background-color: lighten($azure, 55%);
+}
+
+.slate--green {
+  background-color: lighten($ons-green, 52.5%);
+}
+
+.slate--hero-banner {
+  background-color: $grey;
+  background-image: url("../img/hero-banner.jpg");
+  background-position: 50% 50%;
+  background-size: cover;
+}

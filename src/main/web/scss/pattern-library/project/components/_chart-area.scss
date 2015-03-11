@@ -1,0 +1,230 @@
+.chart-area {
+  @extend %cf;
+  padding: .5rem;
+
+  @include respond-min(21em) {
+    padding: .5rem 1rem;
+  }
+
+  @include respond-min(38em) {
+    padding: 1rem 2rem;
+  }
+}
+
+.chart-area__controls {
+  @extend %cf;
+  padding-bottom: .5rem;
+  font-size: 1.4rem;
+}
+
+.chart-area__controls__time {
+  @extend %cf;
+  margin: .5rem 0 0;
+
+  @include respond-min(62em) {
+    float: right;
+    margin: 0 0 0 .5rem;
+    line-height: 1.75;
+  }
+}
+
+.chart-area__controls__time__label {
+  margin-right: 1rem;
+  font-family: $font-bold;
+
+  @include respond-min(28em) {
+    padding-top: .5rem;
+  }
+
+  @include respond-min(32em) {
+    margin-right: 1rem;
+  }
+
+  @include respond-min(62em) {
+    margin-right: 0;
+  }
+}
+
+.chart-area__controls__time__label,
+.chart-area__controls__time__ranges {
+  @include respond-min(28em) {
+    float: left;
+  }
+
+  @include respond-min(62em) {
+    float: none;
+    display: inline-block;
+  }
+}
+
+.chart-area__controls__time__ranges {
+  margin-bottom: 0;
+
+  a {
+    display: inline-block;
+    padding-top: .5rem;
+    padding-bottom: 1rem;
+
+    @include respond-min(19em) {
+      padding-left: .5rem;
+      padding-right: .5rem;
+    }
+
+    @include respond-min(22em) {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
+  // 28em -1px
+  @include respond-max(28.9375em) {
+    li:first-of-type > a {
+      padding-left: 0;
+    }
+  }
+}
+
+.chart-area__controls__custom--active {
+  background-color: $grey-light;
+}
+
+.chart-area__controls__active {
+  &,
+  &:visited {
+    color: $black;
+  }
+}
+
+.chart-area__controls__buttons {
+  @include respond-min(62em) {
+    float: left;
+  }
+}
+
+.chart-area__controls__custom {
+  @extend %cf;
+  display: block;
+  padding-top: 1rem;
+  padding-right: 1.2rem;
+  padding-bottom: 1rem;
+  clear: both;
+  background-color: $grey-light;
+}
+
+.chart-area__controls__custom__errors {
+  margin-bottom: .5rem;
+  font-family: $font-bold;
+  color: $red;
+
+  @include respond-min(62em) {
+    margin-top: .33rem;
+    margin-left: 1rem;
+    margin-bottom: 0;
+    float: left;
+    width: 41rem;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.chart-area__controls__error {
+  color: $red;
+  /* IE8 can't render box shadows, so set color as red as a fallback
+   * and return to black using rgba
+   */
+  color: rgba($black, 1);
+  box-shadow: 0 0 1px 2px $red;
+}
+
+.chart-area__controls__custom__container {
+  @include respond-min(62em) {
+    width: 44rem;
+    float: right;
+  }
+}
+
+.chart-area__controls__date {
+  padding: 0;
+  margin: 0 0 .5rem;
+  border: 0;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  @include respond-min(32em) {
+    float: left;
+    margin: 0 1rem 0 0;
+  }
+}
+
+.chart-area__controls__date__label {
+  float: left;
+  width: 5rem;
+  font-family: $font-bold;
+
+  @include respond-min(32em) {
+    width: auto;
+    margin-right: 1rem;
+  }
+}
+
+.chart-area__controls__month,
+.chart-area__controls__year {
+  text-indent: 0;
+}
+
+.chart-area__controls__month {
+  width: 6rem;
+}
+
+.chart-area__controls__year {
+  width: 7rem;
+}
+
+.chart-area__controls__dropdowns {
+  float: left;
+  margin-right: 1rem;
+  margin-left: 1rem;
+
+  @include respond-min(32em) {
+    margin-top: .33rem;
+    margin-right: 0;
+  }
+}
+
+.chart-area__controls__submit {
+  float: left;
+  padding-top: 1.25rem;
+
+  @include respond-min(32em) {
+    padding-top: 0;
+  }
+
+  @include respond-min(62em) {
+    float: right;
+  }
+}
+
+.chart-area__footer {
+  @extend %cf;
+  float: right;
+  margin-top: 1rem;
+
+  .btn {
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+  }
+}
+
+.chart-area__footer__label,
+.chart-area__footer__actions {
+  display: inline-block;
+}
+
+.chart-area__footer__label {
+  margin-right: 2rem;
+  font-family: $font-bold;
+}

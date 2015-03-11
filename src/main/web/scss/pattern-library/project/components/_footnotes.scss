@@ -1,0 +1,8 @@
+.footnote:target,
+.footnote-body:target {
+  background-color: lighten($blue-light, 50%);
+}
+
+.footnote__source-link {
+  text-decoration: none;
+}

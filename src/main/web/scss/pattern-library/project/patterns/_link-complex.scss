@@ -1,0 +1,10 @@
+// As inspired by @csswizardry as inspired by @necolas
+// https://github.com/csswizardry/inuit.css/blob/master/objects/_link-complex.scss
+
+.link-complex {
+  text-decoration: none;
+
+  .link-complex__target {
+    text-decoration: underline;
+  }
+}

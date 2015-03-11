@@ -1,0 +1,38 @@
+// ------------------------
+// Colors
+$black             : #303030;
+$white             : #fff;
+$off-white         : #f3f3f3;
+$grey              : #757575;
+$grey-cold         : #adafa7;
+$grey-warm         : #d2ccbb;
+$grey-light        : #dedfdc;
+
+// Primary colors :
+$ons-blue          : #00456a;
+$ons-green         : #b2bb1c;
+$ons-black         : #333;
+
+// Accent colors  :
+$ons-green--light  : #f0f1d5;
+$blue-alt          : #0054aa;
+$blue-light        : #007dc3;
+$azure             : #00b5cb;
+$green-dark        : #00543d;
+$orange            : #f37121;
+$red               : #e2383f;
+$red-dark          : #a9233e;
+$pink              : #ec008c;
+
+// Apply colors
+$body-color        : $black;
+$body-bg           : $white;
+$input-bg          : $white;
+$input-shadow      : $off-white;
+$link-color        : $blue-alt;
+$description-color : $grey;
+$table-color       : $grey-light;
+$form-color        : darken($grey-light, 5%);
+$error-color       : $red;
+$page-header       : lighten($grey-light, 6.5%);
+$callout           : darken($azure, 5%);

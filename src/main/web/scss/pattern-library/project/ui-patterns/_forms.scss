@@ -1,0 +1,156 @@
+input {
+  max-width: 100%;
+}
+
+input[type="text"],
+input[type="search"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+textarea {
+  padding: 1.25rem 1.5rem;
+
+  border-color: $form-color;
+  border-style: solid;
+  border-width: 3px;
+  border-radius: 3px;
+
+  background: $input-bg;
+
+  box-shadow: 0 4px 0 -2px inset $input-shadow, 0 4px 0 0 inset rgba($grey-light, .43);
+}
+
+select {
+  padding: 0;
+  margin: 0;
+  text-indent: .5em;
+}
+
+option {
+  padding: 0 1.5em;
+}
+
+.input--lede {
+  font-size: 2.1rem;
+}
+
+textarea {
+  padding: 1em;
+}
+
+.field {
+  @extend %cf;
+  display: block;
+}
+
+.field__label {
+  display: block;
+  margin-bottom: 1rem;
+  font-family: $font-header;
+  font-weight: 700;
+
+  & + .label__description {
+    margin-top: -1rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
+.field--error input {
+  border-color: $error-color;
+}
+
+.field--error__message {
+  color: $error-color;
+}
+
+.field--spaced {
+  margin-bottom: 2.4rem;
+}
+
+.field--text {
+  display: block;
+  font-family: $font-bold;
+}
+
+.field__radio {
+  margin-right: 1.6rem;
+
+  input[type="radio"] {
+    margin-right: .6rem;
+  }
+}
+
+.field__description {
+  display: block;
+}
+
+%full-width {
+  width: 100%;
+}
+
+.input {
+  @extend %full-width;
+  display: inline-block;
+}
+
+.input--block {
+  display: block;
+}
+
+.field--checkbox--reverse {
+  label {
+    float: left;
+  }
+}
+
+.input--mini {
+  @extend %full-width;
+  max-width: 25rem;
+}
+
+.input--small {
+  @extend %full-width;
+  max-width: 35rem;
+}
+
+.input--med {
+  @extend %full-width;
+  max-width: 45rem;
+}
+
+.input--med-large {
+  @extend %full-width;
+  max-width: 55rem;
+}
+
+.input--large {
+  @extend %full-width;
+  max-width: 65rem;
+}
+
+.input-med-large--flex--four-fifths {
+  width: 80%;
+  max-width: 550px;
+
+  @include respond-min(43.75em) {
+    width: 87.5%;
+  }
+}
+
+.input--full {
+  @extend %full-width;
+  max-width: none;
+}
+
+.label__description,
+.message {
+  margin: 0;
+  font-family: $font-regular;
+  font-weight: 400;
+}
+
+.fieldset--invisible {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
