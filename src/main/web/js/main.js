@@ -5,8 +5,8 @@
   var pageData;
 
     function getPathName() {
-        var parsedUrl = window.location.href.split("#!/")[1];
-        return parsedUrl;
+      var parsedUrl = window.location.href.split("#!/")[1];
+      return parsedUrl;
     }
 
   //florence menu
@@ -14,34 +14,34 @@
     '<section class="fl-panel fl-panel--admin-bar">' +
       '<nav>' +
         '<ul class="fl-admin-menu">' +
-            '<li class="fl-admin-menu__item fl-admin-menu__item--collections">' +
-              '<a href="#" class="fl-admin-menu__link">Collections</a>' +
-            '</li>' +
-            '<li class="fl-admin-menu__item fl-admin-menu__item--useradmin">' +
-              '<a href="#" class="fl-admin-menu__link">Users and access</a>' +
-            '</li>' +
-            '<li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
-              '<a href="#" class="fl-admin-menu__link">Publish</a>' +
-            '</li>' +
-          '</ul>' +
+          '<li class="fl-admin-menu__item fl-admin-menu__item--collections">' +
+            '<a href="#" class="fl-admin-menu__link">Collections</a>' +
+          '</li>' +
+          '<li class="fl-admin-menu__item fl-admin-menu__item--useradmin">' +
+            '<a href="#" class="fl-admin-menu__link">Users and access</a>' +
+          '</li>' +
+          '<li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
+            '<a href="#" class="fl-admin-menu__link">Publish</a>' +
+          '</li>' +
+        '</ul>' +
       '</nav>' +
     '</section>' +
     '<section class="fl-panel fl-panel--menu">' +
       '<nav>' +
         '<ul class="fl-main-menu">' +
-            '<li class="fl-main-menu__item fl-main-menu__item--browse">' +
-              '<a href="#" class="fl-main-menu__link">Browse</a>' +
-            '</li>' +
-            '<li class="fl-main-menu__item fl-main-menu__item--create">' +
-              '<a href="#" class="fl-main-menu__link">Create</a>' +
-            '</li>' +
-            '<li class="fl-main-menu__item fl-main-menu__item--edit">' +
-              '<a href="#" class="fl-main-menu__link">Edit</a>' +
-            '</li>' +
-            '<li class="fl-main-menu__item fl-main-menu__item--approve">' +
-              '<a href="#" class="fl-main-menu__link">Approve</a>' +
-            '</li>' +
-          '</ul>' +
+          '<li class="fl-main-menu__item fl-main-menu__item--browse">' +
+            '<a href="#" class="fl-main-menu__link">Browse</a>' +
+          '</li>' +
+          '<li class="fl-main-menu__item fl-main-menu__item--create">' +
+            '<a href="#" class="fl-main-menu__link">Create</a>' +
+          '</li>' +
+          '<li class="fl-main-menu__item fl-main-menu__item--edit">' +
+            '<a href="#" class="fl-main-menu__link">Edit</a>' +
+          '</li>' +
+          '<li class="fl-main-menu__item fl-main-menu__item--approve">' +
+            '<a href="#" class="fl-main-menu__link">Approve</a>' +
+          '</li>' +
+        '</ul>' +
       '</nav>' +
   '</section>' +
   '<section class="fl-panel fl-panel--sub-menu">' +
@@ -86,108 +86,101 @@
   }
 
     function save(collectionName, data) {
-
-
-        // Create the collection
-        $.ajax({
-            url: "http://localhost:8082/collection",
-            dataType: 'json',
-            crossDomain: true,
-            type: 'POST',
-            data: JSON.stringify({name: collectionName}),
-            success: function () {
-                console.log("Collection created")
-                openFileForEditing(collectionName, data);
-            },
-            error: function () {
-                console.log('Error creating collection');
-                openFileForEditing(collectionName, data);
-            }
-        });
+      // Create the collection
+      $.ajax({
+        url: "http://localhost:8082/collection",
+        dataType: 'json',
+        crossDomain: true,
+        type: 'POST',
+        data: JSON.stringify({name: collectionName}),
+        success: function () {
+          console.log("Collection created");
+          openFileForEditing(collectionName, data);
+        },
+        error: function () {
+          console.log('Error creating collection');
+          openFileForEditing(collectionName, data);
+        }
+      });
     }
 
     function openFileForEditing(collectionName, data) {
-        // Open the file for editing
-        $.ajax({
-            url: "http://localhost:8082/edit/" + collectionName,
-            dataType: 'json',
-            crossDomain: true,
-            type: 'POST',
-            data: JSON.stringify({uri: getPathName() + "/data.json"}),
-            success: function () {
-                console.log("File opened for editing");
-                updateContent(collectionName, data);
-            },
-            error: function () {
-                console.log('Error opening file for edit');
-                updateContent(collectionName, data);
-                console.log("update content called.");
-            }
-        });
+      // Open the file for editing
+      $.ajax({
+        url: "http://localhost:8082/edit/" + collectionName,
+        dataType: 'json',
+        crossDomain: true,
+        type: 'POST',
+        data: JSON.stringify({uri: getPathName() + "/data.json"}),
+        success: function () {
+          console.log("File opened for editing");
+          updateContent(collectionName, data);
+        },
+        error: function () {
+          console.log('Error opening file for edit');
+          updateContent(collectionName, data);
+          console.log("update content called.");
+        }
+      });
     }
 
     function updateContent(collectionName, data) {
-        // Update content
-        $.ajax({
-            url: "http://localhost:8082/content/" + collectionName + "?uri=" + getPathName() + "/data.json",
-            dataType: 'json',
-            crossDomain: true,
-            type: 'POST',
-            data: data,
-            success: function (message) {
-                console.log("Updating completed" + message);
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
+      // Update content
+      $.ajax({
+        url: "http://localhost:8082/content/" + collectionName + "?uri=" + getPathName() + "/data.json",
+        dataType: 'json',
+        crossDomain: true,
+        type: 'POST',
+        data: data,
+        success: function (message) {
+          console.log("Updating completed" + message);
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      });
 
-        document.cookie = 'collection=' + collectionName;
+      document.cookie = 'collection=' + collectionName;
     }
 
     function approve(collectionName) {
-
-
-        // Open the file for editing
-        $.ajax({
-            url: "http://localhost:8082/approve/" + collectionName + "?uri=" + getPathName() + "/data.json",
-            dataType: 'json',
-            crossDomain: true,
-            type: 'POST',
-            success: function () {
-                console.log("File approved!")
-                alert("Your file is now approved");
-            },
-            error: function () {
-                console.log('Error');
-            }
-        });
+      // Open the file for editing
+      $.ajax({
+        url: "http://localhost:8082/approve/" + collectionName + "?uri=" + getPathName() + "/data.json",
+        dataType: 'json',
+        crossDomain: true,
+        type: 'POST',
+        success: function () {
+          console.log("File approved!");
+          alert("Your file is now approved");
+        },
+        error: function () {
+          console.log('Error');
+        }
+      });
     }
 
     function publish(collectionName) {
-
-        // Open the file for editing
-        $.ajax({
-            url: "http://localhost:8082/publish/" + collectionName,
-            dataType: 'json',
-            crossDomain: true,
-            type: 'POST',
-            success: function () {
-                console.log("File published")
-                document.cookie = 'collection=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-                alert("Published!");
-            },
-            error: function () {
-                console.log('Error');
-            }
-        });
+      // Open the file for editing
+      $.ajax({
+        url: "http://localhost:8082/publish/" + collectionName,
+        dataType: 'json',
+        crossDomain: true,
+        type: 'POST',
+        success: function () {
+          console.log("File published");
+          document.cookie = 'collection=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+          alert("Published!");
+        },
+        error: function () {
+          console.log('Error');
+        }
+      });
     }
 
 
     function LoadPageDataIntoEditor(){
-
     // var pageurl = window.location.href;
-
     var pageurldata = pageurl.replace("#!", "data");
 
     $.ajax({
@@ -220,7 +213,6 @@
 
     //console.log(caller.parent().attr('class'));
     // console.log($('.fl-panel--preview__inner').height())
-
     // setPreviewOverlayHeight();
 
     removePreviewColClasses();
@@ -262,13 +254,12 @@
 
       });
 
-        $('.fl-panel--editor__nav__approve').click(function () {
-            approve(collectionName);
-        });
-        $('.fl-panel--editor__nav__publish').click(function () {
-            publish(collectionName);
-        });
-
+      $('.fl-panel--editor__nav__approve').click(function () {
+        approve(collectionName);
+      });
+      $('.fl-panel--editor__nav__publish').click(function () {
+        publish(collectionName);
+      });
     }
 
     if (caller.parent().hasClass('fl-main-menu__item--approve')){
