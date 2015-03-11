@@ -1,5 +1,5 @@
 // Pattern-library
-
+@import "pattern-library/main";
 
 
 //Partials
@@ -45,16 +45,14 @@ body {
 	padding: 0;
 	margin-left: -15px;
 	margin-right: -15px;
+	margin-top: 0;
 
 	&__item {
 		display: block;
 		list-style: none;
-		/*border-top: 1px solid #282b31;*/
-		/*border-bottom: 1px solid #111010;*/
 		border-bottom: 1px solid #1d2026;
 		&--approve {
 			/*@extend .icon-edit;*/
-
 		}
 	}
 
@@ -89,13 +87,22 @@ body {
 
 }
 
-/*.fl-main-menu*/
 
-.fl-main-menu__item {
-
+.fl-admin-menu {
+	margin: 0;
+	padding: 0;
+	float: right;
+	&__item {
+		display: inline-block;
+		border: 1px solid #999;
+	}
+	&__link {
+		display: block;
+		padding: 10px 15px;
+		height: 48px;
+	}
 }
 
-/*.fl-main-menu__link*/
 
 .fl-editor {
 	width: 100%;
@@ -122,8 +129,17 @@ body {
 .fl-panel {
 	@extend .col;
 	height: 100%;
+	&--admin-bar {
+		@extend .col--12;
+		height: 50px;
+		overflow: hidden;
+		background: #222;
+		padding: 0 inherit 0 inherit;
+		position: fixed;
+	}
 	&--menu {
 		@extend .col--1;
+		padding: 50px 15px 15px 15px;
 		background-color: #232831;
 		color: #6c727b;
 		font-family: 'Lato', sans-serif;
@@ -137,7 +153,7 @@ body {
 	}
 	&--sub-menu {
 		/*@extend .col--3;*/
-		padding: 0;
+		padding: 50px 0 0 0;
 		@extend .col--4;
 		display: none;
 		background-color: #3d3d3a;
@@ -148,7 +164,6 @@ body {
 	}
 	&--editor {
 		@extend .col--12;
-		display: none;
 		/*background-color: #3d3d3a;*/
 		padding: 100px 0 50px 0;
 		overflow: hidden;
@@ -195,12 +210,13 @@ body {
 	&--preview {
 		@extend .col--11;
 		/*position: relative;*/
-		padding: 0;
+		padding: 50px 0 0 0;
 		overflow-y: scroll;
 
 		&__inner {
 			position: relative;
 			overflow-y: scroll;
+			min-height: 100%;
 
 			&:before {
 				content: "";

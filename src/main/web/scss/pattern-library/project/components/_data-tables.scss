@@ -83,9 +83,9 @@
 
 .tablesaw-bar .btn-select.btn-small {
   @extend %btn-reset;
-
+  
   &:after {
-    @extend .icon-down-open-big;
+    // @extend .icon-down-open-big;
   }
 }
 

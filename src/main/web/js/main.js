@@ -5,6 +5,66 @@
   var pageData;
 
 
+  //florence menu
+  var florence_menu = 
+    '<section class="fl-panel fl-panel--admin-bar">' +
+      '<nav>' +
+        '<ul class="fl-admin-menu">' +
+            '<li class="fl-admin-menu__item fl-admin-menu__item--collections">' +
+              '<a href="#" class="fl-admin-menu__link">Collections</a>' +
+            '</li>' +
+            '<li class="fl-admin-menu__item fl-admin-menu__item--useradmin">' +
+              '<a href="#" class="fl-admin-menu__link">Users and access</a>' +
+            '</li>' +
+            '<li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
+              '<a href="#" class="fl-admin-menu__link">Publish</a>' +
+            '</li>' +
+          '</ul>' +
+      '</nav>' +
+    '</section>' +
+    '<section class="fl-panel fl-panel--menu">' +
+      '<nav>' +
+        '<ul class="fl-main-menu">' +
+            '<li class="fl-main-menu__item fl-main-menu__item--browse">' +
+              '<a href="#" class="fl-main-menu__link">Browse</a>' +
+            '</li>' +
+            '<li class="fl-main-menu__item fl-main-menu__item--create">' +
+              '<a href="#" class="fl-main-menu__link">Create</a>' +
+            '</li>' +
+            '<li class="fl-main-menu__item fl-main-menu__item--edit">' +
+              '<a href="#" class="fl-main-menu__link">Edit</a>' +
+            '</li>' +
+            '<li class="fl-main-menu__item fl-main-menu__item--approve">' +
+              '<a href="#" class="fl-main-menu__link">Approve</a>' +
+            '</li>' +
+          '</ul>' +
+      '</nav>' +
+  '</section>' +
+  '<section class="fl-panel fl-panel--sub-menu">' +
+  '</section>';
+
+  //florence browse menu
+
+  //florence create menu
+
+  //florence edit menu
+  var florence_menu_edit = 
+  '<section class="fl-panel fl-panel--editor">' +
+    '<nav class="fl-panel--editor__breadcrumb">' +
+      '<input type="text" value="" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
+      '<input type="text" value="" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
+    '</nav>' +
+    '<textarea class="fl-editor" name="fl-editor" cols="40" rows="5"></textarea>' +
+    '<nav class="fl-panel--editor__nav">' +
+      '<button class="fl-panel--editor__nav__save">Save</button>' +
+    '</nav>' +
+  '</section>';
+
+  //florence approve menu
+
+
+
+
   // URI simple parser
   var parser = document.createElement('a');
   parser.href = pageurl.replace("#!/", ""); //takes out #! from Angular.js
@@ -22,43 +82,14 @@
   function setupFlorence(){
     $('head').prepend('<link href="http://localhost:8081/css/main.min.css" rel="stylesheet" type="text/css">');
     var bodycontent = $('body').html();
-    var florence_menu = 
-      '<section class="fl-panel fl-panel--menu">' +
-        '<nav>' +
-            '<h1 class="fl-brand">Florence Dashboard v0.1</h1>' +
-            '<ul class="fl-main-menu">' +
-                '<li class="fl-main-menu__item fl-main-menu__item--approve">' +
-                    '<a href="#" class="fl-main-menu__link">Approve</a></li>' +
-                '<li class="fl-main-menu__item fl-main-menu__item--create">' +
-                    '<a href="#" class="fl-main-menu__link">Create</a></li>' +
-                '<li class="fl-main-menu__item fl-main-menu__item--edit">' +
-                    '<a href="#" class="fl-main-menu__link">Edit</a></li>' +
-                '<li class="fl-main-menu__item fl-main-menu__item--users">' +
-                    '<a href="#" class="fl-main-menu__link">Users</a></li>' +
-                '<li class="fl-main-menu__item fl-main-menu__item--publish">' +
-                    '<a href="#" class="fl-main-menu__link">Publish</a></li>' +
-            '</ul>' +
-        '</nav>' +
-    '</section>' +
-    '<section class="fl-panel fl-panel--sub-menu">' +
-        '<section class="fl-panel fl-panel--editor">' +
-            '<nav class="fl-panel--editor__breadcrumb">' +
-                '<input type="text" value="" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
-                '<input type="text" value="" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
-            '</nav>' +
-            '<textarea class="fl-editor" name="fl-editor" cols="40" rows="5"></textarea>' +
-            '<nav class="fl-panel--editor__nav">' +
-                '<button class="fl-panel--editor__nav__save">Save</button>' +
-            '</nav>' +
-        '</section>' +
-    '</section>';
+    
 
     $('body').wrapInner('<section class="fl-panel fl-panel--preview"><div class="fl-panel--preview__inner"></div></section>');
     // $('body').wrapInner('<section class="fl-container"></section>');
     $('body').prepend(florence_menu);
 
     $('.fl-main-menu__link').click(function() {
-      setupFlorenceScene($(this));
+      setupFlorenceWorkspace($(this));
     });
 
   }
@@ -84,7 +115,7 @@
         $('.fl-editor').val(JSON.stringify(response, null, 2));
       },
       error: function() {
-        console.log('Error');
+        console.log('No page data returned');
         $('.fl-editor').val('');
       }
     });
@@ -95,7 +126,7 @@
   function saveUpdatedMarkdown(){}
   function watchForEditorChanges(){}
 
-  function setupFlorenceScene(caller){
+  function setupFlorenceWorkspace(caller){
     
     //console.log(caller.parent().attr('class'));
     // console.log($('.fl-panel--preview__inner').height())
@@ -113,7 +144,7 @@
     $('.fl-panel--sub-menu').show();
 
 
-    if (caller.parent().hasClass('fl-main-menu__item--approve')){
+    if (caller.parent().hasClass('fl-main-menu__item--browse')){
       //
     }
 
@@ -122,8 +153,12 @@
     }
 
     else if (caller.parent().hasClass('fl-main-menu__item--edit')){
-      $('.fl-panel--editor').show();
-      $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
+      // $('.fl-panel--editor').show();
+      // florence_menu_edit
+      // fl-panel--sub-menu
+      $('.fl-panel--sub-menu').html(florence_menu_edit);
+      // console.log(florence_menu_edit);
+
       LoadPageDataIntoEditor();
       setInterval(checkEditPageLocation, intIntervalTime);
       $('.fl-panel--editor__nav__save').click(function() {
@@ -139,13 +174,15 @@
       
     }
 
-    else if (caller.parent().hasClass('fl-main-menu__item--users')){
+    if (caller.parent().hasClass('fl-main-menu__item--approve')){
       //
     }
 
-    else if (caller.parent().hasClass('fl-main-menu__item--publish')){
-      //
-    }
+    
+
+    // else if (caller.parent().hasClass('fl-main-menu__item--publish')){
+    //   //
+    // }
 
     else {
       //
@@ -155,13 +192,17 @@
 
 
 function removeSubMenus(){
-  $('.fl-panel--sub-menu').hide();
-  $('.fl-panel--editor').hide();
+  //$('.fl-panel--sub-menu').hide();
+  $('.fl-panel--sub-menu').empty();
 }
 
 function removePreviewColClasses(){
   $('.fl-panel--preview').removeClass('col--4');
   $('.fl-panel--preview').removeClass('col--8');
+}
+
+function enablePreview(){
+  $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
 }
 
 function checkEditPageLocation() {
