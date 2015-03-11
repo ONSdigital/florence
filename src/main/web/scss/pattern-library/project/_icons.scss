@@ -1,0 +1,221 @@
+@charset "UTF-8";
+
+/*
+============================
+  Icons and temporary classes for their display
+============================
+*/
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  display: inline-block;
+  width: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-right: .2em;
+  margin-left: .2em;
+  font-family: "fontello";
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+
+  line-height: 1em;
+  text-align: center;
+  text-decoration: none;
+
+  text-transform: none;
+
+  speak: none;
+}
+
+.icon-info-circled:before { content: '\e800'; }
+
+.icon-record:before { content: '\e801'; }
+
+.icon-facebook:before { content: '\e802'; }
+
+.icon-twitter:before { content: '\e803'; }
+
+.icon-phone:before { content: '\e804'; }
+
+.icon-mail:before { content: '\e805'; }
+
+.icon-gplus:before { content: '\e806'; }
+
+.icon-search:before { content: '\e807'; }
+
+.icon-download:before { content: '\e808'; }
+
+.icon-print:before { content: '\e809'; }
+
+.icon-left-open-big:before { content: '\e80a'; }
+
+.icon-down-open-big:before { content: '\e80b'; }
+
+.icon-right-open-big:before { content: '\e80c'; }
+
+.icon-up-open-big:before { content: '\e80d'; }
+
+.icon-cog:before { content: '\e80e'; }
+
+.icon-check:before { content: '\e80f'; }
+
+.icon-search-1:before { content: '\e810'; }
+
+.icon-popup:before { content: '\e811'; }
+
+.icon-up-bold:before { content: '\e812'; }
+
+.icon-down-bold:before { content: '\e813'; }
+
+.icon-users:before { content: '\e814'; }
+
+.icon-book:before { content: '\e815'; }
+
+.icon-chart:before { content: '\e816'; }
+
+.icon-table:before { content: '\e817'; }
+
+.icon-down-open-mini:before { content: '\e818'; }
+
+.icon-menu:before { content: '\e819'; }
+
+.icon-cancel:before { content: '\e81a'; }
+
+.icon-comment:before { content: '\e81b'; }
+
+
+
+/*------------------------------
+  Temporary wrapping classes
+
+*/
+
+.icon__list { // temporary display wrapper to lose the
+  padding-left: 0;
+
+  .icon__item {
+    padding: 1.5rem 0;
+    list-style-type: none;
+  }
+
+  .icon {
+
+    &:before {
+      padding-right: 2rem;
+      font-size: 160%;
+    }
+  }
+}
+
+.icon--inline {
+  font-size: inherit;
+
+  &:before {
+    width: auto;
+    vertical-align: middle;
+  }
+}
+
+.icon--button-inline,
+.icon--button-inline-small,
+.icon--button-inline--rev,
+.icon--button-inline--rev-small {
+  line-height: 1;
+
+  &:before {
+    width: auto;
+    font-size: 125%;
+    vertical-align: middle;
+  }
+}
+
+.icon--button-inline {
+  margin-left: 1rem;
+}
+
+.icon--button-inline-small {
+  margin-right: .5rem;
+}
+
+.icon--button-inline--rev {
+  margin-right: 1rem;
+}
+
+.icon--button-inline--rev-small {
+  margin-right: .5rem;
+}
+
+//to compensate for weird vertical alignment when text needs to be bigger than icon
+.icon--inline--large-text {
+  &:before {
+    margin-top: -.4em;
+  }
+}
+
+.icon--small {
+  font-size: 75%;
+}
+
+.icon--large {
+  font-size: 150%;
+}
+
+.icon--mega {
+  font-size: 200%;
+}
+
+.icon--giga {
+  font-size: 300%;
+}
+
+.icon--cold {
+  color: $azure;
+}
+
+.icon--warm {
+  color: $orange;
+
+  &:hover {
+    color: darken($orange, 10%);
+  }
+}
+
+.icon--green {
+  color: $ons-green;
+}
+
+.icon--grey {
+  color: $grey-cold;
+
+  &:hover {
+    color: darken($grey-cold, 15%);
+  }
+}
+
+.icon--fat {
+  font-family: $font-bold;
+}
+
+.icon--flush {
+  &:before {
+    margin: 0;
+  }
+}
+
+.icon--right {
+  text-align: right;
+}
+
+.icon--left {
+  text-align: left;
+}
+
+.icon--left-margin {
+  margin-left: 1rem;
+}
+
+.icon--right-margin {
+  margin-right: 1rem;
+}

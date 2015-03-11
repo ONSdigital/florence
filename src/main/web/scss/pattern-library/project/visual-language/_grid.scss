@@ -1,0 +1,14 @@
+// GRIDS
+@include grids-init("grid");
+
+@include respond-min($bp-tablet) {
+  @include grids-init("tablet-grid");
+}
+
+@include respond-min($bp-tablet-wide) {
+  @include grids-init("tablet-wide-grid");
+}
+
+@include respond-min($bp-desktop) {
+  @include grids-init("desktop-grid");
+}

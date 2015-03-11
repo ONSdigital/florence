@@ -1,0 +1,95 @@
+@charset "UTF-8";
+
+/*
+ * Navigation is a thorny issue, especially with complex IAs. Navigational CSS
+ * has thus been split up into two parts: general patterns that can be used
+ * for simple navs, and _navs-primary for the primary nav which is complex and
+ * not nearly as reusable.
+ * This is done for structural clarity and separations of concerns.
+ */
+
+.nav {
+  @extend %cf;
+  padding-left: 0;
+  list-style: none;
+
+  > li {
+    display: inline-block;
+  }
+}
+
+.nav--inline-block {
+  display: inline-block;
+
+  li {
+    display: inline-block;
+    margin: 0 1em 0 0;
+  }
+}
+
+.nav--block {
+  a {
+    padding: .5em 0;
+  }
+
+  li,
+  a {
+    display: block;
+  }
+}
+
+.nav--block--spaced {
+  a {
+    margin: .5em 0;
+  }
+}
+
+.nav--dark {
+  a {
+    color: $black;
+    text-decoration: underline;
+
+    &:hover {
+      color: lighten($black, 20%);
+    }
+  }
+}
+
+.nav--heavy {
+  font-family: $font-bold;
+
+  a {
+    color: $black;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.breadcrumb {
+
+  > li + li {
+    position: relative;
+
+    &:before {
+      display: inline-block;
+      padding: 0 1rem;
+      font-family: Arial;
+      font-size: 150%;
+      font-weight: 100;
+      line-height: 1;
+      color: $grey;
+      vertical-align: top;
+      content: " \203A ";
+    }
+  }
+}
+
+.nav__active {
+  a {
+    color: $grey;
+    text-decoration: none;
+  }
+}

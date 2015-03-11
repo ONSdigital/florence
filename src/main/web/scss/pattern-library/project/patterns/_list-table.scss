@@ -1,0 +1,401 @@
+.list--table {
+  padding: 0;
+  margin: 0;
+  border-color: darken($table-color, 2.5%);
+  border-style: solid;
+  border-width: 0;
+  list-style: none;
+
+  [class*="icon-"] {
+    margin-left: .8rem;
+
+    &:before {
+      vertical-align: baseline;
+    }
+  }
+}
+
+.list--table--complex {
+  margin-top: -1rem;
+}
+
+.list--table__item {
+  @extend %cf;
+  position: relative;
+  padding: .5rem 1rem;
+}
+
+.list--table--sectioned {
+  border-width: 0 0 2px;
+
+  .list--table__item {
+    &:first-child {
+      border-top: 2px solid darken($table-color, 2.5%);
+    }
+  }
+}
+
+.list--table__item__body {
+  position: relative;
+  float: left;
+}
+
+.list--table__head {
+  padding: .5rem .5rem .5rem 0;
+}
+
+.list--table__footer {
+  width: 100%;
+  border-top-color: darken($table-color, 7.5%);
+  border-bottom-width: 2px;
+  background-color: $table-color;
+  background-image: linear-gradient(lighten($table-color, 4%), $table-color);
+
+  > .list--table__item__body {
+    width: 100%;
+  }
+}
+
+.list--table--footer--releases {
+  padding: 2rem 1rem;
+}
+
+.list--table__item__body--centred {
+  text-align: center;
+}
+
+.list--table__item__body--caption {
+  width: 100%;
+  padding-right: 4rem;
+}
+
+.list--table__item__body--stat {
+  width: 100%;
+
+  @include respond-max(47em) {
+    margin-bottom: .8rem;
+    margin-top: .8rem;
+  }
+}
+
+.list--table__item__body--update {
+  width: 100%;
+}
+
+.list--table__item__body--select {
+  position: absolute;
+  top: .3rem;
+  right: .7rem;
+  padding: 1rem;
+}
+
+.list--table__item__body--select-all {
+  display: none;
+  float: right;
+  padding: .5rem 1.5rem;
+
+  font-family: $font-bold;
+  text-align: right;
+
+  input {
+    margin-left: 1rem;
+  }
+
+  .js & {
+    display: block;
+  }
+}
+
+.list--table__item__body--date {
+  width: 20%;
+
+  // half of the 1rem margin established on list itself
+  // to ensure it looks perfectly centred
+  margin-left: -.5rem;
+
+  text-align: center;
+
+  > .list--table__item__body__inner {
+    width: 3.5rem;
+    margin: 0 auto;
+  }
+}
+
+.list--table--releases {
+  .list--table__item__body {
+    padding: 1rem 0;
+  }
+
+  .list--table__item__body--release-caption {
+    float: right;
+    width: 80%;
+    padding: 2rem 0; // Implement here instead of global so 1-line titles don't get as much padding with the date
+  }
+}
+
+.list--table__item__header {
+  @extend %gamma;
+  @extend %body-type--heavy;
+  margin-bottom: 0;
+
+  &+ .list--table__item__description {
+    margin-top: 1.8rem; //don't throw off vertical spacing if no description
+  }
+}
+
+.list--table__item__description {
+  margin-bottom: 0;
+  font-size: 1.2rem;
+  line-height: 1.25;
+
+  @include respond-min($bp-tablet) {
+    font-size: 1.4rem;
+  }
+}
+
+.list--table-header {
+  margin-bottom: 1rem;
+}
+
+@include respond-min(20em) {
+  .list--table__item__body--stat {
+    min-height: 5.5rem;
+  }
+
+  .list--table__item__body--update {
+    min-height: 4.5rem;
+  }
+
+}
+
+@include respond-min(25em) {
+  .list--table__item__body--date {
+    width: 12.5%;
+  }
+
+  .list--table__item__body--release-caption {
+    width: 87.5%;
+  }
+}
+
+@include respond-min(28em) {
+  .list--table__item__body--update {
+    width: 45%;
+  }
+
+  .list--table__item__body--stat {
+    width: 55%;
+  }
+}
+
+@include respond-min(36em) {
+  .list--table-header {
+    max-width: 72.5%;
+    margin-bottom: -2.5rem;
+  }
+
+  .list--table--complex {
+    .list--table__body,
+    .list--table__footer {
+      padding: 1.5rem;
+    }
+  }
+
+  .list--table__item__body--stat {
+    width: 45%;
+    min-height: 5.5rem;
+  }
+
+  .list--table__item__body--update {
+    width: 45%;
+    min-height: 4.5rem;
+
+    dd + dt {
+      clear: both;
+    }
+  }
+
+  .list--table--cushy {
+    .list--table__item {
+      padding: 1rem 1.5rem;
+    }
+
+    .list--table__footer {
+      padding: 1.5rem 2rem 2rem;
+    }
+  }
+
+  .list--table--releases {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+
+    .list--table__body {
+      display: table-row;
+
+      .list--table__item__body {
+        position: static;
+        display: table-cell;
+        float: none;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .list--table__item__body__split {
+    display: table;
+    width: 100%;
+
+    > .list--table__item__body__two-fifths,
+    > .list--table__item__body__three-fifths {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    .list--table__item__body__two-fifths {
+      width: 37.5%;
+      padding-right: 2.5%;
+      padding-left: 5%;
+    }
+  }
+
+  .list--table--footer--releases {
+    padding: 2rem;
+  }
+}
+
+@include respond-min(42em) {
+  .list--table__item__body--update {
+    float: left;
+    width: 100%;
+    min-height: 3.5rem;
+
+    dd + dt {
+      clear: none;
+    }
+  }
+
+  .list--table__item__body--stat {
+    float: left;
+    width: 30%;
+    margin-bottom: -1em; //to allow Updated to flow under caption
+  }
+
+  .list--table__item__body--caption {
+    float: left;
+    width: 65%;
+  }
+
+  .list--table-header {
+    max-width: 75%;
+  }
+}
+
+@include respond-min(47em) {
+  .list--table--complex {
+    display: table;
+    width: 100%;
+
+    .list--table__body,
+    .list--table__footer {
+      padding: 2rem 1rem;
+    }
+  }
+
+  .list--table--complex {
+    display: table;
+    width: 100%;
+
+    .list--table__item__body {
+      position: static;
+      display: table-cell;
+      float: none;
+      vertical-align: middle;
+    }
+
+    .list--table__item__body--select-all {
+      padding-right: 2rem;
+
+      .js & {
+        display: block;
+      }
+    }
+  }
+
+  .list--table__item__body--update {
+    width: 25%;
+  }
+
+  .list--table__item__body--stat {
+    width: 25%;
+    padding-right: 2.5%;
+  }
+
+  .list--table__item__body--select {
+    width: 3.5%;
+    text-align: center;
+  }
+
+  .list--table__item__body--caption {
+    width: 37.5%;
+    padding-right: 2.5%;
+  }
+
+  .list--table__footer .list--table__item__body {
+    display: block;
+  }
+
+  .list--table--cushy {
+    .list--table__item {
+      padding: 1rem 2.5rem;
+    }
+  }
+
+  .list--table-header {
+    max-width: 80%;
+  }
+}
+
+@include respond-min(52em) {
+  .list--table__item__body--update,
+  .list--table__item__body--stat {
+    width: 25%;
+    padding-right: 0;
+  }
+
+  .list--table__item__body--caption {
+    width: 42.5%;
+  }
+}
+
+@include respond-min(56.5em) {
+
+  .list--table--complex {
+    .list--table__body,
+    .list--table__footer {
+      padding: 1.5rem 2.5rem;
+    }
+
+    .list--table__item__body--select-all {
+      padding-right: 3.2rem;
+    }
+
+    .list--table__item__body--update {
+      min-width: 20rem;
+    }
+
+    .list--table__item__body--stat {
+      width: 25%;
+      padding-right: 5%;
+    }
+
+    .list--table__item__body--select {
+      width: .5%;
+    }
+
+    .list--table__item__body--caption {
+      width: 50%;
+      padding-right: 7.5%;
+    }
+  }
+}

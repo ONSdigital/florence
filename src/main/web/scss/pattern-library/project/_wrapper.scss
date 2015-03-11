@@ -1,0 +1,20 @@
+/* ======================================================
+   A standard wrapping block to limit the width of blocks - this allows for full width elements
+   and contained elements without constraining it at <body> level
+   ======================================================*/
+
+.wrapper {
+  position: relative;
+  max-width: 59.75em;
+  padding: 0 1rem;
+  margin: 0 auto;
+
+  @include respond-min($bp-tablet) {
+    padding: 0 3rem;
+  }
+
+  @include respond-min($bp-desktop+6) {
+    padding: 0 2rem;
+  }
+
+}

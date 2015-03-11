@@ -1,0 +1,166 @@
+@charset "UTF-8";
+
+/*
+<div class="stat">
+  <div class="stat__figure">
+    99
+      <span class="stat__figure__unit">m</span>
+  </div>
+  <div class="stat__description">bottles of beer on the wall</div>
+</div>
+*/
+
+.stat {
+  font-family: $font-regular;
+}
+
+.stat__tight {
+  line-height: 1;
+}
+
+.stat__figure {
+  font-family: $font-bold;
+  font-size: 3.9rem;
+}
+
+.stat__figure__unit {
+  /*---------------------
+    Offset number so it appears visually closer to the stat figure.
+    @TODO: Fix magic number
+  */
+  margin-left: -.7rem;
+
+  font-size: 2.2rem;
+  vertical-align: baseline;
+}
+
+.stat__description {
+  display: block;
+  font-size: 1.2rem;
+}
+
+// Built to work with the biggest statistic (£123,456) displayed at 50% size
+// at a medium-largeish viewport (~700px) and 100% below this down to 240px
+.stat--headline {
+  .stat__figure {
+    font-size: 4rem;
+    line-height: 1;
+
+    @include respond-min(20em) {
+      font-size: 5rem;
+    }
+
+    @include respond-min(55em) {
+      font-size: 6.5rem;
+    }
+
+    @include respond-min(65em) {
+      font-size: 8rem;
+    }
+  }
+
+  .stat__figure__unit {
+    margin-left: -.5rem;
+
+    font-size: 2rem;
+    vertical-align: baseline;
+
+    @include respond-min(20em) {
+      font-size: 2.5rem;
+      margin-left: -.7rem;
+    }
+
+    @include respond-min(25em) {
+      font-size: 3rem;
+      margin-left: -.9rem;
+    }
+  }
+
+
+  .stat__description {
+    font-family: $font-bold;
+    font-size: 1.6rem;
+  }
+}
+
+// For when you need big, big figures and you're guaranteed to have premium
+// space for it at 100% widths on big viewports
+.stat--headline--xl {
+  .stat__figure {
+    @include respond-min(32.5em) {
+      font-size: 8rem;
+    }
+  }
+
+  .stat__figure__unit {
+    @include respond-min(32.5em) {
+      font-size: 5rem;
+      margin-left: -1.5rem;
+    }
+  }
+}
+
+.stat--small {
+  .stat__figure {
+    font-size: 2.1rem;
+  }
+
+  .stat__figure__unit {
+    margin-left: -.3rem;
+    font-size: 1.4rem;
+  }
+}
+
+.stat--hero {
+  .stat__figure {
+    @extend %body-type--light;
+
+    @include respond-min(38em) {
+      line-height: 1;
+      padding-bottom: 1rem;
+    }
+
+    @include respond-min(46em) {
+      font-size: 5rem;
+      padding-bottom: 2rem;
+    }
+  }
+
+  .stat__figure__unit {
+    @extend %body-type;
+  }
+
+  .stat__description {
+    font-family: $font-bold;
+
+    @include respond-min($bp-desktop) {
+      font-size: 1.6rem;
+    }
+  }
+}
+
+.hero-banner--xl {
+  .stat__figure {
+    @include respond-min($bp-tablet) {
+      padding-top: .75rem;
+      margin-top: -2rem;
+      font-size: 8rem;
+      letter-spacing: -.5rem;
+    }
+
+    @include respond-min($bp-desktop) {
+      font-size: 12rem;
+    }
+  }
+
+  .stat__figure__unit {
+    @include respond-min($bp-desktop) {
+      font-size: 4.4rem;
+      margin-left: -2.25rem;
+
+      .lt-ie9 & {
+        padding-right: .3rem;
+      }
+    }
+  }
+}

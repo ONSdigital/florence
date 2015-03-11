@@ -1,0 +1,192 @@
+/*
+============================
+Button styles
+============================
+*/
+
+
+.btn {
+  display: inline-block;
+  width: auto;
+  padding: 1em 2em;
+  border: 0 none;
+  border-radius: 3px;
+
+  font-size: 1.6rem;
+  line-height: 1.5;
+
+  text-align: center;
+  text-decoration: none !important;
+  text-transform: uppercase;
+
+
+  transition-duration: 200ms;
+  transition-property: background-color, color;
+  transition-timing-function: cubic-bezier(.785, .135, .150, .860);
+
+  &:focus {
+    outline: 0; //remember to specify an appropriate focus state on the derivations!
+  }
+}
+
+/*-----------------------------------
+lesser , applied styles
+*/
+
+.btn--primary {
+  font-family: $font-bold;
+  color: $white;
+  background: $link-color;
+
+  &:visited {
+    color: $white;
+  }
+
+  &:hover,
+  &:focus {
+    color: $white;
+    background-color: darken($link-color, 12.5%);
+  }
+
+  &:focus {
+    box-shadow: 0 0 9px 3px $orange;
+  }
+}
+
+.btn--secondary {
+  border: 2px solid darken($grey-light, 10%);
+  font-family: $font-bold;
+  color: $link-color;
+  background-color: lighten($grey-light, 10%);
+
+  &:hover,
+  &:focus {
+    color: $link-color;
+    background-color: darken($grey-light, 10%);
+  }
+}
+
+.btn--secondary--active {
+  background: darken($grey-light, 10%);
+  background: radial-gradient(ellipse at center, #d5d6d2 0%, #c8c9c4 100%);
+
+  &,
+  &:visited,
+  &:hover {
+    color: $black;
+  }
+
+  &:hover,
+  &:focus {
+    background: darken($grey-light, 20%);
+    background: radial-gradient(ellipse at center, darken(#d5d6d2, 10%) 0%, darken(#c8c9c4, 10%) 100%);
+  }
+}
+
+.btn--thin {
+  padding-top: .5em;
+  padding-bottom: .5em;
+}
+
+.btn--small {
+  font-size: 1.2rem;
+}
+
+.btn--narrow {
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+.btn--wide {
+  padding-right: 3em;
+  padding-left: 3em;
+}
+
+// For including buttons inline next to a form element
+.btn--form {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: 0 .5em;
+
+  line-height: 3.33;
+  vertical-align: top;
+
+  @include respond-max(40em) {
+    display: block;
+    margin: .875em 0;
+  }
+}
+
+// For including buttons inline next to a form element with content that has 150% font size
+.btn--form--large-icon {
+  padding: 0 1.5rem;
+  margin-left: .5rem;
+  line-height: 2.45;
+  vertical-align: top;
+
+  > .icon {
+    font-size: 1.5em;
+  }
+}
+
+.btn--block {
+  display: block;
+  width: 100%;
+}
+
+// use in conjunction with btn--block
+.btn--flex {
+  padding: 1em;
+
+  @include respond-min($bp-tablet) {
+    display: inline-block;
+    width: auto;
+    padding: 1em 2em;
+  }
+}
+
+.button-group {
+  @extend %cf;
+  padding-left: 0;
+  list-style: none;
+
+  .btn {
+    float: left;
+    margin: 0;
+    border-radius: 0;
+
+    &:first-of-type {
+      border-radius: 3px 0 0 3px;
+    }
+
+    &:last-of-type {
+      border-radius: 0 3px 3px 0;
+    }
+  }
+
+  // Overrides box shadow which looks wonky with siblings' negative margins
+  // In the context of 2+ buttons, this focus state is distinguished enough
+  .btn--primary:focus {
+    box-shadow: none;
+  }
+
+  // Override the left border on 2+ secondary buttons in button group
+  .btn--secondary + .btn--secondary {
+    margin-left: -2px;
+  }
+
+  .js & input {
+    display: none;
+  }
+}
+
+.button-bar {
+  > .button-group {
+    display: inline-block;
+    margin-right: 1rem;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+/* ------------------------------
+ * Skiplinks
+ */
+
+.skiplinks {
+
+  &:focus {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 700;
+    display: block;
+    text-decoration: none;
+    border: 0;
+    outline: none;
+
+    span {
+      display: block;
+      width: 30%;
+      padding: 8px 0;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+  }
+
+}
