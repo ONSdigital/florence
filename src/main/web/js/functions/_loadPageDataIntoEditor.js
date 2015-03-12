@@ -15,12 +15,20 @@ function loadPageDataIntoEditor(){
       // console.log("Success");
       data = response;
       if (response.type === "bulletin"){
+        $('.fl-editor__headline').hide();
         $(response.sections).each(function(index, section){
-          $('.fl-editor__sections').append('<textarea id="section__'+index+'">' + section.title + "</textarea>");
+          $('.fl-editor__sections').append('<textarea id="section__' + index + '">' + section.title + "</textarea>");
+          //$('.fl-editor__sections').append('<textarea id="section_markdown_' + index + '">' + section.markdown + "</textarea>");
+          $(".fl-editor__sections").append('<button class="fl-panel--editor__sections__section-item__edit">Edit</button>');
+          $(".fl-panel--editor__sections__section-item__edit").click(function () {
+            $(this).append('<textarea id="section_markdown_' + index + '">' + section.markdown + "</textarea>");
+          });
         })
+      } else {
+        $('.fl-editor__headline').val(JSON.stringify(response, null, 2));
       }
       $(".fl-panel--editor__nav__complete").click(function(){
-        saveEditedJson();
+        //saveEditedJson();
       });
     },
     error: function() {
