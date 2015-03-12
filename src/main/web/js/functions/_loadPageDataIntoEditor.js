@@ -13,16 +13,15 @@ function loadPageDataIntoEditor(){
     success: function(response) {
       // do stuff with json (in this case an array)
       // console.log("Success");
+      data = response;
       if (response.type === "bulletin"){
-
-        var dataString = String(response);
-        // pageType = data.level
-        console.log(response);
-        for(i=0;i<response.sections.length;i++){
-
-          $('.fl-editor').append(response.sections[i].title + "<br>");
-        }
+        $(response.sections).each(function(index, section){
+          $('.fl-editor__sections').append('<textarea id="section__'+index+'">' + section.title + "</textarea>");
+        })
       }
+      $(".fl-panel--editor__nav__complete").click(function(){
+        saveEditedJson();
+      });
     },
     error: function() {
       console.log('No page data returned');

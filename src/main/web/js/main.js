@@ -5,6 +5,7 @@
   //var pageurl = window.location.href;
 
   var pageData;
+  var data;
 
   //calling external js functions - this should all get replaces with a bild script in production compiling one main.min.js;
   var files = [
@@ -17,7 +18,8 @@
   '_publish.js', 
   '_removePreviewColClasses.js', 
   '_removeSubMenus.js', 
-  '_save.js', 
+  '_save.js',
+  '_saveEditedJson',
   '_setupFlorence.js', 
   '_setupFlorenceWorkspace.js', 
   '_updateContent.js'];
