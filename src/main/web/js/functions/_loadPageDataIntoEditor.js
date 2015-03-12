@@ -19,8 +19,9 @@ function loadPageDataIntoEditor(){
         $(response.sections).each(function(index, section){
           $('.fl-editor__sections').append('<textarea id="section__' + index + '">' + section.title + "</textarea>");
           //$('.fl-editor__sections').append('<textarea id="section_markdown_' + index + '">' + section.markdown + "</textarea>");
-          $(".fl-editor__sections").append('<button class="fl-panel--editor__sections__section-item__edit">Edit</button>');
-          $(".fl-panel--editor__sections__section-item__edit").click(function () {
+          $(".fl-editor__sections").append('<button class="fl-panel--editor__sections__section-item__edit_'+index+'">Edit</button>');
+          $(".fl-panel--editor__sections__section-item__edit_"+index).click(function () {
+            console.log(index)
             $(this).append('<textarea id="section_markdown_' + index + '">' + section.markdown + "</textarea>");
           });
         })
