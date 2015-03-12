@@ -3,16 +3,31 @@ function setupFlorenceWorkspace(caller){
   var intIntervalTime = 100;
    //florence edit menu
   var florence_menu_edit =
+  // '<section class="fl-panel fl-panel--editor">' +
+  //   '<nav class="fl-panel--editor__breadcrumb">' +
+  //     '<input type="text" value="" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
+  //     '<input type="text" value="" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
+  //   '</nav>' +
+  //   '<textarea class="fl-editor" name="fl-editor" cols="40" rows="5"></textarea>' +
+  //   '<nav class="fl-panel--editor__nav">' +
+  //     '<button class="fl-panel--editor__nav__save">Save</button>' +
+  //     '<button class="fl-panel--editor__nav__approve">Approve</button>' +
+  //     '<button class="fl-panel--editor__nav__publish">Publish</button>' +
+  //   '</nav>' +
+  // '</section>';
+
   '<section class="fl-panel fl-panel--editor">' +
-    '<nav class="fl-panel--editor__breadcrumb">' +
-      '<input type="text" value="" placeholder="Publish owner" class="fl-panel--editor__publish-owner" />' +
-      '<input type="text" value="" placeholder="Publish id (release name)" class="fl-panel--editor__publish-id" />' +
-    '</nav>' +
-    '<textarea class="fl-editor" name="fl-editor" cols="40" rows="5"></textarea>' +
+    '<section class="fl-editor">' +
+      '<section class="fl-editor__metadata">Metadata collapsible section goes here</section>' +
+      '<section class="fl-editor__correction">Correction collapsible section goes here</section>' +
+      '<textarea class="fl-editor__headline" name="fl-editor__headline" cols="40" rows="5"></textarea>' +
+      '<section class="fl-editor__sections">' +
+      '</section>' +
+    '</section>' +
     '<nav class="fl-panel--editor__nav">' +
+      '<button class="fl-panel--editor__nav__cancel">Cancel</button>' +
       '<button class="fl-panel--editor__nav__save">Save</button>' +
-      '<button class="fl-panel--editor__nav__approve">Approve</button>' +
-      '<button class="fl-panel--editor__nav__publish">Publish</button>' +
+      '<button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
     '</nav>' +
   '</section>';
 
