@@ -13,10 +13,16 @@ function loadPageDataIntoEditor(){
     success: function(response) {
       // do stuff with json (in this case an array)
       // console.log("Success");
-      var dataString = String(response);
-      // pageType = data.level
-      // console.log(response);
-      $('.fl-editor').val(JSON.stringify(response, null, 2));
+      if (response.type === "bulletin"){
+
+        var dataString = String(response);
+        // pageType = data.level
+        console.log(response);
+        for(i=0;i<response.sections.length;i++){
+
+          $('.fl-editor').append(response.sections[i].title + "<br>");
+        }
+      }
     },
     error: function() {
       console.log('No page data returned');
