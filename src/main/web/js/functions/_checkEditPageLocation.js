@@ -1,3 +1,5 @@
+var pageurl = window.location.href;
+
 function checkEditPageLocation() {
   if (pageurl != window.location.href) {
     pageurl = window.location.href;

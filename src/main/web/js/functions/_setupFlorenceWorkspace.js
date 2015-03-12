@@ -1,5 +1,6 @@
 function setupFlorenceWorkspace(caller){
 
+  var intIntervalTime = 100;
    //florence edit menu
   var florence_menu_edit =
   '<section class="fl-panel fl-panel--editor">' +

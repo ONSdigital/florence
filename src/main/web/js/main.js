@@ -1,8 +1,9 @@
 (function($) {
 
-  //global vars
-  var intIntervalTime = 100;
-  var pageurl = window.location.href;
+  //global vars (not working now) to be deleted when everything checked and working
+  //var intIntervalTime = 100;
+  //var pageurl = window.location.href;
+
   var pageData;
 
   //calling external js functions - this should all get replaces with a bild script in production compiling one main.min.js;
@@ -23,24 +24,13 @@
 
   //inject functions into dom
   for (i = 0; i < files.length; i++) {
-    javascript:document.body.appendChild(document.createElement('script')).src='http://localhost:8081/js/functions/'+files[i];
+    document.body.appendChild(document.createElement('script')).src = 'http://localhost:8081/js/functions/' + files[i];
     console.log(files[i]);
   }
-
-      // javascript:document.body.appendChild(document.createElement('script')).src='http://localhost:8081/js/functions/_setupFlorence.js';
-
-
-
-
-  
-
-
 
   // possible new functions
   function convertPageJSONtoMarkdown(){}
   function saveUpdatedMarkdown(){}
   function watchForEditorChanges(){}
-
-  
 
 })(jQuery);
