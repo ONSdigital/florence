@@ -1,3 +1,5 @@
+setupFlorence();
+
 function approve(collectionName) {
 
 
@@ -179,10 +181,7 @@ function setupFlorence(){
       setupFlorenceWorkspace($(this));
     });
  }
-
- 
-
- setupFlorence();function setupFlorenceWorkspace(caller){
+function setupFlorenceWorkspace(caller){
 
   var intIntervalTime = 100;
    //florence edit menu

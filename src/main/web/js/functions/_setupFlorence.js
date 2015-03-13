@@ -54,7 +54,3 @@ function setupFlorence(){
       setupFlorenceWorkspace($(this));
     });
  }
-
- 
-
- setupFlorence();
