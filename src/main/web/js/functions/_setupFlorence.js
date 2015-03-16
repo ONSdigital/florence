@@ -41,16 +41,20 @@ function setupFlorence(){
 
   //florence create menu
 
- 
-	
-    $('head').prepend('<link href="http://localhost:8081/css/main.min.css" rel="stylesheet" type="text/css">');
-    var bodycontent = $('body').html();
 
-    $('body').wrapInner('<section class="fl-panel fl-panel--preview"><div class="fl-panel--preview__inner"></div></section>');
-    // $('body').wrapInner('<section class="fl-container"></section>');
-    $('body').prepend(florence_menu);
 
-    $('.fl-main-menu__link').click(function() {
-      setupFlorenceWorkspace($(this));
-    });
+  $('head').prepend('<link href="http://localhost:8081/css/main.min.css" rel="stylesheet" type="text/css">');
+  $('head').prepend('<link href="http://localhost:8081/css/jquery-ui.min.css" rel="stylesheet" type="text/css">');
+  var bodycontent = $('body').html();
+
+  $('body').wrapInner('<section class="fl-panel fl-panel--preview"><div class="fl-panel--preview__inner"></div></section>');
+  // $('body').wrapInner('<section class="fl-container"></section>');
+  $('body').prepend(florence_menu);
+
+  $('.fl-main-menu__link').click(function() {
+    setupFlorenceWorkspace($(this));
+  });
  }
+
+
+setupFlorence();

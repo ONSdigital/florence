@@ -1,7 +1,7 @@
 function openFileForEditing(collectionName, data) {
     // Open the file for editing
     $.ajax({
-        url: "http://localhost:8082/edit/" + collectionName,
+        url: "http://localhost:8082/content/" + collectionName,
         dataType: 'json',
         crossDomain: true,
         type: 'POST',
