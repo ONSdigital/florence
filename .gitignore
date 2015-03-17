@@ -18,3 +18,4 @@ target/
 
 # NPM
 .sass-cache/
+node_modules

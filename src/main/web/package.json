@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "uglify-js": "latest"
+  },
+  "scripts": {
+    "build": "uglifyjs main.js js/main-build.js"
+  }
+}
