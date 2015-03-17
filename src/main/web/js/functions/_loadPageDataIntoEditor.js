@@ -5,7 +5,7 @@ function loadPageDataIntoEditor(){
   var pageurldata = pageurl.replace("#!", "data");
 
   $.ajax({
-    url: pageurldata,
+    url: zebedeeUrl(),
     dataType: 'json', // Notice! JSONP <-- P (lowercase)
     crossDomain: true,
 
@@ -14,6 +14,7 @@ function loadPageDataIntoEditor(){
     },
 
     error: function() {
+      console.log(zebedeeUrl())
       console.log('No page data returned');
       $('.fl-editor').val('');
     }
@@ -47,10 +48,15 @@ function loadPageDataIntoEditor(){
 
         $('body').prepend('<div id="epiceditor"> </div>')
         console.log(textarea.val())
+
+        //clearing local storage here to ensure epic editor uses the default value
+        // it wouldnt work with the default value
+        localStorage.clear()
         var opts = {
           file:{
             // need a unique name for the local storage file, achieved by
             // concatenating the pageurl and the section title
+
             name: pageurldata + section.title,
             defaultContent: textarea.val()
           }
@@ -70,4 +76,11 @@ function loadPageDataIntoEditor(){
 
 }
 
-
+function zebedeeUrl(){
+  // zebedee expects /content/<collectionName>?uri=<uri>+data.json
+  var zebedeeHost = "http://localhost:8082/content"
+  var collectionName = "/kanes"
+  // Window location pathname would be better here but we can't use because of angular
+  var uri = window.location.href.replace("http://localhost:8080/#!", "")
+  return zebedeeHost + collectionName + "?uri=" + uri + "/data.json"
+}
