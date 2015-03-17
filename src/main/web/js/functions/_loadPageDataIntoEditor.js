@@ -29,32 +29,39 @@ function loadPageDataIntoEditor(){
     $('.fl-editor__headline').hide();
 
     $(response.sections).each(function(index, section){
-      $('.fl-editor__sections').append(
+      var element = $('.fl-editor__sections').append(
           '<div id="' + index + '" style="background-color:grey; color:white;">' +
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Title' +
           '<textarea id="section__' + index + '">' + section.title + '</textarea>' +
           '<textarea id="editor__' + index + '">' + section.markdown + '</textarea>' +
-          '<textarea style="visibility:hidden; height:5px;" id="section_markdown_' + index + '">' +
+          '<div style="visibility:hidden; height:5px;" id="section_markdown_' + index + '">' +
           section.markdown +
-          '</textarea>' +
-          '<button class="fl-panel--editor__sections__section-item__edit_'+index+'">Edit</button>' +
+          '</div>' +
+          '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
           '</div>');
 
-      var element = $("section_markdown_" + index);
 
-      var markdown = $("#section_markdown_"+ index).val();
       $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
+        var textarea = $("#editor__"+index)
 
-        console.log(contents);
-        console.log(index)
+        $('body').prepend('<div id="epiceditor"> </div>')
+        console.log(textarea.val())
+        var opts = {
+          file:{
+            // need a unique name for the local storage file, achieved by
+            // concatenating the pageurl and the section title
+            name: pageurldata + section.title,
+            defaultContent: textarea.val()
+          }
+        }
+        var editor = new EpicEditor(opts).load().enterFullscreen()
       });
     });
 
-      var editor = new EpicEditor({container:element}).load().enterFullscreen()
   }
 
-  function addMarkdownSection(){}
+
   function sortable() {
     $(".fl-editor__sections").sortable();
     //$("fl-editor__sections").disableSelection();
