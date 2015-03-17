@@ -1,8 +1,9 @@
 {
-  "devDependencies": {
-    "uglify-js": "latest"
-  },
-  "scripts": {
-    "build": "uglifyjs main.js js/main-build.js"
-  }
+	"devDependencies": {
+	  "catw": "latest"
+	},
+	"scripts": {
+	  "build-js": "catw js/functions/*.js -o js/main.js -v",
+	  "watch": "npm run build-js"
+	}
 }
