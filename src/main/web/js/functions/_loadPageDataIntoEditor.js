@@ -3,6 +3,7 @@ function loadPageDataIntoEditor(){
   var pageurl = window.location.href;
   var newSections = [];
   var pageurldata = pageurl.replace("#!", "data");
+  var data
 
   $.ajax({
     url: zebedeeUrl(),
@@ -10,6 +11,8 @@ function loadPageDataIntoEditor(){
     crossDomain: true,
 
     success: function(response) {
+      data = response
+      console.log(response)
       makeEditSections(response)
     },
 
@@ -58,15 +61,46 @@ function loadPageDataIntoEditor(){
             // concatenating the pageurl and the section title
 
             name: pageurldata + section.title,
-            defaultContent: textarea.val()
+            defaultContent: textarea.val(),
+            autoSave: false
           }
         }
+
         var editor = new EpicEditor(opts).load().enterFullscreen()
+
+        editor.on('save',function(){
+          that = this;
+          saveToServer(index);
+        })
+
+
       });
     });
 
   }
 
+  function saveToServer(index){
+    var editedText = that.exportFile()
+
+    data['sections'][index]['markdown'] = editedText
+
+    $.ajax({
+      type:"POST",
+      url: zebedeeUrl(),
+      data:JSON.stringify(data),
+      dataType: 'json', // Notice! JSONP <-- P (lowercase)
+      crossDomain: true,
+
+      success: function(response) {
+        console.log( "DATA posted!")
+      },
+      error: function() {
+        console.log(zebedeeUrl())
+        console.log('there was a problem posting the data');
+        $('.fl-editor').val('');
+      }
+    });
+  };
 
   function sortable() {
     $(".fl-editor__sections").sortable();
@@ -84,3 +118,4 @@ function zebedeeUrl(){
   var uri = window.location.href.replace("http://localhost:8080/#!", "")
   return zebedeeHost + collectionName + "?uri=" + uri + "/data.json"
 }
+
