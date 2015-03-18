@@ -59,8 +59,8 @@ function loadPageDataIntoEditor(){
             // need a unique name for the local storage file, achieved by
             // concatenating the pageurl and the section title
             name: pageurldata + section.title,
-            autoSave: true
-            defaultContent: section.markdown,
+            autoSave: true,
+            defaultContent: section.markdown
           }
         };
 
