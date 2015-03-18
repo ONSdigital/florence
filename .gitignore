@@ -22,4 +22,4 @@ node_modules
 
 
 # Dev project files
-src/main/web/js/main.js
+src/main/web/florence/js/main.js
