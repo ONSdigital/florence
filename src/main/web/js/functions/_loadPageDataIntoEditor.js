@@ -3,21 +3,21 @@ function loadPageDataIntoEditor(){
   var pageurl = window.location.href;
   var newSections = [];
   var pageurldata = pageurl.replace("#!", "data");
-  var data
+  var data;
 
   $.ajax({
-    url: zebedeeUrl(),
-    dataType: 'json', // Notice! JSONP <-- P (lowercase)
+    url: pageurldata,
+    dataType: 'json',
     crossDomain: true,
 
     success: function(response) {
-      data = response
-      console.log(response)
-      makeEditSections(response)
+      data = response;
+      console.log(response);
+      makeEditSections(response);
     },
 
     error: function() {
-      console.log(zebedeeUrl())
+      console.log(zebedeeUrl());
       console.log('No page data returned');
       $('.fl-editor').val('');
     }
@@ -26,6 +26,16 @@ function loadPageDataIntoEditor(){
   function makeEditSections(response){
     if (response.type == 'bulletin'){
       bulletinSections(response);
+    } else {
+      $('.fl-editor__headline').val(JSON.stringify(response, null, 2));
+      $('.fl-panel--editor__nav__save').click(function() {
+        //if($('.fl-panel--editor__publish-owner').val().length != 0 && $('.fl-panel--editor__publish-id').val().length != 0){
+        pageData = $('.fl-editor__headline').val();
+        save("testCollection", pageData);
+        //} else {
+        //  alert('Publish owner and Publish id cannot be blank!');
+        //}
+      });
     }
   }
 
@@ -47,15 +57,16 @@ function loadPageDataIntoEditor(){
 
 
       $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
-        var textarea = $("#editor__"+index)
+        var textarea = $("#editor__"+index);
 
-        $('body').prepend('<div id="epiceditor"> </div>')
-        console.log(textarea.val())
+        $('body').prepend('<div id="epiceditor"> </div>');
+        console.log(textarea.val());
 
         //clearing local storage here to ensure epic editor uses the default value
         // it wouldnt work with the default value
-        localStorage.clear()
+        //localStorage.clear();
         var opts = {
+          basePath: "http://localhost:8081/thirdparty/epiceditor",
           file:{
             // need a unique name for the local storage file, achieved by
             // concatenating the pageurl and the section title
@@ -64,9 +75,9 @@ function loadPageDataIntoEditor(){
             defaultContent: textarea.val(),
             autoSave: false
           }
-        }
+        };
 
-        var editor = new EpicEditor(opts).load().enterFullscreen()
+        var editor = new EpicEditor(opts).load().enterFullscreen();
 
         editor.on('save',function(){
           that = this;
@@ -80,9 +91,9 @@ function loadPageDataIntoEditor(){
   }
 
   function saveToServer(index){
-    var editedText = that.exportFile()
+    var editedText = that.exportFile();
 
-    data['sections'][index]['markdown'] = editedText
+    data['sections'][index]['markdown'] = editedText;
 
     $.ajax({
       type:"POST",
@@ -95,16 +106,14 @@ function loadPageDataIntoEditor(){
         console.log( "DATA posted!")
       },
       error: function() {
-        console.log(zebedeeUrl())
+        console.log(zebedeeUrl());
         console.log('there was a problem posting the data');
         $('.fl-editor').val('');
       }
     });
-  };
-
+  }
   function sortable() {
     $(".fl-editor__sections").sortable();
-    //$("fl-editor__sections").disableSelection();
   }
   sortable();
 
@@ -112,10 +121,10 @@ function loadPageDataIntoEditor(){
 
 function zebedeeUrl(){
   // zebedee expects /content/<collectionName>?uri=<uri>+data.json
-  var zebedeeHost = "http://localhost:8082/content"
-  var collectionName = "/kanes"
+  var zebedeeHost = "http://localhost:8082/content";
+  var collectionName = "/kanes";
   // Window location pathname would be better here but we can't use because of angular
-  var uri = window.location.href.replace("http://localhost:8080/#!", "")
-  return zebedeeHost + collectionName + "?uri=" + uri + "/data.json"
+  var uri = window.location.href.replace("http://localhost:8080/#!", "");
+  return zebedeeHost + collectionName + "?uri=" + uri + "/data.json";
 }
 
