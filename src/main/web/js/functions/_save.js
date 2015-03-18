@@ -9,12 +9,12 @@ function save(collectionName, data) {
         type: 'POST',
         data: JSON.stringify({name: collectionName}),
         success: function () {
-            console.log("Collection created")
-            openFileForEditing(collectionName, data);
+          console.log("Collection created");
+          updateContent(collectionName, data);
         },
         error: function () {
-            console.log('Error creating collection');
-            openFileForEditing(collectionName, data);
+          console.log('Error creating collection');
+          updateContent(collectionName, data);
         }
     });
 }

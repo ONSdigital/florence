@@ -59,16 +59,18 @@ function setupFlorenceWorkspace(caller){
 
     loadPageDataIntoEditor();
     setInterval(checkEditPageLocation, intIntervalTime);
-    $('.fl-panel--editor__nav__save').click(function() {
-      if($('.fl-panel--editor__publish-owner').val().length != 0 && $('.fl-panel--editor__publish-id').val().length != 0){
-        pageData = $('.fl-editor').val();
-        save("testCollection", pageData);
-        //console.log(parser.pathname);
-      } else {
-        alert('Publish owner and Publish id cannot be blank!');
-      }
 
-    });
+    // ******* Moved this to _loadPageDataintoEditor *******
+    //$('.fl-panel--editor__nav__save').click(function() {
+    //  if($('.fl-panel--editor__publish-owner').val().length != 0 && $('.fl-panel--editor__publish-id').val().length != 0){
+    //    pageData = $('.fl-editor').val();
+    //    save("testCollection", pageData);
+    //    //console.log(parser.pathname);
+    //  } else {
+    //    alert('Publish owner and Publish id cannot be blank!');
+    //  }
+    //
+    //});
 
       $('.fl-panel--editor__nav__approve').click(function () {
           approve(collectionName);
