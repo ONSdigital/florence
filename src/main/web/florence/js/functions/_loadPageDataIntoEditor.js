@@ -61,6 +61,7 @@ function loadPageDataIntoEditor(){
             name: pageurldata + section.title,
             autoSave: true,
             defaultContent: section.markdown
+
           }
         };
 
