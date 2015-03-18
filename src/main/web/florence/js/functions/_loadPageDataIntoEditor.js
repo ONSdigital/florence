@@ -55,25 +55,18 @@ function loadPageDataIntoEditor(){
           '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
           '</div>');
 
-
       $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
         var textarea = $("#editor__"+index);
 
         $('body').prepend('<div id="epiceditor"> </div>');
-        console.log(textarea.val());
-
-        //clearing local storage here to ensure epic editor uses the default value
-        // it wouldnt work with the default value
-        //localStorage.clear();
         var opts = {
           basePath: "http://localhost:8081/florence/css/third-party/epiceditor",
           file:{
             // need a unique name for the local storage file, achieved by
             // concatenating the pageurl and the section title
-
             name: pageurldata + section.title,
             defaultContent: textarea.val(),
-            autoSave: false
+            autoSave: true
           }
         };
 
@@ -81,50 +74,34 @@ function loadPageDataIntoEditor(){
 
         editor.on('save',function(){
           that = this;
-          saveToServer(index);
+          saveMarkdown(index);
         })
-
-
       });
     });
-
   }
 
-  function saveToServer(index){
+  function saveMarkdown(index){
     var editedText = that.exportFile();
-
-    data['sections'][index]['markdown'] = editedText;
-
-    $.ajax({
-      type:"POST",
-      url: zebedeeUrl(),
-      data:JSON.stringify(data),
-      dataType: 'json', // Notice! JSONP <-- P (lowercase)
-      crossDomain: true,
-
-      success: function(response) {
-        console.log( "DATA posted!")
-      },
-      error: function() {
-        console.log(zebedeeUrl());
-        console.log('there was a problem posting the data');
-        $('.fl-editor').val('');
-      }
-    });
+    data.sections[index].markdown = editedText;
   }
+
+  // Save ordered sections
+  $(".fl-panel--editor__nav__save").click(function(){
+    var order = $(".fl-editor__sections").sortable('toArray');
+    $(order).each(function(index, name){
+      var title = $('#section__'+name).val();
+      var markdown = data.sections[name].markdown;
+      newSections[parseInt(index)] = {title: title, markdown: markdown};
+    });
+    data.sections = newSections;
+    //save("testCollection", JSON.stringify(response));
+    console.log(data);
+  });
+
   function sortable() {
     $(".fl-editor__sections").sortable();
   }
   sortable();
-
 }
 
-function zebedeeUrl(){
-  // zebedee expects /content/<collectionName>?uri=<uri>+data.json
-  var zebedeeHost = "http://localhost:8082/content";
-  var collectionName = "/kanes";
-  // Window location pathname would be better here but we can't use because of angular
-  var uri = window.location.href.replace("http://localhost:8080/#!", "");
-  return zebedeeHost + collectionName + "?uri=" + uri + "/data.json";
-}
 
