@@ -13,21 +13,26 @@ import org.apache.http.util.EntityUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
 * Routes all traffic to Tredegar, Unless it is recognised as a florence file being requested.
 */
 public class TredegarProxy implements Filter {
 
-    private static String florenceToken = "/florence";
-    private static String tredegarBaseUrl = "http://localhost:8080";
+
+    private static final String florenceToken = "/florence";
+    private static final String tredegarBaseUrl = "http://localhost:8080";
+
+    private static final List<String> florencePaths = Arrays.asList("/");
 
     @Override
     public boolean filter(HttpServletRequest request, HttpServletResponse response) {
 
         try {
-
-            if (request.getRequestURI().startsWith(florenceToken)) {
+            if (florencePaths.contains(request.getRequestURI())
+                    || request.getRequestURI().startsWith(florenceToken)) {
                 return true; // carry on and serve the file from florence
             }
 
