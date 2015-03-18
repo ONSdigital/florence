@@ -47,15 +47,10 @@ function loadPageDataIntoEditor(){
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Title' +
           '<textarea id="section__' + index + '">' + section.title + '</textarea>' +
-          '<textarea id="editor__' + index + '">' + section.markdown + '</textarea>' +
-          '<div style="visibility:hidden; height:5px;" id="section_markdown_' + index + '">' +
-          section.markdown +
-          '</div>' +
           '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
           '</div>');
 
       $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
-        var textarea = $("#editor__"+index);
 
         $('body').prepend('<div id="epiceditor"> </div>');
         var opts = {
@@ -64,7 +59,7 @@ function loadPageDataIntoEditor(){
             // need a unique name for the local storage file, achieved by
             // concatenating the pageurl and the section title
             name: pageurldata + section.title,
-            defaultContent: textarea.val(),
+            defaultContent: textarea.markdown,
             autoSave: true
           }
         };
