@@ -66,7 +66,7 @@ function loadPageDataIntoEditor(){
         // it wouldnt work with the default value
         //localStorage.clear();
         var opts = {
-          basePath: "http://localhost:8081/css/third-party/epiceditor",
+          basePath: "http://localhost:8081/florence/css/third-party/epiceditor",
           file:{
             // need a unique name for the local storage file, achieved by
             // concatenating the pageurl and the section title
