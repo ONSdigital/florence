@@ -45,6 +45,9 @@ function setupFlorence(){
 
   $('head').prepend('<link href="http://localhost:8081/css/main.min.css" rel="stylesheet" type="text/css">');
   $('head').prepend('<link href="http://localhost:8081/css/jquery-ui.min.css" rel="stylesheet" type="text/css">');
+  $('head').prepend('<link href="http://localhost:8081/css/third-party/epiceditor/base/epiceditor.css" rel="stylesheet" type="text/css">');
+  $('head').prepend('<link href="http://localhost:8081/css/third-party/epiceditor/editor/epic-dark.css" rel="stylesheet" type="text/css">');
+  $('head').prepend('<link href="http://localhost:8081/css/third-party/epiceditor/preview/github.css" rel="stylesheet" type="text/css">');
   var bodycontent = $('body').html();
 
   $('body').wrapInner('<section class="fl-panel fl-panel--preview"><div class="fl-panel--preview__inner"></div></section>');
