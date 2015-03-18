@@ -17,7 +17,6 @@ function loadPageDataIntoEditor(){
     },
 
     error: function() {
-      console.log(zebedeeUrl());
       console.log('No page data returned');
       $('.fl-editor').val('');
     }
