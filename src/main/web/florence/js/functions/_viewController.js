@@ -12,7 +12,10 @@ function viewController(view){
 
 		$('.fl-admin-menu__item--useradmin').click(function() {
 				viewController('users-and-access');
+		});
 
+		$('.fl-admin-menu__item--login').click(function() {
+				authenticate();
 		});
 
 		$('.fl-admin-menu__item--publish').click(function() {

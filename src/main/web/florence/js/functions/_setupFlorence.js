@@ -13,6 +13,9 @@ function setupFlorence(){
           '<li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
             '<a href="#" class="fl-admin-menu__link">Publish</a>' +
           '</li>' +
+          '<li class="fl-admin-menu__item fl-admin-menu__item--login">' +
+            '<a href="#" class="fl-admin-menu__link">login</a>' +
+          '</li>' +
         '</ul>' +
     '</nav>' +
     // '</section>' +
