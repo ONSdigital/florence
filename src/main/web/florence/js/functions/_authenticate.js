@@ -1,0 +1,4 @@
+function authenticate(){
+	//
+	return true;
+}

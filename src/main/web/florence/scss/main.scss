@@ -26,6 +26,26 @@ body {
 	height: 100%;
 }
 
+h1 {
+	text-align: center;
+}
+
+table {
+
+	@extend .col--12;
+
+	margin: 30px auto;
+	
+	tr {
+		border: 1px solid #eee;
+
+		td {
+			padding: 10px;
+		}
+		
+	}	
+}
+
 /*.fl-container {
 	overflow: hidden;
 	height: 100%;
@@ -152,6 +172,11 @@ body {
 	}
 }
 
+.fl-view {
+	height: 100%;
+	padding-top: 50px;
+}
+
 .fl-panel {
 	@extend .col;
 	height: 100%;
@@ -179,9 +204,10 @@ body {
 	}
 	&--sub-menu {
 		/*@extend .col--3;*/
-		padding: 50px 0 0 0;
+		// padding: 50px 0 0 0;
+		padding: 0;
 		@extend .col--4;
-		display: none;
+		// display: none;
 		background-color: #3d3d3a;
 		color: #fff;
 		-webkit-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
@@ -236,7 +262,8 @@ body {
 	&--preview {
 		@extend .col--11;
 		/*position: relative;*/
-		padding: 50px 0 0 0;
+		// padding: 50px 0 0 0;
+		padding: 0;
 		overflow-y: scroll;
 
 		&__inner {
@@ -272,11 +299,53 @@ body {
 			width: 100%;
 			position: absolute;
 		}
+	}
 
+	&--collections {
+		@extend .col--7;
+		height: 100%;
 
+		&__not-selected{
+			float: none;
+			margin: 0 auto;
+		}
+	}
+
+	&--collection-details {
+		@extend .col--5;
+		height: 100%;
+		background: #eee;
 	}
 
 }
+
+
+
+.fl-collections-heading {
+	// @extend .col--12;
+	// text-align: center;
+}
+
+.fl-collections-table {
+	
+}
+
+
+
+/*--generic--*/
+.fl-button {
+	text-align: center;
+	display: block;
+	&--big{
+
+	}
+
+	&--center {
+		margin: 0 auto;
+	}
+}
+
+
 
 
 
