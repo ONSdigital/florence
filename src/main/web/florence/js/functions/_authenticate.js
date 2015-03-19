@@ -1,4 +1,4 @@
-function authenticate(){
+function authenticate(email,password){
 	//
   var email,password, credentials;
   email = 'kane.a.s.morgan@gmail.com';
@@ -14,6 +14,8 @@ function authenticate(){
           password:password
         }),
         success: function (response) {
+            console.log(response)
+            document.cookie="access_token="+response
             console.log('authenticated')
         },
         error: function (response) {

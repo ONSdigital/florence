@@ -1,6 +1,6 @@
 function viewController(view){
 
-	if (authenticate()){
+	if (logged_in()){
 		// alert('auth true');
 
 		//click handlers
@@ -64,6 +64,11 @@ function viewController(view){
 			alert('Not authenticated');
 		}
 
+		function logged_in(){
+
+			// read the cookie here to see if theres an access token, then check if its valid
+			return true
+		}
 
 
 }
