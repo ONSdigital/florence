@@ -12,7 +12,7 @@ function loadPageDataIntoEditor(){
 
     success: function(response) {
       data = response;
-      console.log(response);
+      //console.log(response);
       makeEditSections(response);
     },
 
@@ -47,20 +47,29 @@ function loadPageDataIntoEditor(){
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Title' +
           '<textarea id="section__' + index + '">' + section.title + '</textarea>' +
+          '<textarea style="visibility:hidden; height:2px;" id="section_markdown_' + index + '">' +
+          section.markdown + '</textarea>' +
           '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
           '</div>');
 
-      $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
+      $(".fl-panel--editor__sections__section-item__edit_"+index).click(function() {
         editedValue = $("#section_markdown_" + index).val();
-
 
         $('body').prepend('<div id="wmd-preview" class="wmd-panel wmd-preview"></div>');
 
-        $('body').prepend('<div class="wmd-panel">' +
+        $('body').prepend('<div id="wmd-edit" class="wmd-panel">' +
                               '<div id="wmd-button-bar"></div>' +
                               '<textarea class="wmd-input" id="wmd-input">' + editedValue + '</textarea>' +
-                              '<button>Save edited content</button>' +
+                              '<button id="finish">Finish editing</button>' +
                               '</div>');
+
+        $("#finish").click(function(){
+          editedText = $('#wmd-input').val();
+          console.log(editedText);
+          data.sections[index].markdown = editedText;
+          $("#wmd-preview").remove();
+          $("#wmd-edit").remove();
+        });
 
         var converter = Markdown.getSanitizingConverter();
 
@@ -76,11 +85,6 @@ function loadPageDataIntoEditor(){
         editor.run();
         });
     });
-  }
-
-  function saveMarkdown(index){
-    editedText = $('wmd-input').val();
-    data.sections[index].markdown = editedText;
   }
 
   // Save ordered sections
