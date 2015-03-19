@@ -1,5 +1,5 @@
 function viewCollections() {
-	var select_collections = 
+	var select_collections =
 	'<section class="fl-panel fl-panel--collections fl-panel--collections__not-selected">' +
 	'<h1>Select a collection</h1>' +
 	'<table class="fl-collections-table">' +
@@ -48,9 +48,9 @@ function viewCollections() {
 	'</table>' +
 	'<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
 	'</section>';
-	
 
-	var selected_collection = 
+
+	var selected_collection =
 	'<section class="fl-panel fl-panel--collection-details">' +
 	'<button class="fl-button fl-work-on-collection-button">Work on this collection</button>' +
 	'<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection/button>' +
@@ -60,7 +60,7 @@ function viewCollections() {
 
 
 
-	var create_collection = 
+	var create_collection =
 	'<section class="fl-panel fl-panel--create-collection">' +
 	'<h1>Select a collection</h1>' +
 	'<input type="text" class="fl-collection-name-input">' +
@@ -120,13 +120,14 @@ function viewCollections() {
 	'<select class="fl-collection-publish-time">' +
 		'<option value="0930" selected>09:30</option>' +
 	'</select>' +
-	'<button class="fl-button">Create collection</button>' +
+	'<button class="fl-button fl-create-collection--submit-button">Create collection</button>' +
 	'<button class="fl-button fl-button--cancel">Cancel</button>' +
 	'</section>';
 
+	createCollection()
+
 	//build view
 	$('.fl-view').html(select_collections + selected_collection);
-
 
 	//click handlers
 	$('.fl-collections-table').click(function() {
@@ -147,15 +148,15 @@ function viewCollections() {
 	$('.fl-create-collection-button').click(function() {
 		$('.fl-view').html(create_collection);
 
+		$('.fl-create-collection--submit-button').click(createCollection)
 		$('.fl-button--cancel').click(function() {
 			//perhaps need to rethink this if we do decide to animate panel transitions within this view
 			viewController('collections');
 		});
 	});
 
-	
 
 
 
-	
+
 }
