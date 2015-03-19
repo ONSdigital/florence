@@ -60,7 +60,7 @@ function viewCollections() {
 
 
 
-	var collections_create_collection_screen = 
+	var create_collection = 
 	'<section class="fl-panel fl-panel--create-collection">' +
 	'<h1>Select a collection</h1>' +
 	'<input type="text" class="fl-collection-name-input">' +
@@ -145,7 +145,7 @@ function viewCollections() {
 	});
 
 	$('.fl-create-collection-button').click(function() {
-		$('.fl-view').html(collections_create_collection_screen);
+		$('.fl-view').html(create_collection);
 
 		$('.fl-button--cancel').click(function() {
 			//perhaps need to rethink this if we do decide to animate panel transitions within this view
