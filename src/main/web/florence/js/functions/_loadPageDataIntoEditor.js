@@ -52,11 +52,13 @@ function loadPageDataIntoEditor(){
 
       $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
 
+
+        $('body').prepend('<div id="wmd-preview" class="wmd-panel wmd-preview"></div>');
+
         $('body').prepend('<div class="wmd-panel">' +
-                              //'<div id="wmd-button-bar"></div>' +
+                              '<div id="wmd-button-bar"></div>' +
                               '<textarea class="wmd-input" id="wmd-input"></textarea>' +
                               '</div>');
-        $('body').prepend('<div id="wmd-preview" class="wmd-panel wmd-preview">Hello!</div>');
 
         var converter = Markdown.getSanitizingConverter();
 
