@@ -1,8 +1,8 @@
 function loadPageDataIntoEditor(){
 
-  var pageurl = window.location.href;
-  var newSections = [];
-  var pageurldata = pageurl.replace("#!", "data");
+  var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+    var newSections = [];
+  var pageurldata = "/data" + pageurl.split("#!")[1];
   var data;
 
   $.ajax({
@@ -52,26 +52,25 @@ function loadPageDataIntoEditor(){
 
       $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
 
-        $('body').prepend('<div id="epiceditor"> </div>');
-        var opts = {
-          basePath: "http://localhost:8081/florence/css/third-party/epiceditor",
-          file:{
-            // need a unique name for the local storage file, achieved by
-            // concatenating the pageurl and the section title
-            name: pageurldata + section.title,
-            autoSave: true,
-            defaultContent: section.markdown
+        $('body').prepend('<div class="wmd-panel">' +
+                              //'<div id="wmd-button-bar"></div>' +
+                              '<textarea class="wmd-input" id="wmd-input"></textarea>' +
+                              '</div>');
+        $('body').prepend('<div id="wmd-preview" class="wmd-panel wmd-preview">Hello!</div>');
 
-          }
-        };
+        var converter = Markdown.getSanitizingConverter();
 
-        var editor = new EpicEditor(opts).load().enterFullscreen();
+        Markdown.Extra.init(converter, {
+          extensions: "all"
+        });
 
-        editor.on('save',function(){
-          that = this;
-          saveMarkdown(index);
-        })
-      });
+        var editor = new Markdown.Editor(converter);
+
+        editor.hooks.chain("onPreviewRefresh", function () {
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        });
+        editor.run();
+        });
     });
   }
 
