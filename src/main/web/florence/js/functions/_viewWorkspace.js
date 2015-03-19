@@ -16,7 +16,7 @@ function viewWorkspace(caller){
               '<a href="#" class="fl-main-menu__link">Edit</a>' +
             '</li>' +
             '<li class="fl-main-menu__item fl-main-menu__item--review">' +
-              '<a href="#" class="fl-main-menu__link">Approve</a>' +
+              '<a href="#" class="fl-main-menu__link">Review</a>' +
             '</li>' +
           '</ul>' +
       '</nav>' +
@@ -54,6 +54,9 @@ function viewWorkspace(caller){
 
   //click handlers
   $('.fl-main-menu__link').click(function() {
+    $('.fl-panel--sub-menu').empty();
+    $('.fl-panel--preview__inner').removeClass('fl-panel--preview__inner--active');
+
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')){
     //
@@ -66,6 +69,7 @@ function viewWorkspace(caller){
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')){
 
       $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
+      $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
 
       loadPageDataIntoEditor();
       setInterval(checkEditPageLocation, intIntervalTime);
@@ -83,14 +87,11 @@ function viewWorkspace(caller){
       //
     }
 
-
-
-    // else if (caller.parent().hasClass('fl-main-menu__item--publish')){
-    //   //
-    // }
-
     else {
-      //
+      //browse
+      
+
+      
     }
 
   });
