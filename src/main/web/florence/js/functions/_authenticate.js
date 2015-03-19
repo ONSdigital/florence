@@ -2,7 +2,7 @@ function authenticate(){
 	//
   var email,password, credentials;
   email = 'kane.a.s.morgan@gmail.com';
-  password = 'password';
+  password = 'bluecat';
   console.log(email)
   $.ajax({
         url: "http://localhost:8082/login",

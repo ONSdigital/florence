@@ -32,7 +32,7 @@ function viewController(view){
 
 		//users and access
 		else if (view === 'users-and-access'){
-			alert('users and access is not implemented')
+			viewUserAndAccess();
 			//
 		}
 
