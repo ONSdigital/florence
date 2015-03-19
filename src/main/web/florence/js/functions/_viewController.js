@@ -10,6 +10,15 @@ function viewController(view){
 			}
 		});
 
+		$('.fl-admin-menu__item--useradmin').click(function() {
+				viewController('users-and-access');
+
+		});
+
+		$('.fl-admin-menu__item--publish').click(function() {
+				viewController('publish');
+		});
+
 		//clear view
 		$('.fl-view').empty();
 
@@ -20,11 +29,14 @@ function viewController(view){
 
 		//users and access
 		else if (view === 'users-and-access'){
+			alert('users and access is not implemented')
 			//
 		}
 
 		//publish
 		else if (view === 'publish'){
+			alert('publish is not implemented')
+
 			//
 		}
 
@@ -32,7 +44,7 @@ function viewController(view){
 		else if (view === 'workspace'){
 			viewWorkspace();
 		}
-		
+
 
 		//else collections
 		else {
@@ -48,7 +60,7 @@ function viewController(view){
 			//viewWorkspace();
 			alert('Not authenticated');
 		}
-	
 
-	
+
+
 }

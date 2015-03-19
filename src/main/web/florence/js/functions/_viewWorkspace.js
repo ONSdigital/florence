@@ -2,7 +2,7 @@ function viewWorkspace(caller){
 
   var intIntervalTime = 100;
 
-  var workspace_menu_main = 
+  var workspace_menu_main =
   // '<section class="fl-panel fl-panel--menu">' +
       '<nav class="fl-panel fl-panel--menu">' +
         '<ul class="fl-main-menu">' +
@@ -41,8 +41,32 @@ function viewWorkspace(caller){
     '</nav>' +
   '</section>';
 
+
+  var workspace_menu_create =
+  '<section class="fl-panel fl-panel--creator">' +
+    '<section class="fl-creator">' +
+
+      '<section class="fl-creator__page_details">' +
+        '<span class="fl-creator__title"> Select the Parent</span>' +
+        '<input class="fl-creator__parent" name="fl-editor__headline" cols="40" rows="1"></input>' +
+        '<br>' +
+        '<span class="fl-creator__title"> enter the new page name </span>' +
+        '<input class="fl-creator__new_name" name="fl-editor__headline" cols="40" rows="1"></input>' +
+        '<br>' +
+        '<section class="fl-creator__title"> Select a Page Type' +
+        '<select class="fl-creator__page_type_list_select">'+
+          '<option>bulletin</option>' +
+        '</select></section>'+
+      '</section>' +
+    '</section>' +
+    '<nav class="fl-panel--creator__nav">' +
+      '<button class="fl-panel--creator__nav__create">Create Page</button>' +
+    '</nav>' +
+  '</section>';
+
+
   //
-  var workspace_preview = 
+  var workspace_preview =
   '<section class="fl-panel fl-panel--preview">' +
     '<div class="fl-panel--preview__inner">' +
       '<iframe src="http://localhost:8081/index.html" class="fl-panel fl-panel--preview__content"></iframe>' +
@@ -64,6 +88,8 @@ function viewWorkspace(caller){
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')){
       //
+          $('.fl-panel--sub-menu').html(workspace_menu_create);
+          loadPageCreator();
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')){
@@ -89,9 +115,9 @@ function viewWorkspace(caller){
 
     else {
       //browse
-      
 
-      
+
+
     }
 
   });
@@ -114,6 +140,6 @@ function viewWorkspace(caller){
   $('.fl-panel--sub-menu').show();
 
 
-  
+
 
 }
