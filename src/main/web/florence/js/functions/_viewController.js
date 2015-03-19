@@ -1,4 +1,4 @@
-function viewController(caller){
+function viewController(view){
 
 	if (authenticate()){
 		// alert('auth true');
@@ -14,22 +14,22 @@ function viewController(caller){
 		$('.fl-view').empty();
 
 		//collections
-		if (caller === 'collections'){
+		if (view === 'collections'){
 			viewCollections();
 		}
 
 		//users and access
-		else if (caller === 'users-and-access'){
+		else if (view === 'users-and-access'){
 			//
 		}
 
 		//publish
-		else if (caller === 'publish'){
+		else if (view === 'publish'){
 			//
 		}
 
 		//workspace
-		else if (caller === 'workspace'){
+		else if (view === 'workspace'){
 			viewWorkspace();
 		}
 		
