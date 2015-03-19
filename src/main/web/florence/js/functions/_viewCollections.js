@@ -1,64 +1,62 @@
 function viewCollections() {
-	var select_collections =
-	'<section class="fl-panel fl-panel--collections fl-panel--collections__not-selected">' +
-	'<h1>Select a collection</h1>' +
-	'<table class="fl-collections-table">' +
-	'<tbody>' +
-	'<tr>' +
-	'<td>Collection name</td>' +
-	'<td>Publish time and date</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY</td>' +
-	'<td>&nbsp;DD/MM/YYYY</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>&nbsp;DD/MM/YYYY</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>&nbsp;DD/MM/YYYY</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>&nbsp;DD/MM/YYYY</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>DD/MM/YYYY&nbsp;</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>DD/MM/YYYY&nbsp;</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>DD/MM/YYYY&nbsp;</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>DD/MM/YYYY&nbsp;</td>' +
-	'</tr>' +
-	'<tr>' +
-	'<td>Lorem ipsum Month YYYY&nbsp;</td>' +
-	'<td>DD/MM/YYYY&nbsp;</td>' +
-	'</tr>' +
-	'</tbody>' +
-	'</table>' +
-	'<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
-	'</section>';
+
+  var select_collections = '<section class="fl-panel fl-panel--collections fl-panel--collections__not-selected">' +
+    '<h1>Select a collection</h1>' +
+    '<div class="fl-collections-holder"></div>' +
+    '<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
+    '</section>';
+
+    $.ajax({
+    url: "http://localhost:8082/collections",
+    type: "get",
+    xhrFields: { withCredentials: true },
+    crossDomain: true
+  }).done(function(data) {
+
+      var collection_table =
+        '<table class="fl-collections-table">' +
+          '<tbody>' +
+            '<tr>' +
+              '<td>Collection name</td>' +
+              '<td>Publish time and date</td>' +
+            '</tr>';
+
+      $.each(data, function(i, item) {
+        collection_table +=
+            '<tr>' +
+              '<td>' + item.name + '</td>' +
+              '<td>&nbsp;DD/MM/YYYY</td>' +
+            '</tr>';
+      });
+
+      collection_table += '</tbody>' +
+        '</table>';
+
+      $('.fl-collections-holder').html(collection_table);
+
+      $('.fl-collections-table').click(function() {
+        $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
+        $('.fl-panel--collection-details').show();
+        $('.fl-create-collection-button').hide();
+
+        $('.fl-work-on-collection-button').click(function() {
+          viewController('workspace');
+        });
+
+        $('.fl-button--cancel').click(function() {
+          //perhaps need to rethink this if we do decide to animate panel transitions within this view
+          viewController('collections');
+        });
+      });
+    });
 
 
-	var selected_collection =
-	'<section class="fl-panel fl-panel--collection-details">' +
-	'<button class="fl-button fl-work-on-collection-button">Work on this collection</button>' +
-	'<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection/button>' +
-	'<button class="fl-button fl-button--cancel">Cancel</button>' +
-	'</section>';
-
-
-
+  var selected_collection =
+    '<section class="fl-panel fl-panel--collection-details">' +
+    '<button class="fl-button fl-work-on-collection-button">Work on this collection</button>' +
+    '<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection/button>' +
+    '<button class="fl-button fl-button--cancel">Cancel</button>' +
+    '</section>';
 
 	var create_collection =
 	'<section class="fl-panel fl-panel--create-collection">' +
@@ -130,20 +128,6 @@ function viewCollections() {
 	$('.fl-view').html(select_collections + selected_collection);
 
 	//click handlers
-	$('.fl-collections-table').click(function() {
-		$('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
-		$('.fl-panel--collection-details').show();
-		$('.fl-create-collection-button').hide();
-
-		$('.fl-work-on-collection-button').click(function() {
-			viewController('workspace');
-		});
-
-		$('.fl-button--cancel').click(function() {
-			//perhaps need to rethink this if we do decide to animate panel transitions within this view
-			viewController('collections');
-		});
-	});
 
 	$('.fl-create-collection-button').click(function() {
 		$('.fl-view').html(create_collection);
@@ -154,9 +138,5 @@ function viewCollections() {
 			viewController('collections');
 		});
 	});
-
-
-
-
 
 }
