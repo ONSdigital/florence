@@ -47,50 +47,39 @@ function loadPageDataIntoEditor(){
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Title' +
           '<textarea id="section__' + index + '">' + section.title + '</textarea>' +
-          '<textarea id="editor__' + index + '">' + section.markdown + '</textarea>' +
-          '<div style="visibility:hidden; height:5px;" id="section_markdown_' + index + '">' +
-          section.markdown +
-          '</div>' +
           '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
           '</div>');
 
       $(".fl-panel--editor__sections__section-item__edit_"+index).one('click', function () {
-        var textarea = $("#editor__"+index);
+        editedValue = $("#section_markdown_" + index).val();
 
-        $('body').prepend('<div style="height: 500px; width: 600px;" id="epiceditor"> </div>' +
-        '<div style="height: 500px; width: 600px;" id="preview"> </div>');
 
-        var opts = {
-          basePath: "http://localhost:8081/florence/css/third-party/epiceditor",
-          file:{
-            // need a unique name for the local storage file, achieved by
-            // concatenating the pageurl and the section title
-            name: pageurldata + section.title,
-            defaultContent: textarea.val(),
-            autoSave: true
-          }
-        };
+        $('body').prepend('<div id="wmd-preview" class="wmd-panel wmd-preview"></div>');
 
-        var myCustomPreviewDiv = document.querySelector('#preview');
-        editor = new EpicEditor(opts);
-        editor.on('load', function () {
-          myCustomPreviewDiv.innerHTML = this.exportFile(null, 'html');
+        $('body').prepend('<div class="wmd-panel">' +
+                              '<div id="wmd-button-bar"></div>' +
+                              '<textarea class="wmd-input" id="wmd-input">' + editedValue + '</textarea>' +
+                              '<button>Save edited content</button>' +
+                              '</div>');
+
+        var converter = Markdown.getSanitizingConverter();
+
+        Markdown.Extra.init(converter, {
+          extensions: "all"
         });
-        editor.on('update', function () {
-          myCustomPreviewDiv.innerHTML = this.exportFile(null, 'html');
-        });
-        editor.load();
 
-        editor.on('save',function(){
-          that = this;
-          saveMarkdown(index);
-        })
-      });
+        var editor = new Markdown.Editor(converter);
+
+        editor.hooks.chain("onPreviewRefresh", function () {
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        });
+        editor.run();
+        });
     });
   }
 
   function saveMarkdown(index){
-    var editedText = that.exportFile();
+    editedText = $('wmd-input').val();
     data.sections[index].markdown = editedText;
   }
 
