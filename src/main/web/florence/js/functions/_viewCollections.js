@@ -25,7 +25,7 @@ function viewCollections() {
         collection_table +=
             '<tr>' +
               '<td>' + item.name + '</td>' +
-              '<td>&nbsp;DD/MM/YYYY</td>' +
+              '<td>' + item.publishDate + '</td>' +
             '</tr>';
       });
 
