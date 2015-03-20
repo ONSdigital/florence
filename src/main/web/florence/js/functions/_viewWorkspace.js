@@ -27,7 +27,7 @@ function viewWorkspace(caller){
    //florence edit menu
   var workspace_menu_sub_edit =
   '<section class="fl-panel fl-panel--editor">' +
-    '<section class="fl-editor">' +
+    '<section style="overflow: scroll;" class="fl-editor">' +
       '<section class="fl-editor__metadata">Metadata collapsible section goes here</section>' +
       '<section class="fl-editor__correction">Correction collapsible section goes here</section>' +
       '<textarea class="fl-editor__headline" name="fl-editor__headline" cols="40" rows="5"></textarea>' +
@@ -96,9 +96,12 @@ function viewWorkspace(caller){
 
       $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
       $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
-
+      // This line could be removed
+      localStorage.removeItem("pageurl");
+      var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+      localStorage.setItem("pageurl",pageurl);
       loadPageDataIntoEditor();
-      setInterval(checkEditPageLocation, intIntervalTime);
+      setInterval(setupPageLocation, intIntervalTime);
 
         $('.fl-panel--editor__nav__approve').click(function () {
             approve(collectionName);
