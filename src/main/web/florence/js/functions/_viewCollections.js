@@ -122,8 +122,6 @@ function viewCollections() {
 	'<button class="fl-button fl-button--cancel">Cancel</button>' +
 	'</section>';
 
-	createCollection()
-
 	//build view
 	$('.fl-view').html(select_collections + selected_collection);
 
