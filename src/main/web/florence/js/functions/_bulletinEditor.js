@@ -5,8 +5,11 @@ function bulletinEditor(data){
   var lastIndex;
 
   $('.fl-editor__headline').hide();
+  $(".list").remove();
 
+  // Edit sections
   $(data.sections).each(function(index, section){
+    lastIndex = index + 1;
     var element = $('.fl-editor__sections').append(
         '<div id="' + index + '" class="list" style="background-color:grey; color:white;">' +
         '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
@@ -50,14 +53,18 @@ function bulletinEditor(data){
       editor.run();
     });
 
+    // Delete functionality
     $(".fl-panel--editor__sections__section-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
       saveNewSection();
     });
-
-    lastIndex = index + 1;
   });
+
+  function sortable() {
+    $(".fl-editor__sections").sortable();
+  }
+  sortable();
 
   // Save ordered sections
   $(".fl-panel--editor__nav__save").click(function() {
@@ -72,14 +79,8 @@ function bulletinEditor(data){
     console.log(data);
   });
 
-  function sortable() {
-    $(".fl-editor__sections").sortable();
-  }
-
-  sortable();
-
+  //Add new sections
   if($("#addSection").length === 0) {
-    //Add new sections
     $(".fl-panel--editor__nav").prepend('<button id="addSection">Add new section</button>');
 
     $("#addSection").click(function () {
@@ -108,5 +109,35 @@ function bulletinEditor(data){
     $(".list").remove();
     bulletinEditor(data);
   }
+
+  // Metadata section
+  $(".fl-editor__metadata").append(
+      '<div id="accordion">' +
+      '<h5>First header</h5>' +
+      '<div>' +
+      'Demo: <input value="Tab 1 content"><br>' +
+      'Demo: <input value="Tab 1 content"><br>' +
+      'Demo: <input value="Tab 1 content"><br>' +
+      'Demo: <input value="Tab 1 content"><br>' +
+      'Demo: <input value="Tab 1 content"><br>' +
+      '</div>' +
+      '<h5>Second header</h5>' +
+      '<div>' +
+      'Demo: <input value="Tab 2 content"><br>' +
+      'Demo: <input value="Tab 2 content"><br>' +
+      'Demo: <input value="Tab 2 content"><br>' +
+      'Demo: <input value="Tab 2 content"><br>' +
+      'Demo: <input value="Tab 2 content"><br>' +
+      '</div>' +
+      '</div>'
+  );
+
+  function accordion() {
+    $(function () {
+      $("#accordion").accordion();
+    });
+  }
+  accordion();
+
 }
 
