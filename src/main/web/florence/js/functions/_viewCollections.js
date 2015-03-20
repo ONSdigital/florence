@@ -6,26 +6,28 @@ function viewCollections() {
     '<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
     '</section>';
 
-    $.ajax({
-    url: "http://localhost:8082/collections",
-    type: "get",
-    xhrFields: { withCredentials: true },
-    crossDomain: true
+  $.ajax({
+  url: "http://localhost:8082/collections",
+  type: "get",
+  xhrFields: { withCredentials: true },
+  crossDomain: true
   }).done(function(data) {
 
       var collection_table =
         '<table class="fl-collections-table">' +
           '<tbody>' +
             '<tr>' +
-              '<td>Collection name</td>' +
-              '<td>Publish time and date</td>' +
+              '<th>Collection name</th>' +
+              '<th>Publish time and date</th>' +
             '</tr>';
 
       $.each(data, function(i, item) {
+
+        var date = new Date(item.publishDate);
         collection_table +=
-            '<tr>' +
+            '<tr class="fl-collections-table-row" data-id="' + item.id + '">' +
               '<td>' + item.name + '</td>' +
-              '<td>' + item.publishDate + '</td>' +
+              '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + date.getMinutes() + '</td>' +
             '</tr>';
       });
 
@@ -34,25 +36,28 @@ function viewCollections() {
 
       $('.fl-collections-holder').html(collection_table);
 
-      $('.fl-collections-table').click(function() {
-        $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
-        $('.fl-panel--collection-details').show();
-        $('.fl-create-collection-button').hide();
+      $('.fl-collections-table-row').click(function() {
 
-        $('.fl-work-on-collection-button').click(function() {
-          viewController('workspace');
-        });
+        console.log('Collection row clicked for id: ' + $(this).attr('data-id'));
+        var collectionId = $(this).attr('data-id');
 
-        $('.fl-button--cancel').click(function() {
-          //perhaps need to rethink this if we do decide to animate panel transitions within this view
-          viewController('collections');
-        });
+        if(collectionId) {
+
+          $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
+          $('.fl-panel--collection-details').show();
+          $('.fl-create-collection-button').hide();
+
+          $(this).addClass('fl-panel--collections__selected');
+
+          viewCollectionDetails(collectionId);
+        }
       });
     });
 
 
   var selected_collection =
     '<section class="fl-panel fl-panel--collection-details">' +
+    '<div class="fl-panel--collection-details-container"></div>' +
     '<button class="fl-button fl-work-on-collection-button">Work on this collection</button>' +
     '<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection/button>' +
     '<button class="fl-button fl-button--cancel">Cancel</button>' +
