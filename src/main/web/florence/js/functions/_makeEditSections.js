@@ -10,6 +10,5 @@ function makeEditSections(response){
         pageData = $('.fl-editor__headline').val();
         save("testCollection", pageData);
       });
-    }
   }
 }
