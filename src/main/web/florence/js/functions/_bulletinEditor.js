@@ -1,4 +1,4 @@
-function bulletinEditor(data){
+function bulletinEditor(collectionName, data){
 
   var newSections = [];
   var lastIndex;
@@ -109,5 +109,11 @@ function bulletinEditor(data){
     bulletinEditor(collectionName, data);
   }
 
-}
+  // Metadata load
+  $("#metadata-section").append(
+      function(data) {
+        if ()
+      }
+        )
+      };
 

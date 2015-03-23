@@ -3,6 +3,19 @@ function viewWorkspace(){
   var intIntervalTime = 100;
   var collectionName = localStorage.getItem("collection");
 
+
+  function accordion() {
+    $(function () {
+      $("#accordion").accordion(
+          {
+            header: "section",
+            active: 2
+          }
+      );
+    });
+  }
+
+
   var workspace_menu_main =
   // '<section class="fl-panel fl-panel--menu">' +
       '<nav class="fl-panel fl-panel--menu">' +
@@ -139,7 +152,7 @@ function viewWorkspace(){
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
       accordion();
-      loadPageDataIntoEditor(collectionName);
+      loadPageDataIntoEditor();
       setInterval(setupPageLocation, intIntervalTime);
 
         $('.fl-panel--editor__nav__approve').click(function () {

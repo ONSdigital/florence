@@ -1,10 +1,10 @@
-function loadPageDataIntoEditor(){
+function loadPageDataIntoEditor(collectionName){
 
   var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
   var pageurldata = "/data" + pageurl.split("#!")[1];
 
   $.ajax({
-    url: dataUrl,
+    url: pageurldata,
     dataType: 'json',
     crossDomain: true,
 
