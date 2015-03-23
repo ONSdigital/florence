@@ -1,4 +1,4 @@
-function bulletinEditor(collectionName, data){
+function bulletinEditor(collectionName, data) {
 
   var newSections = [];
   var lastIndex;
@@ -7,20 +7,20 @@ function bulletinEditor(collectionName, data){
   $(".list").remove();
 
   // Edit sections
-  $(data.sections).each(function(index, section){
+  $(data.sections).each(function (index, section) {
     lastIndex = index + 1;
     var element = $('.fl-editor__sections').append(
-        '<div id="' + index + '" class="list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-        'Title' +
-        '<textarea id="section__' + index + '">' + section.title + '</textarea>' +
-        '<textarea style="visibility:hidden; height:2px;" id="section_markdown_' + index + '">' +
-        section.markdown + '</textarea>' +
-        '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
-        '<button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
+      '<div id="' + index + '" class="list" style="background-color:grey; color:white;">' +
+      '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+      'Title' +
+      '<textarea id="section__' + index + '">' + section.title + '</textarea>' +
+      '<textarea style="visibility:hidden; height:2px;" id="section_markdown_' + index + '">' +
+      section.markdown + '</textarea>' +
+      '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
+      '<button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
+      '</div>').show();
 
-    $(".fl-panel--editor__sections__section-item__edit_"+index).click(function() {
+    $(".fl-panel--editor__sections__section-item__edit_" + index).click(function () {
       editedValue = $("#section_markdown_" + index).val();
 
       $('body').prepend('<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>');
@@ -31,7 +31,7 @@ function bulletinEditor(collectionName, data){
       '<button id="finish">Finish editing</button>' +
       '</div>');
 
-      $("#finish").click(function(){
+      $("#finish").click(function () {
         editedText = $('#wmd-input').val();
         data.sections[index].markdown = editedText;
         $("#wmd-preview").remove();
@@ -47,14 +47,14 @@ function bulletinEditor(collectionName, data){
       var editor = new Markdown.Editor(converter);
 
       editor.hooks.chain("onPreviewRefresh", function () {
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
       });
       editor.run();
     });
 
     // Delete functionality
-    $(".fl-panel--editor__sections__section-item__delete_"+index).click(function() {
-      $("#"+index).remove();
+    $(".fl-panel--editor__sections__section-item__delete_" + index).click(function () {
+      $("#" + index).remove();
       data.sections.splice(index, 1);
       saveNewSection();
     });
@@ -63,14 +63,15 @@ function bulletinEditor(collectionName, data){
   function sortable() {
     $(".fl-editor__sections").sortable();
   }
+
   sortable();
 
   // Save ordered sections
-  $('.fl-panel--editor__nav__save').unbind( "click" );
-  $(".fl-panel--editor__nav__save").click(function() {
+  $('.fl-panel--editor__nav__save').unbind("click");
+  $(".fl-panel--editor__nav__save").click(function () {
     var order = $(".fl-editor__sections").sortable('toArray');
-    $(order).each(function(index, name){
-      var title = $('#section__'+name).val();
+    $(order).each(function (index, name) {
+      var title = $('#section__' + name).val();
       var markdown = data.sections[index].markdown;
       newSections[parseInt(index)] = {title: title, markdown: markdown};
     });
@@ -79,19 +80,19 @@ function bulletinEditor(collectionName, data){
   });
 
   //Add new sections
-  if($("#addSection").length === 0) {
+  if ($("#addSection").length === 0) {
     $(".fl-panel--editor__nav").prepend('<button id="addSection">Add new section</button>');
 
     $("#addSection").click(function () {
       $('.fl-editor__sections').append(
-          '<div id="' + lastIndex + '" class="list" style="background-color:grey; color:white;">' +
-          '<div style="background-color:grey; color:white;">' +
-          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-          'Title' +
-          '<textarea id="section__' + lastIndex + '"></textarea>' +
-          '<textarea style="visibility:hidden; height:2px;" id="section_markdown_' + lastIndex + '"></textarea>' +
-          '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndex + '">Edit</button>' +
-          '</div>');
+        '<div id="' + lastIndex + '" class="list" style="background-color:grey; color:white;">' +
+        '<div style="background-color:grey; color:white;">' +
+        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        'Title' +
+        '<textarea id="section__' + lastIndex + '"></textarea>' +
+        '<textarea style="visibility:hidden; height:2px;" id="section_markdown_' + lastIndex + '"></textarea>' +
+        '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndex + '">Edit</button>' +
+        '</div>');
       sortable();
       saveNewSection();
     });
@@ -99,21 +100,14 @@ function bulletinEditor(collectionName, data){
 
   function saveNewSection() {
     var order = $(".fl-editor__sections").sortable('toArray');
-    $(order).each(function(index, name){
-      var title = $('#section__'+name).val();
-      var markdown = $('#section_markdown_'+name).val();
+    $(order).each(function (index, name) {
+      var title = $('#section__' + name).val();
+      var markdown = $('#section_markdown_' + name).val();
       newSections[parseInt(index)] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
     $(".list").remove();
     bulletinEditor(collectionName, data);
   }
-
-  // Metadata load
-  $("#metadata-section").append(
-      function(data) {
-        if ()
-      }
-        )
-      };
+}
 
