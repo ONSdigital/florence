@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -38,6 +39,15 @@ public class TredegarProxy implements Filter {
 
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpGet httpGet = new HttpGet(tredegarBaseUrl + request.getRequestURI());
+
+            // copy the request headers.
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements())
+            {
+                String headerName = headerNames.nextElement();
+                httpGet.addHeader(headerName, request.getHeader(headerName));
+            }
+
             CloseableHttpResponse tredegarResponse = httpClient.execute(httpGet);
 
             try {
