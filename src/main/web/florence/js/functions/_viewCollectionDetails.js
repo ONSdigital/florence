@@ -20,7 +20,8 @@ function viewCollectionDetails(collectionName) {
 
   $('.fl-work-on-collection-button').click(function () {
     document.cookie = "collection=" + collectionName + ";path=/";
-    viewController('workspace', collectionName);
+    localStorage.setItem("collection", collectionName);
+    viewController('workspace');
   });
 
   $('.fl-button--cancel').click(function () {

@@ -9,7 +9,6 @@ function loadPageDataIntoEditor(){
     crossDomain: true,
 
     success: function(response) {
-      data = response;
       makeEditSections(collectionName, response);
     },
   

@@ -1,7 +1,6 @@
 function bulletinEditor(data){
 
   var newSections = [];
-  var data;
   var lastIndex;
 
   $('.fl-editor__headline').hide();
@@ -67,6 +66,7 @@ function bulletinEditor(data){
   sortable();
 
   // Save ordered sections
+  $('.fl-panel--editor__nav__save').unbind( "click" );
   $(".fl-panel--editor__nav__save").click(function() {
     var order = $(".fl-editor__sections").sortable('toArray');
     $(order).each(function(index, name){

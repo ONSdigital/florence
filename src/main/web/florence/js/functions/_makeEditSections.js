@@ -6,6 +6,8 @@ function makeEditSections(collectionName, response){
       $("#addSection").remove();
       $('.fl-editor__headline').show();
       $('.fl-editor__headline').val(JSON.stringify(response, null, 2));
+
+      $('.fl-panel--editor__nav__save').unbind( "click" );
       $('.fl-panel--editor__nav__save').click(function() {
         pageData = $('.fl-editor__headline').val();
         updateContent(collectionName, pageData);

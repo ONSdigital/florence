@@ -1,6 +1,7 @@
-function viewWorkspace(caller){
+function viewWorkspace(){
 
   var intIntervalTime = 100;
+  var collectionName = localStorage.getItem("collection");
 
   var workspace_menu_main =
   // '<section class="fl-panel fl-panel--menu">' +

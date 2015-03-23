@@ -1,4 +1,4 @@
-function viewController(view, collectionName){
+function viewController(view){
 
 	if (logged_in()){
 		// alert('auth true');
@@ -48,7 +48,7 @@ function viewController(view, collectionName){
 
 		//workspace
 		else if (view === 'workspace'){
-			viewWorkspace(collectionName);
+			viewWorkspace();
 		}
 
 
