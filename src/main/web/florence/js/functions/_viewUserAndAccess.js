@@ -28,7 +28,7 @@ function viewUserAndAccess(view){
     var name  = $('.fl-user-and-access__name').val()
     var email = $('.fl-user-and-access__email').val()
     var password = $('.fl-user-and-access__password').val()
-    createUser(name,,password)
+    createUser(name,password)
   })
   function createUser(name,email,password){
 
