@@ -14,7 +14,7 @@ function loadPageDataIntoEditor(collectionName){
 
     success: function(response) {
       data = response;
-      makeEditSections(response);
+      makeEditSections(collectionName, response);
     },
 
     error: function() {

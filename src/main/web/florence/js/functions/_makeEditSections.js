@@ -1,4 +1,4 @@
-function makeEditSections(response){
+function makeEditSections(collectionName, response){
   if (response.type === 'bulletin'){
       bulletinEditor(response);
     } else {
@@ -8,7 +8,7 @@ function makeEditSections(response){
       $('.fl-editor__headline').val(JSON.stringify(response, null, 2));
       $('.fl-panel--editor__nav__save').click(function() {
         pageData = $('.fl-editor__headline').val();
-        save("testCollection", pageData);
+        updateContent(collectionName, pageData);
       });
   }
 }
