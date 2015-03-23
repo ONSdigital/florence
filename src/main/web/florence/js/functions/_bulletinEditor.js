@@ -1,4 +1,4 @@
-function bulletinEditor(data){
+function bulletinEditor(collectionName, data){
 
   var newSections = [];
   var data;
@@ -75,8 +75,7 @@ function bulletinEditor(data){
       newSections[parseInt(index)] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
-    //save("testCollection", JSON.stringify(data));
-    console.log(data);
+    updateContent(collectionName, JSON.stringify(data));
   });
 
   //Add new sections
@@ -107,7 +106,7 @@ function bulletinEditor(data){
     });
     data.sections = newSections;
     $(".list").remove();
-    bulletinEditor(data);
+    bulletinEditor(collectionName, data);
   }
 
   // Metadata section

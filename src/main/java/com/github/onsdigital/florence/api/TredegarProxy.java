@@ -24,21 +24,34 @@ public class TredegarProxy implements Filter {
 
 
     private static final String florenceToken = "/florence";
+    private static final String zebedeeToken = "/zebedee";
+
     private static final String tredegarBaseUrl = "http://localhost:8080";
+    private static final String zebedeeBaseUrl = "http://localhost:8082";
 
     private static final List<String> florencePaths = Arrays.asList("/");
 
     @Override
     public boolean filter(HttpServletRequest request, HttpServletResponse response) {
 
+        String requestUri = request.getRequestURI();
+        String requestQueryString = request.getQueryString() != null ? request.getQueryString() : "";
+
         try {
-            if (florencePaths.contains(request.getRequestURI())
-                    || request.getRequestURI().startsWith(florenceToken)) {
+            if (florencePaths.contains(requestUri)
+                    || requestUri.startsWith(florenceToken)) {
                 return true; // carry on and serve the file from florence
             }
 
+            String requestBaseUrl = tredegarBaseUrl; // proxy to tredegar by default.
+
+            if (requestUri.startsWith(zebedeeToken)) {
+                requestUri = requestUri.replace(zebedeeToken, "");
+                requestBaseUrl = zebedeeBaseUrl;
+            }
+
             CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpGet httpGet = new HttpGet(tredegarBaseUrl + request.getRequestURI());
+            HttpGet httpGet = new HttpGet(requestBaseUrl + requestUri + "?" + requestQueryString);
 
             // copy the request headers.
             Enumeration<String> headerNames = request.getHeaderNames();
@@ -48,13 +61,13 @@ public class TredegarProxy implements Filter {
                 httpGet.addHeader(headerName, request.getHeader(headerName));
             }
 
-            CloseableHttpResponse tredegarResponse = httpClient.execute(httpGet);
+            CloseableHttpResponse proxyResponse = httpClient.execute(httpGet);
 
             try {
-                HttpEntity responseEntity = tredegarResponse.getEntity();
+                HttpEntity responseEntity = proxyResponse.getEntity();
 
                 // copy headers from the response
-                for (Header header : tredegarResponse.getAllHeaders()) {
+                for (Header header : proxyResponse.getAllHeaders()) {
                     response.setHeader(header.getName(), header.getValue());
                 }
 
@@ -64,7 +77,7 @@ public class TredegarProxy implements Filter {
             } catch (IOException e) {
                 return true;
             } finally {
-                tredegarResponse.close();
+                proxyResponse.close();
             }
 
         } catch (IOException e) {
