@@ -1,14 +1,19 @@
-function loadPageDataIntoEditor(){
+function loadPageDataIntoEditor(collectionName){
 
   var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  var pageurldata = "/data" + pageurl.split("#!")[1];
+  var dataPath = pageurl.split("#!")[1];
+  if (dataPath.charAt(dataPath.length -1) != "/") dataPath += "/"
+  var dataUrl = "/zebedee/content/" + collectionName + "?uri=" + dataPath + "data.json"
+
+  //console.log("Url to load data from: " + dataUrl);
 
   $.ajax({
-    url: pageurldata,
+    url: dataUrl,
     dataType: 'json',
     crossDomain: true,
 
     success: function(response) {
+      data = response;
       makeEditSections(response);
     },
 
@@ -17,5 +22,6 @@ function loadPageDataIntoEditor(){
       $('.fl-editor').val('');
     }
   });
-
 }
+
+

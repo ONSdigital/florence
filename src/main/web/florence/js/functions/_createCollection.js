@@ -19,6 +19,7 @@ function createCollection() {
         data: JSON.stringify({name: collectionName, publishDate: publishDate}),
         success: function () {
           console.log("Collection " + collectionName + " created" );
+          viewController('collections');
         },
         error: function (jqxhr) {
           console.log('Error creating collection' + jqxhr.responseText);

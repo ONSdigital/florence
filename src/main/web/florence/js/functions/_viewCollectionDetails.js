@@ -1,7 +1,7 @@
-function viewCollectionDetails(collectionId) {
+function viewCollectionDetails(collectionName) {
 
   $.ajax({
-    url: "http://localhost:8082/collection/" + collectionId,
+    url: "http://localhost:8082/collection/" + collectionName,
     type: "get",
     xhrFields: {withCredentials: true},
     crossDomain: true
@@ -19,8 +19,8 @@ function viewCollectionDetails(collectionId) {
   });
 
   $('.fl-work-on-collection-button').click(function () {
-    document.cookie = "collection=" + collectionId;
-    viewController('workspace');
+    document.cookie = "collection=" + collectionName + ";path=/";
+    viewController('workspace', collectionName);
   });
 
   $('.fl-button--cancel').click(function () {

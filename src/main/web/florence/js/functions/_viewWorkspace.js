@@ -1,4 +1,4 @@
-function viewWorkspace(caller){
+function viewWorkspace(collectionName){
 
   var intIntervalTime = 100;
 
@@ -100,7 +100,7 @@ function viewWorkspace(caller){
       localStorage.removeItem("pageurl");
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
-      loadPageDataIntoEditor();
+      loadPageDataIntoEditor(collectionName);
       setInterval(setupPageLocation, intIntervalTime);
 
         $('.fl-panel--editor__nav__approve').click(function () {
