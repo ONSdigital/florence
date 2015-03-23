@@ -1,4 +1,6 @@
-function viewUserAndAccess(caller){
+function viewUserAndAccess(view){
+ if (view == 'create'){
+
   create_user =
   '<section class="fl-panel fl-panel--user-and-access">' +
     '<section class="fl-creator">' +
@@ -10,6 +12,7 @@ function viewUserAndAccess(caller){
         '<span class="fl-user-and-access__title"> enter the email of the new user </span>' +
         '<input class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1"></input>' +
         '<br>' +
+        'password:<input class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1"></input>'+
       '</section>' +
     '</section>' +
     '<nav class="fl-panel--user-and-access__nav">' +
@@ -24,9 +27,10 @@ function viewUserAndAccess(caller){
   $('.fl-panel--user-and-access__create').click(function(){
     var name  = $('.fl-user-and-access__name').val()
     var email = $('.fl-user-and-access__email').val()
-    createUser(name,email)
+    var password = $('.fl-user-and-access__password').val()
+    createUser(name,,password)
   })
-  function createUser(name,email){
+  function createUser(name,email,password){
 
     $.ajax({
         url: "http://localhost:8082/users",
@@ -38,7 +42,8 @@ function viewUserAndAccess(caller){
           email:email
         }),
         success: function (response) {
-            setPassword(email)
+          console.log(password)
+            setPassword(email,password)
             console.log('created')
         },
         error: function (response) {
@@ -69,4 +74,23 @@ function viewUserAndAccess(caller){
 
   }
   login = ""
+ }
+
+ else if (view === "login"){
+  var login_form =
+  'email:<input class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1"></input>' +
+  '<br>'+
+  'password:<input class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1"></input>'+
+  '<br>'+
+  '<button class="fl-panel--user-and-access__login">Log in</button>'
+
+  $('.fl-view').prepend(login_form);
+
+  $('.fl-panel--user-and-access__login').click(function(){
+
+    var email = $('.fl-user-and-access__email').val();
+    var password = $('.fl-user-and-access__password').val();
+    authenticate(email,password);
+  })
+ }
 }

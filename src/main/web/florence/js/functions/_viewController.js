@@ -15,11 +15,11 @@ function viewController(view, collectionName){
 		});
 
 		$('.fl-admin-menu__item--login').click(function() {
-				authenticate();
+				viewController('login');
 		});
 
 		$('.fl-admin-menu__item--publish').click(function() {
-				viewController('publish');
+				//viewController('publish');
 		});
 
 		//clear view
@@ -32,10 +32,13 @@ function viewController(view, collectionName){
 
 		//users and access
 		else if (view === 'users-and-access'){
-			viewUserAndAccess();
+			viewUserAndAccess('create');
 			//
 		}
 
+		else if (view === 'login'){
+			viewUserAndAccess('login');
+		}
 		//publish
 		else if (view === 'publish'){
 			alert('publish is not implemented')

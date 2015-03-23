@@ -1,8 +1,5 @@
-function authenticate(email,password){
-	//
-  var email,password, credentials;
-  email = email;
-  password = password;
+function callZebedee(success,error,opts){
+  var zebedeeUrl,endpoint,crossDomain,type,data,url;
 
   $.ajax({
         url: "http://localhost:8082/login",
@@ -22,6 +19,4 @@ function authenticate(email,password){
             console.log('fail');
         }
     });
-
-	return true;
 }
