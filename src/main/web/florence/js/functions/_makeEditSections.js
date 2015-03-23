@@ -1,6 +1,6 @@
 function makeEditSections(collectionName, response){
   if (response.type === 'bulletin'){
-      bulletinEditor(response);
+      bulletinEditor(collectionName, response);
     } else {
       $('.fl-editor__sections').hide();
       $("#addSection").remove();
