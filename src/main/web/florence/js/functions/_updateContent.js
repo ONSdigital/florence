@@ -8,11 +8,10 @@ function updateContent(collectionName, data) {
         data: data,
         success: function (message) {
             console.log("Updating completed" + message);
+          $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
         },
         error: function (error) {
             console.log(error);
         }
     });
-
-    document.cookie = 'collection=' + collectionName;
 }   
