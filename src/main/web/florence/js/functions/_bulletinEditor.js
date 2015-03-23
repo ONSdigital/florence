@@ -1,4 +1,4 @@
-function bulletinEditor(collectionName, data){
+function bulletinEditor(data){
 
   var newSections = [];
   var data;
@@ -108,35 +108,6 @@ function bulletinEditor(collectionName, data){
     $(".list").remove();
     bulletinEditor(collectionName, data);
   }
-
-  // Metadata section
-  $(".fl-editor__metadata").append(
-      '<div id="accordion">' +
-      '<h5>First header</h5>' +
-      '<div>' +
-      'Demo: <input value="Tab 1 content"><br>' +
-      'Demo: <input value="Tab 1 content"><br>' +
-      'Demo: <input value="Tab 1 content"><br>' +
-      'Demo: <input value="Tab 1 content"><br>' +
-      'Demo: <input value="Tab 1 content"><br>' +
-      '</div>' +
-      '<h5>Second header</h5>' +
-      '<div>' +
-      'Demo: <input value="Tab 2 content"><br>' +
-      'Demo: <input value="Tab 2 content"><br>' +
-      'Demo: <input value="Tab 2 content"><br>' +
-      'Demo: <input value="Tab 2 content"><br>' +
-      'Demo: <input value="Tab 2 content"><br>' +
-      '</div>' +
-      '</div>'
-  );
-
-  function accordion() {
-    $(function () {
-      $("#accordion").accordion();
-    });
-  }
-  accordion();
 
 }
 

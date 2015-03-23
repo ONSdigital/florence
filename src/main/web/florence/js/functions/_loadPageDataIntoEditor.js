@@ -1,7 +1,7 @@
-function loadPageDataIntoEditor(collectionName){
+function loadPageDataIntoEditor(){
 
   var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  var dataUrl = "/data" + pageurl.split("#!")[1];
+  var pageurldata = "/data" + pageurl.split("#!")[1];
 
   $.ajax({
     url: dataUrl,
@@ -12,7 +12,7 @@ function loadPageDataIntoEditor(collectionName){
       data = response;
       makeEditSections(collectionName, response);
     },
-
+  
     error: function() {
       console.log('No page data returned');
       $('.fl-editor').val('');

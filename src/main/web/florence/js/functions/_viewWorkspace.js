@@ -1,4 +1,4 @@
-function viewWorkspace(collectionName){
+function viewWorkspace(caller){
 
   var intIntervalTime = 100;
 
@@ -24,22 +24,58 @@ function viewWorkspace(collectionName){
   '<section class="fl-panel fl-panel--sub-menu">' +
   '</section>';
 
-   //florence edit menu
+  // Metadata and correction collapsible sections
   var workspace_menu_sub_edit =
-  '<section class="fl-panel fl-panel--editor">' +
-    '<section style="overflow: scroll;" class="fl-editor">' +
-      '<section class="fl-editor__metadata">Metadata collapsible section goes here</section>' +
-      '<section class="fl-editor__correction">Correction collapsible section goes here</section>' +
-      '<textarea class="fl-editor__headline" name="fl-editor__headline" cols="40" rows="5"></textarea>' +
-      '<section class="fl-editor__sections">' +
+    '<section class="fl-panel fl-panel--editor">' +
+      '<section style="overflow: scroll;" class="fl-editor">' +
+        '<div id="accordion">' +
+          '<section class="fl-editor__metadata">Metadata section</section>' +
+            '<div id="metadata-section">' +
+              'Demo: <input value="Tab 1 content"><br>' +
+              'Demo: <input value="Tab 1 content"><br>' +
+              'Demo: <input value="Tab 1 content"><br>' +
+              'Demo: <input value="Tab 1 content"><br>' +
+              'Demo: <input value="Tab 1 content"><br>' +
+            '</div>' +
+          '<section class="fl-editor__metadata">Correction section</section>' +
+            '<div id="correction-section">' +
+              'Demo: <input value="Tab 2 content"><br>' +
+              'Demo: <input value="Tab 2 content"><br>' +
+              'Demo: <input value="Tab 2 content"><br>' +
+              'Demo: <input value="Tab 2 content"><br>' +
+              'Demo: <input value="Tab 2 content"><br>' +
+            '</div>' +
+          '<section class="fl-editor__metadata">Content section</section>' +
+            '<div id="content-section">' +
+              '<textarea class="fl-editor__headline" name="fl-editor__headline" cols="40" rows="5"></textarea>' +
+              '<section class="fl-editor__sections"></section>' +
+            '</div>' +
+        '</div>' +
       '</section>' +
-    '</section>' +
-    '<nav class="fl-panel--editor__nav">' +
-      '<button class="fl-panel--editor__nav__cancel">Cancel</button>' +
-      '<button class="fl-panel--editor__nav__save">Save</button>' +
-      '<button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
-    '</nav>' +
-  '</section>';
+      '<nav class="fl-panel--editor__nav">' +
+        '<button class="fl-panel--editor__nav__cancel">Cancel</button>' +
+        '<button class="fl-panel--editor__nav__save">Save</button>' +
+        '<button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
+      '</nav>' +
+    '</section>';
+
+
+  //florence edit menu
+  //var workspace_menu_sub_edit =
+  //'<section class="fl-panel fl-panel--editor">' +
+  //  '<section style="overflow: scroll;" class="fl-editor">' +
+  //    '<section class="fl-editor__metadata">Metadata collapsible section goes here</section>' +
+  //    '<section class="fl-editor__correction">Correction collapsible section goes here</section>' +
+  //    '<textarea class="fl-editor__headline" name="fl-editor__headline" cols="40" rows="5"></textarea>' +
+  //    '<section class="fl-editor__sections">' +
+  //    '</section>' +
+  //  '</section>' +
+  //  '<nav class="fl-panel--editor__nav">' +
+  //    '<button class="fl-panel--editor__nav__cancel">Cancel</button>' +
+  //    '<button class="fl-panel--editor__nav__save">Save</button>' +
+  //    '<button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
+  //  '</nav>' +
+  //'</section>';
 
 
   var workspace_menu_create =
@@ -94,12 +130,14 @@ function viewWorkspace(collectionName){
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')){
 
-      $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
+      $('.fl-panel--sub-menu').append(workspace_menu_sub_edit);
       $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
       // This line could be removed
       localStorage.removeItem("pageurl");
+
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
+      accordion();
       loadPageDataIntoEditor(collectionName);
       setInterval(setupPageLocation, intIntervalTime);
 
