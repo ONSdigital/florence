@@ -6,12 +6,13 @@ function viewCollections() {
     '<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
     '</section>';
 
+
   $.ajax({
-  url: "http://localhost:8082/collections",
-  type: "get",
-  xhrFields: { withCredentials: true },
-  crossDomain: true
-  }).done(function(data) {
+    url: "http://localhost:8082/collections",
+    type: "get",
+    xhrFields: { withCredentials: true },
+    crossDomain: true
+    }).done(function(data) {
 
       var collection_table =
         '<table class="fl-collections-table">' +
