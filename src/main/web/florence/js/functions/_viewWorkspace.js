@@ -9,6 +9,7 @@ function viewWorkspace(){
       $("#accordion").accordion(
           {
             header: "section",
+            heightStyle: "content",
             active: 2
           }
       );
@@ -44,13 +45,7 @@ function viewWorkspace(){
       '<section style="overflow: scroll;" class="fl-editor">' +
         '<div id="accordion">' +
           '<section class="fl-editor__metadata">Metadata section</section>' +
-            '<div id="metadata-section">' +
-              'Demo: <input value="Tab 1 content"><br>' +
-              'Demo: <input value="Tab 1 content"><br>' +
-              'Demo: <input value="Tab 1 content"><br>' +
-              'Demo: <input value="Tab 1 content"><br>' +
-              'Demo: <input value="Tab 1 content"><br>' +
-            '</div>' +
+            '<div id="metadata-section"></div>' +
           '<section class="fl-editor__metadata">Correction section</section>' +
             '<div id="correction-section">' +
               'Demo: <input value="Tab 2 content"><br>' +
@@ -62,7 +57,7 @@ function viewWorkspace(){
           '<section class="fl-editor__metadata">Content section</section>' +
             '<div id="content-section">' +
               '<textarea class="fl-editor__headline" name="fl-editor__headline" cols="40" rows="5"></textarea>' +
-              '<section class="fl-editor__sections"></section>' +
+              '<article class="fl-editor__sections"></article>' +
             '</div>' +
         '</div>' +
       '</section>' +
