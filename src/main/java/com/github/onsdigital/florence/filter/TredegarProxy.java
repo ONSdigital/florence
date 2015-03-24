@@ -108,12 +108,14 @@ public class TredegarProxy implements Filter {
                 EntityUtils.consume(responseEntity);
 
             } catch (IOException e) {
+                System.out.println("IOException " + e.getMessage());
                 return true;
             } finally {
                 proxyResponse.close();
             }
 
         } catch (IOException e) {
+            System.out.println("IOException " + e.getMessage());
             return true;
         }
 
