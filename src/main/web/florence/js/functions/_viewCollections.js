@@ -10,8 +10,8 @@ function viewCollections() {
   $.ajax({
     url: "http://localhost:8082/collections",
     type: "get",
-    xhrFields: { withCredentials: true },
-    crossDomain: true
+    crossDomain: true,
+    headers:{ "X-Florence-Token":accessToken() }
     }).done(function(data) {
 
       var collection_table =

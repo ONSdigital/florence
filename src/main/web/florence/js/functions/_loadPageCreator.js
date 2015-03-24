@@ -12,8 +12,6 @@ function loadPageCreator () {
     pageData.metaData['name'] = pageName
     console.log(parent)
 
-    //TODO make urls more forgiving, split on / then join to create the uri
-
     newUri = makeUrl(parent,pageTypeData(pageType).uriSection,pageName)
     pageData.metaData['uri'] = newUri
     console.log(newUri)
@@ -24,6 +22,7 @@ function loadPageCreator () {
         crossDomain: true,
         type: 'POST',
         data: pageData.metaData,
+        headers:{ "X-Florence-Token":accessToken() },
         success: function (message) {
             console.log("Updating completed" + message);
             alert("page created at "+newUri)

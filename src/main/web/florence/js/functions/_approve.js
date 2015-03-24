@@ -7,6 +7,7 @@ function approve(collectionName) {
         dataType: 'json',
         crossDomain: true,
         type: 'POST',
+        headers:{ "X-Florence-Token":accessToken() },
         success: function () {
             console.log("File approved!")
             alert("Your file is now approved");
