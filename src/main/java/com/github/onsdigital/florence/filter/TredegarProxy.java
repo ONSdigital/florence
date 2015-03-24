@@ -53,6 +53,7 @@ public class TredegarProxy implements Filter {
             if (requestUri.startsWith(zebedeeToken)) {
                 requestUri = requestUri.replace(zebedeeToken, "");
                 requestBaseUrl = zebedeeBaseUrl;
+                System.out.println("Proxy request to zebedee @ " + zebedeeBaseUrl);
             }
 
             HttpRequestBase proxyRequest;
