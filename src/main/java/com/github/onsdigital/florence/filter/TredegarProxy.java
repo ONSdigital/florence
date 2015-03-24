@@ -57,7 +57,7 @@ public class TredegarProxy implements Filter {
 
             HttpRequestBase proxyRequest;
             String requestUrl = requestBaseUrl + requestUri + "?" + requestQueryString;
-            System.out.println("Proxy request to zebedee @ " + requestUrl);
+            System.out.println("Proxy request from " + request.getRequestURI() + " to " + requestUrl);
 
             switch (request.getMethod()) {
                 case "POST":
