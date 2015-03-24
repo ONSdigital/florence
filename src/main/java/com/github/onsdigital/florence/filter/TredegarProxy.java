@@ -1,6 +1,7 @@
-package com.github.onsdigital.florence.api;
+package com.github.onsdigital.florence.filter;
 
 import com.github.davidcarboni.restolino.framework.Filter;
+import com.github.onsdigital.florence.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -26,8 +27,8 @@ public class TredegarProxy implements Filter {
     private static final String florenceToken = "/florence";
     private static final String zebedeeToken = "/zebedee";
 
-    private static final String tredegarBaseUrl = "http://localhost:8080";
-    private static final String zebedeeBaseUrl = "http://localhost:8082";
+    private static final String tredegarBaseUrl = Configuration.getTredegarUrl();
+    private static final String zebedeeBaseUrl = Configuration.getZebedeeUrl();
 
     private static final List<String> florencePaths = Arrays.asList("/");
 
@@ -60,6 +61,11 @@ public class TredegarProxy implements Filter {
                 String headerName = headerNames.nextElement();
                 httpGet.addHeader(headerName, request.getHeader(headerName));
             }
+
+//            if (requestBaseUrl == zebedeeBaseUrl)
+//            {
+//                httpGet.addHeader("X-Florence-Token", );
+//            }
 
             CloseableHttpResponse proxyResponse = httpClient.execute(httpGet);
 
