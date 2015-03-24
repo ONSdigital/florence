@@ -111,14 +111,14 @@ public class TredegarProxy implements Filter {
 
             } catch (IOException e) {
                 System.out.println("IOException " + e.getMessage());
-                return true;
+                e.printStackTrace();
             } finally {
                 proxyResponse.close();
             }
 
         } catch (IOException e) {
             System.out.println("IOException " + e.getMessage());
-            return true;
+            e.printStackTrace();
         }
 
         return false;
