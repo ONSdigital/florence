@@ -37,6 +37,7 @@ function viewUserAndAccess(view){
         dataType: 'json',
         crossDomain: true,
         type: 'POST',
+        headers:{ "X-Florence-Token":accessToken() },
         data: JSON.stringify({
           name:name,
           email:email
@@ -60,6 +61,7 @@ function viewUserAndAccess(view){
         dataType: 'json',
         crossDomain: true,
         type: 'POST',
+        headers:{ "X-Florence-Token":accessToken() },
         data: JSON.stringify({
           email:email,
           password:password

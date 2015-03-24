@@ -6,6 +6,7 @@ function updateContent(collectionName, content) {
         crossDomain: true,
         type: 'POST',
         data: content,
+        headers:{ "X-Florence-Token":accessToken() },
         success: function (message) {
             console.log("Updating completed" + message);
           //
@@ -17,4 +18,4 @@ function updateContent(collectionName, content) {
             console.log(error);
         }
     });
-}   
+}

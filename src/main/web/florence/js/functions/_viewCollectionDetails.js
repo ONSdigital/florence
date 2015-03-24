@@ -3,7 +3,7 @@ function viewCollectionDetails(collectionName) {
   $.ajax({
     url: "http://localhost:8082/collection/" + collectionName,
     type: "get",
-    xhrFields: {withCredentials: true},
+    headers:{ "X-Florence-Token":accessToken() },
     crossDomain: true
   }).done(function (data) {
 
