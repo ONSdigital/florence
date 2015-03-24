@@ -1,4 +1,4 @@
-function callZebedee(success,error,opts){
+function callZebedee(success, error, opts){
 
   $.ajax({
     url: "/zebedee/login",
@@ -10,12 +10,12 @@ function callZebedee(success,error,opts){
       password: password
     }),
     success: function (response) {
-        console.log(response);
-        document.cookie = "access_token=" + response;
-        console.log('authenticated');
+      console.log(response);
+      document.cookie = "access_token=" + response;
+      console.log('authenticated');
     },
     error: function (response) {
-        console.log('fail');
+      console.log('fail');
     }
   });
 }

@@ -3,7 +3,6 @@ function viewWorkspace(){
   var intIntervalTime = 100;
   var collectionName = localStorage.getItem("collection");
 
-
   function accordion() {
     $(function () {
       $("#accordion").accordion(
@@ -15,7 +14,6 @@ function viewWorkspace(){
       );
     });
   }
-
 
   var workspace_menu_main =
     '<nav class="fl-panel fl-panel--menu">' +

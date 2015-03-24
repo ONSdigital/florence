@@ -12,8 +12,8 @@ function updateContent(collectionName, content) {
     success: function (message) {
       console.log("Updating completed" + message);
       //
-      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl")
-                                      .get(0).contentDocument.location.reload(true);
+      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+      $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
     },
     error: function (error) {
       console.log(error);

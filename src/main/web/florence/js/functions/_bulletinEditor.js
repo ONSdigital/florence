@@ -63,13 +63,14 @@ function bulletinEditor(collectionName, data){
     $(".fl-panel--editor__sections__section-item__edit_"+index).click(function() {
       editedValue = $("#section_markdown_" + index).val();
 
-      $('body').prepend('<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>');
-
-      $('body').prepend('<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
+      var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
+      var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
       '<div id="wmd-button-bar"></div>' +
       '<textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedValue + '</textarea>' +
       '<button id="finish">Finish editing</button>' +
-      '</div>');
+      '</div>';
+
+      $('body').prepend(editorPrev, editorEdit);
 
       $("#finish").click(function(){
         editedText = $('#wmd-input').val();
@@ -95,8 +96,7 @@ function bulletinEditor(collectionName, data){
   sortable();
 
   // Save ordered sections
-  $('.fl-panel--editor__nav__save').unbind("click");
-  $(".fl-panel--editor__nav__save").click(function() {
+  $('.fl-panel--editor__nav__save').unbind("click").click(function() {
     var order = $(".fl-editor__sections").sortable('toArray');
     $(order).each(function (index, name) {
       var title = $('#section__' + name).val();
@@ -113,14 +113,14 @@ function bulletinEditor(collectionName, data){
 
     $("#addSection").click(function () {
       $('.fl-editor__sections').append(
-          '<div id="' + lastIndex + '" class="list" style="background-color:grey; color:white;">' +
+        '<div id="' + lastIndex + '" class="list" style="background-color:grey; color:white;">' +
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Title ' +
           '<textarea id="section__' + lastIndex + '"></textarea>' +
           '<textarea style="display: none;" id="section_markdown_' + lastIndex + '"></textarea>' +
           '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndex + '">Edit</button>' +
           '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndex + '">Delete</button>' +
-          '</div>');
+        '</div>');
       sortable();
       saveNewSection();
     });
@@ -138,6 +138,5 @@ function bulletinEditor(collectionName, data){
     $("#metadata-list").remove();
     bulletinEditor(collectionName, data);
   }
-
 }
 
