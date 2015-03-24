@@ -79,7 +79,8 @@ public class TredegarProxy implements Filter {
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
 
-                if (!headerName.equals("Content-Length"))
+                if (!headerName.equals("Content-Length") &&
+                        !headerName.equals("Transfer-Encoding"))
                     proxyRequest.addHeader(headerName, request.getHeader(headerName));
 
                 if (headerName.equals("access_token"))
