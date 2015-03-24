@@ -1,41 +1,39 @@
 function loadPageCreator () {
   var parent,pageType,pageName,createButton,collectionName,newUri,data;
   // TODO: change me to get the collection name based on your current location
-  collectionName = 'kanes'
+  collectionName = 'kanes';
 
-  pageType = $('.fl-creator__page_type_list_select').val().trim()
-  createButton = $('.fl-panel--creator__nav__create')
+  pageType = $('.fl-creator__page_type_list_select').val().trim();
+  createButton = $('.fl-panel--creator__nav__create');
   createButton.one('click',function(){
-    pageData = pageTypeData(pageType)
-    parent = $('.fl-creator__parent').val().trim()
-    pageName = '/'+ $('.fl-creator__new_name').val().trim()
-    pageData.metaData['name'] = pageName
-    console.log(parent)
+    pageData = pageTypeData(pageType);
+    parent = $('.fl-creator__parent').val().trim();
+    pageName = '/'+ $('.fl-creator__new_name').val().trim();
+    pageData.metaData['name'] = pageName;
+    console.log(parent);
 
-    newUri = makeUrl(parent,pageTypeData(pageType).uriSection,pageName)
-    pageData.metaData['uri'] = newUri
-    console.log(newUri)
+    newUri = makeUrl(parent,pageTypeData(pageType).uriSection,pageName);
+    pageData.metaData['uri'] = newUri;
+    console.log(newUri);
 
     $.ajax({
-        url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
-        dataType: 'json',
-        crossDomain: true,
-        type: 'POST',
-        data: pageData.metaData,
-        headers:{ "X-Florence-Token":accessToken() },
-        success: function (message) {
-            console.log("Updating completed" + message);
-            alert("page created at "+newUri)
-        },
-        error: function (error) {
-            console.log(error);
-        }
+      url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
+      dataType: 'json',
+      crossDomain: true,
+      type: 'POST',
+      data: pageData.metaData,
+      headers: {
+        "X-Florence-Token":accessToken()
+      },
+      success: function (message) {
+          console.log("Updating completed" + message);
+          alert("page created at "+newUri)
+      },
+      error: function (error) {
+          console.log(error);
+      }
     });
-
   })
-
-
-
 }
 
 function pageTypeData(pageType){
@@ -99,18 +97,18 @@ function pageTypeData(pageType){
     };
   }
   else {
-    alert('unsupported page type')
+    alert('unsupported page type');
   }
 }
 
-function makeUrl(args){
-  var accumulator
-  accumulator = []
-  for( i=0;i < arguments.length; i++){
+function makeUrl(args) {
+  var accumulator;
+  accumulator = [];
+  for(var i=0; i < arguments.length; i++){
     accumulator =  accumulator.concat(arguments[i]
                               .split('/')
                               .filter(function(argument){return argument!= ""}));
   }
-  console.log(accumulator)
-  return accumulator.join('/')
+  console.log(accumulator);
+  return accumulator.join('/');
 }

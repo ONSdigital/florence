@@ -7,11 +7,9 @@ function loadPageDataIntoEditor(collectionName){
     url: pageurldata,
     dataType: 'json',
     crossDomain: true,
-
     success: function(response) {
       makeEditSections(collectionName, response);
     },
-  
     error: function() {
       console.log('No page data returned');
       $('.fl-editor').val('');

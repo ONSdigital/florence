@@ -41,7 +41,7 @@ function viewController(view){
 		}
 		//publish
 		else if (view === 'publish'){
-			alert('publish is not implemented')
+			alert('publish is not implemented');
 
 			//
 		}
@@ -60,18 +60,16 @@ function viewController(view){
 	}
 
 	//authentication
-		else {
-			//authentication calls collections view for now untill authentication is implimented
-			// viewCollections();
-			//viewWorkspace();
-			viewLogIn();
-		}
+  else {
+    //authentication calls collections view for now until authentication is implemented
+    // viewCollections();
+    //viewWorkspace();
+    viewLogIn();
+  }
 
-		function logged_in(){
+  function logged_in(){
 
-			// read the cookie here to see if theres an access token, then check if its valid
-			return accessToken() != ''
-		}
-
-
+    // read the cookie here to see if there is an access token, then check if its valid
+    return accessToken() != ''
+  }
 }

@@ -4,19 +4,19 @@ function setupFlorence(){
     // '<section>' +
     '<nav class="fl-panel fl-panel--admin-bar">' +
       '<ul class="fl-admin-menu">' +
-          '<li class="fl-admin-menu__item fl-admin-menu__item--collections">' +
-            '<a href="#" class="fl-admin-menu__link">Collections</a>' +
-          '</li>' +
-          '<li class="fl-admin-menu__item fl-admin-menu__item--useradmin">' +
-            '<a href="#" class="fl-admin-menu__link">Users and access</a>' +
-          '</li>' +
-          '<li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
-            '<a href="#" class="fl-admin-menu__link">Publish</a>' +
-          '</li>' +
-          '<li class="fl-admin-menu__item fl-admin-menu__item--login">' +
-            '<a href="#" class="fl-admin-menu__link">login</a>' +
-          '</li>' +
-        '</ul>' +
+        '<li class="fl-admin-menu__item fl-admin-menu__item--collections">' +
+          '<a href="#" class="fl-admin-menu__link">Collections</a>' +
+        '</li>' +
+        '<li class="fl-admin-menu__item fl-admin-menu__item--useradmin">' +
+          '<a href="#" class="fl-admin-menu__link">Users and access</a>' +
+        '</li>' +
+        '<li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
+          '<a href="#" class="fl-admin-menu__link">Publish</a>' +
+        '</li>' +
+        '<li class="fl-admin-menu__item fl-admin-menu__item--login">' +
+          '<a href="#" class="fl-admin-menu__link">login</a>' +
+        '</li>' +
+      '</ul>' +
     '</nav>' +
     // '</section>' +
   '<div class="fl-view">' +

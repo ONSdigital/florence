@@ -121,7 +121,6 @@ function bulletinEditor(collectionName, data){
           '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndex + '">Edit</button>' +
           '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndex + '">Delete</button>' +
           '</div>');
-      console.log("last index " + lastIndex);
       sortable();
       saveNewSection();
     });
@@ -137,7 +136,6 @@ function bulletinEditor(collectionName, data){
     data.sections = newSections;
     $(".list").remove();
     $("#metadata-list").remove();
-    console.log(data);
     bulletinEditor(collectionName, data);
   }
 

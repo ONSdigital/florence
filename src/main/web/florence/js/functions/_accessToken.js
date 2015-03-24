@@ -1,5 +1,5 @@
-function accessToken(clear){
-  if(clear){
+function accessToken(clear) {
+  if(clear) {
     // get rid of the current access token
   }
 
@@ -7,5 +7,5 @@ function accessToken(clear){
     b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
     return b ? b.pop() : '';
   }
-  return getCookieValue("access_token")
+  return getCookieValue("access_token");
 }

@@ -6,7 +6,6 @@ function viewCollections() {
     '<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
     '</section>';
 
-
   $.ajax({
     url: "/zebedee/collections",
     type: "get",
@@ -136,7 +135,7 @@ function viewCollections() {
 	$('.fl-create-collection-button').click(function() {
 		$('.fl-view').html(create_collection);
 
-		$('.fl-create-collection--submit-button').click(createCollection)
+		$('.fl-create-collection--submit-button').click(createCollection);
 		$('.fl-button--cancel').click(function() {
 			//perhaps need to rethink this if we do decide to animate panel transitions within this view
 			viewController('collections');
