@@ -64,13 +64,13 @@ function viewController(view){
 			//authentication calls collections view for now untill authentication is implimented
 			// viewCollections();
 			//viewWorkspace();
-			alert('Not authenticated');
+			viewLogIn();
 		}
 
 		function logged_in(){
 
 			// read the cookie here to see if theres an access token, then check if its valid
-			return true
+			return accessToken() != ''
 		}
 
 
