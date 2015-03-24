@@ -28,9 +28,9 @@ function setupFlorence(){
 
 
 
-  $('head').prepend('<link href="http://localhost:8081/florence/css/main.min.css" rel="stylesheet" type="text/css">');
-  $('head').prepend('<link href="http://localhost:8081/florence/css/jquery-ui.min.css" rel="stylesheet" type="text/css">');
-  $('head').prepend('<link href="http://localhost:8081/florence/css/third-party/pagedown.css" rel="stylesheet" type="text/css">');
+  $('head').prepend('<link href="/florence/css/main.min.css" rel="stylesheet" type="text/css">');
+  $('head').prepend('<link href="/florence/css/jquery-ui.min.css" rel="stylesheet" type="text/css">');
+  $('head').prepend('<link href="/florence/css/third-party/pagedown.css" rel="stylesheet" type="text/css">');
   var bodycontent = $('body').html();
 
   // $('body').wrapInner('<section class="fl-panel fl-panel--preview"><div class="fl-panel--preview__inner"></div></section>');

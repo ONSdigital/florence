@@ -119,7 +119,7 @@ function viewWorkspace(){
   var workspace_preview =
   '<section class="fl-panel fl-panel--preview">' +
     '<div class="fl-panel--preview__inner">' +
-      '<iframe src="http://localhost:8081/index.html" class="fl-panel fl-panel--preview__content"></iframe>' +
+      '<iframe src="/index.html" class="fl-panel fl-panel--preview__content"></iframe>' +
     '</div>' +
   '</section>';
 

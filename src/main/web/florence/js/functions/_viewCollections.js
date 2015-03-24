@@ -8,7 +8,7 @@ function viewCollections() {
 
 
   $.ajax({
-    url: "http://localhost:8082/collections",
+    url: "/zebedee/collections",
     type: "get",
     crossDomain: true,
     headers:{ "X-Florence-Token":accessToken() }

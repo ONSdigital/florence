@@ -1,7 +1,7 @@
 function updateContent(collectionName, content) {
     // Update content
     $.ajax({
-        url: "http://localhost:8082/content/" + collectionName + "?uri=" + getPathName() + "/data.json",
+        url: "/zebedee/content/" + collectionName + "?uri=" + getPathName() + "/data.json",
         dataType: 'json',
         crossDomain: true,
         type: 'POST',
