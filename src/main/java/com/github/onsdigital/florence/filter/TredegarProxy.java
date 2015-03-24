@@ -105,6 +105,8 @@ public class TredegarProxy implements Filter {
                 if (responseEntity != null && responseEntity.getContent() != null)
                     IOUtils.copy(responseEntity.getContent(), response.getOutputStream());
 
+                System.out.println("Proxy response status :" + proxyResponse.getStatusLine().getStatusCode());
+
                 EntityUtils.consume(responseEntity);
 
             } catch (IOException e) {
