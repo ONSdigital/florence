@@ -33,7 +33,7 @@ function viewUserAndAccess(view){
   function createUser(name,email,password){
 
     $.ajax({
-        url: "/zebedee/users",
+        url: "http://localhost:8082/users",
         dataType: 'json',
         crossDomain: true,
         type: 'POST',
@@ -57,7 +57,7 @@ function viewUserAndAccess(view){
     var password = password || 'bluecat';
     console.log(password)
     $.ajax({
-        url: "/zebedee/password",
+        url: "http://localhost:8082/password",
         dataType: 'json',
         crossDomain: true,
         type: 'POST',

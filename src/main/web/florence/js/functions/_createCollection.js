@@ -12,7 +12,7 @@ function createCollection() {
     // Create the collection
     console.log(collectionName + " " + publishDate);
     $.ajax({
-        url: "/zebedee/collection",
+        url: "http://localhost:8082/collection",
         dataType: 'json',
         crossDomain: true,
         type: 'POST',

@@ -5,7 +5,7 @@ function authenticate(email,password){
   password = password;
 
   $.ajax({
-        url: "/zebedee/login",
+        url: "http://localhost:8082/login",
         dataType: 'json',
         crossDomain: true,
         type: 'POST',

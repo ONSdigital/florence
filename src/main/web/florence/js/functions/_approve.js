@@ -3,7 +3,7 @@ function approve(collectionName) {
 
     // Open the file for editing
     $.ajax({
-        url: "/zebedee/approve/" + collectionName + "?uri=" + getPathName() + "/data.json",
+        url: "http://localhost:8082/approve/" + collectionName + "?uri=" + getPathName() + "/data.json",
         dataType: 'json',
         crossDomain: true,
         type: 'POST',

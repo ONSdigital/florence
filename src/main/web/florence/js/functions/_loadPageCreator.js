@@ -17,7 +17,7 @@ function loadPageCreator () {
     console.log(newUri)
 
     $.ajax({
-        url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
+        url: "http://localhost:8082/content/" + collectionName + "?uri=" + newUri + "/data.json",
         dataType: 'json',
         crossDomain: true,
         type: 'POST',
