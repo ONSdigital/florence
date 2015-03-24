@@ -2,7 +2,7 @@ function publish(collectionName) {
 
     // Open the file for editing
     $.ajax({
-        url: "http://localhost:8082/publish/" + collectionName,
+        url: "/zebedee/publish/" + collectionName,
         dataType: 'json',
         crossDomain: true,
         type: 'POST',

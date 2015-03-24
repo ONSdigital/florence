@@ -8,6 +8,9 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -20,8 +23,8 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
-* Routes all traffic to Tredegar, Unless it is recognised as a florence file being requested.
-*/
+ * Routes all traffic to Tredegar, Unless it is recognised as a florence file being requested.
+ */
 public class TredegarProxy implements Filter {
 
 
@@ -52,29 +55,40 @@ public class TredegarProxy implements Filter {
                 requestBaseUrl = zebedeeBaseUrl;
             }
 
+            HttpRequestBase proxyRequest;
+
+            switch (request.getMethod()) {
+                case "POST":
+                    proxyRequest = new HttpPost(requestBaseUrl + requestUri + "?" + requestQueryString);
+                    ((HttpPost) proxyRequest).setEntity(new InputStreamEntity(request.getInputStream()));
+                    break;
+                default:
+                    proxyRequest = new HttpGet(requestBaseUrl + requestUri + "?" + requestQueryString);
+                    break;
+            }
+
             CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpGet httpGet = new HttpGet(requestBaseUrl + requestUri + "?" + requestQueryString);
 
             // copy the request headers.
             Enumeration<String> headerNames = request.getHeaderNames();
 
             String accessToken = "";
 
-            while (headerNames.hasMoreElements())
-            {
+            while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
-                httpGet.addHeader(headerName, request.getHeader(headerName));
+
+                if (!headerName.equals("Content-Length"))
+                    proxyRequest.addHeader(headerName, request.getHeader(headerName));
 
                 if (headerName.equals("access_token"))
                     accessToken = request.getHeader("access_token");
             }
 
-            if (requestBaseUrl == zebedeeBaseUrl && StringUtils.isNotEmpty(accessToken))
-            {
-                httpGet.addHeader("X-Florence-Token", accessToken);
+            if (requestBaseUrl == zebedeeBaseUrl && StringUtils.isNotEmpty(accessToken)) {
+                proxyRequest.addHeader("X-Florence-Token", accessToken);
             }
 
-            CloseableHttpResponse proxyResponse = httpClient.execute(httpGet);
+            CloseableHttpResponse proxyResponse = httpClient.execute(proxyRequest);
 
             try {
                 HttpEntity responseEntity = proxyResponse.getEntity();
@@ -84,7 +98,11 @@ public class TredegarProxy implements Filter {
                     response.setHeader(header.getName(), header.getValue());
                 }
 
-                IOUtils.copy(responseEntity.getContent(), response.getOutputStream());
+                response.setStatus(proxyResponse.getStatusLine().getStatusCode());
+
+                if (responseEntity != null && responseEntity.getContent() != null)
+                    IOUtils.copy(responseEntity.getContent(), response.getOutputStream());
+
                 EntityUtils.consume(responseEntity);
 
             } catch (IOException e) {
