@@ -120,13 +120,14 @@ function bulletinEditor(collectionName, data){
     $(".fl-panel--editor__sections__section-item__edit_"+index).click(function() {
       editedValue = $("#section_markdown_" + index).val();
 
-      $('body').prepend('<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>');
-
-      $('body').prepend('<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
+      var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
+      var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
       '<div id="wmd-button-bar"></div>' +
       '<textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedValue + '</textarea>' +
       '<button id="finish">Finish editing</button>' +
-      '</div>');
+      '</div>';
+
+      $('body').prepend(editorPrev, editorEdit);
 
       $("#finish").click(function(){
         editedText = $('#wmd-input').val();
@@ -152,8 +153,7 @@ function bulletinEditor(collectionName, data){
   sortable();
 
   // Save ordered sections
-  $('.fl-panel--editor__nav__save').unbind("click");
-  $(".fl-panel--editor__nav__save").click(function() {
+  $('.fl-panel--editor__nav__save').unbind("click").click(function() {
     var order = $(".fl-editor__sections").sortable('toArray');
     $(order).each(function (index, name) {
       var title = $('#section__' + name).val();
@@ -170,14 +170,14 @@ function bulletinEditor(collectionName, data){
 
     $("#addSection").click(function () {
       $('.fl-editor__sections').append(
-          '<div id="' + lastIndex + '" class="list" style="background-color:grey; color:white;">' +
+        '<div id="' + lastIndex + '" class="list" style="background-color:grey; color:white;">' +
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Title ' +
           '<textarea id="section__' + lastIndex + '"></textarea>' +
           '<textarea style="display: none;" id="section_markdown_' + lastIndex + '"></textarea>' +
           '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndex + '">Edit</button>' +
           '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndex + '">Delete</button>' +
-          '</div>');
+        '</div>');
       sortable();
       saveNewSection();
     });
@@ -195,10 +195,9 @@ function bulletinEditor(collectionName, data){
     $("#metadata-list").remove();
     bulletinEditor(collectionName, data);
   }
-
 }
 
-function callZebedee(success,error,opts){
+function callZebedee(success, error, opts){
 
   $.ajax({
     url: "/zebedee/login",
@@ -210,12 +209,12 @@ function callZebedee(success,error,opts){
       password: password
     }),
     success: function (response) {
-        console.log(response);
-        document.cookie = "access_token=" + response;
-        console.log('authenticated');
+      console.log(response);
+      document.cookie = "access_token=" + response;
+      console.log('authenticated');
     },
     error: function (response) {
-        console.log('fail');
+      console.log('fail');
     }
   });
 }
@@ -438,8 +437,7 @@ function publish(collectionName) {
   });
 }
 function removePreviewColClasses(){
-  $('.fl-panel--preview').removeClass('col--4')
-                         .removeClass('col--8');
+  $('.fl-panel--preview').removeClass('col--4').removeClass('col--8');
 }function removeSubMenus(){
   //$('.fl-panel--sub-menu').hide();
   $('.fl-panel--sub-menu').empty();
@@ -510,8 +508,8 @@ function updateContent(collectionName, content) {
     success: function (message) {
       console.log("Updating completed" + message);
       //
-      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl")
-                                      .get(0).contentDocument.location.reload(true);
+      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+      $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
     },
     error: function (error) {
       console.log(error);
@@ -769,25 +767,26 @@ function viewController(view){
     return accessToken() != ''
   }
 }
-function viewLogIn(){
+function viewLogIn() {
 
 var login_form =
   'email:<input class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1"></input>' +
   '<br>'+
   'password:<input class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1"></input>'+
   '<br>'+
-  '<button class="fl-panel--user-and-access__login">Log in</button>'
+  '<button class="fl-panel--user-and-access__login">Log in</button>';
 
   $('.fl-view').prepend(login_form);
 
   $('.fl-panel--user-and-access__login').click(function(){
     var email = $('.fl-user-and-access__email').val();
     var password = $('.fl-user-and-access__password').val();
-    console.log(email)
-    console.log(password)
+    console.log(email);
+    console.log(password);
     authenticate(email,password);
   })
 }
+
 function viewUserAndAccess(view) {
 
   if (view == 'create') {
@@ -850,7 +849,6 @@ function viewWorkspace(){
   var intIntervalTime = 100;
   var collectionName = localStorage.getItem("collection");
 
-
   function accordion() {
     $(function () {
       $("#accordion").accordion(
@@ -862,7 +860,6 @@ function viewWorkspace(){
       );
     });
   }
-
 
   var workspace_menu_main =
     '<nav class="fl-panel fl-panel--menu">' +

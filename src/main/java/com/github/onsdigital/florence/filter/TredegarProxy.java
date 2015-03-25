@@ -3,7 +3,6 @@ package com.github.onsdigital.florence.filter;
 import com.github.davidcarboni.restolino.framework.Filter;
 import com.github.onsdigital.florence.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -73,23 +72,22 @@ public class TredegarProxy implements Filter {
 
             // copy the request headers.
             Enumeration<String> headerNames = request.getHeaderNames();
-
             String accessToken = "";
 
-            while (headerNames.hasMoreElements()) {
-                String headerName = headerNames.nextElement();
-
-                if (!headerName.equals("Content-Length") &&
-                        !headerName.equals("Transfer-Encoding"))
-                    proxyRequest.addHeader(headerName, request.getHeader(headerName));
-
-                if (headerName.equals("access_token"))
-                    accessToken = request.getHeader("access_token");
-            }
-
-            if (requestBaseUrl == zebedeeBaseUrl && StringUtils.isNotEmpty(accessToken)) {
-                proxyRequest.addHeader("X-Florence-Token", accessToken);
-            }
+//            while (headerNames.hasMoreElements()) {
+//                String headerName = headerNames.nextElement();
+//
+//                if (!headerName.equals("Content-Length") &&
+//                        !headerName.equals("Transfer-Encoding"))
+//                    proxyRequest.addHeader(headerName, request.getHeader(headerName));
+//
+//                if (headerName.equals("access_token"))
+//                    accessToken = request.getHeader("access_token");
+//            }
+//
+//            if (requestBaseUrl == zebedeeBaseUrl && StringUtils.isNotEmpty(accessToken)) {
+//                proxyRequest.addHeader("X-Florence-Token", accessToken);
+//            }
 
             CloseableHttpResponse proxyResponse = httpClient.execute(proxyRequest);
 
