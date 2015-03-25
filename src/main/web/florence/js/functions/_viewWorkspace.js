@@ -48,13 +48,23 @@ function viewWorkspace(){
               'Demo: <input value="Tab 2 content"><br>' +
               'Demo: <input value="Tab 2 content"><br>' +
               'Demo: <input value="Tab 2 content"><br>' +
-              'Demo: <input value="Tab 2 content"><br>' +
-              'Demo: <input value="Tab 2 content"><br>' +
             '</div>' +
           '<section class="fl-editor__metadata">Content section</section>' +
             '<div id="content-section">' +
-              '<textarea class="fl-editor__headline" name="fl-editor__headline" cols="40" rows="5"></textarea>' +
+              '<textarea class="fl-editor__headline" name="fl-editor__headline"></textarea>' +
               '<article class="fl-editor__sections"></article>' +
+            '</div>' +
+          '<section class="fl-editor__metadata">Accordion section</section>' +
+            '<div id="content-section">' +
+              '<article class="fl-editor__accordion"></article>' +
+            '</div>' +
+          '<section class="fl-editor__metadata">Related bulletins</section>' +
+            '<div id="content-section">' +
+              '<article class="fl-editor__related"></article>' +
+            '</div>' +
+          '<section class="fl-editor__metadata">External links</section>' +
+            '<div id="content-section">' +
+              '<article class="fl-editor__external"></article>' +
             '</div>' +
         '</div>' +
       '</section>' +
