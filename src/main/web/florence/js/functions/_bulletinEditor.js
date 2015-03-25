@@ -1,6 +1,7 @@
 function bulletinEditor(collectionName, data){
 
   var newSections = [];
+  var newTabs = [];
   var lastIndexSection, lastIndexTab;
 
   $('.fl-editor__headline').hide();
@@ -100,18 +101,6 @@ function bulletinEditor(collectionName, data){
     });
   });
 
-  // Save ordered sections
-  $('.fl-panel--editor__nav__save').unbind("click").click(function() {
-    var orderSection = $(".fl-editor__sections").sortable('toArray');
-    $(orderSection).each(function (index, name) {
-      var title = $('#section__' + name).val();
-      var markdown = data.sections[index].markdown;
-      newSections[parseInt(index)] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    updateContent(collectionName, JSON.stringify(data));
-  });
-
   //Add new sections
   if ($("#addSection").length === 0) {
     $(".fl-panel--editor__nav").prepend('<button id="addSection">Add new section</button>');
@@ -193,18 +182,6 @@ function bulletinEditor(collectionName, data){
     });
   });
 
-  // Save ordered accordion
-  $('.fl-panel--editor__nav__save').unbind("click").click(function() {
-    var orderTab = $(".fl-editor__accordion").sortable('toArray');
-    $(orderTab).each(function (index, name) {
-      var title = $('#tab__' + name).val();
-      var markdown = data.accordion[index].markdown;
-      newSections[parseInt(index)] = {title: title, markdown: markdown};
-    });
-    data.accordion = newSections;
-    updateContent(collectionName, JSON.stringify(data));
-  });
-
   //Add new tab
   if ($("#addTab").length === 0) {
     $(".fl-panel--editor__nav").prepend('<button id="addTab">Add new tab</button>');
@@ -229,9 +206,9 @@ function bulletinEditor(collectionName, data){
     $(orderTab).each(function(index, name){
       var title = $('#tab__'+name).val();
       var markdown = $('#tab_markdown_'+name).val();
-      newSections[parseInt(index)] = {title: title, markdown: markdown};
+      newTabs[parseInt(index)] = {title: title, markdown: markdown};
     });
-    data.accordion = newSections;
+    data.accordion = newTabs;
     $(".tab-list").remove();
     $("#metadata-list").remove();
     bulletinEditor(collectionName, data);
@@ -241,5 +218,27 @@ function bulletinEditor(collectionName, data){
     $(".fl-editor__accordion").sortable();
   }
   sortableTabs();
+
+  // Save
+  $('.fl-panel--editor__nav__save').unbind("click").click(function() {
+    // Sections
+    var orderSection = $(".fl-editor__sections").sortable('toArray');
+    $(orderSection).each(function (indexS, nameS) {
+      var title = $('#section__' + nameS).val();
+      var markdown = data.sections[parseInt(nameS)].markdown;
+      newSections[parseInt(indexS)] = {title: title, markdown: markdown};
+    });
+    data.sections = newSections;
+    // Tabs
+    var orderTab = $(".fl-editor__accordion").sortable('toArray');
+    $(orderTab).each(function (indexT, nameT) {
+      var title = $('#tab__' + nameT).val();
+      var markdown = data.accordion[parseInt(nameT)].markdown;
+      newTabs[parseInt(indexT)] = {title: title, markdown: markdown};
+    });
+    data.accordion = newTabs;
+
+    updateContent(collectionName, JSON.stringify(data));
+  });
 }
 
