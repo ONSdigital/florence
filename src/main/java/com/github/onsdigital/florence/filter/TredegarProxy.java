@@ -15,6 +15,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -80,9 +81,13 @@ public class TredegarProxy implements Filter {
 
                 if (headerName.equals("Cookie"))
                     proxyRequest.addHeader(headerName, request.getHeader(headerName));
+            }
 
-                if (headerName.equals("access_token"))
-                    accessToken = request.getHeader("access_token");
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if (cookie.getName().equals("access_token"))
+                        accessToken = cookie.getValue();
+                }
             }
 
             if (requestBaseUrl == zebedeeBaseUrl && StringUtils.isNotEmpty(accessToken)) {
