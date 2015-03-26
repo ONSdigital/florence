@@ -1,9 +1,9 @@
 function viewLogIn() {
 
 var login_form =
-  'email:<input class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1"></input>' +
+  'email:<input type="email" class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1" />' +
   '<br>'+
-  'password:<input class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1"></input>'+
+  'password:<input type="password" class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1" />'+
   '<br>'+
   '<button class="fl-panel--user-and-access__login">Log in</button>';
 
