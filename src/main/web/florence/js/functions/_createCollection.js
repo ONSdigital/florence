@@ -17,15 +17,12 @@ function createCollection() {
     crossDomain: true,
     type: 'POST',
     data: JSON.stringify({name: collectionName, publishDate: publishDate}),
-    headers: {
-      "X-Florence-Token": accessToken()
-    },
     success: function () {
       console.log("Collection " + collectionName + " created" );
       viewController('collections');
     },
     error: function (jqxhr) {
-      console.log('Error creating collection' + jqxhr.responseText);
+      handleApiError(jqxhr);
     }
   });
 }
