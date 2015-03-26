@@ -37,10 +37,11 @@ function viewWorkspace(){
     '</section>';
 
   // Metadata and correction collapsible sections
-  var workspace_menu_sub_edit =
+    var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +
       '<section style="overflow: scroll;" class="fl-editor">' +
         '<div id="accordion">' +
+        // section > div necessary for accordion
           '<section class="fl-editor__metadata">Metadata section</section>' +
             '<div id="metadata-section"></div>' +
           '<section class="fl-editor__metadata">Correction section</section>' +
@@ -55,15 +56,15 @@ function viewWorkspace(){
               '<article class="fl-editor__sections"></article>' +
             '</div>' +
           '<section class="fl-editor__metadata">Accordion section</section>' +
-            '<div id="content-section">' +
+            '<div id="accordion-section">' +
               '<article class="fl-editor__accordion"></article>' +
             '</div>' +
           '<section class="fl-editor__metadata">Related bulletins</section>' +
-            '<div id="content-section">' +
+            '<div id="related-section">' +
               '<article class="fl-editor__related"></article>' +
             '</div>' +
           '<section class="fl-editor__metadata">External links</section>' +
-            '<div id="content-section">' +
+            '<div id="external-section">' +
               '<article class="fl-editor__external"></article>' +
             '</div>' +
         '</div>' +
