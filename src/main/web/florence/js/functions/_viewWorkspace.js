@@ -116,7 +116,7 @@ function viewWorkspace(){
 
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')){
-    //
+      $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')){
@@ -130,7 +130,6 @@ function viewWorkspace(){
       $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
       // Clear local storage
       localStorage.removeItem("pageurl");
-
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
       accordion();
