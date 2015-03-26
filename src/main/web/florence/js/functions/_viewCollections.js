@@ -4,12 +4,15 @@ function viewCollections() {
     '<h1>Select a collection</h1>' +
     '<div class="fl-collections-holder"></div>' +
     '<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
+    '<button id="test"> test </button>'+
     '</section>';
 
   $.ajax({
     url: "/zebedee/collections",
     type: "get",
     crossDomain: true,
+    headers:{ "X-Florence-Token":accessToken() }
+
     success: function (data) {
       populateCollectionTable(data);
     },
@@ -26,6 +29,7 @@ function viewCollections() {
             '<tr>' +
               '<th>Collection name</th>' +
               '<th>Publish time and date</th>' +
+              '<th></th>'+
             '</tr>';
 
       $.each(data, function(i, item) {
@@ -35,6 +39,7 @@ function viewCollections() {
             '<tr class="fl-collections-table-row" data-id="' + item.id + '">' +
               '<td>' + item.name + '</td>' +
               '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + date.getMinutes() + '</td>' +
+              '<td><button class="view-collection-button" id="' + item.id +'"> View Collection</button></td>'+
             '</tr>';
       });
 
@@ -134,6 +139,13 @@ function viewCollections() {
 	'<button class="fl-button fl-button--cancel">Cancel</button>' +
 	'</section>';
 
+  var view_collection =
+  '<h1 class="collection-name"></h1>' +
+  '<h2>In progress</h2>'+
+  '<section class="fl-collection" id="in-progress-uris"></section>'+
+  '<h2>Approved</h2>'+
+  '<section class="fl-collection" id="approved-uris"></section>'
+
 	//build view
 	$('.fl-view').html(select_collections + selected_collection);
 
@@ -148,4 +160,34 @@ function viewCollections() {
 			viewController('collections');
 		});
 	});
+
+
+  $('#test').click(function(){
+    var collectionId = 'collection1'
+    $.ajax({
+      url:'/zebedee/collection/'+ collectionId,
+      headers:{ "X-Florence-Token":accessToken() }
+    })
+    .done(function(response){
+      var htmlStart,htmlEnd
+      htmlStart = '<td>'
+      htmlEnd   = '</td>'+'<td><button class= "fl-button move-button"> move </button></td>'
+
+      $('.fl-view').html(view_collection)
+      response.inProgressUris.map(function(uri){
+        $('#in-progress-uris').append(htmlStart + uri + htmlEnd)
+
+        $('.move-button').click(function(){
+          console.log('move request sent')
+          transfer(collectionId,'collection2',uri)
+        });
+      });
+
+      response.approvedUris.map(function(uri){
+        $('#approved-uris').append(htmlStart + uri + htmlEnd)
+      });
+
+    })
+  })
 }
+
