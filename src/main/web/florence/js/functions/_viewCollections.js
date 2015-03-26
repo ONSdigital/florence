@@ -10,8 +10,15 @@ function viewCollections() {
     url: "/zebedee/collections",
     type: "get",
     crossDomain: true,
-    headers:{ "X-Florence-Token":accessToken() }
-    }).done(function(data) {
+    success: function (data) {
+      populateCollectionTable(data);
+    },
+    error: function (jqxhr) {
+      handleApiError(jqxhr);
+    }
+  });
+
+  function populateCollectionTable(data) {
 
       var collection_table =
         '<table class="fl-collections-table">' +
@@ -52,7 +59,7 @@ function viewCollections() {
           viewCollectionDetails(collectionId);
         }
       });
-    });
+    }
 
 
   var selected_collection =
@@ -141,5 +148,4 @@ function viewCollections() {
 			viewController('collections');
 		});
 	});
-
 }
