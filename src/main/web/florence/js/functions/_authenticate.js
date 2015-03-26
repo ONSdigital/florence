@@ -14,9 +14,10 @@ function authenticate(email,password){
       console.log(response);
       document.cookie="access_token="+response + ";path=/";
       console.log('authenticated');
+      viewController();
     },
     error: function (response) {
-      console.log('fail');
+      handleApiError(response)
     }
   });
 
