@@ -116,7 +116,7 @@ function viewWorkspace(){
 
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')){
-      $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
+      enablePreview();
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')){
