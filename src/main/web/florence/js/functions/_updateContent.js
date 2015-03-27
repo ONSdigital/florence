@@ -1,14 +1,10 @@
-function updateContent(collectionName, content) {
+function updateContent(collectionName, path, content) {
   // Update content
   $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + getPathName() + "/data.json",
+    url: "/zebedee/content/" + collectionName + "?uri=" + path + "/data.json",
     dataType: 'json',
-    crossDomain: true,
     type: 'POST',
     data: content,
-    headers: {
-      "X-Florence-Token":accessToken()
-    },
     success: function (message) {
       console.log("Updating completed" + message);
       //
@@ -16,7 +12,12 @@ function updateContent(collectionName, content) {
       $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
     },
     error: function (error) {
-      console.log(error);
+      if(response.status == 400) {
+        alert("Cannot edit this file. It is already part of another collection.");
+      }
+      else {
+        handleApiError(error);
+      }
     }
   });
 }
