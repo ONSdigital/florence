@@ -9,11 +9,9 @@ function viewCollectionDetails(collectionName) {
 
     var collection_summary =
       '<h1>' + data.name + '</h1>' +
-      '<p>0 New pages (todo)</p>' +
-      '<p>0 Edited pages (todo)</p>' +
-      '<p>0 Deleted pages (todo)</p>' +
-      '<p>' + data.inProgressUris.length + ' Pages awaiting review</p>' +
-      '<p>' + data.approvedUris.length + ' Pages approved</p>';
+      '<p>' + data.inProgressUris.length + ' Pages in progress</p>' +
+      '<p>' + data.completeUris.length + ' Pages awaiting review</p>' +
+      '<p>' + data.reviewedUris.length + ' Pages awaiting approval</p>';
 
     $('.fl-panel--collection-details-container').html(collection_summary);
   });
