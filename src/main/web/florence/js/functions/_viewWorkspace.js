@@ -133,7 +133,7 @@ function viewWorkspace(){
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
       accordion();
-      loadPageDataIntoEditor();
+      loadPageDataIntoEditor(localStorage.getItem("collection"));
       setInterval(setupPageLocation, intIntervalTime);
 
       $('.fl-panel--editor__nav__approve').click(function () {
