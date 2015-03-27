@@ -11,12 +11,12 @@ function updateContent(collectionName, path, content) {
       $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
       $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
     },
-    error: function (error) {
+    error: function (response) {
       if(response.status == 400) {
         alert("Cannot edit this file. It is already part of another collection.");
       }
       else {
-        handleApiError(error);
+        handleApiError(response);
       }
     }
   });
