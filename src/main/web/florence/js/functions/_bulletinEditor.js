@@ -238,7 +238,7 @@ function bulletinEditor(collectionName, data){
     });
     data.accordion = newTabs;
 
-    updateContent(collectionName, JSON.stringify(data));
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
 }
 
