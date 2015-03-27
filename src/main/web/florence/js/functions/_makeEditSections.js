@@ -1,14 +1,19 @@
-function makeEditSections(collectionName, response){
-  if (response.type === 'bulletin'){
-      bulletinEditor(collectionName, response);
+function makeEditSections(collectionName, response) {
+  if (response.type === 'bulletin') {
+    bulletinEditor(collectionName, response);
   } else {
     $('.fl-editor__sections').hide();
     $("#addSection").remove();
     $('.fl-editor__headline').show().val(JSON.stringify(response, null, 2));
 
-    $('.fl-panel--editor__nav__save').unbind( "click" ).click(function() {
+    $('.fl-panel--editor__nav__save').unbind("click").click(function () {
       pageData = $('.fl-editor__headline').val();
-      updateContent(collectionName, pageData);
+      updateContent(collectionName, getPathName(), pageData);
     });
   }
+
+  // complete
+  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
+    completeContent(collectionName, getPathName());
+  });
 }
