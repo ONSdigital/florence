@@ -16,41 +16,41 @@ function loadReviewScreen(collectionName){
   function populateAwaitingReviewList(data) {
 
     var review_list = '<ul>';
+    var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
     $.each(data.completeUris, function(i, item) {
-
-
-      review_list += '<li>' + item + '</li>';
-
-      // display only the path
-
-      // store the actual file in data attribute
-
-      // add click handler to navigate to that page
-
-      // maintain the currently selected file.
+      pageDataRequests.push(getPageData(collectionName, item,
+        success=function(response) {
+          review_list += '<li class="fl-review-page-list-item" data-path="' + item.uri + '">' + item.name + '</li>';
+          console.log("Got page content for " + response.name);
+        },
+        error=function(response) {
+          handleApiError(response);
+        }));
     });
 
-    review_list += '</ul>';
+    $.when.apply($, pageDataRequests).then(function () {
+      console.log(arguments); //it is an array like object which can be looped
 
-    $('.fl-review-list-holder').html(review_list);
+      review_list += '</ul>';
+      $('.fl-review-list-holder').html(review_list);
 
-    //$('.fl-collections-table-row').click(function() {
-    //
-    //  console.log('Collection row clicked for id: ' + $(this).attr('data-id'));
-    //  var collectionId = $(this).attr('data-id');
-    //
-    //  if(collectionId) {
-    //
-    //    $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
-    //    $('.fl-panel--collection-details').show();
-    //    $('.fl-create-collection-button').hide();
-    //
-    //    $(this).addClass('fl-panel--collections__selected');
-    //
-    //    viewCollectionDetails(collectionId);
-    //  }
-    //});
+      console.log(review_list);
+
+      $.each(arguments, function (i, data) {
+        console.log(data); //data is the value returned by each of the ajax requests
+      });
+    });
+
+    $('.fl-review-page-list-item').click(function() {
+      var pageUrl = $(this).attr('data-path');
+      console.log('Collection row clicked for id: ' + pageUrl);
+      if(pageUrl) {
+        $('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
+        $(this).addClass('fl-panel-review-page-item__selected');
+        setupPageLocation(pageUrl)
+      }
+    });
   }
 
 }

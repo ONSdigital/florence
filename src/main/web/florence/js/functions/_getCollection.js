@@ -1,5 +1,5 @@
 function getCollection(collectionName, success, error) {
-  $.ajax({
+  return $.ajax({
     url: "/zebedee/collection/" + collectionName,
     dataType: 'json',
     type: 'GET',
