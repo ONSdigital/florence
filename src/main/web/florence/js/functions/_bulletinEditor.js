@@ -233,7 +233,8 @@ function bulletinEditor(collectionName, data){
   } else {
     $(data.relatedBulletins).each(function (iBulletin, bulletin) {
       lastIndexRelated = iBulletin + 1;
-      var element = $('.fl-editor__related').append(
+      console.log(lastIndexRelated);
+      var element = $('#related-section').append(
           '<div id="' + iBulletin + '" class="bulletin-list" style="background-color:grey; color:white;">' +
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Link ' +
@@ -256,20 +257,24 @@ function bulletinEditor(collectionName, data){
     });
   }
 
+    console.log(lastIndexRelated);
+
 //Add new related
   if ($("#addBulletin").length === 0) {
+    var lastIndexRelatedScope = lastIndexRelated;
+    console.log(lastIndexRelatedScope);
     $("#related-section").append('<button id="addBulletin">Add new link</button>');
     $("#addBulletin").click(function () {
-      $('.fl-editor__related').append(
-          '<div id="' + lastIndexRelated + '" class="bulletin-list" style="background-color:grey; color:white;">' +
+      $('#related-section').append(
+          '<div id="' + lastIndexRelatedScope + '" class="bulletin-list" style="background-color:grey; color:white;">' +
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Link ' +
-          '<textarea id="bulletin__' + lastIndexRelated + '" cols="50">' + 'Browse to the related bulletin and click Get' + '</textarea>' +
-          '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
+          '<textarea id="bulletin__' + lastIndexRelatedScope + '" placeholder="Paste the related bulletin link and click Get" cols="50"></textarea>' +
+          '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelatedScope + '">Get</button>' +
           '</div>');
 
-      $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
-        var bulletinurl = $('#bulletin__' + lastIndexRelated).val();
+      $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelatedScope).one('click', function () {
+        var bulletinurl = $('#bulletin__' + lastIndexRelatedScope).val();
         var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
         $.ajax({
           url: bulletinurldata,
@@ -277,12 +282,12 @@ function bulletinEditor(collectionName, data){
           crossDomain: true,
           success: function (relatedData) {
             if (relatedData.type === 'bulletin') {
-              $('#bulletin__' + lastIndexRelated).val(relatedData.uri);
+              $('#bulletin__' + lastIndexRelatedScope).val(relatedData.uri);
               $('.bulletin-list').append(
-                  '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelated + '"></textarea>' +
-                  '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelated + '"></textarea>');
-              $('#bulletin_name_' + lastIndexRelated).val(relatedData.name);
-              $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
+                  '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelatedScope + '"></textarea>' +
+                  '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelatedScope + '"></textarea>');
+              $('#bulletin_name_' + lastIndexRelatedScope).val(relatedData.name);
+              $('#bulletin_summary_' + lastIndexRelatedScope).val(relatedData.summary);
               saveNewBulletin();
               bulletinEditor(collectionName, data);
             } else {
@@ -309,12 +314,13 @@ function bulletinEditor(collectionName, data){
     $(orderBulletin).each(function(iorderBulletin, nameB){
       var uri = $('#bulletin__'+nameB).val();
       var summary = $('#bulletin_summary_'+nameB).val();
-      var name = $('#bulletin_name_'+nameB).val();
-      newRelated[parseInt(iorderBulletin)] = {uri: uri, name: name, summary: summary};
+      var names = $('#bulletin_name_'+nameB).val();
+      newRelated[parseInt(iorderBulletin)] = {uri: uri, name: names, summary: summary};
     });
     data.relatedBulletins = newRelated;
     $(".bulletin-list").remove();
     $("#metadata-list").remove();
+      console.log(data.relatedBulletins);
     bulletinEditor(collectionName, data);
   }
 
