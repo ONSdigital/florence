@@ -193,11 +193,9 @@ function makeCollectionView(collectionId,collections){
 
                   $('#fl-select-destination-'+i).append(
                     collections
-                    .filter(function(item){return item.id != collectionId})
-                    .map(function(item){
-                      console.log(item)
-                      return '<option>' + item.id + '</option>'
-                    }).join()
+                    .filter(function(item) { return item.id != collectionId })
+                    .map(function(item) { return '<option>' + item.id + '</option>' })
+                    .join()
                     )
 
                   $('#fl-move-'+i).click(function(){
