@@ -97,8 +97,13 @@ function viewWorkspace(){
       '</nav>' +
     '</section>';
 
+  var workspace_menu_review =
+    '<section class="fl-panel">' +
+    '<div class="fl-review-list-holder"></div>' +
+    '<button class="fl-button fl-button--big fl-button--center fl-edit-button">Edit this page</button>' +
+    '<button class="fl-button fl-button--big fl-button--center fl-review-button">Happy with this send to content owner</button>' +
+    '</section>';
 
-  //
   var workspace_preview =
     '<section class="fl-panel fl-panel--preview">' +
       '<div class="fl-panel--preview__inner">' +
@@ -136,17 +141,21 @@ function viewWorkspace(){
       loadPageDataIntoEditor(localStorage.getItem("collection"));
       setInterval(setupPageLocation, intIntervalTime);
 
-      $('.fl-panel--editor__nav__approve').click(function () {
-          approve(collectionName);
-      });
-
       $('.fl-panel--editor__nav__publish').click(function () {
           publish(collectionName);
       });
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--review')){
-      //
+
+      $('.fl-panel--sub-menu').append(workspace_menu_review);
+      $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
+
+      localStorage.removeItem("pageurl");
+      var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+      localStorage.setItem("pageurl",pageurl);
+
+      loadReviewScreen(collectionName);
     }
 
     else {
