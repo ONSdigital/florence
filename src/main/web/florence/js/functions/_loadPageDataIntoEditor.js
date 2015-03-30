@@ -6,7 +6,6 @@ function loadPageDataIntoEditor(collectionName){
   $.ajax({
     url: pageurldata,
     dataType: 'json',
-    crossDomain: true,
     success: function(response) {
       makeEditSections(collectionName, response);
     },
