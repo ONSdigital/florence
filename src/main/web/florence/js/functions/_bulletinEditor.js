@@ -9,6 +9,9 @@ function bulletinEditor(collectionName, data){
   $(".section-list").remove();
   $(".tab-list").remove();
   $(".bulletin-list").remove();
+  $("#addSection").remove();
+  $("#addTab").remove();
+  $("#addBulletin").remove();
 
   $("#metadata-list").remove();
 
@@ -91,6 +94,10 @@ function bulletinEditor(collectionName, data){
         data.sections[index].markdown = editedText;
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
+<<<<<<< HEAD
+=======
+        save();
+>>>>>>> Editor; working
       });
 
       markdownEditor();
@@ -106,22 +113,20 @@ function bulletinEditor(collectionName, data){
   });
 
   //Add new sections
-  if ($("#addSection").length === 0) {
-    $("#content-section").append('<button id="addSection">Add new link</button>');
-    $("#addSection").click(function () {
-      $('.fl-editor__sections').append(
-        '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;">' +
-          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-          'Title ' +
-          '<textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-          '<textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-          '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-          '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
-        '</div>');
-      sortableSections();
-      saveNewSection();
-    });
-  }
+  $("#content-section").append('<button id="addSection">Add new link</button>');
+  $("#addSection").click(function () {
+    $('.fl-editor__sections').append(
+      '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;">' +
+        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        'Title ' +
+        '<textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
+        '<textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
+        '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
+        '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
+      '</div>');
+    sortableSections();
+    saveNewSection();
+  });
 
   function saveNewSection() {
     var orderSection = $(".fl-editor__sections").sortable('toArray');
@@ -173,6 +178,10 @@ function bulletinEditor(collectionName, data){
         data.accordion[index].markdown = editedText;
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
+<<<<<<< HEAD
+=======
+        save();
+>>>>>>> Editor; working
       });
 
       markdownEditor();
@@ -188,23 +197,20 @@ function bulletinEditor(collectionName, data){
   });
 
   //Add new tab
-  if ($("#addTab").length === 0) {
-    $("#accordion-section").append('<button id="addTab">Add new tab</button>');
-
-    $("#addTab").click(function () {
-      $('.fl-editor__accordion').append(
-          '<div id="' + lastIndexTab + '" class="tab-list" style="background-color:grey; color:white;">' +
-          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-          'Title ' +
-          '<textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
-          '<textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
-          '<button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
-          '<button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
-          '</div>');
-      sortableTabs();
-      saveNewTab();
-    });
-  }
+  $("#accordion-section").append('<button id="addTab">Add new tab</button>');
+  $("#addTab").click(function () {
+    $('.fl-editor__accordion').append(
+        '<div id="' + lastIndexTab + '" class="tab-list" style="background-color:grey; color:white;">' +
+        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        'Title ' +
+        '<textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
+        '<textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
+        '<button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
+        '<button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
+        '</div>');
+    sortableTabs();
+    saveNewTab();
+  });
 
   function saveNewTab() {
     var orderTab = $(".fl-editor__accordion").sortable('toArray');
@@ -224,17 +230,15 @@ function bulletinEditor(collectionName, data){
   }
   sortableTabs();
 
-  console.log(data.relatedBulletins);
-
   // Related bulletin
-// Load
+  // Load
   if (data.relatedBulletins.length === 0) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedBulletins).each(function (iBulletin, bulletin) {
       lastIndexRelated = iBulletin + 1;
       console.log(lastIndexRelated);
-      var element = $('#related-section').append(
+      var element = $('.fl-editor__related').append(
           '<div id="' + iBulletin + '" class="bulletin-list" style="background-color:grey; color:white;">' +
           '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
           'Link ' +
@@ -257,51 +261,48 @@ function bulletinEditor(collectionName, data){
     });
   }
 
-    console.log(lastIndexRelated);
-
-//Add new related
-  if ($("#addBulletin").length === 0) {
+  //Add new related
+  $("#related-section").append('<button id="addBulletin">Add new link</button>');
+  $("#addBulletin").one('click', function () {
     var lastIndexRelatedScope = lastIndexRelated;
     console.log(lastIndexRelatedScope);
-    $("#related-section").append('<button id="addBulletin">Add new link</button>');
-    $("#addBulletin").click(function () {
-      $('#related-section').append(
-          '<div id="' + lastIndexRelatedScope + '" class="bulletin-list" style="background-color:grey; color:white;">' +
-          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-          'Link ' +
-          '<textarea id="bulletin__' + lastIndexRelatedScope + '" placeholder="Paste the related bulletin link and click Get" cols="50"></textarea>' +
-          '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelatedScope + '">Get</button>' +
-          '</div>');
+    $('.fl-editor__related').append(
+        '<div id="' + lastIndexRelatedScope + '" class="bulletin-list" style="background-color:grey; color:white;">' +
+        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        'Link ' +
+        '<textarea id="bulletin__' + lastIndexRelatedScope + '" placeholder="Paste the related bulletin link and click Get" cols="50"></textarea>' +
+        '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelatedScope + '">Get</button>' +
+        '</div>');
 
-      $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelatedScope).one('click', function () {
-        var bulletinurl = $('#bulletin__' + lastIndexRelatedScope).val();
-        var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
-        $.ajax({
-          url: bulletinurldata,
-          dataType: 'json',
-          crossDomain: true,
-          success: function (relatedData) {
-            if (relatedData.type === 'bulletin') {
-              $('#bulletin__' + lastIndexRelatedScope).val(relatedData.uri);
-              $('.bulletin-list').append(
-                  '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelatedScope + '"></textarea>' +
-                  '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelatedScope + '"></textarea>');
-              $('#bulletin_name_' + lastIndexRelatedScope).val(relatedData.name);
-              $('#bulletin_summary_' + lastIndexRelatedScope).val(relatedData.summary);
-              saveNewBulletin();
-              bulletinEditor(collectionName, data);
-            } else {
-              alert("This is not a bulletin");
-            }
-          },
-          error: function () {
-            console.log('No page data returned');
+    $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelatedScope).one('click', function () {
+      var bulletinurl = $('#bulletin__' + lastIndexRelatedScope).val();
+      var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+      $.ajax({
+        url: bulletinurldata,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'bulletin') {
+            $('#bulletin__' + lastIndexRelatedScope).val(relatedData.uri);
+            $('.bulletin-list').append(
+                '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelatedScope + '"></textarea>' +
+                '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelatedScope + '"></textarea>');
+            $('#bulletin_name_' + lastIndexRelatedScope).val(relatedData.name);
+            $('#bulletin_summary_' + lastIndexRelatedScope).val(relatedData.summary);
+            saveNewBulletin();
+            bulletinEditor(collectionName, data);
+          } else {
+            alert("This is not a bulletin");
           }
-        });
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
       });
-      sortableRelated();
     });
-  }
+    sortableRelated();
+  });
+
 
   function sortableRelated() {
     $(".fl-editor__related").sortable();
@@ -318,13 +319,14 @@ function bulletinEditor(collectionName, data){
       newRelated[parseInt(iorderBulletin)] = {uri: uri, name: names, summary: summary};
     });
     data.relatedBulletins = newRelated;
+    console.log(data.relatedBulletins);
     $(".bulletin-list").remove();
     $("#metadata-list").remove();
-      console.log(data.relatedBulletins);
     bulletinEditor(collectionName, data);
   }
 
   // Save
+<<<<<<< HEAD;
   $('.fl-panel--editor__nav__save').unbind("click").click(function() {
     // Sections
     var orderSection = $(".fl-editor__sections").sortable('toArray');
@@ -355,8 +357,38 @@ function bulletinEditor(collectionName, data){
     updateContent(collectionName, getPathName(), JSON.stringify(data));
     console.log(data);
 
+=======
+  function save() {
+    $('.fl-panel--editor__nav__save').unbind("click").click(function () {
+      // Sections
+      var orderSection = $(".fl-editor__sections").sortable('toArray');
+      $(orderSection).each(function (indexS, nameS) {
+        var title = $('#section__' + nameS).val();
+        var markdown = data.sections[parseInt(nameS)].markdown;
+        newSections[parseInt(indexS)] = {title: title, markdown: markdown};
+      });
+      data.sections = newSections;
+      // Tabs
+      var orderTab = $(".fl-editor__accordion").sortable('toArray');
+      $(orderTab).each(function (indexT, nameT) {
+        var title = $('#tab__' + nameT).val();
+        var markdown = data.accordion[parseInt(nameT)].markdown;
+        newTabs[parseInt(indexT)] = {title: title, markdown: markdown};
+      });
+      data.accordion = newTabs;
+      // Related links
+      var orderBulletin = $(".fl-editor__related").sortable('toArray');
+      $(orderBulletin).each(function (iorderBulletin, nameB) {
+        var uri = $('#bulletin__' + nameB).val();
+        var summary = $('#bulletin_summary_' + nameB).val();
+        var name = $('#bulletin_name_' + nameB).val();
+        newRelated[parseInt(iorderBulletin)] = {uri: uri, name: name, summary: summary};
+      });
+      data.relatedBulletins = newRelated;
+>>>>>>> Editor; working;
 
-    //updateContent(collectionName, JSON.stringify(data));
-  });
-}
+      updateContent(collectionName, JSON.stringify(data));
+    });
+  }
+};
 
