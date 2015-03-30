@@ -192,7 +192,9 @@ function makeCollectionView(collectionId,collections){
                   // populate the list with the ids of all the collections
 
                   $('#fl-select-destination-'+i).append(
-                    collections.map(function(item){
+                    collections
+                    .filter(function(item){return item.id != collectionId})
+                    .map(function(item){
                       console.log(item)
                       return '<option>' + item.id + '</option>'
                     }).join()
