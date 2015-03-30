@@ -1,6 +1,5 @@
 function viewWorkspace(){
 
-  var intIntervalTime = 100;
   var collectionName = localStorage.getItem("collection");
 
   function accordion() {
@@ -13,6 +12,12 @@ function viewWorkspace(){
           }
       );
     });
+  }
+
+  window.intIntervalTime = 100;
+  window.intervalID;
+  function checkPage() {
+    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
   }
 
   var workspace_menu_main =
@@ -140,10 +145,16 @@ function viewWorkspace(){
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
       accordion();
+<<<<<<< HEAD
       loadPageDataIntoEditor(localStorage.getItem("collection"));
       setInterval(function() {
         checkForPageChanged(function() {loadPageDataIntoEditor(collectionName)});
       }, intIntervalTime);
+=======
+      loadPageDataIntoEditor(localStorage.getItem("collection"), true);
+      //setInterval(setupPageLocation, intIntervalTime, true);
+      checkPage();
+>>>>>>> Editor retrieves links automatically
 
       $('.fl-panel--editor__nav__publish').click(function () {
           publish(collectionName);

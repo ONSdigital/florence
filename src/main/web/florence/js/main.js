@@ -40,11 +40,17 @@ function bulletinEditor(collectionName, data){
 
   var newSections = [];
   var newTabs = [];
-  var lastIndexSection, lastIndexTab;
+  var newRelated = [];
+  var lastIndexSection, lastIndexTab, lastIndexRelated;
 
   $('.fl-editor__headline').hide();
   $(".section-list").remove();
   $(".tab-list").remove();
+  $(".bulletin-list").remove();
+  $("#addSection").remove();
+  $("#addTab").remove();
+  $("#addBulletin").remove();
+
   $("#metadata-list").remove();
 
   // Metadata load
@@ -126,6 +132,7 @@ function bulletinEditor(collectionName, data){
         data.sections[index].markdown = editedText;
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
+        save();
       });
 
       markdownEditor();
@@ -135,27 +142,25 @@ function bulletinEditor(collectionName, data){
     $(".fl-panel--editor__sections__section-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
-      saveNewSection();
+      bulletinEditor(collectionName, data);
     });
   });
 
   //Add new sections
-  if ($("#addSection").length === 0) {
-    $(".fl-panel--editor__nav").prepend('<button id="addSection">Add new section</button>');
-    $("#addSection").click(function () {
-      $('.fl-editor__sections').append(
-        '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;">' +
-          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-          'Title ' +
-          '<textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-          '<textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-          '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-          '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
-        '</div>');
-      sortableSections();
-      saveNewSection();
-    });
-  }
+  $("#content-section").append('<button id="addSection">Add new link</button>');
+  $("#addSection").click(function () {
+    $('.fl-editor__sections').append(
+      '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;">' +
+        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        'Title ' +
+        '<textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
+        '<textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
+        '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
+        '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
+      '</div>');
+    sortableSections();
+    saveNewSection();
+  });
 
   function saveNewSection() {
     var orderSection = $(".fl-editor__sections").sortable('toArray');
@@ -205,8 +210,10 @@ function bulletinEditor(collectionName, data){
       $("#finish").click(function(){
         editedText = $('#wmd-input').val();
         data.accordion[index].markdown = editedText;
+        console.log(data.accordion);
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
+        save();
       });
 
       markdownEditor();
@@ -216,28 +223,25 @@ function bulletinEditor(collectionName, data){
     $(".fl-panel--editor__accordion__tab-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.accordion.splice(index, 1);
-      saveNewTab();
+      bulletinEditor(collectionName, data);
     });
   });
 
   //Add new tab
-  if ($("#addTab").length === 0) {
-    $(".fl-panel--editor__nav").prepend('<button id="addTab">Add new tab</button>');
-
-    $("#addTab").click(function () {
-      $('.fl-editor__accordion').append(
-          '<div id="' + lastIndexTab + '" class="tab-list" style="background-color:grey; color:white;">' +
-          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-          'Title ' +
-          '<textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
-          '<textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
-          '<button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
-          '<button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
-          '</div>');
-      sortableTabs();
-      saveNewTab();
-    });
-  }
+  $("#accordion-section").append('<button id="addTab">Add new tab</button>');
+  $("#addTab").click(function () {
+    $('.fl-editor__accordion').append(
+        '<div id="' + lastIndexTab + '" class="tab-list" style="background-color:grey; color:white;">' +
+        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        'Title ' +
+        '<textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
+        '<textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
+        '<button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
+        '<button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
+        '</div>');
+    sortableTabs();
+    saveNewTab();
+  });
 
   function saveNewTab() {
     var orderTab = $(".fl-editor__accordion").sortable('toArray');
@@ -257,19 +261,149 @@ function bulletinEditor(collectionName, data){
   }
   sortableTabs();
 
-  $('.fl-panel--editor__nav__save').unbind("click").click(function() {
-    UpdateData();
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
+  // Related bulletin
+  // Load
+  if (data.relatedBulletins.length === 0) {
+    lastIndexRelated = 0;
+  } else {
+    $(data.relatedBulletins).each(function (iBulletin, bulletin) {
+      lastIndexRelated = iBulletin + 1;
+      console.log(lastIndexRelated);
+      var element = $('.fl-editor__related').append(
+          '<div id="' + iBulletin + '" class="bulletin-list" style="background-color:grey; color:white;">' +
+          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+          'Link ' +
+          '<textarea id="bulletin__' + iBulletin + '" cols="50">' + bulletin.uri + '</textarea>' +
+          '<textarea style="display: none;" id="bulletin_name_' + iBulletin + '">' +
+          bulletin.name + '</textarea>' +
+          '<textarea style="display: none;" id="bulletin_summary_' + iBulletin + '">' +
+          bulletin.summary + '</textarea>' +
+          '<button class="fl-panel--editor__related__bulletin-item__delete_' + iBulletin + '">Delete</button>' +
+          '</div>');
+
+      // Delete
+      $(".fl-panel--editor__related__bulletin-item__delete_" + iBulletin).click(function () {
+        $("#" + iBulletin).remove();
+        data.relatedBulletins.splice(iBulletin, 1);
+        bulletinEditor(collectionName, data);
+      });
+    });
+  }
+
+  //Add new related
+  $("#related-section").append('<button id="addBulletin">Add new link</button>');
+  $("#addBulletin").one('click', function () {
+    $('.fl-editor__related').append(
+        '<div id="' + lastIndexRelated + '" class="bulletin-list" style="background-color:grey; color:white;">' +
+        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        'Link ' +
+        '<textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
+        //'<textarea id="bulletin__' + lastIndexRelated + '" placeholder="Paste the related bulletin link and click Get" cols="50"></textarea>' +
+        '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
+        '</div>');
+
+    // Test
+    uncheckPage();
+    setupPageLocation("false");
+    loadPageDataIntoEditor(collectionName, "false");
+
+    $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
+      var bulletinurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+      var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+      $.ajax({
+        url: bulletinurldata,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'bulletin') {
+            $('#bulletin__' + lastIndexRelated).val(relatedData.uri);
+            $('.bulletin-list').append(
+                '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelated + '"></textarea>' +
+                '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelated + '"></textarea>');
+            $('#bulletin_name_' + lastIndexRelated).val(relatedData.name);
+            $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
+            saveNewBulletin();
+            $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+            checkPage();
+            bulletinEditor(collectionName, data);
+          } else {
+            alert("This is not a bulletin");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+    sortableRelated();
   });
 
-  // complete
-  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-    UpdateData();
-    saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
+  function checkPage() {
+    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
+  }
+
+  function uncheckPage() {
+    clearInterval(window.intervalID);
+  }
+
+  //  $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
+  //    var bulletinurl = $('#bulletin__' + lastIndexRelated).val();
+  //    var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+  //    $.ajax({
+  //      url: bulletinurldata,
+  //      dataType: 'json',
+  //      crossDomain: true,
+  //      success: function (relatedData) {
+  //        if (relatedData.type === 'bulletin') {
+  //          $('#bulletin__' + lastIndexRelated).val(relatedData.uri);
+  //          $('.bulletin-list').append(
+  //              '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelated + '"></textarea>' +
+  //              '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelated + '"></textarea>');
+  //          $('#bulletin_name_' + lastIndexRelated).val(relatedData.name);
+  //          $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
+  //          saveNewBulletin();
+  //          bulletinEditor(collectionName, data);
+  //        } else {
+  //          alert("This is not a bulletin");
+  //        }
+  //      },
+  //      error: function () {
+  //        console.log('No page data returned');
+  //      }
+  //    });
+  //  });
+  //  sortableRelated();
+  //});
+
+
+  function sortableRelated() {
+    $(".fl-editor__related").sortable();
+  }
+
+  sortableRelated();
+
+  function saveNewBulletin() {
+    var orderBulletin = $(".fl-editor__related").sortable('toArray');
+    $(orderBulletin).each(function(iorderBulletin, nameB){
+      var uri = $('#bulletin__'+nameB).val();
+      var summary = $('#bulletin_summary_'+nameB).val();
+      var names = $('#bulletin_name_'+nameB).val();
+      newRelated[parseInt(iorderBulletin)] = {uri: uri, name: names, summary: summary};
+    });
+    data.relatedBulletins = newRelated;
+    console.log(data.relatedBulletins);
+    $(".bulletin-list").remove();
+    $("#metadata-list").remove();
+    bulletinEditor(collectionName, data);
+  }
+
+  // Save
+  $('.fl-panel--editor__nav__save').unbind("click").click(function () {
+    save()
   });
 
-  function UpdateData() {
-// Sections
+  function save() {
+    // Sections
     var orderSection = $(".fl-editor__sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var title = $('#section__' + nameS).val();
@@ -285,6 +419,17 @@ function bulletinEditor(collectionName, data){
       newTabs[parseInt(indexT)] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
+    // Related links
+    var orderBulletin = $(".fl-editor__related").sortable('toArray');
+    $(orderBulletin).each(function (iorderBulletin, nameB) {
+      var uri = $('#bulletin__' + nameB).val();
+      var summary = $('#bulletin_summary_' + nameB).val();
+      var name = $('#bulletin_name_' + nameB).val();
+      newRelated[parseInt(iorderBulletin)] = {uri: uri, name: name, summary: summary};
+    });
+    data.relatedBulletins = newRelated;
+
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
   }
 }
 
@@ -309,13 +454,30 @@ function callZebedee(success, error, opts){
     }
   });
 }
+<<<<<<< HEAD:src/main/web/florence/js/functions/_checkForPageChanged.js
 function checkForPageChanged(onChanged) {
+=======
+function setupPageLocation(cond) {
+
+  if(pageUrl)
+    localStorage.setItem("pageurl", pageUrl);
+>>>>>>> Editor retrieves links automatically:src/main/web/florence/js/functions/_setupPageLocation.js
 
   iframeUrl = localStorage.getItem("pageurl");
   nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
+<<<<<<< HEAD:src/main/web/florence/js/functions/_checkForPageChanged.js
   if (iframeUrl !== nowUrl) {
     onChanged();
     localStorage.setItem("pageurl", nowUrl);
+=======
+  if (cond !== "false") {
+    if (iframeUrl !== nowUrl) {
+      loadPageDataIntoEditor(collectionName, true);
+      localStorage.setItem("pageurl", nowUrl);
+    }
+  } else {
+    loadPageDataIntoEditor(collectionName, "false");
+>>>>>>> Editor retrieves links automatically:src/main/web/florence/js/functions/_setupPageLocation.js
   }
 }
 function saveAndCompleteContent(collectionName, path, content) {
@@ -538,6 +700,7 @@ function makeUrl(args) {
   console.log(accumulator);
   return accumulator.join('/');
 }
+<<<<<<< HEAD
 function loadPageDataIntoEditor(collectionName) {
 
   var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
@@ -580,6 +743,26 @@ function loadPageDataIntoEditor(collectionName) {
       error = function (response) {
         handleApiError(response)
       });
+=======
+function loadPageDataIntoEditor(collectionName, active){
+  var condition = active;
+  if (condition === "false") {
+    // do nothing;
+  } else {
+    var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+    var pageurldata = "/data" + pageurl.split("#!")[1];
+    $.ajax({
+      url: pageurldata,
+      dataType: 'json',
+      success: function (response) {
+        makeEditSections(collectionName, response);
+      },
+      error: function () {
+        console.log('No page data returned');
+        $('.fl-editor').val('');
+      }
+    });
+>>>>>>> Editor retrieves links automatically
   }
 }
 
@@ -804,11 +987,25 @@ function refreshPreview(url) {
 
 
 function updateContent(collectionName, path, content) {
+<<<<<<< HEAD
 
   postContent(collectionName, path, content,
     success = function (response) {
       console.log("Updating completed" + response);
       refreshPreview();
+=======
+  // Update content
+  $.ajax({
+    url: "/zebedee/content/" + collectionName + "?uri=" + path + "/data.json",
+    dataType: 'json',
+    type: 'POST',
+    data: content,
+    success: function (message) {
+      console.log("Updating completed " + message);
+      //
+      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+      $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
+>>>>>>> Editor retrieves links automatically
     },
     error = function (response) {
       if (response.status == 400) {
@@ -1153,7 +1350,6 @@ function viewUserAndAccess(view) {
 
 function viewWorkspace(){
 
-  var intIntervalTime = 100;
   var collectionName = localStorage.getItem("collection");
 
   function accordion() {
@@ -1166,6 +1362,12 @@ function viewWorkspace(){
           }
       );
     });
+  }
+
+  window.intIntervalTime = 100;
+  window.intervalID;
+  function checkPage() {
+    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
   }
 
   var workspace_menu_main =
@@ -1190,10 +1392,11 @@ function viewWorkspace(){
     '</section>';
 
   // Metadata and correction collapsible sections
-  var workspace_menu_sub_edit =
+    var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +
       '<section style="overflow: scroll;" class="fl-editor">' +
         '<div id="accordion">' +
+        // section > div necessary for accordion
           '<section class="fl-editor__metadata">Metadata section</section>' +
             '<div id="metadata-section"></div>' +
           '<section class="fl-editor__metadata">Correction section</section>' +
@@ -1208,15 +1411,15 @@ function viewWorkspace(){
               '<article class="fl-editor__sections"></article>' +
             '</div>' +
           '<section class="fl-editor__metadata">Accordion section</section>' +
-            '<div id="content-section">' +
+            '<div id="accordion-section">' +
               '<article class="fl-editor__accordion"></article>' +
             '</div>' +
           '<section class="fl-editor__metadata">Related bulletins</section>' +
-            '<div id="content-section">' +
+            '<div id="related-section">' +
               '<article class="fl-editor__related"></article>' +
             '</div>' +
           '<section class="fl-editor__metadata">External links</section>' +
-            '<div id="content-section">' +
+            '<div id="external-section">' +
               '<article class="fl-editor__external"></article>' +
             '</div>' +
         '</div>' +
@@ -1292,10 +1495,16 @@ function viewWorkspace(){
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
       accordion();
+<<<<<<< HEAD
       loadPageDataIntoEditor(localStorage.getItem("collection"));
       setInterval(function() {
         checkForPageChanged(function() {loadPageDataIntoEditor(collectionName)});
       }, intIntervalTime);
+=======
+      loadPageDataIntoEditor(localStorage.getItem("collection"), true);
+      //setInterval(setupPageLocation, intIntervalTime, true);
+      checkPage();
+>>>>>>> Editor retrieves links automatically
 
       $('.fl-panel--editor__nav__publish').click(function () {
           publish(collectionName);

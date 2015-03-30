@@ -105,7 +105,6 @@ function bulletinEditor(collectionName, data){
       $("#"+index).remove();
       data.sections.splice(index, 1);
       bulletinEditor(collectionName, data);
-      //saveNewSection();
     });
   });
 
@@ -173,6 +172,7 @@ function bulletinEditor(collectionName, data){
       $("#finish").click(function(){
         editedText = $('#wmd-input').val();
         data.accordion[index].markdown = editedText;
+        console.log(data.accordion);
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
         save();
@@ -186,7 +186,6 @@ function bulletinEditor(collectionName, data){
       $("#"+index).remove();
       data.accordion.splice(index, 1);
       bulletinEditor(collectionName, data);
-      //saveNewTab();
     });
   });
 
@@ -256,18 +255,22 @@ function bulletinEditor(collectionName, data){
   //Add new related
   $("#related-section").append('<button id="addBulletin">Add new link</button>');
   $("#addBulletin").one('click', function () {
-    var lastIndexRelatedScope = lastIndexRelated;
-    console.log(lastIndexRelatedScope);
     $('.fl-editor__related').append(
-        '<div id="' + lastIndexRelatedScope + '" class="bulletin-list" style="background-color:grey; color:white;">' +
+        '<div id="' + lastIndexRelated + '" class="bulletin-list" style="background-color:grey; color:white;">' +
         '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
         'Link ' +
-        '<textarea id="bulletin__' + lastIndexRelatedScope + '" placeholder="Paste the related bulletin link and click Get" cols="50"></textarea>' +
-        '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelatedScope + '">Get</button>' +
+        '<textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
+        //'<textarea id="bulletin__' + lastIndexRelated + '" placeholder="Paste the related bulletin link and click Get" cols="50"></textarea>' +
+        '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
         '</div>');
 
-    $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelatedScope).one('click', function () {
-      var bulletinurl = $('#bulletin__' + lastIndexRelatedScope).val();
+    // Test
+    uncheckPage();
+    setupPageLocation("false");
+    loadPageDataIntoEditor(collectionName, "false");
+
+    $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
+      var bulletinurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
       $.ajax({
         url: bulletinurldata,
@@ -275,13 +278,15 @@ function bulletinEditor(collectionName, data){
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
-            $('#bulletin__' + lastIndexRelatedScope).val(relatedData.uri);
+            $('#bulletin__' + lastIndexRelated).val(relatedData.uri);
             $('.bulletin-list').append(
-                '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelatedScope + '"></textarea>' +
-                '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelatedScope + '"></textarea>');
-            $('#bulletin_name_' + lastIndexRelatedScope).val(relatedData.name);
-            $('#bulletin_summary_' + lastIndexRelatedScope).val(relatedData.summary);
+                '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelated + '"></textarea>' +
+                '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelated + '"></textarea>');
+            $('#bulletin_name_' + lastIndexRelated).val(relatedData.name);
+            $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
             saveNewBulletin();
+            $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+            checkPage();
             bulletinEditor(collectionName, data);
           } else {
             alert("This is not a bulletin");
@@ -294,6 +299,43 @@ function bulletinEditor(collectionName, data){
     });
     sortableRelated();
   });
+
+  function checkPage() {
+    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
+  }
+
+  function uncheckPage() {
+    clearInterval(window.intervalID);
+  }
+
+  //  $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
+  //    var bulletinurl = $('#bulletin__' + lastIndexRelated).val();
+  //    var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+  //    $.ajax({
+  //      url: bulletinurldata,
+  //      dataType: 'json',
+  //      crossDomain: true,
+  //      success: function (relatedData) {
+  //        if (relatedData.type === 'bulletin') {
+  //          $('#bulletin__' + lastIndexRelated).val(relatedData.uri);
+  //          $('.bulletin-list').append(
+  //              '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelated + '"></textarea>' +
+  //              '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelated + '"></textarea>');
+  //          $('#bulletin_name_' + lastIndexRelated).val(relatedData.name);
+  //          $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
+  //          saveNewBulletin();
+  //          bulletinEditor(collectionName, data);
+  //        } else {
+  //          alert("This is not a bulletin");
+  //        }
+  //      },
+  //      error: function () {
+  //        console.log('No page data returned');
+  //      }
+  //    });
+  //  });
+  //  sortableRelated();
+  //});
 
 
   function sortableRelated() {
