@@ -140,7 +140,9 @@ function viewWorkspace(){
       localStorage.setItem("pageurl",pageurl);
       accordion();
       loadPageDataIntoEditor(localStorage.getItem("collection"));
-      setInterval(checkForPageChanged(loadPageDataIntoEditor(collectionName)), intIntervalTime);
+      setInterval(function() {
+        return checkForPageChanged(loadPageDataIntoEditor(collectionName));
+      }, intIntervalTime);
 
       $('.fl-panel--editor__nav__publish').click(function () {
           publish(collectionName);
