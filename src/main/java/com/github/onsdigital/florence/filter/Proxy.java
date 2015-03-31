@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Routes all traffic to Tredegar, Unless it is recognised as a florence file being requested.
  */
-public class TredegarProxy implements Filter {
+public class Proxy implements Filter {
 
 
     private static final String florenceToken = "/florence";
