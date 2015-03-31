@@ -351,5 +351,5 @@ function bulletinEditor(collectionName, data){
 
     updateContent(collectionName, getPathName(), JSON.stringify(data));
   }
-};
+}
 
