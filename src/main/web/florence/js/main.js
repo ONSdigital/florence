@@ -257,9 +257,19 @@ function bulletinEditor(collectionName, data){
   }
   sortableTabs();
 
-  // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function() {
-    // Sections
+    UpdateData();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+  });
+
+  // complete
+  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
+    UpdateData();
+    saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
+  });
+
+  function UpdateData() {
+// Sections
     var orderSection = $(".fl-editor__sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var title = $('#section__' + nameS).val();
@@ -275,9 +285,7 @@ function bulletinEditor(collectionName, data){
       newTabs[parseInt(indexT)] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
-  });
+  }
 }
 
 function callZebedee(success, error, opts){
@@ -301,6 +309,30 @@ function callZebedee(success, error, opts){
     }
   });
 }
+function checkForPageChanged(onChanged) {
+
+  iframeUrl = localStorage.getItem("pageurl");
+  nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
+  if (iframeUrl !== nowUrl) {
+    onChanged();
+    localStorage.setItem("pageurl", nowUrl);
+  }
+}
+function saveAndCompleteContent(collectionName, path, content) {
+  postContent(collectionName, path, content,
+    success = function (response) {
+      completeContent(collectionName, path);
+    },
+    error = function (response) {
+      if (response.status == 400) {
+        alert("Cannot edit this file. It is already part of another collection.");
+      }
+      else {
+        handleApiError(response);
+      }
+    });
+}
+
 function completeContent(collectionName, path) {
   // Update content
   $.ajax({
@@ -309,10 +341,7 @@ function completeContent(collectionName, path) {
     type: 'POST',
     success: function (message) {
       console.log("Page is now marked as complete " + message);
-
-      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-      $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
-
+      refreshPreview();
       //Todo: go back to browse view?
     },
     error: function (response) {
@@ -509,37 +538,60 @@ function makeUrl(args) {
   console.log(accumulator);
   return accumulator.join('/');
 }
-function loadPageDataIntoEditor(collectionName){
+function loadPageDataIntoEditor(collectionName) {
 
-  var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  var pageurldata = "/data" + pageurl.split("#!")[1];
+  var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
+  var pagePath = pageUrl.split("#!")[1];
+  var pageUrlData = "/data" + pagePath;
 
   $.ajax({
-    url: pageurldata,
+    url: pageUrlData,
     dataType: 'json',
-    success: function(response) {
+    success: function (response) {
       makeEditSections(collectionName, response);
+      checkIfPageIsComplete();
     },
-    error: function() {
+    error: function () {
       console.log('No page data returned');
       $('.fl-editor').val('');
     }
   });
+
+  function checkIfPageIsComplete() {
+
+    getCollection(collectionName,
+      success = function (response) {
+        var pageIsComplete = false;
+        pageFile = pagePath + '/data.json';
+
+        $.each(response.completeUris, function (i, item) {
+          if (pageFile == item) {
+            pageIsComplete == true;
+          }
+        });
+
+        if (pageIsComplete) {
+          $('.fl-panel--editor__nav__review').show();
+        }
+        else {
+          $('.fl-panel--editor__nav__review').hide();
+        }
+      },
+      error = function (response) {
+        handleApiError(response)
+      });
+  }
 }
 
 
-function loadReviewScreen(collectionName){
-
-  // todo if the current page being browsed is in the review list, then select it
-  //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  //var pageurldata = "/data" + pageurl.split("#!")[1];
+function loadReviewScreen(collectionName) {
 
   getCollection(collectionName,
-    success = function(response) {
+    success = function (response) {
       console.log(response);
       populateAwaitingReviewList(response);
     },
-    error = function(response) {
+    error = function (response) {
       handleApiError(response)
     });
 
@@ -548,42 +600,53 @@ function loadReviewScreen(collectionName){
     var review_list = '<ul>';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
-    $.each(data.completeUris, function(i, item) {
+    $.each(data.completeUris, function (i, item) {
       pageDataRequests.push(getPageData(collectionName, item,
-        success=function(response) {
-          review_list += '<li class="fl-review-page-list-item" data-path="' + item.uri + '">' + item.name + '</li>';
-          console.log("Got page content for " + response.name);
+        success = function (response) {
+          var path = item.replace('/data.json', '')
+          path = path.length === 0 ? '/' : path;
+          review_list += '<li class="fl-review-page-list-item" data-path="' + path + '">' +
+          response.name + '</li>';
+
         },
-        error=function(response) {
+        error = function (response) {
           handleApiError(response);
         }));
     });
 
     $.when.apply($, pageDataRequests).then(function () {
-      console.log(arguments); //it is an array like object which can be looped
-
       review_list += '</ul>';
       $('.fl-review-list-holder').html(review_list);
-
-      console.log(review_list);
-
-      $.each(arguments, function (i, data) {
-        console.log(data); //data is the value returned by each of the ajax requests
-      });
     });
 
-    $('.fl-review-page-list-item').click(function() {
+    $('.fl-review-list-holder').on('click', '.fl-review-page-list-item', function () {
       var pageUrl = $(this).attr('data-path');
       console.log('Collection row clicked for id: ' + pageUrl);
-      if(pageUrl) {
+      if (pageUrl) {
         $('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
         $(this).addClass('fl-panel-review-page-item__selected');
-        setupPageLocation(pageUrl)
+        refreshPreview(pageUrl)
       }
     });
   }
-
 }
+
+function updateReviewScreen() {
+
+  // check the current url
+  var path = getPathName();
+
+  // if the url is in the current list, select it
+  $( ".fl-review-page-list-item" ).each(function( index ) {
+    var itemPath = $(this).attr('data-path');
+
+    if(itemPath == path) {
+      $('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
+      this.addClass('fl-panel-review-page-item__selected')
+    }
+  });
+}
+
 
 
 function logout() {
@@ -605,12 +668,19 @@ function delete_cookie( name ) {
       pageData = $('.fl-editor__headline').val();
       updateContent(collectionName, getPathName(), pageData);
     });
+
+    // complete
+    $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
+      pageData = $('.fl-editor__headline').val();
+      saveAndCompleteContent(collectionName, getPathName(), pageData);
+    });
   }
 
-  // complete
-  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-    completeContent(collectionName, getPathName());
+  $('.fl-panel--editor__nav__review').unbind("click").click(function () {
+    postReview(collectionName, getPathName());
   });
+
+
 }
 function markdownEditor() {
   var converter = Markdown.getSanitizingConverter();
@@ -623,6 +693,35 @@ function markdownEditor() {
     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
   });
   editor.run();
+}
+function postContent(collectionName, path, content, success, error) {
+  $.ajax({
+    url: "/zebedee/content/" + collectionName + "?uri=" + path + "/data.json",
+    dataType: 'json',
+    type: 'POST',
+    data: content,
+    success: function (response) {
+      success(response);
+    },
+    error: function (response) {
+      error(response);
+    }
+  });
+}function postReview(collectionName, path) {
+
+  // Open the file for editing
+  $.ajax({
+    url: "/zebedee/review/" + collectionName + "?uri=" + path + "/data.json",
+    dataType: 'json',
+    type: 'POST',
+    success: function () {
+      console.log("File set to reviewed.");
+      alert("The file is now awaiting approval.");
+    },
+    error: function () {
+      console.log('Error');
+    }
+  });
 }
 function publish(collectionName) {
 
@@ -643,28 +742,24 @@ function publish(collectionName) {
     }
   });
 }
-function removePreviewColClasses(){
+function refreshPreview(url) {
+
+  if(url) {
+    url = $('.fl-panel--preview__content').get(0).src.split('#!')[0] + '#!' + url;
+    console.log(url);
+    $('.fl-panel--preview__content').get(0).src = url;
+  }
+  else {
+    $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+  }
+
+  $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
+}function removePreviewColClasses(){
   $('.fl-panel--preview').removeClass('col--4').removeClass('col--8');
 }function removeSubMenus(){
   //$('.fl-panel--sub-menu').hide();
   $('.fl-panel--sub-menu').empty();
-}function review(collectionName, path) {
-
-  // Open the file for editing
-  $.ajax({
-    url: "/zebedee/review/" + collectionName + "?uri=" + path + "/data.json",
-    dataType: 'json',
-    type: 'POST',
-    success: function () {
-      console.log("File set to reviewed.");
-      alert("The file is now awaiting approval.");
-    },
-    error: function () {
-      console.log('Error');
-    }
-  });
-}
-function setupFlorence(){
+}function setupFlorence(){
 	//florence menu
   var florence_menu =
     // '<section>' +
@@ -708,41 +803,21 @@ function setupFlorence(){
  }
 
 
-function setupPageLocation(pageUrl) {
-
-  if(pageUrl)
-    localStorage.setItem("pageurl", pageUrl);
-
-  iframeUrl = localStorage.getItem("pageurl");
-  var collectionName = localStorage.getItem("collection");
-  nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  if (iframeUrl !== nowUrl) {
-    loadPageDataIntoEditor(collectionName);
-    localStorage.setItem("pageurl", nowUrl);
-  }
-}
 function updateContent(collectionName, path, content) {
-  // Update content
-  $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + path + "/data.json",
-    dataType: 'json',
-    type: 'POST',
-    data: content,
-    success: function (message) {
-      console.log("Updating completed" + message);
-      //
-      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-      $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
+
+  postContent(collectionName, path, content,
+    success = function (response) {
+      console.log("Updating completed" + response);
+      refreshPreview();
     },
-    error: function (response) {
-      if(response.status == 400) {
+    error = function (response) {
+      if (response.status == 400) {
         alert("Cannot edit this file. It is already part of another collection.");
       }
       else {
         handleApiError(response);
       }
-    }
-  });
+    });
 }
 function viewCollectionDetails(collectionName) {
 
@@ -1150,6 +1225,7 @@ function viewWorkspace(){
         '<button class="fl-panel--editor__nav__cancel">Cancel</button>' +
         '<button class="fl-panel--editor__nav__save">Save</button>' +
         '<button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
+        '<button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
       '</nav>' +
     '</section>';
 
@@ -1217,7 +1293,9 @@ function viewWorkspace(){
       localStorage.setItem("pageurl",pageurl);
       accordion();
       loadPageDataIntoEditor(localStorage.getItem("collection"));
-      setInterval(setupPageLocation, intIntervalTime);
+      setInterval(function() {
+        checkForPageChanged(function() {loadPageDataIntoEditor(collectionName)});
+      }, intIntervalTime);
 
       $('.fl-panel--editor__nav__publish').click(function () {
           publish(collectionName);
@@ -1234,6 +1312,9 @@ function viewWorkspace(){
       localStorage.setItem("pageurl",pageurl);
 
       loadReviewScreen(collectionName);
+      setInterval(function() {
+        checkForPageChanged(function() { updateReviewScreen() })
+      }, intIntervalTime);
     }
 
     else {
