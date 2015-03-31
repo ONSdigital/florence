@@ -1,4 +1,5 @@
-function makeEditSections(collectionName, response) {
+function makeEditSections(collectionName, response, path) {
+    
   if (response.type === 'bulletin') {
     bulletinEditor(collectionName, response);
   } else {
@@ -8,15 +9,16 @@ function makeEditSections(collectionName, response) {
 
     $('.fl-panel--editor__nav__save').unbind("click").click(function () {
       pageData = $('.fl-editor__headline').val();
-      updateContent(collectionName, getPathName(), pageData);
+      updateContent(collectionName, path, pageData);
     });
 
-    // complete
     $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
       pageData = $('.fl-editor__headline').val();
-      saveAndCompleteContent(collectionName, getPathName(), pageData);
+      saveAndCompleteContent(collectionName, path, pageData);
     });
   }
 
-
+  $('.fl-panel--editor__nav__review').unbind("click").click(function () {
+    postReview(collectionName, path);
+  });
 }
