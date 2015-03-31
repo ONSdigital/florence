@@ -273,8 +273,7 @@ function bulletinEditor(collectionName, data) {
         '</div>');
 
     unCheckPage();
-    setupPageLocation("false");
-    loadPageDataIntoEditor(collectionName, "false");
+    loadPageDataIntoEditor(collectionName, false);
 
     $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
       var bulletinurl = $('.fl-panel--preview__content').contents().get(0).location.href;
@@ -293,7 +292,7 @@ function bulletinEditor(collectionName, data) {
             $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
             saveNewBulletin();
             $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            checkPage();
+            checkPage2();
             save();
           } else {
             alert("This is not a bulletin");
@@ -307,8 +306,12 @@ function bulletinEditor(collectionName, data) {
     sortableRelated();
   });
 
-  function checkPage() {
-    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
+  function checkPage2() {
+    window.intervalID = setInterval(function () {
+      checkForPageChanged(function () {
+        loadPageDataIntoEditor(collectionName, true);
+      });
+    }, intIntervalTime);
   }
 
   function unCheckPage() {

@@ -145,16 +145,16 @@ function viewWorkspace(){
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
       accordion();
-<<<<<<< HEAD
-      loadPageDataIntoEditor(localStorage.getItem("collection"));
-      setInterval(function() {
-        checkForPageChanged(function() {loadPageDataIntoEditor(collectionName)});
-      }, intIntervalTime);
-=======
+
       loadPageDataIntoEditor(localStorage.getItem("collection"), true);
-      //setInterval(setupPageLocation, intIntervalTime, true);
       checkPage();
->>>>>>> Editor retrieves links automatically
+      function checkPage() {
+        window.intervalID = setInterval(function() {
+          checkForPageChanged(function() {
+            loadPageDataIntoEditor(collectionName, true);
+          });
+        }, window.intIntervalTime);
+      }
 
       $('.fl-panel--editor__nav__publish').click(function () {
           publish(collectionName);
@@ -171,9 +171,14 @@ function viewWorkspace(){
       localStorage.setItem("pageurl",pageurl);
 
       loadReviewScreen(collectionName);
-      setInterval(function() {
-        checkForPageChanged(function() { updateReviewScreen() })
-      }, intIntervalTime);
+      checkPage1();
+      function checkPage1() {
+        window.intervalID = setInterval(function() {
+          checkForPageChanged(function() {
+            updateReviewScreen();
+          });
+        }, window.intIntervalTime);
+      }
     }
 
     else {

@@ -311,8 +311,7 @@ function bulletinEditor(collectionName, data) {
         '</div>');
 
     unCheckPage();
-    setupPageLocation("false");
-    loadPageDataIntoEditor(collectionName, "false");
+    loadPageDataIntoEditor(collectionName, false);
 
     $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
       var bulletinurl = $('.fl-panel--preview__content').contents().get(0).location.href;
@@ -331,7 +330,7 @@ function bulletinEditor(collectionName, data) {
             $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
             saveNewBulletin();
             $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            checkPage();
+            checkPage2();
             save();
           } else {
             alert("This is not a bulletin");
@@ -345,8 +344,12 @@ function bulletinEditor(collectionName, data) {
     sortableRelated();
   });
 
-  function checkPage() {
-    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
+  function checkPage2() {
+    window.intervalID = setInterval(function () {
+      checkForPageChanged(function () {
+        loadPageDataIntoEditor(collectionName, true);
+      });
+    }, intIntervalTime);
   }
 
   function unCheckPage() {
@@ -502,30 +505,14 @@ function callZebedee(success, error, opts){
     }
   });
 }
-<<<<<<< HEAD:src/main/web/florence/js/functions/_checkForPageChanged.js
 function checkForPageChanged(onChanged) {
-=======
-function setupPageLocation(cond) {
 
-  if(pageUrl)
-    localStorage.setItem("pageurl", pageUrl);
->>>>>>> Editor retrieves links automatically:src/main/web/florence/js/functions/_setupPageLocation.js
 
   iframeUrl = localStorage.getItem("pageurl");
   nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-<<<<<<< HEAD:src/main/web/florence/js/functions/_checkForPageChanged.js
   if (iframeUrl !== nowUrl) {
     onChanged();
     localStorage.setItem("pageurl", nowUrl);
-=======
-  if (cond !== "false") {
-    if (iframeUrl !== nowUrl) {
-      loadPageDataIntoEditor(collectionName, true);
-      localStorage.setItem("pageurl", nowUrl);
-    }
-  } else {
-    loadPageDataIntoEditor(collectionName, "false");
->>>>>>> Editor retrieves links automatically:src/main/web/florence/js/functions/_setupPageLocation.js
   }
 }
 function saveAndCompleteContent(collectionName, path, content) {
@@ -748,9 +735,8 @@ function makeUrl(args) {
   console.log(accumulator);
   return accumulator.join('/');
 }
-<<<<<<< HEAD
-function loadPageDataIntoEditor(collectionName) {
-
+function loadPageDataIntoEditor(collectionName, active) {
+  if (active === false) {
   var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
   var pagePath = pageUrl.split("#!")[1];
   var pageUrlData = "/data" + pagePath;
@@ -776,7 +762,7 @@ function loadPageDataIntoEditor(collectionName) {
         pageFile = pagePath + '/data.json';
 
         $.each(response.completeUris, function (i, item) {
-          if (pageFile == item) {
+          if (pagePath == item) {
             pageIsComplete == true;
           }
         });
@@ -789,33 +775,10 @@ function loadPageDataIntoEditor(collectionName) {
         }
       },
       error = function (response) {
-        handleApiError(response)
+        handleApiError(response);
       });
-=======
-function loadPageDataIntoEditor(collectionName, active){
-  var condition = active;
-  if (condition === "false") {
-    // do nothing;
-  } else {
-    var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-    var pageurldata = "/data" + pageurl.split("#!")[1];
-    $.ajax({
-      url: pageurldata,
-      dataType: 'json',
-      success: function (response) {
-        makeEditSections(collectionName, response);
-      },
-      error: function () {
-        console.log('No page data returned');
-        $('.fl-editor').val('');
-      }
-    });
->>>>>>> Editor retrieves links automatically
   }
-}
-
-
-function loadReviewScreen(collectionName) {
+}function loadReviewScreen(collectionName) {
 
   getCollection(collectionName,
     success = function (response) {
@@ -1543,16 +1506,16 @@ function viewWorkspace(){
       var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       localStorage.setItem("pageurl",pageurl);
       accordion();
-<<<<<<< HEAD
-      loadPageDataIntoEditor(localStorage.getItem("collection"));
-      setInterval(function() {
-        checkForPageChanged(function() {loadPageDataIntoEditor(collectionName)});
-      }, intIntervalTime);
-=======
+
       loadPageDataIntoEditor(localStorage.getItem("collection"), true);
-      //setInterval(setupPageLocation, intIntervalTime, true);
       checkPage();
->>>>>>> Editor retrieves links automatically
+      function checkPage() {
+        window.intervalID = setInterval(function() {
+          checkForPageChanged(function() {
+            loadPageDataIntoEditor(collectionName, true);
+          });
+        }, window.intIntervalTime);
+      }
 
       $('.fl-panel--editor__nav__publish').click(function () {
           publish(collectionName);
@@ -1569,9 +1532,14 @@ function viewWorkspace(){
       localStorage.setItem("pageurl",pageurl);
 
       loadReviewScreen(collectionName);
-      setInterval(function() {
-        checkForPageChanged(function() { updateReviewScreen() })
-      }, intIntervalTime);
+      checkPage1();
+      function checkPage1() {
+        window.intervalID = setInterval(function() {
+          checkForPageChanged(function() {
+            updateReviewScreen();
+          });
+        }, window.intIntervalTime);
+      }
     }
 
     else {
