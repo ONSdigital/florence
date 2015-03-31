@@ -58,7 +58,7 @@ public class TredegarProxy implements Filter {
 
             HttpRequestBase proxyRequest;
             String requestUrl = requestBaseUrl + requestUri + "?" + requestQueryString;
-            System.out.println("Proxy request from " + request.getRequestURI() + " to " + requestUrl);
+            //System.out.println("Proxy request from " + request.getRequestURI() + " to " + requestUrl);
 
             switch (request.getMethod()) {
                 case "POST":
@@ -109,7 +109,7 @@ public class TredegarProxy implements Filter {
                 if (responseEntity != null && responseEntity.getContent() != null)
                     IOUtils.copy(responseEntity.getContent(), response.getOutputStream());
 
-                System.out.println("Proxy response status :" + proxyResponse.getStatusLine().getStatusCode());
+                //System.out.println("Proxy response status :" + proxyResponse.getStatusLine().getStatusCode());
 
                 EntityUtils.consume(responseEntity);
 
