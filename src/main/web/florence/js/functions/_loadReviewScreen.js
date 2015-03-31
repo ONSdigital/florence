@@ -1,9 +1,5 @@
 function loadReviewScreen(collectionName) {
 
-  // todo if the current page being browsed is in the review list, then select it
-  //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  //var pageurldata = "/data" + pageurl.split("#!")[1];
-
   getCollection(collectionName,
     success = function (response) {
       console.log(response);
@@ -23,7 +19,9 @@ function loadReviewScreen(collectionName) {
         success = function (response) {
           var path = item.replace('/data.json', '')
           path = path.length === 0 ? '/' : path;
-          review_list += '<li class="fl-review-page-list-item" data-path="' + path + '">' + response.name + '</li>';
+          review_list += '<li class="fl-review-page-list-item" data-path="' + path + '">' +
+          response.name + '</li>';
+
         },
         error = function (response) {
           handleApiError(response);
@@ -31,18 +29,9 @@ function loadReviewScreen(collectionName) {
     });
 
     $.when.apply($, pageDataRequests).then(function () {
-      console.log(arguments); //it is an array like object which can be looped
-
       review_list += '</ul>';
       $('.fl-review-list-holder').html(review_list);
-
-      console.log(review_list);
-
-      $.each(arguments, function (i, data) {
-        console.log(data); //data is the value returned by each of the ajax requests
-      });
     });
-
 
     $('.fl-review-list-holder').on('click', '.fl-review-page-list-item', function () {
       var pageUrl = $(this).attr('data-path');
@@ -54,7 +43,23 @@ function loadReviewScreen(collectionName) {
       }
     });
   }
-
 }
+
+function updateReviewScreen() {
+
+  // check the current url
+  var path = getPathName();
+
+  // if the url is in the current list, select it
+  $( ".fl-review-page-list-item" ).each(function( index ) {
+    var itemPath = $(this).attr('data-path');
+
+    if(itemPath == path) {
+      $('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
+      this.addClass('fl-panel-review-page-item__selected')
+    }
+  });
+}
+
 
 

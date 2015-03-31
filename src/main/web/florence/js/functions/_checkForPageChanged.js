@@ -1,10 +1,9 @@
-function setupPageLocation() {
+function checkForPageChanged(onChanged) {
 
   iframeUrl = localStorage.getItem("pageurl");
-  var collectionName = localStorage.getItem("collection");
   nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
   if (iframeUrl !== nowUrl) {
-    loadPageDataIntoEditor(collectionName);
+    onChanged();
     localStorage.setItem("pageurl", nowUrl);
   }
 }
