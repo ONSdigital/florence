@@ -1,7 +1,4 @@
-function setupPageLocation(pageUrl) {
-
-  if(pageUrl)
-    localStorage.setItem("pageurl", pageUrl);
+function setupPageLocation() {
 
   iframeUrl = localStorage.getItem("pageurl");
   var collectionName = localStorage.getItem("collection");

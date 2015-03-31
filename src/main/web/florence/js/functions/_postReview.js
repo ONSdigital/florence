@@ -1,4 +1,4 @@
-function review(collectionName, path) {
+function postReview(collectionName, path) {
 
   // Open the file for editing
   $.ajax({

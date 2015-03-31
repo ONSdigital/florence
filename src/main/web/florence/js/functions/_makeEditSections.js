@@ -10,10 +10,13 @@ function makeEditSections(collectionName, response) {
       pageData = $('.fl-editor__headline').val();
       updateContent(collectionName, getPathName(), pageData);
     });
+
+    // complete
+    $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
+      pageData = $('.fl-editor__headline').val();
+      saveAndCompleteContent(collectionName, getPathName(), pageData);
+    });
   }
 
-  // complete
-  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-    completeContent(collectionName, getPathName());
-  });
+
 }

@@ -219,9 +219,19 @@ function bulletinEditor(collectionName, data){
   }
   sortableTabs();
 
-  // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function() {
-    // Sections
+    UpdateData();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+  });
+
+  // complete
+  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
+    UpdateData();
+    saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
+  });
+
+  function UpdateData() {
+// Sections
     var orderSection = $(".fl-editor__sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var title = $('#section__' + nameS).val();
@@ -237,8 +247,6 @@ function bulletinEditor(collectionName, data){
       newTabs[parseInt(indexT)] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
-  });
+  }
 }
 

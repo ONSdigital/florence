@@ -1,15 +1,15 @@
-function loadReviewScreen(collectionName){
+function loadReviewScreen(collectionName) {
 
   // todo if the current page being browsed is in the review list, then select it
   //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
   //var pageurldata = "/data" + pageurl.split("#!")[1];
 
   getCollection(collectionName,
-    success = function(response) {
+    success = function (response) {
       console.log(response);
       populateAwaitingReviewList(response);
     },
-    error = function(response) {
+    error = function (response) {
       handleApiError(response)
     });
 
@@ -18,13 +18,14 @@ function loadReviewScreen(collectionName){
     var review_list = '<ul>';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
-    $.each(data.completeUris, function(i, item) {
+    $.each(data.completeUris, function (i, item) {
       pageDataRequests.push(getPageData(collectionName, item,
-        success=function(response) {
-          review_list += '<li class="fl-review-page-list-item" data-path="' + response.uri + '">' + response.name + '</li>';
-          console.log("Got page content for " + response.name);
+        success = function (response) {
+          var path = item.replace('/data.json', '')
+          path = path.length === 0 ? '/' : path;
+          review_list += '<li class="fl-review-page-list-item" data-path="' + path + '">' + response.name + '</li>';
         },
-        error=function(response) {
+        error = function (response) {
           handleApiError(response);
         }));
     });
@@ -42,13 +43,14 @@ function loadReviewScreen(collectionName){
       });
     });
 
-    $('.fl-review-page-list-item').click(function() {
+
+    $('.fl-review-list-holder').on('click', '.fl-review-page-list-item', function () {
       var pageUrl = $(this).attr('data-path');
       console.log('Collection row clicked for id: ' + pageUrl);
-      if(pageUrl) {
+      if (pageUrl) {
         $('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
         $(this).addClass('fl-panel-review-page-item__selected');
-        setupPageLocation(pageUrl)
+        refreshPreview(pageUrl)
       }
     });
   }

@@ -1,3 +1,18 @@
+function saveAndCompleteContent(collectionName, path, content) {
+  postContent(collectionName, path, content,
+    success = function (response) {
+      completeContent(collectionName, path);
+    },
+    error = function (response) {
+      if (response.status == 400) {
+        alert("Cannot edit this file. It is already part of another collection.");
+      }
+      else {
+        handleApiError(response);
+      }
+    });
+}
+
 function completeContent(collectionName, path) {
   // Update content
   $.ajax({
@@ -6,10 +21,7 @@ function completeContent(collectionName, path) {
     type: 'POST',
     success: function (message) {
       console.log("Page is now marked as complete " + message);
-
-      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-      $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
-
+      refreshPreview();
       //Todo: go back to browse view?
     },
     error: function (response) {
