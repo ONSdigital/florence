@@ -141,7 +141,7 @@ function viewWorkspace(){
       accordion();
       loadPageDataIntoEditor(localStorage.getItem("collection"));
       setInterval(function() {
-        return checkForPageChanged(loadPageDataIntoEditor(collectionName));
+        checkForPageChanged(function() {loadPageDataIntoEditor(collectionName)});
       }, intIntervalTime);
 
       $('.fl-panel--editor__nav__publish').click(function () {
@@ -159,7 +159,9 @@ function viewWorkspace(){
       localStorage.setItem("pageurl",pageurl);
 
       loadReviewScreen(collectionName);
-      setInterval(checkForPageChanged(updateReviewScreen()), intIntervalTime);
+      setInterval(function() {
+        checkForPageChanged(function() { updateReviewScreen() })
+      }, intIntervalTime);
     }
 
     else {
