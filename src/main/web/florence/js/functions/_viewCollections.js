@@ -4,12 +4,14 @@ function viewCollections() {
     '<h1>Select a collection</h1>' +
     '<div class="fl-collections-holder"></div>' +
     '<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
+    '<button id="test"> test </button>'+
     '</section>';
 
   $.ajax({
     url: "/zebedee/collections",
     type: "get",
     crossDomain: true,
+    headers:{ "X-Florence-Token":accessToken() },
     success: function (data) {
       populateCollectionTable(data);
     },
@@ -19,29 +21,37 @@ function viewCollections() {
   });
 
   function populateCollectionTable(data) {
-
+      var page = $('.fl-collections-holder')
       var collection_table =
         '<table class="fl-collections-table">' +
           '<tbody>' +
             '<tr>' +
               '<th>Collection name</th>' +
               '<th>Publish time and date</th>' +
+              '<th>Manage collection</th>'+
             '</tr>';
 
-      $.each(data, function(i, item) {
+      $(page).html(collection_table);
 
-        var date = new Date(item.publishDate);
-        collection_table +=
-            '<tr class="fl-collections-table-row" data-id="' + item.id + '">' +
-              '<td>' + item.name + '</td>' +
+      $.each(data, function(i, collection) {
+
+        var date = new Date(collection.publishDate);
+        $('tbody',page).append(
+            '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
+              '<td class= "collection-name">' + collection.name + '</td>' +
               '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + date.getMinutes() + '</td>' +
-            '</tr>';
+              '<td><button class="view-collection-button" id="fl-collection-view-button-' + collection.id +'"> View Collection</button></td>'+
+            '</tr>'
+          )
+
+        makeCollectionView(collection.id,data);
+
       });
 
-      collection_table += '</tbody>' +
-        '</table>';
+      page.append(
+          '</tbody>' +
+        '</table>')
 
-      $('.fl-collections-holder').html(collection_table);
 
       $('.fl-collections-table-row').click(function() {
 
@@ -134,6 +144,7 @@ function viewCollections() {
 	'<button class="fl-button fl-button--cancel">Cancel</button>' +
 	'</section>';
 
+
 	//build view
 	$('.fl-view').html(select_collections + selected_collection);
 
@@ -149,3 +160,59 @@ function viewCollections() {
 		});
 	});
 }
+
+function makeCollectionView(collectionId,collections){
+  $('#fl-collection-view-button-'+collectionId).click(function(){
+      var view_collection =
+        '<h1 class="collection-name"></h1>' +
+        '<h2>In progress</h2>'+
+        '<section class="fl-collection" id="in-progress-uris"></section>'+
+        '<h2>Approved</h2>' +
+        '<section class="fl-collection" id="approved-uris"></section>'
+
+      $('.fl-view').html(view_collection);
+
+      $.ajax({
+        url:'/zebedee/collection/'+ collectionId,
+        headers:{ "X-Florence-Token":accessToken() }
+      }).done(function(collection){
+                var inProgressUris,approvedUris
+
+                inProgressUris = collection.inProgressUris;
+                approvedUris   = collection.approvedUris;
+                $.each(inProgressUris,function(i,uri){
+                  $('#in-progress-uris').append(
+                    '<tr>'+
+                      '<td>'+uri+'/<td>'+
+                      '<td><select id="fl-select-destination-'+i+'"></select></td>'+
+                      '<td><button id="fl-move-'+i+'">move</button></td>'+
+                    '</tr>'
+                    )
+
+                  // populate the list with the ids of all the collections
+
+                  $('#fl-select-destination-'+i).append(
+                    collections
+                    .filter(function(item) { return item.id != collectionId })
+                    .map(function(item) { return '<option>' + item.id + '</option>' })
+                    .join()
+                    )
+
+                  $('#fl-move-'+i).click(function(){
+                    var destination = $('#fl-select-destination-'+i).val()
+                    var source = collection.id
+                    console.log(destination)
+                    console.log(collection)
+                    console.log(uri)
+                    transfer(collection.id,destination,uri)
+                  })
+                })
+
+
+                console.log('foo')
+                console.log(collection)
+      })
+
+    })
+}
+
