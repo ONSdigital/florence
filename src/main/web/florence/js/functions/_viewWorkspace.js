@@ -72,6 +72,7 @@ function viewWorkspace(){
         '<button class="fl-panel--editor__nav__cancel">Cancel</button>' +
         '<button class="fl-panel--editor__nav__save">Save</button>' +
         '<button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
+        '<button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
       '</nav>' +
     '</section>';
 
