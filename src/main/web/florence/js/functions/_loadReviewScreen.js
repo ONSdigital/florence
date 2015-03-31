@@ -21,7 +21,7 @@ function loadReviewScreen(collectionName){
     $.each(data.completeUris, function(i, item) {
       pageDataRequests.push(getPageData(collectionName, item,
         success=function(response) {
-          review_list += '<li class="fl-review-page-list-item" data-path="' + item.uri + '">' + item.name + '</li>';
+          review_list += '<li class="fl-review-page-list-item" data-path="' + response.uri + '">' + response.name + '</li>';
           console.log("Got page content for " + response.name);
         },
         error=function(response) {
