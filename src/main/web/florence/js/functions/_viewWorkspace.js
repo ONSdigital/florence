@@ -1,7 +1,9 @@
 function viewWorkspace(){
 
-  var collectionName = localStorage.getItem("collection");
+  window.intIntervalTime = 100;
+  window.intervalID;
 
+  var collectionName = localStorage.getItem("collection");
   function accordion() {
     $(function () {
       $("#accordion").accordion(
@@ -14,11 +16,7 @@ function viewWorkspace(){
     });
   }
 
-  window.intIntervalTime = 100;
-  window.intervalID;
-  function checkPage() {
-    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
-  }
+
 
   var workspace_menu_main =
     '<nav class="fl-panel fl-panel--menu">' +

@@ -1,21 +1,23 @@
 function loadPageDataIntoEditor(collectionName, active) {
   if (active === false) {
-  var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  var pagePath = pageUrl.split("#!")[1];
-  var pageUrlData = "/data" + pagePath;
-
-  $.ajax({
-    url: pageUrlData,
-    dataType: 'json',
-    success: function (response) {
-      makeEditSections(collectionName, response);
-      checkIfPageIsComplete();
-    },
-    error: function () {
-      console.log('No page data returned');
-      $('.fl-editor').val('');
-    }
-  });
+    // Do nothing
+  } else {
+    var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
+    var pagePath = pageUrl.split("#!")[1];
+    var pageUrlData = "/data" + pagePath;
+    $.ajax({
+      url: pageUrlData,
+      dataType: 'json',
+      success: function (response) {
+        makeEditSections(collectionName, response);
+        checkIfPageIsComplete();
+      },
+      error: function () {
+        console.log('No page data returned');
+        $('.fl-editor').val('');
+      }
+    });
+  }
 
   function checkIfPageIsComplete() {
 
