@@ -8,7 +8,7 @@ function loadPageDataIntoEditor(collectionName) {
     url: pageUrlData,
     dataType: 'json',
     success: function (response) {
-      makeEditSections(collectionName, response, pagePath);
+      makeEditSections(collectionName, response);
       checkIfPageIsComplete();
     },
     error: function () {
