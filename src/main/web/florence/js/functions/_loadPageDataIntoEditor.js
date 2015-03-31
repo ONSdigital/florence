@@ -22,9 +22,10 @@ function loadPageDataIntoEditor(collectionName) {
     getCollection(collectionName,
       success = function (response) {
         var pageIsComplete = false;
+        pageFile = pagePath + '/data.json';
 
         $.each(response.completeUris, function (i, item) {
-          if (pagePath == item) {
+          if (pageFile == item) {
             pageIsComplete == true;
           }
         });
