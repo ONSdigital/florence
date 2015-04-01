@@ -2,9 +2,7 @@ function loadPageDataIntoEditor(collectionName, active) {
   if (active === false) {
     // Do nothing
   } else {
-    var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-    var pagePath = pageUrl.split("#!")[1];
-    var pageUrlData = "/data" + pagePath;
+    var pageUrlData = "/data/" + getPathName();
     $.ajax({
       url: pageUrlData,
       dataType: 'json',
@@ -24,11 +22,16 @@ function loadPageDataIntoEditor(collectionName, active) {
     getCollection(collectionName,
       success = function (response) {
         var pageIsComplete = false;
-        pageFile = pagePath + '/data.json';
+
+        var pagePath = getPathName();
+        if (pagePath.indexOf('/') !== 0) {
+          pagePath = '/' + pagePath;
+        }
+        var pageFile = pagePath + '/data.json';
 
         $.each(response.completeUris, function (i, item) {
-          if (pagePath == item) {
-            pageIsComplete == true;
+          if (pageFile === item) {
+            pageIsComplete = true;
           }
         });
 
