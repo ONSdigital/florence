@@ -737,22 +737,24 @@ function makeUrl(args) {
 }
 function loadPageDataIntoEditor(collectionName, active) {
   if (active === false) {
-  var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  var pagePath = pageUrl.split("#!")[1];
-  var pageUrlData = "/data" + pagePath;
-
-  $.ajax({
-    url: pageUrlData,
-    dataType: 'json',
-    success: function (response) {
-      makeEditSections(collectionName, response);
-      checkIfPageIsComplete();
-    },
-    error: function () {
-      console.log('No page data returned');
-      $('.fl-editor').val('');
-    }
-  });
+    // Do nothing
+  } else {
+    var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
+    var pagePath = pageUrl.split("#!")[1];
+    var pageUrlData = "/data" + pagePath;
+    $.ajax({
+      url: pageUrlData,
+      dataType: 'json',
+      success: function (response) {
+        makeEditSections(collectionName, response);
+        checkIfPageIsComplete();
+      },
+      error: function () {
+        console.log('No page data returned');
+        $('.fl-editor').val('');
+      }
+    });
+  }
 
   function checkIfPageIsComplete() {
 
@@ -998,25 +1000,10 @@ function refreshPreview(url) {
 
 
 function updateContent(collectionName, path, content) {
-<<<<<<< HEAD
-
   postContent(collectionName, path, content,
     success = function (response) {
       console.log("Updating completed" + response);
       refreshPreview();
-=======
-  // Update content
-  $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + path + "/data.json",
-    dataType: 'json',
-    type: 'POST',
-    data: content,
-    success: function (message) {
-      console.log("Updating completed " + message);
-      //
-      $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-      $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
->>>>>>> Editor retrieves links automatically
     },
     error = function (response) {
       if (response.status == 400) {
@@ -1025,7 +1012,8 @@ function updateContent(collectionName, path, content) {
       else {
         handleApiError(response);
       }
-    });
+    }
+  );
 }
 function viewCollectionDetails(collectionName) {
 
@@ -1361,8 +1349,10 @@ function viewUserAndAccess(view) {
 
 function viewWorkspace(){
 
-  var collectionName = localStorage.getItem("collection");
+  window.intIntervalTime = 100;
+  window.intervalID;
 
+  var collectionName = localStorage.getItem("collection");
   function accordion() {
     $(function () {
       $("#accordion").accordion(
@@ -1375,11 +1365,7 @@ function viewWorkspace(){
     });
   }
 
-  window.intIntervalTime = 100;
-  window.intervalID;
-  function checkPage() {
-    window.intervalID = setInterval(setupPageLocation, intIntervalTime, true);
-  }
+
 
   var workspace_menu_main =
     '<nav class="fl-panel fl-panel--menu">' +
