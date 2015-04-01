@@ -65,6 +65,7 @@ function viewWorkspace(){
 
   //build view
   $('.fl-view').prepend(workspace_menu_main + workspace_preview);
+  enablePreview();
 
   //click handlers
   $('.fl-main-menu__link').click(function() {
@@ -96,14 +97,13 @@ function viewWorkspace(){
       localStorage.setItem("pageurl",pageurl);
 
       loadReviewScreen(collectionName);
-      checkPage1();
-      function checkPage1() {
-        window.intervalID = setInterval(function() {
-          checkForPageChanged(function() {
-            updateReviewScreen();
-          });
-        }, window.intIntervalTime);
-      }
+
+      clearInterval(window.intervalID);
+      window.intervalID = setInterval(function() {
+        checkForPageChanged(function() {
+          updateReviewScreen();
+        });
+      }, window.intIntervalTime);
     }
 
     else {

@@ -63,14 +63,13 @@ function loadEditScreen(collectionName) {
   accordion();
 
   loadPageDataIntoEditor(localStorage.getItem("collection"), true);
-  checkPage();
-  function checkPage() {
-    window.intervalID = setInterval(function () {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
-    }, window.intIntervalTime);
-  }
+
+  clearInterval(window.intervalID);
+  window.intervalID = setInterval(function () {
+    checkForPageChanged(function () {
+      loadPageDataIntoEditor(collectionName, true);
+    });
+  }, window.intIntervalTime);
 
   $('.fl-panel--editor__nav__publish').click(function () {
     publish(collectionName);

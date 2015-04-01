@@ -307,6 +307,7 @@ function bulletinEditor(collectionName, data) {
   });
 
   function checkPage2() {
+    clearInterval(window.intervalID);
     window.intervalID = setInterval(function () {
       checkForPageChanged(function () {
         loadPageDataIntoEditor(collectionName, true);
