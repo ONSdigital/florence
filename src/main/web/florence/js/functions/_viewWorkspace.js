@@ -4,19 +4,6 @@ function viewWorkspace(){
   window.intervalID;
 
   var collectionName = localStorage.getItem("collection");
-  function accordion() {
-    $(function () {
-      $("#accordion").accordion(
-          {
-            header: "section",
-            heightStyle: "content",
-            active: 2
-          }
-      );
-    });
-  }
-
-
 
   var workspace_menu_main =
     '<nav class="fl-panel fl-panel--menu">' +
@@ -39,46 +26,6 @@ function viewWorkspace(){
     '<section class="fl-panel fl-panel--sub-menu">' +
     '</section>';
 
-  // Metadata and correction collapsible sections
-    var workspace_menu_sub_edit =
-    '<section class="fl-panel fl-panel--editor">' +
-      '<section style="overflow: scroll;" class="fl-editor">' +
-        '<div id="accordion">' +
-        // section > div necessary for accordion
-          '<section class="fl-editor__metadata">Metadata section</section>' +
-            '<div id="metadata-section"></div>' +
-          '<section class="fl-editor__metadata">Correction section</section>' +
-            '<div id="correction-section">' +
-              'Demo: <input value="Tab 2 content"><br>' +
-              'Demo: <input value="Tab 2 content"><br>' +
-              'Demo: <input value="Tab 2 content"><br>' +
-            '</div>' +
-          '<section class="fl-editor__metadata">Content section</section>' +
-            '<div id="content-section">' +
-              '<textarea class="fl-editor__headline" name="fl-editor__headline"></textarea>' +
-              '<article class="fl-editor__sections"></article>' +
-            '</div>' +
-          '<section class="fl-editor__metadata">Accordion section</section>' +
-            '<div id="accordion-section">' +
-              '<article class="fl-editor__accordion"></article>' +
-            '</div>' +
-          '<section class="fl-editor__metadata">Related bulletins</section>' +
-            '<div id="related-section">' +
-              '<article class="fl-editor__related"></article>' +
-            '</div>' +
-          '<section class="fl-editor__metadata">External links</section>' +
-            '<div id="external-section">' +
-              '<article class="fl-editor__external"></article>' +
-            '</div>' +
-        '</div>' +
-      '</section>' +
-      '<nav class="fl-panel--editor__nav">' +
-        '<button class="fl-panel--editor__nav__cancel">Cancel</button>' +
-        '<button class="fl-panel--editor__nav__save">Save</button>' +
-        '<button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
-        '<button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
-      '</nav>' +
-    '</section>';
 
   var workspace_menu_create =
     '<section class="fl-panel fl-panel--creator">' +
@@ -105,8 +52,8 @@ function viewWorkspace(){
   var workspace_menu_review =
     '<section class="fl-panel">' +
     '<div class="fl-review-list-holder"></div>' +
-    '<button class="fl-button fl-button--big fl-button--center fl-edit-button">Edit this page</button>' +
-    '<button class="fl-button fl-button--big fl-button--center fl-review-button">Happy with this send to content owner</button>' +
+    '<button class="fl-button fl-button--big fl-button--center fl-review-page-edit-button">Edit this page</button>' +
+    '<button class="fl-button fl-button--big fl-button--center fl-review-page-review-button">Happy with this send to content owner</button>' +
     '</section>';
 
   var workspace_preview =
@@ -136,27 +83,7 @@ function viewWorkspace(){
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')){
-      $('.fl-panel--sub-menu').append(workspace_menu_sub_edit);
-      $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
-      // Clear local storage
-      localStorage.removeItem("pageurl");
-      var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-      localStorage.setItem("pageurl",pageurl);
-      accordion();
-
-      loadPageDataIntoEditor(localStorage.getItem("collection"), true);
-      checkPage();
-      function checkPage() {
-        window.intervalID = setInterval(function() {
-          checkForPageChanged(function() {
-            loadPageDataIntoEditor(collectionName, true);
-          });
-        }, window.intIntervalTime);
-      }
-
-      $('.fl-panel--editor__nav__publish').click(function () {
-          publish(collectionName);
-      });
+      loadEditScreen(collectionName);
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--review')){
