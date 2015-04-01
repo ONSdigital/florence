@@ -88,7 +88,7 @@ function viewWorkspace(){
 
     else if ($(this).parent().hasClass('fl-main-menu__item--review')){
 
-      $('.fl-panel--sub-menu').append(workspace_menu_review);
+      $('.fl-panel--sub-menu').html(workspace_menu_review);
       $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
 
       localStorage.removeItem("pageurl");
