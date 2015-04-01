@@ -1,9 +1,9 @@
 function handleApiError(response) {
 
-  if(!response || response.status == 200)
+  if(!response || response.status === 200)
     return;
 
-  if(response.status == 403) {
+  if(response.status === 403) {
     logout();
   }
   else {
