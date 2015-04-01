@@ -1118,7 +1118,7 @@ function viewCollections() {
 
 	var create_collection =
 	'<section class="fl-panel fl-panel--create-collection">' +
-	'<h1>Select a collection</h1>' +
+	'<h1>Create a collection</h1>' +
 	'<input type="text" class="fl-collection-name-input">' +
 	'<select class="fl-collection-team-access">' +
 		'<option value="1">Labour Market Statistics Team</option>' +
