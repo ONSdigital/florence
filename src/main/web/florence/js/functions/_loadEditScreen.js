@@ -54,7 +54,7 @@ function loadEditScreen(collectionName) {
     '</section>';
 
 
-  $('.fl-panel--sub-menu').append(workspace_menu_sub_edit);
+  $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
   $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
   // Clear local storage
   localStorage.removeItem("pageurl");
