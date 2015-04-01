@@ -1,5 +1,8 @@
 function loadReviewScreen(collectionName) {
 
+  var editButton = $('.fl-review-page-edit-button'),
+    reviewButton = $('.fl-review-page-review-button');
+
   getCollection(collectionName,
     success = function (response) {
       console.log(response);
@@ -43,14 +46,16 @@ function loadReviewScreen(collectionName) {
       }
     });
 
-    $('.fl-review-page-edit-button').click(function () {
-      loadEditScreen();
+    editButton.click(function () {
+      loadEditScreen(collectionName);
     });
 
-    $('.fl-review-page-review-button').click(function () {
+    reviewButton.click(function () {
       var listItem = $('.fl-panel-review-page-item__selected');
       var path = listItem.attr('data-path');
-      if (path === '/') { path = ''; }
+      if (path === '/') {
+        path = '';
+      }
       listItem.hide();
       postReview(collectionName, path);
     });
@@ -59,19 +64,33 @@ function loadReviewScreen(collectionName) {
 
 function updateReviewScreen() {
 
-  // check the current url
-  var path = getPathName();
-  if (path.indexOf('/') !== 0) { path = '/' + path; }
+  var editButton = $('.fl-review-page-edit-button'),
+    reviewButton = $('.fl-review-page-review-button');
+
+  var path = getPathName(),
+    pageIsComplete = false;
+  if (path.indexOf('/') !== 0) {
+    path = '/' + path;
+  }
 
   // if the url is in the current list, select it
   $(".fl-review-page-list-item").each(function () {
     var itemPath = $(this).attr('data-path');
 
     if (itemPath === path) {
+      pageIsComplete = true;
       $('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
       $(this).addClass('fl-panel-review-page-item__selected');
     }
   });
+
+  if (pageIsComplete) {
+    editButton.show();
+    reviewButton.show();
+  } else {
+    editButton.hide();
+    reviewButton.hide();
+  }
 }
 
 

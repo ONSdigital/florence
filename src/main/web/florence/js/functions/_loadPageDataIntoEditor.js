@@ -24,11 +24,10 @@ function loadPageDataIntoEditor(collectionName, active) {
         var pageIsComplete = false;
 
         var pagePath = getPathName();
-        if (pagePath.indexOf('/') !== 0) {
-          pagePath = '/' + pagePath;
-        }
         var pageFile = pagePath + '/data.json';
-
+        if (pageFile.indexOf('/') !== 0) {
+          pageFile = '/' + pageFile;
+        }
         $.each(response.completeUris, function (i, item) {
           if (pageFile === item) {
             pageIsComplete = true;
