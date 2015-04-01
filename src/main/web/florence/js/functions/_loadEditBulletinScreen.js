@@ -1,4 +1,4 @@
-function loadEditScreen(collectionName) {
+function loadEditBulletinScreen(collectionName) {
 
   function accordion() {
     $(function () {
@@ -6,7 +6,8 @@ function loadEditScreen(collectionName) {
         {
           header: "section",
           heightStyle: "content",
-          active: 2
+          active: 'none',
+          collapsible: true
         }
       );
     });
@@ -56,13 +57,9 @@ function loadEditScreen(collectionName) {
 
   $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
   $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
-  // Clear local storage
-  localStorage.removeItem("pageurl");
-  var pageUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  localStorage.setItem("pageurl", pageUrl);
   accordion();
 
-  loadPageDataIntoEditor(localStorage.getItem("collection"), true);
+  loadPageDataIntoEditor(collectionName, true);
 
   clearInterval(window.intervalID);
   window.intervalID = setInterval(function () {
