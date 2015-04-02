@@ -940,7 +940,7 @@ function loadPageDataIntoEditor(collectionName, active) {
     });
 
     editButton.click(function () {
-      loadEditScreen(collectionName);
+      loadEditBulletinScreen(collectionName);
     });
 
     reviewButton.click(function () {
