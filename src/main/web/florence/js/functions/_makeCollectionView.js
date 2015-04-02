@@ -57,6 +57,7 @@ function makeCollectionView(collectionId,collections){
                   '<td>'+uri+'/<td>'+
                   '<td><select id="fl-select-destination-'+i+'"></select></td>'+
                   '<td><button id="fl-move-'+i+'">move</button></td>'+
+                  '<td><button id="fl-edit-'+i+'">edit this page </button></td>'+
                 '</tr>'
                 )
 
@@ -76,6 +77,12 @@ function makeCollectionView(collectionId,collections){
                 console.log(collection)
                 console.log(uri)
                 transfer(collection.id,destination,uri)
+              })
+
+              $('#fl-edit-'+i).click(function(){
+                $('.fl-view').html("")
+                console.log(uri)
+                  viewController('workspace',uri)
               })
             }
       })
