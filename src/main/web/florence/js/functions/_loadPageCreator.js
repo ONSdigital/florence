@@ -3,8 +3,7 @@ function loadPageCreator (collectionName) {
 
   getCollection(collectionName,
     success = function (response) {
-      console.log(response);
-      releaseDate = new Date(response.publishDate);
+      releaseDate = response.publishDate;
     },
     error = function (response) {
       handleApiError(response);
@@ -18,14 +17,13 @@ function loadPageCreator (collectionName) {
     parent = $('.fl-creator__parent').val().trim();
     pageName = $('.fl-creator__new_name').val().trim();
     pageData.name = pageName;
-    console.log(parent);
     uriSection = pageType + "s";
     pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     pageData.fileName = pageNameTrimmed;
     newUri = makeUrl(parent, uriSection, pageNameTrimmed);
     pageData.uri = newUri;
-    console.log(newUri);
-    pageData.releaseDate = $.datepicker.formatDate('dd MM yy', releaseDate);
+    pageData.releaseDate = convertDate(releaseDate);
+    console.log("this " + pageData.releaseDate);
 
     $.ajax({
       url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
@@ -39,8 +37,8 @@ function loadPageCreator (collectionName) {
       success: function (message) {
         console.log("Updating completed " + message);
         // To be changed when #! gets removed
-        //$('.fl-panel--preview__content').get(0).src = "#!/" + newUri;
-        //loadEditScreen();
+        $('.fl-panel--preview__content').get(0).src = "http://localhost:8081/index.html#!/" + newUri;
+        loadEditBulletinScreen(collectionName);
       },
       error: function (error) {
         console.log(error);
@@ -53,41 +51,40 @@ function pageTypeData(pageType) {
 
   if (pageType === "bulletin") {
     return {
-      nextRelease: "",
-      contact: {
-        name: "",
-        email: ""
+      "nextRelease": "",
+      "contact": {
+        "name": "",
+        "email": ""
       },
-      lede: "",
-      more: "",
-      sections: [],
-      accordion: [],
-      headline1: "",
-      headline2: "",
-      headline3: "",
-      summary: "",
-      relatedBulletins: [],
-      externalLinks: [],
-      title: "",
-      releaseDate: "",
+      "lede": "",
+      "more": "",
+      "sections": [],
+      "accordion": [],
+      "headline1": "",
+      "headline2": "",
+      "headline3": "",
+      "summary": "",
+      "relatedBulletins": [],
+      "title": "",
+      "releaseDate": "",
       type: pageType,
       //"type": "bulletin",
-      name: "",
-      uri: "",
-      fileName: "",
-      breadcrumb: [
+      "name": "",
+      "uri": "",
+      "fileName": "",
+      "breadcrumb": [
         {
-          index: 0,
-          type: "home",
-          name: "Economy",
-          fileName: "economy"
+          "index": 0,
+          "type": "home",
+          "name": "Economy",
+          "fileName": "economy"
         },
         {
-          index: 0,
-          type: "home",
-          name: "Gross Domestic Product (GDP)",
-          fileName: "grossdomesticproductgdp",
-          breadcrumb: []
+          "index": 0,
+          "type": "home",
+          "name": "Gross Domestic Product (GDP)",
+          "fileName": "grossdomesticproductgdp",
+          "breadcrumb": []
         }
       ]
     };
@@ -105,6 +102,21 @@ function makeUrl(args) {
                               .split('/')
                               .filter(function(argument){return argument !== "";}));
   }
-  console.log(accumulator);
   return accumulator.join('/');
+}
+
+function convertDate(isoDate) {
+  var monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+  var stringDate = isoDate.toString();
+  date = Date.parse(stringDate);
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+  return day + " " + monthNames[monthIndex] + " " + year;
 }

@@ -71,5 +71,4 @@ function loadEditBulletinScreen(collectionName) {
   $('.fl-panel--editor__nav__publish').click(function () {
     publish(collectionName);
   });
-
 }

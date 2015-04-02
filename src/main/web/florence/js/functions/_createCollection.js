@@ -5,9 +5,8 @@ function createCollection() {
   publishYear  = $('.fl-collection-publish-year').val();
   publishTime  = $('.fl-collection-publish-time').val();
   collectionName = $('.fl-collection-name-input').val();
-
-  // months are zero indexed.
-  var publishDate = new Date(2015, publishMonth - 1, publishDay, 9, 30, 0, 0);
+  
+  var publishDate = new Date(Date.UTC(2015, publishMonth, publishDay, 9, 30, 0, 0));
 
   // Create the collection
   console.log(collectionName + " " + publishDate);
