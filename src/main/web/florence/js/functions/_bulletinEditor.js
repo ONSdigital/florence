@@ -23,14 +23,14 @@ function bulletinEditor(collectionName, data) {
   // Metadata load
   $("#metadata-section").append(
     '<div id="metadata-list">' +
-    '<p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '<p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '<p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '<p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '<p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '<p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '<p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '<p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
     '</div>');
 
   // Metadata edition and saving
@@ -67,19 +67,20 @@ function bulletinEditor(collectionName, data) {
     data.headline3 = $(this).val();
   });
 
+  var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
+
   // Edit sections
   // Load and edition
   $(data.sections).each(function(index, section){
     lastIndexSection = index + 1;
     $('.fl-editor__sections').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
+        //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
         'Title ' +
-        '<textarea id="section__' + index + '" cols="50">' + section.title + '</textarea>' +
-        '<textarea style="display: none;" id="section_markdown_' + index + '">' +
-        section.markdown + '</textarea>' +
-        '<button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
-        '<button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
+        ' <textarea id="section__' + index + '" cols="50">' + section.title + '</textarea>' +
+        ' <textarea style="display: none;" id="section_markdown_' + index + '">' + section.markdown + '</textarea>' +
+        ' <button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
+        ' <button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
 
     $(".fl-panel--editor__sections__section-item__edit_"+index).click(function() {
@@ -88,8 +89,8 @@ function bulletinEditor(collectionName, data) {
       var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
       var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
       '<div id="wmd-button-bar"></div>' +
-      '<textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedSectionValue + '</textarea>' +
-      '<button id="finish-section">Finish editing</button>' +
+      ' <textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedSectionValue + '</textarea>' +
+      ' <button id="finish-section">Finish editing</button>' +
       '</div>';
 
       $('body').prepend(editorPrev, editorEdit);
@@ -105,6 +106,7 @@ function bulletinEditor(collectionName, data) {
         $("#wmd-edit").remove();
         bulletinEditor(collectionName, data);
         save();
+        updateContent(collectionName, getPathName(), JSON.stringify(data));
       });
     });
 
@@ -120,13 +122,12 @@ function bulletinEditor(collectionName, data) {
   $("#content-section").append('<button id="addSection">Add new section</button>');
   $("#addSection").click(function () {
     $('.fl-editor__sections').append(
-      '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-        'Title ' +
-        '<textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-        '<textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-        '<button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-        '<button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
+      '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
+      'Title ' +
+      ' <textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
+      ' <textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
+      ' <button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
+      ' <button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
       '</div>');
     sortableSections();
     saveNewSection();
@@ -155,14 +156,12 @@ function bulletinEditor(collectionName, data) {
   $(data.accordion).each(function(index, tab) {
     lastIndexTab = index + 1;
     $('.fl-editor__accordion').append(
-        '<div id="' + index + '" class="tab-list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Title ' +
-        '<textarea id="tab__' + index + '" cols="50">' + tab.title + '</textarea>' +
-        '<textarea style="display: none;" id="tab_markdown_' + index + '">' +
-        tab.markdown + '</textarea>' +
-        '<button class="fl-panel--editor__accordion__tab-item__edit_' + index + '">Edit</button>' +
-        '<button class="fl-panel--editor__accordion__tab-item__delete_' + index + '">Delete</button>' +
+        ' <textarea id="tab__' + index + '" cols="50">' + tab.title + '</textarea>' +
+        ' <textarea style="display: none;" id="tab_markdown_' + index + '">' + tab.markdown + '</textarea>' +
+        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + index + '">Edit</button>' +
+        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
 
     $(".fl-panel--editor__accordion__tab-item__edit_"+index).click(function() {
@@ -171,8 +170,8 @@ function bulletinEditor(collectionName, data) {
       var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
       var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
           '<div id="wmd-button-bar"></div>' +
-          '<textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedTabValue + '</textarea>' +
-          '<button id="finish-tab">Finish editing</button>' +
+          ' <textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedTabValue + '</textarea>' +
+          ' <button id="finish-tab">Finish editing</button>' +
           '</div>';
 
       $('body').prepend(editorPrev, editorEdit);
@@ -187,6 +186,7 @@ function bulletinEditor(collectionName, data) {
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
         save();
+        updateContent(collectionName, getPathName(), JSON.stringify(data));
       });
     });
 
@@ -202,13 +202,12 @@ function bulletinEditor(collectionName, data) {
   $("#accordion-section").append('<button id="addTab">Add new tab</button>');
   $("#addTab").click(function () {
     $('.fl-editor__accordion').append(
-        '<div id="' + lastIndexTab + '" class="tab-list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        '<div id="' + lastIndexTab + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Title ' +
-        '<textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
-        '<textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
-        '<button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
-        '<button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
+        ' <textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
+        ' <textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
+        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
+        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
         '</div>');
     sortableTabs();
     saveNewTab();
@@ -241,15 +240,12 @@ function bulletinEditor(collectionName, data) {
     $(data.relatedBulletins).each(function (iBulletin, bulletin) {
       lastIndexRelated = iBulletin + 1;
       $('.fl-editor__related').append(
-          '<div id="' + iBulletin + '" class="bulletin-list" style="background-color:grey; color:white;">' +
-          '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+          '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           'Link ' +
-          '<textarea id="bulletin__' + iBulletin + '" cols="50">' + bulletin.uri + '</textarea>' +
-          '<textarea style="display: none;" id="bulletin_name_' + iBulletin + '">' +
-          bulletin.name + '</textarea>' +
-          '<textarea style="display: none;" id="bulletin_summary_' + iBulletin + '">' +
-          bulletin.summary + '</textarea>' +
-          '<button class="fl-panel--editor__related__bulletin-item__delete_' + iBulletin + '">Delete</button>' +
+          ' <textarea id="bulletin__' + iBulletin + '" cols="50">' + bulletin.uri + '</textarea>' +
+          ' <textarea style="display: none;" id="bulletin_name_' + iBulletin + '">' + bulletin.name + '</textarea>' +
+          ' <textarea style="display: none;" id="bulletin_summary_' + iBulletin + '">' + bulletin.summary + '</textarea>' +
+          ' <button class="fl-panel--editor__related__bulletin-item__delete_' + iBulletin + '">Delete</button>' +
           '</div>');
 
       // Delete
@@ -265,11 +261,10 @@ function bulletinEditor(collectionName, data) {
   $("#related-section").append('<button id="addBulletin">Add new link</button>');
   $("#addBulletin").one('click', function () {
     $('.fl-editor__related').append(
-        '<div id="' + lastIndexRelated + '" class="bulletin-list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Link ' +
-        '<textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
-        '<button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
+        ' <textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
+        ' <button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
         '</div>');
 
     unCheckPage();
@@ -292,8 +287,10 @@ function bulletinEditor(collectionName, data) {
             $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
             saveNewBulletin();
             $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            checkPage2();
+            //checkPage2();
+            checkPage();
             save();
+            updateContent(collectionName, getPathName(), JSON.stringify(data));
           } else {
             alert("This is not a bulletin");
           }
@@ -306,14 +303,13 @@ function bulletinEditor(collectionName, data) {
     sortableRelated();
   });
 
-  function checkPage2() {
-    clearInterval(window.intervalID);
-    window.intervalID = setInterval(function () {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
-    }, intIntervalTime);
-  }
+  //function checkPage2() {
+  //  window.intervalID = setInterval(function () {
+  //    checkForPageChanged(function () {
+  //      loadPageDataIntoEditor(collectionName, true);
+  //    });
+  //  }, intIntervalTime);
+  //}
 
   function unCheckPage() {
     clearInterval(window.intervalID);
@@ -344,11 +340,10 @@ function bulletinEditor(collectionName, data) {
   $(data.externalLinks).each(function(index, link){
     lastIndexLink = index + 1;
     $('.fl-editor__external').append(
-        '<div id="' + index + '" class="link-list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Title ' +
-        '<textarea id="link__' + index + '" cols="50">' + link.url + '</textarea>' +
-        '<button class="fl-panel--editor__external__link-item__delete_' + index + '">Delete</button>' +
+        ' <textarea id="link__' + index + '" cols="50">' + link.url + '</textarea>' +
+        ' <button class="fl-panel--editor__external__link-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
 
     // Delete
@@ -363,11 +358,10 @@ function bulletinEditor(collectionName, data) {
   $("#external-section").append('<button id="addLink">Add new link</button>');
   $("#addLink").click(function () {
     $('.fl-editor__external').append(
-        '<div id="' + lastIndexLink + '" class="link-list" style="background-color:grey; color:white;">' +
-        '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+        '<div id="' + lastIndexLink + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Title ' +
-        '<textarea id="link__' + lastIndexLink + '" placeholder="Copy the link here" cols="50"></textarea>' +
-        '<button class="fl-panel--editor__external__link-item__delete_' + lastIndexLink + '">Delete</button>' +
+        ' <textarea id="link__' + lastIndexLink + '" placeholder="Copy the link here" cols="50"></textarea>' +
+        ' <button class="fl-panel--editor__external__link-item__delete_' + lastIndexLink + '">Delete</button>' +
         '</div>');
     sortableLinks();
     saveNewLink();
@@ -402,7 +396,16 @@ function bulletinEditor(collectionName, data) {
   // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function () {
     save();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
+
+  // complete
+  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
+    pageData = $('.fl-editor__headline').val();
+    save();
+    saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
+  });
+
 
   function save() {
     // Sections
@@ -441,8 +444,6 @@ function bulletinEditor(collectionName, data) {
     data.externalLinks = newLinks;
 
     //console.log(data);
-
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
     bulletinEditor(collectionName, data);
   }
 }

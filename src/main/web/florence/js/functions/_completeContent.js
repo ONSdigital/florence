@@ -4,7 +4,7 @@ function saveAndCompleteContent(collectionName, path, content) {
       completeContent(collectionName, path);
     },
     error = function (response) {
-      if (response.status == 400) {
+      if (response.status === 400) {
         alert("Cannot edit this file. It is already part of another collection.");
       }
       else {
@@ -25,7 +25,7 @@ function completeContent(collectionName, path) {
       //Todo: go back to browse view?
     },
     error: function (response) {
-      handleApiError(response)
+      handleApiError(response);
     }
   });
 }
