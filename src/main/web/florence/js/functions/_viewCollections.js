@@ -27,7 +27,6 @@ function viewCollections() {
             '<tr>' +
               '<th>Collection name</th>' +
               '<th>Publish time and date</th>' +
-              '<th>Manage collection</th>'+
             '</tr>';
 
       $(page).html(collection_table);
@@ -44,7 +43,6 @@ function viewCollections() {
             '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
               '<td class= "collection-name">' + collection.name + '</td>' +
               '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
-              '<td><button class="view-collection-button" id="fl-collection-view-button-' + collection.id +'"> View Collection</button></td>'+
             '</tr>'
           )
 
