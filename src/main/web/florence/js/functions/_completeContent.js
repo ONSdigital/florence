@@ -21,8 +21,7 @@ function completeContent(collectionName, path) {
     type: 'POST',
     success: function (message) {
       console.log("Page is now marked as complete " + message);
-      refreshPreview();
-      //Todo: go back to browse view?
+      alert("This content has now been submitted for internal review.")
     },
     error: function (response) {
       handleApiError(response);
