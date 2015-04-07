@@ -4,7 +4,6 @@ function viewCollections() {
     '<h1>Select a collection</h1>' +
     '<div class="fl-collections-holder"></div>' +
     '<button class="fl-button fl-button--big fl-button--center fl-create-collection-button">Create a collection</button>' +
-    '<button id="test"> test </button>'+
     '</section>';
 
   $.ajax({
