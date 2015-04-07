@@ -21,8 +21,13 @@ function createCollection() {
       console.log("Collection " + collectionName + " created" );
       viewController('collections');
     },
-    error: function (jqxhr) {
-      handleApiError(jqxhr);
+    error: function (response) {
+      if(response.status === 409) {
+        alert('A collection already exists with the name ' + collectionName);
+      }
+      else {
+        handleApiError(response);
+      }
     }
   });
 }
