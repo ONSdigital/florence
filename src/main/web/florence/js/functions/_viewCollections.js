@@ -80,7 +80,7 @@ function viewCollections() {
     '<section class="fl-panel fl-panel--collection-details">' +
     '<div class="fl-panel--collection-details-container"></div>' +
     '<button class="fl-button fl-work-on-collection-button">Work on this collection</button>' +
-    '<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection/button>' +
+    '<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection</button>' +
     '<button class="fl-button fl-button--cancel">Cancel</button>' +
     '</section>';
 
