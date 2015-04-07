@@ -22,7 +22,9 @@ function loadPageCreator (collectionName) {
     pageData.fileName = pageNameTrimmed;
     newUri = makeUrl(parent, uriSection, pageNameTrimmed);
     pageData.uri = newUri;
-    pageData.releaseDate = convertDate(releaseDate);
+    //pageData.releaseDate = convertDate(releaseDate);
+    date = new Date(releaseDate);
+    pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
     console.log("this " + pageData.releaseDate);
 
     $.ajax({
@@ -105,18 +107,18 @@ function makeUrl(args) {
   return accumulator.join('/');
 }
 
-function convertDate(isoDate) {
-  var monthNames = [
-    "January", "February", "March",
-    "April", "May", "June", "July",
-    "August", "September", "October",
-    "November", "December"
-  ];
-  var stringDate = isoDate.toString();
-  date = Date.parse(stringDate);
-
-  var day = date.getDate();
-  var monthIndex = date.getMonth();
-  var year = date.getFullYear();
-  return day + " " + monthNames[monthIndex] + " " + year;
-}
+//function convertDate(isoDate) {
+//  var monthNames = [
+//    "January", "February", "March",
+//    "April", "May", "June", "July",
+//    "August", "September", "October",
+//    "November", "December"
+//  ];
+//  var stringDate = isoDate.toString();
+//  date = Date.parse(stringDate);
+//
+//  var day = date.getDate();
+//  var monthIndex = date.getMonth();
+//  var year = date.getFullYear();
+//  return day + " " + monthNames[monthIndex] + " " + year;
+//}
