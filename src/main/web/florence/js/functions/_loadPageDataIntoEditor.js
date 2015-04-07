@@ -2,7 +2,7 @@ function loadPageDataIntoEditor(collectionName, active) {
   if (active === false) {
     // Do nothing
   } else {
-    var pageUrlData = "/data/" + getPathName();
+    var pageUrlData = "/data" + getPathName();
     $.ajax({
       url: pageUrlData,
       dataType: 'json',
@@ -25,9 +25,6 @@ function loadPageDataIntoEditor(collectionName, active) {
 
         var pagePath = getPathName();
         var pageFile = pagePath + '/data.json';
-        if (pageFile.indexOf('/') !== 0) {
-          pageFile = '/' + pageFile;
-        }
         $.each(response.completeUris, function (i, item) {
           if (pageFile === item) {
             pageIsComplete = true;

@@ -17,10 +17,10 @@ function loadReviewScreen(collectionName) {
     var review_list = '<ul>';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
-    $.each(data.completeUris, function (i, item) {
-      pageDataRequests.push(getPageData(collectionName, item,
+    $.each(data.completeUris, function (i, uri) {
+      pageDataRequests.push(getPageData(collectionName, uri,
         success = function (response) {
-          var path = item.replace('/data.json', '')
+          var path = uri.replace('/data.json', '');
           path = path.length === 0 ? '/' : path;
           review_list += '<li class="fl-review-page-list-item" data-path="' + path + '">' +
           response.name + '</li>';
@@ -67,11 +67,7 @@ function updateReviewScreen() {
   var editButton = $('.fl-review-page-edit-button'),
     reviewButton = $('.fl-review-page-review-button');
 
-  var path = getPathName(),
-    pageIsComplete = false;
-  if (path.indexOf('/') !== 0) {
-    path = '/' + path;
-  }
+  var path = getPathName(), pageIsComplete = false;
 
   // if the url is in the current list, select it
   $(".fl-review-page-list-item").each(function () {
