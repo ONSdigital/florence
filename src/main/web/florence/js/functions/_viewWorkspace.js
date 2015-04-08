@@ -1,4 +1,4 @@
-function viewWorkspace(){
+function viewWorkspace(path) {
 
   window.intIntervalTime = 100;
   window.intervalID;
@@ -30,10 +30,15 @@ function viewWorkspace(){
     '  <button class="fl-button fl-button--big fl-button--center fl-review-page-review-button">Happy with this send to content owner</button>' +
     '</section>';
 
+  var currentPath = '';
+  if (path) {
+    currentPath = path;
+  }
+
   var workspace_preview =
     '<section class="fl-panel fl-panel--preview">' +
     '  <div class="fl-panel--preview__inner">' +
-    '    <iframe src="/index.html" class="fl-panel fl-panel--preview__content"></iframe>' +
+    '    <iframe src="/index.html#!' + currentPath + '" class="fl-panel fl-panel--preview__content"></iframe>' +
     '  </div>' +
     '</section>';
 
@@ -47,32 +52,32 @@ function viewWorkspace(){
   localStorage.setItem("pageurl", pageurl);
 
   //click handlers
-  $('.fl-main-menu__link').click(function() {
+  $('.fl-main-menu__link').click(function () {
     $('.fl-panel--sub-menu').empty();
     $('.fl-panel--preview__inner').removeClass('fl-panel--preview__inner--active');
 
     // setupFlorenceWorkspace($(this));
-    if ($(this).parent().hasClass('fl-main-menu__item--browse')){
+    if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
       enablePreview();
     }
 
-    else if ($(this).parent().hasClass('fl-main-menu__item--create')){
+    else if ($(this).parent().hasClass('fl-main-menu__item--create')) {
       loadCreateBulletinScreen(collectionName);
     }
 
-    else if ($(this).parent().hasClass('fl-main-menu__item--edit')){
+    else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
       loadEditBulletinScreen(collectionName);
     }
 
-    else if ($(this).parent().hasClass('fl-main-menu__item--review')){
+    else if ($(this).parent().hasClass('fl-main-menu__item--review')) {
 
       $('.fl-panel--sub-menu').html(workspace_menu_review);
       $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
       loadReviewScreen(collectionName);
 
       clearInterval(window.intervalID);
-      window.intervalID = setInterval(function() {
-        checkForPageChanged(function() {
+      window.intervalID = setInterval(function () {
+        checkForPageChanged(function () {
           updateReviewScreen();
         });
       }, window.intIntervalTime);
