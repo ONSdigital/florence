@@ -293,6 +293,12 @@ function articleEditor(collectionName, data) {
     loadPageDataIntoEditor(collectionName, false);
 
     $(".fl-panel--editor__related__article-item__get_" + lastIndexRelated).one('click', function () {
+      $('.fl-editor__related').append(
+          '<button class="fl-panel--editor__article__tab-item__cancel_' + lastIndexRelated + '">Cancel</button>');
+      $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).one('click', function () {
+        $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+        checkPage();
+      });
       var articleurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       var articleurldata = "/data" + articleurl.split("#!")[1];
       $.ajax({
@@ -309,7 +315,6 @@ function articleEditor(collectionName, data) {
             $('#article_summary_' + lastIndexRelated).val(relatedData.summary);
             saveNewArticle();
             $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            //checkPage2();
             checkPage();
             save();
             updateContent(collectionName, getPathName(), JSON.stringify(data));
@@ -1372,7 +1377,12 @@ function loadT4Creator (collectionName) {
     }
   });
 
-  pageType = $('.fl-creator__page_type_list_select').val().trim();
+  // Default
+  pageType = "bulletin";
+
+  $('.fl-creator__page_type_list_select').change(function () {
+    pageType = $(this).val();
+  });
   createButton.one('click', function () {
     pageData = pageTypeData(pageType);
     parent = $('.fl-creator__parent').val().trim();
