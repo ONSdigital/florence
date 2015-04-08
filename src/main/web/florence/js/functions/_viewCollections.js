@@ -20,14 +20,13 @@ function viewCollections() {
   });
 
   function populateCollectionTable(data) {
-      var page = $('.fl-collections-holder')
+      var page = $('.fl-collections-holder');
       var collection_table =
         '<table class="fl-collections-table">' +
           '<tbody>' +
             '<tr>' +
               '<th>Collection name</th>' +
               '<th>Publish time and date</th>' +
-              '<th>Manage collection</th>'+
             '</tr>';
 
       $(page).html(collection_table);
@@ -38,15 +37,14 @@ function viewCollections() {
         //var date = Date.parse(stringDate);
 
         var date = new Date(collection.publishDate);
-        var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes()
+        var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
 
         $('tbody',page).append(
             '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
               '<td class= "collection-name">' + collection.name + '</td>' +
               '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
-              '<td><button class="view-collection-button" id="fl-collection-view-button-' + collection.id +'"> View Collection</button></td>'+
             '</tr>'
-          )
+          );
 
         makeCollectionView(collection.id,data);
 
@@ -54,7 +52,7 @@ function viewCollections() {
 
       page.append(
           '</tbody>' +
-        '</table>')
+        '</table>');
 
 
       $('.fl-collections-table-row').click(function() {
@@ -80,7 +78,7 @@ function viewCollections() {
     '<section class="fl-panel fl-panel--collection-details">' +
     '<div class="fl-panel--collection-details-container"></div>' +
     '<button class="fl-button fl-work-on-collection-button">Work on this collection</button>' +
-    '<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection/button>' +
+    '<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection</button>' +
     '<button class="fl-button fl-button--cancel">Cancel</button>' +
     '</section>';
 
@@ -145,7 +143,7 @@ function viewCollections() {
 	'<select class="fl-collection-publish-time">' +
 		'<option value="0930" selected>09:30</option>' +
 	'</select>' +
-	'<button class="fl-button fl-create-collection--submit-button">Create collection</button>' +
+	'<button class="fl-button fl-create-collection--submit-button">Save</button>' +
 	'<button class="fl-button fl-button--cancel">Cancel</button>' +
 	'</section>';
 
