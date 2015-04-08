@@ -43,7 +43,7 @@ function viewWorkspace(path) {
     '</section>';
 
   //build view
-  $('.fl-view').prepend(workspace_menu_main + workspace_preview);
+  $('.fl-view').html(workspace_menu_main + workspace_preview);
   enablePreview();
 
   var collectionName = localStorage.getItem("collection");
