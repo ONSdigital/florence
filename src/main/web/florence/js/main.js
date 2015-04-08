@@ -2249,6 +2249,9 @@ function viewWorkspace(path) {
   $('.fl-main-menu__link').click(function () {
     $('.fl-panel--sub-menu').empty();
 
+    $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+    $(this).addClass('fl-main-menu__link--active');
+
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
       enablePreview();
@@ -2281,11 +2284,11 @@ function viewWorkspace(path) {
     }
   });
 
+  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+  $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
+
   //removePreviewColClasses();
   //removeSubMenus();
-
-  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-  $(this).addClass('fl-main-menu__link--active');
 
   $('.fl-panel--preview').addClass('col--7');
   $('.fl-panel--sub-menu').show();
