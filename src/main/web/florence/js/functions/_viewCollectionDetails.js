@@ -34,7 +34,7 @@ function viewCollectionDetails(collectionName) {
 
     CreateUriListHtml(data.inProgressUris, collectionName, "fl-panel--collection-details-in-progress-container");
     CreateUriListHtml(data.completeUris, collectionName, "fl-panel--collection-details-complete-container");
-    CreateUriListHtml(data.reviewedUris, collectionName, "fl-panel--collection-details-complete-container");
+    CreateUriListHtml(data.reviewedUris, collectionName, "fl-panel--collection-details-reviewed-container");
 
     $('.fl-panel--collection-details-container').html(collection_summary);
 
@@ -74,7 +74,7 @@ function viewCollectionDetails(collectionName) {
         //$(this).addClass('fl-panel-review-page-item__selected');
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
-        viewWorkspace(path)
+        viewWorkspace(path);
         loadEditBulletinScreen(collectionName );
       }
     });
