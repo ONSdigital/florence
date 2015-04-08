@@ -4,21 +4,21 @@ function viewController(view){
 		// alert('auth true');
 
 		//click handlers
-		$('.fl-admin-menu__link').click(function() {
+		$('.fl-admin-menu__link').unbind("click").click(function() {
 			if ($(this).parent().hasClass('fl-admin-menu__item--collections')){
 				viewController('collections');
 			}
 		});
 
-		$('.fl-admin-menu__item--useradmin').click(function() {
+		$('.fl-admin-menu__item--useradmin').unbind("click").click(function() {
 				viewController('users-and-access');
 		});
 
-		$('.fl-admin-menu__item--login').click(function() {
+		$('.fl-admin-menu__item--login').unbind("click").click(function() {
 				viewController('login');
 		});
 
-		$('.fl-admin-menu__item--publish').click(function() {
+		$('.fl-admin-menu__item--publish').unbind("click").click(function() {
 				//viewController('publish');
 		});
 
