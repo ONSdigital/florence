@@ -26,8 +26,8 @@ function viewWorkspace(path) {
   var workspace_menu_review =
     '<section class="fl-panel">' +
     '  <div class="fl-review-list-holder"></div>' +
-    '  <button class="fl-button fl-button--big fl-button--center fl-review-page-edit-button">Edit this page</button>' +
-    '  <button class="fl-button fl-button--big fl-button--center fl-review-page-review-button">Happy with this send to content owner</button>' +
+    '  <button class="fl-button fl-button--big fl-button--center fl-review-page-edit-button" style="display: none;">Edit this page</button>' +
+    '  <button class="fl-button fl-button--big fl-button--center fl-review-page-review-button" style="display: none;">Happy with this send to content owner</button>' +
     '</section>';
 
   var currentPath = '';

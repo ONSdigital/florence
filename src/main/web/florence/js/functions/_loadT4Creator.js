@@ -75,8 +75,8 @@ function loadT4Creator (collectionName) {
       success: function (message) {
         console.log("Updating completed " + message);
         // To be changed when #! gets removed
-        $('.fl-panel--preview__content').get(0).src = "http://localhost:8081/index.html#!/" + newUri;
-        loadEditBulletinScreen(collectionName);
+        viewWorkspace('/' + newUri);
+        loadEditBulletinScreen(collectionName );
       },
       error: function (error) {
         console.log(error);
