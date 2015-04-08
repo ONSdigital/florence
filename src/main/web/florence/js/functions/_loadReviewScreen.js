@@ -47,7 +47,7 @@ function loadReviewScreen(collectionName) {
     });
 
     editButton.click(function () {
-      loadEditBulletinScreen(collectionName);
+      loadEditT4Screen(collectionName);
     });
 
     reviewButton.click(function () {

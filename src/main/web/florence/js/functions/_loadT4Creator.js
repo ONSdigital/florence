@@ -34,7 +34,7 @@ function loadT4Creator (collectionName) {
         breadcrumb = inheritedBreadcrumb;
         return breadcrumb;
       } else {
-        $('.fl-creator__parent').attr("placeholder", "This is not a valid place to create " + pageType + "s.");
+        $('.fl-creator__parent').attr("placeholder", "This is not a valid place to create this page.");
       }
     },
     error: function () {
@@ -75,8 +75,9 @@ function loadT4Creator (collectionName) {
       success: function (message) {
         console.log("Updating completed " + message);
         // To be changed when #! gets removed
-        $('.fl-panel--preview__content').get(0).src = "http://localhost:8081/index.html#!/" + newUri;
-        loadEditBulletinScreen(collectionName);
+        var local = localStorage.getItem("pageurl").split("#!")[0];
+        $('.fl-panel--preview__content').get(0).src = local + "#!/" + newUri;
+        loadEditT4Screen(collectionName);
       },
       error: function (error) {
         console.log(error);
@@ -134,6 +135,32 @@ function pageTypeData(pageType) {
       "name": "",
       "uri": "",
       "fileName": "",
+      "breadcrumb": ""
+    };
+  }
+
+  else if (pageType === "dataset") {
+    return {
+      "nextRelease": "",
+      "contact": {
+        "name": "",
+        "email": ""
+      },
+      "lede": "",
+      "more": "",
+      "download": [],
+      "notes": [],
+      "summary": "",
+      "nationalStatistic": "",
+      "description": "",
+      "title": "",
+      "releaseDate": "",
+      type: pageType,
+      "name": "",
+      "uri": "",
+      "fileName": "",
+      "relatedDatasets": [],
+      "usedIn": [],
       "breadcrumb": ""
     };
   }

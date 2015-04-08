@@ -1,7 +1,6 @@
 function viewWorkspace(path) {
 
   window.intIntervalTime = 100;
-  window.intervalID;
 
   var workspace_menu_main =
     '<nav class="fl-panel fl-panel--menu">' +
@@ -44,7 +43,7 @@ function viewWorkspace(path) {
 
   //build view
   $('.fl-view').html(workspace_menu_main + workspace_preview);
-  enablePreview();
+  //enablePreview();
 
   var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
@@ -54,6 +53,7 @@ function viewWorkspace(path) {
   //click handlers
   $('.fl-main-menu__link').click(function () {
     $('.fl-panel--sub-menu').empty();
+    $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
 
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
@@ -65,13 +65,21 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
-      loadEditBulletinScreen(collectionName);
+      clearInterval(window.intervalID);
+      window.intervalID = setInterval(function () {
+        checkForPageChanged(function () {
+          loadPageDataIntoEditor(collectionName, true);
+        });
+      }, window.intIntervalTime);
+      enablePreview();
+      loadPageDataIntoEditor(collectionName, true);
+      //loadEditT4Screen(collectionName);
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--review')) {
-
       $('.fl-panel--sub-menu').html(workspace_menu_review);
-      $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
+      enablePreview();
+      //$('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
       loadReviewScreen(collectionName);
 
       clearInterval(window.intervalID);
@@ -90,9 +98,9 @@ function viewWorkspace(path) {
   //removePreviewColClasses();
   //removeSubMenus();
 
-  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-  $(this).addClass('fl-main-menu__link--active');
+
+  //$(this).addClass('fl-main-menu__link--active');
 
   $('.fl-panel--preview').addClass('col--7');
-  $('.fl-panel--sub-menu').show();
+  //$('.fl-panel--sub-menu').show();
 }

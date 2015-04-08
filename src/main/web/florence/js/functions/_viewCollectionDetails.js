@@ -75,7 +75,7 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
-        loadEditBulletinScreen(collectionName );
+        loadEditT4Screen(collectionName);
       }
     });
   }
