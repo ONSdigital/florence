@@ -1,5 +1,5 @@
-function loadPageCreator (collectionName) {
-  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, createButton, newUri, pageData;
+function loadT4Creator (collectionName) {
+  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, createButton, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
     success = function (response) {
@@ -10,8 +10,39 @@ function loadPageCreator (collectionName) {
     }
   );
 
+  createButton = $('.fl-panel--creator__nav').append('<button class="fl-panel--creator__nav__create">Create Page</button>').hide();
+  var parentUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
+  var parentUrlData = "/data" + parentUrl.split("#!")[1];
+
+  $.ajax({
+    url: parentUrlData,
+    dataType: 'json',
+    crossDomain: true,
+    success: function (checkData) {
+      if (checkData.level === 't3') {
+        $('.fl-creator__parent').val(parentUrl.split("#!")[1]);
+        createButton.show();
+        var inheritedBreadcrumb = checkData.breadcrumb;
+        var parentBreadcrumb = {
+          "index": 0,
+          "type": "home",
+          "name": checkData.name,
+          "fileName": checkData.fileName,
+          "breadcrumb": []
+        };
+        inheritedBreadcrumb.push(parentBreadcrumb);
+        breadcrumb = inheritedBreadcrumb;
+        return breadcrumb;
+      } else {
+        $('.fl-creator__parent').attr("placeholder", "This is not a valid place to create " + pageType + "s.");
+      }
+    },
+    error: function () {
+      console.log('No page data returned');
+    }
+  });
+
   pageType = $('.fl-creator__page_type_list_select').val().trim();
-  createButton = $('.fl-panel--creator__nav__create');
   createButton.one('click', function () {
     pageData = pageTypeData(pageType);
     parent = $('.fl-creator__parent').val().trim();
@@ -22,10 +53,10 @@ function loadPageCreator (collectionName) {
     pageData.fileName = pageNameTrimmed;
     newUri = makeUrl(parent, uriSection, pageNameTrimmed);
     pageData.uri = newUri;
-    //pageData.releaseDate = convertDate(releaseDate);
     date = new Date(releaseDate);
     pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
-    console.log("this " + pageData.releaseDate);
+    pageData.breadcrumb = breadcrumb;
+
 
     $.ajax({
       url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
@@ -70,27 +101,38 @@ function pageTypeData(pageType) {
       "title": "",
       "releaseDate": "",
       type: pageType,
-      //"type": "bulletin",
       "name": "",
       "uri": "",
       "fileName": "",
-      "breadcrumb": [
-        {
-          "index": 0,
-          "type": "home",
-          "name": "Economy",
-          "fileName": "economy"
-        },
-        {
-          "index": 0,
-          "type": "home",
-          "name": "Gross Domestic Product (GDP)",
-          "fileName": "grossdomesticproductgdp",
-          "breadcrumb": []
-        }
-      ]
+      "breadcrumb": ""
     };
   }
+
+  else if (pageType === "article") {
+    return {
+      "contact": {
+        "name": "",
+        "email": ""
+      },
+      "lede": "",
+      "more": "",
+      "sections": [],
+      "accordion": [],
+      "headline1": "",
+      "headline2": "",
+      "headline3": "",
+      "summary": "",
+      "relatedArticles": [],
+      "title": "",
+      "releaseDate": "",
+      type: pageType,
+      "name": "",
+      "uri": "",
+      "fileName": "",
+      "breadcrumb": ""
+    };
+  }
+
   else {
     alert('unsupported page type');
   }
@@ -106,19 +148,3 @@ function makeUrl(args) {
   }
   return accumulator.join('/');
 }
-
-//function convertDate(isoDate) {
-//  var monthNames = [
-//    "January", "February", "March",
-//    "April", "May", "June", "July",
-//    "August", "September", "October",
-//    "November", "December"
-//  ];
-//  var stringDate = isoDate.toString();
-//  date = Date.parse(stringDate);
-//
-//  var day = date.getDate();
-//  var monthIndex = date.getMonth();
-//  var year = date.getFullYear();
-//  return day + " " + monthNames[monthIndex] + " " + year;
-//}

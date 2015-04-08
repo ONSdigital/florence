@@ -1,9 +1,14 @@
 function makeEditSections(collectionName, response) {
   if (response.type === 'bulletin') {
     bulletinEditor(collectionName, response);
-  } else {
-    $('.fl-editor__sections').hide();
-    $("#addSection").remove();
+  }
+
+  else if (response.type === 'article') {
+    articleEditor(collectionName, response);
+  }
+
+  else {
+    $('#accordion').hide();
     $('.fl-editor__headline').show().val(JSON.stringify(response, null, 2));
 
     $('.fl-panel--editor__nav__save').unbind("click").click(function () {

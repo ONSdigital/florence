@@ -1,4 +1,4 @@
-function bulletinEditor(collectionName, data) {
+function articleEditor(collectionName, data) {
 
   var newSections = [];
   var newTabs = [];
@@ -6,41 +6,36 @@ function bulletinEditor(collectionName, data) {
   var newLinks = [];
   var lastIndexSection, lastIndexTab, lastIndexRelated, lastIndexLink;
 
-    //console.log(data.sections);
+  //console.log(data.sections);
 
   $(".fl-editor__headline").hide();
   $(".section-list").remove();
   $(".tab-list").remove();
-  $(".bulletin-list").remove();
+  $(".article-list").remove();
   $(".link-list").remove();
   $("#addSection").remove();
   $("#addTab").remove();
-  $("#addBulletin").remove();
+  $("#addArticle").remove();
   $("#addLink").remove();
 
   $("#metadata-list").remove();
 
   // Metadata load
   $("#metadata-section").append(
-    '<div id="metadata-list">' +
-    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '</div>');
+      '<div id="metadata-list">' +
+      ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      '</div>');
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
     $(this).textareaAutoSize();
     data.title = $(this).val();
-  });
-  $("#nextRelease").val(data.nextRelease).on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.nextRelease = $(this).val();
   });
   $("#contactName").val(data.contact.name).on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -75,7 +70,7 @@ function bulletinEditor(collectionName, data) {
     lastIndexSection = index + 1;
     $('.fl-editor__sections').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
+          //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
         'Title ' +
         ' <textarea id="section__' + index + '" cols="50">' + section.title + '</textarea>' +
         ' <textarea style="display: none;" id="section_markdown_' + index + '">' + section.markdown + '</textarea>' +
@@ -88,10 +83,10 @@ function bulletinEditor(collectionName, data) {
 
       var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
       var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
-      '<div id="wmd-button-bar"></div>' +
-      ' <textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedSectionValue + '</textarea>' +
-      ' <button id="finish-section">Finish editing</button>' +
-      '</div>';
+          '<div id="wmd-button-bar"></div>' +
+          ' <textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedSectionValue + '</textarea>' +
+          ' <button id="finish-section">Finish editing</button>' +
+          '</div>';
 
       $('body').prepend(editorPrev, editorEdit);
 
@@ -104,7 +99,7 @@ function bulletinEditor(collectionName, data) {
         data.sections[index].title = editedSectionTitle;
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
-        bulletinEditor(collectionName, data);
+        articleEditor(collectionName, data);
         save();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
       });
@@ -114,7 +109,7 @@ function bulletinEditor(collectionName, data) {
     $(".fl-panel--editor__sections__section-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
-      bulletinEditor(collectionName, data);
+      articleEditor(collectionName, data);
     });
   });
 
@@ -122,13 +117,13 @@ function bulletinEditor(collectionName, data) {
   $("#content-section").append('<button id="addSection">Add new section</button>');
   $("#addSection").click(function () {
     $('.fl-editor__sections').append(
-      '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-      'Title ' +
-      ' <textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-      ' <textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-      ' <button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-      ' <button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
-      '</div>');
+        '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
+        'Title ' +
+        ' <textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
+        ' <textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
+        ' <button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
+        ' <button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
+        '</div>');
     sortableSections();
     saveNewSection();
   });
@@ -143,7 +138,7 @@ function bulletinEditor(collectionName, data) {
     data.sections = newSections;
     $(".section-list").remove();
     $("#metadata-list").remove();
-    bulletinEditor(collectionName, data);
+    articleEditor(collectionName, data);
   }
 
   function sortableSections() {
@@ -192,7 +187,7 @@ function bulletinEditor(collectionName, data) {
     $(".fl-panel--editor__accordion__tab-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.accordion.splice(index, 1);
-      bulletinEditor(collectionName, data);
+      articleEditor(collectionName, data);
     });
   });
 
@@ -222,7 +217,7 @@ function bulletinEditor(collectionName, data) {
     console.log(data.accordion);
     $(".tab-list").remove();
     $("#metadata-list").remove();
-    bulletinEditor(collectionName, data);
+    articleEditor(collectionName, data);
   }
 
   function sortableTabs() {
@@ -230,67 +225,67 @@ function bulletinEditor(collectionName, data) {
   }
   sortableTabs();
 
-  // Related bulletin
+  // Related article
   // Load
-  if (data.relatedBulletins.length === 0) {
+  if (data.relatedArticles.length === 0) {
     lastIndexRelated = 0;
   } else {
-    $(data.relatedBulletins).each(function (iBulletin, bulletin) {
-      lastIndexRelated = iBulletin + 1;
+    $(data.relatedArticles).each(function (iArticle, article) {
+      lastIndexRelated = iArticle + 1;
       $('.fl-editor__related').append(
           '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           'Link ' +
-          ' <textarea id="bulletin__' + iBulletin + '" cols="50">' + bulletin.uri + '</textarea>' +
-          ' <textarea style="display: none;" id="bulletin_name_' + iBulletin + '">' + bulletin.name + '</textarea>' +
-          ' <textarea style="display: none;" id="bulletin_summary_' + iBulletin + '">' + bulletin.summary + '</textarea>' +
-          ' <button class="fl-panel--editor__related__bulletin-item__delete_' + iBulletin + '">Delete</button>' +
+          ' <textarea id="article__' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
+          ' <textarea style="display: none;" id="article_name_' + iArticle + '">' + article.name + '</textarea>' +
+          ' <textarea style="display: none;" id="article_summary_' + iArticle + '">' + article.summary + '</textarea>' +
+          ' <button class="fl-panel--editor__related__article-item__delete_' + iArticle + '">Delete</button>' +
           '</div>');
 
       // Delete
-      $(".fl-panel--editor__related__bulletin-item__delete_" + iBulletin).click(function () {
-        $("#" + iBulletin).remove();
-        data.relatedBulletins.splice(iBulletin, 1);
-        bulletinEditor(collectionName, data);
+      $(".fl-panel--editor__related__article-item__delete_" + iArticle).click(function () {
+        $("#" + iArticle).remove();
+        data.relatedArticles.splice(iArticle, 1);
+        articleEditor(collectionName, data);
       });
     });
   }
 
   //Add new related
-  $("#related-section").append('<button id="addBulletin">Add new link</button>');
-  $("#addBulletin").one('click', function () {
+  $("#related-section").append('<button id="addArticle">Add new link</button>');
+  $("#addArticle").one('click', function () {
     $('.fl-editor__related').append(
         '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Link ' +
-        ' <textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
+        ' <textarea id="article__' + lastIndexRelated + '" placeholder="Go to the related article and click Get" cols="50"></textarea>' +
+        ' <button class="fl-panel--editor__related__article-item__get_' + lastIndexRelated + '">Get</button>' +
         '</div>');
 
     unCheckPage();
     loadPageDataIntoEditor(collectionName, false);
 
-    $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
-      var bulletinurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-      var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+    $(".fl-panel--editor__related__article-item__get_" + lastIndexRelated).one('click', function () {
+      var articleurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+      var articleurldata = "/data" + articleurl.split("#!")[1];
       $.ajax({
-        url: bulletinurldata,
+        url: articleurldata,
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
-          if (relatedData.type === 'bulletin') {
-            $('#bulletin__' + lastIndexRelated).val(relatedData.uri);
-            $('.bulletin-list').append(
-                '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelated + '"></textarea>' +
-                '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelated + '"></textarea>');
-            $('#bulletin_name_' + lastIndexRelated).val(relatedData.name);
-            $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
-            saveNewBulletin();
+          if (relatedData.type === 'article') {
+            $('#article__' + lastIndexRelated).val(relatedData.uri);
+            $('.article-list').append(
+                '<textarea style="display: none;" id="article_name_' + lastIndexRelated + '"></textarea>' +
+                '<textarea style="display: none;" id="article_summary_' + lastIndexRelated + '"></textarea>');
+            $('#article_name_' + lastIndexRelated).val(relatedData.name);
+            $('#article_summary_' + lastIndexRelated).val(relatedData.summary);
+            saveNewArticle();
             $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
             //checkPage2();
             checkPage();
             save();
             updateContent(collectionName, getPathName(), JSON.stringify(data));
           } else {
-            alert("This is not a bulletin");
+            alert("This is not a article");
           }
         },
         error: function () {
@@ -300,14 +295,6 @@ function bulletinEditor(collectionName, data) {
     });
     sortableRelated();
   });
-
-  //function checkPage2() {
-  //  window.intervalID = setInterval(function () {
-  //    checkForPageChanged(function () {
-  //      loadPageDataIntoEditor(collectionName, true);
-  //    });
-  //  }, intIntervalTime);
-  //}
 
   function unCheckPage() {
     clearInterval(window.intervalID);
@@ -319,18 +306,18 @@ function bulletinEditor(collectionName, data) {
 
   sortableRelated();
 
-  function saveNewBulletin() {
-    var orderBulletin = $(".fl-editor__related").sortable('toArray');
-    $(orderBulletin).each(function(indexB, nameB){
-      var uri = $('#bulletin__'+nameB).val();
-      var summary = $('#bulletin_summary_'+nameB).val();
-      var names = $('#bulletin_name_'+nameB).val();
+  function saveNewArticle() {
+    var orderArticle = $(".fl-editor__related").sortable('toArray');
+    $(orderArticle).each(function(indexB, nameB){
+      var uri = $('#article__'+nameB).val();
+      var summary = $('#article_summary_'+nameB).val();
+      var names = $('#article_name_'+nameB).val();
       newRelated[parseInt(indexB)] = {uri: uri, name: names, summary: summary};
     });
-    data.relatedBulletins = newRelated;
-    $(".bulletin-list").remove();
+    data.relatedArticles = newRelated;
+    $(".article-list").remove();
     $("#metadata-list").remove();
-    bulletinEditor(collectionName, data);
+    articleEditor(collectionName, data);
   }
 
   // Edit external
@@ -348,7 +335,7 @@ function bulletinEditor(collectionName, data) {
     $(".fl-panel--editor__external__link-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.externalLinks.splice(index, 1);
-      bulletinEditor(collectionName, data);
+      articleEditor(collectionName, data);
     });
   });
 
@@ -369,19 +356,17 @@ function bulletinEditor(collectionName, data) {
     var orderLink = $(".fl-editor__external").sortable('toArray');
     $(orderLink).each(function(index, name){
       var link;
-      console.log($('#link__' + name).val().length);
       if($('#link__' + name).val().length === 0) {
         link = "";
       } else {
         link = $('#link__' + name).val();
       }
-      console.log(link);
       newLinks[index] = {url: link};
     });
     data.externalLinks = newLinks;
     $(".link-list").remove();
     $("#metadata-list").remove();
-    bulletinEditor(collectionName, data);
+    articleEditor(collectionName, data);
   }
 
   function sortableLinks() {
@@ -409,8 +394,8 @@ function bulletinEditor(collectionName, data) {
     // Sections
     var orderSection = $(".fl-editor__sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#section_markdown_' + nameS).val();
-        var title = $('#section__' + nameS).val();
+      var markdown = $('#section_markdown_' + nameS).val();
+      var title = $('#section__' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
@@ -424,15 +409,15 @@ function bulletinEditor(collectionName, data) {
     console.log(newTabs);
     data.accordion = newTabs;
     // Related links
-    var orderBulletin = $(".fl-editor__related").sortable('toArray');
-    $(orderBulletin).each(function (indexB, nameB) {
-      var uri = $('#bulletin__' + nameB).val();
-      var summary = $('#bulletin_summary_' + nameB).val();
-      var name = $('#bulletin_name_' + nameB).val();
+    var orderArticle = $(".fl-editor__related").sortable('toArray');
+    $(orderArticle).each(function (indexB, nameB) {
+      var uri = $('#article__' + nameB).val();
+      var summary = $('#article_summary_' + nameB).val();
+      var name = $('#article_name_' + nameB).val();
       newRelated[indexB]= {uri: uri, name: name, summary: summary};
     });
-    data.relatedBulletins = newRelated;
-      //console.log(data.relatedBulletins);
+    data.relatedArticles = newRelated;
+    //console.log(data.relatedArticles);
     // External links
     var orderLink = $(".fl-editor__external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
@@ -440,9 +425,8 @@ function bulletinEditor(collectionName, data) {
       newLinks[indexL] = {url: link};
     });
     data.externalLinks = newLinks;
-
     //console.log(data);
-    bulletinEditor(collectionName, data);
+    articleEditor(collectionName, data);
   }
 }
 

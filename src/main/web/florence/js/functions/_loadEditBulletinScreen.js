@@ -17,32 +17,32 @@ function loadEditBulletinScreen(collectionName) {
   var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +
     '  <section style="overflow: scroll;" class="fl-editor">' +
+    '    <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 800px"></textarea>' +
     '    <div id="accordion">' +
       // section > div necessary for accordion
-    '      <section class="fl-editor__metadata">Metadata section</section>' +
+    '      <section class="fl-editor__metadata">Metadata</section>' +
     '      <div id="metadata-section"></div>' +
-    '      <section class="fl-editor__metadata">Correction section</section>' +
+    '      <section class="fl-editor__metadata">Correction</section>' +
     '      <div id="correction-section">' +
     '        Demo: <input value="Tab 2 content"><br>' +
     '        Demo: <input value="Tab 2 content"><br>' +
     '        Demo: <input value="Tab 2 content"><br>' +
     '      </div>' +
-    '      <section class="fl-editor__metadata">Content section</section>' +
-    '      <div id="content-section">' +
-    '        <textarea class="fl-editor__headline" name="fl-editor__headline"></textarea>' +
-    '        <article class="fl-editor__sections"></article>' +
-    '      </div>' +
-    '      <section class="fl-editor__metadata">Accordion section</section>' +
+    '      <section class="fl-editor__metadata">Notes</section>' +
     '      <div id="accordion-section">' +
     '        <article class="fl-editor__accordion"></article>' +
     '      </div>' +
-    '      <section class="fl-editor__metadata">Related bulletins</section>' +
+    '      <section class="fl-editor__metadata">Related</section>' +
     '      <div id="related-section">' +
     '        <article class="fl-editor__related"></article>' +
     '      </div>' +
     '      <section class="fl-editor__metadata">External links</section>' +
     '      <div id="external-section">' +
     '        <article class="fl-editor__external"></article>' +
+    '      </div>' +
+    '      <section class="fl-editor__metadata">Content</section>' +
+    '      <div id="content-section">' +
+    '        <article class="fl-editor__sections"></article>' +
     '      </div>' +
     '    </div>' +
     '  </section>' +
