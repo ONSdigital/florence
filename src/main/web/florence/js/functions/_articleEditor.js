@@ -233,12 +233,12 @@ function articleEditor(collectionName, data) {
     $(data.relatedArticles).each(function (iArticle, article) {
       lastIndexRelated = iArticle + 1;
       $('.fl-editor__related').append(
-          '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
+          '<div id="' + iArticle + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           'Link ' +
-          ' <textarea id="article__' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
-          ' <textarea style="display: none;" id="article_name_' + iArticle + '">' + article.name + '</textarea>' +
-          ' <textarea style="display: none;" id="article_summary_' + iArticle + '">' + article.summary + '</textarea>' +
-          ' <button class="fl-panel--editor__related__article-item__delete_' + iArticle + '">Delete</button>' +
+          '  <textarea id="article__' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
+          '  <textarea style="display: none;" id="article_name_' + iArticle + '">' + article.name + '</textarea>' +
+          '  <textarea style="display: none;" id="article_summary_' + iArticle + '">' + article.summary + '</textarea>' +
+          '  <button class="fl-panel--editor__related__article-item__delete_' + iArticle + '">Delete</button>' +
           '</div>');
 
       // Delete
@@ -256,19 +256,22 @@ function articleEditor(collectionName, data) {
     $('.fl-editor__related').append(
         '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Link ' +
-        ' <textarea id="article__' + lastIndexRelated + '" placeholder="Go to the related article and click Get" cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__related__article-item__get_' + lastIndexRelated + '">Get</button>' +
+        '  <textarea id="article__' + lastIndexRelated + '" placeholder="Go to the related article and click Get" cols="50"></textarea>' +
+        '  <button class="fl-panel--editor__related__article-item__get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="fl-panel--editor__related__article-item__cancel_' + lastIndexRelated + '">Cancel</button>' +
         '</div>');
+
+    $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).hide();
 
     unCheckPage();
     loadPageDataIntoEditor(collectionName, false);
 
     $(".fl-panel--editor__related__article-item__get_" + lastIndexRelated).one('click', function () {
-      $('.fl-editor__related').append(
-          '<button class="fl-panel--editor__article__tab-item__cancel_' + lastIndexRelated + '">Cancel</button>');
-      $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).one('click', function () {
+      $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).show().one('click', function () {
         $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
         checkPage();
+        $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).remove();
+        articleEditor(collectionName, data);
       });
       var articleurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       var articleurldata = "/data" + articleurl.split("#!")[1];
@@ -300,6 +303,14 @@ function articleEditor(collectionName, data) {
     });
     sortableRelated();
   });
+
+  function checkPage() {
+    window.intervalID = setInterval(function () {
+      checkForPageChanged(function () {
+        loadPageDataIntoEditor(collectionName, true);
+      });
+    }, intIntervalTime);
+  }
 
   function unCheckPage() {
     clearInterval(window.intervalID);
