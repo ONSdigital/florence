@@ -88,6 +88,11 @@ function viewCollections() {
 	'<input type="text" class="fl-collection-name-input">' +
 	'<select class="fl-collection-team-access">' +
 		'<option value="1">Labour Market Statistics Team</option>' +
+		'<option value="2">CPI Team</option>' +
+		'<option value="3">Public Sector Finance Team</option>' +
+		'<option value="4">Retail Sales Team</option>' +
+		'<option value="5">Mortality Team</option>' +
+		'<option value="6">Population Estimates Team</option>' +
 	'</select>' +
 	'<select class="fl-collection-publish-day">' +
 		'<option value="1">1</option>' +
