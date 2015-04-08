@@ -262,12 +262,12 @@ function articleEditor(collectionName, data) {
     $(data.relatedArticles).each(function (iArticle, article) {
       lastIndexRelated = iArticle + 1;
       $('.fl-editor__related').append(
-          '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
+          '<div id="' + iArticle + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           'Link ' +
-          ' <textarea id="article__' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
-          ' <textarea style="display: none;" id="article_name_' + iArticle + '">' + article.name + '</textarea>' +
-          ' <textarea style="display: none;" id="article_summary_' + iArticle + '">' + article.summary + '</textarea>' +
-          ' <button class="fl-panel--editor__related__article-item__delete_' + iArticle + '">Delete</button>' +
+          '  <textarea id="article__' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
+          '  <textarea style="display: none;" id="article_name_' + iArticle + '">' + article.name + '</textarea>' +
+          '  <textarea style="display: none;" id="article_summary_' + iArticle + '">' + article.summary + '</textarea>' +
+          '  <button class="fl-panel--editor__related__article-item__delete_' + iArticle + '">Delete</button>' +
           '</div>');
 
       // Delete
@@ -285,19 +285,22 @@ function articleEditor(collectionName, data) {
     $('.fl-editor__related').append(
         '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Link ' +
-        ' <textarea id="article__' + lastIndexRelated + '" placeholder="Go to the related article and click Get" cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__related__article-item__get_' + lastIndexRelated + '">Get</button>' +
+        '  <textarea id="article__' + lastIndexRelated + '" placeholder="Go to the related article and click Get" cols="50"></textarea>' +
+        '  <button class="fl-panel--editor__related__article-item__get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="fl-panel--editor__related__article-item__cancel_' + lastIndexRelated + '">Cancel</button>' +
         '</div>');
+
+    $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).hide();
 
     unCheckPage();
     loadPageDataIntoEditor(collectionName, false);
 
     $(".fl-panel--editor__related__article-item__get_" + lastIndexRelated).one('click', function () {
-      $('.fl-editor__related').append(
-          '<button class="fl-panel--editor__article__tab-item__cancel_' + lastIndexRelated + '">Cancel</button>');
-      $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).one('click', function () {
+      $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).show().one('click', function () {
         $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
         checkPage();
+        $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).remove();
+        articleEditor(collectionName, data);
       });
       var articleurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       var articleurldata = "/data" + articleurl.split("#!")[1];
@@ -329,6 +332,14 @@ function articleEditor(collectionName, data) {
     });
     sortableRelated();
   });
+
+  function checkPage() {
+    window.intervalID = setInterval(function () {
+      checkForPageChanged(function () {
+        loadPageDataIntoEditor(collectionName, true);
+      });
+    }, intIntervalTime);
+  }
 
   function unCheckPage() {
     clearInterval(window.intervalID);
@@ -960,12 +971,15 @@ function callZebedee(success, error, opts){
 }
 function checkForPageChanged(onChanged) {
 
+  var iframe = $('.fl-panel--preview__content').contents().get(0);
 
-  iframeUrl = localStorage.getItem("pageurl");
-  nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  if (iframeUrl !== nowUrl) {
-    onChanged();
-    localStorage.setItem("pageurl", nowUrl);
+  if(iframe) {
+    var iframeUrl = localStorage.getItem("pageurl");
+    var nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
+    if (iframeUrl !== nowUrl) {
+      onChanged();
+      localStorage.setItem("pageurl", nowUrl);
+    }
   }
 }
 function collectionContent(){
@@ -1921,6 +1935,7 @@ function viewCollections() {
           $('.fl-panel--collection-details').show();
           $('.fl-create-collection-button').hide();
 
+					$('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
           $(this).addClass('fl-panel--collections__selected');
 
           viewCollectionDetails(collectionId);
@@ -1943,6 +1958,11 @@ function viewCollections() {
 	'<input type="text" class="fl-collection-name-input">' +
 	'<select class="fl-collection-team-access">' +
 		'<option value="1">Labour Market Statistics Team</option>' +
+		'<option value="2">CPI Team</option>' +
+		'<option value="3">Public Sector Finance Team</option>' +
+		'<option value="4">Retail Sales Team</option>' +
+		'<option value="5">Mortality Team</option>' +
+		'<option value="6">Population Estimates Team</option>' +
 	'</select>' +
 	'<select class="fl-collection-publish-day">' +
 		'<option value="1">1</option>' +

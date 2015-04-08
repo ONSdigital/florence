@@ -309,6 +309,10 @@ table {
 			float: none;
 			margin: 0 auto;
 		}
+
+	  	&__selected{
+		  background: #88b2ee;
+		}
 	}
 
 	&--collection-details {
