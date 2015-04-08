@@ -10,7 +10,10 @@ function makeEditSections(collectionName, response) {
   }
 
   else if (response.type === 'dataset') {
+<<<<<<< HEAD
     loadEditDatasetScreen(collectionName);
+=======
+>>>>>>> 2e64f37... Refactoring html
     datasetEditor(collectionName, response);
   }
 

@@ -73,6 +73,10 @@ function viewWorkspace(path) {
       }, window.intIntervalTime);
       enablePreview();
       loadPageDataIntoEditor(collectionName, true);
+<<<<<<< HEAD
+=======
+      //loadEditT4Screen(collectionName);
+>>>>>>> 2e64f37... Refactoring html
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--review')) {
