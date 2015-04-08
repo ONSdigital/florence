@@ -26,6 +26,10 @@ body {
 	height: 100%;
 }
 
+a {
+  outline : none;
+}
+
 h1 {
 	text-align: center;
 }
@@ -354,15 +358,15 @@ table {
 
 
 /*Hardcore overides!*/
-//a.fl-main-menu__link:hover {
-//	text-decoration: none !important;
-//}
-//
-//a.fl-main-menu__link:active, a.fl-main-menu__link:focus {
-//	color: #d4d5d7;
-//	text-decoration: inherit;
-//	outline: 0;
-//}
+a.fl-main-menu__link:hover {
+	text-decoration: none !important;
+}
+
+a.fl-main-menu__link:active, a.fl-main-menu__link:focus {
+	color: #d4d5d7;
+	text-decoration: inherit;
+	outline: 0;
+}
 
 h1.fl-brand {
 	font-family: 'Lato', sans-serif;
