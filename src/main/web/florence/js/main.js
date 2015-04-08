@@ -1184,11 +1184,10 @@ function loadEditBulletinScreen(collectionName) {
     '  <nav class="fl-panel--editor__nav">' +
     '    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
     '    <button class="fl-panel--editor__nav__save">Save</button>' +
-    '    <button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
-    '    <button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
+    '    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
+    '    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
     '  </nav>' +
     '</section>';
-
 
   $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
   $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
@@ -1242,9 +1241,11 @@ function loadPageDataIntoEditor(collectionName, active) {
 
         if (pageIsComplete) {
           $('.fl-panel--editor__nav__review').show();
+          $('.fl-panel--editor__nav__complete').hide();
         }
         else {
           $('.fl-panel--editor__nav__review').hide();
+          $('.fl-panel--editor__nav__complete').show();
         }
       },
       error = function (response) {
@@ -1628,8 +1629,6 @@ function makeEditSections(collectionName, response) {
   $('.fl-panel--editor__nav__review').unbind("click").click(function () {
     postReview(collectionName, getPathName());
   });
-
-
 }
 function markdownEditor() {
   var converter = Markdown.getSanitizingConverter();

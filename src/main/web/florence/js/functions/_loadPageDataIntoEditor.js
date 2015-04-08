@@ -33,9 +33,11 @@ function loadPageDataIntoEditor(collectionName, active) {
 
         if (pageIsComplete) {
           $('.fl-panel--editor__nav__review').show();
+          $('.fl-panel--editor__nav__complete').hide();
         }
         else {
           $('.fl-panel--editor__nav__review').hide();
+          $('.fl-panel--editor__nav__complete').show();
         }
       },
       error = function (response) {
