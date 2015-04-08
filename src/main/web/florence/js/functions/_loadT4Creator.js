@@ -42,7 +42,12 @@ function loadT4Creator (collectionName) {
     }
   });
 
-  pageType = $('.fl-creator__page_type_list_select').val().trim();
+  // Default
+  pageType = "bulletin";
+
+  $('.fl-creator__page_type_list_select').change(function () {
+    pageType = $(this).val();
+  });
   createButton.one('click', function () {
     pageData = pageTypeData(pageType);
     parent = $('.fl-creator__parent').val().trim();
