@@ -66,6 +66,7 @@ function viewCollections() {
           $('.fl-panel--collection-details').show();
           $('.fl-create-collection-button').hide();
 
+					$('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
           $(this).addClass('fl-panel--collections__selected');
 
           viewCollectionDetails(collectionId);
