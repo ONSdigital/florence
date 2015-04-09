@@ -1,0 +1,51 @@
+$panel-height-1-top-nav: 850px;
+$panel-height-2-top-nav: 800px;
+
+
+
+.wrapper {
+	overflow: hidden;
+	position: relative;
+	height: 100%;
+	min-height: 900px;
+	min-width: 1440px;
+	background: $porcelain;
+}
+
+.panel {
+	overflow: hidden;
+	height: $panel-height-1-top-nav;
+	display: block;
+
+	&--with-top-sub-menu {
+		height: $panel-height-2-top-nav;
+	}
+}
+
+.nav {
+	overflow: hidden;
+	background: $mine-shaft;
+	padding: 0 20px;
+	color: $gray-chateau;
+	height: 54px;
+	text-align: right;
+
+	li {
+		display: inline-block;
+	}
+}
+
+table {
+	border: 3px solid $pickled-bluewood;
+
+	tr:nth-child(odd) {
+		background-color: $white;
+	}
+
+	tr:nth-child(even) {
+		background-color: $iron;
+	}
+}
+
+
+//buttons
