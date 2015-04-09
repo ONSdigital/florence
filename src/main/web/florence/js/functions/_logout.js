@@ -1,5 +1,6 @@
 function logout() {
   delete_cookie('access_token');
+  localStorage.removeItem("loggedInAs");
   viewController();
 }
 

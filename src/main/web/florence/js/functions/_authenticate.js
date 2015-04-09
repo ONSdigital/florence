@@ -13,6 +13,7 @@ function authenticate(email,password){
     success: function (response) {
       console.log(response);
       document.cookie="access_token="+response + ";path=/";
+      localStorage.setItem("loggedInAs", email);
       console.log('authenticated');
       viewController();
     },
