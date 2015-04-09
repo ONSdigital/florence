@@ -80,7 +80,7 @@ function viewWorkspace(path) {
       clearInterval(window.intervalID);
       window.intervalID = setInterval(function () {
         checkForPageChanged(function () {
-          updateReviewScreen();
+          updateReviewScreen(collectionName);
         });
       }, window.intIntervalTime);
     }

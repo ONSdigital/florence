@@ -490,6 +490,7 @@ function authenticate(email,password){
     success: function (response) {
       console.log(response);
       document.cookie="access_token="+response + ";path=/";
+      localStorage.setItem("loggedInAs", email);
       console.log('authenticated');
       viewController();
     },
@@ -991,6 +992,37 @@ function collectionContent(){
   '<h2>Approved</h2>'+
   '<section class="fl-collection" id="approved-uris"></section>'
 }
+function getLastEditedEvent(collection, page) {
+  var pageEvents = collection.eventsByUri[page];
+
+  var lastEditedEvent = _.chain(pageEvents)
+    .filter(function (event) {
+      return event.type === 'EDITED'
+    })
+    .sortBy(function (event) {
+      return event.date;
+    })
+    .last()
+    .value();
+
+  return lastEditedEvent;
+}
+
+function getLastCompletedEvent(collection, page) {
+  var pageEvents = collection.eventsByUri[page];
+  var lastCompletedEvent = _.chain(pageEvents)
+    .filter(function (event) {
+      return event.type === 'COMPLETED'
+    })
+    .sortBy(function (event) {
+      return event.date;
+    })
+    .last()
+    .value();
+
+  return lastCompletedEvent;
+}
+
 function saveAndCompleteContent(collectionName, path, content) {
   postContent(collectionName, path, content,
     success = function (response) {
@@ -1230,9 +1262,9 @@ function loadPageDataIntoEditor(collectionName, active) {
     getCollection(collectionName,
       success = function (response) {
         var pageIsComplete = false;
-
         var pagePath = getPathName();
         var pageFile = pagePath + '/data.json';
+
         $.each(response.completeUris, function (i, item) {
           if (pageFile === item) {
             pageIsComplete = true;
@@ -1240,7 +1272,12 @@ function loadPageDataIntoEditor(collectionName, active) {
         });
 
         if (pageIsComplete) {
-          $('.fl-panel--editor__nav__review').show();
+
+          var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
+          if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
+            $('.fl-panel--editor__nav__review').show();
+          }
+
           $('.fl-panel--editor__nav__complete').hide();
         }
         else {
@@ -1260,7 +1297,6 @@ function loadReviewScreen(collectionName) {
 
   getCollection(collectionName,
     success = function (response) {
-      console.log(response);
       populateAwaitingReviewList(response);
     },
     error = function (response) {
@@ -1280,30 +1316,18 @@ function loadReviewScreen(collectionName) {
           review_list += '<h2 class="fl-review-page-list-item" data-path="' + path + '">' +
           response.name + '</h3>';
 
-          var pageEvents = data.eventsByUri[uri];
-
-          var lastEditedEvent = _.chain(pageEvents)
-            .filter(function (event) {
-              return event.type === 'EDITED'
-            })
-            .sortBy(function (event) {
-              return event.date;
-            })
-            .last()
-            .value();
-
+          var lastEditedEvent = getLastEditedEvent(data, uri);
           review_list += '<p>' + createLastEventText(lastEditedEvent) + '</p>';
         },
         error = function (response) {
           handleApiError(response);
         }));
-
     });
 
     $.when.apply($, pageDataRequests).then(function () {
       review_list += '</ul>';
       $('.fl-review-list-holder').html(review_list);
-      updateReviewScreen();
+      updateReviewScreenWithCollection(data);
     });
 
     $('.fl-review-list-holder').on('click', '.fl-review-page-list-item', function () {
@@ -1317,6 +1341,7 @@ function loadReviewScreen(collectionName) {
     });
 
     editButton.click(function () {
+
       loadEditBulletinScreen(collectionName);
     });
 
@@ -1359,12 +1384,14 @@ function loadReviewScreen(collectionName) {
   }
 }
 
-function updateReviewScreen() {
-
+function updateReviewScreenWithCollection(collection) {
   var editButton = $('.fl-review-page-edit-button'),
     reviewButton = $('.fl-review-page-review-button');
 
   var path = getPathName(), pageIsComplete = false;
+  var pageFile = path + '/data.json';
+
+  if (!path) path = '/';
 
   // if the url is in the current list, select it
   $(".fl-review-page-list-item").each(function () {
@@ -1379,11 +1406,26 @@ function updateReviewScreen() {
 
   if (pageIsComplete) {
     editButton.show();
-    reviewButton.show();
+
+    var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
+    if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
+      reviewButton.show();
+    }
+
   } else {
     editButton.hide();
     reviewButton.hide();
   }
+}
+
+function updateReviewScreen(collectionName) {
+  getCollection(collectionName,
+    success = function (response) {
+      updateReviewScreenWithCollection(response);
+    },
+    error = function (response) {
+      handleApiError(response);
+    });
 }
 
 
@@ -1545,6 +1587,7 @@ function makeUrl(args) {
 }
 function logout() {
   delete_cookie('access_token');
+  localStorage.removeItem("loggedInAs");
   viewController();
 }
 
@@ -1830,7 +1873,6 @@ function viewCollectionDetails(collectionName) {
 
   getCollection(collectionName,
     success = function (response) {
-      console.log(response);
       populateCollectionDetails(response, collectionName);
     },
     error = function (response) {
@@ -1884,8 +1926,6 @@ function viewCollectionDetails(collectionName) {
           error = function (response) {
             handleApiError(response);
           }));
-
-        console.log(data.eventsByUri[uri]);
       });
 
       $.when.apply($, pageDataRequests).then(function () {
@@ -2315,7 +2355,7 @@ function viewWorkspace(path) {
       clearInterval(window.intervalID);
       window.intervalID = setInterval(function () {
         checkForPageChanged(function () {
-          updateReviewScreen();
+          updateReviewScreen(collectionName);
         });
       }, window.intIntervalTime);
     }

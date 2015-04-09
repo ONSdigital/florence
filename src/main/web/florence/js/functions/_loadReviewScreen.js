@@ -5,7 +5,6 @@ function loadReviewScreen(collectionName) {
 
   getCollection(collectionName,
     success = function (response) {
-      console.log(response);
       populateAwaitingReviewList(response);
     },
     error = function (response) {
@@ -25,30 +24,18 @@ function loadReviewScreen(collectionName) {
           review_list += '<h2 class="fl-review-page-list-item" data-path="' + path + '">' +
           response.name + '</h3>';
 
-          var pageEvents = data.eventsByUri[uri];
-
-          var lastEditedEvent = _.chain(pageEvents)
-            .filter(function (event) {
-              return event.type === 'EDITED'
-            })
-            .sortBy(function (event) {
-              return event.date;
-            })
-            .last()
-            .value();
-
+          var lastEditedEvent = getLastEditedEvent(data, uri);
           review_list += '<p>' + createLastEventText(lastEditedEvent) + '</p>';
         },
         error = function (response) {
           handleApiError(response);
         }));
-
     });
 
     $.when.apply($, pageDataRequests).then(function () {
       review_list += '</ul>';
       $('.fl-review-list-holder').html(review_list);
-      updateReviewScreen();
+      updateReviewScreenWithCollection(data);
     });
 
     $('.fl-review-list-holder').on('click', '.fl-review-page-list-item', function () {
@@ -62,6 +49,7 @@ function loadReviewScreen(collectionName) {
     });
 
     editButton.click(function () {
+
       loadEditBulletinScreen(collectionName);
     });
 
@@ -104,12 +92,14 @@ function loadReviewScreen(collectionName) {
   }
 }
 
-function updateReviewScreen() {
-
+function updateReviewScreenWithCollection(collection) {
   var editButton = $('.fl-review-page-edit-button'),
     reviewButton = $('.fl-review-page-review-button');
 
   var path = getPathName(), pageIsComplete = false;
+  var pageFile = path + '/data.json';
+
+  if (!path) path = '/';
 
   // if the url is in the current list, select it
   $(".fl-review-page-list-item").each(function () {
@@ -124,11 +114,26 @@ function updateReviewScreen() {
 
   if (pageIsComplete) {
     editButton.show();
-    reviewButton.show();
+
+    var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
+    if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
+      reviewButton.show();
+    }
+
   } else {
     editButton.hide();
     reviewButton.hide();
   }
+}
+
+function updateReviewScreen(collectionName) {
+  getCollection(collectionName,
+    success = function (response) {
+      updateReviewScreenWithCollection(response);
+    },
+    error = function (response) {
+      handleApiError(response);
+    });
 }
 
 
