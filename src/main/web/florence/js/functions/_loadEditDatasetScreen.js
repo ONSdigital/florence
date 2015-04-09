@@ -1,5 +1,18 @@
 function loadEditDatasetScreen(collectionName) {
 
+  function accordion() {
+    $(function () {
+      $("#accordion").accordion(
+        {
+          header: "section",
+          heightStyle: "content",
+          active: 'none',
+          collapsible: true
+        }
+      );
+    });
+  }
+
   // Metadata and correction collapsible sections
   var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +

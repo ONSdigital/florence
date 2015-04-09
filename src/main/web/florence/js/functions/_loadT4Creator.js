@@ -78,7 +78,7 @@ function loadT4Creator (collectionName) {
       },
       success: function (message) {
         console.log("Updating completed " + message);
-<<<<<<< HEAD
+
         viewWorkspace('/' + newUri);
         clearInterval(window.intervalID);
         window.intervalID = setInterval(function () {
@@ -86,12 +86,15 @@ function loadT4Creator (collectionName) {
             loadPageDataIntoEditor(collectionName, true);
           });
         }, window.intIntervalTime);
-=======
+
+          loadEditT4Screen(collectionName);
         // To be changed when #! gets removed
         var local = localStorage.getItem("pageurl").split("#!")[0];
         $('.fl-panel--preview__content').get(0).src = local + "#!/" + newUri;
         loadEditT4Screen(collectionName);
->>>>>>> 2e64f37... Refactoring html
+        } else if (pageType === 'dataset') {
+          loadEditDatasetScreen(collectionName);
+        }
       },
       error: function (error) {
         console.log(error);
@@ -165,11 +168,8 @@ function pageTypeData(pageType) {
       "download": [],
       "notes": [],
       "summary": "",
-<<<<<<< HEAD
       "nationalStatistic": "false",
-=======
-      "nationalStatistic": "",
->>>>>>> 2e64f37... Refactoring html
+
       "description": "",
       "title": "",
       "releaseDate": "",

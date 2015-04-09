@@ -22,7 +22,6 @@ function loadEditT4Screen(collectionName) {
     '  <section style="overflow: scroll;" class="fl-editor">' +
 <<<<<<< HEAD:src/main/web/florence/js/functions/_loadEditT4Screen.js
 =======
-    //'    <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 800px"></textarea>' +
 >>>>>>> 2e64f37... Refactoring html:src/main/web/florence/js/functions/_loadEditT4Screen.js
     '    <div id="accordion">' +
       // section > div necessary for accordion

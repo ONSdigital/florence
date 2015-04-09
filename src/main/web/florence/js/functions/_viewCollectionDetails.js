@@ -75,16 +75,13 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
-<<<<<<< HEAD
         clearInterval(window.intervalID);
         window.intervalID = setInterval(function () {
           checkForPageChanged(function () {
             loadPageDataIntoEditor(collectionName, true);
           });
         }, window.intIntervalTime);
-=======
         loadEditT4Screen(collectionName);
->>>>>>> 2e64f37... Refactoring html
       }
     });
   }
