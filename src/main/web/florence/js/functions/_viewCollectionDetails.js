@@ -75,7 +75,15 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
-        loadEditT4Screen(collectionName);
+        clearInterval(window.intervalID);
+        window.intervalID = setInterval(function () {
+          checkForPageChanged(function () {
+            loadPageDataIntoEditor(collectionName, true);
+          });
+        }, window.intIntervalTime);
+        enablePreview();
+        loadPageDataIntoEditor(collectionName, true);
+        //loadEditT4Screen(collectionName);
       }
     });
   }

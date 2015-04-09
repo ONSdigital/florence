@@ -1,4 +1,4 @@
-function loadEditT4Screen(collectionName) {
+function loadEditDatasetScreen(collectionName) {
 
   function accordion() {
     $(function () {
@@ -28,20 +28,20 @@ function loadEditT4Screen(collectionName) {
     '        Demo: <input value="Tab 2 content"><br>' +
     '      </div>' +
     '      <section class="fl-editor__metadata">Notes</section>' +
-    '      <div id="accordion-section">' +
-    '        <article class="fl-editor__accordion"></article>' +
+    '      <div id="notes-section">' +
+    '        <article class="fl-editor__notes"></article>' +
     '      </div>' +
     '      <section class="fl-editor__metadata">Related</section>' +
     '      <div id="related-section">' +
     '        <article class="fl-editor__related"></article>' +
     '      </div>' +
-    '      <section class="fl-editor__metadata">External links</section>' +
-    '      <div id="external-section">' +
-    '        <article class="fl-editor__external"></article>' +
+    '      <section class="fl-editor__metadata">Used in</section>' +
+    '      <div id="used-section">' +
+    '        <article class="fl-editor__used"></article>' +
     '      </div>' +
-    '      <section class="fl-editor__metadata">Content</section>' +
+    '      <section class="fl-editor__metadata">Download</section>' +
     '      <div id="content-section">' +
-    '        <article class="fl-editor__sections"></article>' +
+    '        <article class="fl-editor__download"></article>' +
     '      </div>' +
     '    </div>' +
     '  </section>' +
@@ -57,16 +57,6 @@ function loadEditT4Screen(collectionName) {
   $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
   $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
   accordion();
-
-  //loadCreateBulletinScreen(collectionName);
-  //loadPageDataIntoEditor(collectionName, true);
-
-  //clearInterval(window.intervalID);
-  //window.intervalID = setInterval(function () {
-  //  checkForPageChanged(function () {
-  //    loadPageDataIntoEditor(collectionName, true);
-  //  });
-  //}, window.intIntervalTime);
 
   $('.fl-panel--editor__nav__publish').click(function () {
     publish(collectionName);

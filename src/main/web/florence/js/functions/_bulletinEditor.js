@@ -10,9 +10,9 @@ function bulletinEditor(collectionName, data) {
 
   $(".fl-editor__headline").hide();
   $(".section-list").remove();
-  $(".tab-list").remove();
-  $(".bulletin-list").remove();
-  $(".link-list").remove();
+  //$(".tab-list").remove();
+  //$(".bulletin-list").remove();
+  //$(".link-list").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addBulletin").remove();

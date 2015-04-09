@@ -8,11 +8,10 @@ function articleEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $(".fl-editor__headline").hide();
   $(".section-list").remove();
-  $(".tab-list").remove();
-  $(".article-list").remove();
-  $(".link-list").remove();
+  //$(".tab-list").remove();
+  //$(".article-list").remove();
+  //$(".link-list").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addArticle").remove();

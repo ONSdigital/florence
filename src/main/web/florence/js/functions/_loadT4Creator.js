@@ -74,10 +74,12 @@ function loadT4Creator (collectionName) {
       },
       success: function (message) {
         console.log("Updating completed " + message);
-        // To be changed when #! gets removed
-        var local = localStorage.getItem("pageurl").split("#!")[0];
-        $('.fl-panel--preview__content').get(0).src = local + "#!/" + newUri;
-        loadEditT4Screen(collectionName);
+        viewWorkspace('/' + newUri);
+        if (pageType === 'bulletin' || pageType === 'article') {
+          loadEditT4Screen(collectionName);
+        } else if (pageType === 'dataset') {
+          loadEditDatasetScreen(collectionName);
+        }
       },
       error: function (error) {
         console.log(error);
