@@ -2,7 +2,6 @@ function viewCollectionDetails(collectionName) {
 
   getCollection(collectionName,
     success = function (response) {
-      console.log(response);
       populateCollectionDetails(response, collectionName);
     },
     error = function (response) {
@@ -56,8 +55,6 @@ function viewCollectionDetails(collectionName) {
           error = function (response) {
             handleApiError(response);
           }));
-
-        console.log(data.eventsByUri[uri]);
       });
 
       $.when.apply($, pageDataRequests).then(function () {
