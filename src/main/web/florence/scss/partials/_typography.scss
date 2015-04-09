@@ -112,6 +112,7 @@
 
 
 $baseline: 18px;
+$gutter: 20px;
 
 .text-align-right {
   text-align: right;
@@ -140,8 +141,8 @@ h1 {
   line-height: $baseline * 2;
   margin-top: $baseline;
   margin-bottom: $baseline;
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: $gutter;
+  margin-left: $gutter;
 }
 
 h2 {
@@ -151,9 +152,8 @@ h2 {
   line-height: $baseline * 3;
   margin-top: $baseline - 6;
   margin-bottom: - $baseline + 6;
-  margin-right: 20px;
-  margin-left: 20px;
-  // padding-top: 3px;
+  margin-right: $gutter;
+  margin-left: $gutter;
 }
 
 p, li {
@@ -161,13 +161,51 @@ p, li {
   line-height: $baseline;
   margin-top: $baseline;
   margin-bottom: $baseline;
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: $gutter;
+  margin-left: $gutter;
 }
 
-table {}
+table {
+  border-collapse: collapse;
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    padding-top: $baseline;
+    padding-bottom: $baseline;
+    display: block;
+  }
+
+  th {
+    padding-right: $gutter;
+    padding-left: $gutter;
+    font-size: 18px;
+  }
+
+  td {
+    padding-right: $gutter;
+    padding-left: $gutter;
+  }
+}
 
 
+// Baseline grid ruler
+body:after {
+  position: absolute;
+  width: auto;
+  height: auto;
+  z-index: 9999;
+  content: '';
+  display: block;
+  pointer-events: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: url(../img/rule.png) repeat top left;
+}
 
 
 
