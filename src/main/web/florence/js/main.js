@@ -1269,7 +1269,7 @@ function loadReviewScreen(collectionName) {
 
   function populateAwaitingReviewList(data) {
 
-    var review_list = '<ul>';
+    var review_list = '';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
     $.each(data.completeUris, function (i, uri) {
@@ -1277,14 +1277,27 @@ function loadReviewScreen(collectionName) {
         success = function (response) {
           var path = uri.replace('/data.json', '');
           path = path.length === 0 ? '/' : path;
-          review_list += '<li class="fl-review-page-list-item" data-path="' + path + '">' +
-          response.name + '</li>';
+          review_list += '<h2 class="fl-review-page-list-item" data-path="' + path + '">' +
+          response.name + '</h3>';
+
+          var pageEvents = data.eventsByUri[uri];
+
+          var lastEditedEvent = _.chain(pageEvents)
+            .filter(function (event) {
+              return event.type === 'EDITED'
+            })
+            .sortBy(function (event) {
+              return event.date;
+            })
+            .last()
+            .value();
+
+          review_list += '<p>' + createLastEventText(lastEditedEvent) + '</p>';
         },
         error = function (response) {
           handleApiError(response);
         }));
 
-      console.log(data.eventsByUri[uri]);
     });
 
     $.when.apply($, pageDataRequests).then(function () {
@@ -1316,6 +1329,33 @@ function loadReviewScreen(collectionName) {
       listItem.hide();
       postReview(collectionName, path);
     });
+  }
+
+  function createEventText(event) {
+    var date = new Date(event.date);
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var dateView = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
+
+    var eventText = '';
+
+    switch (event.type) {
+      case 'EDITED':
+        eventText = 'edited by ';
+        break;
+      case 'COMPLETED':
+        eventText = 'completed by ';
+        break;
+      default:
+        eventText = event.type + ' by ';
+        break;
+    }
+
+    eventText += event.email + ' on ' + dateView;
+    return eventText;
+  }
+
+  function createLastEventText(event) {
+    return 'Last ' + createEventText(event);
   }
 }
 
