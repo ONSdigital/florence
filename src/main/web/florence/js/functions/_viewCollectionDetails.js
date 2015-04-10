@@ -81,9 +81,6 @@ function viewCollectionDetails(collectionName) {
             loadPageDataIntoEditor(collectionName, true);
           });
         }, window.intIntervalTime);
-        enablePreview();
-        loadPageDataIntoEditor(collectionName, true);
-        //loadEditT4Screen(collectionName);
       }
     });
   }

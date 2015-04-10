@@ -52,7 +52,11 @@ function loadT4Creator (collectionName) {
     pageData = pageTypeData(pageType);
     parent = $('.fl-creator__parent').val().trim();
     pageName = $('.fl-creator__new_name').val().trim();
+    //
+    // get rid of name or title?
+    //
     pageData.name = pageName;
+    pageData.title = pageName;
     uriSection = pageType + "s";
     pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     pageData.fileName = pageNameTrimmed;
@@ -75,11 +79,12 @@ function loadT4Creator (collectionName) {
       success: function (message) {
         console.log("Updating completed " + message);
         viewWorkspace('/' + newUri);
-        if (pageType === 'bulletin' || pageType === 'article') {
-          loadEditT4Screen(collectionName);
-        } else if (pageType === 'dataset') {
-          loadEditDatasetScreen(collectionName);
-        }
+        clearInterval(window.intervalID);
+        window.intervalID = setInterval(function () {
+          checkForPageChanged(function () {
+            loadPageDataIntoEditor(collectionName, true);
+          });
+        }, window.intIntervalTime);
       },
       error: function (error) {
         console.log(error);
@@ -153,7 +158,7 @@ function pageTypeData(pageType) {
       "download": [],
       "notes": [],
       "summary": "",
-      "nationalStatistic": "",
+      "nationalStatistic": "false",
       "description": "",
       "title": "",
       "releaseDate": "",

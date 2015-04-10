@@ -1,18 +1,5 @@
 function loadEditT4Screen(collectionName) {
 
-  function accordion() {
-    $(function () {
-      $("#accordion").accordion(
-        {
-          header: "section",
-          heightStyle: "content",
-          active: 'none',
-          collapsible: true
-        }
-      );
-    });
-  }
-
   // Metadata and correction collapsible sections
   var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +
@@ -57,16 +44,6 @@ function loadEditT4Screen(collectionName) {
   $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
   $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
   accordion();
-
-  //loadCreateBulletinScreen(collectionName);
-  //loadPageDataIntoEditor(collectionName, true);
-
-  //clearInterval(window.intervalID);
-  //window.intervalID = setInterval(function () {
-  //  checkForPageChanged(function () {
-  //    loadPageDataIntoEditor(collectionName, true);
-  //  });
-  //}, window.intIntervalTime);
 
   $('.fl-panel--editor__nav__publish').click(function () {
     publish(collectionName);

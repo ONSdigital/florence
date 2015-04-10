@@ -73,7 +73,6 @@ function viewWorkspace(path) {
       }, window.intIntervalTime);
       enablePreview();
       loadPageDataIntoEditor(collectionName, true);
-      //loadEditT4Screen(collectionName);
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--review')) {
