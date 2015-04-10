@@ -56,9 +56,19 @@ function datasetEditor(collectionName, data) {
     $(this).textareaAutoSize();
     data.description = $(this).val();
   });
-  $("#metadata-list input[type='checkbox']").prop('checked', data.nationalStatistic).click(function () {
+
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function () {
+    if(data.nationalStatistic === "false") {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
-    console.log( data.nationalStatistic );
   });
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
@@ -480,7 +490,6 @@ function datasetEditor(collectionName, data) {
       var markdown = data.notes[parseInt(nameT)].data;
       newNotes[indexT] = {data: markdown};
     });
-    console.log(newNotes);
     data.notes = newNotes;
     // Related links
     var orderDataset = $(".fl-editor__related").sortable('toArray');
