@@ -10,7 +10,6 @@ function viewCollections() {
     url: "/zebedee/collections",
     type: "get",
     crossDomain: true,
-    headers:{ "X-Florence-Token":accessToken() },
     success: function (data) {
       populateCollectionTable(data);
     },
@@ -33,9 +32,6 @@ function viewCollections() {
 
       $.each(data, function(i, collection) {
 
-        //var stringDate = collection.publishDate.toString();
-        //var date = Date.parse(stringDate);
-
         var date = new Date(collection.publishDate);
         var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
 
@@ -47,21 +43,17 @@ function viewCollections() {
           );
 
         makeCollectionView(collection.id,data);
-
       });
 
       page.append(
           '</tbody>' +
         '</table>');
 
-
       $('.fl-collections-table-row').click(function() {
-
-        console.log('Collection row clicked for id: ' + $(this).attr('data-id'));
+        //console.log('Collection row clicked for id: ' + $(this).attr('data-id'));
         var collectionId = $(this).attr('data-id');
 
         if(collectionId) {
-
           $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
           $('.fl-panel--collection-details').show();
           $('.fl-create-collection-button').hide();
@@ -73,7 +65,6 @@ function viewCollections() {
         }
       });
     }
-
 
   var selected_collection =
     '<section class="fl-panel fl-panel--collection-details">' +
@@ -152,7 +143,6 @@ function viewCollections() {
 	'<button class="fl-button fl-create-collection--submit-button">Save</button>' +
 	'<button class="fl-button fl-button--cancel">Cancel</button>' +
 	'</section>';
-
 
 	//build view
 	$('.fl-view').html(select_collections + selected_collection);
