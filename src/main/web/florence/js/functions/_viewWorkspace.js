@@ -75,7 +75,6 @@ function viewWorkspace(path) {
       loadPageDataIntoEditor(collectionName, true);
 <<<<<<< HEAD
 =======
-      //loadEditT4Screen(collectionName);
 >>>>>>> 2e64f37... Refactoring html
     }
 

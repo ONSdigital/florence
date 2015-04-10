@@ -91,10 +91,6 @@ function loadT4Creator (collectionName) {
         // To be changed when #! gets removed
         var local = localStorage.getItem("pageurl").split("#!")[0];
         $('.fl-panel--preview__content').get(0).src = local + "#!/" + newUri;
-        loadEditT4Screen(collectionName);
-        } else if (pageType === 'dataset') {
-          loadEditDatasetScreen(collectionName);
-        }
       },
       error: function (error) {
         console.log(error);
@@ -169,7 +165,6 @@ function pageTypeData(pageType) {
       "notes": [],
       "summary": "",
       "nationalStatistic": "false",
-
       "description": "",
       "title": "",
       "releaseDate": "",

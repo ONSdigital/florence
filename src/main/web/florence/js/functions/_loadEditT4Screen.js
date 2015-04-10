@@ -2,20 +2,7 @@ function loadEditT4Screen(collectionName) {
 <<<<<<< HEAD:src/main/web/florence/js/functions/_loadEditT4Screen.js
 =======
 
-  function accordion() {
-    $(function () {
-      $("#accordion").accordion(
-        {
-          header: "section",
-          heightStyle: "content",
-          active: 'none',
-          collapsible: true
-        }
-      );
-    });
-  }
 >>>>>>> 2e64f37... Refactoring html:src/main/web/florence/js/functions/_loadEditT4Screen.js
-
   // Metadata and correction collapsible sections
   var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +
@@ -66,16 +53,6 @@ function loadEditT4Screen(collectionName) {
 
 <<<<<<< HEAD:src/main/web/florence/js/functions/_loadEditT4Screen.js
 =======
-  //loadCreateBulletinScreen(collectionName);
-  //loadPageDataIntoEditor(collectionName, true);
-
-  //clearInterval(window.intervalID);
-  //window.intervalID = setInterval(function () {
-  //  checkForPageChanged(function () {
-  //    loadPageDataIntoEditor(collectionName, true);
-  //  });
-  //}, window.intIntervalTime);
-
 >>>>>>> 2e64f37... Refactoring html:src/main/web/florence/js/functions/_loadEditT4Screen.js
   $('.fl-panel--editor__nav__publish').click(function () {
     publish(collectionName);
