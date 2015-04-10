@@ -1,12 +1,11 @@
 function datasetEditor(collectionName, data) {
 
-  //var newFiles = [];
+  var newFiles = [];
   var newNotes = [];
   var newRelated = [];
   var newUsedIn = [];
-  var lastIndexFile, lastIndexNote, lastIndexRelated, lastIndexUsedIn;
-
-  //console.log(data.sections);
+  var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
+  var lastIndexFile = 0;
 
   $(".section-list").remove();
   $(".note-list").remove();
@@ -76,15 +75,14 @@ function datasetEditor(collectionName, data) {
   // Edit download
   // Load and edition
   $(data.download).each(function(index, file){
+    lastIndexFile = index + 1;
     $('.fl-editor__download').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         '  Title ' +
-          //' <textarea id="file__' + index + '" cols="50">' + file.title + '</textarea>' +
-          //' <textarea style="display: none;" id="file_markdown_' + index + '">' + file.markdown + '</textarea>' +
-          //' <button class="fl-panel--editor__download__file-item__edit_' + index + '">Edit</button>' +
+        '  <textarea id="file__' + index + '" cols="50">' + file.title + '</textarea>' +
+        '  <div id="file_name_' + index + '">' + file.file + '</div>' +
           //' <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
-    lastIndexFile = index + 1;
 
     // Delete
     $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
@@ -96,12 +94,13 @@ function datasetEditor(collectionName, data) {
 
   //Add new download
   $("#content-section").append('<button id="addFile">Add new file</button>');
-  $("#addFile").click(function () {
+  $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
-        '<div id="' + lastIndexFile + '" class="file-list" style="background-color:grey; color:white;">' +
+        '<div id="uploadFile" class="file-list" style="background-color:grey; color:white;">' +
         '  Title ' +
-        '  <form id="UploadForm" action="fileupload" method="post" enctype="multipart/form-data">' +
-        '    <p><input type="file" name="files[]" id="files" multiple>' +
+        '  <textarea id="fileToUp"></textarea>' +
+        '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
+        '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
         '    <button type="submit" id="btn">Submit</button>' +
         '  </form>' +
@@ -117,7 +116,6 @@ function datasetEditor(collectionName, data) {
         document.getElementById("btn").style.display = "none";
       }
       function showUploadedItem (source) {
-        console.log(source);
         var list = document.getElementById("list"),
             li   = document.createElement("li"),
             para = document.createElement("p");
@@ -128,38 +126,47 @@ function datasetEditor(collectionName, data) {
       }
       if (input.addEventListener) {
         input.addEventListener("change", function (evt) {
-          var i = 0, len = this.files.length, file;
+          document.getElementById("response").innerHTML = "Uploading . . .";
 
-          document.getElementById("response").innerHTML = "Uploading . . ."
-
-          for ( ; i < len; i++ ) {
-            file = this.files[i];
-            if (!!file.type.match(/csv.*/)) {
-                  showUploadedItem(file.name);
-              if (formdata) {
-                formdata.append("names[]", file);
-              }
+          var file = this.files[0];
+          if (!!file.type.match(/csv.*/)) {
+            showUploadedItem(file.name);
+            if (formdata) {
+              formdata.append("name", file);
             }
           }
 
+          // Multifile upload (not accepted at the moment by the server)
+          //var i = 0, len = this.files.length, file;
+          //for ( ; i < len; i++ ) {
+          //  file = this.files[i];
+          //  if (!!file.type.match(/csv.*/)) {
+          //    showUploadedItem(file.name);
+          //    if (formdata) {
+          //      formdata.append("names[]", file);  //change input name to names[]
+          //    }
+          //  }
+          //}
+
+          var uriUpload = getPathName() + "/" + file.name;
           if (formdata) {
             $.ajax({
-              url: "/zebedee/fileupload",
+              url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
               type: "POST",
               data: formdata,
               processData: false,
               contentType: false,
               success: function (res) {
-                document.getElementById("response").innerHTML = res;
+                document.getElementById("response").innerHTML = "File uploaded successfully";
+                data.download[lastIndexFile] = {title: $('#fileToUp').val(), file: uriUpload};
+                $('#uploadFile').remove();
+                datasetEditor(collectionName, data);
               }
             });
           }
         }, false);
       }
     })();
-
-    sortableFiles();
-    //saveNewFile();
   });
 
   function sortableFiles() {
@@ -482,8 +489,14 @@ function datasetEditor(collectionName, data) {
 
 
   function save() {
-    // Files are uploaded. No need to save
-
+    // Files are uploaded. Save metadata
+    var orderFile = $(".fl-editor__download").sortable('toArray');
+    $(orderFile).each(function(index, name){
+      var title = $('#file__'+name).val();
+      var file = data.download[parseInt(name)].file;
+      newFiles[parseInt(index)] = {title: title, file: file};
+    });
+    data.download = newFiles;
     // Notes
     var orderNote = $(".fl-editor__notes").sortable('toArray');
     $(orderNote).each(function (indexT, nameT) {
@@ -555,4 +568,3 @@ function datasetEditor(collectionName, data) {
     datasetEditor(collectionName, data);
   }
 }
-
