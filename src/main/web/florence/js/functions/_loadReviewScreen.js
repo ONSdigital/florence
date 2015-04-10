@@ -21,7 +21,7 @@ function loadReviewScreen(collectionName) {
         success = function (response) {
           var path = uri.replace('/data.json', '');
           path = path.length === 0 ? '/' : path;
-          review_list += '<h2 class="fl-review-page-list-item" data-path="' + path + '">' +
+          review_list += '<h3 class="fl-review-page-list-item" data-path="' + path + '">' +
           response.name + '</h3>';
 
           var lastEditedEvent = getLastEditedEvent(data, uri);

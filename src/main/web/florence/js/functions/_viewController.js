@@ -19,40 +19,27 @@ function viewController(view){
 		});
 
 		$('.fl-admin-menu__item--publish').unbind("click").click(function() {
-				//viewController('publish');
+				viewController('publish');
 		});
 
 		//clear view
 		$('.fl-view').empty();
 
-		//collections
 		if (view === 'collections'){
 			viewCollections();
 		}
-
-		//users and access
 		else if (view === 'users-and-access'){
 			viewUserAndAccess('create');
-			//
 		}
-
 		else if (view === 'login'){
 			viewUserAndAccess('login');
 		}
-		//publish
 		else if (view === 'publish'){
-			alert('publish is not implemented');
-
-			//
+			viewPublish();
 		}
-
-		//workspace
 		else if (view === 'workspace'){
 			viewWorkspace();
 		}
-
-
-		//else collections
 		else {
 			viewController('collections');
 			// viewController('workspace')
