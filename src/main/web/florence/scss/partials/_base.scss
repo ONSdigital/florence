@@ -108,10 +108,11 @@ $panel-height-2-top-nav: 756px;
 		height: $lineheight * 5;
 
 		button {
-			/*margin-right: 15px;
-			margin-left: 15px;*/
+			margin-right: 10px;
+			margin-left: 10px;
 			&:first-child {
 				margin-right: 0;
+				margin-left: 20px;
 			}
 			&:last-child {
 				margin-left: 0;
