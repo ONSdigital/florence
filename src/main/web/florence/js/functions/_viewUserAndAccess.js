@@ -32,22 +32,36 @@ function viewUserAndAccess(view) {
       $.ajax({
         url: "/zebedee/users",
         dataType: 'json',
-        crossDomain: true,
         type: 'POST',
-        headers: {
-          "X-Florence-Token": accessToken()
-        },
         data: JSON.stringify({
           name: name,
           email: email,
-          password: password
         }),
         success: function (response) {
-          console.log(password);
-          console.log('created');
+          console.log('User created');
+          setPassword(email, password);
         },
         error: function (response) {
-          console.log('fail');
+          handleApiError(response);
+        }
+      });
+    }
+
+    function setPassword(email, password) {
+      $.ajax({
+        url: "/zebedee/password",
+        dataType: 'json',
+        type: 'POST',
+        data: JSON.stringify({
+          password: password,
+          email: email
+        }),
+        success: function (response) {
+          console.log('Password set');
+          alert("User created");
+        },
+        error: function (response) {
+          handleApiError(response);
         }
       });
     }
