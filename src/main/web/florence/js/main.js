@@ -2388,7 +2388,7 @@ function viewUserAndAccess(view) {
       var name  = $('.fl-user-and-access__name').val();
       var email = $('.fl-user-and-access__email').val();
       var password = $('.fl-user-and-access__password').val();
-      createUser(name, password)
+      createUser(name, email, password)
     });
 
     function createUser(name, email, password) {
@@ -2402,11 +2402,11 @@ function viewUserAndAccess(view) {
         },
         data: JSON.stringify({
           name: name,
-          email: email
+          email: email,
+          password: password
         }),
         success: function (response) {
           console.log(password);
-          setPassword(email,password);
           console.log('created');
         },
         error: function (response) {
@@ -2415,7 +2415,6 @@ function viewUserAndAccess(view) {
       });
     }
   }
-  //var login = ""
 }
 
 function viewWorkspace(path) {
