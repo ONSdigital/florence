@@ -1,31 +1,31 @@
-function setupFlorence(){
-	//florence menu
+function setupFlorence() {
+  //florence menu
   var florence_menu =
-    // '<section>' +
     '<nav class="fl-panel fl-panel--admin-bar">' +
-      '<ul class="fl-admin-menu">' +
-        '<li class="fl-admin-menu__item fl-admin-menu__item--collections">' +
-          '<a href="#" class="fl-admin-menu__link">Collections</a>' +
-        '</li>' +
-        '<li class="fl-admin-menu__item fl-admin-menu__item--useradmin">' +
-          '<a href="#" class="fl-admin-menu__link">Users and access</a>' +
-        '</li>' +
-        '<li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
-          '<a href="#" class="fl-admin-menu__link">Publish</a>' +
-        '</li>' +
-        '<li class="fl-admin-menu__item fl-admin-menu__item--login">' +
-          '<a href="#" class="fl-admin-menu__link">login</a>' +
-        '</li>' +
-      '</ul>' +
+    '  <ul class="fl-admin-menu">' +
+    '    <li class="fl-admin-menu__item fl-admin-menu__item--collections">' +
+    '      <a href="#" class="fl-admin-menu__link">Collections</a>' +
+    '    </li>' +
+    '    <li class="fl-admin-menu__item fl-admin-menu__item--useradmin">' +
+    '      <a href="#" class="fl-admin-menu__link">Users and access</a>' +
+    '    </li>' +
+    '    <li class="fl-admin-menu__item fl-admin-menu__item--publish">' +
+    '      <a href="#" class="fl-admin-menu__link">Publish</a>' +
+    '    </li>' +
+    '    <li class="fl-admin-menu__item fl-admin-menu__item--login hidden">' +
+    '      <a href="#" class="fl-admin-menu__link">login</a>' +
+    '    </li>' +
+    '    <li class="fl-admin-menu__item fl-admin-menu__item--logout hidden">' +
+    '      <a href="#" class="fl-admin-menu__link">logout</a>' +
+    '    </li>' +
+    '  </ul>' +
     '</nav>' +
-    // '</section>' +
-  '<div class="fl-view">' +
-  '</div>';
+    '<div class="fl-view">' +
+    '</div>';
 
   //florence browse menu
 
   //florence create menu
-
 
 
   $('head').prepend('<link href="/florence/css/main.min.css" rel="stylesheet" type="text/css">');
@@ -39,6 +39,6 @@ function setupFlorence(){
 
   viewController();
 
- }
+}
 
 

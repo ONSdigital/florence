@@ -14,8 +14,12 @@ function viewController(view){
 				viewController('users-and-access');
 		});
 
-		$('.fl-admin-menu__item--login').unbind("click").click(function() {
-				viewController('login');
+
+		$('.fl-admin-menu__item--login').addClass('hidden');
+		$('.fl-admin-menu__item--logout').removeClass('hidden');
+		$('.fl-admin-menu__item--logout').unbind("click").click(function() {
+			logout();
+			viewController('login');
 		});
 
 		$('.fl-admin-menu__item--publish').unbind("click").click(function() {
@@ -55,7 +59,6 @@ function viewController(view){
   }
 
   function logged_in(){
-
     // read the cookie here to see if there is an access token, then check if its valid
     return accessToken() != ''
   }
