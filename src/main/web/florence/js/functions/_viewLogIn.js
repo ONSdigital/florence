@@ -1,7 +1,7 @@
 function viewLogIn() {
 
 var login_form =
-  'email:<input type="email" value="florence@magicroundabout.ons.gov.uk" class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1" />' +
+  'email:<input type="email" value="p1@t.com" class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1" />' +
   '<br>'+
   'password:<input type="password" value="Doug4l" class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1" />'+
   '<br>'+

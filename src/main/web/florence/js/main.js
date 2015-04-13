@@ -1016,6 +1016,9 @@ function saveAndCompleteContent(collectionName, path, content) {
       if (response.status === 400) {
         alert("Cannot edit this file. It is already part of another collection.");
       }
+      else if (response.status == 401) {
+        alert("You are not authorised to update content.");
+      }
       else {
         handleApiError(response);
       }
@@ -1867,6 +1870,9 @@ function updateContent(collectionName, path, content) {
       if (response.status == 400) {
         alert("Cannot edit this file. It is already part of another collection.");
       }
+      else if (response.status == 401) {
+        alert("You are not authorised to update content.");
+      }
       else {
         handleApiError(response);
       }
@@ -2146,10 +2152,16 @@ function viewController(view){
 				viewController('users-and-access');
 		});
 
-
-		$('.fl-admin-menu__item--login').addClass('hidden');
-		$('.fl-admin-menu__item--logout').removeClass('hidden');
-		$('.fl-admin-menu__item--logout').unbind("click").click(function() {
+		var loginLink = $('.fl-admin-menu__item--login');
+		loginLink.addClass('hidden');
+		loginLink.unbind("click").click(function() {
+			viewController('login');
+		});
+		var logoutLink = $('.fl-admin-menu__item--logout')
+		logoutLink.removeClass('hidden');
+		logoutLink.unbind("click").click(function() {
+			logoutLink.addClass('hidden');
+			loginLink.removeClass('hidden');
 			logout();
 			viewController('login');
 		});
@@ -2198,7 +2210,7 @@ function viewController(view){
 function viewLogIn() {
 
 var login_form =
-  'email:<input type="email" value="florence@magicroundabout.ons.gov.uk" class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1" />' +
+  'email:<input type="email" value="p1@t.com" class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1" />' +
   '<br>'+
   'password:<input type="password" value="Doug4l" class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1" />'+
   '<br>'+
