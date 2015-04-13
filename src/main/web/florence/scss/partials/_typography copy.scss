@@ -111,10 +111,7 @@
 }
 
 
-$rembase: 62.5%;
-$lineheight: 21px;
-$magicnumber1: 7px;
-$magicnumber2: 3px;
+$baseline: 18px;
 $gutter: 20px;
 
 .text-align-right {
@@ -129,84 +126,71 @@ $gutter: 20px;
   text-align: center;
 }
 
-html {
-  font-size: $rembase; 
-}
-
-
-
 body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
-  font-size: 14px;
-  /*font-size: 1.4rem;*/
-  line-height: $lineheight;
-  margin-bottom: $lineheight;
+  font-size: 15px;
+  line-height: $baseline;
+  margin-bottom: $baseline;
 }
 
-h1, h2, h3 {
+h1 {
   font-family: 'Roboto Slab', serif;
   font-weight: 400;
   font-size: 30px;
-  font-size: $magicnumber1 * 5;
-  line-height: $lineheight * 2;
-  margin-top: $lineheight * 3;
-  margin-bottom: $lineheight * 2;
+  line-height: $baseline * 2;
+  margin-top: $baseline * 2 + 6;
+  margin-bottom: $baseline - 6;
   margin-right: $gutter;
   margin-left: $gutter;
 }
 
 h2 {
-  font-size: $magicnumber1 * 4;
-  padding-top: 4px;
-  margin-bottom: -4px;
-}
-
-h3 {
-  margin-top: $lineheight;
-  font-size: $magicnumber1 * 3;
-  padding-top: 10px;
-  margin-bottom: -10px;
+  font-family: 'Roboto Slab', serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: $baseline * 2 - 6;
+  margin-top: $baseline * 3 - 6;
+  margin-bottom: $baseline - 6;
+  margin-right: $gutter;
+  margin-left: $gutter;
 }
 
 p {
-  /*font-size: 15px;*/
-  line-height: $lineheight;
-  margin-top: $lineheight;
-  margin-bottom: $lineheight;
+  font-size: 15px;
+  line-height: $baseline;
+  margin-top: $baseline * 2 - 3;
+  margin-bottom: $baseline;
   margin-right: $gutter;
   margin-left: $gutter;
 }
 
 li {
-  /*font-size: 15px;*/
-  line-height: $lineheight;
-  margin-top: $lineheight;
-  margin-bottom: $lineheight;
+  font-size: 15px;
+  line-height: $baseline;
+  margin-top: $baseline + 3;
+  margin-bottom: $baseline;
   margin-right: $gutter;
   margin-left: $gutter;
-}
-
-button {
-  line-height: $lineheight;
-  margin-top: $lineheight / 2;
-  margin-bottom: 0;
-  margin-right: $gutter;
-  margin-left: $gutter;
-  padding: 10px $gutter;
 }
 
 table {
-  /*border-collapse: collapse;*/
-  border-spacing: 0px;
+  border-collapse: collapse;
 
   thead {
     display: table-header-group;
+
+    tr {
+      padding-top: $baseline;
+      padding-bottom: $baseline;
+      display: block;
+    }
   }
 
   tr {
-    padding-top: $lineheight;
-    padding-bottom: $lineheight;
+    padding-top: $baseline;
+    padding-bottom: $baseline;
+    /*padding-bottom: $baseline - 3;*/
     display: block;
   }
 
@@ -219,6 +203,8 @@ table {
   td {
     padding-right: $gutter;
     padding-left: $gutter;
+    margin-bottom: -3px;
+    display: inline-block;
   }
 }
 
@@ -236,7 +222,7 @@ table {
   right: 0;
   bottom: 0;
   left: 0;
-  background: url(../img/rule-21.png) repeat top left;
+  background: url(../img/rule.png) repeat top left;
 }*/
 
 

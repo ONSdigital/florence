@@ -35,11 +35,18 @@ ol, ul {
 p {
 	padding: 0;
 }
+button {
+	border: 0;
+	cursor: pointer;
+	outline: none;
+}
 
 textarea,input {
-	font:11px arial, helvetica, sans-serif; 
-	padding: 2px;
+	/*font:11px arial, helvetica, sans-serif; */
+	padding: 0;
+	outline: none;
 }
+
 
 /*  print media  */
 @media print
