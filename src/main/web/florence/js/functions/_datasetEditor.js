@@ -6,9 +6,11 @@ function datasetEditor(collectionName, data) {
   var newUsedIn = [];
   var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
+  var filesUploaded = [];
   var uriUpload;
 
   $(".section-list").remove();
+  $(".file-list").remove();
   $(".note-list").remove();
   $(".dataset-list").remove();
   $(".link-list").remove();
@@ -94,6 +96,7 @@ function datasetEditor(collectionName, data) {
   });
 
   //Add new download
+
   $("#content-section").append('<button id="addFile">Add new file</button>');
   $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
@@ -101,6 +104,7 @@ function datasetEditor(collectionName, data) {
         '  Title ' +
         //'  <textarea id="fileToUp"></textarea>' +
         '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
+        '  <textarea id="file_name_' + lastIndexFile + '" style="display: none" cols="50"></textarea>' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
@@ -131,40 +135,85 @@ function datasetEditor(collectionName, data) {
           document.getElementById("response").innerHTML = "Uploading . . .";
 
           var file = this.files[0];
-          if (!!file.type.match(/csv.*/)) {
-            showUploadedItem(file.name);
-            if (formdata) {
-              formdata.append("name", file);
-            }
-          }
-
-          // Multifile upload (not accepted at the moment by the server)
-          //var i = 0, len = this.files.length, file;
-          //for ( ; i < len; i++ ) {
-          //  file = this.files[i];
-          //  if (!!file.type.match(/csv.*/)) {
-          //    showUploadedItem(file.name);
-          //    if (formdata) {
-          //      formdata.append("names[]", file);  //change input name to names[]
-          //    }
-          //  }
-          //}
-
           uriUpload = getPathName() + "/" + file.name;
-          if (formdata) {
-            $.ajax({
-              url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
-              type: "POST",
-              data: formdata,
-              processData: false,
-              contentType: false,
-              success: function (res) {
-                document.getElementById("response").innerHTML = "File uploaded successfully";
-                //data.download[lastIndexFile] = {title: $('#"file__' + lastIndexFile).val(), file: uriUpload};
-                //$('#' + lastIndexFile).remove();
-                saveNewFile();
+
+          if (data.download.length > 0) {
+            $(data.download).each(function (i, filesUploaded) {
+              if (filesUploaded.file == uriUpload) {
+                alert('This file already exists');
+                $('#' + lastIndexFile).remove();
+                datasetEditor(collectionName, data);
+                return;
               }
+              if (!!file.type.match(/csv.*/)) {
+                showUploadedItem(file.name);
+                if (formdata) {
+                  formdata.append("name", file);
+                }
+              } else {
+                alert('This file type is not supported');
+                $('#' + lastIndexFile).remove();
+                datasetEditor(collectionName, data);
+                return;
+              }
+
+              // Multifile upload (not accepted at the moment by the server)
+              //var i = 0, len = this.files.length, file;
+              //for ( ; i < len; i++ ) {
+              //  file = this.files[i];
+              //  if (!!file.type.match(/csv.*/)) {
+              //    showUploadedItem(file.name);
+              //    if (formdata) {
+              //      formdata.append("names[]", file);  //change input name to names[]
+              //    }
+              //  }
+              //}
+
+              if (formdata) {
+                $.ajax({
+                  url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
+                  type: "POST",
+                  data: formdata,
+                  processData: false,
+                  contentType: false,
+                  success: function (res) {
+                    document.getElementById("response").innerHTML = "File uploaded successfully";
+                    $('#file_name_' + lastIndexFile).val(uriUpload);
+                    //data.download[lastIndexFile] = {title: $('#file__' + lastIndexFile).val(), file: uriUpload};
+                    //$('#' + lastIndexFile).remove();
+                    saveNewFile();
+                  }
+                });
+              }
+              //}
             });
+          } else {
+            if (!!file.type.match(/csv.*/)) {
+              showUploadedItem(file.name);
+              if (formdata) {
+                formdata.append("name", file);
+              }
+            } else {
+              alert('This file type is not supported');
+              $('#' + lastIndexFile).remove();
+              datasetEditor(collectionName, data);
+              return;
+            }
+
+            if (formdata) {
+              $.ajax({
+                url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                  document.getElementById("response").innerHTML = "File uploaded successfully";
+                  $('#file_name_' + lastIndexFile).val(uriUpload);
+                  saveNewFile();
+                }
+              });
+            }
           }
         }, false);
       }
@@ -180,13 +229,14 @@ function datasetEditor(collectionName, data) {
     var orderFile = $(".fl-editor__download").sortable('toArray');
     $(orderFile).each(function(index, name){
       var title = $('#file__'+name).val();
-      var filename = uriUpload;
+      var filename = $('#file_name_' + lastIndexFile).val();
       newFiles[parseInt(index)] = {title: title, file: filename};
     });
     data.download = newFiles;
     console.log(data.download);
-    $(".file-list").remove();
     $("#metadata-list").remove();
+    //save();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
     datasetEditor(collectionName, data);
   }
 
@@ -257,7 +307,7 @@ function datasetEditor(collectionName, data) {
     //console.log(data.notes);
     $(".note-list").remove();
     $("#metadata-list").remove();
-    datasetEditor(collectionName, data);
+    save();
   }
 
   function sortableNotes() {
@@ -513,6 +563,7 @@ function datasetEditor(collectionName, data) {
       newFiles[parseInt(index)] = {title: title, file: file};
     });
     data.download = newFiles;
+    console.log(data.download);
     // Notes
     var orderNote = $(".fl-editor__notes").sortable('toArray');
     $(orderNote).each(function (indexT, nameT) {
