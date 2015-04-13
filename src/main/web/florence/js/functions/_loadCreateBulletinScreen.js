@@ -25,5 +25,4 @@ function loadCreateBulletinScreen(collectionName) {
 
   $('.fl-panel--sub-menu').html(workspace_menu_create);
   loadT4Creator(collectionName);
-
 }

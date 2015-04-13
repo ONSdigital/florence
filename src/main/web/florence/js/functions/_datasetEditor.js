@@ -6,6 +6,7 @@ function datasetEditor(collectionName, data) {
   var newUsedIn = [];
   var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
+  var uriUpload;
 
   $(".section-list").remove();
   $(".note-list").remove();
@@ -74,7 +75,7 @@ function datasetEditor(collectionName, data) {
 
   // Edit download
   // Load and edition
-  $(data.download).each(function(index, file){
+  $(data.download).each(function (index, file) {
     lastIndexFile = index + 1;
     $('.fl-editor__download').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
@@ -96,9 +97,10 @@ function datasetEditor(collectionName, data) {
   $("#content-section").append('<button id="addFile">Add new file</button>');
   $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
-        '<div id="uploadFile" class="file-list" style="background-color:grey; color:white;">' +
+        '<div id="' + lastIndexFile + '" class="file-list" style="background-color:grey; color:white;">' +
         '  Title ' +
-        '  <textarea id="fileToUp"></textarea>' +
+        //'  <textarea id="fileToUp"></textarea>' +
+        '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
@@ -118,8 +120,8 @@ function datasetEditor(collectionName, data) {
       function showUploadedItem (source) {
         var list = document.getElementById("list"),
             li   = document.createElement("li"),
-            para = document.createElement("p");
-        text = document.createTextNode(source);
+            para = document.createElement("p"),
+            text = document.createTextNode(source);
         para.appendChild(text);
         li.appendChild(para);
         list.appendChild(li);
@@ -148,7 +150,7 @@ function datasetEditor(collectionName, data) {
           //  }
           //}
 
-          var uriUpload = getPathName() + "/" + file.name;
+          uriUpload = getPathName() + "/" + file.name;
           if (formdata) {
             $.ajax({
               url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
@@ -158,9 +160,9 @@ function datasetEditor(collectionName, data) {
               contentType: false,
               success: function (res) {
                 document.getElementById("response").innerHTML = "File uploaded successfully";
-                data.download[lastIndexFile] = {title: $('#fileToUp').val(), file: uriUpload};
-                $('#uploadFile').remove();
-                datasetEditor(collectionName, data);
+                //data.download[lastIndexFile] = {title: $('#"file__' + lastIndexFile).val(), file: uriUpload};
+                //$('#' + lastIndexFile).remove();
+                saveNewFile();
               }
             });
           }
@@ -173,6 +175,20 @@ function datasetEditor(collectionName, data) {
     $(".fl-editor__download").sortable();
   }
   sortableFiles();
+
+  function saveNewFile() {
+    var orderFile = $(".fl-editor__download").sortable('toArray');
+    $(orderFile).each(function(index, name){
+      var title = $('#file__'+name).val();
+      var filename = uriUpload;
+      newFiles[parseInt(index)] = {title: title, file: filename};
+    });
+    data.download = newFiles;
+    console.log(data.download);
+    $(".file-list").remove();
+    $("#metadata-list").remove();
+    datasetEditor(collectionName, data);
+  }
 
   // Edit notes
   // Load and edition
@@ -529,42 +545,3 @@ function datasetEditor(collectionName, data) {
   }
 }
 
-    saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
-  });
-
-
-  function save() {
-    // Files are uploaded. No need to save
-
-    // Notes
-    var orderNote = $(".fl-editor__notes").sortable('toArray');
-    $(orderNote).each(function (indexT, nameT) {
-      var markdown = data.notes[parseInt(nameT)].data;
-      newNotes[indexT] = {data: markdown};
-    });
-    console.log(newNotes);
-    data.notes = newNotes;
-    // Related links
-    var orderDataset = $(".fl-editor__related").sortable('toArray');
-    $(orderDataset).each(function (indexD, nameD) {
-      var uri = $('#dataset__' + nameD).val();
-      var summary = $('#dataset_summary_' + nameD).val();
-      var name = $('#dataset_name_' + nameD).val();
-      newRelated[indexD]= {uri: uri, name: name, summary: summary};
-    });
-    data.relatedDatasets = newRelated;
-    //console.log(data.relatedDatasets);
-    // Used in links
-    var orderUsedIn = $(".fl-editor__used").sortable('toArray');
-    $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#usedIn__'+nameU).val();
-      var summary = $('#usedIn_summary_'+nameU).val();
-      var names = $('#usedIn_name_'+nameU).val();
-      newUsedIn[parseInt(indexU)] = {uri: uri, name: names, summary: summary};
-    });
-    data.usedIn = newUsedIn;
-
-    //console.log(data);
-    datasetEditor(collectionName, data);
-  }
-}

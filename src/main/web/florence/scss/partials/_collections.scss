@@ -1,0 +1,14 @@
+.collection-select {
+	padding: 0 $col--1;
+}
+
+.collection-create {
+	padding: 0 $col--1;
+}
+
+.collection-selected {
+	right: -50%;
+	position: absolute;
+	background: $quill-gray;
+	// display: none;
+}

@@ -1,0 +1,41 @@
+table {
+	border: 3px solid $pickled-bluewood;
+	border-radius: 4px;
+	margin-top:-3px;
+	width: 100%;
+
+	thead {
+		tr {
+			background-color: $pickled-bluewood;
+			color: $cadet-blue;
+		}
+	}
+
+	tbody {
+		tr {
+			cursor: pointer;
+		}
+
+		tr:nth-child(odd) {
+			background-color: $white;
+			&:hover {
+				background-color: $quill-gray;
+			}
+		}
+
+		tr:nth-child(even) {
+			background-color: $iron;
+			&:hover {
+				background-color: $quill-gray;
+			}
+		}
+
+		tr.selected {
+			background-color: $astral;
+			cursor: default;
+			&:hover {
+				background-color: $astral;
+			}
+		}
+	}
+}

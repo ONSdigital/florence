@@ -1,15 +1,8 @@
 function loadEditT4Screen(collectionName) {
-<<<<<<< HEAD:src/main/web/florence/js/functions/_loadEditT4Screen.js
-=======
-
->>>>>>> 2e64f37... Refactoring html:src/main/web/florence/js/functions/_loadEditT4Screen.js
   // Metadata and correction collapsible sections
   var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +
     '  <section style="overflow: scroll;" class="fl-editor">' +
-<<<<<<< HEAD:src/main/web/florence/js/functions/_loadEditT4Screen.js
-=======
->>>>>>> 2e64f37... Refactoring html:src/main/web/florence/js/functions/_loadEditT4Screen.js
     '    <div id="accordion">' +
       // section > div necessary for accordion
     '      <section class="fl-editor__metadata">Metadata</section>' +
@@ -51,9 +44,6 @@ function loadEditT4Screen(collectionName) {
   $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
   accordion();
 
-<<<<<<< HEAD:src/main/web/florence/js/functions/_loadEditT4Screen.js
-=======
->>>>>>> 2e64f37... Refactoring html:src/main/web/florence/js/functions/_loadEditT4Screen.js
   $('.fl-panel--editor__nav__publish').click(function () {
     publish(collectionName);
   });

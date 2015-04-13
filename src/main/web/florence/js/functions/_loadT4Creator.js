@@ -86,11 +86,6 @@ function loadT4Creator (collectionName) {
             loadPageDataIntoEditor(collectionName, true);
           });
         }, window.intIntervalTime);
-
-          loadEditT4Screen(collectionName);
-        // To be changed when #! gets removed
-        var local = localStorage.getItem("pageurl").split("#!")[0];
-        $('.fl-panel--preview__content').get(0).src = local + "#!/" + newUri;
       },
       error: function (error) {
         console.log(error);

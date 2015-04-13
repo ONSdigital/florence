@@ -10,11 +10,7 @@ function makeEditSections(collectionName, response) {
   }
 
   else if (response.type === 'dataset') {
-
     loadEditDatasetScreen(collectionName);
-
-
-
     datasetEditor(collectionName, response);
   }
 

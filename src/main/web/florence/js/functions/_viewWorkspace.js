@@ -65,17 +65,13 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
+      viewWorkspace(path);
       clearInterval(window.intervalID);
       window.intervalID = setInterval(function () {
         checkForPageChanged(function () {
           loadPageDataIntoEditor(collectionName, true);
         });
       }, window.intIntervalTime);
-      enablePreview();
-      loadPageDataIntoEditor(collectionName, true);
-<<<<<<< HEAD
-=======
->>>>>>> 2e64f37... Refactoring html
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--review')) {
