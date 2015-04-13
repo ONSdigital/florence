@@ -14,6 +14,7 @@ function loadCreateBulletinScreen(collectionName) {
       '      <select class="fl-creator__page_type_list_select" required>'+
       '        <option name="bulletin">bulletin</option>' +
       '        <option name="article">article</option>' +
+      '        <option name="dataset">dataset</option>' +
       '      </select></section>'+
       '    </section>' +
       '  </section>' +
@@ -24,5 +25,4 @@ function loadCreateBulletinScreen(collectionName) {
 
   $('.fl-panel--sub-menu').html(workspace_menu_create);
   loadT4Creator(collectionName);
-
 }

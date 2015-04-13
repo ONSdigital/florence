@@ -8,11 +8,10 @@ function articleEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $(".fl-editor__headline").hide();
   $(".section-list").remove();
-  $(".tab-list").remove();
-  $(".article-list").remove();
-  $(".link-list").remove();
+  //$(".tab-list").remove();
+  //$(".article-list").remove();
+  //$(".link-list").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addArticle").remove();
@@ -235,7 +234,7 @@ function articleEditor(collectionName, data) {
       $('.fl-editor__related').append(
           '<div id="' + iArticle + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           'Link ' +
-          '  <textarea id="article__' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
+          '  <textarea id="article_' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
           '  <textarea style="display: none;" id="article_name_' + iArticle + '">' + article.name + '</textarea>' +
           '  <textarea style="display: none;" id="article_summary_' + iArticle + '">' + article.summary + '</textarea>' +
           '  <button class="fl-panel--editor__related__article-item__delete_' + iArticle + '">Delete</button>' +

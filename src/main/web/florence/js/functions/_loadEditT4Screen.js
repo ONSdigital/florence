@@ -1,23 +1,8 @@
-function loadEditBulletinScreen(collectionName) {
-
-  function accordion() {
-    $(function () {
-      $("#accordion").accordion(
-        {
-          header: "section",
-          heightStyle: "content",
-          active: 'none',
-          collapsible: true
-        }
-      );
-    });
-  }
-
+function loadEditT4Screen(collectionName) {
   // Metadata and correction collapsible sections
   var workspace_menu_sub_edit =
     '<section class="fl-panel fl-panel--editor">' +
     '  <section style="overflow: scroll;" class="fl-editor">' +
-    '    <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 800px"></textarea>' +
     '    <div id="accordion">' +
       // section > div necessary for accordion
     '      <section class="fl-editor__metadata">Metadata</section>' +
@@ -57,15 +42,6 @@ function loadEditBulletinScreen(collectionName) {
   $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
   $('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
   accordion();
-
-  loadPageDataIntoEditor(collectionName, true);
-
-  clearInterval(window.intervalID);
-  window.intervalID = setInterval(function () {
-    checkForPageChanged(function () {
-      loadPageDataIntoEditor(collectionName, true);
-    });
-  }, window.intIntervalTime);
 
   $('.fl-panel--editor__nav__publish').click(function () {
     publish(collectionName);

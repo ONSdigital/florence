@@ -85,7 +85,12 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
-        loadEditBulletinScreen(collectionName);
+        clearInterval(window.intervalID);
+        window.intervalID = setInterval(function () {
+          checkForPageChanged(function () {
+            loadPageDataIntoEditor(collectionName, true);
+          });
+        }, window.intIntervalTime);
       }
     });
   }

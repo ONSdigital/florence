@@ -34,7 +34,7 @@ function loadT4Creator (collectionName) {
         breadcrumb = inheritedBreadcrumb;
         return breadcrumb;
       } else {
-        $('.fl-creator__parent').attr("placeholder", "This is not a valid place to create " + pageType + "s.");
+        $('.fl-creator__parent').attr("placeholder", "This is not a valid place to create this page.");
       }
     },
     error: function () {
@@ -52,7 +52,11 @@ function loadT4Creator (collectionName) {
     pageData = pageTypeData(pageType);
     parent = $('.fl-creator__parent').val().trim();
     pageName = $('.fl-creator__new_name').val().trim();
+    //
+    // get rid of name or title?
+    //
     pageData.name = pageName;
+    pageData.title = pageName;
     uriSection = pageType + "s";
     pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     pageData.fileName = pageNameTrimmed;
@@ -74,9 +78,14 @@ function loadT4Creator (collectionName) {
       },
       success: function (message) {
         console.log("Updating completed " + message);
-        // To be changed when #! gets removed
+
         viewWorkspace('/' + newUri);
-        loadEditBulletinScreen(collectionName );
+        clearInterval(window.intervalID);
+        window.intervalID = setInterval(function () {
+          checkForPageChanged(function () {
+            loadPageDataIntoEditor(collectionName, true);
+          });
+        }, window.intIntervalTime);
       },
       error: function (error) {
         console.log(error);
@@ -134,6 +143,32 @@ function pageTypeData(pageType) {
       "name": "",
       "uri": "",
       "fileName": "",
+      "breadcrumb": ""
+    };
+  }
+
+  else if (pageType === "dataset") {
+    return {
+      "nextRelease": "",
+      "contact": {
+        "name": "",
+        "email": ""
+      },
+      "lede": "",
+      "more": "",
+      "download": [],
+      "notes": [],
+      "summary": "",
+      "nationalStatistic": "false",
+      "description": "",
+      "title": "",
+      "releaseDate": "",
+      type: pageType,
+      "name": "",
+      "uri": "",
+      "fileName": "",
+      "relatedDatasets": [],
+      "usedIn": [],
       "breadcrumb": ""
     };
   }

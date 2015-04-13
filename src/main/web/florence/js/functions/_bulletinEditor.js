@@ -10,9 +10,9 @@ function bulletinEditor(collectionName, data) {
 
   $(".fl-editor__headline").hide();
   $(".section-list").remove();
-  $(".tab-list").remove();
-  $(".bulletin-list").remove();
-  $(".link-list").remove();
+  //$(".tab-list").remove();
+  //$(".bulletin-list").remove();
+  //$(".link-list").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addBulletin").remove();
@@ -238,7 +238,7 @@ function bulletinEditor(collectionName, data) {
     $(data.relatedBulletins).each(function (iBulletin, bulletin) {
       lastIndexRelated = iBulletin + 1;
       $('.fl-editor__related').append(
-          '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
+          '<div id="' + iBulletin + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           'Link ' +
           ' <textarea id="bulletin__' + iBulletin + '" cols="50">' + bulletin.uri + '</textarea>' +
           ' <textarea style="display: none;" id="bulletin_name_' + iBulletin + '">' + bulletin.name + '</textarea>' +
@@ -261,14 +261,23 @@ function bulletinEditor(collectionName, data) {
     $('.fl-editor__related').append(
         '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Link ' +
-        ' <textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
+        '  <textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
+        '  <button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="fl-panel--editor__related__bulletin-item__cancel_' + lastIndexRelated + '">Cancel</button>' +
         '</div>');
+
+    $(".fl-panel--editor__related__bulletin-item__cancel_" + lastIndexRelated).hide();
 
     unCheckPage();
     loadPageDataIntoEditor(collectionName, false);
 
     $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
+      $(".fl-panel--editor__related__bulletin-item__cancel_" + lastIndexRelated).show().one('click', function () {
+        $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+        checkPage();
+        $(".fl-panel--editor__related__bulletin-item__cancel_" + lastIndexRelated).remove();
+        bulletinEditor(collectionName, data);
+      });
       var bulletinurl = $('.fl-panel--preview__content').contents().get(0).location.href;
       var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
       $.ajax({
@@ -301,13 +310,13 @@ function bulletinEditor(collectionName, data) {
     sortableRelated();
   });
 
-  //function checkPage2() {
-  //  window.intervalID = setInterval(function () {
-  //    checkForPageChanged(function () {
-  //      loadPageDataIntoEditor(collectionName, true);
-  //    });
-  //  }, intIntervalTime);
-  //}
+  function checkPage() {
+    window.intervalID = setInterval(function () {
+      checkForPageChanged(function () {
+        loadPageDataIntoEditor(collectionName, true);
+      });
+    }, intIntervalTime);
+  }
 
   function unCheckPage() {
     clearInterval(window.intervalID);
