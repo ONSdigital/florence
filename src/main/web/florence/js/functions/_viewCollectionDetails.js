@@ -20,20 +20,33 @@ function viewCollectionDetails(collectionName) {
   });
 
 
-  function populateCollectionDetails(data, collectionName) {
+  function populateCollectionDetails(collection, collectionName) {
+
+    if (collection.inProgressUris != 0 || collection.completeUris != 0) {
+      // You can't approve collections unless there is nothing left to be reviewed
+      $('.fl-finish-collection-button').hide();
+    }
+    else {
+      $('.fl-finish-collection-button').show();
+
+      $('.fl-finish-collection-button').click(function () {
+        postApproveCollection(collection.id)
+      })
+    }
+
 
     var collection_summary =
-      '<h1>' + data.name + '</h1>' +
-      '<p>' + data.inProgressUris.length + ' Pages in progress</p>' +
+      '<h1>' + collection.name + '</h1>' +
+      '<p>' + collection.inProgressUris.length + ' Pages in progress</p>' +
       '<div class="fl-panel--collection-details-in-progress-container"></div>' +
-      '<p>' + data.completeUris.length + ' Pages awaiting review</p>' +
+      '<p>' + collection.completeUris.length + ' Pages awaiting review</p>' +
       '<div class="fl-panel--collection-details-complete-container"></div>' +
-      '<p>' + data.reviewedUris.length + ' Pages awaiting approval</p>' +
+      '<p>' + collection.reviewedUris.length + ' Pages awaiting approval</p>' +
       '<div class="fl-panel--collection-details-reviewed-container"></div>';
 
-    CreateUriListHtml(data.inProgressUris, collectionName, "fl-panel--collection-details-in-progress-container");
-    CreateUriListHtml(data.completeUris, collectionName, "fl-panel--collection-details-complete-container");
-    CreateUriListHtml(data.reviewedUris, collectionName, "fl-panel--collection-details-reviewed-container");
+    CreateUriListHtml(collection.inProgressUris, collectionName, "fl-panel--collection-details-in-progress-container");
+    CreateUriListHtml(collection.completeUris, collectionName, "fl-panel--collection-details-complete-container");
+    CreateUriListHtml(collection.reviewedUris, collectionName, "fl-panel--collection-details-reviewed-container");
 
     $('.fl-panel--collection-details-container').html(collection_summary);
 
@@ -72,7 +85,7 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
-        loadEditBulletinScreen(collectionName );
+        loadEditBulletinScreen(collectionName);
       }
     });
   }

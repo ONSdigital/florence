@@ -46,7 +46,7 @@ function makeCollectionView(collectionId,collections){
               $('#approve-collection-button').click(function(){
                 console.log(collection.inProgressUris)
                 console.log(collection.completeUris)
-                approve(collection.id)
+                postApproveCollection(collection.id)
               })
             }
 
