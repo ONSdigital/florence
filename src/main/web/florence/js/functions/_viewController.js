@@ -14,10 +14,16 @@ function viewController(view){
 				viewController('users-and-access');
 		});
 
-
-		$('.fl-admin-menu__item--login').addClass('hidden');
-		$('.fl-admin-menu__item--logout').removeClass('hidden');
-		$('.fl-admin-menu__item--logout').unbind("click").click(function() {
+		var loginLink = $('.fl-admin-menu__item--login');
+		loginLink.addClass('hidden');
+		loginLink.unbind("click").click(function() {
+			viewController('login');
+		});
+		var logoutLink = $('.fl-admin-menu__item--logout')
+		logoutLink.removeClass('hidden');
+		logoutLink.unbind("click").click(function() {
+			logoutLink.addClass('hidden');
+			loginLink.removeClass('hidden');
 			logout();
 			viewController('login');
 		});
