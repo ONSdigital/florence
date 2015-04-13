@@ -60,7 +60,7 @@ function datasetEditor(collectionName, data) {
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if(data.nationalStatistic === "false") {
+    if(data.nationalStatistic === "false" || data.nationalStatistic === false) {
       return false;
     } else {
       return true;
