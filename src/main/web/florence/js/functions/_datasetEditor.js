@@ -6,7 +6,6 @@ function datasetEditor(collectionName, data) {
   var newUsedIn = [];
   var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
-  var filesUploaded = [];
   var uriUpload;
 
   $(".section-list").remove();
@@ -85,25 +84,25 @@ function datasetEditor(collectionName, data) {
         '  <textarea id="file__' + index + '" cols="50">' + file.title + '</textarea>' +
         '  <textarea id="file_name_' + index + '" style="display: none" cols="50">' + file.file + '</textarea>' +
         '  <div id="file_name_show_' + index + '">' + file.file + '</div>' +
-          //' <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
+        '  <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
 
     // Delete
     $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.download.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
       datasetEditor(collectionName, data);
     });
   });
 
   //Add new download
-
   $("#content-section").append('<button id="addFile">Add new file</button>');
   $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
         '<div id="' + lastIndexFile + '" class="file-list" style="background-color:grey; color:white;">' +
         '  Title ' +
-        //'  <textarea id="fileToUp"></textarea>' +
+          //'  <textarea id="fileToUp"></textarea>' +
         '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
         '  <textarea id="file_name_' + lastIndexFile + '" style="display: none" cols="50"></textarea>' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
@@ -182,7 +181,7 @@ function datasetEditor(collectionName, data) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
-                  saveNewFile();
+                  save();
                 }
               });
             }
@@ -211,7 +210,7 @@ function datasetEditor(collectionName, data) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
-                  saveNewFile();
+                  save();
                 }
               });
             }
@@ -226,23 +225,6 @@ function datasetEditor(collectionName, data) {
   }
   sortableFiles();
 
-  function saveNewFile() {
-    var orderFile = $(".fl-editor__download").sortable('toArray');
-    console.log(orderFile);
-    $(orderFile).each(function(index, name){
-      var title = $('#file__'+name).val();
-      var filename = $('#file_name_' + name).val();
-      console.log(filename);
-      newFiles[parseInt(index)] = {title: title, file: filename};
-    });
-    data.download = newFiles;
-    console.log(data.download);
-    $("#metadata-list").remove();
-    //save();
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
-    datasetEditor(collectionName, data);
-  }
-
   // Edit notes
   // Load and edition
   $(data.notes).each(function(index, note) {
@@ -250,7 +232,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + index + '">' + note.data + '</textarea>' +
+        ' <textarea id="note_markdown_' + index + '" cols="50">' + note.data + '</textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
@@ -282,6 +264,7 @@ function datasetEditor(collectionName, data) {
     $(".fl-panel--editor__notes__note-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.notes.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
       datasetEditor(collectionName, data);
     });
   });
@@ -292,7 +275,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + lastIndexNote + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + lastIndexNote + '"></textarea>' +
+        ' <textarea id="note_markdown_' + lastIndexNote + '"cols="50"></textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + lastIndexNote + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + lastIndexNote + '">Delete</button>' +
         '</div>');
@@ -304,13 +287,15 @@ function datasetEditor(collectionName, data) {
     var orderNote = $(".fl-editor__notes").sortable('toArray');
     $(orderNote).each(function(index, name){
       var markdown = $('#note_markdown_'+name).val();
+      //var markdown = "Enter text here";
       newNotes[parseInt(index)] = {data: markdown};
     });
     data.notes = newNotes;
-    //console.log(data.notes);
+    console.log(data.notes);
     $(".note-list").remove();
     $("#metadata-list").remove();
-    save();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    datasetEditor(collectionName, data);
   }
 
   function sortableNotes() {
@@ -385,7 +370,6 @@ function datasetEditor(collectionName, data) {
             //checkPage2();
             checkPage();
             save();
-            updateContent(collectionName, getPathName(), JSON.stringify(data));
           } else {
             alert("This is not a dataset");
           }
@@ -546,27 +530,30 @@ function datasetEditor(collectionName, data) {
   // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function () {
     save();
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
   // complete
   $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
     pageData = $('.fl-editor__headline').val();
-    save();
+    saveData();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
-
   function save() {
+    saveData();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+  }
+
+  function saveData() {
     // Files are uploaded. Save metadata
     var orderFile = $(".fl-editor__download").sortable('toArray');
     $(orderFile).each(function(index, name){
       var title = $('#file__'+name).val();
-      var file = data.download[parseInt(name)].file;
+      var file = $('#file_name_' + name).val();
       newFiles[parseInt(index)] = {title: title, file: file};
     });
     data.download = newFiles;
-    console.log(data.download);
+    //console.log(data.download);
     // Notes
     var orderNote = $(".fl-editor__notes").sortable('toArray');
     $(orderNote).each(function (indexT, nameT) {
