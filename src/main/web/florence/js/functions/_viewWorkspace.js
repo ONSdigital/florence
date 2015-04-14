@@ -54,8 +54,6 @@ function viewWorkspace(path) {
   $('.fl-main-menu__link').click(function () {
     $('.fl-panel--sub-menu').empty();
     $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-
-    $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
     $(this).addClass('fl-main-menu__link--active');
 
     // setupFlorenceWorkspace($(this));
@@ -69,7 +67,7 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
-      viewWorkspace(path);
+      loadPageDataIntoEditor(collectionName, true);
       clearInterval(window.intervalID);
       enablePreview();
       window.intervalID = setInterval(function () {
