@@ -48,7 +48,7 @@ function loadT4Creator (collectionName) {
   $('.fl-creator__page_type_list_select').change(function () {
     pageType = $(this).val();
   });
-  createButton.one('click', function () {
+  createButton.click(function () {
     pageData = pageTypeData(pageType);
     parent = $('.fl-creator__parent').val().trim();
     pageName = $('.fl-creator__new_name').val().trim();
@@ -66,31 +66,34 @@ function loadT4Creator (collectionName) {
     pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
     pageData.breadcrumb = breadcrumb;
 
+    if (pageName.length < 4) {
+      alert("This is not a valid file name");
+    } else {
+      $.ajax({
+        url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
+        dataType: 'json',
+        crossDomain: true,
+        type: 'POST',
+        data: JSON.stringify(pageData),
+        headers: {
+          "X-Florence-Token": accessToken()
+        },
+        success: function (message) {
+          console.log("Updating completed " + message);
 
-    $.ajax({
-      url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
-      dataType: 'json',
-      crossDomain: true,
-      type: 'POST',
-      data: JSON.stringify(pageData),
-      headers: {
-        "X-Florence-Token": accessToken()
-      },
-      success: function (message) {
-        console.log("Updating completed " + message);
-
-        viewWorkspace('/' + newUri);
-        clearInterval(window.intervalID);
-        window.intervalID = setInterval(function () {
-          checkForPageChanged(function () {
-            loadPageDataIntoEditor(collectionName, true);
-          });
-        }, window.intIntervalTime);
-      },
-      error: function (error) {
-        console.log(error);
-      }
-    });
+          viewWorkspace('/' + newUri);
+          clearInterval(window.intervalID);
+          window.intervalID = setInterval(function () {
+            checkForPageChanged(function () {
+              loadPageDataIntoEditor(collectionName, true);
+            });
+          }, window.intIntervalTime);
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      });
+    }
   });
 }
 
@@ -111,7 +114,9 @@ function pageTypeData(pageType) {
       "headline2": "",
       "headline3": "",
       "summary": "",
+      "nationalStatistic": "false",
       "relatedBulletins": [],
+      "correction": [],
       "title": "",
       "releaseDate": "",
       type: pageType,
@@ -136,11 +141,12 @@ function pageTypeData(pageType) {
       "headline2": "",
       "headline3": "",
       "summary": "",
+      "nationalStatistic": "false",
       "relatedArticles": [],
+      "correction": [],
       "title": "",
       "releaseDate": "",
       type: pageType,
-      "name": "",
       "uri": "",
       "fileName": "",
       "breadcrumb": ""
@@ -161,10 +167,10 @@ function pageTypeData(pageType) {
       "summary": "",
       "nationalStatistic": "false",
       "description": "",
+      "correction": [],
       "title": "",
       "releaseDate": "",
       type: pageType,
-      "name": "",
       "uri": "",
       "fileName": "",
       "relatedDatasets": [],
