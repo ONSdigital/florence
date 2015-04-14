@@ -83,7 +83,8 @@ function datasetEditor(collectionName, data) {
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         '  Title ' +
         '  <textarea id="file__' + index + '" cols="50">' + file.title + '</textarea>' +
-        '  <div id="file_name_' + index + '">' + file.file + '</div>' +
+        '  <textarea id="file_name_' + index + '" style="display: none" cols="50">' + file.file + '</textarea>' +
+        '  <div id="file_name_show_' + index + '">' + file.file + '</div>' +
           //' <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
 
@@ -145,48 +146,47 @@ function datasetEditor(collectionName, data) {
                 datasetEditor(collectionName, data);
                 return;
               }
-              if (!!file.type.match(/csv.*/)) {
-                showUploadedItem(file.name);
-                if (formdata) {
-                  formdata.append("name", file);
-                }
-              } else {
-                alert('This file type is not supported');
-                $('#' + lastIndexFile).remove();
-                datasetEditor(collectionName, data);
-                return;
-              }
-
-              // Multifile upload (not accepted at the moment by the server)
-              //var i = 0, len = this.files.length, file;
-              //for ( ; i < len; i++ ) {
-              //  file = this.files[i];
-              //  if (!!file.type.match(/csv.*/)) {
-              //    showUploadedItem(file.name);
-              //    if (formdata) {
-              //      formdata.append("names[]", file);  //change input name to names[]
-              //    }
-              //  }
-              //}
-
-              if (formdata) {
-                $.ajax({
-                  url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
-                  type: "POST",
-                  data: formdata,
-                  processData: false,
-                  contentType: false,
-                  success: function (res) {
-                    document.getElementById("response").innerHTML = "File uploaded successfully";
-                    $('#file_name_' + lastIndexFile).val(uriUpload);
-                    //data.download[lastIndexFile] = {title: $('#file__' + lastIndexFile).val(), file: uriUpload};
-                    //$('#' + lastIndexFile).remove();
-                    saveNewFile();
-                  }
-                });
-              }
-              //}
             });
+            if (!!file.type.match(/csv.*/)) {
+              showUploadedItem(file.name);
+              if (formdata) {
+                formdata.append("name", file);
+              }
+            } else {
+              alert('This file type is not supported');
+              $('#' + lastIndexFile).remove();
+              datasetEditor(collectionName, data);
+              return;
+            }
+
+            // Multifile upload (not accepted at the moment by the server)
+            //var i = 0, len = this.files.length, file;
+            //for ( ; i < len; i++ ) {
+            //  file = this.files[i];
+            //  if (!!file.type.match(/csv.*/)) {
+            //    showUploadedItem(file.name);
+            //    if (formdata) {
+            //      formdata.append("names[]", file);  //change input name to names[]
+            //    }
+            //  }
+            //}
+
+            if (formdata) {
+              $.ajax({
+                url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                  document.getElementById("response").innerHTML = "File uploaded successfully";
+                  $('#file_name_' + lastIndexFile).val(uriUpload);
+                  $('#file_name_show_' + lastIndexFile).val(uriUpload);
+                  saveNewFile();
+                }
+              });
+            }
+            //}); //each
           } else {
             if (!!file.type.match(/csv.*/)) {
               showUploadedItem(file.name);
@@ -210,6 +210,7 @@ function datasetEditor(collectionName, data) {
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   $('#file_name_' + lastIndexFile).val(uriUpload);
+                  $('#file_name_show_' + lastIndexFile).val(uriUpload);
                   saveNewFile();
                 }
               });
@@ -227,9 +228,11 @@ function datasetEditor(collectionName, data) {
 
   function saveNewFile() {
     var orderFile = $(".fl-editor__download").sortable('toArray');
+    console.log(orderFile);
     $(orderFile).each(function(index, name){
       var title = $('#file__'+name).val();
-      var filename = $('#file_name_' + lastIndexFile).val();
+      var filename = $('#file_name_' + name).val();
+      console.log(filename);
       newFiles[parseInt(index)] = {title: title, file: filename};
     });
     data.download = newFiles;

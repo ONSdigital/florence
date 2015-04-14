@@ -64,12 +64,14 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')) {
+      disablePreview();
       loadCreateBulletinScreen(collectionName);
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
       viewWorkspace(path);
       clearInterval(window.intervalID);
+      enablePreview();
       window.intervalID = setInterval(function () {
         checkForPageChanged(function () {
           loadPageDataIntoEditor(collectionName, true);
