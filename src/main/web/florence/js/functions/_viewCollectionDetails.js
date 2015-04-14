@@ -63,7 +63,7 @@ function viewCollectionDetails(collectionName) {
             var path = uri.replace('/data.json', '');
             path = path.length === 0 ? '/' : path;
             uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-            response.name + '</li>';
+            response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
           },
           error = function (response) {
             handleApiError(response);
@@ -76,6 +76,7 @@ function viewCollectionDetails(collectionName) {
       });
     }
 
+    // Click to go to editor function
     $('.fl-panel--collection-details-container').on('click', '.fl-collection-page-list-item', function () {
       var path = $(this).attr('data-path');
       console.log('Collection row clicked for id: ' + path);
@@ -93,5 +94,13 @@ function viewCollectionDetails(collectionName) {
         }, window.intIntervalTime);
       }
     });
+
+    // Delete function
+    $('.fl-panel--collection-details-container').on('click', '.fl-button--delete', function () {
+          var path = $(this).attr('data-path');
+          console.log('Collection row clicked for id: ' + path);
+
+        });
+
   }
 }
