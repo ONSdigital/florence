@@ -3205,7 +3205,7 @@ function viewWorkspace(path) {
 
   //build view
   $('.fl-view').html(workspace_menu_main + workspace_preview);
-  //enablePreview();
+  enablePreview();
 
   var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
