@@ -178,6 +178,55 @@ $panel-height-2-top-nav: 756px;
 	border-top: 7px solid $white;
 }
 
+.page {
+	&-list {
+		li {
+			list-style: none;
+			margin: $lineheight 0;
+			padding: 0 $gutter;
+			
+			&.selected {
+				margin-top: $lineheight;
+				padding: $lineheight $gutter;
+				background-color: $concrete;
+				color: $mine-shaft;
+				font-weight: 400;
+				border: 4px solid $gray-chateau; 
+			}
+		}
+
+		.page-options {
+			display: none;
+		}
+	}
+
+	&-item {
+		display: inline-block;
+		&:hover {
+			cursor: pointer;
+			color: $mine-shaft;
+			font-weight: 400;
+		}
+		/*&--selected {
+			color: $mine-shaft;
+			font-weight: 400;
+		}*/
+	}
+	&-options {
+		/*background-color: $concrete;*/
+		margin-top: $lineheight;
+		/*margin-bottom: $lineheight;
+		margin-right: -$gutter;
+		margin-left: -$gutter;
+		padding: $lineheight 0;*/
+
+		button {
+			margin-top: 0;
+		}
+		
+	}
+}
+
 
 
 //buttons
