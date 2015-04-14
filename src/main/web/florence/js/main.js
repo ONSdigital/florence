@@ -2913,6 +2913,7 @@ function viewPublish() {
     $(table_holder).html(publish_table);
 
     var collectionsByDate = _.chain(collections)
+      .filter( function(collection) { return collection.approvedStatus })
       .sortBy('publishDate')
       .groupBy('publishDate')
       .value();
