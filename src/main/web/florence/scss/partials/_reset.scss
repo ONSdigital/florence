@@ -20,9 +20,9 @@ h2 {
 	padding: 0;
 }
 
-label,select {
+/*label, select {
 	cursor: pointer;
-}
+}*/
 
 li {
 	margin: 0;
@@ -41,11 +41,21 @@ button {
 	outline: none;
 }
 
-textarea,input {
-	/*font:11px arial, helvetica, sans-serif; */
+textarea, input {
 	padding: 0;
 	outline: none;
 }
+
+select {
+	/*cursor: pointer;*/
+	padding: 0;
+	outline: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+
 
 
 /*  print media  */
