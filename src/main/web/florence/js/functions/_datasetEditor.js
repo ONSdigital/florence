@@ -90,6 +90,18 @@ function datasetEditor(collectionName, data) {
     // Delete
     $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
       $("#"+index).remove();
+      $.ajax({
+        url: "/zebedee/content/" + collectionName + "?uri=" + data.download[index].file,
+        type: "DELETE",
+        //processData: false,
+        //contentType: false,
+        success: function (res) {
+          console.log(res);
+        },
+        error: function (res) {
+          console.log(res);
+        }
+      });
       data.download.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
       datasetEditor(collectionName, data);
@@ -232,7 +244,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + index + '" cols="50">' + note.data + '</textarea>' +
+        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Clicx edit to add content">' + note.data + '</textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
@@ -292,8 +304,8 @@ function datasetEditor(collectionName, data) {
     });
     data.notes = newNotes;
     console.log(data.notes);
-    $(".note-list").remove();
-    $("#metadata-list").remove();
+    //$(".note-list").remove();
+    //$("#metadata-list").remove();
     updateContent(collectionName, getPathName(), JSON.stringify(data));
     datasetEditor(collectionName, data);
   }
@@ -409,8 +421,8 @@ function datasetEditor(collectionName, data) {
       newRelated[parseInt(indexD)] = {uri: uri, name: names, summary: summary};
     });
     data.relatedDatasets = newRelated;
-    $(".dataset-list").remove();
-    $("#metadata-list").remove();
+    //$(".dataset-list").remove();
+    //$("#metadata-list").remove();
     datasetEditor(collectionName, data);
   }
 
@@ -520,8 +532,8 @@ function datasetEditor(collectionName, data) {
       newUsedIn[parseInt(indexU)] = {uri: uri, name: names, summary: summary};
     });
     data.usedIn = newUsedIn;
-    $(".usedIn-list").remove();
-    $("#metadata-list").remove();
+    //$(".usedIn-list").remove();
+    //$("#metadata-list").remove();
     datasetEditor(collectionName, data);
   }
 
