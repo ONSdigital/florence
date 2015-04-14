@@ -1075,12 +1075,19 @@ function createCollection() {
   $.ajax({
     url: "/zebedee/collection",
     dataType: 'json',
-    crossDomain: true,
     type: 'POST',
     data: JSON.stringify({name: collectionName, publishDate: publishDate}),
     success: function () {
       console.log("Collection " + collectionName + " created" );
-      viewController('collections');
+      document.cookie = "collection=" + collectionName + ";path=/";
+      localStorage.setItem("collection", collectionName);
+      viewWorkspace();
+      clearInterval(window.intervalID);
+      window.intervalID = setInterval(function () {
+        checkForPageChanged(function () {
+          loadPageDataIntoEditor(collectionName, true);
+        });
+      }, window.intIntervalTime);
     },
     error: function (response) {
       if(response.status === 409) {
