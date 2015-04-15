@@ -45,10 +45,11 @@ function viewWorkspace(path) {
   $('.fl-view').html(workspace_menu_main + workspace_preview);
   enablePreview();
 
+  clearInterval(window.intervalID);
   var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
-  var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  localStorage.setItem("pageurl", pageurl);
+  //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+  //localStorage.setItem("pageurl", pageurl);
 
   //click handlers
   $('.fl-main-menu__link').click(function () {

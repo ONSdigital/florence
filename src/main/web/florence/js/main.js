@@ -53,6 +53,7 @@ function articleEditor(collectionName, data) {
       ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
       ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
       ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
       ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
       '</div>');
 
@@ -86,6 +87,20 @@ function articleEditor(collectionName, data) {
     data.headline3 = $(this).val();
   });
 
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function () {
+    if(data.nationalStatistic === "false" || data.nationalStatistic === false) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  });
+
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
 
   // Edit sections
@@ -96,7 +111,7 @@ function articleEditor(collectionName, data) {
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
         'Title ' +
-        ' <textarea id="section__' + index + '" cols="50">' + section.title + '</textarea>' +
+        ' <textarea id="section__' + index + '" cols="50" placeholder="Type title here and click edit to add content">' + section.title + '</textarea>' +
         ' <textarea style="display: none;" id="section_markdown_' + index + '">' + section.markdown + '</textarea>' +
         ' <button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
@@ -528,6 +543,7 @@ function bulletinEditor(collectionName, data) {
     ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
     ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
     ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
     ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
     '</div>');
 
@@ -565,6 +581,20 @@ function bulletinEditor(collectionName, data) {
     data.headline3 = $(this).val();
   });
 
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function () {
+    if(data.nationalStatistic === "false" || data.nationalStatistic === false) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  });
+
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
 
   // Edit sections
@@ -575,7 +605,7 @@ function bulletinEditor(collectionName, data) {
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
         'Title ' +
-        ' <textarea id="section__' + index + '" cols="50">' + section.title + '</textarea>' +
+        ' <textarea id="section__' + index + '" cols="50" placeholder="Type title here and click edit to add content">' + section.title + '</textarea>' +
         ' <textarea style="display: none;" id="section_markdown_' + index + '">' + section.markdown + '</textarea>' +
         ' <button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
@@ -2126,7 +2156,7 @@ function loadT4Creator (collectionName) {
   $('.fl-creator__page_type_list_select').change(function () {
     pageType = $(this).val();
   });
-  createButton.one('click', function () {
+  createButton.click(function () {
     pageData = pageTypeData(pageType);
     parent = $('.fl-creator__parent').val().trim();
     pageName = $('.fl-creator__new_name').val().trim();
@@ -2144,31 +2174,34 @@ function loadT4Creator (collectionName) {
     pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
     pageData.breadcrumb = breadcrumb;
 
+    if (pageName.length < 4) {
+      alert("This is not a valid file name");
+    } else {
+      $.ajax({
+        url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
+        dataType: 'json',
+        crossDomain: true,
+        type: 'POST',
+        data: JSON.stringify(pageData),
+        headers: {
+          "X-Florence-Token": accessToken()
+        },
+        success: function (message) {
+          console.log("Updating completed " + message);
 
-    $.ajax({
-      url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
-      dataType: 'json',
-      crossDomain: true,
-      type: 'POST',
-      data: JSON.stringify(pageData),
-      headers: {
-        "X-Florence-Token": accessToken()
-      },
-      success: function (message) {
-        console.log("Updating completed " + message);
-
-        viewWorkspace('/' + newUri);
-        clearInterval(window.intervalID);
-        window.intervalID = setInterval(function () {
-          checkForPageChanged(function () {
-            loadPageDataIntoEditor(collectionName, true);
-          });
-        }, window.intIntervalTime);
-      },
-      error: function (error) {
-        console.log(error);
-      }
-    });
+          viewWorkspace('/' + newUri);
+          clearInterval(window.intervalID);
+          window.intervalID = setInterval(function () {
+            checkForPageChanged(function () {
+              loadPageDataIntoEditor(collectionName, true);
+            });
+          }, window.intIntervalTime);
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      });
+    }
   });
 }
 
@@ -2189,7 +2222,9 @@ function pageTypeData(pageType) {
       "headline2": "",
       "headline3": "",
       "summary": "",
+      "nationalStatistic": "false",
       "relatedBulletins": [],
+      "correction": [],
       "title": "",
       "releaseDate": "",
       type: pageType,
@@ -2214,11 +2249,12 @@ function pageTypeData(pageType) {
       "headline2": "",
       "headline3": "",
       "summary": "",
+      "nationalStatistic": "false",
       "relatedArticles": [],
+      "correction": [],
       "title": "",
       "releaseDate": "",
       type: pageType,
-      "name": "",
       "uri": "",
       "fileName": "",
       "breadcrumb": ""
@@ -2239,10 +2275,10 @@ function pageTypeData(pageType) {
       "summary": "",
       "nationalStatistic": "false",
       "description": "",
+      "correction": [],
       "title": "",
       "releaseDate": "",
       type: pageType,
-      "name": "",
       "uri": "",
       "fileName": "",
       "relatedDatasets": [],
@@ -2330,10 +2366,10 @@ function makeCollectionView(collectionId,collections){
             function populateTable(i,uri){
               $('#in-progress-uris').append(
                 '<tr>'+
-                  '<td>'+uri+'/<td>'+
-                  '<td><select id="fl-select-destination-'+i+'"></select></td>'+
-                  '<td><button id="fl-move-'+i+'">move</button></td>'+
-                  '<td><button id="fl-edit-'+i+'">edit this page </button></td>'+
+                '  <td>'+uri+'/<td>'+
+                '  <td><select id="fl-select-destination-'+i+'"></select></td>'+
+                '  <td><button id="fl-move-'+i+'">move</button></td>'+
+                '  <td><button id="fl-edit-'+i+'">edit this page </button></td>'+
                 '</tr>'
                 )
 
@@ -2682,6 +2718,8 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
+        $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+        $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
         clearInterval(window.intervalID);
         window.intervalID = setInterval(function () {
           checkForPageChanged(function () {
@@ -2713,6 +2751,7 @@ function viewCollections(collectionName) {
   });
 
   function populateCollectionTable(data) {
+
     var page = $('.fl-collections-holder');
     var collection_table =
       '<table class="fl-collections-table">' +
@@ -3225,10 +3264,11 @@ function viewWorkspace(path) {
   $('.fl-view').html(workspace_menu_main + workspace_preview);
   enablePreview();
 
+  clearInterval(window.intervalID);
   var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
-  var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  localStorage.setItem("pageurl", pageurl);
+  //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+  //localStorage.setItem("pageurl", pageurl);
 
   //click handlers
   $('.fl-main-menu__link').click(function () {
@@ -3238,7 +3278,8 @@ function viewWorkspace(path) {
 
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
-      enablePreview();
+      $('.fl-panel--sub-menu').empty();
+      clearInterval(window.intervalID);
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')) {
@@ -3247,7 +3288,10 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
+      console.log(path)
       loadPageDataIntoEditor(collectionName, true);
+      $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
       clearInterval(window.intervalID);
       enablePreview();
       window.intervalID = setInterval(function () {
@@ -3279,13 +3323,14 @@ function viewWorkspace(path) {
   $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
   $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
 
-  //removePreviewColClasses();
-  //removeSubMenus();
 
-  //$(this).addClass('fl-main-menu__link--active');
+  removePreviewColClasses();
+  removeSubMenus();
+
+  $(this).addClass('fl-main-menu__link--active');
 
   $('.fl-panel--preview').addClass('col--7');
-  //$('.fl-panel--sub-menu').show();
+  $('.fl-panel--sub-menu').show();
 }
 "use strict";
 var Markdown;
