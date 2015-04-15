@@ -1,12 +1,12 @@
 function createCollection() {
   var publishDay,publishMonth,publishYear,publishTime,collectionName;
-  publishDay   = $('.fl-collection-publish-day').val();
-  publishMonth = $('.fl-collection-publish-month').val();
-  publishYear  = $('.fl-collection-publish-year').val();
-  publishTime  = $('.fl-collection-publish-time').val();
-  collectionName = $('.fl-collection-name-input').val();
+  publishDay   = $('#day').val();
+  publishMonth = $('#month').val();
+  publishYear  = $('#year').val();
+  publishTime  = $('#time').val();
+  collectionName = $('#collectionname').val();
   
-  var publishDate = new Date(2015, publishMonth, publishDay, 9, 30, 0, 0);
+  var publishDate = new Date(publishYear, publishMonth, publishDay, 9, 30, 0, 0);
 
   // Create the collection
   console.log(collectionName + " " + publishDate);
