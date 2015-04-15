@@ -54,10 +54,10 @@ function makeCollectionView(collectionId,collections){
             function populateTable(i,uri){
               $('#in-progress-uris').append(
                 '<tr>'+
-                  '<td>'+uri+'/<td>'+
-                  '<td><select id="fl-select-destination-'+i+'"></select></td>'+
-                  '<td><button id="fl-move-'+i+'">move</button></td>'+
-                  '<td><button id="fl-edit-'+i+'">edit this page </button></td>'+
+                '  <td>'+uri+'/<td>'+
+                '  <td><select id="fl-select-destination-'+i+'"></select></td>'+
+                '  <td><button id="fl-move-'+i+'">move</button></td>'+
+                '  <td><button id="fl-edit-'+i+'">edit this page </button></td>'+
                 '</tr>'
                 )
 

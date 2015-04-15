@@ -22,11 +22,11 @@ function viewCollections() {
       var page = $('.fl-collections-holder');
       var collection_table =
         '<table class="fl-collections-table">' +
-          '<tbody>' +
-            '<tr>' +
-              '<th>Collection name</th>' +
-              '<th>Publish time and date</th>' +
-            '</tr>';
+        '  <tbody>' +
+        '    <tr>' +
+        '      <th>Collection name</th>' +
+        '      <th>Publish time and date</th>' +
+        '    </tr>';
 
       $(page).html(collection_table);
 
@@ -37,8 +37,8 @@ function viewCollections() {
 
         $('tbody',page).append(
             '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
-              '<td class= "collection-name">' + collection.name + '</td>' +
-              '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
+            '  <td class= "collection-name">' + collection.name + '</td>' +
+            '  <td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
             '</tr>'
           );
 
