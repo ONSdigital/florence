@@ -200,28 +200,8 @@ button {
 }
 
 table {
-  /*border-collapse: collapse;*/
-  border-spacing: 0px;
-
-  thead {
-    display: table-header-group;
-  }
-
-  tr {
-    padding-top: $lineheight;
-    padding-bottom: $lineheight;
-    display: block;
-  }
-
   th {
-    padding-right: $gutter;
-    padding-left: $gutter;
     font-size: 18px;
-  }
-
-  td {
-    padding-right: $gutter;
-    padding-left: $gutter;
   }
 }
 
