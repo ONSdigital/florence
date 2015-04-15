@@ -30,7 +30,7 @@ function viewWorkspace(path) {
     '</section>';
 
   var currentPath = '';
-  if (!!path) {
+  if (path) {
     currentPath = path;
   }
 
@@ -50,7 +50,6 @@ function viewWorkspace(path) {
   var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
   localStorage.setItem("pageurl", pageurl);
 
-
   //click handlers
   $('.fl-main-menu__link').click(function () {
     $('.fl-panel--sub-menu').empty();
@@ -61,7 +60,6 @@ function viewWorkspace(path) {
     if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
       $('.fl-panel--sub-menu').empty();
       clearInterval(window.intervalID);
-
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')) {

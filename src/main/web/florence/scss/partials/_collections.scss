@@ -6,6 +6,23 @@
 
 	&-create {
 		padding: 0 $col--1;
+		select {
+			&.small {
+				/*width: 30%;*/
+			}
+		}
+
+		.selectbg {
+			&--small {
+				width: 28%;
+				float: left;
+
+				&--margin {
+					margin-right: 8%;
+					margin-left: 8%;
+				}
+			}
+		}
 	}
 
 	&-selected {
@@ -15,4 +32,6 @@
 		background: $quill-gray;
 		// display: none;
 	}
+
+
 }

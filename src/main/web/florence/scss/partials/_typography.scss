@@ -200,30 +200,49 @@ button {
 }
 
 table {
-  /*border-collapse: collapse;*/
-  border-spacing: 0px;
-
-  thead {
-    display: table-header-group;
-  }
-
-  tr {
-    padding-top: $lineheight;
-    padding-bottom: $lineheight;
-    display: block;
-  }
-
   th {
-    padding-right: $gutter;
-    padding-left: $gutter;
     font-size: 18px;
   }
+}
 
-  td {
-    padding-right: $gutter;
-    padding-left: $gutter;
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-style: italic;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-style: italic;  
+}
+
+:-ms-input-placeholder {  
+  font-style: italic;  
+}
+
+input {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: $lineheight + 1;
+}
+
+select {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  padding: 7px;
+  line-height: $lineheight + 1;
+
+  select:first-child {
+    font-style: italic;
   }
 }
+
+
+
+
 
 
 // Baseline grid ruler

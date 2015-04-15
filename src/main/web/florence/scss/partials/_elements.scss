@@ -3,6 +3,15 @@ table {
 	border-radius: 4px;
 	margin-top:-3px;
 	width: 100%;
+	border-spacing: 0px;
+
+	td, th {
+		padding-top: $lineheight;
+		padding-bottom: $lineheight;
+		padding-right: $gutter;
+		padding-left: $gutter;
+		text-align: left;
+	}
 
 	thead {
 		tr {
@@ -39,3 +48,130 @@ table {
 		}
 	}
 }
+
+
+button {
+	position: relative;
+	border-radius: 4px;
+
+	&:hover {
+		&:after {
+			content: '';
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			background-color: rgba(0,0,0,0.2);
+			top: 0;
+			left: 0;
+			border-radius: 4px;
+		}
+	}
+}
+
+form {
+	position: relative;
+	margin-top: - $lineheight;
+}
+
+::-webkit-input-placeholder {
+	color: &dusty-gray;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+	color: &dusty-gray;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+	color: &dusty-gray;  
+}
+
+:-ms-input-placeholder {  
+	color: &dusty-gray;  
+}
+
+input {
+	box-sizing: border-box;
+	border: 3px solid $scarpa-flow;
+	border-radius: 4px;
+	margin-top:-3px;
+	display: inline-block;
+	width: 100%;
+	height: $lineheight * 2;
+	margin: $lineheight 0;
+	padding: 7px $gutter;
+
+}
+
+select {
+	box-sizing: border-box;
+	border: 3px solid $scarpa-flow;
+	border-radius: 4px;
+	margin-top:-3px;
+	display: inline-block;
+	width: 100%;
+	height: $lineheight * 2;
+	margin: $lineheight 0;
+	padding: 7px 30px 7px $gutter;
+	/*background-color: $white;*/
+	background: transparent;
+	position: relative;
+}
+
+/*select:before {
+	content: "";
+	display: block;
+	width: 30px;
+	height: $lineheight * 2;
+	background-color: $scarpa-flow;
+	position: absolute;
+	right: 0;
+}*/
+
+input[type="radio"] {
+	position:absolute;
+	width: $lineheight;
+	height: $lineheight;
+	margin: 0;
+	-moz-opacity: 0;
+	-webkit-opacity: 0;
+	-o-opacity: 0;
+	opacity: 0;
+}
+
+input[type="radio"] + label {
+	position:relative;
+	padding: 0 $lineheight 0 $lineheight + 4;
+	display: inline-block;
+	margin: $lineheight 0;
+}
+
+input[type="radio"] + label:before {
+	box-sizing: border-box;
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: $lineheight;
+	width: $lineheight;
+	background: $white;
+	border: 3px solid $scarpa-flow;
+	box-shadow: inset 0px 0px 0px 2px white;
+	-webkit-box-shadow: inset 0px 0px 0px 2px white;
+	-moz-box-shadow: inset 0px 0px 0px 2px white;
+	-o-box-shadow: inset 0px 0px 0px 2px white;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	-o-border-radius: 50%;
+	border-radius: 50%;
+}
+
+input[type="radio"]:checked + label:before {
+	background: $astral;
+}
+
+
+
+
+
+
