@@ -8,17 +8,28 @@ function viewCollectionDetails(collectionName) {
       handleApiError(response);
     });
 
-  $('.fl-work-on-collection-button').click(function () {
+  $('.btn-collection-work-on').click(function () {
     document.cookie = "collection=" + collectionName + ";path=/";
     localStorage.setItem("collection", collectionName);
     viewController('workspace');
   });
 
-  $('.fl-button--cancel').click(function () {
-    //perhaps need to rethink this if we do decide to animate panel transitions within this view
+  $('.collection-selected .btn-cancel').click(function(){
+    $('.collection-selected').animate({right: "-50%"}, 500);
+    $('.collections-select-table tbody tr').removeClass('selected');
     viewController('collections');
   });
 
+  //page-list
+  $('.page-item').click(function(){
+    $('.page-list li').removeClass('selected');
+    $('.page-options').hide();
+
+    $(this).parent('li').addClass('selected');
+    // $(this).addClass('page-item--selected');
+    $(this).next('.page-options').show();
+
+  });
 
   function populateCollectionDetails(collection, collectionName) {
 
@@ -27,34 +38,20 @@ function viewCollectionDetails(collectionName) {
       $('.fl-finish-collection-button').hide();
     }
     else {
-      $('.fl-finish-collection-button').show();
-
-      $('.fl-finish-collection-button').click(function () {
+      $('.fl-finish-collection-button').show().click(function () {
         postApproveCollection(collection.id)
       })
     }
 
+    CreateUriListHtml(collection.inProgressUris, collectionName, inProgress);
+    CreateUriListHtml(collection.completeUris, collectionName, completed);
+    CreateUriListHtml(collection.reviewedUris, collectionName, reviewed);
 
-    var collection_summary =
-      '<h1>' + collection.name + '</h1>' +
-      '<p>' + collection.inProgressUris.length + ' Pages in progress</p>' +
-      '<div class="fl-panel--collection-details-in-progress-container"></div>' +
-      '<p>' + collection.completeUris.length + ' Pages awaiting review</p>' +
-      '<div class="fl-panel--collection-details-complete-container"></div>' +
-      '<p>' + collection.reviewedUris.length + ' Pages awaiting approval</p>' +
-      '<div class="fl-panel--collection-details-reviewed-container"></div>';
-
-    CreateUriListHtml(collection.inProgressUris, collectionName, "fl-panel--collection-details-in-progress-container");
-    CreateUriListHtml(collection.completeUris, collectionName, "fl-panel--collection-details-complete-container");
-    CreateUriListHtml(collection.reviewedUris, collectionName, "fl-panel--collection-details-reviewed-container");
-
-    $('.fl-panel--collection-details-container').html(collection_summary);
-
-    function CreateUriListHtml(uris, collectionName, containerClass) {
+    function CreateUriListHtml(uris, collectionName, status) {
       if (uris.length === 0)
         return '';
 
-      var uri_list = '<ul>';
+      var uri_list = [];
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
       $.each(uris, function (i, uri) {
@@ -62,8 +59,7 @@ function viewCollectionDetails(collectionName) {
           success = function (response) {
             var path = uri.replace('/data.json', '');
             path = path.length === 0 ? '/' : path;
-            uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-            response.name + '</li>';
+            uri_list.push({path:path, name:response.name});
           },
           error = function (response) {
             handleApiError(response);
@@ -71,12 +67,11 @@ function viewCollectionDetails(collectionName) {
       });
 
       $.when.apply($, pageDataRequests).then(function () {
-        uri_list += '</ul>';
-        $('.' + containerClass).html(uri_list);
+        return {status:status, list:uri_list};
       });
     }
 
-    $('.fl-panel--collection-details-container').on('click', '.fl-collection-page-list-item', function () {
+    $('.btn-page-edit').click(function () {
       var path = $(this).attr('data-path');
       console.log('Collection row clicked for id: ' + path);
       if (path) {
