@@ -1053,7 +1053,8 @@ function completeContent(collectionName, path) {
     type: 'POST',
     success: function (message) {
       console.log("Page is now marked as complete " + message);
-      alert("This content has now been submitted for internal review.")
+      //alert("This content has now been submitted for internal review.")
+      viewCollections(collectionName);
     },
     error: function (response) {
       handleApiError(response);
@@ -1107,7 +1108,6 @@ function datasetEditor(collectionName, data) {
   var newUsedIn = [];
   var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
-  var filesUploaded = [];
   var uriUpload;
 
   $(".section-list").remove();
@@ -1186,25 +1186,37 @@ function datasetEditor(collectionName, data) {
         '  <textarea id="file__' + index + '" cols="50">' + file.title + '</textarea>' +
         '  <textarea id="file_name_' + index + '" style="display: none" cols="50">' + file.file + '</textarea>' +
         '  <div id="file_name_show_' + index + '">' + file.file + '</div>' +
-          //' <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
+        '  <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
 
     // Delete
     $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
       $("#"+index).remove();
+      $.ajax({
+        url: "/zebedee/content/" + collectionName + "?uri=" + data.download[index].file,
+        type: "DELETE",
+        //processData: false,
+        //contentType: false,
+        success: function (res) {
+          console.log(res);
+        },
+        error: function (res) {
+          console.log(res);
+        }
+      });
       data.download.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
       datasetEditor(collectionName, data);
     });
   });
 
   //Add new download
-
   $("#content-section").append('<button id="addFile">Add new file</button>');
   $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
         '<div id="' + lastIndexFile + '" class="file-list" style="background-color:grey; color:white;">' +
         '  Title ' +
-        //'  <textarea id="fileToUp"></textarea>' +
+          //'  <textarea id="fileToUp"></textarea>' +
         '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
         '  <textarea id="file_name_' + lastIndexFile + '" style="display: none" cols="50"></textarea>' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
@@ -1283,7 +1295,7 @@ function datasetEditor(collectionName, data) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
-                  saveNewFile();
+                  save();
                 }
               });
             }
@@ -1312,7 +1324,7 @@ function datasetEditor(collectionName, data) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
-                  saveNewFile();
+                  save();
                 }
               });
             }
@@ -1327,23 +1339,6 @@ function datasetEditor(collectionName, data) {
   }
   sortableFiles();
 
-  function saveNewFile() {
-    var orderFile = $(".fl-editor__download").sortable('toArray');
-    console.log(orderFile);
-    $(orderFile).each(function(index, name){
-      var title = $('#file__'+name).val();
-      var filename = $('#file_name_' + name).val();
-      console.log(filename);
-      newFiles[parseInt(index)] = {title: title, file: filename};
-    });
-    data.download = newFiles;
-    console.log(data.download);
-    $("#metadata-list").remove();
-    //save();
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
-    datasetEditor(collectionName, data);
-  }
-
   // Edit notes
   // Load and edition
   $(data.notes).each(function(index, note) {
@@ -1351,7 +1346,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + index + '">' + note.data + '</textarea>' +
+        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Clicx edit to add content">' + note.data + '</textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
@@ -1383,6 +1378,7 @@ function datasetEditor(collectionName, data) {
     $(".fl-panel--editor__notes__note-item__delete_"+index).click(function() {
       $("#"+index).remove();
       data.notes.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
       datasetEditor(collectionName, data);
     });
   });
@@ -1393,7 +1389,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + lastIndexNote + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + lastIndexNote + '"></textarea>' +
+        ' <textarea id="note_markdown_' + lastIndexNote + '"cols="50"></textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + lastIndexNote + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + lastIndexNote + '">Delete</button>' +
         '</div>');
@@ -1405,13 +1401,15 @@ function datasetEditor(collectionName, data) {
     var orderNote = $(".fl-editor__notes").sortable('toArray');
     $(orderNote).each(function(index, name){
       var markdown = $('#note_markdown_'+name).val();
+      //var markdown = "Enter text here";
       newNotes[parseInt(index)] = {data: markdown};
     });
     data.notes = newNotes;
-    //console.log(data.notes);
-    $(".note-list").remove();
-    $("#metadata-list").remove();
-    save();
+    console.log(data.notes);
+    //$(".note-list").remove();
+    //$("#metadata-list").remove();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    datasetEditor(collectionName, data);
   }
 
   function sortableNotes() {
@@ -1486,7 +1484,6 @@ function datasetEditor(collectionName, data) {
             //checkPage2();
             checkPage();
             save();
-            updateContent(collectionName, getPathName(), JSON.stringify(data));
           } else {
             alert("This is not a dataset");
           }
@@ -1526,8 +1523,8 @@ function datasetEditor(collectionName, data) {
       newRelated[parseInt(indexD)] = {uri: uri, name: names, summary: summary};
     });
     data.relatedDatasets = newRelated;
-    $(".dataset-list").remove();
-    $("#metadata-list").remove();
+    //$(".dataset-list").remove();
+    //$("#metadata-list").remove();
     datasetEditor(collectionName, data);
   }
 
@@ -1637,8 +1634,8 @@ function datasetEditor(collectionName, data) {
       newUsedIn[parseInt(indexU)] = {uri: uri, name: names, summary: summary};
     });
     data.usedIn = newUsedIn;
-    $(".usedIn-list").remove();
-    $("#metadata-list").remove();
+    //$(".usedIn-list").remove();
+    //$("#metadata-list").remove();
     datasetEditor(collectionName, data);
   }
 
@@ -1647,27 +1644,30 @@ function datasetEditor(collectionName, data) {
   // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function () {
     save();
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
   // complete
   $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
     pageData = $('.fl-editor__headline').val();
-    save();
+    saveData();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
-
   function save() {
+    saveData();
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+  }
+
+  function saveData() {
     // Files are uploaded. Save metadata
     var orderFile = $(".fl-editor__download").sortable('toArray');
     $(orderFile).each(function(index, name){
       var title = $('#file__'+name).val();
-      var file = data.download[parseInt(name)].file;
+      var file = $('#file_name_' + name).val();
       newFiles[parseInt(index)] = {title: title, file: file};
     });
     data.download = newFiles;
-    console.log(data.download);
+    //console.log(data.download);
     // Notes
     var orderNote = $(".fl-editor__notes").sortable('toArray');
     $(orderNote).each(function (indexT, nameT) {
@@ -1822,8 +1822,8 @@ function loadEditDatasetScreen(collectionName) {
     '  <nav class="fl-panel--editor__nav">' +
     '    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
     '    <button class="fl-panel--editor__nav__save">Save</button>' +
-    '    <button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
-    '    <button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
+    '    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
+    '    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
     '  </nav>' +
     '</section>';
 
@@ -2390,8 +2390,8 @@ function makeEditSections(collectionName, response) {
         '  <nav class="fl-panel--editor__nav">' +
         '    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
         '    <button class="fl-panel--editor__nav__save">Save</button>' +
-        '    <button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
-        '    <button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
+        '    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
+        '    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
         '  </nav>' +
         '</section>';
 
@@ -2471,7 +2471,8 @@ function postContent(collectionName, path, content, success, error) {
     type: 'POST',
     success: function () {
       console.log("File set to reviewed.");
-      alert("The file is now awaiting approval.");
+      //alert("The file is now awaiting approval.");
+      viewCollections(collectionName);
     },
     error: function () {
       console.log('Error');
@@ -2691,7 +2692,7 @@ function viewCollectionDetails(collectionName) {
     });
   }
 }
-function viewCollections() {
+function viewCollections(collectionName) {
 
   var select_collections = '<section class="fl-panel fl-panel--collections fl-panel--collections__not-selected">' +
     '<h1>Select a collection</h1>' +
@@ -2712,52 +2713,62 @@ function viewCollections() {
   });
 
   function populateCollectionTable(data) {
-      var page = $('.fl-collections-holder');
-      var collection_table =
-        '<table class="fl-collections-table">' +
-          '<tbody>' +
-            '<tr>' +
-              '<th>Collection name</th>' +
-              '<th>Publish time and date</th>' +
-            '</tr>';
+    var page = $('.fl-collections-holder');
+    var collection_table =
+      '<table class="fl-collections-table">' +
+        '<tbody>' +
+          '<tr>' +
+            '<th>Collection name</th>' +
+            '<th>Publish time and date</th>' +
+          '</tr>';
 
-      $(page).html(collection_table);
+    $(page).html(collection_table);
 
-      $.each(data, function(i, collection) {
+    $.each(data, function(i, collection) {
 
-        var date = new Date(collection.publishDate);
-        var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
+      var date = new Date(collection.publishDate);
+      var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
 
-        $('tbody',page).append(
-            '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
-              '<td class= "collection-name">' + collection.name + '</td>' +
-              '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
-            '</tr>'
-          );
+      $('tbody',page).append(
+          '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
+            '<td class= "collection-name">' + collection.name + '</td>' +
+            '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
+          '</tr>'
+        );
 
-        makeCollectionView(collection.id,data);
-      });
+      makeCollectionView(collection.id,data);
+    });
 
-      page.append(
-          '</tbody>' +
-        '</table>');
+    page.append(
+        '</tbody>' +
+      '</table>');
 
-      $('.fl-collections-table-row').click(function() {
-        //console.log('Collection row clicked for id: ' + $(this).attr('data-id'));
-        var collectionId = $(this).attr('data-id');
+    $('.fl-collections-table-row').click(function () {
+      //
+      var collectionId = $(this).attr('data-id');
 
-        if(collectionId) {
-          $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
-          $('.fl-panel--collection-details').show();
-          $('.fl-create-collection-button').hide();
+      if (collectionId) {
+        $('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
+        console.log('Collection row clicked for id: ' + collectionId);
+        $(this).addClass('fl-panel--collections__selected');
+        selectCollection(collectionId);
+      }
+    });
 
-					$('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
-          $(this).addClass('fl-panel--collections__selected');
-
-          viewCollectionDetails(collectionId);
-        }
-      });
+    if (collectionName) {
+      $('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
+      $('.fl-collections-table-row[data-id="' + collectionName + '"]').addClass('fl-panel--collections__selected');
+      selectCollection(collectionName)
     }
+  }
+
+  function selectCollection(collectionId) {
+    $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
+    $('.fl-panel--collection-details').show();
+    $('.fl-create-collection-button').hide();
+    viewCollectionDetails(collectionId);
+  }
+
 
   var selected_collection =
     '<section class="fl-panel fl-panel--collection-details">' +
@@ -3223,8 +3234,6 @@ function viewWorkspace(path) {
   $('.fl-main-menu__link').click(function () {
     $('.fl-panel--sub-menu').empty();
     $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-
-    $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
     $(this).addClass('fl-main-menu__link--active');
 
     // setupFlorenceWorkspace($(this));
@@ -3238,7 +3247,7 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
-      viewWorkspace(path);
+      loadPageDataIntoEditor(collectionName, true);
       clearInterval(window.intervalID);
       enablePreview();
       window.intervalID = setInterval(function () {

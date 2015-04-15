@@ -24,7 +24,8 @@ function completeContent(collectionName, path) {
     type: 'POST',
     success: function (message) {
       console.log("Page is now marked as complete " + message);
-      alert("This content has now been submitted for internal review.")
+      //alert("This content has now been submitted for internal review.")
+      viewCollections(collectionName);
     },
     error: function (response) {
       handleApiError(response);
