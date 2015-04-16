@@ -42,6 +42,9 @@ function viewCollections(collectionName) {
             '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
           '</tr>'
         );
+
+
+      makeCollectionView(collection.id,data);
     });
 
     page.append(
