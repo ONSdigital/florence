@@ -8,12 +8,14 @@ function viewCollectionDetails(collectionName) {
       handleApiError(response);
     });
 
+  $('.fl-work-on-collection-button').unbind('click'); // View gets reloaded so unbind click handlers
   $('.fl-work-on-collection-button').click(function () {
     document.cookie = "collection=" + collectionName + ";path=/";
     localStorage.setItem("collection", collectionName);
     viewController('workspace');
   });
 
+  $('.fl-delete-collection-button').unbind('click');
   $('.fl-delete-collection-button').click(function () {
     console.log('About to delete collection ' + collectionName);
     // Run delete content
@@ -27,6 +29,7 @@ function viewCollectionDetails(collectionName) {
             })
   });
 
+  $('.fl-button--cancel').unbind('click');
   $('.fl-button--cancel').click(function () {
     //perhaps need to rethink this if we do decide to animate panel transitions within this view
     viewController('collections');
