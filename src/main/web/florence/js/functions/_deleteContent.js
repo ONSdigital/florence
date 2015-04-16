@@ -1,12 +1,14 @@
-function deleteContent(collectionName, path) {
+function deleteContent(collectionName, path, success, error) {
   $.ajax({
     url: "/zebedee/content/" + collectionName + "?uri=" + path + "/data.json",
     type: 'DELETE',
     success: function (response) {
-      console.log("Delete success: " + path);
+      if (success)
+        success(response);
     },
     error: function (response) {
-      console.log("Delete fail #" + response.status + ": " + path);
+      if (error)
+        error(response);
     }
   });
 }

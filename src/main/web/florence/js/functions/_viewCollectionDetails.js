@@ -100,8 +100,17 @@ function viewCollectionDetails(collectionName) {
     // Delete function
     $('.fl-panel--collection-details-container').on('click', '.fl-button--delete', function () {
           var path = $(this).attr('data-path');
-          console.log('Collection delete clicked for id: ' + path);
-          deleteContent(collectionName, path);
+
+          // Run delete content
+          deleteContent(collectionName, path,
+                  success = function (response) { // On success update the screen
+                    viewCollectionDetails(collectionName);
+                    console.log('Content deleted for id: ' + path);
+                  },
+                  error = function (response) {
+                    handleApiError(response);
+                  })
+
         });
 
   }
