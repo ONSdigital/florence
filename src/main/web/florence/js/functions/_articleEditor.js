@@ -28,6 +28,7 @@ function articleEditor(collectionName, data) {
       ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
       ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
       ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+      ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
       ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
       '</div>');
 
@@ -61,6 +62,20 @@ function articleEditor(collectionName, data) {
     data.headline3 = $(this).val();
   });
 
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function () {
+    if(data.nationalStatistic === "false" || data.nationalStatistic === false) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  });
+
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
 
   // Edit sections
@@ -71,7 +86,7 @@ function articleEditor(collectionName, data) {
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
           //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
         'Title ' +
-        ' <textarea id="section__' + index + '" cols="50">' + section.title + '</textarea>' +
+        ' <textarea id="section__' + index + '" cols="50" placeholder="Type title here and click edit to add content">' + section.title + '</textarea>' +
         ' <textarea style="display: none;" id="section_markdown_' + index + '">' + section.markdown + '</textarea>' +
         ' <button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +

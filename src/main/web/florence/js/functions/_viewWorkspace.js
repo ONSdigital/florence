@@ -45,10 +45,11 @@ function viewWorkspace(path) {
   $('.fl-view').html(workspace_menu_main + workspace_preview);
   enablePreview();
 
+  clearInterval(window.intervalID);
   var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
-  var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  localStorage.setItem("pageurl", pageurl);
+  //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+  //localStorage.setItem("pageurl", pageurl);
 
   //click handlers
   $('.fl-main-menu__link').click(function () {
@@ -58,7 +59,8 @@ function viewWorkspace(path) {
 
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
-      enablePreview();
+      $('.fl-panel--sub-menu').empty();
+      clearInterval(window.intervalID);
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')) {
@@ -67,7 +69,10 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
+      console.log(path)
       loadPageDataIntoEditor(collectionName, true);
+      $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
       clearInterval(window.intervalID);
       enablePreview();
       window.intervalID = setInterval(function () {
@@ -99,11 +104,12 @@ function viewWorkspace(path) {
   $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
   $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
 
-  //removePreviewColClasses();
-  //removeSubMenus();
 
-  //$(this).addClass('fl-main-menu__link--active');
+  removePreviewColClasses();
+  removeSubMenus();
+
+  $(this).addClass('fl-main-menu__link--active');
 
   $('.fl-panel--preview').addClass('col--7');
-  //$('.fl-panel--sub-menu').show();
+  $('.fl-panel--sub-menu').show();
 }
