@@ -1,0 +1,10 @@
+{{#each children}} {{! Each item is an "li" }}
+  <li>
+      {{name}}
+      {{#if children}} {{! Within the context of the current item }}
+        <ul>
+            {{> browseNode}} {{! Recursively render the partial }}
+        </ul>
+      {{/if}}
+  </li>
+{{/each}}

@@ -46,11 +46,11 @@ function viewWorkspace(path) {
   enablePreview();
 
   clearInterval(window.intervalID);
+  loadBrowseScreen();
   var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
   //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
   //localStorage.setItem("pageurl", pageurl);
-
   //click handlers
   $('.fl-main-menu__link').click(function () {
     $('.fl-panel--sub-menu').empty();
@@ -59,8 +59,9 @@ function viewWorkspace(path) {
 
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
-      $('.fl-panel--sub-menu').empty();
+      //$('.fl-panel--sub-menu').empty();
       clearInterval(window.intervalID);
+      loadBrowseScreen();
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')) {
@@ -97,7 +98,8 @@ function viewWorkspace(path) {
     }
 
     else {
-      //browse
+      clearInterval(window.intervalID);
+      loadBrowseScreen();
     }
   });
 
