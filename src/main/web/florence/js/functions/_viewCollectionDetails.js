@@ -14,6 +14,19 @@ function viewCollectionDetails(collectionName) {
     viewController('workspace');
   });
 
+  $('.fl-delete-collection-button').click(function () {
+    console.log('About to delete collection ' + collectionName);
+    // Run delete content
+    deleteCollection(collectionName,
+            success = function (response) { // On success update the screen
+              viewController('collections');
+              console.log('Content deleted for collection: ' + collectionName);
+            },
+            error = function (response) {
+              handleApiError(response);
+            })
+  });
+
   $('.fl-button--cancel').click(function () {
     //perhaps need to rethink this if we do decide to animate panel transitions within this view
     viewController('collections');
