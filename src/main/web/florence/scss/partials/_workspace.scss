@@ -1,0 +1,53 @@
+.nav {
+	&--workspace {
+		background-color: transparent;
+		height: auto;
+		text-align: left;
+
+		li {
+			margin-top: 0;
+			margin-bottom: 0;
+			margin-left: -$gutter;
+			margin-right: -$gutter;
+			padding: $lineheight $gutter;
+			display: block;
+			overflow: hidden;
+			font-size: 12px;
+
+			&.selected {
+				background-color: $mirage;
+				position: relative;
+
+				&:before {
+					content: '';
+					position: absolute;
+					width: 0; 
+					height: 0;
+					top: $lineheight;
+					right: 0;
+					background-color: transparent;
+					border-top: 10px solid transparent;
+					border-bottom: 10px solid transparent; 
+					border-right:10px solid $quill-gray; 
+				}
+			}
+		}
+	}
+}
+
+.workspace {
+
+	&-nav{
+		background-color: $pickled-bluewood;
+	}
+
+	&-browse{
+		background-color: $quill-gray;
+	}
+
+	&-browser{
+		background-color: $mine-shaft;
+		padding-bottom: ($gutter / 4) * 3;
+	}
+}
+
