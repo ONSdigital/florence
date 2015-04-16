@@ -1,35 +1,13 @@
 function viewCollectionDetails(collectionName) {
-
+  var collectionDetails = [];
   getCollection(collectionName,
     success = function (response) {
       populateCollectionDetails(response, collectionName);
     },
     error = function (response) {
       handleApiError(response);
-    });
-
-  $('.btn-collection-work-on').click(function () {
-    document.cookie = "collection=" + collectionName + ";path=/";
-    localStorage.setItem("collection", collectionName);
-    viewController('workspace');
-  });
-
-  $('.collection-selected .btn-cancel').click(function(){
-    $('.collection-selected').animate({right: "-50%"}, 500);
-    $('.collections-select-table tbody tr').removeClass('selected');
-    viewController('collections');
-  });
-
-  //page-list
-  $('.page-item').click(function(){
-    $('.page-list li').removeClass('selected');
-    $('.page-options').hide();
-
-    $(this).parent('li').addClass('selected');
-    // $(this).addClass('page-item--selected');
-    $(this).next('.page-options').show();
-
-  });
+    }
+  );
 
   function populateCollectionDetails(collection, collectionName) {
 
@@ -43,33 +21,66 @@ function viewCollectionDetails(collectionName) {
       })
     }
 
-    CreateUriListHtml(collection.inProgressUris, collectionName, inProgress);
-    CreateUriListHtml(collection.completeUris, collectionName, completed);
-    CreateUriListHtml(collection.reviewedUris, collectionName, reviewed);
+    CreateUriListHtml(collection.inProgressUris, collectionName, "inProgress");
+    CreateUriListHtml(collection.completeUris, collectionName, "completed");
+    CreateUriListHtml(collection.reviewedUris, collectionName, "reviewed");
 
     function CreateUriListHtml(uris, collectionName, status) {
-      if (uris.length === 0)
-        return '';
+      var auxObj={};
+      if (uris.length === 0) {
+        auxObj[status] = [];
+        collectionDetails.push(auxObj);
+      } else {
+        var uri_list = [];
+        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
-      var uri_list = [];
-      var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-
-      $.each(uris, function (i, uri) {
-        pageDataRequests.push(getPageData(collectionName, uri,
-          success = function (response) {
-            var path = uri.replace('/data.json', '');
-            path = path.length === 0 ? '/' : path;
-            uri_list.push({path:path, name:response.name});
-          },
-          error = function (response) {
-            handleApiError(response);
-          }));
-      });
-
-      $.when.apply($, pageDataRequests).then(function () {
-        return {status:status, list:uri_list};
-      });
+        $.each(uris, function (i, uri) {
+          pageDataRequests.push(getPageData(collectionName, uri,
+              success = function (response) {
+                var path = response.uri;
+                uri_list.push({path: path, name: response.name});
+              },
+              error = function (response) {
+                handleApiError(response);
+              }));
+        });
+        auxObj[status] = uri_list;
+        collectionDetails.push(auxObj);
+        //$.when.apply($, pageDataRequests).then(function () {
+        //  auxObj[status] = uri_list;
+        //  collectionDetails.push(auxObj);
+        //});
+      }
     }
+    console.log(collectionDetails);
+
+
+
+    var collectionHtml = window.templates.collection(collectionDetails);
+    $('.collection-selected').html(collectionHtml);
+    $('.collection-selected').animate({right: "0%"}, 500);
+
+    $('.btn-collection-work-on').click(function () {
+      document.cookie = "collection=" + collectionName + ";path=/";
+      localStorage.setItem("collection", collectionName);
+      viewController('workspace');
+    });
+
+    $('.collection-selected .btn-cancel').click(function(){
+      $('.collection-selected').stop().animate({right: "-50%"}, 500);
+      $('.collections-select-table tbody tr').removeClass('selected');
+      viewController('collections');
+    });
+
+    //page-list
+    $('.page-item').click(function() {
+      $('.page-list li').removeClass('selected');
+      $('.page-options').hide();
+
+      $(this).parent('li').addClass('selected');
+      // $(this).addClass('page-item--selected');
+      $(this).next('.page-options').show();
+    });
 
     $('.btn-page-edit').click(function () {
       var path = $(this).attr('data-path');

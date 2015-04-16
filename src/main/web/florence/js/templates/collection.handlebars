@@ -1,51 +1,44 @@
-<section class="panel col col--6 collection-selected">
-  <div class="section-head">
-    <h2>Collection name</h2>
-    <p>Publish: 17/04/2015 09:30</p>
-  </div>
-  <div class="section-content">
-    <h3>Pages in this collection</h3>
-    <h4 id="in-progress-uris">{{collection.inProgressUris.length}} pages in progress</h4>
-    <ul class="page-list">
-      {{#each inProgress}}
-        <li><span class="page-item">{{name}}</span>
-          <div class="page-options">
-            <button class="btn-page-edit" data-path="{{path}}">Button</button>
-            <button class="">Button</button>
-            <button class="">Button</button>
-          </div>
-        </li>
-      {{/each}}
-    </ul>
-    <h4 id="complete-uris">{{collection.completeUris.length}} pages awaiting review</h4>
-    <ul class="page-list">
-      {{#each completed}}
-        <li><span class="page-item">{{name}}</span>
-          <div class="page-options">
-            <button class="btn-page-edit" data-path="{{path}}">Button</button>
-            <button class="">Button</button>
-            <button class="">Button</button>
-          </div>
-        </li>
-      {{/each}}
-    </ul>
-    <h4 id="reviewed-uris">{{collection.reviewedUris.length}} pages awaiting approval</h4>
-    <ul class="page-list">
-      {{#each reviewed}}
-        <li><span class="page-item">{{name}}</span>
-          <div class="page-options">
-            <button class="btn-page-edit" data-path="{{path}}">Button</button>
-            <button class="">Button</button>
-            <button class="">Button</button>
-          </div>
-        </li>
-      {{/each}}
-    </ul>
-  </div>
+<div class="section-head">
+  <h2>Collection name</h2>
+  <p>Publish: 17/04/2015 09:30</p>
+</div>
+{{#each this}}
+<div class="section-content">
+  <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
+  <ul class="page-list">
+      <li><span class="page-item">{{name}}</span>
+        <div class="page-options">
+          <button class="btn-page-edit" data-path="{{path}}">Button</button>
+          <button class="">Button</button>
+          <button class="">Button</button>
+        </div>
+      </li>
+  </ul>
+  <h3 id="complete-uris">{{completed.length}} pages awaiting review</h3>
+  <ul class="page-list">
+      <li><span class="page-item">{{completed.name}}</span>
+        <div class="page-options">
+          <button class="btn-page-edit" data-path="{{path}}">Button</button>
+          <button class="">Button</button>
+          <button class="">Button</button>
+        </div>
+      </li>
+  </ul>
+  <h3 id="reviewed-uris">{{reviewed.length}} pages awaiting approval</h3>
+  <ul class="page-list">
+      <li><span class="page-item">{{this}}</span>
+        <div class="page-options">
+          <button class="btn-page-edit" data-path="{{path}}">Button</button>
+          <button class="">Button</button>
+          <button class="">Button</button>
+        </div>
+      </li>
+  </ul>
+</div>
+{{/each}}
 
-  <nav class="section-nav">
-    <button class="btn-cancel">Cancel</button>
-    <button class="btn-collection-work-on">Work on collection</button>
-    <button class="btn-collection-approve">Approve collection</button>
-  </nav>
-</section>
+<nav class="section-nav">
+  <button class="btn-cancel">Cancel</button>
+  <button class="btn-collection-work-on">Work on collection</button>
+  <button class="btn-collection-approve">Approve collection</button>
+</nav>

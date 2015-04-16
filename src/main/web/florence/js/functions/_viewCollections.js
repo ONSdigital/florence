@@ -12,30 +12,30 @@ function viewCollections() {
     }
   });
 
+  var response = [];
   function populateCollectionTable(data) {
+    $.each(data, function (i, collection) {
+      var id = collection.id;
+      var name = collection.name;
+      var date = new Date(collection.publishDate);
+      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+      var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
+      response.push({id: id, name: name, date: formattedDate});
+    });
 
-      $.each(data, function(i, collection) {
+    var collectionsHtml = templates.collections(response);
+    $('.section').html(collectionsHtml);
 
-        var date = new Date(collection.publishDate);
-        var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
-
-        formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
-      });
-
-    $('.collections-select-table tbody tr').click(function(){
+    $('.collections-select-table tbody tr').click(function () {
       $('.collections-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
-      $('.collection-selected').animate({right: "0%"}, 500);
       var collectionId = $(this).attr('data-id');
       viewCollectionDetails(collectionId);
     });
-
-
-	//build view
-  // template name: collections
+  }
 
 	//click handlers
-  $('.btn-collection-create').click(function() {
+  $('.btn-collection-create').click(function () {
     createCollection();
   });
 }

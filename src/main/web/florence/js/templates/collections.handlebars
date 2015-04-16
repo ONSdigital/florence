@@ -1,11 +1,3 @@
-<nav>
-  <ul class="nav">
-    <li class="selected">Collections</li>
-    <li>Users and access</li>
-    <li>Publish</li>
-    <li>My account</li>
-  </ul>
-</nav>
 <section class="panel col col--6 collection-select">
   <h1 class="text-align-center">Select a collection</h1>
   <table class="collections-select-table">
@@ -16,10 +8,10 @@
       </tr>
     </thead>
     <tbody>
-    {{#each response}}
+    {{#each this}}
       <tr data-id="{{id}}">
         <td headers="collection-name">{{name}}</td>
-        <td headers="collection-date">{{formattedDate}}</td>
+        <td headers="collection-date">{{date}}</td>
       </tr>
     {{/each}}
     </tbody>
@@ -107,17 +99,6 @@
     <button class="btn-collection-create">Create collection</button>
   </form>
 </section>
+<section class="panel col col--6 collection-selected">
 
-
-
-
-<script type="text/javascript">
-
-
-
-
-
-
-
-
-</script>
+</section>
