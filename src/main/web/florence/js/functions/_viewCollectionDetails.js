@@ -1,7 +1,17 @@
 function viewCollectionDetails(collectionName) {
-  var collectionDetails = [];
+
+  var collectionDetails = {
+    name: "",
+    date: "",
+  };
+
   getCollection(collectionName,
     success = function (response) {
+      collectionDetails.name = response.name;
+      var date = new Date(response.publishDate);
+      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+      var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
+      collectionDetails.date = formattedDate;
       populateCollectionDetails(response, collectionName);
     },
     error = function (response) {
@@ -26,80 +36,74 @@ function viewCollectionDetails(collectionName) {
     CreateUriListHtml(collection.reviewedUris, collectionName, "reviewed");
 
     function CreateUriListHtml(uris, collectionName, status) {
-      var auxObj={};
-      if (uris.length === 0) {
-        auxObj[status] = [];
-        collectionDetails.push(auxObj);
-      } else {
-        var uri_list = [];
-        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-
-        $.each(uris, function (i, uri) {
-          pageDataRequests.push(getPageData(collectionName, uri,
+      var uri_list = [];
+      var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+      var collectionHtml;
+      $.each(uris, function (i, uri) {
+          if (uri.length === 0) {
+            collectionDetails[status] = [];
+          } else {
+            pageDataRequests.push(getPageData(collectionName, uri,
               success = function (response) {
                 var path = response.uri;
                 uri_list.push({path: path, name: response.name});
               },
               error = function (response) {
                 handleApiError(response);
-              }));
+              })
+            );
+          }
         });
-        auxObj[status] = uri_list;
-        collectionDetails.push(auxObj);
-        //$.when.apply($, pageDataRequests).then(function () {
-        //  auxObj[status] = uri_list;
-        //  collectionDetails.push(auxObj);
-        //});
-      }
+
+      $.when.apply($, pageDataRequests).then(function () {
+        collectionDetails[status] = uri_list;
+
+        collectionHtml = window.templates.collection(collectionDetails);
+        $('.collection-selected').html(collectionHtml);
+        $('.collection-selected').animate({right: "0%"}, 500);
+
+        //page-list
+        $('.page-item').click(function() {
+          $('.page-list li').removeClass('selected');
+          $('.page-options').hide();
+
+          $(this).parent('li').addClass('selected');
+          // $(this).addClass('page-item--selected');
+          $(this).next('.page-options').show();
+        });
+
+        $('.btn-page-edit').click(function () {
+          var path = $(this).attr('data-path');
+          console.log('Collection row clicked for id: ' + path);
+          if (path) {
+            document.cookie = "collection=" + collectionName + ";path=/";
+            localStorage.setItem("collection", collectionName);
+            viewWorkspace(path);
+            $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+            $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
+            clearInterval(window.intervalID);
+            window.intervalID = setInterval(function () {
+              checkForPageChanged(function () {
+                loadPageDataIntoEditor(collectionName, true);
+              });
+            }, window.intIntervalTime);
+          }
+        });
+        $('.btn-collection-work-on').click(function () {
+          document.cookie = "collection=" + collectionName + ";path=/";
+          localStorage.setItem("collection", collectionName);
+          viewController('workspace');
+        });
+
+        $('.collection-selected .btn-cancel').click(function(){
+          $('.collection-selected').stop().animate({right: "-50%"}, 500);
+          $('.collections-select-table tbody tr').removeClass('selected');
+          // Wait until the animation ends
+          setTimeout(function(){
+            viewController('collections');
+          }, 500);
+        });
+      });
     }
-    console.log(collectionDetails);
-
-
-
-    var collectionHtml = window.templates.collection(collectionDetails);
-    $('.collection-selected').html(collectionHtml);
-    $('.collection-selected').animate({right: "0%"}, 500);
-
-    $('.btn-collection-work-on').click(function () {
-      document.cookie = "collection=" + collectionName + ";path=/";
-      localStorage.setItem("collection", collectionName);
-      viewController('workspace');
-    });
-
-    $('.collection-selected .btn-cancel').click(function(){
-      $('.collection-selected').stop().animate({right: "-50%"}, 500);
-      $('.collections-select-table tbody tr').removeClass('selected');
-      viewController('collections');
-    });
-
-    //page-list
-    $('.page-item').click(function() {
-      $('.page-list li').removeClass('selected');
-      $('.page-options').hide();
-
-      $(this).parent('li').addClass('selected');
-      // $(this).addClass('page-item--selected');
-      $(this).next('.page-options').show();
-    });
-
-    $('.btn-page-edit').click(function () {
-      var path = $(this).attr('data-path');
-      console.log('Collection row clicked for id: ' + path);
-      if (path) {
-        //$('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
-        //$(this).addClass('fl-panel-review-page-item__selected');
-        document.cookie = "collection=" + collectionName + ";path=/";
-        localStorage.setItem("collection", collectionName);
-        viewWorkspace(path);
-        $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
-        $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
-        clearInterval(window.intervalID);
-        window.intervalID = setInterval(function () {
-          checkForPageChanged(function () {
-            loadPageDataIntoEditor(collectionName, true);
-          });
-        }, window.intIntervalTime);
-      }
-    });
   }
 }
