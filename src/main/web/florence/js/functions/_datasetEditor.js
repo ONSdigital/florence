@@ -280,7 +280,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Clicx edit to add content">' + note.data + '</textarea>' +
+        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Click edit to add content">' + note.data + '</textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
@@ -319,32 +319,11 @@ function datasetEditor(collectionName, data) {
 
   //Add new note
   $("#notes-section").append('<button id="addNote">Add new note</button>');
-  $("#addNote").click(function () {
-    $('.fl-editor__notes').append(
-        '<div id="' + lastIndexNote + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Note ' +
-        ' <textarea id="note_markdown_' + lastIndexNote + '"cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__notes__note-item__edit_' + lastIndexNote + '">Edit</button>' +
-        ' <button class="fl-panel--editor__notes__note-item__delete_' + lastIndexNote + '">Delete</button>' +
-        '</div>');
-    sortableNotes();
-    saveNewNote();
-  });
-
-  function saveNewNote() {
-    var orderNote = $(".fl-editor__notes").sortable('toArray');
-    $(orderNote).each(function(index, name){
-      var markdown = $('#note_markdown_'+name).val();
-      //var markdown = "Enter text here";
-      newNotes[parseInt(index)] = {data: markdown};
-    });
-    data.notes = newNotes;
-    console.log(data.notes);
-    //$(".note-list").remove();
-    //$("#metadata-list").remove();
+  $("#addNote").one('click', function () {
+    data.notes.push({data:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
     datasetEditor(collectionName, data);
-  }
+  });
 
   function sortableNotes() {
     $(".fl-editor__notes").sortable();

@@ -103,7 +103,7 @@ function articleEditor(collectionName, data) {
       $("#" + index).remove();
       data.correction.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
-      datasetEditor(collectionName, data);
+      articleEditor(collectionName, data);
     });
   });
 
@@ -112,7 +112,7 @@ function articleEditor(collectionName, data) {
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    datasetEditor(collectionName, data);
+    articleEditor(collectionName, data);
   });
 
   // Edit sections
@@ -166,31 +166,11 @@ function articleEditor(collectionName, data) {
 
   //Add new sections
   $("#content-section").append('<button id="addSection">Add new section</button>');
-  $("#addSection").click(function () {
-    $('.fl-editor__sections').append(
-        '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-        ' <textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-        ' <button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-        ' <button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
-        '</div>');
-    sortableSections();
-    saveNewSection();
-  });
-
-  function saveNewSection() {
-    var orderSection = $(".fl-editor__sections").sortable('toArray');
-    $(orderSection).each(function(index, name){
-      var title = $('#section__'+name).val();
-      var markdown = $('#section_markdown_'+name).val();
-      newSections[index] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    $(".section-list").remove();
-    $("#metadata-list").remove();
+  $("#addSection").one('click', function () {
+    data.sections.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
     articleEditor(collectionName, data);
-  }
+  });
 
   function sortableSections() {
     $(".fl-editor__sections").sortable();
@@ -244,32 +224,11 @@ function articleEditor(collectionName, data) {
 
   //Add new tab
   $("#accordion-section").append('<button id="addTab">Add new tab</button>');
-  $("#addTab").click(function () {
-    $('.fl-editor__accordion').append(
-        '<div id="' + lastIndexTab + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
-        ' <textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
-        '</div>');
-    sortableTabs();
-    saveNewTab();
-  });
-
-  function saveNewTab() {
-    var orderTab = $(".fl-editor__accordion").sortable('toArray');
-    $(orderTab).each(function(index, name){
-      var title = $('#tab__'+name).val();
-      var markdown = $('#tab_markdown_'+name).val();
-      newTabs[parseInt(index)] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
-    console.log(data.accordion);
-    $(".tab-list").remove();
-    $("#metadata-list").remove();
+  $("#addTab").one('click', function () {
+    data.accordion.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
     articleEditor(collectionName, data);
-  }
+  });
 
   function sortableTabs() {
     $(".fl-editor__accordion").sortable();
