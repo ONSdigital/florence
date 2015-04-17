@@ -1,10 +1,12 @@
 {
-	"devDependencies": {
-	  "catw": "latest"
-	},
-	"scripts": {
+  "devDependencies": {
+    "catw": "latest",
+    "onchange": "latest"
+  },
+  "scripts": {
     "build-js": "catw js/functions/*.js js/third-party/*.js -o js/main.js -v",
-    "watch": "npm run build-js"
-
-	}
+    "watch-templates": "npm run build-templates && onchange 'templates/*.handlebars' -- npm run build-templates ",
+    "build-templates": "handlebars templates/*.handlebars --output js/templates.js",
+    "watch": "npm run build-js & npm run watch-templates"
+  }
 }

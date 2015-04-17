@@ -1,4 +1,4 @@
-function viewCollections() {
+function viewCollections(collectionName) {
 
   var select_collections = '<section class="fl-panel fl-panel--collections fl-panel--collections__not-selected">' +
     '<h1>Select a collection</h1>' +
@@ -19,58 +19,68 @@ function viewCollections() {
   });
 
   function populateCollectionTable(data) {
-      var page = $('.fl-collections-holder');
-      var collection_table =
-        '<table class="fl-collections-table">' +
-        '  <tbody>' +
-        '    <tr>' +
-        '      <th>Collection name</th>' +
-        '      <th>Publish time and date</th>' +
-        '    </tr>';
 
-      $(page).html(collection_table);
+    var page = $('.fl-collections-holder');
+    var collection_table =
+      '<table class="fl-collections-table">' +
+        '<tbody>' +
+          '<tr>' +
+            '<th>Collection name</th>' +
+            '<th>Publish time and date</th>' +
+          '</tr>';
 
-      $.each(data, function(i, collection) {
+    $(page).html(collection_table);
 
-        var date = new Date(collection.publishDate);
-        var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
+    $.each(data, function(i, collection) {
 
-        $('tbody',page).append(
-            '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
-            '  <td class= "collection-name">' + collection.name + '</td>' +
-            '  <td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
-            '</tr>'
-          );
+      var date = new Date(collection.publishDate);
+      var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
 
-        makeCollectionView(collection.id,data);
-      });
+      $('tbody',page).append(
+          '<tr class="fl-collections-table-row" data-id="' + collection.id + '">' +
+            '<td class= "collection-name">' + collection.name + '</td>' +
+            '<td>' + $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes + '</td>' +
+          '</tr>'
+        );
+		});
 
-      page.append(
-          '</tbody>' +
-        '</table>');
+    page.append(
+        '</tbody>' +
+      '</table>');
 
-      $('.fl-collections-table-row').click(function() {
-        //console.log('Collection row clicked for id: ' + $(this).attr('data-id'));
-        var collectionId = $(this).attr('data-id');
+    $('.fl-collections-table-row').click(function () {
+      //
+      var collectionId = $(this).attr('data-id');
 
-        if(collectionId) {
-          $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
-          $('.fl-panel--collection-details').show();
-          $('.fl-create-collection-button').hide();
+      if (collectionId) {
+        $('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
+        console.log('Collection row clicked for id: ' + collectionId);
+        $(this).addClass('fl-panel--collections__selected');
+        selectCollection(collectionId);
+      }
+    });
 
-					$('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
-          $(this).addClass('fl-panel--collections__selected');
-
-          viewCollectionDetails(collectionId);
-        }
-      });
+    if (collectionName) {
+      $('.fl-collections-table-row').removeClass('fl-panel--collections__selected');
+      $('.fl-collections-table-row[data-id="' + collectionName + '"]').addClass('fl-panel--collections__selected');
+      selectCollection(collectionName)
     }
+  }
+
+  function selectCollection(collectionId) {
+    $('.fl-panel--collections').removeClass('fl-panel--collections__not-selected');
+    $('.fl-panel--collection-details').show();
+    $('.fl-create-collection-button').hide();
+    viewCollectionDetails(collectionId);
+  }
+
 
   var selected_collection =
     '<section class="fl-panel fl-panel--collection-details">' +
     '<div class="fl-panel--collection-details-container"></div>' +
     '<button class="fl-button fl-work-on-collection-button">Work on this collection</button>' +
     '<button class="fl-button fl-button--secondary fl-finish-collection-button">Finish this collection</button>' +
+    '<button class="fl-button fl-delete-collection-button">Delete this collection</button>' +
     '<button class="fl-button fl-button--cancel">Cancel</button>' +
     '</section>';
 
