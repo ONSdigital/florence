@@ -32,12 +32,13 @@ function viewCollections() {
       var collectionId = $(this).attr('data-id');
       viewCollectionDetails(collectionId);
     });
-  }
 
-	//click handlers
-  $('.btn-collection-create').click(function () {
-    createCollection();
-  });
+    //click handlers
+    //$('.btn-collection-create').unbind("click").click(function () {
+    $('.btn-collection-create').click(function () {
+      createCollection();
+    });
+  }
 }
 
 
