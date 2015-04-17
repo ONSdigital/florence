@@ -4,15 +4,12 @@ function datasetEditor(collectionName, data) {
   var newNotes = [];
   var newRelated = [];
   var newUsedIn = [];
-  var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
+  var lastIndexNote, lastIndexRelated, lastIndexUsedIn, lastIndexCorrection;
   var lastIndexFile = 0;
   var uriUpload;
 
   $(".section-list").remove();
-  $(".file-list").remove();
-  $(".note-list").remove();
-  $(".dataset-list").remove();
-  $(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addFile").remove();
   $("#addNote").remove();
   $("#addDataset").remove();
@@ -22,15 +19,15 @@ function datasetEditor(collectionName, data) {
 
   // Metadata load
   $("#metadata-section").append(
-      '<div id="metadata-list">' +
-      ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
-      ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      '</div>');
+    '<div id="metadata-list">' +
+    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Next release: <textarea class="auto-size" type="date" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
+    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    '</div>');
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -67,12 +64,51 @@ function datasetEditor(collectionName, data) {
       return true;
     }
   };
-
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      datasetEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    datasetEditor(collectionName, data);
+  });
+
 
   // Edit download
   // Load and edition
@@ -158,7 +194,7 @@ function datasetEditor(collectionName, data) {
                 return;
               }
             });
-            if (!!file.type.match(/csv.*/)) {
+            if (!!file.name.match(/\.csv/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -199,7 +235,7 @@ function datasetEditor(collectionName, data) {
             }
             //}); //each
           } else {
-            if (!!file.type.match(/csv.*/)) {
+            if (!!file.name.match(/\.csv/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);

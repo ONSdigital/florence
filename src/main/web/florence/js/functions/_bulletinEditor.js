@@ -6,13 +6,10 @@ function bulletinEditor(collectionName, data) {
   var newLinks = [];
   var lastIndexSection, lastIndexTab, lastIndexRelated, lastIndexLink;
 
-    //console.log(data.sections);
+  //console.log(data.sections);
 
-  $(".fl-editor__headline").hide();
   $(".section-list").remove();
-  //$(".tab-list").remove();
-  //$(".bulletin-list").remove();
-  //$(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addBulletin").remove();
@@ -83,6 +80,46 @@ function bulletinEditor(collectionName, data) {
   });
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
+
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      datasetEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    datasetEditor(collectionName, data);
+  });
 
   // Edit sections
   // Load and edition

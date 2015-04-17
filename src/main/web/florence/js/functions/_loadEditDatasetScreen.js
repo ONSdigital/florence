@@ -10,9 +10,7 @@ function loadEditDatasetScreen(collectionName) {
     '      <div id="metadata-section"></div>' +
     '      <section class="fl-editor__metadata">Correction</section>' +
     '      <div id="correction-section">' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
+    '        <article class="fl-editor__correction"></article>' +
     '      </div>' +
     '      <section class="fl-editor__metadata">Notes</section>' +
     '      <div id="notes-section">' +

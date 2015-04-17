@@ -9,9 +9,7 @@ function articleEditor(collectionName, data) {
   //console.log(data.sections);
 
   $(".section-list").remove();
-  //$(".tab-list").remove();
-  //$(".article-list").remove();
-  //$(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addArticle").remove();
@@ -21,16 +19,16 @@ function articleEditor(collectionName, data) {
 
   // Metadata load
   $("#metadata-section").append(
-      '<div id="metadata-list">' +
-      ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
-      ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      '</div>');
+    '<div id="metadata-list">' +
+    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
+    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    '</div>');
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -77,6 +75,45 @@ function articleEditor(collectionName, data) {
   });
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      datasetEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    datasetEditor(collectionName, data);
+  });
 
   // Edit sections
   // Load and edition
