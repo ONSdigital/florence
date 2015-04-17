@@ -27,7 +27,7 @@
 		<section class="panel col col--4 workspace-browse">
 			<nav class="tree-nav-holder">
 				<ul class="page-list page-list--tree">
-					<li>
+					<li data-url="">
 						<span class="page-item">Home</span>
 						<div class="page-options">
 							<button class="">Button</button>
@@ -35,16 +35,16 @@
 							<button class="">Button</button>
 						</div>
 						<ul>
-							<li>
-							<span class="page-item">t1 - 1</span>
+							<li data-url="businessindustryandtrade">
+							<span class="page-item">Business and trade</span>
 								<div class="page-options">
 									<button class="">Button</button>
 									<button class="">Button</button>
 									<button class="">Button</button>
 								</div>
 								<ul>
-									<li>
-									<span class="page-item">t1 - 1 | t2 - 1</span>
+									<li data-url="businessindustryandtrade/retailindustry">
+									<span class="page-item">Retail industry</span>
 										<div class="page-options">
 											<button class="">Button</button>
 											<button class="">Button</button>
@@ -87,8 +87,8 @@
 									</li>
 								</ul>
 							</li>
-							<li>
-							<span class="page-item">t1 - 2</span>
+							<li data-url="economy">
+							<span class="page-item">Economy</span>
 								<div class="page-options">
 									<button class="">Button</button>
 									<button class="">Button</button>
@@ -167,11 +167,47 @@
 				$(this).closest('li').children('ul').addClass('active');
 			});
 
+			// function pageListItemSelect(caller){
+			// 	//
+			// }
+
+			$('.page-list--tree .page-item').click(function(){
+				//change iframe location
+				var newURL = baseURL + $(this).closest('li').attr('data-url');
+				browserContent.document.location.href = newURL;
+				$('.browser-location').val(newURL);
+				// console.log(newURL);
+			});
+
+
+			function treeNodeSelect(url){
+				var urlPart = url.replace('baseURL', '');
+				var selectedListItem = $('.tree-nav-holder li').find('[data-url="' + urlPart + '"]'); //get first li with data-url with url
+
+				console.log(selectedListItem);
+
+				$('.page-list li').removeClass('selected');
+				$('.page-options').hide();
+
+				$(selectedListItem).addClass('selected hello');
+				$(selectedListItem).next('.page-options').show();
+
+				//page-list-tree
+				$('.tree-nav-holder ul').removeClass('active');
+				$(selectedListItem).parents('ul').addClass('active');
+				$(selectedListItem).closest('li').children('ul').addClass('active');
+			}
+
+
+
 			//mini browser
+			var baseURL = 'http://localhost:8081/index.html#!/';
 			var browserContent = $('#iframe')[0].contentWindow;
 			browserContent.document.onclick = function(){
 				var browserLocation = browserContent.location.href;
 				$('.browser-location').val(browserLocation);
+				//treeNodeSelect(browserLocation);
+				//console.log(browserLocation);
 				// console.log('iframe inner clicked');
 			};
 
