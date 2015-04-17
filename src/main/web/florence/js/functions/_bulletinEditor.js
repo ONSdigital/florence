@@ -90,8 +90,8 @@ function bulletinEditor(collectionName, data) {
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
         '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
         '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
-        '  <p>Type: <input type="radio" name="correctionType" value="minor"/><label> Minor</label> ' +
-        '           <input type="radio" name="correctionType" value="major"/><label> Major</label> ' +
+        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
         '  </p>' +
         '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
         '</div>');
