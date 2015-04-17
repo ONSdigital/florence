@@ -25,16 +25,14 @@
 			</ul>
 		</nav>
 		<section class="panel col col--4 workspace-browse">
-			<nav>
+			<nav class="tree-nav-holder">
 				<ul class="page-list page-list--tree">
 					<li>
-						<div class="page-item-holder">
-							<span class="page-item">Home</span>
-							<div class="page-options">
-								<button class="">Button</button>
-								<button class="">Button</button>
-								<button class="">Button</button>
-							</div>
+						<span class="page-item">Home</span>
+						<div class="page-options">
+							<button class="">Button</button>
+							<button class="">Button</button>
+							<button class="">Button</button>
 						</div>
 						<ul>
 							<li>
@@ -163,6 +161,10 @@
 				// $(this).addClass('page-item--selected');
 				$(this).next('.page-options').show();
 
+				//page-list-tree
+				$('.tree-nav-holder ul').removeClass('active');
+				$(this).parents('ul').addClass('active');
+				$(this).closest('li').children('ul').addClass('active');
 			});
 
 			//mini browser
