@@ -4,7 +4,7 @@ function articleEditor(collectionName, data) {
   var newTabs = [];
   var newRelated = [];
   var newLinks = [];
-  var lastIndexSection, lastIndexTab, lastIndexRelated, lastIndexLink;
+  var lastIndexRelated, lastIndexLink;
 
   //console.log(data.sections);
 

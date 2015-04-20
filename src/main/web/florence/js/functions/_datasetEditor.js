@@ -4,7 +4,7 @@ function datasetEditor(collectionName, data) {
   var newNotes = [];
   var newRelated = [];
   var newUsedIn = [];
-  var lastIndexNote, lastIndexRelated, lastIndexUsedIn, lastIndexCorrection;
+  var lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
   var uriUpload;
 
