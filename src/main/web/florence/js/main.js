@@ -2627,13 +2627,13 @@ function viewCollectionDetails(collectionName) {
     console.log('About to delete collection ' + collectionName);
     // Run delete content
     deleteCollection(collectionName,
-            success = function (response) { // On success update the screen
-              viewController('collections');
-              console.log('Content deleted for collection: ' + collectionName);
-            },
-            error = function (response) {
-              handleApiError(response);
-            })
+      success = function (response) { // On success update the screen
+        viewController('collections');
+        console.log('Content deleted for collection: ' + collectionName);
+      },
+      error = function (response) {
+        handleApiError(response);
+      })
   });
 
   $('.fl-button--cancel').unbind('click');
@@ -2681,16 +2681,20 @@ function viewCollectionDetails(collectionName) {
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
       $.each(uris, function (i, uri) {
-        pageDataRequests.push(getPageData(collectionName, uri,
-          success = function (response) {
-            var path = uri.replace('/data.json', '');
-            path = path.length === 0 ? '/' : path;
-            uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-            response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
-          },
-          error = function (response) {
-            handleApiError(response);
-          }));
+
+        // only request the json files.
+        if (uri.indexOf('.json', uri.length - '.json'.length) !== -1) {
+          pageDataRequests.push(getPageData(collectionName, uri,
+            success = function (response) {
+              var path = uri.replace('/data.json', '');
+              path = path.length === 0 ? '/' : path;
+              uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
+              response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
+            },
+            error = function (response) {
+              handleApiError(response);
+            }));
+        }
       });
 
       $.when.apply($, pageDataRequests).then(function () {
@@ -2722,19 +2726,19 @@ function viewCollectionDetails(collectionName) {
 
     // Delete function
     $('.fl-panel--collection-details-container').on('click', '.fl-button--delete', function () {
-          var path = $(this).attr('data-path');
+      var path = $(this).attr('data-path');
 
-          // Run delete content
-          deleteContent(collectionName, path,
-                  success = function (response) { // On success update the screen
-                    viewCollectionDetails(collectionName);
-                    console.log('Content deleted for id: ' + path);
-                  },
-                  error = function (response) {
-                    handleApiError(response);
-                  })
+      // Run delete content
+      deleteContent(collectionName, path,
+        success = function (response) { // On success update the screen
+          viewCollectionDetails(collectionName);
+          console.log('Content deleted for id: ' + path);
+        },
+        error = function (response) {
+          handleApiError(response);
+        })
 
-        });
+    });
 
   }
 }
