@@ -34,9 +34,7 @@ function articleEditor(collectionName, data) {
   //console.log(data.sections);
 
   $(".section-list").remove();
-  //$(".tab-list").remove();
-  //$(".article-list").remove();
-  //$(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addArticle").remove();
@@ -46,16 +44,16 @@ function articleEditor(collectionName, data) {
 
   // Metadata load
   $("#metadata-section").append(
-      '<div id="metadata-list">' +
-      ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
-      ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      '</div>');
+    '<div id="metadata-list">' +
+    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
+    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    '</div>');
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -102,6 +100,45 @@ function articleEditor(collectionName, data) {
   });
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      articleEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    articleEditor(collectionName, data);
+  });
 
   // Edit sections
   // Load and edition
@@ -154,31 +191,11 @@ function articleEditor(collectionName, data) {
 
   //Add new sections
   $("#content-section").append('<button id="addSection">Add new section</button>');
-  $("#addSection").click(function () {
-    $('.fl-editor__sections').append(
-        '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-        ' <textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-        ' <button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-        ' <button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
-        '</div>');
-    sortableSections();
-    saveNewSection();
-  });
-
-  function saveNewSection() {
-    var orderSection = $(".fl-editor__sections").sortable('toArray');
-    $(orderSection).each(function(index, name){
-      var title = $('#section__'+name).val();
-      var markdown = $('#section_markdown_'+name).val();
-      newSections[index] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    $(".section-list").remove();
-    $("#metadata-list").remove();
+  $("#addSection").one('click', function () {
+    data.sections.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
     articleEditor(collectionName, data);
-  }
+  });
 
   function sortableSections() {
     $(".fl-editor__sections").sortable();
@@ -232,32 +249,11 @@ function articleEditor(collectionName, data) {
 
   //Add new tab
   $("#accordion-section").append('<button id="addTab">Add new tab</button>');
-  $("#addTab").click(function () {
-    $('.fl-editor__accordion').append(
-        '<div id="' + lastIndexTab + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
-        ' <textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
-        '</div>');
-    sortableTabs();
-    saveNewTab();
-  });
-
-  function saveNewTab() {
-    var orderTab = $(".fl-editor__accordion").sortable('toArray');
-    $(orderTab).each(function(index, name){
-      var title = $('#tab__'+name).val();
-      var markdown = $('#tab_markdown_'+name).val();
-      newTabs[parseInt(index)] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
-    console.log(data.accordion);
-    $(".tab-list").remove();
-    $("#metadata-list").remove();
+  $("#addTab").one('click', function () {
+    data.accordion.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
     articleEditor(collectionName, data);
-  }
+  });
 
   function sortableTabs() {
     $(".fl-editor__accordion").sortable();
@@ -519,13 +515,10 @@ function bulletinEditor(collectionName, data) {
   var newLinks = [];
   var lastIndexSection, lastIndexTab, lastIndexRelated, lastIndexLink;
 
-    //console.log(data.sections);
+  //console.log(data.sections);
 
-  $(".fl-editor__headline").hide();
   $(".section-list").remove();
-  //$(".tab-list").remove();
-  //$(".bulletin-list").remove();
-  //$(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addBulletin").remove();
@@ -597,6 +590,46 @@ function bulletinEditor(collectionName, data) {
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
 
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      bulletinEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    bulletinEditor(collectionName, data);
+  });
+
   // Edit sections
   // Load and edition
   $(data.sections).each(function(index, section){
@@ -648,17 +681,10 @@ function bulletinEditor(collectionName, data) {
 
   //Add new sections
   $("#content-section").append('<button id="addSection">Add new section</button>');
-  $("#addSection").click(function () {
-    $('.fl-editor__sections').append(
-      '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-      'Title ' +
-      ' <textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-      ' <textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-      ' <button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-      ' <button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
-      '</div>');
-    sortableSections();
-    saveNewSection();
+  $("#addSection").one('click', function () {
+    data.sections.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    bulletinEditor(collectionName, data);
   });
 
   function saveNewSection() {
@@ -726,32 +752,11 @@ function bulletinEditor(collectionName, data) {
 
   //Add new tab
   $("#accordion-section").append('<button id="addTab">Add new tab</button>');
-  $("#addTab").click(function () {
-    $('.fl-editor__accordion').append(
-        '<div id="' + lastIndexTab + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
-        ' <textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
-        '</div>');
-    sortableTabs();
-    saveNewTab();
-  });
-
-  function saveNewTab() {
-    var orderTab = $(".fl-editor__accordion").sortable('toArray');
-    $(orderTab).each(function(index, name){
-      var title = $('#tab__'+name).val();
-      var markdown = $('#tab_markdown_'+name).val();
-      newTabs[parseInt(index)] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
-    console.log(data.accordion);
-    $(".tab-list").remove();
-    $("#metadata-list").remove();
+  $("#addTab").one('click', function () {
+    data.accordion.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
     bulletinEditor(collectionName, data);
-  }
+  });
 
   function sortableTabs() {
     $(".fl-editor__accordion").sortable();
@@ -1136,15 +1141,12 @@ function datasetEditor(collectionName, data) {
   var newNotes = [];
   var newRelated = [];
   var newUsedIn = [];
-  var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
+  var lastIndexNote, lastIndexRelated, lastIndexUsedIn, lastIndexCorrection;
   var lastIndexFile = 0;
   var uriUpload;
 
   $(".section-list").remove();
-  $(".file-list").remove();
-  $(".note-list").remove();
-  $(".dataset-list").remove();
-  $(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addFile").remove();
   $("#addNote").remove();
   $("#addDataset").remove();
@@ -1154,15 +1156,15 @@ function datasetEditor(collectionName, data) {
 
   // Metadata load
   $("#metadata-section").append(
-      '<div id="metadata-list">' +
-      ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
-      ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      '</div>');
+    '<div id="metadata-list">' +
+    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Next release: <textarea class="auto-size" type="date" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
+    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    '</div>');
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -1199,12 +1201,51 @@ function datasetEditor(collectionName, data) {
       return true;
     }
   };
-
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      datasetEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    datasetEditor(collectionName, data);
+  });
+
 
   // Edit download
   // Load and edition
@@ -1290,7 +1331,7 @@ function datasetEditor(collectionName, data) {
                 return;
               }
             });
-            if (!!file.type.match(/csv.*/)) {
+            if (!!file.name.match(/\.csv/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -1331,7 +1372,7 @@ function datasetEditor(collectionName, data) {
             }
             //}); //each
           } else {
-            if (!!file.type.match(/csv.*/)) {
+            if (!!file.name.match(/\.csv/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -1376,7 +1417,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Clicx edit to add content">' + note.data + '</textarea>' +
+        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Click edit to add content">' + note.data + '</textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
@@ -1415,32 +1456,11 @@ function datasetEditor(collectionName, data) {
 
   //Add new note
   $("#notes-section").append('<button id="addNote">Add new note</button>');
-  $("#addNote").click(function () {
-    $('.fl-editor__notes').append(
-        '<div id="' + lastIndexNote + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Note ' +
-        ' <textarea id="note_markdown_' + lastIndexNote + '"cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__notes__note-item__edit_' + lastIndexNote + '">Edit</button>' +
-        ' <button class="fl-panel--editor__notes__note-item__delete_' + lastIndexNote + '">Delete</button>' +
-        '</div>');
-    sortableNotes();
-    saveNewNote();
-  });
-
-  function saveNewNote() {
-    var orderNote = $(".fl-editor__notes").sortable('toArray');
-    $(orderNote).each(function(index, name){
-      var markdown = $('#note_markdown_'+name).val();
-      //var markdown = "Enter text here";
-      newNotes[parseInt(index)] = {data: markdown};
-    });
-    data.notes = newNotes;
-    console.log(data.notes);
-    //$(".note-list").remove();
-    //$("#metadata-list").remove();
+  $("#addNote").one('click', function () {
+    data.notes.push({data:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
     datasetEditor(collectionName, data);
-  }
+  });
 
   function sortableNotes() {
     $(".fl-editor__notes").sortable();
@@ -1829,8 +1849,8 @@ function loadBrowseScreen() {
     dataType: 'json',
     type: 'GET',
     success: function (response) {
-      var html = Handlebars.templates.browse(response);
-      $('.fl-panel--sub-menu').html(html);
+      //var html = Handlebars.templates.browse(response);
+      //$('.fl-panel--sub-menu').html(html);
     },
     error: function (response) {
       handleApiError(response)
@@ -1876,9 +1896,7 @@ function loadEditDatasetScreen(collectionName) {
     '      <div id="metadata-section"></div>' +
     '      <section class="fl-editor__metadata">Correction</section>' +
     '      <div id="correction-section">' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
+    '        <article class="fl-editor__correction"></article>' +
     '      </div>' +
     '      <section class="fl-editor__metadata">Notes</section>' +
     '      <div id="notes-section">' +
@@ -1926,9 +1944,7 @@ function loadEditT4Screen(collectionName) {
     '      <div id="metadata-section"></div>' +
     '      <section class="fl-editor__metadata">Correction</section>' +
     '      <div id="correction-section">' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
+    '        <article class="fl-editor__correction"></article>' +
     '      </div>' +
     '      <section class="fl-editor__metadata">Notes</section>' +
     '      <div id="accordion-section">' +
@@ -2611,13 +2627,13 @@ function viewCollectionDetails(collectionName) {
     console.log('About to delete collection ' + collectionName);
     // Run delete content
     deleteCollection(collectionName,
-            success = function (response) { // On success update the screen
-              viewController('collections');
-              console.log('Content deleted for collection: ' + collectionName);
-            },
-            error = function (response) {
-              handleApiError(response);
-            })
+      success = function (response) { // On success update the screen
+        viewController('collections');
+        console.log('Content deleted for collection: ' + collectionName);
+      },
+      error = function (response) {
+        handleApiError(response);
+      })
   });
 
   $('.fl-button--cancel').unbind('click');
@@ -2665,16 +2681,20 @@ function viewCollectionDetails(collectionName) {
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
       $.each(uris, function (i, uri) {
-        pageDataRequests.push(getPageData(collectionName, uri,
-          success = function (response) {
-            var path = uri.replace('/data.json', '');
-            path = path.length === 0 ? '/' : path;
-            uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-            response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
-          },
-          error = function (response) {
-            handleApiError(response);
-          }));
+
+        // only request the json files.
+        if (uri.indexOf('.json', uri.length - '.json'.length) !== -1) {
+          pageDataRequests.push(getPageData(collectionName, uri,
+            success = function (response) {
+              var path = uri.replace('/data.json', '');
+              path = path.length === 0 ? '/' : path;
+              uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
+              response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
+            },
+            error = function (response) {
+              handleApiError(response);
+            }));
+        }
       });
 
       $.when.apply($, pageDataRequests).then(function () {
@@ -2706,19 +2726,19 @@ function viewCollectionDetails(collectionName) {
 
     // Delete function
     $('.fl-panel--collection-details-container').on('click', '.fl-button--delete', function () {
-          var path = $(this).attr('data-path');
+      var path = $(this).attr('data-path');
 
-          // Run delete content
-          deleteContent(collectionName, path,
-                  success = function (response) { // On success update the screen
-                    viewCollectionDetails(collectionName);
-                    console.log('Content deleted for id: ' + path);
-                  },
-                  error = function (response) {
-                    handleApiError(response);
-                  })
+      // Run delete content
+      deleteContent(collectionName, path,
+        success = function (response) { // On success update the screen
+          viewCollectionDetails(collectionName);
+          console.log('Content deleted for id: ' + path);
+        },
+        error = function (response) {
+          handleApiError(response);
+        })
 
-        });
+    });
 
   }
 }
