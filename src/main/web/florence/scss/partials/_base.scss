@@ -451,6 +451,13 @@ button {
 		margin-top: $lineheight;
 		margin-right: 0;
 	}
+	&.btn-page-create {
+		color: $concrete;
+		background-color: $como;
+		float: right;
+		margin-top: $lineheight;
+		margin-right: 0;
+	}
 }
 
 .browser {
