@@ -1849,8 +1849,8 @@ function loadBrowseScreen() {
     dataType: 'json',
     type: 'GET',
     success: function (response) {
-      var html = Handlebars.templates.browse(response);
-      $('.fl-panel--sub-menu').html(html);
+      //var html = Handlebars.templates.browse(response);
+      //$('.fl-panel--sub-menu').html(html);
     },
     error: function (response) {
       handleApiError(response)
