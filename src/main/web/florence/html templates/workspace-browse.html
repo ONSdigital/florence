@@ -181,16 +181,16 @@
 
 
 			function treeNodeSelect(url){
-				var urlPart = url.replace('baseURL', '');
+				var urlPart = url.replace(baseURL, '');
 				var selectedListItem = $('.tree-nav-holder li').find('[data-url="' + urlPart + '"]'); //get first li with data-url with url
 
-				console.log(selectedListItem);
+				console.log(urlPart);
 
 				$('.page-list li').removeClass('selected');
 				$('.page-options').hide();
 
 				$(selectedListItem).addClass('selected hello');
-				$(selectedListItem).next('.page-options').show();
+				$(selectedListItem).children('.page-options').show();
 
 				//page-list-tree
 				$('.tree-nav-holder ul').removeClass('active');
@@ -206,7 +206,7 @@
 			browserContent.document.onclick = function(){
 				var browserLocation = browserContent.location.href;
 				$('.browser-location').val(browserLocation);
-				//treeNodeSelect(browserLocation);
+				treeNodeSelect(browserLocation);
 				//console.log(browserLocation);
 				// console.log('iframe inner clicked');
 			};
