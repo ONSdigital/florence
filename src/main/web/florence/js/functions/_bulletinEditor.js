@@ -4,15 +4,12 @@ function bulletinEditor(collectionName, data) {
   var newTabs = [];
   var newRelated = [];
   var newLinks = [];
-  var lastIndexSection, lastIndexTab, lastIndexRelated, lastIndexLink;
+  var lastIndexRelated, lastIndexLink;
 
-    //console.log(data.sections);
+  //console.log(data.sections);
 
-  $(".fl-editor__headline").hide();
   $(".section-list").remove();
-  //$(".tab-list").remove();
-  //$(".bulletin-list").remove();
-  //$(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addSection").remove();
   $("#addTab").remove();
   $("#addBulletin").remove();
@@ -84,6 +81,46 @@ function bulletinEditor(collectionName, data) {
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
 
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      bulletinEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    bulletinEditor(collectionName, data);
+  });
+
   // Edit sections
   // Load and edition
   $(data.sections).each(function(index, section){
@@ -135,17 +172,10 @@ function bulletinEditor(collectionName, data) {
 
   //Add new sections
   $("#content-section").append('<button id="addSection">Add new section</button>');
-  $("#addSection").click(function () {
-    $('.fl-editor__sections').append(
-      '<div id="' + lastIndexSection + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-      'Title ' +
-      ' <textarea id="section__' + lastIndexSection + '" cols="50"></textarea>' +
-      ' <textarea style="display: none;" id="section_markdown_' + lastIndexSection + '"></textarea>' +
-      ' <button class="fl-panel--editor__sections__section-item__edit_' + lastIndexSection + '">Edit</button>' +
-      ' <button class="fl-panel--editor__sections__section-item__delete_' + lastIndexSection + '">Delete</button>' +
-      '</div>');
-    sortableSections();
-    saveNewSection();
+  $("#addSection").one('click', function () {
+    data.sections.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    bulletinEditor(collectionName, data);
   });
 
   function saveNewSection() {
@@ -213,32 +243,11 @@ function bulletinEditor(collectionName, data) {
 
   //Add new tab
   $("#accordion-section").append('<button id="addTab">Add new tab</button>');
-  $("#addTab").click(function () {
-    $('.fl-editor__accordion').append(
-        '<div id="' + lastIndexTab + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="tab__' + lastIndexTab + '" cols="50"></textarea>' +
-        ' <textarea style="display: none;" id="tab_markdown_' + lastIndexTab + '"></textarea>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + lastIndexTab + '">Edit</button>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + lastIndexTab + '">Delete</button>' +
-        '</div>');
-    sortableTabs();
-    saveNewTab();
-  });
-
-  function saveNewTab() {
-    var orderTab = $(".fl-editor__accordion").sortable('toArray');
-    $(orderTab).each(function(index, name){
-      var title = $('#tab__'+name).val();
-      var markdown = $('#tab_markdown_'+name).val();
-      newTabs[parseInt(index)] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
-    console.log(data.accordion);
-    $(".tab-list").remove();
-    $("#metadata-list").remove();
+  $("#addTab").one('click', function () {
+    data.accordion.push({title:"", markdown:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
     bulletinEditor(collectionName, data);
-  }
+  });
 
   function sortableTabs() {
     $(".fl-editor__accordion").sortable();

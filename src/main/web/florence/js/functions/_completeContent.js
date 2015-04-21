@@ -1,6 +1,7 @@
 function saveAndCompleteContent(collectionName, path, content) {
   postContent(collectionName, path, content,
     success = function (response) {
+      Florence.Editor.isDirty = false;
       completeContent(collectionName, path);
     },
     error = function (response) {
@@ -24,7 +25,8 @@ function completeContent(collectionName, path) {
     type: 'POST',
     success: function (message) {
       console.log("Page is now marked as complete " + message);
-      alert("This content has now been submitted for internal review.")
+      //alert("This content has now been submitted for internal review.")
+      viewCollections(collectionName);
     },
     error: function (response) {
       handleApiError(response);

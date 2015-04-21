@@ -10,9 +10,7 @@ function loadEditDatasetScreen(collectionName) {
     '      <div id="metadata-section"></div>' +
     '      <section class="fl-editor__metadata">Correction</section>' +
     '      <div id="correction-section">' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
-    '        Demo: <input value="Tab 2 content"><br>' +
+    '        <article class="fl-editor__correction"></article>' +
     '      </div>' +
     '      <section class="fl-editor__metadata">Notes</section>' +
     '      <div id="notes-section">' +
@@ -35,8 +33,8 @@ function loadEditDatasetScreen(collectionName) {
     '  <nav class="fl-panel--editor__nav">' +
     '    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
     '    <button class="fl-panel--editor__nav__save">Save</button>' +
-    '    <button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
-    '    <button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
+    '    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
+    '    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
     '  </nav>' +
     '</section>';
 

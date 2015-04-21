@@ -7,7 +7,8 @@ function postReview(collectionName, path) {
     type: 'POST',
     success: function () {
       console.log("File set to reviewed.");
-      alert("The file is now awaiting approval.");
+      //alert("The file is now awaiting approval.");
+      viewCollections(collectionName);
     },
     error: function () {
       console.log('Error');

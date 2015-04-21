@@ -45,21 +45,35 @@ function viewWorkspace(path) {
   $('.section').html(workspace_menu_main + workspace_preview);
   enablePreview();
 
+  clearInterval(window.intervalID);
+  loadBrowseScreen();
   var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
-  var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  localStorage.setItem("pageurl", pageurl);
-
+  //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+  //localStorage.setItem("pageurl", pageurl);
   //click handlers
   $('.fl-main-menu__link').click(function () {
+
+    console.log('menu item clicked');
+
+    if(Florence.Editor.isDirty) {
+      var result = confirm("You have unsaved changes. Are you sure you want to continue");
+      if (result == true) {
+        Florence.Editor.isDirty = false;
+      } else {
+        return false;
+      }
+    }
+
     $('.fl-panel--sub-menu').empty();
     $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
     $(this).addClass('fl-main-menu__link--active');
 
     // setupFlorenceWorkspace($(this));
     if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
-      $('.fl-panel--sub-menu').empty();
+      //$('.fl-panel--sub-menu').empty();
       clearInterval(window.intervalID);
+      loadBrowseScreen();
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--create')) {
@@ -68,7 +82,6 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
-      console.log(path)
       loadPageDataIntoEditor(collectionName, true);
       $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
       $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
@@ -96,7 +109,8 @@ function viewWorkspace(path) {
     }
 
     else {
-      //browse
+      clearInterval(window.intervalID);
+      loadBrowseScreen();
     }
   });
 

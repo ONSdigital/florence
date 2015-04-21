@@ -23,8 +23,8 @@ function makeEditSections(collectionName, response) {
         '  <nav class="fl-panel--editor__nav">' +
         '    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
         '    <button class="fl-panel--editor__nav__save">Save</button>' +
-        '    <button class="fl-panel--editor__nav__complete">Save and submit for internal review</button>' +
-        '    <button class="fl-panel--editor__nav__review">Save and submit for approval</button>' +
+        '    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
+        '    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
         '  </nav>' +
         '</section>';
 
@@ -48,5 +48,10 @@ function makeEditSections(collectionName, response) {
     postReview(collectionName, getPathName());
   });
 
-
+  $('.fl-panel--editor :input').on('input', function() {
+    Florence.Editor.isDirty = true;
+    // remove the handler now we know content has changed.
+    $(':input').unbind('input');
+    //console.log('Changes detected.');
+  });
 }

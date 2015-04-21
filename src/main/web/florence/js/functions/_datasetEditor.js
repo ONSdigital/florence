@@ -4,15 +4,12 @@ function datasetEditor(collectionName, data) {
   var newNotes = [];
   var newRelated = [];
   var newUsedIn = [];
-  var lastIndexNote, lastIndexRelated, lastIndexUsedIn;
+  var lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
   var uriUpload;
 
   $(".section-list").remove();
-  $(".file-list").remove();
-  $(".note-list").remove();
-  $(".dataset-list").remove();
-  $(".link-list").remove();
+  $("#addCorrection").remove();
   $("#addFile").remove();
   $("#addNote").remove();
   $("#addDataset").remove();
@@ -22,15 +19,15 @@ function datasetEditor(collectionName, data) {
 
   // Metadata load
   $("#metadata-section").append(
-      '<div id="metadata-list">' +
-      ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p>Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
-      ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-      '</div>');
+    '<div id="metadata-list">' +
+    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Next release: <textarea class="auto-size" type="date" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p>Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
+    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
+    '</div>');
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -67,12 +64,51 @@ function datasetEditor(collectionName, data) {
       return true;
     }
   };
-
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
   var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+    lastIndexCorrection = index + 1;
+    $(".fl-editor__correction").append(
+        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
+        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
+        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
+        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
+        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
+        '  </p>' +
+        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
+        '</div>');
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      datasetEditor(collectionName, data);
+    });
+  });
+
+  // New correction
+  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    datasetEditor(collectionName, data);
+  });
+
 
   // Edit download
   // Load and edition
@@ -85,7 +121,7 @@ function datasetEditor(collectionName, data) {
         '  <textarea id="file_name_' + index + '" style="display: none" cols="50">' + file.file + '</textarea>' +
         '  <div id="file_name_show_' + index + '">' + file.file + '</div>' +
         '  <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
+        '</div>');
 
     // Delete
     $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
@@ -93,8 +129,6 @@ function datasetEditor(collectionName, data) {
       $.ajax({
         url: "/zebedee/content/" + collectionName + "?uri=" + data.download[index].file,
         type: "DELETE",
-        //processData: false,
-        //contentType: false,
         success: function (res) {
           console.log(res);
         },
@@ -112,7 +146,7 @@ function datasetEditor(collectionName, data) {
   $("#content-section").append('<button id="addFile">Add new file</button>');
   $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
-        '<div id="' + lastIndexFile + '" class="file-list" style="background-color:grey; color:white;">' +
+        '<div id="' + lastIndexFile + '" class="section-list" style="background-color:grey; color:white;">' +
         '  Title ' +
           //'  <textarea id="fileToUp"></textarea>' +
         '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
@@ -120,7 +154,7 @@ function datasetEditor(collectionName, data) {
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
-        '    <button type="submit" id="btn">Submit</button>' +
+        //'    <button type="submit" id="btn">Submit</button>' +
         '  </form>' +
         '  <div id="response"></div>' +
         '  <ul id="list"></ul>' +
@@ -131,7 +165,7 @@ function datasetEditor(collectionName, data) {
 
       if (window.FormData) {
         formdata = new FormData();
-        document.getElementById("btn").style.display = "none";
+        //document.getElementById("btn").style.display = "none";
       }
       function showUploadedItem (source) {
         var list = document.getElementById("list"),
@@ -158,7 +192,7 @@ function datasetEditor(collectionName, data) {
                 return;
               }
             });
-            if (!!file.type.match(/csv.*/)) {
+            if (!!file.name.match(/\.csv/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -194,12 +228,13 @@ function datasetEditor(collectionName, data) {
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
                   save();
+                  datasetEditor(collectionName, data);
                 }
               });
             }
             //}); //each
           } else {
-            if (!!file.type.match(/csv.*/)) {
+            if (!!file.name.match(/\.csv/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -223,6 +258,7 @@ function datasetEditor(collectionName, data) {
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
                   save();
+                  datasetEditor(collectionName, data);
                 }
               });
             }
@@ -244,7 +280,7 @@ function datasetEditor(collectionName, data) {
     $('.fl-editor__notes').append(
         '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
         'Note ' +
-        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Clicx edit to add content">' + note.data + '</textarea>' +
+        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Click edit to add content">' + note.data + '</textarea>' +
         ' <button class="fl-panel--editor__notes__note-item__edit_' + index + '">Edit</button>' +
         ' <button class="fl-panel--editor__notes__note-item__delete_' + index + '">Delete</button>' +
         '</div>').show();
@@ -283,32 +319,11 @@ function datasetEditor(collectionName, data) {
 
   //Add new note
   $("#notes-section").append('<button id="addNote">Add new note</button>');
-  $("#addNote").click(function () {
-    $('.fl-editor__notes').append(
-        '<div id="' + lastIndexNote + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Note ' +
-        ' <textarea id="note_markdown_' + lastIndexNote + '"cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__notes__note-item__edit_' + lastIndexNote + '">Edit</button>' +
-        ' <button class="fl-panel--editor__notes__note-item__delete_' + lastIndexNote + '">Delete</button>' +
-        '</div>');
-    sortableNotes();
-    saveNewNote();
-  });
-
-  function saveNewNote() {
-    var orderNote = $(".fl-editor__notes").sortable('toArray');
-    $(orderNote).each(function(index, name){
-      var markdown = $('#note_markdown_'+name).val();
-      //var markdown = "Enter text here";
-      newNotes[parseInt(index)] = {data: markdown};
-    });
-    data.notes = newNotes;
-    console.log(data.notes);
-    //$(".note-list").remove();
-    //$("#metadata-list").remove();
+  $("#addNote").one('click', function () {
+    data.notes.push({data:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
     datasetEditor(collectionName, data);
-  }
+  });
 
   function sortableNotes() {
     $(".fl-editor__notes").sortable();
