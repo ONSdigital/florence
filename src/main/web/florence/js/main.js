@@ -39,7 +39,7 @@ function articleEditor(collectionName, data) {
   var newTabs = [];
   var newRelated = [];
   var newLinks = [];
-  var lastIndexSection, lastIndexTab, lastIndexRelated, lastIndexLink;
+  var lastIndexRelated, lastIndexLink;
 
   //console.log(data.sections);
 
@@ -523,7 +523,7 @@ function bulletinEditor(collectionName, data) {
   var newTabs = [];
   var newRelated = [];
   var newLinks = [];
-  var lastIndexSection, lastIndexTab, lastIndexRelated, lastIndexLink;
+  var lastIndexRelated, lastIndexLink;
 
   //console.log(data.sections);
 
@@ -1151,7 +1151,7 @@ function datasetEditor(collectionName, data) {
   var newNotes = [];
   var newRelated = [];
   var newUsedIn = [];
-  var lastIndexNote, lastIndexRelated, lastIndexUsedIn, lastIndexCorrection;
+  var lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
   var uriUpload;
 
@@ -2655,6 +2655,7 @@ function updateContent(collectionName, path, content) {
   postContent(collectionName, path, content,
     success = function (response) {
       console.log("Updating completed" + response);
+      Florence.Editor.isDirty = false;
       refreshPreview();
     },
     error = function (response) {
