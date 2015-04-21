@@ -135,8 +135,16 @@ $(document).ready(function(){
 		// 		$(this).addClass('active');
 		// 	}
 		// });
-		$('.edit-accordion').accordion({
-			header: '.edit-section__head'
-		});
+		try {
+			$('.edit-accordion').accordion({
+				header: '.edit-section__head'
+			});
+
+			$('.edit-section__sortable').sortable();
+			$('.edit-section__sortable').disableSelection();
+		}
+		catch(err){
+			//
+		}
 		
 });
