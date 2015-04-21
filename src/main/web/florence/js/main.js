@@ -1,3 +1,13 @@
+var Florence = Florence || {};
+
+Florence.Editor = {
+  isDirty:false,
+  data:{}
+};
+
+
+
+
 setupFlorence();
 
 function accessToken(clear) {
@@ -2425,7 +2435,12 @@ function delete_cookie(name) {
     postReview(collectionName, getPathName());
   });
 
-
+  $('.fl-panel--editor :input').on('input', function() {
+    Florence.Editor.isDirty = true;
+    // remove the handler now we know content has changed.
+    $(':input').unbind('input');
+    //console.log('Changes detected.');
+  });
 }
 function markdownEditor() {
   var converter = Markdown.getSanitizingConverter();
@@ -2563,6 +2578,56 @@ function refreshPreview(url) {
   // $('body').wrapInner('<section class="fl-panel fl-panel--preview"><div class="fl-panel--preview__inner"></div></section>');
   // $('body').wrapInner('<section class="fl-container"></section>');
   $('body').prepend(florence_menu);
+
+  $('.fl-admin-menu__link').on('click', function() {
+    console.log('admin menu clicked...');
+    if(Florence.Editor.isDirty) {
+      var result = confirm("You have unsaved changes. Are you sure you want to continue");
+      if (result == true) {
+        Florence.Editor.isDirty = false;
+        return true;
+      } else {
+        return false;
+      }
+    }
+  });
+
+  window.onbeforeunload = function(){
+    if(Florence.Editor.isDirty) {
+      return 'You have unsaved changes.';
+    }
+  };
+
+  //click handlers
+  $('.fl-admin-menu__link').click(function() {
+    if ($(this).parent().hasClass('fl-admin-menu__item--collections')){
+      viewController('collections');
+    }
+  });
+
+  $('.fl-admin-menu__item--useradmin').click(function() {
+    viewController('users-and-access');
+  });
+
+  var loginLink = $('.fl-admin-menu__item--login');
+  loginLink.addClass('hidden');
+  loginLink.click(function() {
+    viewController('login');
+  });
+  var logoutLink = $('.fl-admin-menu__item--logout')
+  logoutLink.removeClass('hidden');
+  logoutLink.click(function() {
+    logoutLink.addClass('hidden');
+    loginLink.removeClass('hidden');
+    logout();
+    viewController('login');
+  });
+
+  $('.fl-admin-menu__item--publish').click(function() {
+    viewController('publish');
+  });
+
+
 
   viewController();
 
@@ -2920,36 +2985,6 @@ function viewCollections(collectionName) {
 function viewController(view){
 
 	if (logged_in()){
-		// alert('auth true');
-
-		//click handlers
-		$('.fl-admin-menu__link').unbind("click").click(function() {
-			if ($(this).parent().hasClass('fl-admin-menu__item--collections')){
-				viewController('collections');
-			}
-		});
-
-		$('.fl-admin-menu__item--useradmin').unbind("click").click(function() {
-				viewController('users-and-access');
-		});
-
-		var loginLink = $('.fl-admin-menu__item--login');
-		loginLink.addClass('hidden');
-		loginLink.unbind("click").click(function() {
-			viewController('login');
-		});
-		var logoutLink = $('.fl-admin-menu__item--logout')
-		logoutLink.removeClass('hidden');
-		logoutLink.unbind("click").click(function() {
-			logoutLink.addClass('hidden');
-			loginLink.removeClass('hidden');
-			logout();
-			viewController('login');
-		});
-
-		$('.fl-admin-menu__item--publish').unbind("click").click(function() {
-				viewController('publish');
-		});
 
 		//clear view
 		$('.fl-view').empty();
@@ -3283,6 +3318,18 @@ function viewWorkspace(path) {
   //localStorage.setItem("pageurl", pageurl);
   //click handlers
   $('.fl-main-menu__link').click(function () {
+
+    console.log('menu item clicked');
+
+    if(Florence.Editor.isDirty) {
+      var result = confirm("You have unsaved changes. Are you sure you want to continue");
+      if (result == true) {
+        Florence.Editor.isDirty = false;
+      } else {
+        return false;
+      }
+    }
+
     $('.fl-panel--sub-menu').empty();
     $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
     $(this).addClass('fl-main-menu__link--active');
@@ -3300,7 +3347,6 @@ function viewWorkspace(path) {
     }
 
     else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
-      console.log(path)
       loadPageDataIntoEditor(collectionName, true);
       $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
       $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');

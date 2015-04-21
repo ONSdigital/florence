@@ -48,5 +48,10 @@ function makeEditSections(collectionName, response) {
     postReview(collectionName, getPathName());
   });
 
-
+  $('.fl-panel--editor :input').on('input', function() {
+    Florence.Editor.isDirty = true;
+    // remove the handler now we know content has changed.
+    $(':input').unbind('input');
+    //console.log('Changes detected.');
+  });
 }
