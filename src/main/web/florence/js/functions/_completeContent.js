@@ -1,6 +1,7 @@
 function saveAndCompleteContent(collectionName, path, content) {
   postContent(collectionName, path, content,
     success = function (response) {
+      Florence.Editor.isDirty = false;
       completeContent(collectionName, path);
     },
     error = function (response) {
