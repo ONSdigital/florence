@@ -1,12 +1,14 @@
 {
   "devDependencies": {
     "catw": "latest",
+    "cat": "latest",
     "onchange": "latest"
   },
   "scripts": {
-    "build-js": "catw js/functions/*.js js/third-party/*.js -o js/main.js -v",
+    "watch-js": "catw js/functions/*.js js/third-party/*.js -o js/main.js -v",
+    "build-js": "cat js/functions/*.js js/third-party/*.js > js/main.js",
     "watch-templates": "npm run build-templates && onchange 'templates/*.handlebars' -- npm run build-templates ",
     "build-templates": "handlebars templates/*.handlebars --output js/templates.js",
-    "watch": "npm run build-js & npm run watch-templates"
+    "watch": "npm run watch-js & npm run watch-templates"
   }
 }

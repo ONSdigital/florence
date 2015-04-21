@@ -19,6 +19,9 @@ export RESTOLINO_CLASSES="target/classes"
 #           see also: http://stackoverflow.com/questions/9311353/java-ee-security-realms
 #export REALM=niceapp
 
+# Build the required javascript files - this requires node to be installed.
+./build-js.sh
+
 mvn clean package && \
 
 # Development: reloadable
