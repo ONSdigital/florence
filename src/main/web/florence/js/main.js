@@ -2724,6 +2724,11 @@ function viewCollectionDetails(collectionName) {
       })
     }
 
+    function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+    collection.inProgressUris = collection.inProgressUris.filter(function(uri) { return isJsonFile(uri) });
+    collection.completeUris = collection.completeUris.filter(function(uri) { return isJsonFile(uri) });
+    collection.reviewedUris = collection.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
+
     var collection_summary =
       '<h1>' + collection.name + '</h1>' +
       '<p>' + collection.inProgressUris.length + ' Pages in progress</p>' +
