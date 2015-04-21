@@ -1129,6 +1129,8 @@ function createCollection() {
       document.cookie = "collection=" + collectionName + ";path=/";
       localStorage.setItem("collection", collectionName);
       viewWorkspace();
+      $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
       clearInterval(window.intervalID);
       window.intervalID = setInterval(function () {
         checkForPageChanged(function () {
@@ -1852,6 +1854,10 @@ function handleApiError(response) {
   }
 }
 function loadBrowseScreen() {
+
+  enablePreview();
+  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+  $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
 
   $('.fl-panel--sub-menu').css("overflow","scroll");
   Handlebars.registerPartial("browseNode", Handlebars.templates.browseNode);
@@ -2782,7 +2788,7 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
-        $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+        $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
         $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
         clearInterval(window.intervalID);
         window.intervalID = setInterval(function () {
@@ -3382,10 +3388,6 @@ function viewWorkspace(path) {
       loadBrowseScreen();
     }
   });
-
-  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-  $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
-
 
   removePreviewColClasses();
   removeSubMenus();
