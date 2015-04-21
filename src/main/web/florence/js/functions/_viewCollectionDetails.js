@@ -50,7 +50,6 @@ function viewCollectionDetails(collectionName) {
       })
     }
 
-
     var collection_summary =
       '<h1>' + collection.name + '</h1>' +
       '<p>' + collection.inProgressUris.length + ' Pages in progress</p>' +
@@ -76,18 +75,16 @@ function viewCollectionDetails(collectionName) {
       $.each(uris, function (i, uri) {
 
         // only request the json files.
-        if (uri.indexOf('.json', uri.length - '.json'.length) !== -1) {
-          pageDataRequests.push(getPageData(collectionName, uri,
-            success = function (response) {
-              var path = uri.replace('/data.json', '');
-              path = path.length === 0 ? '/' : path;
-              uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-              response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
-            },
-            error = function (response) {
-              handleApiError(response);
-            }));
-        }
+        pageDataRequests.push(getPageData(collectionName, uri,
+          success = function (response) {
+            var path = uri.replace('/data.json', '');
+            path = path.length === 0 ? '/' : path;
+            uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
+            response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
+          },
+          error = function (response) {
+            handleApiError(response);
+          }));
       });
 
       $.when.apply($, pageDataRequests).then(function () {
