@@ -109,35 +109,66 @@
 			margin: $lineheight $gutter;
 			overflow: hidden;
 			position: relative;
-			cursor: pointer;
+			
 
-			&.active {
-				cursor: auto;
+
+
+			// &.active {
+			// 	cursor: auto;
+			// 	&:before {
+			// 		border-top: 0px solid transparent;
+			// 		border-bottom: 10px solid $quill-gray;
+			// 		border-left: 10px solid transparent; 
+			// 		border-right:10px solid transparent; 
+			// 	}
+			// }
+
+			// &:before {
+			// 	content: '';
+			// 	position: absolute;
+			// 	width: 0; 
+			// 	height: 0;
+			// 	top: $lineheight;
+			// 	right: $gutter;
+			// 	background-color: transparent;
+			// 	border-top: 10px solid $quill-gray;
+			// 	border-left: 10px solid transparent; 
+			// 	border-right:10px solid transparent; 
+			// 	/*cursor: pointer;*/
+			// }
+
+			&__head {
+				outline: none;
+				cursor: pointer;
+
+				&.ui-accordion-header-active {
+					cursor: auto;
+					&:before {
+						border-top: 0px solid transparent;
+						border-bottom: 10px solid $quill-gray;
+						border-left: 10px solid transparent; 
+						border-right:10px solid transparent; 
+					}
+				}
+
 				&:before {
-					border-top: 0px solid transparent;
-					border-bottom: 10px solid $quill-gray;
+					content: '';
+					position: absolute;
+					width: 0; 
+					height: 0;
+					top: $lineheight;
+					right: $gutter;
+					background-color: transparent;
+					border-top: 10px solid $quill-gray;
 					border-left: 10px solid transparent; 
 					border-right:10px solid transparent; 
+					/*cursor: pointer;*/
 				}
-			}
-
-			&:before {
-				content: '';
-				position: absolute;
-				width: 0; 
-				height: 0;
-				top: $lineheight;
-				right: $gutter;
-				background-color: transparent;
-				border-top: 10px solid $quill-gray;
-				border-left: 10px solid transparent; 
-				border-right:10px solid transparent; 
-				/*cursor: pointer;*/
 			}
 
 			&__content {
 				padding-top: $lineheight;
-				display: none;
+				// display: none;
 			}
 		}
 	}

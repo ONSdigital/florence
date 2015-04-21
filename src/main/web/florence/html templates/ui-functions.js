@@ -125,16 +125,18 @@ $(document).ready(function(){
 
 
 		//edit
-		$('.edit-section').click(function() {
+		// $('.edit-section').click(function() {
 
-			if(!$(this).hasClass('active')) {
-				$('.edit-section__content').slideUp(300);
-				$('.edit-section').removeClass('active');
+		// 	if(!$(this).hasClass('active')) {
+		// 		$('.edit-section__content').slideUp(300);
+		// 		$('.edit-section').removeClass('active');
 
-				$(this).children('.edit-section__content').slideDown(300);
-				$(this).addClass('active');
-			}
+		// 		$(this).children('.edit-section__content').slideDown(300);
+		// 		$(this).addClass('active');
+		// 	}
+		// });
+		$('.edit-accordion').accordion({
+			header: '.edit-section__head'
 		});
-
 		
 });
