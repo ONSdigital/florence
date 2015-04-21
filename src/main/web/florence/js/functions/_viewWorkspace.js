@@ -1,128 +1,74 @@
-function viewWorkspace(path) {
-
-  window.intIntervalTime = 100;
-
-  var workspace_menu_main =
-    '<nav class="fl-panel fl-panel--menu">' +
-    '  <ul class="fl-main-menu">' +
-    '    <li class="fl-main-menu__item fl-main-menu__item--browse">' +
-    '      <a href="#" class="fl-main-menu__link">Browse</a>' +
-    '    </li>' +
-    '    <li class="fl-main-menu__item fl-main-menu__item--create">' +
-    '      <a href="#" class="fl-main-menu__link">Create</a>' +
-    '    </li>' +
-    '    <li class="fl-main-menu__item fl-main-menu__item--edit">' +
-    '      <a href="#" class="fl-main-menu__link">Edit</a>' +
-    '    </li>' +
-    '    <li class="fl-main-menu__item fl-main-menu__item--review">' +
-    '      <a href="#" class="fl-main-menu__link">Review</a>' +
-    '    </li>' +
-    '  </ul>' +
-    '</nav>' +
-    '<section class="fl-panel fl-panel--sub-menu">' +
-    '</section>';
-
-  var workspace_menu_review =
-    '<section class="fl-panel">' +
-    '  <div class="fl-review-list-holder"></div>' +
-    '  <button class="fl-button fl-button--big fl-button--center fl-review-page-edit-button" style="display: none;">Edit this page</button>' +
-    '  <button class="fl-button fl-button--big fl-button--center fl-review-page-review-button" style="display: none;">Happy with this send to content owner</button>' +
-    '</section>';
+function viewWorkspace(path, collectionName, menu) {
 
   var currentPath = '';
   if (path) {
     currentPath = path;
   }
+  var browserLocation;
 
-  var workspace_preview =
-    '<section class="fl-panel fl-panel--preview">' +
-    '  <div class="fl-panel--preview__inner">' +
-    '    <iframe src="/index.html#!' + currentPath + '" class="fl-panel fl-panel--preview__content"></iframe>' +
-    '  </div>' +
-    '</section>';
-
-  //build view
-  $('.section').html(workspace_menu_main + workspace_preview);
-  enablePreview();
-
-  clearInterval(window.intervalID);
-  loadBrowseScreen();
-  var collectionName = localStorage.getItem("collection");
   localStorage.removeItem("pageurl");
-  //var pageurl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  //localStorage.setItem("pageurl", pageurl);
+
+  // tentative reload of nav bar with collection name
+  var mainNavHtml = templates.mainNav(collectionName);
+  //console.log(collectionName)
+  $('.wrapper').replaceWith(mainNavHtml);
+
+  var workSpace = templates.workSpace(currentPath);
+  $('.section').append(workSpace);
+
   //click handlers
-  $('.fl-main-menu__link').click(function () {
+  $('.nav--workspace').click(function () {
 
-    console.log('menu item clicked');
+    $('.nav--workspace li').removeClass('selected');
+    $(this).addClass('selected');
 
-    if(Florence.Editor.isDirty) {
+    //console.log('menu item clicked');
+
+    if (Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
-      if (result == true) {
+      if (result === true) {
         Florence.Editor.isDirty = false;
       } else {
         return false;
       }
     }
 
-    $('.fl-panel--sub-menu').empty();
-    $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-    $(this).addClass('fl-main-menu__link--active');
-
-    // setupFlorenceWorkspace($(this));
-    if ($(this).parent().hasClass('fl-main-menu__item--browse')) {
-      //$('.fl-panel--sub-menu').empty();
-      clearInterval(window.intervalID);
+    if (menu === 'browse' || $(this).is('#browse')) {
       loadBrowseScreen();
     }
-
-    else if ($(this).parent().hasClass('fl-main-menu__item--create')) {
-      disablePreview();
+    else if (menu === 'create' || $(this).is('#create')) {
       loadCreateBulletinScreen(collectionName);
     }
-
-    else if ($(this).parent().hasClass('fl-main-menu__item--edit')) {
-      loadPageDataIntoEditor(collectionName, true);
-      $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
-      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
-      clearInterval(window.intervalID);
-      enablePreview();
-      window.intervalID = setInterval(function () {
-        checkForPageChanged(function () {
-          loadPageDataIntoEditor(collectionName, true);
-        });
-      }, window.intIntervalTime);
+    else if (menu === 'edit' || $(this).is('#edit')) {
+      checkForPageChanged(function () {
+        loadPageDataIntoEditor(collectionName, true);
+      });
     }
-
-    else if ($(this).parent().hasClass('fl-main-menu__item--review')) {
-      $('.fl-panel--sub-menu').html(workspace_menu_review);
-      enablePreview();
-      //$('.fl-panel--preview__inner').addClass('fl-panel--preview__inner--active');
+    else if (menu === 'review' || $(this).is('#review')) {
       loadReviewScreen(collectionName);
-
-      clearInterval(window.intervalID);
-      window.intervalID = setInterval(function () {
-        checkForPageChanged(function () {
-          updateReviewScreen(collectionName);
-        });
-      }, window.intIntervalTime);
+      checkForPageChanged(function () {
+        updateReviewScreen(collectionName);
+      });
     }
-
     else {
-      clearInterval(window.intervalID);
       loadBrowseScreen();
     }
   });
 
-  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-  $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
+  //mini browser
+  var browserContent = $('#iframe')[0].contentWindow;
+  setTimeout(function() {
+    $(browserContent.document).on('click', function(){
+      browserLocation = browserContent.location.href;
+      $('.browser-location').val(browserLocation);
+    });
+    $('.browser-location').val($('#iframe').attr('src'));
 
+    var iframeUrl = localStorage.getItem("pageurl");
+    var nowUrl = browserLocation;
+    if (iframeUrl !== nowUrl) {
+      localStorage.setItem("pageurl", nowUrl);
+    }
+  },100);
 
-  removePreviewColClasses();
-  removeSubMenus();
-
-  $(this).addClass('fl-main-menu__link--active');
-
-  $('.fl-panel--preview').addClass('col--7');
-  $('.fl-panel--sub-menu').show();
 }

@@ -59,8 +59,7 @@ function viewCollectionDetails(collectionName) {
         collectionDetails[status] = uri_list;
 
         collectionHtml = window.templates.collection(collectionDetails);
-        $('.collection-selected').html(collectionHtml);
-        $('.collection-selected').animate({right: "0%"}, 500);
+        $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
         //page-list
         $('.page-item').click(function() {
@@ -74,19 +73,14 @@ function viewCollectionDetails(collectionName) {
 
         $('.btn-page-edit').click(function () {
           var path = $(this).attr('data-path');
-          console.log('Collection row clicked for id: ' + path);
+          //console.log('Collection row clicked for id: ' + path);
           if (path) {
             document.cookie = "collection=" + collectionName + ";path=/";
             localStorage.setItem("collection", collectionName);
-            viewWorkspace(path);
-            $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
-            $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
-            clearInterval(window.intervalID);
-            window.intervalID = setInterval(function () {
-              checkForPageChanged(function () {
-                loadPageDataIntoEditor(collectionName, true);
-              });
-            }, window.intIntervalTime);
+            viewWorkspace(path, collectionName, 'edit');
+            checkForPageChanged(function () {
+              loadPageDataIntoEditor(collectionName, true);
+            });
           }
         });
         $('.btn-collection-work-on').click(function () {

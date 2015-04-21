@@ -22,7 +22,6 @@ function viewController(view){
 		}
 		else {
 			viewController('collections');
-			// viewController('workspace')
 		}
 	}
 
