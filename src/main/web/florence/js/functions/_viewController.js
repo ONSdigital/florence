@@ -1,36 +1,6 @@
 function viewController(view){
 
 	if (logged_in()){
-		// alert('auth true');
-
-		//click handlers
-		$('.fl-admin-menu__link').unbind("click").click(function() {
-			if ($(this).parent().hasClass('fl-admin-menu__item--collections')){
-				viewController('collections');
-			}
-		});
-
-		$('.fl-admin-menu__item--useradmin').unbind("click").click(function() {
-				viewController('users-and-access');
-		});
-
-		var loginLink = $('.fl-admin-menu__item--login');
-		loginLink.addClass('hidden');
-		loginLink.unbind("click").click(function() {
-			viewController('login');
-		});
-		var logoutLink = $('.fl-admin-menu__item--logout')
-		logoutLink.removeClass('hidden');
-		logoutLink.unbind("click").click(function() {
-			logoutLink.addClass('hidden');
-			loginLink.removeClass('hidden');
-			logout();
-			viewController('login');
-		});
-
-		$('.fl-admin-menu__item--publish').unbind("click").click(function() {
-				viewController('publish');
-		});
 
 		//clear view
 		$('.fl-view').empty();

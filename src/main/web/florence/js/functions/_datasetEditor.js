@@ -4,7 +4,7 @@ function datasetEditor(collectionName, data) {
   var newNotes = [];
   var newRelated = [];
   var newUsedIn = [];
-  var lastIndexNote, lastIndexRelated, lastIndexUsedIn, lastIndexCorrection;
+  var lastIndexRelated, lastIndexUsedIn;
   var lastIndexFile = 0;
   var uriUpload;
 
@@ -121,7 +121,7 @@ function datasetEditor(collectionName, data) {
         '  <textarea id="file_name_' + index + '" style="display: none" cols="50">' + file.file + '</textarea>' +
         '  <div id="file_name_show_' + index + '">' + file.file + '</div>' +
         '  <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
+        '</div>');
 
     // Delete
     $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
@@ -129,8 +129,6 @@ function datasetEditor(collectionName, data) {
       $.ajax({
         url: "/zebedee/content/" + collectionName + "?uri=" + data.download[index].file,
         type: "DELETE",
-        //processData: false,
-        //contentType: false,
         success: function (res) {
           console.log(res);
         },
@@ -148,7 +146,7 @@ function datasetEditor(collectionName, data) {
   $("#content-section").append('<button id="addFile">Add new file</button>');
   $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
-        '<div id="' + lastIndexFile + '" class="file-list" style="background-color:grey; color:white;">' +
+        '<div id="' + lastIndexFile + '" class="section-list" style="background-color:grey; color:white;">' +
         '  Title ' +
           //'  <textarea id="fileToUp"></textarea>' +
         '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
@@ -156,7 +154,7 @@ function datasetEditor(collectionName, data) {
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
-        '    <button type="submit" id="btn">Submit</button>' +
+        //'    <button type="submit" id="btn">Submit</button>' +
         '  </form>' +
         '  <div id="response"></div>' +
         '  <ul id="list"></ul>' +
@@ -167,7 +165,7 @@ function datasetEditor(collectionName, data) {
 
       if (window.FormData) {
         formdata = new FormData();
-        document.getElementById("btn").style.display = "none";
+        //document.getElementById("btn").style.display = "none";
       }
       function showUploadedItem (source) {
         var list = document.getElementById("list"),
@@ -230,6 +228,7 @@ function datasetEditor(collectionName, data) {
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
                   save();
+                  datasetEditor(collectionName, data);
                 }
               });
             }
@@ -259,6 +258,7 @@ function datasetEditor(collectionName, data) {
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
                   save();
+                  datasetEditor(collectionName, data);
                 }
               });
             }

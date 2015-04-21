@@ -119,5 +119,22 @@ $(document).ready(function(){
 		// 	$('.browser-location').val(browserLocation);
 		// });
 
+
+
+
+
+
+		//edit
+		$('.edit-section').click(function() {
+
+			if(!$(this).hasClass('active')) {
+				$('.edit-section__content').slideUp(300);
+				$('.edit-section').removeClass('active');
+
+				$(this).children('.edit-section__content').slideDown(300);
+				$(this).addClass('active');
+			}
+		});
+
 		
 });
