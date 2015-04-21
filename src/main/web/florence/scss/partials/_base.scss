@@ -196,7 +196,7 @@ $panel-height-2-top-nav: 756px;
 		&:after {
 			content: '';
 			width: 30px;
-			height: 42px;
+			height: 30px;
 			position: absolute;
 			left: 0;
 			top: -5px;
@@ -444,6 +444,7 @@ button {
 		color: $concrete;
 		background-color: $como;
 	}
+
 	&.btn-collection-create {
 		color: $concrete;
 		background-color: $como;
@@ -451,12 +452,33 @@ button {
 		margin-top: $lineheight;
 		margin-right: 0;
 	}
+
 	&.btn-page-create {
 		color: $concrete;
 		background-color: $como;
 		float: right;
 		margin-top: $lineheight;
 		margin-right: 0;
+	}
+
+	&.btn-page-edit {
+		color: $concrete;
+		background-color: $astral;
+	}
+
+	&.btn-page-delete {
+		color: $concrete;
+		background-color: $night-shadz;
+	}
+
+	&.btn-add-section {
+		color: $pickled-bluewood;
+		background-color: $cadet-blue;
+		opacity: 0.5;
+
+		&:hover {
+			opacity: 1;
+		}
 	}
 }
 

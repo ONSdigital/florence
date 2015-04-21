@@ -1129,6 +1129,8 @@ function createCollection() {
       document.cookie = "collection=" + collectionName + ";path=/";
       localStorage.setItem("collection", collectionName);
       viewWorkspace();
+      $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
       clearInterval(window.intervalID);
       window.intervalID = setInterval(function () {
         checkForPageChanged(function () {
@@ -1269,7 +1271,7 @@ function datasetEditor(collectionName, data) {
         '  <textarea id="file_name_' + index + '" style="display: none" cols="50">' + file.file + '</textarea>' +
         '  <div id="file_name_show_' + index + '">' + file.file + '</div>' +
         '  <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
+        '</div>');
 
     // Delete
     $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
@@ -1277,8 +1279,6 @@ function datasetEditor(collectionName, data) {
       $.ajax({
         url: "/zebedee/content/" + collectionName + "?uri=" + data.download[index].file,
         type: "DELETE",
-        //processData: false,
-        //contentType: false,
         success: function (res) {
           console.log(res);
         },
@@ -1296,7 +1296,7 @@ function datasetEditor(collectionName, data) {
   $("#content-section").append('<button id="addFile">Add new file</button>');
   $("#addFile").one('click', function () {
     $('.fl-editor__download').append(
-        '<div id="' + lastIndexFile + '" class="file-list" style="background-color:grey; color:white;">' +
+        '<div id="' + lastIndexFile + '" class="section-list" style="background-color:grey; color:white;">' +
         '  Title ' +
           //'  <textarea id="fileToUp"></textarea>' +
         '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
@@ -1304,7 +1304,7 @@ function datasetEditor(collectionName, data) {
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
-        '    <button type="submit" id="btn">Submit</button>' +
+        //'    <button type="submit" id="btn">Submit</button>' +
         '  </form>' +
         '  <div id="response"></div>' +
         '  <ul id="list"></ul>' +
@@ -1315,7 +1315,7 @@ function datasetEditor(collectionName, data) {
 
       if (window.FormData) {
         formdata = new FormData();
-        document.getElementById("btn").style.display = "none";
+        //document.getElementById("btn").style.display = "none";
       }
       function showUploadedItem (source) {
         var list = document.getElementById("list"),
@@ -1378,6 +1378,7 @@ function datasetEditor(collectionName, data) {
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
                   save();
+                  datasetEditor(collectionName, data);
                 }
               });
             }
@@ -1407,6 +1408,7 @@ function datasetEditor(collectionName, data) {
                   $('#file_name_' + lastIndexFile).val(uriUpload);
                   $('#file_name_show_' + lastIndexFile).val(uriUpload);
                   save();
+                  datasetEditor(collectionName, data);
                 }
               });
             }
@@ -1853,6 +1855,10 @@ function handleApiError(response) {
 }
 function loadBrowseScreen() {
 
+  enablePreview();
+  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+  $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
+
   $('.fl-panel--sub-menu').css("overflow","scroll");
   Handlebars.registerPartial("browseNode", Handlebars.templates.browseNode);
   return $.ajax({
@@ -2266,6 +2272,8 @@ function loadT4Creator (collectionName) {
           console.log("Updating completed " + message);
 
           viewWorkspace('/' + newUri);
+          $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+          $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
           clearInterval(window.intervalID);
           window.intervalID = setInterval(function () {
             checkForPageChanged(function () {
@@ -2724,6 +2732,10 @@ function viewCollectionDetails(collectionName) {
       })
     }
 
+    function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+    collection.inProgressUris = collection.inProgressUris.filter(function(uri) { return isJsonFile(uri) });
+    collection.completeUris = collection.completeUris.filter(function(uri) { return isJsonFile(uri) });
+    collection.reviewedUris = collection.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
 
     var collection_summary =
       '<h1>' + collection.name + '</h1>' +
@@ -2750,18 +2762,16 @@ function viewCollectionDetails(collectionName) {
       $.each(uris, function (i, uri) {
 
         // only request the json files.
-        if (uri.indexOf('.json', uri.length - '.json'.length) !== -1) {
-          pageDataRequests.push(getPageData(collectionName, uri,
-            success = function (response) {
-              var path = uri.replace('/data.json', '');
-              path = path.length === 0 ? '/' : path;
-              uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-              response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
-            },
-            error = function (response) {
-              handleApiError(response);
-            }));
-        }
+        pageDataRequests.push(getPageData(collectionName, uri,
+          success = function (response) {
+            var path = uri.replace('/data.json', '');
+            path = path.length === 0 ? '/' : path;
+            uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
+            response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
+          },
+          error = function (response) {
+            handleApiError(response);
+          }));
       });
 
       $.when.apply($, pageDataRequests).then(function () {
@@ -2780,7 +2790,7 @@ function viewCollectionDetails(collectionName) {
         document.cookie = "collection=" + collectionName + ";path=/";
         localStorage.setItem("collection", collectionName);
         viewWorkspace(path);
-        $('.fl-main-menu__item--browse .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+        $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
         $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
         clearInterval(window.intervalID);
         window.intervalID = setInterval(function () {
@@ -3380,10 +3390,6 @@ function viewWorkspace(path) {
       loadBrowseScreen();
     }
   });
-
-  $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-  $('.fl-main-menu__item--browse .fl-main-menu__link').addClass('fl-main-menu__link--active');
-
 
   removePreviewColClasses();
   removeSubMenus();

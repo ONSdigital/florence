@@ -20,6 +20,8 @@ function createCollection() {
       document.cookie = "collection=" + collectionName + ";path=/";
       localStorage.setItem("collection", collectionName);
       viewWorkspace();
+      $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
       clearInterval(window.intervalID);
       window.intervalID = setInterval(function () {
         checkForPageChanged(function () {

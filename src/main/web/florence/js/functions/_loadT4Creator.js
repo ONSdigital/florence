@@ -82,6 +82,8 @@ function loadT4Creator (collectionName) {
           console.log("Updating completed " + message);
 
           viewWorkspace('/' + newUri);
+          $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
+          $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
           clearInterval(window.intervalID);
           window.intervalID = setInterval(function () {
             checkForPageChanged(function () {

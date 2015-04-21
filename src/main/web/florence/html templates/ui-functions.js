@@ -125,16 +125,26 @@ $(document).ready(function(){
 
 
 		//edit
-		$('.edit-section').click(function() {
+		// $('.edit-section').click(function() {
 
-			if(!$(this).hasClass('active')) {
-				$('.edit-section__content').slideUp(300);
-				$('.edit-section').removeClass('active');
+		// 	if(!$(this).hasClass('active')) {
+		// 		$('.edit-section__content').slideUp(300);
+		// 		$('.edit-section').removeClass('active');
 
-				$(this).children('.edit-section__content').slideDown(300);
-				$(this).addClass('active');
-			}
-		});
+		// 		$(this).children('.edit-section__content').slideDown(300);
+		// 		$(this).addClass('active');
+		// 	}
+		// });
+		try {
+			$('.edit-accordion').accordion({
+				header: '.edit-section__head'
+			});
 
+			$('.edit-section__sortable').sortable();
+			$('.edit-section__sortable').disableSelection();
+		}
+		catch(err){
+			//
+		}
 		
 });
