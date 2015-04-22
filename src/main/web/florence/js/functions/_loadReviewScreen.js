@@ -16,6 +16,9 @@ function loadReviewScreen(collectionName) {
     var review_list = '';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
+    function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+    data.completeUris = data.completeUris.filter(function(uri) { return isJsonFile(uri) });
+
     $.each(data.completeUris, function (i, uri) {
       pageDataRequests.push(getPageData(collectionName, uri,
         success = function (response) {

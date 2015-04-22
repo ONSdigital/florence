@@ -1847,7 +1847,7 @@ function handleApiError(response) {
   if(!response || response.status === 200)
     return;
 
-  if(response.status === 403) {
+  if(response.status === 403 || response.status === 401) {
     logout();
   }
   else {
@@ -2068,6 +2068,9 @@ function loadReviewScreen(collectionName) {
 
     var review_list = '';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+
+    function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+    data.completeUris = data.completeUris.filter(function(uri) { return isJsonFile(uri) });
 
     $.each(data.completeUris, function (i, uri) {
       pageDataRequests.push(getPageData(collectionName, uri,
@@ -3157,6 +3160,9 @@ function viewPublish() {
         success = function (response) {
           var page_list = '';
           var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+
+          function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+          response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
 
           $.each(response.reviewedUris, function (i, uri) {
             pageDataRequests.push(getPageData(collectionId, uri,
