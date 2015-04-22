@@ -2,13 +2,14 @@ function loadPageDataIntoEditor(collectionName, active) {
   if (active === false) {
     // Do nothing
   } else {
-    var pageUrlData = "/data" + getPathName();
+    checkForPageChanged();  // to update path
+    var pageUrlData = "/data" + localStorage.getItem("");
     $.ajax({
       url: pageUrlData,
       dataType: 'json',
       success: function (response) {
         makeEditSections(collectionName, response);
-        checkIfPageIsComplete();
+        //checkIfPageIsComplete();
       },
       error: function () {
         console.log('No page data returned');

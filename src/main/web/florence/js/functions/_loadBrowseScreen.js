@@ -5,9 +5,9 @@ function loadBrowseScreen() {
     dataType: 'json',
     type: 'GET',
     success: function (response) {
-      var html = templates.workBrowse(response);
       var browserContent = $('#iframe')[0].contentWindow;
       var baseURL = 'http://localhost:8081/index.html#!';
+      var html = templates.workBrowse(response);
       $('.workspace-menu').html(html);
       $('.workspace-browse').css("overflow","scroll");
 

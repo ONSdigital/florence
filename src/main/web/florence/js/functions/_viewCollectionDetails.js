@@ -45,7 +45,6 @@ function viewCollectionDetails(collectionName) {
           } else {
             pageDataRequests.push(getPageData(collectionName, uri,
               success = function (response) {
-                console.log(response)
                 var path = response.uri;
                 uri_list.push({path: path, name: response.title});
               },
@@ -74,17 +73,14 @@ function viewCollectionDetails(collectionName) {
         $('.btn-page-edit').click(function () {
           var path = $(this).attr('data-path');
           if (path) {
-            document.cookie = "collection=" + collectionName + ";path=/";
-            localStorage.setItem("collection", collectionName);
+            //document.cookie = "collection=" + collectionName + ";path=/";
+            //localStorage.setItem("collection", collectionName);
             viewWorkspace(path, collectionName, 'edit');
-            checkForPageChanged(function () {
-              loadPageDataIntoEditor(collectionName, true);
-            });
           }
         });
         $('.btn-collection-work-on').click(function () {
-          document.cookie = "collection=" + collectionName + ";path=/";
-          localStorage.setItem("collection", collectionName);
+          //document.cookie = "collection=" + collectionName + ";path=/";
+          //localStorage.setItem("collection", collectionName);
           viewWorkspace('', collectionName, 'browse');
         });
 

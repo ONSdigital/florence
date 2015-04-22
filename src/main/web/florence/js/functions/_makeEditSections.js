@@ -16,19 +16,19 @@ function makeEditSections(collectionName, response) {
 
   else {
     var workspace_menu_sub_edit =
-        '<section class="fl-panel fl-panel--editor">' +
-        '  <section style="overflow: scroll;" class="fl-editor">' +
+        '<section class="workspace-edit">' +
+        '  <section style="overflow: scroll;">' +
         '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 800px"></textarea>' +
         '  </section>' +
-        '  <nav class="fl-panel--editor__nav">' +
-        '    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
-        '    <button class="fl-panel--editor__nav__save">Save</button>' +
-        '    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
-        '    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
-        '  </nav>' +
+        //'  <nav class="fl-panel--editor__nav">' +
+        //'    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
+        //'    <button class="fl-panel--editor__nav__save">Save</button>' +
+        //'    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
+        //'    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
+        //'  </nav>' +
         '</section>';
 
-    $('.fl-panel--sub-menu').html(workspace_menu_sub_edit);
+    $('.workspace-menu').html(workspace_menu_sub_edit);
 
     $('.fl-editor__headline').val(JSON.stringify(response, null, 2));
 
@@ -48,7 +48,7 @@ function makeEditSections(collectionName, response) {
     postReview(collectionName, getPathName());
   });
 
-  $('.fl-panel--editor :input').on('input', function() {
+  $('.workspace-edit :input').on('input', function() {
     Florence.Editor.isDirty = true;
     // remove the handler now we know content has changed.
     $(':input').unbind('input');

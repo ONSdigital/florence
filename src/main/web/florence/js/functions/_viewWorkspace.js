@@ -1,13 +1,12 @@
 function viewWorkspace(path, collectionName, menu) {
 
-  var currentPath = '';
+  var currentPath = '/';
   if (path) {
     currentPath = path;
   }
-  var browserLocation;
 
   localStorage.removeItem("pageurl");
-  localStorage.setItem("pageurl", path || "/");
+  localStorage.setItem("pageurl", currentPath);
 
   // tentative reload of nav bar with collection name
   var mainNavHtml = templates.mainNav(collectionName);
@@ -38,9 +37,9 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateBulletinScreen(collectionName);
     }
     else if (menu === 'edit' || $(this).is('#edit')) {
-      checkForPageChanged(function () {
+      //checkForPageChanged(function () {
         loadPageDataIntoEditor(collectionName, true);
-      });
+      //});
     }
     else if (menu === 'review' || $(this).is('#review')) {
       loadReviewScreen(collectionName);
@@ -52,5 +51,4 @@ function viewWorkspace(path, collectionName, menu) {
       loadBrowseScreen();
     }
   });
-  loadBrowseScreen();
 }
