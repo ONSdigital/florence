@@ -1,5 +1,7 @@
 function setupFlorence() {
   window.templates = Handlebars.templates;
+  Handlebars.registerPartial("browseNode", templates.browseNode);
+
   var florence = '<div class="wrapper">'+'</div>';
   $('body').prepend(florence);
 

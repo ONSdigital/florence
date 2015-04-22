@@ -1,14 +1,16 @@
-
 <section class="workspace-create">
   <h1>New page details</h1>
   <form>
     <label for="location" class="">Location</label>
     <input id="location" type="text" />
     <label for="pagetype" class="">Page type</label>
-    <input id="pagetype" type="text" />
+    <select id="pagetype" required>
+      <option name="bulletin">bulletin</option>
+      <option name="article">article</option>
+      <option name="dataset">dataset</option>
+    </select>
     <label for="pagename" class="hidden">Page type</label>
     <input id="pagename" class="full" type="text" placeholder="Page name" />
-    <button class="btn-page-create">Create page</button>
+    <!--Button will be added here-->
   </form>
-
 </section>

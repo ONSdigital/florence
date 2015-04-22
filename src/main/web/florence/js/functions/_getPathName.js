@@ -3,7 +3,7 @@ function getPathName() {
 
   if (parsedUrl === '/')
     parsedUrl = '';
-
+  //console.log(parsedUrl);
   return parsedUrl;
 }
 

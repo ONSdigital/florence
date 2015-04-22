@@ -45,8 +45,9 @@ function viewCollectionDetails(collectionName) {
           } else {
             pageDataRequests.push(getPageData(collectionName, uri,
               success = function (response) {
+                console.log(response)
                 var path = response.uri;
-                uri_list.push({path: path, name: response.name});
+                uri_list.push({path: path, name: response.title});
               },
               error = function (response) {
                 handleApiError(response);
@@ -67,13 +68,11 @@ function viewCollectionDetails(collectionName) {
           $('.page-options').hide();
 
           $(this).parent('li').addClass('selected');
-          // $(this).addClass('page-item--selected');
           $(this).next('.page-options').show();
         });
 
         $('.btn-page-edit').click(function () {
           var path = $(this).attr('data-path');
-          //console.log('Collection row clicked for id: ' + path);
           if (path) {
             document.cookie = "collection=" + collectionName + ";path=/";
             localStorage.setItem("collection", collectionName);
@@ -86,7 +85,7 @@ function viewCollectionDetails(collectionName) {
         $('.btn-collection-work-on').click(function () {
           document.cookie = "collection=" + collectionName + ";path=/";
           localStorage.setItem("collection", collectionName);
-          viewController('workspace');
+          viewWorkspace('', collectionName, 'browse');
         });
 
         $('.collection-selected .btn-cancel').click(function(){

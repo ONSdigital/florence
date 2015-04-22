@@ -7,22 +7,20 @@ function viewWorkspace(path, collectionName, menu) {
   var browserLocation;
 
   localStorage.removeItem("pageurl");
+  localStorage.setItem("pageurl", path || "/");
 
   // tentative reload of nav bar with collection name
   var mainNavHtml = templates.mainNav(collectionName);
-  //console.log(collectionName)
   $('.wrapper').replaceWith(mainNavHtml);
 
   var workSpace = templates.workSpace(currentPath);
   $('.section').append(workSpace);
 
   //click handlers
-  $('.nav--workspace').click(function () {
-
+  $('.nav--workspace > li').click(function () {
+    menu = '';
     $('.nav--workspace li').removeClass('selected');
     $(this).addClass('selected');
-
-    //console.log('menu item clicked');
 
     if (Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
@@ -54,21 +52,5 @@ function viewWorkspace(path, collectionName, menu) {
       loadBrowseScreen();
     }
   });
-
-  //mini browser
-  var browserContent = $('#iframe')[0].contentWindow;
-  setTimeout(function() {
-    $(browserContent.document).on('click', function(){
-      browserLocation = browserContent.location.href;
-      $('.browser-location').val(browserLocation);
-    });
-    $('.browser-location').val($('#iframe').attr('src'));
-
-    var iframeUrl = localStorage.getItem("pageurl");
-    var nowUrl = browserLocation;
-    if (iframeUrl !== nowUrl) {
-      localStorage.setItem("pageurl", nowUrl);
-    }
-  },100);
-
+  loadBrowseScreen();
 }
