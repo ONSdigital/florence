@@ -508,6 +508,8 @@ function authenticate(email,password){
       document.cookie="access_token="+response + ";path=/";
       localStorage.setItem("loggedInAs", email);
       console.log('authenticated');
+      $('.fl-admin-menu__item--login').addClass('hidden');
+      $('.fl-admin-menu__item--logout').removeClass('hidden');
       viewController();
     },
     error: function (response) {
@@ -2389,6 +2391,10 @@ function makeUrl(args) {
 function logout() {
   delete_cookie('access_token');
   localStorage.removeItem("loggedInAs");
+
+  $('.fl-admin-menu__item--login').removeClass('hidden');
+  $('.fl-admin-menu__item--logout').addClass('hidden');
+
   viewController();
 }
 

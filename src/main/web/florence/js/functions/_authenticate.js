@@ -15,6 +15,8 @@ function authenticate(email,password){
       document.cookie="access_token="+response + ";path=/";
       localStorage.setItem("loggedInAs", email);
       console.log('authenticated');
+      $('.fl-admin-menu__item--login').addClass('hidden');
+      $('.fl-admin-menu__item--logout').removeClass('hidden');
       viewController();
     },
     error: function (response) {
