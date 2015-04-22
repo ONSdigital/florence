@@ -142,9 +142,21 @@ $(document).ready(function(){
 
 			$('.edit-section__sortable').sortable();
 			$('.edit-section__sortable').disableSelection();
+
+			markdownEditor();
 		}
 		catch(err){
 			//
 		}
+
+		$('.btn-markdown-editor-cancel').on('click', function() {
+			$('.markdown-editor').stop().fadeOut(200);
+		});
+
+		$('.btn-markdown-edit').on('click', function() {
+			$('.markdown-editor').stop().fadeIn(200);
+		});
+
+		
 		
 });

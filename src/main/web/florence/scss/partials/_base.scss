@@ -461,7 +461,7 @@ button {
 		margin-right: 0;
 	}
 
-	&.btn-page-edit {
+	&.btn-markdown-edit {
 		color: $concrete;
 		background-color: $astral;
 	}
@@ -479,6 +479,16 @@ button {
 		&:hover {
 			opacity: 1;
 		}
+	}
+
+	&.btn-markdown-editor-cancel {
+		color: $pickled-bluewood;
+		background-color: $cadet-blue;
+	}
+
+	&.btn-markdown-editor-save {
+		color: $concrete;
+		background-color: $como;
 	}
 }
 

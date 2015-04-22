@@ -3,10 +3,27 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Workspace</title>
+    <link href="../css/third-party/pagedown.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="../css/style.min.css">
 </head>
 <body>
 	<div class="wrapper">
+		<div class="markdown-editor">
+			<div class="markdown-editor__header">
+				<h1>Section name</h1>
+				<div id="wmd-button-bar"></div>
+			</div>
+			<div class="markdown-editor__content">
+				<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+				<div id="wmd-edit" class="wmd-panel">
+					<textarea class="wmd-input" id="wmd-input">#Markdown</textarea>
+				</div>
+			</div>
+			<div class="markdown-editor__footer">
+				<button class="btn-markdown-editor-cancel">Cancel</button>
+				<button class="btn-markdown-editor-save">Save changes</button>
+			</div>
+		</div>
 		<nav>
 			<ul class="nav">
 				<li class="selected">Working on: Collection name goes here</li>
@@ -35,22 +52,22 @@
 					<div class="edit-section__sortable">
 						<div class="edit-section__sortable-item">
 							<input type="text" value="Item 1" />
-							<button class="btn-page-edit">Edit</button>
+							<button class="btn-markdown-edit">Edit</button>
 							<button class="btn-page-delete">Delete</button>
 						</div>
 						<div class="edit-section__sortable-item">
 							<input type="text" value="Item 2" />
-							<button class="btn-page-edit">Edit</button>
+							<button class="btn-markdown-edit">Edit</button>
 							<button class="btn-page-delete">Delete</button>
 						</div>
 						<div class="edit-section__sortable-item">
 							<input type="text" value="Item 3" />
-							<button class="btn-page-edit">Edit</button>
+							<button class="btn-markdown-edit">Edit</button>
 							<button class="btn-page-delete">Delete</button>
 						</div>
 						<div class="edit-section__sortable-item">
 							<input type="text" value="Item 4" />
-							<button class="btn-page-edit">Edit</button>
+							<button class="btn-markdown-edit">Edit</button>
 							<button class="btn-page-delete">Delete</button>
 						</div>
 					</div>
@@ -113,8 +130,14 @@
 	<script type="text/javascript" src="../js/jquery.min.js"></script>
 	<!-- <script type="text/javascript" src="../js/main.js"></script> -->
 	<!-- <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
-
+	
 	<script type="text/javascript" src="jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js/third-party/Markdown.Converter.js"></script>
+	<script type="text/javascript" src="../js/third-party/Markdown.Editor.js"></script>
+	<script type="text/javascript" src="../js/third-party/Markdown.Extra.js"></script>
+	<script type="text/javascript" src="../js/third-party/Markdown.Sanitizer.js"></script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<script type="text/javascript" src="../js/functions/_markdownEditor.js"></script>
 	<script type="text/javascript" src="ui-functions.js"></script>
 </body>
 </html>
