@@ -52,7 +52,9 @@ function loadReviewScreen(collectionName) {
     });
 
     editButton.click(function () {
-      loadEditT4Screen(collectionName);
+      loadPageDataIntoEditor(collectionName, true);
+      $('.fl-main-menu__item--review .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
     });
 
     reviewButton.click(function () {

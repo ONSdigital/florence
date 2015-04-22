@@ -2037,9 +2037,12 @@ function loadPageDataIntoEditor(collectionName, active) {
           var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
           if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
             $('.fl-panel--editor__nav__review').show();
+            $('.fl-panel--editor__nav__complete').hide();
           }
-
-          $('.fl-panel--editor__nav__complete').hide();
+          else {
+            $('.fl-panel--editor__nav__review').hide();
+            $('.fl-panel--editor__nav__complete').show();
+          }
         }
         else {
           $('.fl-panel--editor__nav__review').hide();
@@ -2105,7 +2108,9 @@ function loadReviewScreen(collectionName) {
     });
 
     editButton.click(function () {
-      loadEditT4Screen(collectionName);
+      loadPageDataIntoEditor(collectionName, true);
+      $('.fl-main-menu__item--review .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
     });
 
     reviewButton.click(function () {
