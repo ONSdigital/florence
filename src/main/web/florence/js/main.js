@@ -1847,7 +1847,7 @@ function handleApiError(response) {
   if(!response || response.status === 200)
     return;
 
-  if(response.status === 403) {
+  if(response.status === 403 || response.status === 401) {
     logout();
   }
   else {
@@ -2037,9 +2037,12 @@ function loadPageDataIntoEditor(collectionName, active) {
           var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
           if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
             $('.fl-panel--editor__nav__review').show();
+            $('.fl-panel--editor__nav__complete').hide();
           }
-
-          $('.fl-panel--editor__nav__complete').hide();
+          else {
+            $('.fl-panel--editor__nav__review').hide();
+            $('.fl-panel--editor__nav__complete').show();
+          }
         }
         else {
           $('.fl-panel--editor__nav__review').hide();
@@ -2068,6 +2071,9 @@ function loadReviewScreen(collectionName) {
 
     var review_list = '';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+
+    function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+    data.completeUris = data.completeUris.filter(function(uri) { return isJsonFile(uri) });
 
     $.each(data.completeUris, function (i, uri) {
       pageDataRequests.push(getPageData(collectionName, uri,
@@ -2102,7 +2108,9 @@ function loadReviewScreen(collectionName) {
     });
 
     editButton.click(function () {
-      loadEditT4Screen(collectionName);
+      loadPageDataIntoEditor(collectionName, true);
+      $('.fl-main-menu__item--review .fl-main-menu__link').removeClass('fl-main-menu__link--active');
+      $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
     });
 
     reviewButton.click(function () {
@@ -3157,6 +3165,9 @@ function viewPublish() {
         success = function (response) {
           var page_list = '';
           var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+
+          function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+          response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
 
           $.each(response.reviewedUris, function (i, uri) {
             pageDataRequests.push(getPageData(collectionId, uri,

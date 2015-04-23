@@ -1,6 +1,12 @@
 language: java
 jdk:
 - oraclejdk7
+before_script:
+  - '[ "${TRAVIS_NODE_VERSION}" != "0.8" ] || npm install -g npm@1.4.28'
+  - npm install -g npm@latest
+  - npm --prefix src/main/web/florence/ install
+script:
+  - npm --prefix src/main/web/florence/ test
 notifications:
   slack:
     secure: J5FTJJE9MPSLLcpHD/x93ZMwmsnz1ObxwWwgCvH2JGLEdKOkX/x7TbWesX5ni1SkExCiE1CZwdQ2hV5PlQmVvsTGXr9un0+kbKn3btmpsu2ITcoqVuxNUQbRDy0J3jiJhI3GwmbHdkffElVCQ1V6IUj1DPn8xOJbryFX85myego=

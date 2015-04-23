@@ -1,10 +1,17 @@
 {
+  "description": "Florence javascript build",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ONSdigital/florence"
+  },
   "devDependencies": {
-    "catw": "latest",
     "cat": "latest",
+    "catw": "latest",
+    "jasmine": "^2.2.1",
     "onchange": "latest"
   },
   "scripts": {
+    "test": "jasmine",
     "watch-js": "catw js/functions/*.js js/third-party/*.js -o js/main.js -v",
     "build-js": "cat js/functions/*.js js/third-party/*.js > js/main.js",
     "watch-templates": "npm run build-templates && onchange 'templates/*.handlebars' -- npm run build-templates ",

@@ -214,7 +214,7 @@
 }
 
 .markdown-editor {
-	display: none;
+	// display: none;
 	box-sizing: border-box;
 	position: absolute;
 	z-index: 900;
@@ -238,7 +238,7 @@
 			padding-top: $lineheight / 2;
 			color: $cadet-blue;
 			font-family: 'Open Sans', sans-serif;
-    		font-weight: 300;
+			font-weight: 300;
 		}
 	}
 
@@ -263,12 +263,25 @@
 		width: 50%;
 		float: right;
 		background-color: $concrete;
+		overflow-y: scroll;
 	}
 
 	.wmd-edit {
 		width: 50%;
 		float: left;
 		background-color: $ash;
+		position: relative;
+		overflow: hidden;
+		padding-top: $lineheight * 2;
+
+		h2 {
+			margin: -($lineheight * 2) $gutter 0 $gutter;
+			padding: 0;
+			// color: $cadet-blue;
+			font-family: 'Open Sans', sans-serif;
+			font-weight: 600;
+			font-size: 14px;
+		}
 	}
 
 	.wmd-input {
@@ -278,10 +291,15 @@
 		resize: none;
 		background-color: $ash;
 		color: $ship-gray;
-		padding: $gutter / 2;
+		// padding: 0 ($gutter / 2) 0 70px;
+		padding: 0 0 0 0;
+		margin-left: 10%;
 		font-family: 'Ubuntu Mono';
 		font-weight: normal;
 		font-size: 14px;
+		line-height: $lineheight;
+		white-space: pre-line;
+		width: 89%;
 	}
 
 	// .wmd-prompt-dialog {
@@ -352,6 +370,33 @@
 				margin: 4px auto;
 				background: transparent url(../img/sprite.png) no-repeat 0px -262px;
 				background-size: 30px auto;
+			}
+		}
+	}
+
+	.markdown-editor-line-numbers {
+		box-sizing: border-box;
+		width: 8%;
+		height: 100%;
+		padding-bottom: $lineheight * 2;
+		position: absolute;
+		top: $lineheight * 2;
+		background: $tea;
+		border-right: 1px solid $gurkha;
+		overflow: hidden;
+
+		li {
+			margin: 0 -10px 0 0;
+			list-style-position: inside;
+			font-family: 'Ubuntu Mono';
+			font-weight: normal;
+			font-size: 14px;
+			text-align: right;
+			color: $olive-haze;
+
+			&.active {
+				background-color: $nappa;
+				color: $kabul;
 			}
 		}
 	}
