@@ -1,5 +1,6 @@
 function loadT4Creator (collectionName) {
-  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, createButton, newUri, pageData, breadcrumb;
+
+  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
     success = function (response) {
@@ -10,9 +11,10 @@ function loadT4Creator (collectionName) {
     }
   );
 
-  createButton = $('.fl-panel--creator__nav').append('<button class="fl-panel--creator__nav__create">Create Page</button>').hide();
-  var parentUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-  var parentUrlData = "/data" + parentUrl.split("#!")[1];
+  $('form').append('<button class="btn-page-create">Create page</button>');
+  $('.btn-page-create').hide();
+  var parentUrl = localStorage.getItem("pageurl");
+  var parentUrlData = "/data" + parentUrl;
 
   $.ajax({
     url: parentUrlData,
@@ -20,8 +22,8 @@ function loadT4Creator (collectionName) {
     crossDomain: true,
     success: function (checkData) {
       if (checkData.level === 't3') {
-        $('.fl-creator__parent').val(parentUrl.split("#!")[1]);
-        createButton.show();
+        $('.btn-page-create').show();
+        $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "index": 0,
@@ -34,7 +36,7 @@ function loadT4Creator (collectionName) {
         breadcrumb = inheritedBreadcrumb;
         return breadcrumb;
       } else {
-        $('.fl-creator__parent').attr("placeholder", "This is not a valid place to create this page.");
+        $('#location').attr("placeholder", "This is not a valid place to create this page.");
       }
     },
     error: function () {
@@ -45,17 +47,13 @@ function loadT4Creator (collectionName) {
   // Default
   pageType = "bulletin";
 
-  $('.fl-creator__page_type_list_select').change(function () {
+  $('#pagetype').change(function () {
     pageType = $(this).val();
   });
-  createButton.click(function () {
+  $('.btn-page-create').click(function () {
     pageData = pageTypeData(pageType);
-    parent = $('.fl-creator__parent').val().trim();
-    pageName = $('.fl-creator__new_name').val().trim();
-    //
-    // get rid of name or title?
-    //
-    pageData.name = pageName;
+    parent = $('#location').val().trim();
+    pageName = $('#pagename').val().trim();
     pageData.title = pageName;
     uriSection = pageType + "s";
     pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -80,16 +78,9 @@ function loadT4Creator (collectionName) {
         },
         success: function (message) {
           console.log("Updating completed " + message);
-
-          viewWorkspace('/' + newUri);
-          $('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-          $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
-          clearInterval(window.intervalID);
-          window.intervalID = setInterval(function () {
-            checkForPageChanged(function () {
-              loadPageDataIntoEditor(collectionName, true);
-            });
-          }, window.intIntervalTime);
+          var path = newUri;
+          console.log(path);
+          viewWorkspace(path, collectionName, 'edit');
         },
         error: function (error) {
           console.log(error);
@@ -122,7 +113,6 @@ function pageTypeData(pageType) {
       "title": "",
       "releaseDate": "",
       type: pageType,
-      "name": "",
       "uri": "",
       "fileName": "",
       "breadcrumb": ""

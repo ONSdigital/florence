@@ -1,0 +1,104 @@
+<section class="panel col col--6 collection-select">
+  <h1 class="text-align-center">Select a collection</h1>
+  <table class="collections-select-table">
+    <thead>
+      <tr>
+        <th id="collection-name" scope="col">Collection name</th>
+        <th id="collection-date" scope="col">Collection date</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each this}}
+      <tr data-id="{{id}}">
+        <td headers="collection-name">{{name}}</td>
+        <td headers="collection-date">{{date}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+</section>
+<section class="panel col col--6 collection-create">
+  <h1 class="text-align-center">Create a collection</h1>
+  <form>
+    <label for="collectionname" class="hidden">Scheduled publish</label>
+    <input id="collectionname" type="text" placeholder="Collection name" />
+    <label for="team" class="hidden">Select the team the collection can be previewed by</label>
+    <select id="team">
+      <option selected disabled="disabled">Select the team the collection can be previewed by</option>
+      <option value="Team1">Team 1</option>
+      <option value="Team2">Team 2</option>
+      <option value="Team3">Team 3</option>
+    </select>
+    <input type="radio" id="scheduledpublish" name="publishtype" value="scheduled"><label for="scheduledpublish">Scheduled publish</label>
+    <input type="radio" id="manualpublish" name="publishtype" value="manual"><label for="manualpublish">Manual publish</label>
+    <br>
+    <div class="block text-center">
+      <label for="day" class="hidden">Day</label>
+      <select id="day" class="small">
+        <option selected disabled>Day</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+        <option value="29">29</option>
+        <option value="30">30</option>
+        <option value="31">31</option>
+      </select>
+      <label for="month" class="hidden">Month</label>
+      <select id="month" class="small">
+        <option selected disabled>Month</option>
+        <option value="0">January</option>
+        <option value="1">February</option>
+        <option value="2">March</option>
+        <option value="3">April</option>
+        <option value="4">May</option>
+        <option value="5">June</option>
+        <option value="6">July</option>
+        <option value="7">August</option>
+        <option value="8">September</option>
+        <option value="9">October</option>
+        <option value="10">November</option>
+        <option value="11">December</option>
+      </select>
+      <label for="year" class="hidden">Year</label>
+      <select id="year" class="small">
+        <option selected value="2015">2015</option>
+        <option value="2016">2016</option>
+        <option value="2017">2017</option>
+      </select>
+      <br>
+      <label for="time" class="hidden">Time</label>
+      <select id="time" class="small">
+        <option value="0930">09:30</option>
+      </select>
+    </div>
+    <button class="btn-collection-create">Create collection</button>
+  </form>
+</section>
+<section class="panel col col--6 collection-selected">
+
+</section>

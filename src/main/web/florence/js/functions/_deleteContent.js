@@ -1,6 +1,6 @@
 function deleteContent(collectionName, path, success, error) {
   // little fiddle to account for home having a trailing slash
-  if(path == '/') {
+  if(path === '/') {
     uri = 'data.json';
     } else {
     uri = path + '/data.json';
@@ -19,3 +19,4 @@ function deleteContent(collectionName, path, success, error) {
     }
   });
 }
+

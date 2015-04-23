@@ -18,7 +18,7 @@ function getLastCompletedEvent(collection, page) {
   var pageEvents = collection.eventsByUri[page];
   var lastCompletedEvent = _.chain(pageEvents)
     .filter(function (event) {
-      return event.type === 'COMPLETED'
+      return event.type === 'COMPLETED';
     })
     .sortBy(function (event) {
       return event.date;

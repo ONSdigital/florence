@@ -21,11 +21,11 @@ function viewUserAndAccess(view) {
 
     $('.fl-view').prepend(create_user);
 
-    $('.fl-panel--user-and-access__create').click(function(){
+    $('.fl-panel--user-and-access__create').click(function () {
       var name  = $('.fl-user-and-access__name').val();
       var email = $('.fl-user-and-access__email').val();
       var password = $('.fl-user-and-access__password').val();
-      createUser(name, email, password)
+      createUser(name, email, password);
     });
 
     function createUser(name, email, password) {

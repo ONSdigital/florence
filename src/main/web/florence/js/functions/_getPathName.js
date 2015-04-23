@@ -1,9 +1,11 @@
 function getPathName() {
-  var parsedUrl = $('.fl-panel--preview__content').contents().get(0).location.href.split("#!")[1];
+  //var parsedUrl = localStorage.getItem("pageurl");
+  var parsedUrl = $('#iframe')[0].contentWindow.location.href.split("#!")[1];
 
-  if (parsedUrl === '/')
+  if (parsedUrl === '/') {
     parsedUrl = '';
-
-  return parsedUrl;
+    console.log(parsedUrl);
+    return parsedUrl;
+  }
 }
 

@@ -1,8 +1,8 @@
 function accordion() {
   $(function () {
-    $("#accordion").accordion(
+    $(".edit-accordion").accordion(
         {
-          header: "section",
+          header: "div.edit-section__head",
           heightStyle: "content",
           active: 'none',
           collapsible: true

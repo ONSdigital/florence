@@ -1,0 +1,22 @@
+<nav class="panel col col--1 workspace-nav">
+  <ul class="nav nav--workspace">
+    <li id="browse" class="selected">Browse</li>
+    <li id="create">Create</li>
+    <li id="edit">Edit</li>
+    <li id="review">Review</li>
+  </ul>
+</nav>
+<div class="panel col col--4 workspace-menu" style="overflow-y: scroll;">
+
+</div>
+<section class="panel col col--7 workspace-browser">
+  <div class="browser">
+    <div class="addressbar">
+      <button class="browser-btn-back">&lt;</button>
+      <button class="browser-btn-forward">&gt;</button>
+      <label for="browser-location" class="browser-location-label">Preview URL</label><input id="browser-location" class="browser-location" type="text" value="">
+      <button class="browser-btn-mobile">Mobile</button>
+    </div>
+    <iframe id="iframe" src="http://localhost:8081/index.html#!/{{this}}"></iframe>
+  </div>
+</section>

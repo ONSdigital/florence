@@ -8,59 +8,45 @@ function bulletinEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $(".section-list").remove();
-  $("#addCorrection").remove();
-  $("#addSection").remove();
-  $("#addTab").remove();
-  $("#addBulletin").remove();
-  $("#addLink").remove();
+  $("#description-p").remove();
+  //$(".section-list").remove();
+  //$("#addCorrection").remove();
+  //$("#addSection").remove();
+  //$("#addTab").remove();
+  //$("#addBulletin").remove();
+  //$("#addLink").remove();
 
-  $("#metadata-list").remove();
 
-  // Metadata load
-  $("#metadata-section").append(
-    '<div id="metadata-list">' +
-    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
-    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '</div>');
-
-  // Metadata edition and saving
-  $("#title").val(data.title).on('click keyup', function () {
+  // Metadata load, edition and saving
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.title = $(this).val();
   });
-  $("#nextRelease").val(data.nextRelease).on('click keyup', function () {
+  $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.nextRelease = $(this).val();
   });
-  $("#contactName").val(data.contact.name).on('click keyup', function () {
+  $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.name = $(this).val();
   });
-  $("#contactEmail").val(data.contact.email).on('click keyup', function () {
+  $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
-  $("#summary").val(data.summary).on('click keyup', function () {
+  $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
   });
-  $("#headline1").val(data.headline1).on('click keyup', function () {
+  $("#headline1").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.headline1 = $(this).val();
   });
-  $("#headline2").val(data.headline2).on('click keyup', function () {
+  $("#headline2").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.headline2 = $(this).val();
   });
-  $("#headline3").val(data.headline3).on('click keyup', function () {
+  $("#headline3").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.headline3 = $(this).val();
   });
@@ -79,22 +65,9 @@ function bulletinEditor(collectionName, data) {
     data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
-  var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
-
-
   // Correction section
   // Load
   $(data.correction).each(function (index, correction) {
-    lastIndexCorrection = index + 1;
-    $(".fl-editor__correction").append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
-        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
-        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
-        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
-        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
-        '  </p>' +
-        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
-        '</div>');
 
     $("#correction_text_" + index).on('click keyup', function () {
       $(this).textareaAutoSize();
@@ -105,7 +78,7 @@ function bulletinEditor(collectionName, data) {
     });
 
     // Delete
-    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+    $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
@@ -114,7 +87,6 @@ function bulletinEditor(collectionName, data) {
   });
 
   // New correction
-  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
@@ -123,20 +95,10 @@ function bulletinEditor(collectionName, data) {
 
   // Edit sections
   // Load and edition
-  $(data.sections).each(function(index, section){
-    lastIndexSection = index + 1;
-    $('.fl-editor__sections').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-        'Title ' +
-        ' <textarea id="section__' + index + '" cols="50" placeholder="Type title here and click edit to add content">' + section.title + '</textarea>' +
-        ' <textarea style="display: none;" id="section_markdown_' + index + '">' + section.markdown + '</textarea>' +
-        ' <button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
-        ' <button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
+  $(data.sections).each(function(index, section) {
 
-    $(".fl-panel--editor__sections__section-item__edit_"+index).click(function() {
-      var editedSectionValue = $("#section_markdown_" + index).val();
+    $("#section-edit_"+index).click(function() {
+      var editedSectionValue = $("#section-markdown_" + index).val();
 
       var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
       var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
@@ -152,7 +114,7 @@ function bulletinEditor(collectionName, data) {
       $("#finish-section").click(function(){
         var editedSectionText = $('#wmd-input').val();
         data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section__' + index).val();
+        var editedSectionTitle = $('#section-title_' + index).val();
         data.sections[index].title = editedSectionTitle;
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
@@ -163,7 +125,7 @@ function bulletinEditor(collectionName, data) {
     });
 
     // Delete
-    $(".fl-panel--editor__sections__section-item__delete_"+index).click(function() {
+    $("#section-delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
       bulletinEditor(collectionName, data);
@@ -171,45 +133,22 @@ function bulletinEditor(collectionName, data) {
   });
 
   //Add new sections
-  $("#content-section").append('<button id="addSection">Add new section</button>');
   $("#addSection").one('click', function () {
     data.sections.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
     bulletinEditor(collectionName, data);
   });
 
-  function saveNewSection() {
-    var orderSection = $(".fl-editor__sections").sortable('toArray');
-    $(orderSection).each(function(index, name){
-      var title = $('#section__'+name).val();
-      var markdown = $('#section_markdown_'+name).val();
-      newSections[index] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    $(".section-list").remove();
-    $("#metadata-list").remove();
-    bulletinEditor(collectionName, data);
-  }
-
   function sortableSections() {
-    $(".fl-editor__sections").sortable();
+    $("#sortable-sections").sortable();
   }
   sortableSections();
 
   // Edit accordion
   // Load and edition
   $(data.accordion).each(function(index, tab) {
-    lastIndexTab = index + 1;
-    $('.fl-editor__accordion').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="tab__' + index + '" cols="50">' + tab.title + '</textarea>' +
-        ' <textarea style="display: none;" id="tab_markdown_' + index + '">' + tab.markdown + '</textarea>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + index + '">Edit</button>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
 
-    $(".fl-panel--editor__accordion__tab-item__edit_"+index).click(function() {
+    $("#tab-edit_"+index).click(function() {
       var editedTabValue = $("#tab_markdown_" + index).val();
 
       var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
@@ -234,7 +173,7 @@ function bulletinEditor(collectionName, data) {
     });
 
     // Delete
-    $(".fl-panel--editor__accordion__tab-item__delete_"+index).click(function() {
+    $("#tab-delete_"+index).click(function() {
       $("#"+index).remove();
       data.accordion.splice(index, 1);
       bulletinEditor(collectionName, data);
@@ -242,7 +181,6 @@ function bulletinEditor(collectionName, data) {
   });
 
   //Add new tab
-  $("#accordion-section").append('<button id="addTab">Add new tab</button>');
   $("#addTab").one('click', function () {
     data.accordion.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
@@ -250,7 +188,7 @@ function bulletinEditor(collectionName, data) {
   });
 
   function sortableTabs() {
-    $(".fl-editor__accordion").sortable();
+    $("#sortable-tabs").sortable();
   }
   sortableTabs();
 
@@ -259,19 +197,11 @@ function bulletinEditor(collectionName, data) {
   if (data.relatedBulletins.length === 0) {
     lastIndexRelated = 0;
   } else {
-    $(data.relatedBulletins).each(function (iBulletin, bulletin) {
+    $(data.relatedBulletins).each(function (iBulletin) {
       lastIndexRelated = iBulletin + 1;
-      $('.fl-editor__related').append(
-          '<div id="' + iBulletin + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-          'Link ' +
-          ' <textarea id="bulletin__' + iBulletin + '" cols="50">' + bulletin.uri + '</textarea>' +
-          ' <textarea style="display: none;" id="bulletin_name_' + iBulletin + '">' + bulletin.name + '</textarea>' +
-          ' <textarea style="display: none;" id="bulletin_summary_' + iBulletin + '">' + bulletin.summary + '</textarea>' +
-          ' <button class="fl-panel--editor__related__bulletin-item__delete_' + iBulletin + '">Delete</button>' +
-          '</div>');
 
       // Delete
-      $(".fl-panel--editor__related__bulletin-item__delete_" + iBulletin).click(function () {
+      $("#bulletin-delete_"+iBulletin).click(function () {
         $("#" + iBulletin).remove();
         data.relatedBulletins.splice(iBulletin, 1);
         bulletinEditor(collectionName, data);
@@ -280,23 +210,24 @@ function bulletinEditor(collectionName, data) {
   }
 
   //Add new related
-  $("#related-section").append('<button id="addBulletin">Add new link</button>');
   $("#addBulletin").one('click', function () {
-    $('.fl-editor__related').append(
-        '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Link ' +
-        '  <textarea id="bulletin__' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get" cols="50"></textarea>' +
-        '  <button class="fl-panel--editor__related__bulletin-item__get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="fl-panel--editor__related__bulletin-item__cancel_' + lastIndexRelated + '">Cancel</button>' +
+    var pageurl = localStorage.getItem('pageurl');
+    localStorage.setItem('historicUrl', pageurl);
+    viewWorkspace(pageurl, collectionName, 'edit');
+
+    $('#sortable-related').append(
+        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
+        '  <textarea id="bulletin-uri_' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="bulletin-get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="bulletin-cancel_' + lastIndexRelated + '">Cancel</button>' +
         '</div>');
+    $("#bulletin-cancel_" + lastIndexRelated).hide();
 
-    $(".fl-panel--editor__related__bulletin-item__cancel_" + lastIndexRelated).hide();
+    //unCheckPage();
+    //loadPageDataIntoEditor(collectionName, false);
 
-    unCheckPage();
-    loadPageDataIntoEditor(collectionName, false);
-
-    $(".fl-panel--editor__related__bulletin-item__get_" + lastIndexRelated).one('click', function () {
-      $(".fl-panel--editor__related__bulletin-item__cancel_" + lastIndexRelated).show().one('click', function () {
+    $("#bulletin-get_" + lastIndexRelated).one('click', function () {
+      $("#bulletin-cancel_" + lastIndexRelated).show().one('click', function () {
         $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
         checkPage();
         $(".fl-panel--editor__related__bulletin-item__cancel_" + lastIndexRelated).remove();
@@ -347,7 +278,7 @@ function bulletinEditor(collectionName, data) {
   }
 
   function sortableRelated() {
-    $(".fl-editor__related").sortable();
+    $("#sortable-related").sortable();
   }
 
   sortableRelated();
@@ -422,7 +353,10 @@ function bulletinEditor(collectionName, data) {
   }
   sortableLinks();
 
-
+  function sortableExample() {
+    $("#sortable-example").sortable();
+  }
+  sortableExample();
 
   // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function () {
@@ -440,10 +374,10 @@ function bulletinEditor(collectionName, data) {
 
   function save() {
     // Sections
-    var orderSection = $(".fl-editor__sections").sortable('toArray');
+    var orderSection = $("#sortable-sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#section_markdown_' + nameS).val();
-        var title = $('#section__' + nameS).val();
+        var markdown = $('#section-markdown_' + nameS).val();
+        var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;

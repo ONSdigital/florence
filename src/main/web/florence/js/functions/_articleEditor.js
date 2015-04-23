@@ -8,27 +8,17 @@ function articleEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $(".section-list").remove();
-  $("#addCorrection").remove();
-  $("#addSection").remove();
-  $("#addTab").remove();
-  $("#addArticle").remove();
-  $("#addLink").remove();
+  var html = templates.workEdit(data);
+  $('.workspace-menu').html(html);
 
-  $("#metadata-list").remove();
-
-  // Metadata load
-  $("#metadata-section").append(
-    '<div id="metadata-list">' +
-    ' <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p>Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    ' <p >National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>' +
-    ' <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>' +
-    '</div>');
+  //$(".section-list").remove();
+  //$("#addCorrection").remove();
+  //$("#addSection").remove();
+  //$("#addTab").remove();
+  //$("#addArticle").remove();
+  //$("#addLink").remove();
+  //
+  //$("#metadata-list").remove();
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -74,21 +64,9 @@ function articleEditor(collectionName, data) {
     data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
-  var style = "background-image:url(img/sb_v_double_arrow.png);background-repeat: no-repeat; background-position:10px 25px";
-
   // Correction section
   // Load
   $(data.correction).each(function (index, correction) {
-    lastIndexCorrection = index + 1;
-    $(".fl-editor__correction").append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;">' +
-        '  <p>Text: <textarea class="auto-size" type="text" id="correction_text_' + index + '" cols="65" style="box-sizing: border-box; min-height: 31px;">' + correction.text + '</textarea></p>' +
-        '  <p>Date: <input class="auto-size" type="date" id="correction_date_' + index + '"/></p>' +
-        '  <p>Type: <input type="radio" name="correctionType' + index + '" value="minor"/><label> Minor</label> ' +
-        '           <input type="radio" name="correctionType' + index + '" value="major"/><label> Major</label> ' +
-        '  </p>' +
-        '  <button class="fl-panel--editor__correction__item__delete_' + index + '">Delete</button>' +
-        '</div>');
 
     $("#correction_text_" + index).on('click keyup', function () {
       $(this).textareaAutoSize();
@@ -99,38 +77,27 @@ function articleEditor(collectionName, data) {
     });
 
     // Delete
-    $(".fl-panel--editor__correction__item__delete_" + index).click(function () {
+    $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
-      articleEditor(collectionName, data);
+      bulletinEditor(collectionName, data);
     });
   });
 
   // New correction
-  $("#correction-section").append('<button id="addCorrection">Add new correction</button>');
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    articleEditor(collectionName, data);
+    bulletinEditor(collectionName, data);
   });
 
   // Edit sections
   // Load and edition
   $(data.sections).each(function(index, section){
-    lastIndexSection = index + 1;
-    $('.fl-editor__sections').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-          //'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' +
-        'Title ' +
-        ' <textarea id="section__' + index + '" cols="50" placeholder="Type title here and click edit to add content">' + section.title + '</textarea>' +
-        ' <textarea style="display: none;" id="section_markdown_' + index + '">' + section.markdown + '</textarea>' +
-        ' <button class="fl-panel--editor__sections__section-item__edit_' + index + '">Edit</button>' +
-        ' <button class="fl-panel--editor__sections__section-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
 
-    $(".fl-panel--editor__sections__section-item__edit_"+index).click(function() {
-      var editedSectionValue = $("#section_markdown_" + index).val();
+    $("#section-edit_"+index).click(function() {
+      var editedSectionValue = $("#section-markdown_" + index).val();
 
       var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
       var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
@@ -146,34 +113,33 @@ function articleEditor(collectionName, data) {
       $("#finish-section").click(function(){
         var editedSectionText = $('#wmd-input').val();
         data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section__' + index).val();
+        var editedSectionTitle = $('#section-title_' + index).val();
         data.sections[index].title = editedSectionTitle;
         $("#wmd-preview").remove();
         $("#wmd-edit").remove();
-        articleEditor(collectionName, data);
+        bulletinEditor(collectionName, data);
         save();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
       });
     });
 
     // Delete
-    $(".fl-panel--editor__sections__section-item__delete_"+index).click(function() {
+    $("#section-delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
-      articleEditor(collectionName, data);
+      bulletinEditor(collectionName, data);
     });
   });
 
   //Add new sections
-  $("#content-section").append('<button id="addSection">Add new section</button>');
   $("#addSection").one('click', function () {
     data.sections.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    articleEditor(collectionName, data);
+    bulletinEditor(collectionName, data);
   });
 
   function sortableSections() {
-    $(".fl-editor__sections").sortable();
+    $("#sortable-sections").sortable();
   }
   sortableSections();
 
@@ -418,7 +384,7 @@ function articleEditor(collectionName, data) {
 
   function save() {
     // Sections
-    var orderSection = $(".fl-editor__sections").sortable('toArray');
+    var orderSection = $("#sortable-sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var markdown = $('#section_markdown_' + nameS).val();
       var title = $('#section__' + nameS).val();

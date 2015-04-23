@@ -2,19 +2,16 @@ function loadPageDataIntoEditor(collectionName, active) {
   if (active === false) {
     // Do nothing
   } else {
-    var pageUrlData = "/data" + getPathName();
-    $.ajax({
-      url: pageUrlData,
-      dataType: 'json',
-      success: function (response) {
+    var pageUrlData = localStorage.getItem("pageurl") + "/data.json";
+    getPageData(collectionName, pageUrlData,
+      success = function (response) {
         makeEditSections(collectionName, response);
-        checkIfPageIsComplete();
+        console.log(response);
       },
-      error: function () {
-        console.log('No page data returned');
-        $('.fl-editor').val('');
+      error = function (response) {
+        handleApiError(response);
       }
-    });
+    );
   }
 
   function checkIfPageIsComplete() {

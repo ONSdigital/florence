@@ -7,14 +7,14 @@ var login_form =
   '<br>'+
   '<button class="fl-panel--user-and-access__login">Log in</button>';
 
-  $('.fl-view').html(login_form);
+  $('.section').html(login_form);
 
-  $('.fl-panel--user-and-access__login').click(function(){
+  $('.fl-panel--user-and-access__login').click(function () {
     var email = $('.fl-user-and-access__email').val();
     var password = $('.fl-user-and-access__password').val();
     console.log(email);
     console.log(password);
-    authenticate(email,password);
-  })
+    authenticate(email, password);
+  });
 }
 

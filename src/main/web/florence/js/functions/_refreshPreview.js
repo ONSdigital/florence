@@ -11,3 +11,4 @@ function refreshPreview(url) {
 
   $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
 }
+

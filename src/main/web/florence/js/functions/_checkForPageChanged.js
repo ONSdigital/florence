@@ -1,11 +1,11 @@
 function checkForPageChanged(onChanged) {
 
-  var iframe = $('.fl-panel--preview__content').contents().get(0);
-
-  if(iframe) {
-    var iframeUrl = localStorage.getItem("pageurl");
-    var nowUrl = $('.fl-panel--preview__content').contents().get(0).location.href;
-    if (iframeUrl !== nowUrl) {
+  var iframeUrl = localStorage.getItem("pageurl");
+  var nowUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[1];
+  if (iframeUrl !== nowUrl) {
+    if (!onChanged) {
+      localStorage.setItem("pageurl", nowUrl);
+    } else {
       onChanged();
       localStorage.setItem("pageurl", nowUrl);
     }
