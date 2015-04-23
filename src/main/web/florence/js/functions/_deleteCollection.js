@@ -12,3 +12,4 @@ function deleteCollection(collectionName, success, error) {
     }
   });
 }
+

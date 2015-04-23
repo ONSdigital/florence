@@ -9,7 +9,7 @@ function loadBrowseScreen() {
       var baseURL = 'http://localhost:8081/index.html#!';
       var html = templates.workBrowse(response);
       $('.workspace-menu').html(html);
-      $('.workspace-browse').css("overflow","scroll");
+      $('.workspace-browse').css("overflow", "scroll");
 
       //page-list
       $('.page-item').click(function () {

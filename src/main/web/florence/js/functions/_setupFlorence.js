@@ -1,4 +1,4 @@
-function setupFlorence() {
+function setupFlorence () {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
 
@@ -8,11 +8,11 @@ function setupFlorence() {
   var mainNavHtml = templates.mainNav;
   $('.wrapper').append(mainNavHtml);
 
-  $('.fl-admin-menu__link').on('click', function() {
+  $('.fl-admin-menu__link').on('click', function () {
     console.log('admin menu clicked...');
     if(Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
-      if (result == true) {
+      if (result === true) {
         Florence.Editor.isDirty = false;
         return true;
       } else {
@@ -21,44 +21,41 @@ function setupFlorence() {
     }
   });
 
-  window.onbeforeunload = function(){
+  window.onbeforeunload = function () {
     if(Florence.Editor.isDirty) {
       return 'You have unsaved changes.';
     }
   };
 
   //click handlers
-  $('.fl-admin-menu__link').click(function() {
-    if ($(this).parent().hasClass('fl-admin-menu__item--collections')){
+  $('.fl-admin-menu__link').click(function () {
+    if ($(this).parent().hasClass('fl-admin-menu__item--collections')) {
       viewController('collections');
     }
   });
 
-  $('.fl-admin-menu__item--useradmin').click(function() {
+  $('.fl-admin-menu__item--useradmin').click(function () {
     viewController('users-and-access');
   });
 
   var loginLink = $('.fl-admin-menu__item--login');
   loginLink.addClass('hidden');
-  loginLink.click(function() {
+  loginLink.click(function () {
     viewController('login');
   });
-  var logoutLink = $('.fl-admin-menu__item--logout')
+  var logoutLink = $('.fl-admin-menu__item--logout');
   logoutLink.removeClass('hidden');
-  logoutLink.click(function() {
+  logoutLink.click(function () {
     logoutLink.addClass('hidden');
     loginLink.removeClass('hidden');
     logout();
     viewController('login');
   });
 
-  $('.fl-admin-menu__item--publish').click(function() {
+  $('.fl-admin-menu__item--publish').click(function () {
     viewController('publish');
   });
 
-
-
   viewController();
 }
-
 

@@ -7,7 +7,8 @@ function getCollection(collectionName, success, error) {
       success(response);
     },
     error: function (response) {
-      error(response)
+      error(response);
     }
   });
 }
+

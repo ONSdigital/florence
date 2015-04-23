@@ -4,10 +4,10 @@ function checkForPageChanged(onChanged) {
   var nowUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[1];
   if (iframeUrl !== nowUrl) {
     if (!onChanged) {
-      return;
+      localStorage.setItem("pageurl", nowUrl);
     } else {
       onChanged();
+      localStorage.setItem("pageurl", nowUrl);
     }
-    localStorage.setItem("pageurl", nowUrl);
   }
 }

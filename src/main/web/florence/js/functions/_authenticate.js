@@ -1,4 +1,4 @@
-function authenticate(email,password){
+function authenticate(email,password) {
 	//
 
   $.ajax({
@@ -20,9 +20,8 @@ function authenticate(email,password){
       viewController();
     },
     error: function (response) {
-      handleApiError(response)
+      handleApiError(response);
     }
   });
-
-	return true;
+  return true;
 }

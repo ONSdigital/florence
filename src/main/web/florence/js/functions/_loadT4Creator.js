@@ -22,8 +22,8 @@ function loadT4Creator (collectionName) {
     crossDomain: true,
     success: function (checkData) {
       if (checkData.level === 't3') {
+        $('.btn-page-create').show();
         $('#location').val(parentUrl);
-        $('form .btn-page-create').show();
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "index": 0,
@@ -78,16 +78,9 @@ function loadT4Creator (collectionName) {
         },
         success: function (message) {
           console.log("Updating completed " + message);
-
-          //viewWorkspace('/' + newUri);
-          //$('.fl-main-menu__link').removeClass('fl-main-menu__link--active');
-          //$('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
-          //clearInterval(window.intervalID);
-          //window.intervalID = setInterval(function () {
-          //  checkForPageChanged(function () {
-          //    loadPageDataIntoEditor(collectionName, true);
-          //  });
-          //}, window.intIntervalTime);
+          var path = newUri;
+          console.log(path);
+          viewWorkspace(path, collectionName, 'edit');
         },
         error: function (error) {
           console.log(error);

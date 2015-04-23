@@ -13,7 +13,25 @@ function viewWorkspace(path, collectionName, menu) {
   $('.wrapper').replaceWith(mainNavHtml);
 
   var workSpace = templates.workSpace(currentPath);
-  $('.section').append(workSpace);
+  $('.section').replaceWith(workSpace);
+
+  if (menu === 'browse') {
+    loadBrowseScreen();
+  }
+  else if (menu === 'create') {
+    loadCreateBulletinScreen(collectionName);
+  }
+  else if (menu === 'edit') {
+    //checkForPageChanged(function () {
+    loadPageDataIntoEditor(collectionName, true);
+    //});
+  }
+  else if (menu === 'review') {
+    loadReviewScreen(collectionName);
+    checkForPageChanged(function () {
+      updateReviewScreen(collectionName);
+    });
+  }
 
   //click handlers
   $('.nav--workspace > li').click(function () {
@@ -30,18 +48,18 @@ function viewWorkspace(path, collectionName, menu) {
       }
     }
 
-    if (menu === 'browse' || $(this).is('#browse')) {
+    if ($(this).is('#browse')) {
       loadBrowseScreen();
     }
-    else if (menu === 'create' || $(this).is('#create')) {
+    else if ($(this).is('#create')) {
       loadCreateBulletinScreen(collectionName);
     }
-    else if (menu === 'edit' || $(this).is('#edit')) {
+    else if ($(this).is('#edit')) {
       //checkForPageChanged(function () {
         loadPageDataIntoEditor(collectionName, true);
       //});
     }
-    else if (menu === 'review' || $(this).is('#review')) {
+    else if ($(this).is('#review')) {
       loadReviewScreen(collectionName);
       checkForPageChanged(function () {
         updateReviewScreen(collectionName);
@@ -52,3 +70,4 @@ function viewWorkspace(path, collectionName, menu) {
     }
   });
 }
+

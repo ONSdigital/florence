@@ -21,14 +21,14 @@ function viewCollectionDetails(collectionName) {
 
   function populateCollectionDetails(collection, collectionName) {
 
-    if (collection.inProgressUris != 0 || collection.completeUris != 0) {
+    if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
       $('.fl-finish-collection-button').hide();
     }
     else {
       $('.fl-finish-collection-button').show().click(function () {
-        postApproveCollection(collection.id)
-      })
+        postApproveCollection(collection.id);
+      });
     }
 
     CreateUriListHtml(collection.inProgressUris, collectionName, "inProgress");
@@ -40,20 +40,20 @@ function viewCollectionDetails(collectionName) {
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
       var collectionHtml;
       $.each(uris, function (i, uri) {
-          if (uri.length === 0) {
-            collectionDetails[status] = [];
-          } else {
-            pageDataRequests.push(getPageData(collectionName, uri,
-              success = function (response) {
-                var path = response.uri;
-                uri_list.push({path: path, name: response.title});
-              },
-              error = function (response) {
-                handleApiError(response);
-              })
-            );
-          }
-        });
+        if (uri.length === 0) {
+          collectionDetails[status] = [];
+        } else {
+          pageDataRequests.push(getPageData(collectionName, uri,
+            success = function (response) {
+              var path = response.uri;
+              uri_list.push({path: path, name: response.title});
+            },
+            error = function (response) {
+              handleApiError(response);
+            })
+          );
+        }
+      });
 
       $.when.apply($, pageDataRequests).then(function () {
         collectionDetails[status] = uri_list;
@@ -73,9 +73,16 @@ function viewCollectionDetails(collectionName) {
         $('.btn-page-edit').click(function () {
           var path = $(this).attr('data-path');
           if (path) {
+            viewWorkspace(path, collectionName, 'edit');
+          }
+        });
+        $('.btn-page-delete').click(function () {
+          var path = $(this).attr('data-path');
+          if (path) {
             //document.cookie = "collection=" + collectionName + ";path=/";
             //localStorage.setItem("collection", collectionName);
-            viewWorkspace(path, collectionName, 'edit');
+            deleteContent(collectionName, path);
+            viewCollectionDetails(collectionName);
           }
         });
         $('.btn-collection-work-on').click(function () {

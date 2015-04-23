@@ -1,6 +1,6 @@
 function setupMiniBrowser() {
   var browserContent = $('#iframe')[0].contentWindow;
-  $(browserContent.document).off().on('click', function(){
+  $(browserContent.document).on('click', function(){
     var browserLocation = browserContent.location.href;
     $('.browser-location').val(browserLocation);
     treeNodeSelect(browserLocation);

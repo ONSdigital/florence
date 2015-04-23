@@ -1,16 +1,16 @@
 function makeEditSections(collectionName, response) {
   if (response.type === 'bulletin') {
-    loadEditT4Screen(collectionName);
+    //loadEditT4Screen(collectionName);
     bulletinEditor(collectionName, response);
   }
 
   else if (response.type === 'article') {
-    loadEditT4Screen(collectionName);
+    //loadEditT4Screen(collectionName);
     articleEditor(collectionName, response);
   }
 
   else if (response.type === 'dataset') {
-    loadEditDatasetScreen(collectionName);
+    //loadEditDatasetScreen(collectionName);
     datasetEditor(collectionName, response);
   }
 
@@ -20,38 +20,39 @@ function makeEditSections(collectionName, response) {
         '  <section style="overflow: scroll;">' +
         '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 800px"></textarea>' +
         '  </section>' +
-        //'  <nav class="fl-panel--editor__nav">' +
-        //'    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
-        //'    <button class="fl-panel--editor__nav__save">Save</button>' +
-        //'    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
-        //'    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
-        //'  </nav>' +
+          //'  <nav class="fl-panel--editor__nav">' +
+          //'    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
+          //'    <button class="fl-panel--editor__nav__save">Save</button>' +
+          //'    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
+          //'    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
+          //'  </nav>' +
         '</section>';
 
     $('.workspace-menu').html(workspace_menu_sub_edit);
 
     $('.fl-editor__headline').val(JSON.stringify(response, null, 2));
 
-    $('.fl-panel--editor__nav__save').unbind("click").click(function () {
-      pageData = $('.fl-editor__headline').val();
-      updateContent(collectionName, getPathName(), pageData);
-    });
+    //  $('.fl-panel--editor__nav__save').unbind("click").click(function () {
+    //    pageData = $('.fl-editor__headline').val();
+    //    updateContent(collectionName, getPathName(), pageData);
+    //  });
+    //
+    //  // complete
+    //  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
+    //    pageData = $('.fl-editor__headline').val();
+    //    saveAndCompleteContent(collectionName, getPathName(), pageData);
+    //  });
+    //}
+    //
+    //$('.fl-panel--editor__nav__review').unbind("click").click(function () {
+    //  postReview(collectionName, getPathName());
+    //});
 
-    // complete
-    $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-      pageData = $('.fl-editor__headline').val();
-      saveAndCompleteContent(collectionName, getPathName(), pageData);
+    $('.workspace-edit :input').on('input', function () {
+      Florence.Editor.isDirty = true;
+      // remove the handler now we know content has changed.
+      $(':input').unbind('input');
+      //console.log('Changes detected.');
     });
   }
-
-  $('.fl-panel--editor__nav__review').unbind("click").click(function () {
-    postReview(collectionName, getPathName());
-  });
-
-  $('.workspace-edit :input').on('input', function() {
-    Florence.Editor.isDirty = true;
-    // remove the handler now we know content has changed.
-    $(':input').unbind('input');
-    //console.log('Changes detected.');
-  });
 }

@@ -6,6 +6,9 @@ function bulletinEditor(collectionName, data) {
   var newLinks = [];
   var lastIndexRelated, lastIndexLink;
 
+  var html = templates.workEdit(data);
+  $('.workspace-menu').html(html);
+
   //console.log(data.sections);
 
   $(".section-list").remove();
@@ -95,7 +98,7 @@ function bulletinEditor(collectionName, data) {
 
   // Edit sections
   // Load and edition
-  $(data.sections).each(function(index, section){
+  $(data.sections).each(function(index, section) {
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = $("#section-markdown_" + index).val();
