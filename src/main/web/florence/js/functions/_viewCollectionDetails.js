@@ -85,7 +85,7 @@ function viewCollectionDetails(collectionName) {
             var path = uri.replace('/data.json', '');
             path = path.length === 0 ? '/' : path;
             uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-            response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
+            response.title + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
           },
           error = function (response) {
             handleApiError(response);
