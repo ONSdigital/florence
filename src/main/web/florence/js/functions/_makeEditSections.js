@@ -1,16 +1,17 @@
 function makeEditSections(collectionName, response) {
   if (response.type === 'bulletin') {
-    //loadEditT4Screen(collectionName);
+    var html = templates.workEdit(response);
+    $('.workspace-menu').empty();
+    $('.workspace-menu').append(html);
+    accordion();
     bulletinEditor(collectionName, response);
   }
 
   else if (response.type === 'article') {
-    //loadEditT4Screen(collectionName);
     articleEditor(collectionName, response);
   }
 
   else if (response.type === 'dataset') {
-    //loadEditDatasetScreen(collectionName);
     datasetEditor(collectionName, response);
   }
 
@@ -18,7 +19,7 @@ function makeEditSections(collectionName, response) {
     var workspace_menu_sub_edit =
         '<section class="workspace-edit">' +
         '  <section style="overflow: scroll;">' +
-        '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 800px"></textarea>' +
+        '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 818px"></textarea>' +
         '  </section>' +
           //'  <nav class="fl-panel--editor__nav">' +
           //'    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +

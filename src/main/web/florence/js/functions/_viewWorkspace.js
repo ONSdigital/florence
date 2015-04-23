@@ -16,17 +16,23 @@ function viewWorkspace(path, collectionName, menu) {
   $('.section').replaceWith(workSpace);
 
   if (menu === 'browse') {
+    $('.nav--workspace li').removeClass('selected');
+    $("#browse").addClass('selected');
     loadBrowseScreen();
   }
   else if (menu === 'create') {
+    $('.nav--workspace li').removeClass('selected');
+    $("#create").addClass('selected');
     loadCreateBulletinScreen(collectionName);
   }
   else if (menu === 'edit') {
-    //checkForPageChanged(function () {
+    $('.nav--workspace li').removeClass('selected');
+    $("#edit").addClass('selected');
     loadPageDataIntoEditor(collectionName, true);
-    //});
   }
   else if (menu === 'review') {
+    $('.nav--workspace li').removeClass('selected');
+    $("#review").addClass('selected');
     loadReviewScreen(collectionName);
     checkForPageChanged(function () {
       updateReviewScreen(collectionName);
@@ -55,9 +61,9 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateBulletinScreen(collectionName);
     }
     else if ($(this).is('#edit')) {
-      //checkForPageChanged(function () {
+      checkForPageChanged(function () {
         loadPageDataIntoEditor(collectionName, true);
-      //});
+      });
     }
     else if ($(this).is('#review')) {
       loadReviewScreen(collectionName);

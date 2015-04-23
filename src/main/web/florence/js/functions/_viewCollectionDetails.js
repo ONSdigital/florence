@@ -79,9 +79,8 @@ function viewCollectionDetails(collectionName) {
         $('.btn-page-delete').click(function () {
           var path = $(this).attr('data-path');
           if (path) {
-            //document.cookie = "collection=" + collectionName + ";path=/";
-            //localStorage.setItem("collection", collectionName);
-            deleteContent(collectionName, path);
+            deleteContent(collectionName, path, success, error);
+            console.log('File deleted');
             viewCollectionDetails(collectionName);
           }
         });
