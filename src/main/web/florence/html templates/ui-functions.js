@@ -200,7 +200,13 @@ $(document).ready(function(){
 				var lineWrap = Math.round(lineLength / textareaMaxChars);
 				// var lineWrap = Math.floor(lineLength / textareaMaxChars);
 				// var lineWrap = Math.ceil(lineLength / textareaMaxChars);
-				var liPaddingBottom = lineWrap * lineHeight;
+
+        console.log('max chars: ' + textareaMaxChars);
+        console.log('line length: ' + lineLength);
+
+
+        var numberOfLinesCovered = textareaLines(this, textareaMaxChars, 0, 0);
+				var liPaddingBottom = numberOfLinesCovered * lineHeight;
 
 				if(lineNumber === 1) {
 					cumulativeLineLength += lineLength;
@@ -214,7 +220,7 @@ $(document).ready(function(){
 
 				lineLengthArray.push(cumulativeLineLength);
 
-				textareaLines(this);
+
 
 				//push to charmap
 
@@ -222,31 +228,45 @@ $(document).ready(function(){
 
 
 				// console.log(this.selectionStart);
-				console.log('max chars: ' + textareaMaxChars);
-				console.log('line length: ' + lineLength);
-				console.log('line wrap: ' + lineWrap + ' (' + lineLength / textareaMaxChars + ')');
+
+				//console.log('line wrap: ' + lineWrap + ' (' + lineLength / textareaMaxChars + ')');
 			});
 
 
-			//for carl :)
-			function textareaLines(line) {
-				// var start
-				// var thisLineLength;
-				// var substring = line.substr(0, textareaMaxChars + 1);
-				// substring = substring.replace(/\s*$/,"");
+      //for carl :)
+      // given a line of text, calculate how many lines it will cover given a max line length
+      // with word wrap
+      function textareaLines(line, maxLineLength, start, numberOfLinesCovered) {
 
-				// if (substring.length <= textareaMaxChars) 
-				// 	{
-				// 		thisLineLength = substring.length;
-				// 	}
-				// 	else
-				// 	{
+        if (start + maxLineLength >= line.length) {
+          console.log('Line Length = ' + numberOfLinesCovered);
+          return numberOfLinesCovered;
+        }
 
-				// 	}
+        var substring = line.substr(start, textareaMaxChars + 1);
+        var actualLineLength = substring.lastIndexOf(' ');
 
-				// var actualLineLength = substring.lastIndexOf(' ');
-				// console.log('Carl: ' + actualLineLength);
-			}
+        if (actualLineLength === maxLineLength) // edge case - the break is at the end of the line exactly with a space after it
+        {
+          console.log('edge case hit');
+          actualLineLength--;
+        }
+
+        if( start + actualLineLength === line.length)
+        {
+          console.log('edge case  2 hit');
+          return numberOfLinesCovered;
+        }
+        if(actualLineLength === -1 )
+        {
+          console.log('edge case   3 hit');
+          return numberOfLinesCovered;
+        }
+
+        console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
+
+        return textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
+      }
 
 			if(linesLi) {
 				var linesOl = '<ol>' + linesLi + '</ol>';
@@ -279,6 +299,6 @@ $(document).ready(function(){
 
 		}
 
-		
-		
+
+
 });
