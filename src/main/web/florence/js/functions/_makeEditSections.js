@@ -19,7 +19,7 @@ function makeEditSections(collectionName, response) {
     var workspace_menu_sub_edit =
         '<section class="workspace-edit">' +
         '  <section style="overflow: scroll;">' +
-        '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 818px"></textarea>' +
+        '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 818px" cols="104"></textarea>' +
         '  </section>' +
           //'  <nav class="fl-panel--editor__nav">' +
           //'    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
