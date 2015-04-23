@@ -95,6 +95,9 @@ function viewPublish() {
           var page_list = '';
           var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
+          function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+          response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
+
           $.each(response.reviewedUris, function (i, uri) {
             pageDataRequests.push(getPageData(collectionId, uri,
               success = function (response) {

@@ -36,9 +36,12 @@ function loadPageDataIntoEditor(collectionName, active) {
           var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
           if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
             $('.fl-panel--editor__nav__review').show();
+            $('.fl-panel--editor__nav__complete').hide();
           }
-
-          $('.fl-panel--editor__nav__complete').hide();
+          else {
+            $('.fl-panel--editor__nav__review').hide();
+            $('.fl-panel--editor__nav__complete').show();
+          }
         }
         else {
           $('.fl-panel--editor__nav__review').hide();

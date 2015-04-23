@@ -182,7 +182,7 @@
 				padding-top: $lineheight / 2;
 				padding-bottom: $lineheight / 2;
 				padding-right: $gutter / 2;
-				padding-left: ($gutter / 2) * 5;
+				padding-left: ($gutter / 2) * 4;
 				margin-bottom: $lineheight / 2;
 				margin-right: $gutter;
 				margin-left: $gutter;
@@ -202,7 +202,7 @@
 				input {
 					margin: 0;
 					// margin-right: 5px;
-					width: 54%;
+					width: 50%;
 				}
 
 				button {
@@ -210,6 +210,189 @@
 				}
 			}
 		}
+	}
+}
+
+.markdown-editor {
+	display: none;
+	box-sizing: border-box;
+	position: absolute;
+	z-index: 900;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	padding-top: $lineheight * 4;
+	padding-bottom: $lineheight * 4;
+	padding-right: $gutter * 4;
+	padding-left: $gutter * 4;
+	background-color: rgba(0,0,0,0.85);
+
+	&__header {
+		height: $lineheight * 6;
+		background-color: $pickled-bluewood;
+
+		h1 {
+			margin: 0 $gutter;
+			padding-top: $lineheight / 2;
+			color: $cadet-blue;
+			font-family: 'Open Sans', sans-serif;
+			font-weight: 300;
+		}
+	}
+
+	&__content {
+		box-sizing: border-box;
+		padding: 0;
+		// height: 100%;
+		height: $lineheight * 24;
+	}
+
+	&__footer {
+		height: $lineheight * 4;
+		background-color: $pickled-bluewood;
+	}
+
+	.wmd-panel {
+		box-sizing: border-box;
+		height: 100%;
+	}
+
+	.wmd-preview {
+		width: 50%;
+		float: right;
+		background-color: $concrete;
+		overflow-y: scroll;
+	}
+
+	.wmd-edit {
+		width: 50%;
+		float: left;
+		background-color: $ash;
+		position: relative;
+		overflow: hidden;
+		padding-top: $lineheight * 2;
+
+		h2 {
+			margin: -($lineheight * 2) $gutter 0 $gutter;
+			padding: 0;
+			// color: $cadet-blue;
+			font-family: 'Open Sans', sans-serif;
+			font-weight: 600;
+			font-size: 14px;
+		}
+	}
+
+	.wmd-input {
+		box-sizing: border-box;
+		height: 100%;
+		border: none;
+		resize: none;
+		background-color: $ash;
+		color: $ship-gray;
+		padding: 0 ($gutter / 2) 0 70px;
+		font-family: 'Ubuntu Mono';
+		font-weight: normal;
+		font-size: 14px;
+		line-height: $lineheight;
+	}
+
+	// .wmd-prompt-dialog {
+	// 	z-index: 9005;
+	// }
+
+	#wmd-button-row {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		  height: auto;
+	}
+
+	#wmd-button-bar {
+
+		li {
+			box-sizing: border-box;
+			display: none;
+			float: left;
+			position: static;
+			margin: ($lineheight / 2) 0 0 $gutter;
+			// position: relative;
+		}
+
+		.wmd-button {
+			width: $gutter * 2;
+			height: $lineheight * 2;
+			// border: 2px solid $cadet-blue;
+		}
+
+		.wmd-button > span {
+			display: none;
+		}
+
+		#wmd-link-button {
+			display: inline-block;
+			&:before {
+				content: '';
+				width: 30px;
+				height: 30px;
+				display: block;
+				margin: 4px auto;
+				background: transparent url(../img/sprite.png) no-repeat 0px -180px;
+				background-size: 30px auto;
+			}
+		}
+
+		#wmd-undo-button {
+			display: inline-block;
+			&:before {
+				content: '';
+				width: 30px;
+				height: 30px;
+				display: block;
+				margin: 4px auto;
+				background: transparent url(../img/sprite.png) no-repeat 0px -221px;
+				background-size: 30px auto;
+			}
+		}
+
+		#wmd-redo-button {
+			display: inline-block;
+			&:before {
+				content: '';
+				width: 30px;
+				height: 30px;
+				display: block;
+				margin: 4px auto;
+				background: transparent url(../img/sprite.png) no-repeat 0px -262px;
+				background-size: 30px auto;
+			}
+		}
+	}
+
+	.markdown-editor-line-numbers {
+		box-sizing: border-box;
+		width: 60px;
+		height: 100%;
+		padding-bottom: $lineheight * 2;
+		position: absolute;
+		top: $lineheight * 2;
+		background: $tea;
+		border-right: 1px solid $gurkha;
+
+		li {
+			margin: 0 -10px 0 0;
+			list-style-position: inside;
+			font-family: 'Ubuntu Mono';
+			font-weight: normal;
+			font-size: 14px;
+			text-align: right;
+			color: $olive-haze;
+		}
+	}
+
+	button {
+		margin-top: $lineheight;
 	}
 }
 

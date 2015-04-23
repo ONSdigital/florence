@@ -142,9 +142,74 @@ $(document).ready(function(){
 
 			$('.edit-section__sortable').sortable();
 			$('.edit-section__sortable').disableSelection();
+
+			markdownEditor();
+			markDownEditorSetLines()
+
 		}
 		catch(err){
 			//
 		}
+
+		$('.btn-markdown-editor-cancel').on('click', function() {
+			$('.markdown-editor').stop().fadeOut(200);
+		});
+
+		$('.btn-markdown-edit').on('click', function() {
+			$('.markdown-editor').stop().fadeIn(200);
+		});
+
+		// var t = $("#wmd-input")[0];
+		// consloe.log(t.value.substr(0, t.selectionStart).split("\n").length);
+
+		$("#wmd-input").on('click', function() {
+			// markDownEditorActiveLine($(this)[0]);
+			markDownEditorSetLines();
+		});
+
+		$("#wmd-input").on('keyup', function() {
+			// markDownEditorActiveLine($(this)[0]);
+			markDownEditorSetLines();
+		});
+
+		function markDownEditorActiveLine(textarea) {
+			var line = textarea.value.substr(0, textarea.selectionStart).split("\n").length;
+			console.log(line);
+
+		}
+
+		function markDownEditorSetLines() {
+			var textarea = $("#wmd-input");
+			var textareaWidth = textarea.width();
+			var charWidth = 7;
+			var lineHeight = 21;
+			var textareaMaxChars = textareaWidth / charWidth;
+			var lines = textarea.val().split('\n');
+			var linesLi = '';
+			$.each(lines, function(index){
+				var lineNumber = index + 1;
+				var lineLength = this.length;
+				var lineWrap = Math.floor(lineLength / textareaMaxChars);
+				var liMarginBottom = lineWrap * lineHeight;
+				linesLi += '<li style="margin-bottom:' + liMarginBottom +'px">&nbsp;</li>';
+				console.log(lineLength);
+			});
+
+			if(linesLi) {
+				var linesOl = '<ol>' + linesLi + '</ol>';
+				$('.markdown-editor-line-numbers').html(linesOl);
+				// console.log(linesOl);
+			}
+
+			// console.log(textareaMaxChars);
+
+
+
+			// var line = textarea.value.substr(0, textarea.selectionStart).split("\n").length;
+			// console.log(line);
+
+		}
+
+		
 		
 });
