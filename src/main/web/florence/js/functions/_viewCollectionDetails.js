@@ -120,7 +120,7 @@ function viewCollectionDetails(collectionName) {
     });
 
     // Delete function
-    $('.fl-panel--collection-details-container').on('click', '.fl-button--delete', function () {
+    $('.fl-panel--collection-details-container').unbind('click').on('click', '.fl-button--delete', function () {
       var path = $(this).attr('data-path');
 
       // Run delete content

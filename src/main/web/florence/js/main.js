@@ -1785,15 +1785,9 @@ function deleteCollection(collectionName, success, error) {
     }
   });
 }function deleteContent(collectionName, path, success, error) {
-  // little fiddle to account for home having a trailing slash
-  if(path == '/') {
-    uri = 'data.json';
-    } else {
-    uri = path + '/data.json';
-    }
   // send ajax call
   $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + uri,
+    url: "/zebedee/content/" + collectionName + "?uri=" + path,
     type: 'DELETE',
     success: function (response) {
       if (success)
@@ -2808,7 +2802,7 @@ function viewCollectionDetails(collectionName) {
     });
 
     // Delete function
-    $('.fl-panel--collection-details-container').on('click', '.fl-button--delete', function () {
+    $('.fl-panel--collection-details-container').unbind('click').on('click', '.fl-button--delete', function () {
       var path = $(this).attr('data-path');
 
       // Run delete content

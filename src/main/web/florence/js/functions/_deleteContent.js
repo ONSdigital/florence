@@ -1,13 +1,7 @@
 function deleteContent(collectionName, path, success, error) {
-  // little fiddle to account for home having a trailing slash
-  if(path == '/') {
-    uri = 'data.json';
-    } else {
-    uri = path + '/data.json';
-    }
   // send ajax call
   $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + uri,
+    url: "/zebedee/content/" + collectionName + "?uri=" + path,
     type: 'DELETE',
     success: function (response) {
       if (success)
