@@ -85,8 +85,8 @@ function viewCollectionDetails(collectionName) {
           }
         });
         $('.btn-collection-work-on').click(function () {
-          //document.cookie = "collection=" + collectionName + ";path=/";
-          //localStorage.setItem("collection", collectionName);
+          document.cookie = "collection=" + collectionName + ";path=/";
+          localStorage.setItem("collection", collectionName);
           viewWorkspace('', collectionName, 'browse');
         });
 

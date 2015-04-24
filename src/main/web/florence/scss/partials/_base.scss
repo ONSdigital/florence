@@ -486,7 +486,12 @@ button {
 		background-color: $cadet-blue;
 	}
 
-	&.btn-markdown-editor-save {
+  &.btn-markdown-editor-save {
+    color: $concrete;
+    background-color: $astral;
+  }
+
+	&.btn-markdown-editor-exit {
 		color: $concrete;
 		background-color: $como;
 	}

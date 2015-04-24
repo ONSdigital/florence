@@ -1,10 +1,14 @@
-function accordion() {
+function accordion(active) {
+  var activeTab = parseInt(active);
+  if(!activeTab){
+    activeTab = 'none';
+  }
   $(function () {
     $(".edit-accordion").accordion(
         {
           header: "div.edit-section__head",
           heightStyle: "content",
-          active: 'none',
+          active: activeTab,
           collapsible: true
         }
     );

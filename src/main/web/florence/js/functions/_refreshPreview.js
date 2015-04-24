@@ -1,14 +1,14 @@
 function refreshPreview(url) {
 
   if(url) {
-    url = $('.fl-panel--preview__content').get(0).src.split('#!')[0] + '#!' + url;
+    url = $('#iframe')[0].contentWindow.document.location.href.split('#!')[0] + '#!' + url;
     console.log(url);
-    $('.fl-panel--preview__content').get(0).src = url;
+    $('#iframe')[0].contentWindow.document.location.href = url;
   }
   else {
-    $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
+    $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("pageurl");
   }
 
-  $('.fl-panel--preview__content').get(0).contentDocument.location.reload(true);
+  $('#iframe')[0].contentWindow.document.location.reload(true);
 }
 

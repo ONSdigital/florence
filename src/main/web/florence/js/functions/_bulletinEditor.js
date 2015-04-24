@@ -5,11 +5,27 @@ function bulletinEditor(collectionName, data) {
   var newRelated = [];
   var newLinks = [];
   var lastIndexRelated, lastIndexLink;
+  var setActiveTab;
+  var getActiveTab;
+
+  $( ".edit-accordion").on('accordionactivate', function(event, ui) {
+    setActiveTab = $(".edit-accordion").accordion("option", "active");
+    if(setActiveTab !== false) {
+      localStorage.setItem('activeTab', setActiveTab);
+    }
+  });
+
+  getActiveTab = localStorage.getItem('activeTab');
+  accordion(getActiveTab);
+
 
   //console.log(data.sections);
 
   $("#description-p").remove();
-
+  $("#relArticle").remove();
+  $("#relDataset").remove();
+  $("#usedIn").remove();
+  $("#download").remove();
 
   // Metadata load, edition and saving
   $("#title").on('click keyup', function () {
@@ -94,7 +110,7 @@ function bulletinEditor(collectionName, data) {
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = $("#section-markdown_" + index).val();
       var html = templates.markdownEditor(editedSectionValue);
-      $('body').prepend(html);
+      $('body').append(html);
 
       markdownEditor();
       markDownEditorSetLines();
@@ -112,10 +128,16 @@ function bulletinEditor(collectionName, data) {
         data.sections[index].markdown = editedSectionText;
         var editedSectionTitle = $('#section-title_' + index).val();
         data.sections[index].title = editedSectionTitle;
-        // $(".markdown-editor").remove();
-        // bulletinEditor(collectionName, data);
-        save();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
+      });
+
+      $(".btn-markdown-editor-exit").click(function(){
+        var editedSectionText = $('#wmd-input').val();
+        data.sections[index].markdown = editedSectionText;
+        var editedSectionTitle = $('#section-title_' + index).val();
+        data.sections[index].title = editedSectionTitle;
+        updateContent(collectionName, getPathName(), JSON.stringify(data));
+        $('.markdown-editor').stop().fadeOut(200);
       });
 
       $("#wmd-input").on('click', function() {
@@ -130,7 +152,7 @@ function bulletinEditor(collectionName, data) {
 
       function markDownEditorActiveLine(textarea) {
           var line = textarea.value.substr(0, textarea.selectionStart).split("\n").length;
-          console.log(line);
+          //console.log(line);
 
       }
 
@@ -243,7 +265,8 @@ function bulletinEditor(collectionName, data) {
     $("#section-delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
-      bulletinEditor(collectionName, data);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      loadPageDataIntoEditor(collectionName);
     });
   });
 
@@ -251,7 +274,6 @@ function bulletinEditor(collectionName, data) {
   $("#addSection").one('click', function () {
     data.sections.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    bulletinEditor(collectionName, data);
   });
 
   function sortableSections() {
@@ -319,7 +341,7 @@ function bulletinEditor(collectionName, data) {
       $("#bulletin-delete_"+iBulletin).click(function () {
         $("#" + iBulletin).remove();
         data.relatedBulletins.splice(iBulletin, 1);
-        bulletinEditor(collectionName, data);
+        updateContent(collectionName, getPathName(), JSON.stringify(data));
       });
     });
   }
@@ -328,7 +350,8 @@ function bulletinEditor(collectionName, data) {
   $("#addBulletin").one('click', function () {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
-    viewWorkspace(pageurl, collectionName, 'edit');
+    var reload = localStorage.getItem("historicUrl");
+    //unCheckPage();
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -338,17 +361,15 @@ function bulletinEditor(collectionName, data) {
         '</div>');
     $("#bulletin-cancel_" + lastIndexRelated).hide();
 
-    //unCheckPage();
-    //loadPageDataIntoEditor(collectionName, false);
-
     $("#bulletin-get_" + lastIndexRelated).one('click', function () {
       $("#bulletin-cancel_" + lastIndexRelated).show().one('click', function () {
-        $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-        checkPage();
-        $(".fl-panel--editor__related__bulletin-item__cancel_" + lastIndexRelated).remove();
-        bulletinEditor(collectionName, data);
+        $("#bulletin-cancel_" + lastIndexRelated).hide();
+        $('#' + lastIndexRelated).hide();
+        $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("historicUrl");
+        // checkPage();
       });
-      var bulletinurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+
+      var bulletinurl = $('#iframe')[0].contentWindow.document.location.href;
       var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
       $.ajax({
         url: bulletinurldata,
@@ -356,18 +377,9 @@ function bulletinEditor(collectionName, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
-            $('#bulletin__' + lastIndexRelated).val(relatedData.uri);
-            $('.bulletin-list').append(
-                '<textarea style="display: none;" id="bulletin_name_' + lastIndexRelated + '"></textarea>' +
-                '<textarea style="display: none;" id="bulletin_summary_' + lastIndexRelated + '"></textarea>');
-            $('#bulletin_name_' + lastIndexRelated).val(relatedData.name);
-            $('#bulletin_summary_' + lastIndexRelated).val(relatedData.summary);
-            saveNewBulletin();
-            $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            //checkPage2();
-            checkPage();
-            save();
-            updateContent(collectionName, getPathName(), JSON.stringify(data));
+            data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
+            // checkPage();
+            updateContent(collectionName, getPathName(), JSON.stringify(data), reload);
           } else {
             alert("This is not a bulletin");
           }
@@ -377,101 +389,36 @@ function bulletinEditor(collectionName, data) {
         }
       });
     });
-    sortableRelated();
   });
-
-  function checkPage() {
-    window.intervalID = setInterval(function () {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
-    }, intIntervalTime);
-  }
-
-  function unCheckPage() {
-    clearInterval(window.intervalID);
-  }
 
   function sortableRelated() {
     $("#sortable-related").sortable();
   }
-
   sortableRelated();
-
-  function saveNewBulletin() {
-    var orderBulletin = $(".fl-editor__related").sortable('toArray');
-    $(orderBulletin).each(function(indexB, nameB){
-      var uri = $('#bulletin__'+nameB).val();
-      var summary = $('#bulletin_summary_'+nameB).val();
-      var names = $('#bulletin_name_'+nameB).val();
-      newRelated[parseInt(indexB)] = {uri: uri, name: names, summary: summary};
-    });
-    data.relatedBulletins = newRelated;
-    $(".bulletin-list").remove();
-    $("#metadata-list").remove();
-    bulletinEditor(collectionName, data);
-  }
 
   // Edit external
   // Load and edition
-  $(data.externalLinks).each(function(index, link){
-    lastIndexLink = index + 1;
-    $('.fl-editor__external').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="link__' + index + '" cols="50">' + link.url + '</textarea>' +
-        ' <button class="fl-panel--editor__external__link-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
+  $(data.externalLinks).each(function(iLink){
+    // No edit functionality.
 
     // Delete
-    $(".fl-panel--editor__external__link-item__delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.externalLinks.splice(index, 1);
-      bulletinEditor(collectionName, data);
+    $(".fl-panel--editor__external__link-item__delete_"+iLink).click(function() {
+      $("#"+iLink).remove();
+      data.externalLinks.splice(iLink, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new external
-  $("#external-section").append('<button id="addLink">Add new link</button>');
   $("#addLink").click(function () {
-    $('.fl-editor__external').append(
-        '<div id="' + lastIndexLink + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="link__' + lastIndexLink + '" placeholder="Copy the link here" cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__external__link-item__delete_' + lastIndexLink + '">Delete</button>' +
-        '</div>');
-    sortableLinks();
-    saveNewLink();
+    data.externalLinks.push({url:"", linkText:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
-
-  function saveNewLink() {
-    var orderLink = $(".fl-editor__external").sortable('toArray');
-    $(orderLink).each(function(index, name){
-      var link;
-      console.log($('#link__' + name).val().length);
-      if($('#link__' + name).val().length === 0) {
-        link = "";
-      } else {
-        link = $('#link__' + name).val();
-      }
-      console.log(link);
-      newLinks[index] = {url: link};
-    });
-    data.externalLinks = newLinks;
-    $(".link-list").remove();
-    $("#metadata-list").remove();
-    bulletinEditor(collectionName, data);
-  }
 
   function sortableLinks() {
     $(".fl-editor__external").sortable();
   }
   sortableLinks();
-
-  function sortableExample() {
-    $("#sortable-example").sortable();
-  }
-  sortableExample();
 
   // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function () {
@@ -511,20 +458,18 @@ function bulletinEditor(collectionName, data) {
       var uri = $('#bulletin__' + nameB).val();
       var summary = $('#bulletin_summary_' + nameB).val();
       var name = $('#bulletin_name_' + nameB).val();
-      newRelated[indexB]= {uri: uri, name: name, summary: summary};
+      newRelated[indexB] = {uri: uri, name: name, summary: summary};
     });
     data.relatedBulletins = newRelated;
       //console.log(data.relatedBulletins);
     // External links
     var orderLink = $(".fl-editor__external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
-      var link = $('#link__'+nameL).val();
-      newLinks[indexL] = {url: link};
+      var displayText = $('#link_text_'+nameL).val();
+      var link = $('#link_url_'+nameL).val();
+      newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
-
-    //console.log(data);
-    bulletinEditor(collectionName, data);
   }
 }
 

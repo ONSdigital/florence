@@ -29,7 +29,6 @@
         <p>Description</p>
       </div>
       <div class="edit-section__content">
-        {{!--<div class="edit-section__sortable">--}}
           {{#each this.correction}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <p>Text: <textarea class="auto-size" type="text" id="correction_text_{{@index}}" cols="65" style="box-sizing: border-box; min-height: 31px;">{{correction.text}}</textarea></p>
@@ -40,16 +39,15 @@
               <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
-        {{!--</div>--}}
         <div class="text-center">
           <button class="btn-add-section" id="addCorrection">Add correction</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section">
+    <div class="edit-section" id="collapsible">
       <div class="edit-section__head">
-        <h1>Notes</h1>
+        <h1>Collapsible section</h1>
         <p>Description</p>
       </div>
       <div class="edit-section__content">
@@ -64,12 +62,12 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addTab">Add notes</button>
+          <button class="btn-add-section" id="addTab">Add collapsible</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section">
+    <div class="edit-section" id="relBulletin">
       <div class="edit-section__head">
         <h1>Related bulletin</h1>
         <p>Description</p>
@@ -91,33 +89,85 @@
       </div>
     </div>
 
-    <div class="edit-section">
+    <div class="edit-section" id="relArticle">
       <div class="edit-section__head">
-        <h1>Heading</h1>
+        <h1>Related article</h1>
+        <p>Description</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-related" class="edit-section__sortable">
+          {{#each this.relatedArticles}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="article-uri_{{@index}}">{{uri}}</textarea>
+              <textarea style="display: none;" id="article-title_{{@index}}">{{title}}</textarea>
+              <textarea style="display: none;" id="article-summary_{{@index}}">{{summary}}</textarea>
+              <button class="btn-page-delete" id="article-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addArticle">Add article</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="relDataset">
+      <div class="edit-section__head">
+        <h1>Related dataset</h1>
+        <p>Description</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-related" class="edit-section__sortable">
+          {{#each this.relatedDatasets}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
+              <textarea style="display: none;" id="dataset-title_{{@index}}">{{title}}</textarea>
+              <textarea style="display: none;" id="dataset-summary_{{@index}}">{{summary}}</textarea>
+              <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addDataset">Add dataset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="extLink">
+      <div class="edit-section__head">
+        <h1>External links</h1>
         <p>Description</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-example" class="edit-section__sortable">
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
+          {{#each this.externalLinks}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="link-url_{{@index}}">{{url}}</textarea>
+              <textarea id="link-title_{{@index}}" placeholder="Paste link here and save">{{linkText}}</textarea>
+              <button class="btn-page-delete" id="link-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addLink">Add external link</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="usedIn">
+      <div class="edit-section__head">
+        <h1>Used in</h1>
+        <p>Description</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-example" class="edit-section__sortable">
+          {{#each this.usedIn}}
+            <div class="edit-section__sortable-item">
+              <textarea></textarea>
+              <button class="btn-markdown-edit">Edit</button>
+              <button class="btn-page-delete">Delete</button>
+            </div>
+          {{/each}}
         </div>
         <div class="text-center">
           <button class="btn-add-section">Add section</button>
@@ -125,135 +175,20 @@
       </div>
     </div>
 
-    <div class="edit-section">
+    <div class="edit-section" id="download">
       <div class="edit-section__head">
-        <h1>Heading</h1>
+        <h1>Download</h1>
         <p>Description</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-example" class="edit-section__sortable">
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section">Add section</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Heading</h1>
-        <p>Description</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-example" class="edit-section__sortable">
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section">Add section</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Heading</h1>
-        <p>Description</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-example" class="edit-section__sortable">
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section">Add section</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Heading</h1>
-        <p>Description</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-example" class="edit-section__sortable">
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
-          <div class="edit-section__sortable-item">
-            <textarea></textarea>
-            <button class="btn-markdown-edit">Edit</button>
-            <button class="btn-page-delete">Delete</button>
-          </div>
+          {{#each this.usedIn}}
+            <div class="edit-section__sortable-item">
+              <textarea></textarea>
+              <button class="btn-markdown-edit">Edit</button>
+              <button class="btn-page-delete">Delete</button>
+            </div>
+          {{/each}}
         </div>
         <div class="text-center">
           <button class="btn-add-section">Add section</button>
