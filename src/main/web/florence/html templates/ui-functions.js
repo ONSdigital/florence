@@ -236,37 +236,35 @@ $(document).ready(function(){
       //for carl :)
       // given a line of text, calculate how many lines it will cover given a max line length
       // with word wrap
-      function textareaLines(line, maxLineLength, start, numberOfLinesCovered) {
+			function textareaLines(line, maxLineLength, start, numberOfLinesCovered) {
 
-        if (start + maxLineLength >= line.length) {
-          console.log('Line Length = ' + numberOfLinesCovered);
-          return numberOfLinesCovered;
-        }
+				if (start + maxLineLength >= line.length) {
+					console.log('Line Length = ' + numberOfLinesCovered);
+					return numberOfLinesCovered;
+				}
 
-        var substring = line.substr(start, textareaMaxChars + 1);
-        var actualLineLength = substring.lastIndexOf(' ');
+				var substring = line.substr(start, maxLineLength + 1);
+				var actualLineLength = substring.lastIndexOf(' ') + 1;
 
-        if (actualLineLength === maxLineLength) // edge case - the break is at the end of the line exactly with a space after it
-        {
-          console.log('edge case hit');
-          actualLineLength--;
-        }
+				if (actualLineLength === maxLineLength) // edge case - the break is at the end of the line exactly with a space after it
+				{
+					console.log('edge case hit');
+					actualLineLength--;
+				}
 
-        if( start + actualLineLength === line.length)
-        {
-          console.log('edge case  2 hit');
-          return numberOfLinesCovered;
-        }
-        if(actualLineLength === -1 )
-        {
-          console.log('edge case   3 hit');
-          return numberOfLinesCovered;
-        }
+				if (start + actualLineLength === line.length) {
+					console.log('edge case  2 hit');
+					return numberOfLinesCovered;
+				}
+				//if (actualLineLength === -1) {
+				//  console.log('edge case   3 hit');
+				//  return numberOfLinesCovered;
+				//}
 
-        console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
+				console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
 
-        return textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
-      }
+				return textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
+			}
 
 			if(linesLi) {
 				var linesOl = '<ol>' + linesLi + '</ol>';
