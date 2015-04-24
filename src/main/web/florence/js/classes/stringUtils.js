@@ -2,7 +2,7 @@ StringUtils = {
   textareaLines: function (line, maxLineLength, start, numberOfLinesCovered) {
 
     if (start + maxLineLength >= line.length) {
-      console.log('Line Length = ' + numberOfLinesCovered);
+      //console.log('Line Length = ' + numberOfLinesCovered);
       return numberOfLinesCovered;
     }
 

@@ -1060,17 +1060,23 @@ function getLastEditedEvent(collection, page) {
 }
 
 function getLastCompletedEvent(collection, page) {
-  var pageEvents = collection.eventsByUri[page];
-  var lastCompletedEvent = _.chain(pageEvents)
-    .filter(function (event) {
-      return event.type === 'COMPLETED'
-    })
-    .sortBy(function (event) {
-      return event.date;
-    })
-    .last()
-    .value();
 
+  var lastCompletedEvent;
+
+  if (collection.eventsByUri) {
+    var pageEvents = collection.eventsByUri[page];
+    if (pageEvents) {
+      lastCompletedEvent = _.chain(pageEvents)
+        .filter(function (event) {
+          return event.type === 'COMPLETED'
+        })
+        .sortBy(function (event) {
+          return event.date;
+        })
+        .last()
+        .value();
+    }
+  }
   return lastCompletedEvent;
 }
 
@@ -2025,28 +2031,14 @@ function loadPageDataIntoEditor(collectionName, active) {
         var pageIsComplete = false;
         var pagePath = getPathName();
         var pageFile = pagePath + '/data.json';
+        var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
 
-        $.each(response.completeUris, function (i, item) {
-          if (pageFile === item) {
-            pageIsComplete = true;
-          }
-        });
-
-        if (pageIsComplete) {
-
-          var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
-          if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
-            $('.fl-panel--editor__nav__review').show();
-            $('.fl-panel--editor__nav__complete').hide();
-          }
-          else {
-            $('.fl-panel--editor__nav__review').hide();
-            $('.fl-panel--editor__nav__complete').show();
-          }
-        }
-        else {
-          $('.fl-panel--editor__nav__review').hide();
+        if (!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs")) {
           $('.fl-panel--editor__nav__complete').show();
+          $('.fl-panel--editor__nav__review').hide();
+        } else {
+          $('.fl-panel--editor__nav__review').show();
+          $('.fl-panel--editor__nav__complete').hide();
         }
       },
       error = function (response) {
@@ -2781,7 +2773,7 @@ function viewCollectionDetails(collectionName) {
             var path = uri.replace('/data.json', '');
             path = path.length === 0 ? '/' : path;
             uri_list += '<li class="fl-collection-page-list-item" data-path="' + path + '">' +
-            response.name + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
+            response.title + '</li><button class="fl-button fl-button--delete" data-path="' + path + '">Delete</button>';
           },
           error = function (response) {
             handleApiError(response);
