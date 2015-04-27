@@ -54,7 +54,10 @@ function setupFlorence () {
     viewController('login');
   });
 
-  $('.fl-admin-menu__item--publish').click(function () {
+  var $nav = $('.nav');
+
+  $nav.on('click', '#publish', function () {
+    console.log('once?!');
     viewController('publish');
   });
 
