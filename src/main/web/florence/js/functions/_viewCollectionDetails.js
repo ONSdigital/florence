@@ -2,7 +2,7 @@ function viewCollectionDetails(collectionName) {
 
   var collectionDetails = {
     name: "",
-    date: "",
+    date: ""
   };
 
   getCollection(collectionName,
@@ -44,13 +44,13 @@ function viewCollectionDetails(collectionName) {
           collectionDetails[status] = [];
         } else {
           pageDataRequests.push(getPageData(collectionName, uri,
-            success = function (response) {
-              var path = response.uri;
-              uri_list.push({path: path, name: response.title});
-            },
-            error = function (response) {
-              handleApiError(response);
-            })
+              success = function (response) {
+                var path = response.uri;
+                uri_list.push({path: path, name: response.title});
+              },
+              error = function (response) {
+                handleApiError(response);
+              })
           );
         }
       });
@@ -62,46 +62,47 @@ function viewCollectionDetails(collectionName) {
         $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
         //page-list
-        $('.page-item').click(function() {
+        $('.page-item').click(function () {
           $('.page-list li').removeClass('selected');
           $('.page-options').hide();
-    // Delete function
-    $('.fl-panel--collection-details-container').unbind('click').on('click', '.fl-button--delete', function () {
-      var path = $(this).attr('data-path');
+          // Delete function
+          $('.fl-panel--collection-details-container').unbind('click').on('click', '.fl-button--delete', function () {
+            var path = $(this).attr('data-path');
 
-          $(this).parent('li').addClass('selected');
-          $(this).next('.page-options').show();
-        });
+            $(this).parent('li').addClass('selected');
+            $(this).next('.page-options').show();
+          });
 
-        $('.btn-page-edit').click(function () {
-          var path = $(this).attr('data-path');
-          if (path) {
-            viewWorkspace(path, collectionName, 'edit');
-          }
-        });
-        $('.btn-page-delete').click(function () {
-          var path = $(this).attr('data-path');
-          if (path) {
-            deleteContent(collectionName, path, success, error);
-            console.log('File deleted');
-            viewCollectionDetails(collectionName);
-          }
-        });
-        $('.btn-collection-work-on').click(function () {
-          document.cookie = "collection=" + collectionName + ";path=/";
-          localStorage.setItem("collection", collectionName);
-          viewWorkspace('', collectionName, 'browse');
-        });
+          $('.btn-page-edit').click(function () {
+            var path = $(this).attr('data-path');
+            if (path) {
+              viewWorkspace(path, collectionName, 'edit');
+            }
+          });
+          $('.btn-page-delete').click(function () {
+            var path = $(this).attr('data-path');
+            if (path) {
+              deleteContent(collectionName, path, success, error);
+              console.log('File deleted');
+              viewCollectionDetails(collectionName);
+            }
+          });
+          $('.btn-collection-work-on').click(function () {
+            document.cookie = "collection=" + collectionName + ";path=/";
+            localStorage.setItem("collection", collectionName);
+            viewWorkspace('', collectionName, 'browse');
+          });
 
-        $('.collection-selected .btn-cancel').click(function(){
-          $('.collection-selected').stop().animate({right: "-50%"}, 500);
-          $('.collections-select-table tbody tr').removeClass('selected');
-          // Wait until the animation ends
-          setTimeout(function(){
-            viewController('collections');
-          }, 500);
+          $('.collection-selected .btn-cancel').click(function () {
+            $('.collection-selected').stop().animate({right: "-50%"}, 500);
+            $('.collections-select-table tbody tr').removeClass('selected');
+            // Wait until the animation ends
+            setTimeout(function () {
+              viewController('collections');
+            }, 500);
+          });
         });
-      });
+      })
     }
   }
 }
