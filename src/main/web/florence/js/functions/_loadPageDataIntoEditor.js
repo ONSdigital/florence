@@ -1,18 +1,16 @@
-function loadPageDataIntoEditor(collectionName, active) {
-  if (active === false) {
-    // Do nothing
-  } else {
-    var pageUrlData = localStorage.getItem("pageurl") + "/data.json";
-    getPageData(collectionName, pageUrlData,
-      success = function (response) {
-        makeEditSections(collectionName, response);
-        console.log(response);
-      },
-      error = function (response) {
-        handleApiError(response);
-      }
-    );
-  }
+function loadPageDataIntoEditor(collectionName) {
+  var pageUrlData = localStorage.getItem("pageurl") + "/data.json";
+  getPageData(collectionName, pageUrlData,
+    success = function (response) {
+      makeEditSections(collectionName, response);
+      console.log(response);
+      refreshPreview(localStorage.getItem("pageurl"));
+      setPreviewUrl(localStorage.getItem("pageurl"))
+    },
+    error = function (response) {
+      handleApiError(response);
+    }
+  );
 
   function checkIfPageIsComplete() {
 

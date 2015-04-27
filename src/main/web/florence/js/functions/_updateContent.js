@@ -1,9 +1,9 @@
-function updateContent(collectionName, path, content, refreshPreviewUrl) {
+function updateContent(collectionName, path, content) {
   postContent(collectionName, path, content,
     success = function (response) {
-      console.log("Updating completed" + response);
+      console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      refreshPreview(refreshPreviewUrl);
+      refreshPreview(path);
       loadPageDataIntoEditor(collectionName);
     },
     error = function (response) {

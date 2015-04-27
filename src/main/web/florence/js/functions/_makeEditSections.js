@@ -8,10 +8,18 @@ function makeEditSections(collectionName, response) {
   }
 
   else if (response.type === 'article') {
+    var html = templates.workEdit(response);
+    $('.workspace-menu').empty();
+    $('.workspace-menu').append(html);
+    accordion();
     articleEditor(collectionName, response);
   }
 
   else if (response.type === 'dataset') {
+    var html = templates.workEdit(response);
+    $('.workspace-menu').empty();
+    $('.workspace-menu').append(html);
+    accordion();
     datasetEditor(collectionName, response);
   }
 

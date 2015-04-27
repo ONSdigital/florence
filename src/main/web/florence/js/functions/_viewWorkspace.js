@@ -1,6 +1,6 @@
 function viewWorkspace(path, collectionName, menu) {
 
-  var currentPath = '/';
+  var currentPath = '';
   if (path) {
     currentPath = path;
   }
@@ -28,15 +28,13 @@ function viewWorkspace(path, collectionName, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
-    loadPageDataIntoEditor(collectionName, true);
+    loadPageDataIntoEditor(collectionName);
   }
   else if (menu === 'review') {
     $('.nav--workspace li').removeClass('selected');
     $("#review").addClass('selected');
     loadReviewScreen(collectionName);
-    checkForPageChanged(function () {
-      updateReviewScreen(collectionName);
-    });
+    checkForPageChanged(updateReviewScreen(collectionName));
   }
 
   //click handlers
@@ -61,15 +59,11 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateBulletinScreen(collectionName);
     }
     else if ($(this).is('#edit')) {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
+      checkForPageChanged(loadPageDataIntoEditor(collectionName));
     }
     else if ($(this).is('#review')) {
       loadReviewScreen(collectionName);
-      checkForPageChanged(function () {
-        updateReviewScreen(collectionName);
-      });
+      checkForPageChanged(updateReviewScreen(collectionName));
     }
     else {
       loadBrowseScreen();

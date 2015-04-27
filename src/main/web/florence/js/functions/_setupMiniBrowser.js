@@ -6,7 +6,7 @@ function setupMiniBrowser() {
     treeNodeSelect(browserLocation);
     checkForPageChanged();
     //console.log(browserLocation);
-    // console.log('iframe inner clicked');
+    console.log('iframe inner clicked');
   });
   $('.browser-location').val($('#iframe').attr('src'));
 }
