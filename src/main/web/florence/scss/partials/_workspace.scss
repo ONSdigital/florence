@@ -14,6 +14,17 @@
 			overflow: hidden;
 			font-size: 12px;
 
+			&:after {
+				content: '';
+				position: absolute;
+				right: $gutter / 2;
+				top: $lineheight / 2;
+				width: 30px;
+				height: $lineheight * 2;
+				background: transparent url(../img/sprite.png);
+				background-size: 30px auto;
+			}
+
 			&.selected {
 				background-color: $mirage;
 				position: relative;
@@ -30,6 +41,30 @@
 					border-bottom: 10px solid transparent; 
 					border-right:10px solid $quill-gray; 
 				}
+			}
+		}
+
+		&__browse {
+			&:after {
+				background-position: 0px -97px !important;
+			}
+		}
+
+		&__create {
+			&:after {
+				background-position: 0px -27px !important;
+			}
+		}
+
+		&__edit {
+			&:after {
+				background-position: 0px -61px !important;
+			}
+		}
+
+		&__review {
+			&:after {
+				background-position: 0px -297px !important;
 			}
 		}
 	}
@@ -214,7 +249,7 @@
 }
 
 .markdown-editor {
-	// display: none;
+	display: none;
 	box-sizing: border-box;
 	position: absolute;
 	z-index: 900;

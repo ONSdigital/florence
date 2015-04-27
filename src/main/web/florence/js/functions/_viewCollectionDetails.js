@@ -65,6 +65,9 @@ function viewCollectionDetails(collectionName) {
         $('.page-item').click(function() {
           $('.page-list li').removeClass('selected');
           $('.page-options').hide();
+    // Delete function
+    $('.fl-panel--collection-details-container').unbind('click').on('click', '.fl-button--delete', function () {
+      var path = $(this).attr('data-path');
 
           $(this).parent('li').addClass('selected');
           $(this).next('.page-options').show();
