@@ -19,6 +19,27 @@ $(document).ready(function(){
 
 
 
+		//publishes table
+		$('.publish-select-table tbody tr').click(function(){
+
+			$('.publish-select-table tbody tr').removeClass('selected');
+
+			$(this).addClass('selected');
+
+			$('.publish-selected').animate({right: "0%"}, 800);
+
+			$('.publish-select').animate({marginLeft: "0%"}, 500);
+		});
+
+		$('.publish-selected .btn-cancel').click(function(){
+			$('.publish-selected').animate({right: "-50%"}, 500);
+			$('.publish-select').animate({marginLeft: "25%"}, 800);
+			$('.publish-select-table tbody tr').removeClass('selected');
+		});
+
+
+
+
 
 
 		//forms field styling markup injection

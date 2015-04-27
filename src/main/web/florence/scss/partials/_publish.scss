@@ -1,0 +1,49 @@
+
+.publish {
+	&-select {
+		padding: 0 $col--1;
+		margin-left: 25%;
+	}
+
+	&-create {
+		padding: 0 $col--1;
+		select {
+			&.small {
+				/*width: 30%;*/
+			}
+		}
+
+		.selectbg {
+			&--small {
+				width: 28%;
+				float: left;
+
+				&--margin {
+					margin-right: 8%;
+					margin-left: 8%;
+				}
+			}
+		}
+	}
+
+	&-selected {
+
+		right: -50%;
+		position: absolute;
+		background: $quill-gray;
+		// display: none;
+	}
+}
+
+.publish-select-table {
+
+	tbody {
+		max-height: $lineheight * 24;
+		overflow-y: scroll;
+		display: block;
+
+		tr {
+			display: block;
+		}
+	}
+}
