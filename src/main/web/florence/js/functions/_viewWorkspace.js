@@ -11,7 +11,7 @@ function viewWorkspace(path, collectionName, menu) {
   localStorage.setItem("pageurl", currentPath);
 
   // tentative reload of nav bar with collection name
-  var mainNavHtml = templates.mainNav(Florence.collection.name);
+  var mainNavHtml = templates.mainNav(Florence);
   $('.wrapper').replaceWith(mainNavHtml);
 
   var workSpace = templates.workSpace(path);
