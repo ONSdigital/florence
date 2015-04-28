@@ -2,13 +2,13 @@
   {{#if this.collection.name}}
     <li class="selected">Working on: {{this}}</li>
   {{/if}}
-  <li id="admin-menu-collections" class="admin-menu selected"><a href="#">Collections</a></li>
+  <li id="admin-menu-collections" class="admin-menu {{#if this.isAuthenticated}}selected{{/if}}"><a href="#">Collections</a></li>
   <li id="admin-menu-users" class="admin-menu"><a href="#">Users and access</a></li>
   <li id="admin-menu-publish" class="admin-menu"><a href="#">Publish</a></li>
 
   {{#if this.isAuthenticated}}
     <li id="admin-menu-logout" class="admin-menu"><a href="#">Logout</a></li>
   {{else}}
-    <li id="admin-menu-login" class="admin-menu"><a href="#">Login</a></li>
+    <li id="admin-menu-login" class="admin-menu selected"><a href="#">Login</a></li>
   {{/if}}
 </ul>

@@ -51,7 +51,7 @@ function setupFlorence () {
   });
 
   adminMenu.on('click', '#admin-menu-login', function () {
-    viewController();
+    viewController('login');
   });
 
   adminMenu.on('click', '#admin-menu-logout', function () {

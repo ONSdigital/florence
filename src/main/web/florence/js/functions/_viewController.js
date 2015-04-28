@@ -12,7 +12,7 @@ function viewController(view) {
 			viewUserAndAccess('create');
 		}
 		else if (view === 'login') {
-			viewUserAndAccess('login');
+			viewLogIn();
 		}
 		else if (view === 'publish') {
 			viewPublish();
@@ -30,7 +30,7 @@ function viewController(view) {
     //authentication calls collections view for now until authentication is implemented
     // viewCollections();
     //viewWorkspace();
-    viewLogIn();
+		viewLogIn();
   }
 
   function logged_in() {

@@ -1,9 +1,11 @@
 function logout() {
   delete_cookie('access_token');
   localStorage.removeItem("loggedInAs");
+  Florence.isAuthenticated = false;
 
-  $('.fl-admin-menu__item--login').removeClass('hidden');
-  $('.fl-admin-menu__item--logout').addClass('hidden');
+  // refresh the navigation
+  var mainNavHtml = templates.mainNav(Florence);
+  $('#admin-menu').html(mainNavHtml);
 
   viewController();
 }
