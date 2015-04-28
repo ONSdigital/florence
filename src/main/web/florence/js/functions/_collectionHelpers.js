@@ -15,17 +15,22 @@ function getLastEditedEvent(collection, page) {
 }
 
 function getLastCompletedEvent(collection, page) {
-  var pageEvents = collection.eventsByUri[page];
-  var lastCompletedEvent = _.chain(pageEvents)
-    .filter(function (event) {
-      return event.type === 'COMPLETED';
-    })
-    .sortBy(function (event) {
-      return event.date;
-    })
-    .last()
-    .value();
+   var lastCompletedEvent;
 
+  if (collection.eventsByUri) {
+    var pageEvents = collection.eventsByUri[page];
+    if (pageEvents) {
+      lastCompletedEvent = _.chain(pageEvents)
+        .filter(function (event) {
+          return event.type === 'COMPLETED'
+        })
+        .sortBy(function (event) {
+          return event.date;
+        })
+        .last()
+        .value();
+    }
+  }
   return lastCompletedEvent;
 }
 
