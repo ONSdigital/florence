@@ -4,7 +4,7 @@ function updateContent(collectionName, path, content) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
       refreshPreview(path);
-      loadPageDataIntoEditor(collectionName);
+      loadPageDataIntoEditor(path, collectionName);
     },
     error = function (response) {
       if (response.status === 400) {

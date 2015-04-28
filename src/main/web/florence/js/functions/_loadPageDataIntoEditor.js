@@ -1,11 +1,10 @@
-function loadPageDataIntoEditor(collectionName) {
-  var pageUrlData = localStorage.getItem("pageurl") + "/data.json";
-  getPageData(collectionName, pageUrlData,
+function loadPageDataIntoEditor(path, collectionId) {
+  var pageUrlData = path + "/data.json";
+  getPageData(collectionId, pageUrlData,
     success = function (response) {
-      makeEditSections(collectionName, response);
-      console.log(response);
-      refreshPreview(localStorage.getItem("pageurl"));
-      setPreviewUrl(localStorage.getItem("pageurl"))
+      makeEditSections(collectionId, response);
+      refreshPreview(path);
+      setPreviewUrl(path);
     },
     error = function (response) {
       handleApiError(response);
@@ -14,7 +13,7 @@ function loadPageDataIntoEditor(collectionName) {
 
   function checkIfPageIsComplete() {
 
-    getCollection(collectionName,
+    getCollection(collectionId,
       success = function (response) {
         var pageIsComplete = false;
         var pagePath = getPathName();

@@ -1,10 +1,10 @@
-function makeEditSections(collectionName, response) {
+function makeEditSections(collectionId, response) {
   if (response.type === 'bulletin') {
     var html = templates.workEdit(response);
     $('.workspace-menu').empty();
     $('.workspace-menu').append(html);
     accordion();
-    bulletinEditor(collectionName, response);
+    bulletinEditor(collectionId, response);
   }
 
   else if (response.type === 'article') {
@@ -12,7 +12,7 @@ function makeEditSections(collectionName, response) {
     $('.workspace-menu').empty();
     $('.workspace-menu').append(html);
     accordion();
-    articleEditor(collectionName, response);
+    articleEditor(collectionId, response);
   }
 
   else if (response.type === 'dataset') {
@@ -20,13 +20,13 @@ function makeEditSections(collectionName, response) {
     $('.workspace-menu').empty();
     $('.workspace-menu').append(html);
     accordion();
-    datasetEditor(collectionName, response);
+    datasetEditor(collectionId, response);
   }
 
   else {
     var workspace_menu_sub_edit =
         '<section class="workspace-edit">' +
-        '  <section style="overflow: scroll;">' +
+        '  <section class="panel">' +
         '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 818px" cols="104"></textarea>' +
         '  </section>' +
           //'  <nav class="fl-panel--editor__nav">' +
@@ -43,18 +43,18 @@ function makeEditSections(collectionName, response) {
 
     //  $('.fl-panel--editor__nav__save').unbind("click").click(function () {
     //    pageData = $('.fl-editor__headline').val();
-    //    updateContent(collectionName, getPathName(), pageData);
+    //    updateContent(collectionId, getPathName(), pageData);
     //  });
     //
     //  // complete
     //  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
     //    pageData = $('.fl-editor__headline').val();
-    //    saveAndCompleteContent(collectionName, getPathName(), pageData);
+    //    saveAndCompleteContent(collectionId, getPathName(), pageData);
     //  });
     //}
     //
     //$('.fl-panel--editor__nav__review').unbind("click").click(function () {
-    //  postReview(collectionName, getPathName());
+    //  postReview(collectionId, getPathName());
     //});
 
     $('.workspace-edit :input').on('input', function () {

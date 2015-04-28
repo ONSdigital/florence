@@ -30,7 +30,8 @@ function viewWorkspace(path, collectionName, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
-    loadPageDataIntoEditor(collectionName);
+    //checkIframe();
+    loadPageDataIntoEditor(path, collectionName);
   }
   else if (menu === 'review') {
     $('.nav--workspace li').removeClass('selected');
@@ -61,8 +62,10 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateBulletinScreen(collectionName);
     }
     else if ($(this).is('#edit')) {
-      checkIframe();
-      checkForPageChanged(loadPageDataIntoEditor(collectionName));
+      //removeListen();
+      //checkIframe();
+      var goto = localStorage.getItem('pageurl');
+      loadPageDataIntoEditor(goto, collectionName);
     }
     else if ($(this).is('#review')) {
       loadReviewScreen(collectionName);

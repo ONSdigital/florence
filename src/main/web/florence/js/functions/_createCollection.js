@@ -1,5 +1,5 @@
 function createCollection() {
-  var publishDay,publishMonth,publishYear,publishTime,collectionName;
+  var publishDay, publishMonth, publishYear, publishTime, collectionName;
   publishDay   = $('#day').val();
   publishMonth = $('#month').val();
   publishYear  = $('#year').val();

@@ -1,4 +1,4 @@
-StringUtils = {
+var StringUtils = {
   textareaLines: function (line, maxLineLength, start, numberOfLinesCovered) {
 
     if (start + maxLineLength >= line.length) {
@@ -23,3 +23,4 @@ StringUtils = {
     return StringUtils.textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
   }
 };
+
