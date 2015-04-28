@@ -154,13 +154,13 @@
       </div>
     </div>
 
-    <div class="edit-section" id="usedIn">
+    <div class="edit-section" id="used">
       <div class="edit-section__head">
         <h1>Used in</h1>
         <p>Description</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-example" class="edit-section__sortable">
+        <div id="sortable-used" class="edit-section__sortable">
           {{#each this.usedIn}}
             <div class="edit-section__sortable-item">
               <textarea></textarea>
@@ -170,7 +170,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section">Add section</button>
+          <button class="btn-add-used">Add article or bulletin</button>
         </div>
       </div>
     </div>
@@ -181,8 +181,8 @@
         <p>Description</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-example" class="edit-section__sortable">
-          {{#each this.usedIn}}
+        <div id="sortable-download" class="edit-section__sortable">
+          {{#each this.download}}
             <div class="edit-section__sortable-item">
               <textarea></textarea>
               <button class="btn-markdown-edit">Edit</button>
@@ -191,12 +191,33 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section">Add section</button>
+          <button class="btn-add-download">Add file</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section">
+    <div class="edit-section" id="note">
+      <div class="edit-section__head">
+        <h1>Content</h1>
+        <p>Description</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-notes" class="edit-section__sortable">
+          {{#each this.notes}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="note-markdown_{{@index}}" placeholder="Click edit to add content">{{data}}</textarea>
+              <button class="btn-markdown-edit" id="note-edit_{{@index}}">Edit</button>
+              <button class="btn-page-delete" id="note-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addNote">Add note</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="content">
       <div class="edit-section__head">
         <h1>Content</h1>
         <p>Description</p>

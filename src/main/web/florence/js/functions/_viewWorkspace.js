@@ -5,8 +5,6 @@ function viewWorkspace(path, collectionName, menu) {
     currentPath = path;
   }
 
-  console.log(collectionName)
-
   localStorage.removeItem("pageurl");
   localStorage.setItem("pageurl", currentPath);
 

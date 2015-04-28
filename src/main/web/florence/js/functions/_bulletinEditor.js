@@ -8,7 +8,7 @@ function bulletinEditor(collectionName, data) {
   var setActiveTab;
   var getActiveTab;
 
-  $( ".edit-accordion").on('accordionactivate', function(event, ui) {
+  $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
       localStorage.setItem('activeTab', setActiveTab);
@@ -24,8 +24,9 @@ function bulletinEditor(collectionName, data) {
   $("#description-p").remove();
   $("#relArticle").remove();
   $("#relDataset").remove();
-  $("#usedIn").remove();
+  $("#used").remove();
   $("#download").remove();
+  $("#note").remove();
 
   // Metadata load, edition and saving
   $("#title").on('click keyup', function () {
@@ -132,7 +133,7 @@ function bulletinEditor(collectionName, data) {
         var editedSectionTitle = $('#section-title_' + index).val();
         data.sections[index].title = editedSectionTitle;
         updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200);
+        $('.markdown-editor').stop().fadeOut(200).remove();
       });
 
       $("#wmd-input").on('click', function() {
@@ -152,7 +153,7 @@ function bulletinEditor(collectionName, data) {
     });
   });
 
-  //Add new sections
+  //Add new section
   $("#addSection").one('click', function () {
     data.sections.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
@@ -194,7 +195,7 @@ function bulletinEditor(collectionName, data) {
         var editedSectionTitle = $('#tab-title_' + index).val();
         data.accordion[index].title = editedSectionTitle;
         updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200);
+        $('.markdown-editor').stop().fadeOut(200).remove();
       });
 
       $("#wmd-input").on('click', function() {
@@ -247,7 +248,6 @@ function bulletinEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
-    //unCheckPage();
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -262,7 +262,6 @@ function bulletinEditor(collectionName, data) {
         $("#bulletin-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
         $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("historicUrl");
-        // checkPage();
       });
 
       var bulletinurl = $('#iframe')[0].contentWindow.document.location.href;
@@ -274,7 +273,6 @@ function bulletinEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
             data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            // checkPage();
             updateContent(collectionName, reload, JSON.stringify(data));
             localStorage.removeItem('historicUrl');
           } else {
@@ -299,7 +297,7 @@ function bulletinEditor(collectionName, data) {
     // No edit functionality.
 
     // Delete
-    $(".fl-panel--editor__external__link-item__delete_"+iLink).click(function() {
+    $("#link-delete_"+iLink).click(function() {
       $("#"+iLink).remove();
       data.externalLinks.splice(iLink, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));

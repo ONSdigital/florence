@@ -4,21 +4,30 @@ function articleEditor(collectionName, data) {
   var newTabs = [];
   var newRelated = [];
   var newLinks = [];
-  var lastIndexRelated, lastIndexLink;
+  var lastIndexRelated;
+  var setActiveTab;
+  var getActiveTab;
+
+  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+    setActiveTab = $(".edit-accordion").accordion("option", "active");
+    if(setActiveTab !== false) {
+      localStorage.setItem('activeTab', setActiveTab);
+    }
+  });
+
+  getActiveTab = localStorage.getItem('activeTab');
+  accordion(getActiveTab);
 
   //console.log(data.sections);
 
-  var html = templates.workEdit(data);
-  $('.workspace-menu').html(html);
+  $("#nextRelease").remove();
+  $("#description-p").remove();
+  $("#relBulletin").remove();
+  $("#relDataset").remove();
+  $("#used").remove();
+  $("#download").remove();
+  $("#note").remove();
 
-  //$(".section-list").remove();
-  //$("#addCorrection").remove();
-  //$("#addSection").remove();
-  //$("#addTab").remove();
-  //$("#addArticle").remove();
-  //$("#addLink").remove();
-  //
-  //$("#metadata-list").remove();
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -81,7 +90,6 @@ function articleEditor(collectionName, data) {
       $("#" + index).remove();
       data.correction.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
-      bulletinEditor(collectionName, data);
     });
   });
 
@@ -89,7 +97,6 @@ function articleEditor(collectionName, data) {
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    bulletinEditor(collectionName, data);
   });
 
   // Edit sections
@@ -98,28 +105,40 @@ function articleEditor(collectionName, data) {
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = $("#section-markdown_" + index).val();
-
-      var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
-      var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
-          '<div id="wmd-button-bar"></div>' +
-          ' <textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedSectionValue + '</textarea>' +
-          ' <button id="finish-section">Finish editing</button>' +
-          '</div>';
-
-      $('body').prepend(editorPrev, editorEdit);
+      var html = templates.markdownEditor(editedSectionValue);
+      $('body').append(html);
+      $('.markdown-editor').stop().fadeIn(200);
 
       markdownEditor();
+      markDownEditorSetLines();
 
-      $("#finish-section").click(function(){
+      $('.btn-markdown-editor-cancel').on('click', function() {
+        $('.markdown-editor').stop().fadeOut(200).remove();
+      });
+
+      $(".btn-markdown-editor-save").click(function(){
         var editedSectionText = $('#wmd-input').val();
         data.sections[index].markdown = editedSectionText;
         var editedSectionTitle = $('#section-title_' + index).val();
         data.sections[index].title = editedSectionTitle;
-        $("#wmd-preview").remove();
-        $("#wmd-edit").remove();
-        bulletinEditor(collectionName, data);
-        save();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
+      });
+
+      $(".btn-markdown-editor-exit").click(function(){
+        var editedSectionText = $('#wmd-input').val();
+        data.sections[index].markdown = editedSectionText;
+        var editedSectionTitle = $('#section-title_' + index).val();
+        data.sections[index].title = editedSectionTitle;
+        updateContent(collectionName, getPathName(), JSON.stringify(data));
+        $('.markdown-editor').stop().fadeOut(200).remove();
+      });
+
+      $("#wmd-input").on('click', function() {
+        markDownEditorSetLines();
+      });
+
+      $("#wmd-input").on('keyup', function() {
+        markDownEditorSetLines();
       });
     });
 
@@ -127,7 +146,7 @@ function articleEditor(collectionName, data) {
     $("#section-delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
-      bulletinEditor(collectionName, data);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
     });
   });
 
@@ -135,7 +154,6 @@ function articleEditor(collectionName, data) {
   $("#addSection").one('click', function () {
     data.sections.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    bulletinEditor(collectionName, data);
   });
 
   function sortableSections() {
@@ -146,58 +164,62 @@ function articleEditor(collectionName, data) {
   // Edit accordion
   // Load and edition
   $(data.accordion).each(function(index, tab) {
-    lastIndexTab = index + 1;
-    $('.fl-editor__accordion').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="tab__' + index + '" cols="50">' + tab.title + '</textarea>' +
-        ' <textarea style="display: none;" id="tab_markdown_' + index + '">' + tab.markdown + '</textarea>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__edit_' + index + '">Edit</button>' +
-        ' <button class="fl-panel--editor__accordion__tab-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
 
-    $(".fl-panel--editor__accordion__tab-item__edit_"+index).click(function() {
-      var editedTabValue = $("#tab_markdown_" + index).val();
-
-      var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
-      var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
-          '<div id="wmd-button-bar"></div>' +
-          ' <textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedTabValue + '</textarea>' +
-          ' <button id="finish-tab">Finish editing</button>' +
-          '</div>';
-
-      $('body').prepend(editorPrev, editorEdit);
+    $("#tab-edit_"+index).click(function() {
+      var editedSectionValue = $("#tab-markdown_" + index).val();
+      var html = templates.markdownEditor(editedSectionValue);
+      $('body').append(html);
+      $('.markdown-editor').stop().fadeIn(200);
 
       markdownEditor();
+      markDownEditorSetLines();
 
-      $("#finish-tab").click(function() {
-        data.accordion[index].markdown = $('#wmd-input').val();
-        data.accordion[index].title = $('#tab__' + index).val();
-        $("#wmd-preview").remove();
-        $("#wmd-edit").remove();
-        save();
+      $('.btn-markdown-editor-cancel').on('click', function() {
+        $('.markdown-editor').stop().fadeOut(200).remove();
+      });
+
+      $(".btn-markdown-editor-save").click(function(){
+        var editedSectionText = $('#wmd-input').val();
+        data.accordion[index].markdown = editedSectionText;
+        var editedSectionTitle = $('#tab-title_' + index).val();
+        data.accordion[index].title = editedSectionTitle;
         updateContent(collectionName, getPathName(), JSON.stringify(data));
+      });
+
+      $(".btn-markdown-editor-exit").click(function(){
+        var editedSectionText = $('#wmd-input').val();
+        data.accordion[index].markdown = editedSectionText;
+        var editedSectionTitle = $('#tab-title_' + index).val();
+        data.accordion[index].title = editedSectionTitle;
+        updateContent(collectionName, getPathName(), JSON.stringify(data));
+        $('.markdown-editor').stop().fadeOut(200).remove();
+      });
+
+      $("#wmd-input").on('click', function() {
+        markDownEditorSetLines();
+      });
+
+      $("#wmd-input").on('keyup', function() {
+        markDownEditorSetLines();
       });
     });
 
     // Delete
-    $(".fl-panel--editor__accordion__tab-item__delete_"+index).click(function() {
+    $("#tab-delete_"+index).click(function() {
       $("#"+index).remove();
       data.accordion.splice(index, 1);
-      articleEditor(collectionName, data);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new tab
-  $("#accordion-section").append('<button id="addTab">Add new tab</button>');
   $("#addTab").one('click', function () {
     data.accordion.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    articleEditor(collectionName, data);
   });
 
   function sortableTabs() {
-    $(".fl-editor__accordion").sortable();
+    $("#sortable-tabs").sortable();
   }
   sortableTabs();
 
@@ -208,14 +230,6 @@ function articleEditor(collectionName, data) {
   } else {
     $(data.relatedArticles).each(function (iArticle, article) {
       lastIndexRelated = iArticle + 1;
-      $('.fl-editor__related').append(
-          '<div id="' + iArticle + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-          'Link ' +
-          '  <textarea id="article_' + iArticle + '" cols="50">' + article.uri + '</textarea>' +
-          '  <textarea style="display: none;" id="article_name_' + iArticle + '">' + article.name + '</textarea>' +
-          '  <textarea style="display: none;" id="article_summary_' + iArticle + '">' + article.summary + '</textarea>' +
-          '  <button class="fl-panel--editor__related__article-item__delete_' + iArticle + '">Delete</button>' +
-          '</div>');
 
       // Delete
       $(".fl-panel--editor__related__article-item__delete_" + iArticle).click(function () {
@@ -227,29 +241,27 @@ function articleEditor(collectionName, data) {
   }
 
   //Add new related
-  $("#related-section").append('<button id="addArticle">Add new link</button>');
   $("#addArticle").one('click', function () {
-    $('.fl-editor__related').append(
-        '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Link ' +
-        '  <textarea id="article__' + lastIndexRelated + '" placeholder="Go to the related article and click Get" cols="50"></textarea>' +
-        '  <button class="fl-panel--editor__related__article-item__get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="fl-panel--editor__related__article-item__cancel_' + lastIndexRelated + '">Cancel</button>' +
+    var pageurl = localStorage.getItem('pageurl');
+    localStorage.setItem('historicUrl', pageurl);
+    var reload = localStorage.getItem("historicUrl");
+
+    $('#sortable-related').append(
+        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
+        '  <textarea id="bulletin-uri_' + lastIndexRelated + '" placeholder="Go to the related article and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="article-get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="article-cancel_' + lastIndexRelated + '">Cancel</button>' +
         '</div>');
+    $("#article-cancel_" + lastIndexRelated).hide();
 
-    $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).hide();
-
-    unCheckPage();
-    loadPageDataIntoEditor(collectionName, false);
-
-    $(".fl-panel--editor__related__article-item__get_" + lastIndexRelated).one('click', function () {
-      $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).show().one('click', function () {
-        $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-        checkPage();
-        $(".fl-panel--editor__related__article-item__cancel_" + lastIndexRelated).remove();
-        articleEditor(collectionName, data);
+    $("#article-get_" + lastIndexRelated).one('click', function () {
+      $("#article-cancel_" + lastIndexRelated).show().one('click', function () {
+        $("#article-cancel_" + lastIndexRelated).hide();
+        $('#' + lastIndexRelated).hide();
+        $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("historicUrl");
       });
-      var articleurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+
+      var articleurl = $('#iframe')[0].contentWindow.document.location.href;
       var articleurldata = "/data" + articleurl.split("#!")[1];
       $.ajax({
         url: articleurldata,
@@ -257,19 +269,11 @@ function articleEditor(collectionName, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'article') {
-            $('#article__' + lastIndexRelated).val(relatedData.uri);
-            $('.article-list').append(
-                '<textarea style="display: none;" id="article_name_' + lastIndexRelated + '"></textarea>' +
-                '<textarea style="display: none;" id="article_summary_' + lastIndexRelated + '"></textarea>');
-            $('#article_name_' + lastIndexRelated).val(relatedData.name);
-            $('#article_summary_' + lastIndexRelated).val(relatedData.summary);
-            saveNewArticle();
-            $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            checkPage();
-            save();
-            updateContent(collectionName, getPathName(), JSON.stringify(data));
+            data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
+            updateContent(collectionName, reload, JSON.stringify(data));
+            localStorage.removeItem('historicUrl');
           } else {
-            alert("This is not a article");
+            alert("This is not an article");
           }
         },
         error: function () {
@@ -277,96 +281,36 @@ function articleEditor(collectionName, data) {
         }
       });
     });
-    sortableRelated();
   });
 
-  function checkPage() {
-    window.intervalID = setInterval(function () {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
-    }, intIntervalTime);
-  }
-
-  function unCheckPage() {
-    clearInterval(window.intervalID);
-  }
-
   function sortableRelated() {
-    $(".fl-editor__related").sortable();
+    $("#sortable-related").sortable();
   }
-
   sortableRelated();
-
-  function saveNewArticle() {
-    var orderArticle = $(".fl-editor__related").sortable('toArray');
-    $(orderArticle).each(function(indexB, nameB){
-      var uri = $('#article__'+nameB).val();
-      var summary = $('#article_summary_'+nameB).val();
-      var names = $('#article_name_'+nameB).val();
-      newRelated[parseInt(indexB)] = {uri: uri, name: names, summary: summary};
-    });
-    data.relatedArticles = newRelated;
-    $(".article-list").remove();
-    $("#metadata-list").remove();
-    articleEditor(collectionName, data);
-  }
 
   // Edit external
   // Load and edition
-  $(data.externalLinks).each(function(index, link){
-    lastIndexLink = index + 1;
-    $('.fl-editor__external').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="link__' + index + '" cols="50">' + link.url + '</textarea>' +
-        ' <button class="fl-panel--editor__external__link-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
+  $(data.externalLinks).each(function(iLink){
+    // No edit functionality.
 
     // Delete
-    $(".fl-panel--editor__external__link-item__delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.externalLinks.splice(index, 1);
-      articleEditor(collectionName, data);
+    $("#link-delete_"+iLink).click(function() {
+      $("#"+iLink).remove();
+      data.externalLinks.splice(iLink, 1);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new external
-  $("#external-section").append('<button id="addLink">Add new link</button>');
   $("#addLink").click(function () {
-    $('.fl-editor__external').append(
-        '<div id="' + lastIndexLink + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Title ' +
-        ' <textarea id="link__' + lastIndexLink + '" placeholder="Copy the link here" cols="50"></textarea>' +
-        ' <button class="fl-panel--editor__external__link-item__delete_' + lastIndexLink + '">Delete</button>' +
-        '</div>');
-    sortableLinks();
-    saveNewLink();
+    data.externalLinks.push({url:"", linkText:""});
+    updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
-
-  function saveNewLink() {
-    var orderLink = $(".fl-editor__external").sortable('toArray');
-    $(orderLink).each(function(index, name){
-      var link;
-      if($('#link__' + name).val().length === 0) {
-        link = "";
-      } else {
-        link = $('#link__' + name).val();
-      }
-      newLinks[index] = {url: link};
-    });
-    data.externalLinks = newLinks;
-    $(".link-list").remove();
-    $("#metadata-list").remove();
-    articleEditor(collectionName, data);
-  }
 
   function sortableLinks() {
     $(".fl-editor__external").sortable();
   }
   sortableLinks();
-
-
 
   // Save
   $('.fl-panel--editor__nav__save').unbind("click").click(function () {
@@ -398,7 +342,6 @@ function articleEditor(collectionName, data) {
       var title = $('#tab__' + nameT).val();
       newTabs[indexT] = {title: title, markdown: markdown};
     });
-    console.log(newTabs);
     data.accordion = newTabs;
     // Related links
     var orderArticle = $(".fl-editor__related").sortable('toArray');
@@ -409,7 +352,6 @@ function articleEditor(collectionName, data) {
       newRelated[indexB]= {uri: uri, name: name, summary: summary};
     });
     data.relatedArticles = newRelated;
-    //console.log(data.relatedArticles);
     // External links
     var orderLink = $(".fl-editor__external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
@@ -417,8 +359,6 @@ function articleEditor(collectionName, data) {
       newLinks[indexL] = {url: link};
     });
     data.externalLinks = newLinks;
-    //console.log(data);
-    articleEditor(collectionName, data);
   }
 }
 

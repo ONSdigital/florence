@@ -8,12 +8,24 @@ function datasetEditor(collectionName, data) {
   var lastIndexFile = 0;
   var uriUpload;
 
-  $(".section-list").remove();
-  $("#addCorrection").remove();
-  $("#addFile").remove();
-  $("#addNote").remove();
-  $("#addDataset").remove();
-  $("#addUsedIn").remove();
+  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+    setActiveTab = $(".edit-accordion").accordion("option", "active");
+    if(setActiveTab !== false) {
+      localStorage.setItem('activeTab', setActiveTab);
+    }
+  });
+
+  getActiveTab = localStorage.getItem('activeTab');
+  accordion(getActiveTab);
+
+  $("#headline1-p").remove();
+  $("#headline2-p").remove();
+  $("#headline3-p").remove();
+  $("#collapsible").remove();
+  $("#relBulletin").remove();
+  $("#relArticle").remove();
+  $("#extLink").remove();
+  $("#content").remove();
 
   $("#metadata-list").remove();
 
@@ -81,11 +93,10 @@ function datasetEditor(collectionName, data) {
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    bulletinEditor(collectionName, data);
   });
 
 
-  // Edit download
+  // Edit download            ********* REFACTOR **********
   // Load and edition
   $(data.download).each(function (index, file) {
     lastIndexFile = index + 1;
@@ -113,7 +124,6 @@ function datasetEditor(collectionName, data) {
       });
       data.download.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
-      datasetEditor(collectionName, data);
     });
   });
 
@@ -251,57 +261,58 @@ function datasetEditor(collectionName, data) {
   // Edit notes
   // Load and edition
   $(data.notes).each(function(index, note) {
-    lastIndexNote = index + 1;
-    $('.fl-editor__notes').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Note ' +
-        ' <textarea id="note_markdown_' + index + '" cols="50" placeholder="Click edit to add content">' + note.data + '</textarea>' +
-        ' <button class="fl-panel--editor__notes__note-item__edit_' + index + '">Edit</button>' +
-        ' <button class="fl-panel--editor__notes__note-item__delete_' + index + '">Delete</button>' +
-        '</div>').show();
 
-    $(".fl-panel--editor__notes__note-item__edit_"+index).click(function() {
-      var editedNoteValue = $("#note_markdown_" + index).val();
-
-      var editorPrev = '<div style="float: right; margin-top: 50px; height:905px; overflow: scroll;" id="wmd-preview" class="wmd-panel wmd-preview"></div>';
-      var editorEdit = '<div style="float: left; margin-top: 50px;" id="wmd-edit" class="wmd-panel">' +
-          '<div id="wmd-button-bar"></div>' +
-          ' <textarea style="height:845px;" class="wmd-input" id="wmd-input">' + editedNoteValue + '</textarea>' +
-          ' <button id="finish-note">Finish editing</button>' +
-          '</div>';
-
-      $('body').prepend(editorPrev, editorEdit);
+    $("#note-edit_"+index).click(function() {
+      var editedSectionValue = $("#note-markdown_" + index).val();
+      var html = templates.markdownEditor(editedSectionValue);
+      $('body').append(html);
+      $('.markdown-editor').stop().fadeIn(200);
 
       markdownEditor();
+      markDownEditorSetLines();
 
-      $("#finish-note").click(function() {
-        data.notes[index].data = $('#wmd-input').val();
-        $("#wmd-preview").remove();
-        $("#wmd-edit").remove();
-        save();
+      $('.btn-markdown-editor-cancel').on('click', function() {
+        $('.markdown-editor').stop().fadeOut(200).remove();
+      });
+
+      $(".btn-markdown-editor-save").click(function(){
+        var editedSectionText = $('#wmd-input').val();
+        data.notes[index].data = editedSectionText;
         updateContent(collectionName, getPathName(), JSON.stringify(data));
+      });
+
+      $(".btn-markdown-editor-exit").click(function(){
+        var editedSectionText = $('#wmd-input').val();
+        data.notes[index].data = editedSectionText;
+        updateContent(collectionName, getPathName(), JSON.stringify(data));
+        $('.markdown-editor').stop().fadeOut(200).remove();
+      });
+
+      $("#wmd-input").on('click', function() {
+        markDownEditorSetLines();
+      });
+
+      $("#wmd-input").on('keyup', function() {
+        markDownEditorSetLines();
       });
     });
 
     // Delete
-    $(".fl-panel--editor__notes__note-item__delete_"+index).click(function() {
+    $("#note-delete_"+index).click(function() {
       $("#"+index).remove();
       data.notes.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
-      datasetEditor(collectionName, data);
     });
   });
 
   //Add new note
-  $("#notes-section").append('<button id="addNote">Add new note</button>');
   $("#addNote").one('click', function () {
     data.notes.push({data:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    datasetEditor(collectionName, data);
   });
 
   function sortableNotes() {
-    $(".fl-editor__notes").sortable();
+    $("#sortable-notes").sortable();
   }
   sortableNotes();
 
@@ -310,19 +321,11 @@ function datasetEditor(collectionName, data) {
   if (data.relatedDatasets.length === 0) {
     lastIndexRelated = 0;
   } else {
-    $(data.relatedDatasets).each(function (iDataset, dataset) {
+    $(data.relatedDatasets).each(function (iDataset) {
       lastIndexRelated = iDataset + 1;
-      $('.fl-editor__related').append(
-          '<div id="' + iDataset + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-          'Link ' +
-          ' <textarea id="dataset__' + iDataset + '" cols="50">' + dataset.uri + '</textarea>' +
-          ' <textarea style="display: none;" id="dataset_name_' + iDataset + '">' + dataset.name + '</textarea>' +
-          ' <textarea style="display: none;" id="dataset_summary_' + iDataset + '">' + dataset.summary + '</textarea>' +
-          ' <button class="fl-panel--editor__related__dataset-item__delete_' + iDataset + '">Delete</button>' +
-          '</div>');
 
       // Delete
-      $(".fl-panel--editor__related__dataset-item__delete_" + iDataset).click(function () {
+      $("#dataset-delete_" + iDataset).click(function () {
         $("#" + iDataset).remove();
         data.relatedDatasets.splice(iDataset, 1);
         datasetEditor(collectionName, data);
@@ -331,29 +334,23 @@ function datasetEditor(collectionName, data) {
   }
 
   //Add new related
-  $("#related-section").append('<button id="addDataset">Add new link</button>');
   $("#addDataset").one('click', function () {
     $('.fl-editor__related').append(
-        '<div id="' + lastIndexRelated + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Link ' +
-        '  <textarea id="dataset__' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get" cols="50"></textarea>' +
-        '  <button class="fl-panel--editor__related__dataset-item__get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="fl-panel--editor__related__dataset-item__cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
+        '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="dataset-get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="dataset-cancel_' + lastIndexRelated + '">Cancel</button>' +
         '</div>');
+    $("#dataset-cancel_" + lastIndexRelated).hide();
 
-    $(".fl-panel--editor__related__dataset-item__cancel_" + lastIndexRelated).hide();
-
-    unCheckPage();
-    loadPageDataIntoEditor(collectionName, false);
-
-    $(".fl-panel--editor__related__dataset-item__get_" + lastIndexRelated).one('click', function () {
-      $(".fl-panel--editor__related__dataset-item__cancel_" + lastIndexRelated).show().one('click', function () {
-        $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-        checkPage();
-        $(".fl-panel--editor__related__dataset-item__cancel_" + lastIndexRelated).remove();
-        datasetEditor(collectionName, data);
+    $("#dataset-get_" + lastIndexRelated).one('click', function () {
+      $("#dataset-cancel_" + lastIndexRelated).show().one('click', function () {
+        $("#dataset-cancel_" + lastIndexRelated).hide();
+        $('#' + lastIndexRelated).hide();
+        $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("historicUrl");
       });
-      var dataseturl = $('.fl-panel--preview__content').contents().get(0).location.href;
+
+      var dataseturl = $('#iframe')[0].contentWindow.document.location.href;
       var dataseturldata = "/data" + dataseturl.split("#!")[1];
       $.ajax({
         url: dataseturldata,
@@ -361,17 +358,9 @@ function datasetEditor(collectionName, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
-            $('#dataset__' + lastIndexRelated).val(relatedData.uri);
-            $('.dataset-list').append(
-                '<textarea style="display: none;" id="dataset_name_' + lastIndexRelated + '"></textarea>' +
-                '<textarea style="display: none;" id="dataset_summary_' + lastIndexRelated + '"></textarea>');
-            $('#dataset_name_' + lastIndexRelated).val(relatedData.name);
-            $('#dataset_summary_' + lastIndexRelated).val(relatedData.summary);
-            saveNewDataset();
-            $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            //checkPage2();
-            checkPage();
-            save();
+            data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
+            updateContent(collectionName, reload, JSON.stringify(data));
+            localStorage.removeItem('historicUrl');
           } else {
             alert("This is not a dataset");
           }
@@ -381,42 +370,14 @@ function datasetEditor(collectionName, data) {
         }
       });
     });
-    sortableRelated();
   });
-
-  function checkPage() {
-    window.intervalID = setInterval(function () {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
-    }, intIntervalTime);
-  }
-
-  function unCheckPage() {
-    clearInterval(window.intervalID);
-  }
 
   function sortableRelated() {
     $(".fl-editor__related").sortable();
   }
-
   sortableRelated();
 
-  function saveNewDataset() {
-    var orderDataset = $(".fl-editor__related").sortable('toArray');
-    $(orderDataset).each(function(indexD, nameD){
-      var uri = $('#dataset__'+nameD).val();
-      var summary = $('#dataset_summary_'+nameD).val();
-      var names = $('#dataset_name_'+nameD).val();
-      newRelated[parseInt(indexD)] = {uri: uri, name: names, summary: summary};
-    });
-    data.relatedDatasets = newRelated;
-    //$(".dataset-list").remove();
-    //$("#metadata-list").remove();
-    datasetEditor(collectionName, data);
-  }
-
-  // Used in (articles or bulletins where dataset is used in)
+  // Used in (articles or bulletins where dataset is used in)   ********* REFACTOR **********
   // Load
   if (data.usedIn.length === 0) {
     lastIndexUsedIn = 0;
