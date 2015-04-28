@@ -35,28 +35,26 @@ function setupFlorence () {
 
   adminMenu.on('click', '.admin-menu', function () {
     $('.admin-menu').removeClass('selected');
+    $(this).addClass('selected');
   });
 
   adminMenu.on('click', '#admin-menu-collections', function () {
-    $('#admin-menu-collections').addClass('selected');
     viewController('collections');
   });
 
   adminMenu.on('click', '#admin-menu-users', function () {
-    $('#admin-menu-users').addClass('selected');
     viewController('users-and-access');
   });
 
   adminMenu.on('click', '#admin-menu-publish', function () {
-    $('#admin-menu-publish').addClass('selected');
     viewController('publish');
   });
 
-  adminMenu.on('click', $(menuItems, '.admin-menu-login'), function () {
+  adminMenu.on('click', '#admin-menu-login', function () {
     viewController();
   });
 
-  adminMenu.on('click', $(menuItems, '.admin-menu-logout'), function () {
+  adminMenu.on('click', '#admin-menu-logout', function () {
     logout();
     viewController();
   });
