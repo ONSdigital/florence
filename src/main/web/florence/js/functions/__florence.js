@@ -5,6 +5,6 @@ Florence.Editor = {
   data: {}
 };
 
-
+Florence.collection = {};
 
 

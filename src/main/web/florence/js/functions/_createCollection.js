@@ -9,17 +9,16 @@ function createCollection() {
   var publishDate = new Date(publishYear, publishMonth, publishDay, 9, 30, 0, 0);
 
   // Create the collection
-  console.log(collectionName + " " + publishDate);
   $.ajax({
     url: "/zebedee/collection",
     dataType: 'json',
     type: 'POST',
     data: JSON.stringify({name: collectionName, publishDate: publishDate}),
-    success: function () {
-      console.log("Collection " + collectionName + " created");
-      document.cookie = "collection=" + collectionName + ";path=/";
-      localStorage.setItem("collection", collectionName);
-      viewWorkspace('', collectionName, 'browse');
+    success: function (response) {
+      console.log("Collection " + response.name + " created");
+      document.cookie = "collection=" + response.id + ";path=/";
+      //localStorage.setItem("collection", collectionName);
+      viewWorkspace('', response.id, 'browse');
     },
     error: function (response) {
       if(response.status === 409) {

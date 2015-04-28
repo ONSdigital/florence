@@ -5,7 +5,9 @@ function checkForPageChanged(onChanged) {
     if (!onChanged) {
       localStorage.setItem("pageurl", nowUrl);
     } else {
-      localStorage.setItem("pageurl", nowUrl);
+      setTimeout(function () {
+        localStorage.setItem("pageurl", nowUrl);
+      }, 200);
       onChanged();
     }
   }

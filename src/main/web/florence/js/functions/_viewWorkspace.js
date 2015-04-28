@@ -5,14 +5,16 @@ function viewWorkspace(path, collectionName, menu) {
     currentPath = path;
   }
 
+  console.log(collectionName)
+
   localStorage.removeItem("pageurl");
   localStorage.setItem("pageurl", currentPath);
 
   // tentative reload of nav bar with collection name
-  var mainNavHtml = templates.mainNav(collectionName);
+  var mainNavHtml = templates.mainNav(Florence.collection.name);
   $('.wrapper').replaceWith(mainNavHtml);
 
-  var workSpace = templates.workSpace(currentPath);
+  var workSpace = templates.workSpace(path);
   $('.section').replaceWith(workSpace);
 
   if (menu === 'browse') {
@@ -59,6 +61,7 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateBulletinScreen(collectionName);
     }
     else if ($(this).is('#edit')) {
+      checkIframe();
       checkForPageChanged(loadPageDataIntoEditor(collectionName));
     }
     else if ($(this).is('#review')) {

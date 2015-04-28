@@ -1,25 +1,22 @@
-function viewCollectionDetails(collectionName) {
+function viewCollectionDetails(collectionId) {
 
   var collectionDetails = {
-    name: "",
-    date: "",
+    name: Florence.collection.name,
+    date: Florence.collection.date,
   };
 
-  getCollection(collectionName,
+  console.log(collectionId)
+
+  getCollection(collectionId,
     success = function (response) {
-      collectionDetails.name = response.name;
-      var date = new Date(response.publishDate);
-      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-      var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
-      collectionDetails.date = formattedDate;
-      populateCollectionDetails(response, collectionName);
+      populateCollectionDetails(response, collectionId);
     },
     error = function (response) {
       handleApiError(response);
     }
   );
 
-  function populateCollectionDetails(collection, collectionName) {
+  function populateCollectionDetails(collection, collectionId) {
 
     if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
@@ -31,11 +28,11 @@ function viewCollectionDetails(collectionName) {
       });
     }
 
-    CreateUriListHtml(collection.inProgressUris, collectionName, "inProgress");
-    CreateUriListHtml(collection.completeUris, collectionName, "completed");
-    CreateUriListHtml(collection.reviewedUris, collectionName, "reviewed");
+    CreateUriListHtml(collection.inProgressUris, collectionId, "inProgress");
+    CreateUriListHtml(collection.completeUris, collectionId, "completed");
+    CreateUriListHtml(collection.reviewedUris, collectionId, "reviewed");
 
-    function CreateUriListHtml(uris, collectionName, status) {
+    function CreateUriListHtml(uris, collectionId, status) {
       var uri_list = [];
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
       var collectionHtml;
@@ -43,7 +40,7 @@ function viewCollectionDetails(collectionName) {
         if (uri.length === 0) {
           collectionDetails[status] = [];
         } else {
-          pageDataRequests.push(getPageData(collectionName, uri,
+          pageDataRequests.push(getPageData(collectionId, uri,
             success = function (response) {
               var path = response.uri;
               uri_list.push({path: path, name: response.title});
@@ -73,21 +70,21 @@ function viewCollectionDetails(collectionName) {
         $('.btn-page-edit').click(function () {
           var path = $(this).attr('data-path');
           if (path) {
-            viewWorkspace(path, collectionName, 'edit');
+            viewWorkspace(path, collectionId, 'edit');
           }
         });
         $('.btn-page-delete').click(function () {
           var path = $(this).attr('data-path');
           if (path) {
-            deleteContent(collectionName, path, success, error);
+            deleteContent(collectionId, path, success, error);
             console.log('File deleted');
-            viewCollectionDetails(collectionName);
+            viewCollectionDetails(collectionId);
           }
         });
         $('.btn-collection-work-on').click(function () {
-          document.cookie = "collection=" + collectionName + ";path=/";
-          localStorage.setItem("collection", collectionName);
-          viewWorkspace('', collectionName, 'browse');
+          document.cookie = "collection=" + collectionId + ";path=/";
+          //localStorage.setItem("collection", collectionId);
+          viewWorkspace('', collectionId, 'browse');
         });
 
         $('.collection-selected .btn-cancel').click(function(){

@@ -30,7 +30,9 @@ function viewCollections() {
       $('.collections-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
       var collectionId = $(this).attr('data-id');
+      Florence.collection = {name: $(this).find(".collection-name").html(), date: $(this).find(".collection-date").html()};
       viewCollectionDetails(collectionId);
+      console.log(Florence.collection)
     });
 
     //click handlers
