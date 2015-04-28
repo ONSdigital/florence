@@ -1,4 +1,6 @@
-var Florence = Florence || {};
+var Florence = Florence || {
+    isAuthenticated:false
+  };
 
 Florence.Editor = {
   isDirty:false,

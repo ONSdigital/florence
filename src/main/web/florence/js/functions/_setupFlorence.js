@@ -2,16 +2,20 @@ function setupFlorence () {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
 
-  localStorage.setItem('activeTab', false);
+  localStorage.setItem('activeTab', false); // do we need this?
 
-  var florence = '<div class="wrapper">'+'</div>';
+  // load main florence template
+  var florence = templates.florence;
   $('body').prepend(florence);
 
-  var mainNavHtml = templates.mainNav;
-  $('.wrapper').append(mainNavHtml);
+  var adminMenu = $('#admin-menu');
 
-  $('.fl-admin-menu__link').on('click', function () {
-    console.log('admin menu clicked...');
+  // render the admin menu within the florence template.
+  var mainNavHtml = templates.mainNav(Florence);
+  adminMenu.html(mainNavHtml);
+
+  // dirty checks on admin menu
+  adminMenu.on('click', '.admin-menu', function () {
     if(Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
       if (result === true) {
@@ -29,36 +33,32 @@ function setupFlorence () {
     }
   };
 
-  //click handlers
-  $('.fl-admin-menu__link').click(function () {
-    if ($(this).parent().hasClass('fl-admin-menu__item--collections')) {
-      viewController('collections');
-    }
+  adminMenu.on('click', '.admin-menu', function () {
+    $('.admin-menu').removeClass('selected');
   });
 
-  $('.fl-admin-menu__item--useradmin').click(function () {
+  adminMenu.on('click', '#admin-menu-collections', function () {
+    $('#admin-menu-collections').addClass('selected');
+    viewController('collections');
+  });
+
+  adminMenu.on('click', '#admin-menu-users', function () {
+    $('#admin-menu-users').addClass('selected');
     viewController('users-and-access');
   });
 
-  var loginLink = $('.fl-admin-menu__item--login');
-  loginLink.addClass('hidden');
-  loginLink.click(function () {
-    viewController('login');
-  });
-  var logoutLink = $('.fl-admin-menu__item--logout');
-  logoutLink.removeClass('hidden');
-  logoutLink.click(function () {
-    logoutLink.addClass('hidden');
-    loginLink.removeClass('hidden');
-    logout();
-    viewController('login');
-  });
-
-  var $nav = $('.nav');
-
-  $nav.on('click', '#publish', function () {
-    console.log('once?!');
+  adminMenu.on('click', '#admin-menu-publish', function () {
+    $('#admin-menu-publish').addClass('selected');
     viewController('publish');
+  });
+
+  adminMenu.on('click', $(menuItems, '.admin-menu-login'), function () {
+    viewController();
+  });
+
+  adminMenu.on('click', $(menuItems, '.admin-menu-logout'), function () {
+    logout();
+    viewController();
   });
 
   viewController();
