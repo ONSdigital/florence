@@ -49,6 +49,14 @@ $panel-height-2-top-nav: 756px;
 			}
 		}
 	}
+
+	&--admin {
+		&__item
+
+		a {
+			color: $concrete;
+		}
+	}
 }
 
 .section {
