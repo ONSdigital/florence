@@ -139,7 +139,7 @@
         <p>Description</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-example" class="edit-section__sortable">
+        <div id="sortable-external" class="edit-section__sortable">
           {{#each this.externalLinks}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea id="link-url_{{@index}}">{{url}}</textarea>
@@ -163,9 +163,10 @@
         <div id="sortable-used" class="edit-section__sortable">
           {{#each this.usedIn}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea></textarea>
-              <button class="btn-markdown-edit">Edit</button>
-              <button class="btn-page-delete">Delete</button>
+              <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
+              <textarea style="display: none;" id="used-title_{{@index}}">{{title}}</textarea>
+              <textarea style="display: none;" id="used-summary_{{@index}}">{{summary}}</textarea>
+              <button class="btn-page-delete" id="used-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
@@ -177,14 +178,14 @@
 
     <div class="edit-section" id="download">
       <div class="edit-section__head">
-        <h1>Download</h1>
+        <h1>Attach files</h1>
         <p>Description</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-download" class="edit-section__sortable">
           {{#each this.download}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="download-title_{{@index}}">{{title}}</textarea>
+              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
               <textarea style="display: none;" id="download-filename_{{@index}}">{{file}}</textarea>
               <div id="download-filename_show_{{@index}}">{{file}}</div>
               <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
@@ -199,7 +200,7 @@
 
     <div class="edit-section" id="note">
       <div class="edit-section__head">
-        <h1>Content</h1>
+        <h1>Notes</h1>
         <p>Description</p>
       </div>
       <div class="edit-section__content">
@@ -239,6 +240,12 @@
         </div>
       </div>
     </div>
-
   </div>
+
+  <nav class="edit-nav">
+    <button class="btn-edit-cancel">Cancel</button>
+    <button class="btn-edit-save">Save</button>
+    <button class="btn-edit-save-and-submit-for-review">Save and submit for review</button>
+  </nav>
+
 </section>

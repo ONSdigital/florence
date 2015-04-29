@@ -10,7 +10,7 @@ function createWorkspace(path, collectionName, menu) {
 
   // tentative reload of nav bar with collection name
   var mainNavHtml = templates.mainNav(Florence);
-  $('.wrapper').replaceWith(mainNavHtml);
+  $('.admin-nav').replaceWith(mainNavHtml);
 
   var workSpace = templates.workSpace(path);
   $('.section').replaceWith(workSpace);

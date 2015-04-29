@@ -6,7 +6,7 @@ function setupFlorence () {
 
   // load main florence template
   var florence = templates.florence;
-  $('body').prepend(florence);
+  $('body').append(florence);
 
   Florence.refreshAdminMenu();
   var adminMenu = $('.admin-nav');

@@ -27,7 +27,6 @@ function datasetEditor(collectionName, data) {
   $("#extLink").remove();
   $("#content").remove();
 
-  $("#metadata-list").remove();
 
   // Metadata edition and saving
   $("#title").val(data.title).on('click keyup', function () {
@@ -96,9 +95,9 @@ function datasetEditor(collectionName, data) {
   });
 
 
-  // Edit download            ********* REFACTOR **********
+  // Edit download
   // Load and edition
-  $(data.download).each(function (index, file) {
+  $(data.download).each(function (index) {
     lastIndexFile = index + 1;
 
     // Delete
@@ -120,12 +119,9 @@ function datasetEditor(collectionName, data) {
   });
 
   //Add new download
-
   $("#addFile").one('click', function () {
     $('#sortable-download').append(
         '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
-        '  <textarea id="download-title_' + lastIndexFile + '"></textarea>' +
-        '  <textarea style="display: none;" id="download-filename_' + lastIndexFile + '"></textarea>' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
@@ -165,7 +161,7 @@ function datasetEditor(collectionName, data) {
                 return;
               }
             });
-            if (!!file.name.match(/\.csv/)) {
+            if (!!file.name.match(/\.csv$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -186,15 +182,13 @@ function datasetEditor(collectionName, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  var title = title = $('#download-title_'+name).val();
-                  var file = $('#download-filename_' + lastIndexFile).val(uriUpload);
-                  data.download = {title: title, file: file};
+                  data.download.push({title:'', file: uriUpload});
                   updateContent(collectionName, getPathName(), JSON.stringify(data));
                 }
               });
             }
           } else {
-            if (!!file.name.match(/\.csv/)) {
+            if (!!file.name.match(/\.csv$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -215,9 +209,7 @@ function datasetEditor(collectionName, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  var title = title = $('#download-title_'+name).val();
-                  var file = $('#download-filename_' + lastIndexFile).val(uriUpload);
-                  data.download = {title: title, file: file};
+                  data.download.push({title:'', file: uriUpload});
                   updateContent(collectionName, getPathName(), JSON.stringify(data));
                 }
               });
@@ -310,6 +302,10 @@ function datasetEditor(collectionName, data) {
 
   //Add new related
   $("#addDataset").one('click', function () {
+    var pageurl = localStorage.getItem('pageurl');
+    localStorage.setItem('historicUrl', pageurl);
+    var reload = localStorage.getItem("historicUrl");
+
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
         '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
@@ -322,7 +318,9 @@ function datasetEditor(collectionName, data) {
       $("#dataset-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#dataset-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("historicUrl");
+        refreshPreview(localStorage.getItem("historicUrl"));
+        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        localStorage.removeItem('historicUrl');
       });
 
       var dataseturl = $('#iframe')[0].contentWindow.document.location.href;
@@ -333,7 +331,7 @@ function datasetEditor(collectionName, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
-            data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
+            data.relatedDatasets.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
             updateContent(collectionName, reload, JSON.stringify(data));
             localStorage.removeItem('historicUrl');
           } else {
@@ -348,7 +346,7 @@ function datasetEditor(collectionName, data) {
   });
 
   function sortableRelated() {
-    $(".fl-editor__related").sortable();
+    $("#sortable-related").sortable();
   }
   sortableRelated();
 
@@ -359,17 +357,9 @@ function datasetEditor(collectionName, data) {
   } else {
     $(data.usedIn).each(function (iUsed, usedIn) {
       lastIndexUsedIn = iUsed + 1;
-      $('.fl-editor__used').append(
-          '<div id="' + iUsed + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-          'Link ' +
-          ' <textarea id="usedIn__' + iUsed + '" cols="50">' + usedIn.uri + '</textarea>' +
-          ' <textarea style="display: none;" id="usedIn_name_' + iUsed + '">' + usedIn.name + '</textarea>' +
-          ' <textarea style="display: none;" id="usedIn_summary_' + iUsed + '">' + usedIn.summary + '</textarea>' +
-          ' <button class="fl-panel--editor__related__usedIn-item__delete_' + iUsed + '">Delete</button>' +
-          '</div>');
 
       // Delete
-      $(".fl-panel--editor__related__usedIn-item__delete_" + iUsed).click(function () {
+      $("#used-delete_" + iUsed).click(function () {
         $("#" + iUsed).remove();
         data.usedIn.splice(iUsed, 1);
         datasetEditor(collectionName, data);
@@ -378,29 +368,29 @@ function datasetEditor(collectionName, data) {
   }
 
   //Add new articles or bulletins where dataset is used in
-  $("#used-section").append('<button id="addUsedIn">Add new link</button>');
-  $("#addUsedIn").one('click', function () {
-    $('.fl-editor__used').append(
-        '<div id="' + lastIndexUsedIn + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        'Link ' +
-        '  <textarea id="usedIn__' + lastIndexUsedIn + '" placeholder="Go to the related usedIn and click Get" cols="50"></textarea>' +
-        '  <button class="fl-panel--editor__related__usedIn-item__get_' + lastIndexUsedIn + '">Get</button>' +
-        '  <button class="fl-panel--editor__related__usedIn-item__cancel_' + lastIndexUsedIn + '">Cancel</button>' +
+  $("#addUsed").one('click', function () {
+    var pageurl = localStorage.getItem('pageurl');
+    localStorage.setItem('historicUrl', pageurl);
+    var reload = localStorage.getItem("historicUrl");
+
+    $('#sortable-used').append(
+        '<div id="' + lastIndexUsedIn + '" class="edit-section__sortable-item">' +
+        '  <textarea id="dataset-uri_' + lastIndexUsedIn + '" placeholder="Go to the related document and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="used-get_' + lastIndexUsedIn + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="used-cancel_' + lastIndexUsedIn + '">Cancel</button>' +
         '</div>');
+    $("#used-cancel_" + lastIndexUsedIn).hide();
 
-    $(".fl-panel--editor__related__usedIn-item__cancel_" + lastIndexUsedIn).hide();
-
-    unCheckPage();
-    loadPageDataIntoEditor(collectionName, false);
-
-    $(".fl-panel--editor__related__usedIn-item__get_" + lastIndexUsedIn).one('click', function () {
-      $(".fl-panel--editor__related__usedIn-item__cancel_" + lastIndexUsedIn).show().one('click', function () {
-        $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-        checkPage();
-        $(".fl-panel--editor__related__usedIn-item__cancel_" + lastIndexUsedIn).remove();
-        datasetEditor(collectionName, data);
+    $("#used-get_" + lastIndexUsedIn).one('click', function () {
+      $("#used-cancel_" + lastIndexUsedIn).show().one('click', function () {
+        $('#used-cancel_' + lastIndexUsedIn).hide();
+        $('#' + lastIndexUsedIn).hide();
+        refreshPreview(localStorage.getItem("historicUrl"));
+        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        localStorage.removeItem('historicUrl');
       });
-      var usedInurl = $('.fl-panel--preview__content').contents().get(0).location.href;
+
+      var usedInurl = $('#iframe')[0].contentWindow.document.location.href;
       var usedInurldata = "/data" + usedInurl.split("#!")[1];
       $.ajax({
         url: usedInurldata,
@@ -408,17 +398,9 @@ function datasetEditor(collectionName, data) {
         crossDomain: true,
         success: function (usedInData) {
           if (usedInData.type === 'bulletin' || usedInData.type === 'article') {
-            $('#usedIn__' + lastIndexUsedIn).val(usedInData.uri);
-            $('.usedIn-list').append(
-                '<textarea style="display: none;" id="usedIn_name_' + lastIndexUsedIn + '"></textarea>' +
-                '<textarea style="display: none;" id="usedIn_summary_' + lastIndexUsedIn + '"></textarea>');
-            $('#usedIn_name_' + lastIndexUsedIn).val(usedInData.name);
-            $('#usedIn_summary_' + lastIndexUsedIn).val(usedInData.summary);
-            saveNewUsedIn();
-            $('.fl-panel--preview__content').get(0).src = localStorage.getItem("pageurl");
-            checkPage();
-            save();
-            updateContent(collectionName, getPathName(), JSON.stringify(data));
+            data.usedIn.push({uri: usedInData.uri, title: usedInData.title, summary: usedInData.summary});
+            updateContent(collectionName, reload, JSON.stringify(data));
+            localStorage.removeItem('historicUrl');
           } else {
             alert("This is not an article or a bulletin");
           }
@@ -428,51 +410,21 @@ function datasetEditor(collectionName, data) {
         }
       });
     });
-    sortableUsedIn();
   });
 
-  function checkPage() {
-    window.intervalID = setInterval(function () {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
-    }, intIntervalTime);
-  }
-
-  function unCheckPage() {
-    clearInterval(window.intervalID);
-  }
-
   function sortableUsedIn() {
-    $(".fl-editor__used").sortable();
+    $("#sortable-used").sortable();
   }
-
   sortableUsedIn();
 
-  function saveNewUsedIn() {
-    var orderUsedIn = $(".fl-editor__used").sortable('toArray');
-    $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#usedIn__'+nameU).val();
-      var summary = $('#usedIn_summary_'+nameU).val();
-      var names = $('#usedIn_name_'+nameU).val();
-      newUsedIn[parseInt(indexU)] = {uri: uri, name: names, summary: summary};
-    });
-    data.usedIn = newUsedIn;
-    //$(".usedIn-list").remove();
-    //$("#metadata-list").remove();
-    datasetEditor(collectionName, data);
-  }
-
-
-
   // Save
-  $('.fl-panel--editor__nav__save').unbind("click").click(function () {
+  $('.btn-edit-save').click(function () {
     save();
   });
 
   // complete
-  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-    pageData = $('.fl-editor__headline').val();
+  $('.btn-edit-save-and-submit-for-review').click(function () {
+    //pageData = $('.fl-editor__headline').val(); ???
     saveData();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
@@ -484,7 +436,7 @@ function datasetEditor(collectionName, data) {
 
   function saveData() {
     // Files are uploaded. Save metadata
-    var orderFile = $(".fl-editor__download").sortable('toArray');
+    var orderFile = $("#sortable-download").sortable('toArray');
     $(orderFile).each(function(index, name){
       var title = $('#download-title_'+name).val();
       var file = $('#download-filename_' + name).val();
@@ -493,14 +445,14 @@ function datasetEditor(collectionName, data) {
     data.download = newFiles;
     //console.log(data.download);
     // Notes
-    var orderNote = $(".fl-editor__notes").sortable('toArray');
+    var orderNote = $("#sortable-notes").sortable('toArray');
     $(orderNote).each(function (indexT, nameT) {
       var markdown = data.notes[parseInt(nameT)].data;
       newNotes[indexT] = {data: markdown};
     });
     data.notes = newNotes;
     // Related links
-    var orderDataset = $(".fl-editor__related").sortable('toArray');
+    var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = $('#dataset__' + nameD).val();
       var summary = $('#dataset_summary_' + nameD).val();
@@ -510,7 +462,7 @@ function datasetEditor(collectionName, data) {
     data.relatedDatasets = newRelated;
     //console.log(data.relatedDatasets);
     // Used in links
-    var orderUsedIn = $(".fl-editor__used").sortable('toArray');
+    var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#usedIn__'+nameU).val();
       var summary = $('#usedIn_summary_'+nameU).val();

@@ -258,7 +258,9 @@ function articleEditor(collectionName, data) {
       $("#article-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#article-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("historicUrl");
+        refreshPreview(localStorage.getItem("historicUrl"));
+        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        localStorage.removeItem('historicUrl');
       });
 
       var articleurl = $('#iframe')[0].contentWindow.document.location.href;
@@ -269,7 +271,7 @@ function articleEditor(collectionName, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'article') {
-            data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
+            data.relatedArticles.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
             updateContent(collectionName, reload, JSON.stringify(data));
             localStorage.removeItem('historicUrl');
           } else {
@@ -313,14 +315,14 @@ function articleEditor(collectionName, data) {
   sortableLinks();
 
   // Save
-  $('.fl-panel--editor__nav__save').unbind("click").click(function () {
+  $('.btn-edit-save').click(function () {
     save();
     updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
   // complete
-  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-    pageData = $('.fl-editor__headline').val();
+  $('.btn-edit-save-and-submit-for-review').click(function () {
+    //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
@@ -336,7 +338,7 @@ function articleEditor(collectionName, data) {
     });
     data.sections = newSections;
     // Tabs
-    var orderTab = $(".fl-editor__accordion").sortable('toArray');
+    var orderTab = $("#sortable-tabs").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
       var title = $('#tab__' + nameT).val();
@@ -344,7 +346,7 @@ function articleEditor(collectionName, data) {
     });
     data.accordion = newTabs;
     // Related links
-    var orderArticle = $(".fl-editor__related").sortable('toArray');
+    var orderArticle = $("#sortable-related").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = $('#article__' + nameB).val();
       var summary = $('#article_summary_' + nameB).val();
@@ -353,7 +355,7 @@ function articleEditor(collectionName, data) {
     });
     data.relatedArticles = newRelated;
     // External links
-    var orderLink = $(".fl-editor__external").sortable('toArray');
+    var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
       var link = $('#link__'+nameL).val();
       newLinks[indexL] = {url: link};

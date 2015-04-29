@@ -261,7 +261,9 @@ function bulletinEditor(collectionName, data) {
       $("#bulletin-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#bulletin-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("historicUrl");
+        refreshPreview(localStorage.getItem("historicUrl"));
+        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        localStorage.removeItem('historicUrl');
       });
 
       var bulletinurl = $('#iframe')[0].contentWindow.document.location.href;
@@ -316,14 +318,14 @@ function bulletinEditor(collectionName, data) {
   sortableLinks();
 
   // Save
-  $('.fl-panel--editor__nav__save').unbind("click").click(function () {
+  $('.btn-edit-save').click(function () {
     save();
     updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
   // complete
-  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-    pageData = $('.fl-editor__headline').val();
+  $('.btn-edit-save-and-submit-for-review').click(function () {
+    //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
@@ -339,7 +341,7 @@ function bulletinEditor(collectionName, data) {
     });
     data.sections = newSections;
     // Tabs
-    var orderTab = $(".fl-editor__accordion").sortable('toArray');
+    var orderTab = $("#sortable-tabs").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
       var title = $('#tab__' + nameT).val();
@@ -347,7 +349,7 @@ function bulletinEditor(collectionName, data) {
     });
     data.accordion = newTabs;
     // Related links
-    var orderBulletin = $(".fl-editor__related").sortable('toArray');
+    var orderBulletin = $("#sortable-related").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = $('#bulletin__' + nameB).val();
       var summary = $('#bulletin_summary_' + nameB).val();
@@ -356,7 +358,7 @@ function bulletinEditor(collectionName, data) {
     });
     data.relatedBulletins = newRelated;
     // External links
-    var orderLink = $(".fl-editor__external").sortable('toArray');
+    var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
       var displayText = $('#link_text_'+nameL).val();
       var link = $('#link_url_'+nameL).val();

@@ -26,16 +26,20 @@ function makeEditSections(collectionId, response) {
   else {
     var workspace_menu_sub_edit =
         '<section class="workspace-edit">' +
-        '  <section class="panel">' +
-        '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 818px" cols="104"></textarea>' +
-        '  </section>' +
+        '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
+        '     <nav class="edit-nav">' +
+        '       <button class="btn-edit-cancel">Cancel</button>' +
+        '       <button class="btn-edit-save">Save</button>' +
+        '       <button class="btn-edit-save-and-submit-for-review">Save and submit for review</button>' +
+        '     </nav>' +
+        '  </section>'
           //'  <nav class="fl-panel--editor__nav">' +
           //'    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
           //'    <button class="fl-panel--editor__nav__save">Save</button>' +
           //'    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
           //'    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
           //'  </nav>' +
-        '</section>';
+        ;
 
     $('.workspace-menu').html(workspace_menu_sub_edit);
 
