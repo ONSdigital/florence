@@ -32,6 +32,11 @@ $panel-height-2-top-nav: 756px;
 	height: $lineheight * 3;
 	text-align: right;
 
+	a {
+		color: $gray-chateau;
+		text-decoration: none;
+	}
+
 	li {
 		display: inline-block;
 		position: relative;
@@ -47,14 +52,20 @@ $panel-height-2-top-nav: 756px;
 				top: - $lineheight;
 				background-color: $white;
 			}
+
+			a {
+				color: $white;
+			}
 		}
 	}
 
 	&--admin {
-		&__item
+		&__item {
 
-		a {
-			color: $concrete;
+			a {
+				// color: $concrete;
+				// text-decoration: none;
+			}
 		}
 	}
 }
@@ -532,6 +543,14 @@ button {
 		background-color: $como;
 		margin-left: 0;
 	}
+
+	&.btn-florence-login {
+	  color: $concrete;
+	  background-color: $astral;
+	  margin-left: 0;
+	}
+
+
 }
 
 .browser {
@@ -620,6 +639,17 @@ button {
 	}
 }
 
+.login-wrapper {
+  padding-left: $col--4;
+  padding-right: $col--4;
+
+  form {
+	padding-left: $gutter;
+	padding-right: $gutter;
+  }
+
+
+}
 
 
 

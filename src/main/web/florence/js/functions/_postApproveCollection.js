@@ -3,7 +3,6 @@ function postApproveCollection(collectionName) {
     url: "/zebedee/approve/" + collectionName,
     crossDomain: true,
     type: 'POST',
-    headers: { "X-Florence-Token":accessToken() },
     success: function (response) {
       console.log(response);
       console.log(collectionName + ' collection is now approved');

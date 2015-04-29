@@ -73,9 +73,6 @@ function loadT4Creator (collectionName) {
         crossDomain: true,
         type: 'POST',
         data: JSON.stringify(pageData),
-        headers: {
-          "X-Florence-Token": accessToken()
-        },
         success: function (message) {
           console.log("Updating completed " + message);
           var path = newUri;

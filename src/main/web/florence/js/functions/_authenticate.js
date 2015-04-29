@@ -12,7 +12,6 @@ function authenticate(email,password) {
       console.log(response);
       document.cookie="access_token="+response + ";path=/";
       localStorage.setItem("loggedInAs", email);
-      Florence.isAuthenticated = true;
       Florence.refreshAdminMenu();
 
 

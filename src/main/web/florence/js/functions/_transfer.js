@@ -10,7 +10,6 @@ function transfer(source, destination, uri) {
     type: "POST",
     dataType: "json",
     data: JSON.stringify(transferRequest),
-    headers: {"X-Florence-Token": accessToken()},
     success: function(response) {
       console.log(' file has been moved');
     },
