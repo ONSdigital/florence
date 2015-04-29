@@ -2,11 +2,7 @@ function logout() {
   delete_cookie('access_token');
   localStorage.removeItem("loggedInAs");
   Florence.isAuthenticated = false;
-
-  // refresh the navigation
-  var mainNavHtml = templates.mainNav(Florence);
-  $('#admin-menu').html(mainNavHtml);
-
+  Florence.refreshAdminMenu();
   viewController();
 }
 

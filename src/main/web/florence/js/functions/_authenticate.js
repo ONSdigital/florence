@@ -13,10 +13,8 @@ function authenticate(email,password) {
       document.cookie="access_token="+response + ";path=/";
       localStorage.setItem("loggedInAs", email);
       Florence.isAuthenticated = true;
+      Florence.refreshAdminMenu();
 
-      // refresh the navigation
-      var mainNavHtml = templates.mainNav(Florence);
-      $('#admin-menu').html(mainNavHtml);
 
       viewController();
     },

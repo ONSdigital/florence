@@ -1,14 +1,14 @@
-<ul class="nav">
-  {{#if this.collection.name}}
+<ul class="nav nav--admin">
+{{#if this.collection.name}}
     <li class="selected">Working on: {{this}}</li>
-  {{/if}}
-  <li id="admin-menu-collections" class="admin-menu {{#if this.isAuthenticated}}selected{{/if}}"><a href="#">Collections</a></li>
-  <li id="admin-menu-users" class="admin-menu"><a href="#">Users and access</a></li>
-  <li id="admin-menu-publish" class="admin-menu"><a href="#">Publish</a></li>
+{{/if}}
+  <li class="nav--admin-item nav--admin__collections" {{#if this.isAuthenticated}}selected{{/if}}"><a href="#">Collections</a></li>
+  <li class="nav--admin-item nav--admin__users"><a href="#">Users and access</a></li>
+  <li class="nav--admin-item nav--admin__publish"><a href="#">Publish</a></li>
 
-  {{#if this.isAuthenticated}}
-    <li id="admin-menu-logout" class="admin-menu"><a href="#">Logout</a></li>
-  {{else}}
-    <li id="admin-menu-login" class="admin-menu selected"><a href="#">Login</a></li>
-  {{/if}}
+{{#if this.isAuthenticated}}
+    <li class="nav--admin-item nav--admin__logout"><a href="#">Logout</a></li>
+{{else}}
+    <li class="nav--admin-item nav--admin__login selected"><a href="#">Login</a></li>
+{{/if}}
 </ul>

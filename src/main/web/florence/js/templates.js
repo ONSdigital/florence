@@ -59,9 +59,9 @@ templates['collections'] = template({"1":function(depth0,helpers,partials,data) 
 
   return "      <tr data-id=\""
     + alias3(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\">\n        <td headers=\"collection-name\">"
+    + "\">\n        <td headers=\"collection-name\" class=\"collection-name\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</td>\n        <td headers=\"collection-date\">"
+    + "</td>\n        <td headers=\"collection-date\" class=\"collection-date\">"
     + alias3(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"date","hash":{},"data":data}) : helper)))
     + "</td>\n      </tr>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -71,19 +71,32 @@ templates['collections'] = template({"1":function(depth0,helpers,partials,data) 
     + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tbody>\n  </table>\n</section>\n<section class=\"panel col col--6 collection-create\">\n  <h1 class=\"text-align-center\">Create a collection</h1>\n  <form>\n    <label for=\"collectionname\" class=\"hidden\">Scheduled publish</label>\n    <input id=\"collectionname\" type=\"text\" placeholder=\"Collection name\" />\n    <label for=\"team\" class=\"hidden\">Select the team the collection can be previewed by</label>\n    <select id=\"team\">\n      <option selected disabled=\"disabled\">Select the team the collection can be previewed by</option>\n      <option value=\"Team1\">Team 1</option>\n      <option value=\"Team2\">Team 2</option>\n      <option value=\"Team3\">Team 3</option>\n    </select>\n    <input type=\"radio\" id=\"scheduledpublish\" name=\"publishtype\" value=\"scheduled\"><label for=\"scheduledpublish\">Scheduled publish</label>\n    <input type=\"radio\" id=\"manualpublish\" name=\"publishtype\" value=\"manual\"><label for=\"manualpublish\">Manual publish</label>\n    <br>\n    <div class=\"block text-center\">\n      <label for=\"day\" class=\"hidden\">Day</label>\n      <select id=\"day\" class=\"small\">\n        <option selected disabled>Day</option>\n        <option value=\"1\">1</option>\n        <option value=\"2\">2</option>\n        <option value=\"3\">3</option>\n        <option value=\"4\">4</option>\n        <option value=\"5\">5</option>\n        <option value=\"6\">6</option>\n        <option value=\"7\">7</option>\n        <option value=\"8\">8</option>\n        <option value=\"9\">9</option>\n        <option value=\"10\">10</option>\n        <option value=\"11\">11</option>\n        <option value=\"12\">12</option>\n        <option value=\"13\">13</option>\n        <option value=\"14\">14</option>\n        <option value=\"15\">15</option>\n        <option value=\"16\">16</option>\n        <option value=\"17\">17</option>\n        <option value=\"18\">18</option>\n        <option value=\"19\">19</option>\n        <option value=\"20\">20</option>\n        <option value=\"21\">21</option>\n        <option value=\"22\">22</option>\n        <option value=\"23\">23</option>\n        <option value=\"24\">24</option>\n        <option value=\"25\">25</option>\n        <option value=\"26\">26</option>\n        <option value=\"27\">27</option>\n        <option value=\"28\">28</option>\n        <option value=\"29\">29</option>\n        <option value=\"30\">30</option>\n        <option value=\"31\">31</option>\n      </select>\n      <label for=\"month\" class=\"hidden\">Month</label>\n      <select id=\"month\" class=\"small\">\n        <option selected disabled>Month</option>\n        <option value=\"0\">January</option>\n        <option value=\"1\">February</option>\n        <option value=\"2\">March</option>\n        <option value=\"3\">April</option>\n        <option value=\"4\">May</option>\n        <option value=\"5\">June</option>\n        <option value=\"6\">July</option>\n        <option value=\"7\">August</option>\n        <option value=\"8\">September</option>\n        <option value=\"9\">October</option>\n        <option value=\"10\">November</option>\n        <option value=\"11\">December</option>\n      </select>\n      <label for=\"year\" class=\"hidden\">Year</label>\n      <select id=\"year\" class=\"small\">\n        <option selected value=\"2015\">2015</option>\n        <option value=\"2016\">2016</option>\n        <option value=\"2017\">2017</option>\n      </select>\n      <br>\n      <label for=\"time\" class=\"hidden\">Time</label>\n      <select id=\"time\" class=\"small\">\n        <option value=\"0930\">09:30</option>\n      </select>\n    </div>\n    <button class=\"btn-collection-create\">Create collection</button>\n  </form>\n</section>\n<section class=\"panel col col--6 collection-selected\">\n\n</section>";
 },"useData":true});
+templates['florence'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<nav class=\"admin-nav\">\n</nav>\n<div class=\"section\">\n</div>";
+},"useData":true});
 templates['login'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "email:<input id=\"email\" type=\"email\" value=\"p1@t.com\" class=\"fl-user-and-access__email\" name=\"fl-editor__headline\" cols=\"40\" rows=\"1\" />\npassword:<input id=\"password\" type=\"password\" value=\"Doug4l\" class=\"fl-user-and-access__password\" name=\"fl-editor__headline\" cols=\"40\" rows=\"1\" />\n<button id=\"login\" class=\"fl-panel--user-and-access__login\">Log in</button>";
 },"useData":true});
 templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
-    return "      <li class=\"selected\">Working on: "
+    return "    <li class=\"selected\">Working on: "
     + this.escapeExpression(this.lambda(depth0, depth0))
     + "</li>\n";
+},"3":function(depth0,helpers,partials,data) {
+    return "selected";
+},"5":function(depth0,helpers,partials,data) {
+    return "    <li class=\"nav--admin-item nav--admin__logout\"><a href=\"#\">Logout</a></li>\n";
+},"7":function(depth0,helpers,partials,data) {
+    return "    <li class=\"nav--admin-item nav--admin__login selected\"><a href=\"#\">Login</a></li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<nav>\n  <ul class=\"nav\">\n"
-    + ((stack1 = helpers['if'].call(depth0,depth0,{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "    <li id=\"collections\" class=\"selected\">Collections</li>\n    <li id=\"users\">Users and access</li>\n    <li id=\"publish\">Publish</li>\n    <li id=\"account\">My account</li>\n  </ul>\n</nav>\n<div class=\"section\"></div>";
+  return "<ul class=\"nav nav--admin\">\n"
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "  <li class=\"nav--admin-item nav--admin__collections\" "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isAuthenticated : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\"><a href=\"#\">Collections</a></li>\n  <li class=\"nav--admin-item nav--admin__users\"><a href=\"#\">Users and access</a></li>\n  <li class=\"nav--admin-item nav--admin__publish\"><a href=\"#\">Publish</a></li>\n\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isAuthenticated : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.program(7, data, 0),"data":data})) != null ? stack1 : "")
+    + "</ul>\n";
 },"useData":true});
 templates['markdownEditor'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class=\"markdown-editor\">\n    <div class=\"markdown-editor__header\">\n        <h1>Section name</h1>\n        <div id=\"wmd-button-bar\"></div>\n    </div>\n    <div class=\"markdown-editor__content\">\n        <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n        <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n            <h2>Markdown:</h2>\n            <textarea class=\"wmd-input\" id=\"wmd-input\">"
@@ -109,12 +122,12 @@ templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<section class=\"workspace-browse\">\n  <nav class=\"tree-nav-holder\">\n    <ul class=\"page-list page-list--tree\">\n        "
+  return "<section class=\"panel workspace-browse\">\n  <nav class=\"tree-nav-holder\">\n    <ul class=\"page-list page-list--tree\">\n        "
     + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </ul>\n  </nav>\n</section>";
 },"usePartial":true,"useData":true});
 templates['workCreate'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<section class=\"workspace-create\">\n  <h1>New page details</h1>\n  <form>\n    <label for=\"location\" class=\"\">Location</label>\n    <input id=\"location\" type=\"text\" />\n    <label for=\"pagetype\" class=\"\">Page type</label>\n    <select id=\"pagetype\" required>\n      <option name=\"bulletin\">bulletin</option>\n      <option name=\"article\">article</option>\n      <option name=\"dataset\">dataset</option>\n    </select>\n    <label for=\"pagename\" class=\"hidden\">Page type</label>\n    <input id=\"pagename\" class=\"full\" type=\"text\" placeholder=\"Page name\" />\n    <!--Button will be added here-->\n  </form>\n</section>\n";
+    return "<section class=\"panel workspace-create\">\n  <h1>New page details</h1>\n  <form>\n    <label for=\"location\" class=\"\">Location</label>\n    <input id=\"location\" type=\"text\" />\n    <label for=\"pagetype\" class=\"\">Page type</label>\n    <select id=\"pagetype\" required>\n      <option name=\"bulletin\">bulletin</option>\n      <option name=\"article\">article</option>\n      <option name=\"dataset\">dataset</option>\n    </select>\n    <label for=\"pagename\" class=\"hidden\">Page type</label>\n    <input id=\"pagename\" class=\"full\" type=\"text\" placeholder=\"Page name\" />\n    <!--Button will be added here-->\n  </form>\n</section>\n";
 },"useData":true});
 templates['workEdit'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
@@ -251,7 +264,7 @@ templates['workEdit'] = template({"1":function(depth0,helpers,partials,data) {
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "<section class=\"workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p>Description</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <p>Title: <textarea class=\"auto-size\" type=\"text\" id=\"title\" cols=\"40\" style=\"box-sizing: border-box; min-height: 31px;\">"
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p>Description</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <p>Title: <textarea class=\"auto-size\" type=\"text\" id=\"title\" cols=\"40\" style=\"box-sizing: border-box; min-height: 31px;\">"
     + alias2(alias1((depth0 != null ? depth0.title : depth0), depth0))
     + "</textarea></p>\n          <p>Next release: <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\" cols=\"20\" style=\"box-sizing: border-box; min-height: 31px;\">"
     + alias2(alias1((depth0 != null ? depth0.nextRelease : depth0), depth0))
@@ -288,7 +301,7 @@ templates['workEdit'] = template({"1":function(depth0,helpers,partials,data) {
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addSection\">Add section</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n</section>";
 },"useData":true});
 templates['workSpace'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<nav class=\"panel col col--1 workspace-nav\">\n  <ul class=\"nav nav--workspace\">\n    <li id=\"browse\" class=\"selected\">Browse</li>\n    <li id=\"create\">Create</li>\n    <li id=\"edit\">Edit</li>\n    <li id=\"review\">Review</li>\n  </ul>\n</nav>\n<div class=\"panel col col--4 workspace-menu\" style=\"overflow-y: scroll;\">\n\n</div>\n<section class=\"panel col col--7 workspace-browser\">\n  <div class=\"browser\">\n    <div class=\"addressbar\">\n      <button class=\"browser-btn-back\">&lt;</button>\n      <button class=\"browser-btn-forward\">&gt;</button>\n      <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label><input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n      <button class=\"browser-btn-mobile\">Mobile</button>\n    </div>\n    <iframe id=\"iframe\" src=\"http://localhost:8081/index.html#!/"
+    return "<nav class=\"panel col col--1 workspace-nav\">\n  <ul class=\"nav nav--workspace\">\n    <li id=\"browse\" class=\"selected\">Browse</li>\n    <li id=\"create\">Create</li>\n    <li id=\"edit\">Edit</li>\n    <li id=\"review\">Review</li>\n  </ul>\n</nav>\n<div class=\"col col--4 workspace-menu\" style=\"overflow-y: scroll;\">\n\n</div>\n<section class=\"panel col col--7 workspace-browser\">\n  <div class=\"browser\">\n    <div class=\"addressbar\">\n      <button class=\"browser-btn-back\">&lt;</button>\n      <button class=\"browser-btn-forward\">&gt;</button>\n      <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label><input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n      <button class=\"browser-btn-mobile\">Mobile</button>\n    </div>\n    <iframe id=\"iframe\" src=\"http://localhost:8081/index.html#!/"
     + this.escapeExpression(this.lambda(depth0, depth0))
     + "\"></iframe>\n  </div>\n</section>\n";
 },"useData":true});

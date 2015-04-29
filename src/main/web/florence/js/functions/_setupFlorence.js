@@ -8,14 +8,11 @@ function setupFlorence () {
   var florence = templates.florence;
   $('body').prepend(florence);
 
-  var adminMenu = $('#admin-menu');
-
-  // render the admin menu within the florence template.
-  var mainNavHtml = templates.mainNav(Florence);
-  adminMenu.html(mainNavHtml);
+  Florence.refreshAdminMenu();
+  var adminMenu = $('.admin-nav');
 
   // dirty checks on admin menu
-  adminMenu.on('click', '.admin-menu', function () {
+  adminMenu.on('click', '.nav--admin-item', function () {
     if(Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
       if (result === true) {
@@ -33,28 +30,28 @@ function setupFlorence () {
     }
   };
 
-  adminMenu.on('click', '.admin-menu', function () {
-    $('.admin-menu').removeClass('selected');
+  adminMenu.on('click', '.nav--admin-item', function () {
+    $('.nav--admin-item').removeClass('selected');
     $(this).addClass('selected');
   });
 
-  adminMenu.on('click', '#admin-menu-collections', function () {
+  adminMenu.on('click', '.nav--admin__collections', function () {
     viewController('collections');
   });
 
-  adminMenu.on('click', '#admin-menu-users', function () {
+  adminMenu.on('click', '.nav--admin__users', function () {
     viewController('users-and-access');
   });
 
-  adminMenu.on('click', '#admin-menu-publish', function () {
+  adminMenu.on('click', '.nav--admin__publish', function () {
     viewController('publish');
   });
 
-  adminMenu.on('click', '#admin-menu-login', function () {
+  adminMenu.on('click', '.nav--admin__login', function () {
     viewController('login');
   });
 
-  adminMenu.on('click', '#admin-menu-logout', function () {
+  adminMenu.on('click', '.nav--admin__logout', function () {
     logout();
     viewController();
   });
