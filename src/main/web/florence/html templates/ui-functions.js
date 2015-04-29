@@ -318,6 +318,19 @@ $(document).ready(function(){
 
 		}
 
+		try {
+
+			$('.collections-accordion').accordion({
+				header: '.collections-section__head',
+				active: false,
+				collapsible: true
+			});
+
+		}
+		catch(err){
+			//
+		}
+
 
 
 });

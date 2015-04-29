@@ -1,10 +1,8 @@
 function logout() {
   delete_cookie('access_token');
   localStorage.removeItem("loggedInAs");
-
-  $('.fl-admin-menu__item--login').removeClass('hidden');
-  $('.fl-admin-menu__item--logout').addClass('hidden');
-
+  Florence.isAuthenticated = false;
+  Florence.refreshAdminMenu();
   viewController();
 }
 

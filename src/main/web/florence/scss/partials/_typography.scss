@@ -145,7 +145,7 @@ body {
   margin-bottom: $lineheight;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   font-family: 'Roboto Slab', serif;
   font-weight: 400;
   /*font-size: 30px;*/
@@ -166,6 +166,13 @@ h2 {
 h3 {
   margin-top: $lineheight;
   font-size: $magicnumber1 * 3;
+  padding-top: 10px;
+  margin-bottom: -10px;
+}
+
+h4 {
+  margin-top: $lineheight;
+  font-size: 18px;
   padding-top: 10px;
   margin-bottom: -10px;
 }

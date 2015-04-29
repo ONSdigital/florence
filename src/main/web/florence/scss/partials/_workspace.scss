@@ -124,8 +124,11 @@
 	}
 
 	&-edit {
+		box-sizing: border-box;
 		overflow-y: scroll;
 		background-color: $quill-gray;
+		padding-bottom: $lineheight * 4;
+		// position: relative;
 
 		h1 {
 			margin-top: 0;
@@ -137,6 +140,17 @@
 
 		p {
 			margin-top: 0;
+		}
+
+		.edit-nav {
+			box-sizing: border-box;
+			position: absolute;
+			bottom: 0;
+			height: $lineheight * 4;
+			width: $col--4;
+			padding-top: $lineheight / 2;
+			padding-bottom: $lineheight / 2;
+			background: $gray-chateau;
 		}
 
 		.edit-section {

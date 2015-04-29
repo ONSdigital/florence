@@ -1,12 +1,17 @@
-var Florence = Florence || {};
+var Florence = Florence || {
+    isAuthenticated: false,
+    refreshAdminMenu: function () {
+      var mainNavHtml = templates.mainNav(Florence);
+      $('.admin-nav').html(mainNavHtml);
+    }
+  };
 
 Florence.Editor = {
-  isDirty:false,
+  isDirty: false,
   data: {}
 };
 
-
-
+Florence.collection = {};
 
 setupFlorence();
 
@@ -468,8 +473,6 @@ function articleEditor(collectionName, data) {
 }
 
 function authenticate(email,password) {
-	//
-
   $.ajax({
     url: "/zebedee/login",
     dataType: 'json',
@@ -483,9 +486,10 @@ function authenticate(email,password) {
       console.log(response);
       document.cookie="access_token="+response + ";path=/";
       localStorage.setItem("loggedInAs", email);
-      console.log('authenticated');
-      $('.fl-admin-menu__item--login').addClass('hidden');
-      $('.fl-admin-menu__item--logout').removeClass('hidden');
+      Florence.isAuthenticated = true;
+      Florence.refreshAdminMenu();
+
+
       viewController();
     },
     error: function (response) {
@@ -588,7 +592,6 @@ function bulletinEditor(collectionName, data) {
       $("#" + index).remove();
       data.correction.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
-      bulletinEditor(collectionName, data);
     });
   });
 
@@ -596,7 +599,6 @@ function bulletinEditor(collectionName, data) {
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    bulletinEditor(collectionName, data);
   });
 
   // Edit sections
@@ -607,17 +609,15 @@ function bulletinEditor(collectionName, data) {
       var editedSectionValue = $("#section-markdown_" + index).val();
       var html = templates.markdownEditor(editedSectionValue);
       $('body').append(html);
+      $('.markdown-editor').stop().fadeIn(200);
 
       markdownEditor();
-      markDownEditorSetLines();
+      //markDownEditorSetLines();
 
       $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200);
+        $('.markdown-editor').stop().fadeOut(200).remove();
       });
 
-      $('.btn-markdown-edit').on('click', function() {
-          $('.markdown-editor').stop().fadeIn(200);
-      });
 
       $(".btn-markdown-editor-save").click(function(){
         var editedSectionText = $('#wmd-input').val();
@@ -638,12 +638,12 @@ function bulletinEditor(collectionName, data) {
 
       $("#wmd-input").on('click', function() {
         // markDownEditorActiveLine($(this)[0]);
-        markDownEditorSetLines();
+        //markDownEditorSetLines();
       });
 
       $("#wmd-input").on('keyup', function() {
           // markDownEditorActiveLine($(this)[0]);
-          markDownEditorSetLines();
+          //markDownEditorSetLines();
       });
 
       function markDownEditorActiveLine(textarea) {
@@ -762,7 +762,6 @@ function bulletinEditor(collectionName, data) {
       $("#"+index).remove();
       data.sections.splice(index, 1);
       updateContent(collectionName, getPathName(), JSON.stringify(data));
-      loadPageDataIntoEditor(collectionName);
     });
   });
 
@@ -809,7 +808,7 @@ function bulletinEditor(collectionName, data) {
     $("#tab-delete_"+index).click(function() {
       $("#"+index).remove();
       data.accordion.splice(index, 1);
-      bulletinEditor(collectionName, data);
+      updateContent(collectionName, getPathName(), JSON.stringify(data));
     });
   });
 
@@ -817,7 +816,6 @@ function bulletinEditor(collectionName, data) {
   $("#addTab").one('click', function () {
     data.accordion.push({title:"", markdown:""});
     updateContent(collectionName, getPathName(), JSON.stringify(data));
-    bulletinEditor(collectionName, data);
   });
 
   function sortableTabs() {
@@ -875,7 +873,7 @@ function bulletinEditor(collectionName, data) {
           if (relatedData.type === 'bulletin') {
             data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
             // checkPage();
-            updateContent(collectionName, getPathName(), JSON.stringify(data), reload);
+            updateContent(collectionName, reload, JSON.stringify(data));
           } else {
             alert("This is not a bulletin");
           }
@@ -946,7 +944,6 @@ function bulletinEditor(collectionName, data) {
       var title = $('#tab__' + nameT).val();
       newTabs[indexT] = {title: title, markdown: markdown};
     });
-    console.log(newTabs);
     data.accordion = newTabs;
     // Related links
     var orderBulletin = $(".fl-editor__related").sortable('toArray');
@@ -957,7 +954,6 @@ function bulletinEditor(collectionName, data) {
       newRelated[indexB] = {uri: uri, name: name, summary: summary};
     });
     data.relatedBulletins = newRelated;
-      //console.log(data.relatedBulletins);
     // External links
     var orderLink = $(".fl-editor__external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
@@ -997,11 +993,25 @@ function checkForPageChanged(onChanged) {
     if (!onChanged) {
       localStorage.setItem("pageurl", nowUrl);
     } else {
-      localStorage.setItem("pageurl", nowUrl);
+      setTimeout(function () {
+        localStorage.setItem("pageurl", nowUrl);
+      }, 200);
       onChanged();
     }
   }
 }
+function checkIframe() {
+  var browserContent = document.getElementById('iframe').contentWindow;
+  browserContent.addEventListener('click', function iClick () {
+    setTimeout(function () {
+      checkForPageChanged();
+      console.log('iframe inner clicked');
+    }, 200);
+    $('.browser-location').val($('#iframe').attr('src'));
+  }, true);
+}
+
+
 function collectionContent () {
 
   var view_collection =
@@ -1094,17 +1104,16 @@ function createCollection() {
   var publishDate = new Date(publishYear, publishMonth, publishDay, 9, 30, 0, 0);
 
   // Create the collection
-  console.log(collectionName + " " + publishDate);
   $.ajax({
     url: "/zebedee/collection",
     dataType: 'json',
     type: 'POST',
     data: JSON.stringify({name: collectionName, publishDate: publishDate}),
-    success: function () {
-      console.log("Collection " + collectionName + " created");
-      document.cookie = "collection=" + collectionName + ";path=/";
-      localStorage.setItem("collection", collectionName);
-      viewWorkspace('', collectionName, 'browse');
+    success: function (response) {
+      console.log("Collection " + response.name + " created");
+      document.cookie = "collection=" + response.id + ";path=/";
+      //localStorage.setItem("collection", collectionName);
+      viewWorkspace('', response.id, 'browse');
     },
     error: function (response) {
       if(response.status === 409) {
@@ -1933,21 +1942,19 @@ function loadEditDatasetScreen(collectionName) {
 //    publish(collectionName);
 //  });
 //}
-function loadPageDataIntoEditor(collectionName, active) {
-  if (active === false) {
-    // Do nothing
-  } else {
-    var pageUrlData = localStorage.getItem("pageurl") + "/data.json";
-    getPageData(collectionName, pageUrlData,
-      success = function (response) {
-        makeEditSections(collectionName, response);
-        console.log(response);
-      },
-      error = function (response) {
-        handleApiError(response);
-      }
-    );
-  }
+function loadPageDataIntoEditor(collectionName) {
+  var pageUrlData = localStorage.getItem("pageurl") + "/data.json";
+  getPageData(collectionName, pageUrlData,
+    success = function (response) {
+      makeEditSections(collectionName, response);
+      console.log(response);
+      refreshPreview(localStorage.getItem("pageurl"));
+      setPreviewUrl(localStorage.getItem("pageurl"))
+    },
+    error = function (response) {
+      handleApiError(response);
+    }
+  );
 
   function checkIfPageIsComplete() {
 
@@ -2306,10 +2313,8 @@ function makeUrl(args) {
 function logout() {
   delete_cookie('access_token');
   localStorage.removeItem("loggedInAs");
-
-  $('.fl-admin-menu__item--login').removeClass('hidden');
-  $('.fl-admin-menu__item--logout').addClass('hidden');
-
+  Florence.isAuthenticated = false;
+  Florence.refreshAdminMenu();
   viewController();
 }
 
@@ -2325,10 +2330,18 @@ function delete_cookie(name) {
   }
 
   else if (response.type === 'article') {
+    var html = templates.workEdit(response);
+    $('.workspace-menu').empty();
+    $('.workspace-menu').append(html);
+    accordion();
     articleEditor(collectionName, response);
   }
 
   else if (response.type === 'dataset') {
+    var html = templates.workEdit(response);
+    $('.workspace-menu').empty();
+    $('.workspace-menu').append(html);
+    accordion();
     datasetEditor(collectionName, response);
   }
 
@@ -2458,7 +2471,8 @@ function publish(collectionName) {
 function refreshPreview(url) {
 
   if(url) {
-    url = $('#iframe')[0].contentWindow.document.location.href.split('#!')[0] + '#!' + url;
+    var baseUrl = 'http://localhost:8081/index.html#!';
+    url = baseUrl + url;
     console.log(url);
     $('#iframe')[0].contentWindow.document.location.href = url;
   }
@@ -2478,20 +2492,25 @@ function removeSubMenus () {
   $('.fl-panel--sub-menu').empty();
 }
 
+function setPreviewUrl (url) {
+  var baseUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[0] + '#!'; //'http://localhost:8081/index.html#!'
+  $('.browser-location').val(baseUrl + url);
+}
 function setupFlorence () {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
 
-  localStorage.setItem('activeTab', false);
+  localStorage.setItem('activeTab', false); // do we need this?
 
-  var florence = '<div class="wrapper">'+'</div>';
+  // load main florence template
+  var florence = templates.florence;
   $('body').prepend(florence);
 
-  var mainNavHtml = templates.mainNav;
-  $('.wrapper').append(mainNavHtml);
+  Florence.refreshAdminMenu();
+  var adminMenu = $('.admin-nav');
 
-  $('.fl-admin-menu__link').on('click', function () {
-    console.log('admin menu clicked...');
+  // dirty checks on admin menu
+  adminMenu.on('click', '.nav--admin-item', function () {
     if(Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
       if (result === true) {
@@ -2509,53 +2528,50 @@ function setupFlorence () {
     }
   };
 
-  //click handlers
-  $('.fl-admin-menu__link').click(function () {
-    if ($(this).parent().hasClass('fl-admin-menu__item--collections')) {
-      viewController('collections');
-    }
+  adminMenu.on('click', '.nav--admin-item', function () {
+    $('.nav--admin-item').removeClass('selected');
+    $(this).addClass('selected');
   });
 
-  $('.fl-admin-menu__item--useradmin').click(function () {
+  adminMenu.on('click', '.nav--admin__collections', function () {
+    viewController('collections');
+  });
+
+  adminMenu.on('click', '.nav--admin__users', function () {
     viewController('users-and-access');
   });
 
-  var loginLink = $('.fl-admin-menu__item--login');
-  loginLink.addClass('hidden');
-  loginLink.click(function () {
-    viewController('login');
-  });
-  var logoutLink = $('.fl-admin-menu__item--logout');
-  logoutLink.removeClass('hidden');
-  logoutLink.click(function () {
-    logoutLink.addClass('hidden');
-    loginLink.removeClass('hidden');
-    logout();
-    viewController('login');
-  });
-
-  var $nav = $('.nav');
-
-  $nav.on('click', '#publish', function () {
-    console.log('once?!');
+  adminMenu.on('click', '.nav--admin__publish', function () {
     viewController('publish');
+  });
+
+  adminMenu.on('click', '.nav--admin__login', function () {
+    viewController('login');
+  });
+
+  adminMenu.on('click', '.nav--admin__logout', function () {
+    logout();
+    viewController();
   });
 
   viewController();
 }
 
 function setupMiniBrowser() {
-  var browserContent = $('#iframe')[0].contentWindow;
-  $(browserContent.document).on('click', function(){
-    var browserLocation = browserContent.location.href;
-    $('.browser-location').val(browserLocation);
-    treeNodeSelect(browserLocation);
-    checkForPageChanged();
-    //console.log(browserLocation);
-    // console.log('iframe inner clicked');
-  });
-  $('.browser-location').val($('#iframe').attr('src'));
+  var browserContent = document.getElementById('iframe').contentWindow;
+  browserContent.addEventListener('click', function iClick () {
+    setTimeout(function () {
+      var browserLocation = document.getElementById('iframe').contentWindow.location.href;
+      $('.browser-location').val(browserLocation);
+      treeNodeSelect(browserLocation);
+      checkForPageChanged();
+      //console.log('iframe inner clicked');
+    }, 200);
+    $('.browser-location').val($('#iframe').attr('src'));
+  }, true);
 }
+
+
 function transfer(source, destination, uri) {
   var transferRequest = {
     source: source,
@@ -2593,12 +2609,12 @@ function treeNodeSelect(url){
   $(selectedListItem).parents('ul').addClass('active');
   $(selectedListItem).closest('li').children('ul').addClass('active');
 }
-function updateContent(collectionName, path, content, refreshPreviewUrl) {
+function updateContent(collectionName, path, content) {
   postContent(collectionName, path, content,
     success = function (response) {
-      console.log("Updating completed" + response);
+      console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      refreshPreview(refreshPreviewUrl);
+      refreshPreview(path);
       loadPageDataIntoEditor(collectionName);
     },
     error = function (response) {
@@ -2614,28 +2630,25 @@ function updateContent(collectionName, path, content, refreshPreviewUrl) {
     }
   );
 }
-function viewCollectionDetails(collectionName) {
+function viewCollectionDetails(collectionId) {
 
   var collectionDetails = {
-    name: "",
-    date: ""
+    name: Florence.collection.name,
+    date: Florence.collection.date,
   };
 
-  getCollection(collectionName,
+  console.log(collectionId)
+
+  getCollection(collectionId,
     success = function (response) {
-      collectionDetails.name = response.name;
-      var date = new Date(response.publishDate);
-      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-      var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
-      collectionDetails.date = formattedDate;
-      populateCollectionDetails(response, collectionName);
+      populateCollectionDetails(response, collectionId);
     },
     error = function (response) {
       handleApiError(response);
     }
   );
 
-  function populateCollectionDetails(collection, collectionName) {
+  function populateCollectionDetails(collection, collectionId) {
 
     if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
@@ -2647,11 +2660,11 @@ function viewCollectionDetails(collectionName) {
       });
     }
 
-    CreateUriListHtml(collection.inProgressUris, collectionName, "inProgress");
-    CreateUriListHtml(collection.completeUris, collectionName, "completed");
-    CreateUriListHtml(collection.reviewedUris, collectionName, "reviewed");
+    CreateUriListHtml(collection.inProgressUris, collectionId, "inProgress");
+    CreateUriListHtml(collection.completeUris, collectionId, "completed");
+    CreateUriListHtml(collection.reviewedUris, collectionId, "reviewed");
 
-    function CreateUriListHtml(uris, collectionName, status) {
+    function CreateUriListHtml(uris, collectionId, status) {
       var uri_list = [];
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
       var collectionHtml;
@@ -2659,14 +2672,14 @@ function viewCollectionDetails(collectionName) {
         if (uri.length === 0) {
           collectionDetails[status] = [];
         } else {
-          pageDataRequests.push(getPageData(collectionName, uri,
-              success = function (response) {
-                var path = response.uri;
-                uri_list.push({path: path, name: response.title});
-              },
-              error = function (response) {
-                handleApiError(response);
-              })
+          pageDataRequests.push(getPageData(collectionId, uri,
+            success = function (response) {
+              var path = response.uri;
+              uri_list.push({path: path, name: response.title});
+            },
+            error = function (response) {
+              handleApiError(response);
+            })
           );
         }
       });
@@ -2678,50 +2691,47 @@ function viewCollectionDetails(collectionName) {
         $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
         //page-list
-        $('.page-item').click(function () {
+        $('.page-item').click(function() {
           $('.page-list li').removeClass('selected');
           $('.page-options').hide();
-          // Delete function
-          $('.fl-panel--collection-details-container').unbind('click').on('click', '.fl-button--delete', function () {
-            var path = $(this).attr('data-path');
 
-            $(this).parent('li').addClass('selected');
-            $(this).next('.page-options').show();
-          });
-
-          $('.btn-page-edit').click(function () {
-            var path = $(this).attr('data-path');
-            if (path) {
-              viewWorkspace(path, collectionName, 'edit');
-            }
-          });
-          $('.btn-page-delete').click(function () {
-            var path = $(this).attr('data-path');
-            if (path) {
-              deleteContent(collectionName, path, success, error);
-              console.log('File deleted');
-              viewCollectionDetails(collectionName);
-            }
-          });
-          $('.btn-collection-work-on').click(function () {
-            document.cookie = "collection=" + collectionName + ";path=/";
-            localStorage.setItem("collection", collectionName);
-            viewWorkspace('', collectionName, 'browse');
-          });
-
-          $('.collection-selected .btn-cancel').click(function () {
-            $('.collection-selected').stop().animate({right: "-50%"}, 500);
-            $('.collections-select-table tbody tr').removeClass('selected');
-            // Wait until the animation ends
-            setTimeout(function () {
-              viewController('collections');
-            }, 500);
-          });
+          $(this).parent('li').addClass('selected');
+          $(this).next('.page-options').show();
         });
-      })
+
+        $('.btn-page-edit').click(function () {
+          var path = $(this).attr('data-path');
+          if (path) {
+            viewWorkspace(path, collectionId, 'edit');
+          }
+        });
+        $('.btn-page-delete').click(function () {
+          var path = $(this).attr('data-path');
+          if (path) {
+            deleteContent(collectionId, path, success, error);
+            console.log('File deleted');
+            viewCollectionDetails(collectionId);
+          }
+        });
+        $('.btn-collection-work-on').click(function () {
+          document.cookie = "collection=" + collectionId + ";path=/";
+          //localStorage.setItem("collection", collectionId);
+          viewWorkspace('', collectionId, 'browse');
+        });
+
+        $('.collection-selected .btn-cancel').click(function(){
+          $('.collection-selected').stop().animate({right: "-50%"}, 500);
+          $('.collections-select-table tbody tr').removeClass('selected');
+          // Wait until the animation ends
+          setTimeout(function(){
+            viewController('collections');
+          }, 500);
+        });
+      });
     }
   }
-}function viewCollections() {
+}
+function viewCollections() {
 
   $.ajax({
     url: "/zebedee/collections",
@@ -2753,7 +2763,9 @@ function viewCollectionDetails(collectionName) {
       $('.collections-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
       var collectionId = $(this).attr('data-id');
+      Florence.collection = {name: $(this).find(".collection-name").html(), date: $(this).find(".collection-date").html()};
       viewCollectionDetails(collectionId);
+      console.log(Florence.collection)
     });
 
     //click handlers
@@ -2779,7 +2791,7 @@ function viewController(view) {
 			viewUserAndAccess('create');
 		}
 		else if (view === 'login') {
-			viewUserAndAccess('login');
+			viewLogIn();
 		}
 		else if (view === 'publish') {
 			viewPublish();
@@ -2797,7 +2809,7 @@ function viewController(view) {
     //authentication calls collections view for now until authentication is implemented
     // viewCollections();
     //viewWorkspace();
-    viewLogIn();
+		viewLogIn();
   }
 
   function logged_in() {
@@ -3043,19 +3055,21 @@ function viewUserAndAccess(view) {
 
 function viewWorkspace(path, collectionName, menu) {
 
-  var currentPath = '/';
+  var currentPath = '';
   if (path) {
     currentPath = path;
   }
+
+  console.log(collectionName)
 
   localStorage.removeItem("pageurl");
   localStorage.setItem("pageurl", currentPath);
 
   // tentative reload of nav bar with collection name
-  var mainNavHtml = templates.mainNav(collectionName);
+  var mainNavHtml = templates.mainNav(Florence);
   $('.wrapper').replaceWith(mainNavHtml);
 
-  var workSpace = templates.workSpace(currentPath);
+  var workSpace = templates.workSpace(path);
   $('.section').replaceWith(workSpace);
 
   if (menu === 'browse') {
@@ -3071,15 +3085,13 @@ function viewWorkspace(path, collectionName, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
-    loadPageDataIntoEditor(collectionName, true);
+    loadPageDataIntoEditor(collectionName);
   }
   else if (menu === 'review') {
     $('.nav--workspace li').removeClass('selected');
     $("#review").addClass('selected');
     loadReviewScreen(collectionName);
-    checkForPageChanged(function () {
-      updateReviewScreen(collectionName);
-    });
+    checkForPageChanged(updateReviewScreen(collectionName));
   }
 
   //click handlers
@@ -3104,15 +3116,12 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateBulletinScreen(collectionName);
     }
     else if ($(this).is('#edit')) {
-      checkForPageChanged(function () {
-        loadPageDataIntoEditor(collectionName, true);
-      });
+      checkIframe();
+      checkForPageChanged(loadPageDataIntoEditor(collectionName));
     }
     else if ($(this).is('#review')) {
       loadReviewScreen(collectionName);
-      checkForPageChanged(function () {
-        updateReviewScreen(collectionName);
-      });
+      checkForPageChanged(updateReviewScreen(collectionName));
     }
     else {
       loadBrowseScreen();
