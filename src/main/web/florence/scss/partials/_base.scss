@@ -543,6 +543,14 @@ button {
 		background-color: $como;
 		margin-left: 0;
 	}
+
+	&.btn-florence-login {
+	  color: $concrete;
+	  background-color: $astral;
+	  margin-left: 0;
+	}
+
+
 }
 
 .browser {
@@ -631,6 +639,17 @@ button {
 	}
 }
 
+.login-wrapper {
+  padding-left: $col--4;
+  padding-right: $col--4;
+
+  form {
+	padding-left: $gutter;
+	padding-right: $gutter;
+  }
+
+
+}
 
 
 
