@@ -49,6 +49,14 @@ $panel-height-2-top-nav: 756px;
 			}
 		}
 	}
+
+	&--admin {
+		&__item
+
+		a {
+			color: $concrete;
+		}
+	}
 }
 
 .section {
@@ -506,6 +514,23 @@ button {
 		color: $concrete;
 		background-color: $como;
 		margin-bottom: $lineheight / 2;
+	}
+
+	&.btn-edit-cancel {
+		color: $concrete;
+		background-color: $mine-shaft;
+	}
+
+	&.btn-edit-save {
+		color: $concrete;
+		background-color: $astral;
+		margin-left: 0;
+	}
+
+	&.btn-edit-save-and-submit-for-review {
+		color: $concrete;
+		background-color: $como;
+		margin-left: 0;
 	}
 }
 
