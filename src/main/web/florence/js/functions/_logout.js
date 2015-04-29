@@ -1,7 +1,6 @@
 function logout() {
   delete_cookie('access_token');
   localStorage.removeItem("loggedInAs");
-  Florence.isAuthenticated = false;
   Florence.refreshAdminMenu();
   viewController();
 }
