@@ -8,13 +8,6 @@ function viewWorkspace(path, collectionName, menu) {
   localStorage.removeItem("pageurl");
   localStorage.setItem("pageurl", currentPath);
 
-  // tentative reload of nav bar with collection name
-  var mainNavHtml = templates.mainNav(Florence);
-  $('.wrapper').replaceWith(mainNavHtml);
-
-  var workSpace = templates.workSpace(path);
-  $('.section').replaceWith(workSpace);
-
   if (menu === 'browse') {
     $('.nav--workspace li').removeClass('selected');
     $("#browse").addClass('selected');
@@ -54,16 +47,13 @@ function viewWorkspace(path, collectionName, menu) {
     }
 
     if ($(this).is('#browse')) {
-      loadBrowseScreen();
+      loadBrowseScreen('click');
     }
     else if ($(this).is('#create')) {
       loadCreateBulletinScreen(collectionName);
     }
     else if ($(this).is('#edit')) {
-      //removeListen();
-      //checkIframe();
-      var goto = localStorage.getItem('pageurl');
-      loadPageDataIntoEditor(goto, collectionName);
+      loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
     }
     else if ($(this).is('#review')) {
       loadReviewScreen(collectionName);

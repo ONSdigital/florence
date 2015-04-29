@@ -100,17 +100,9 @@ function datasetEditor(collectionName, data) {
   // Load and edition
   $(data.download).each(function (index, file) {
     lastIndexFile = index + 1;
-    $('.fl-editor__download').append(
-        '<div id="' + index + '" class="section-list" style="background-color:grey; color:white;'+style+'">' +
-        '  Title ' +
-        '  <textarea id="file__' + index + '" cols="50">' + file.title + '</textarea>' +
-        '  <textarea id="file_name_' + index + '" style="display: none" cols="50">' + file.file + '</textarea>' +
-        '  <div id="file_name_show_' + index + '">' + file.file + '</div>' +
-        '  <button class="fl-panel--editor__download__file-item__delete_' + index + '">Delete</button>' +
-        '</div>');
 
     // Delete
-    $(".fl-panel--editor__download__file-item__delete_"+index).click(function() {
+    $("#file-delete_"+index).click(function() {
       $("#"+index).remove();
       $.ajax({
         url: "/zebedee/content/" + collectionName + "?uri=" + data.download[index].file,
@@ -128,18 +120,15 @@ function datasetEditor(collectionName, data) {
   });
 
   //Add new download
-  $("#content-section").append('<button id="addFile">Add new file</button>');
+
   $("#addFile").one('click', function () {
-    $('.fl-editor__download').append(
-        '<div id="' + lastIndexFile + '" class="section-list" style="background-color:grey; color:white;">' +
-        '  Title ' +
-          //'  <textarea id="fileToUp"></textarea>' +
-        '  <textarea id="file__' + lastIndexFile + '" cols="50"></textarea>' +
-        '  <textarea id="file_name_' + lastIndexFile + '" style="display: none" cols="50"></textarea>' +
+    $('#sortable-download').append(
+        '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
+        '  <textarea id="download-title_' + lastIndexFile + '"></textarea>' +
+        '  <textarea style="display: none;" id="download-filename_' + lastIndexFile + '"></textarea>' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files" multiple>' +
         '    <p>' +
-        //'    <button type="submit" id="btn">Submit</button>' +
         '  </form>' +
         '  <div id="response"></div>' +
         '  <ul id="list"></ul>' +
@@ -150,7 +139,6 @@ function datasetEditor(collectionName, data) {
 
       if (window.FormData) {
         formdata = new FormData();
-        //document.getElementById("btn").style.display = "none";
       }
       function showUploadedItem (source) {
         var list = document.getElementById("list"),
@@ -189,18 +177,6 @@ function datasetEditor(collectionName, data) {
               return;
             }
 
-            // Multifile upload (not accepted at the moment by the server)
-            //var i = 0, len = this.files.length, file;
-            //for ( ; i < len; i++ ) {
-            //  file = this.files[i];
-            //  if (!!file.type.match(/csv.*/)) {
-            //    showUploadedItem(file.name);
-            //    if (formdata) {
-            //      formdata.append("names[]", file);  //change input name to names[]
-            //    }
-            //  }
-            //}
-
             if (formdata) {
               $.ajax({
                 url: "/zebedee/content/" + collectionName + "?uri=" + uriUpload,
@@ -210,14 +186,13 @@ function datasetEditor(collectionName, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  $('#file_name_' + lastIndexFile).val(uriUpload);
-                  $('#file_name_show_' + lastIndexFile).val(uriUpload);
-                  save();
-                  datasetEditor(collectionName, data);
+                  var title = title = $('#download-title_'+name).val();
+                  var file = $('#download-filename_' + lastIndexFile).val(uriUpload);
+                  data.download = {title: title, file: file};
+                  updateContent(collectionName, getPathName(), JSON.stringify(data));
                 }
               });
             }
-            //}); //each
           } else {
             if (!!file.name.match(/\.csv/)) {
               showUploadedItem(file.name);
@@ -240,10 +215,10 @@ function datasetEditor(collectionName, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  $('#file_name_' + lastIndexFile).val(uriUpload);
-                  $('#file_name_show_' + lastIndexFile).val(uriUpload);
-                  save();
-                  datasetEditor(collectionName, data);
+                  var title = title = $('#download-title_'+name).val();
+                  var file = $('#download-filename_' + lastIndexFile).val(uriUpload);
+                  data.download = {title: title, file: file};
+                  updateContent(collectionName, getPathName(), JSON.stringify(data));
                 }
               });
             }
@@ -254,7 +229,7 @@ function datasetEditor(collectionName, data) {
   });
 
   function sortableFiles() {
-    $(".fl-editor__download").sortable();
+    $("#sortable-download").sortable();
   }
   sortableFiles();
 
@@ -335,7 +310,7 @@ function datasetEditor(collectionName, data) {
 
   //Add new related
   $("#addDataset").one('click', function () {
-    $('.fl-editor__related').append(
+    $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
         '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
         '  <button class="btn-page-get" id="dataset-get_' + lastIndexRelated + '">Get</button>' +
@@ -511,8 +486,8 @@ function datasetEditor(collectionName, data) {
     // Files are uploaded. Save metadata
     var orderFile = $(".fl-editor__download").sortable('toArray');
     $(orderFile).each(function(index, name){
-      var title = $('#file__'+name).val();
-      var file = $('#file_name_' + name).val();
+      var title = $('#download-title_'+name).val();
+      var file = $('#download-filename_' + name).val();
       newFiles[parseInt(index)] = {title: title, file: file};
     });
     data.download = newFiles;

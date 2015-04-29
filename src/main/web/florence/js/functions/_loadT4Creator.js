@@ -79,7 +79,7 @@ function loadT4Creator (collectionName) {
         success: function (message) {
           console.log("Updating completed " + message);
           var path = newUri;
-          console.log(path);
+
           viewWorkspace(path, collectionName, 'edit');
         },
         error: function (error) {

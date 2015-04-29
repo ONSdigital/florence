@@ -70,7 +70,7 @@ function viewCollectionDetails(collectionId) {
         $('.btn-page-edit').click(function () {
           var path = $(this).attr('data-path');
           if (path) {
-            viewWorkspace(path, collectionId, 'edit');
+            createWorkspace(path, collectionId, 'edit');
           }
         });
         $('.btn-page-delete').click(function () {
@@ -84,7 +84,7 @@ function viewCollectionDetails(collectionId) {
         $('.btn-collection-work-on').click(function () {
           document.cookie = "collection=" + collectionId + ";path=/";
           //localStorage.setItem("collection", collectionId);
-          viewWorkspace('', collectionId, 'browse');
+          createWorkspace('', collectionId, 'browse');
         });
 
         $('.collection-selected .btn-cancel').click(function(){

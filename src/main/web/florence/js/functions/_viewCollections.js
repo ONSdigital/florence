@@ -20,7 +20,8 @@ function viewCollections() {
       var date = new Date(collection.publishDate);
       var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
       var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
-      response.push({id: id, name: name, date: formattedDate});
+      Florence.collection = {id: id, name: name, date: formattedDate};
+      response.push(Florence.collection);
     });
 
     var collectionsHtml = templates.collections(response);
@@ -30,7 +31,6 @@ function viewCollections() {
       $('.collections-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
       var collectionId = $(this).attr('data-id');
-      Florence.collection = {name: $(this).find(".collection-name").html(), date: $(this).find(".collection-date").html()};
       viewCollectionDetails(collectionId);
     });
 

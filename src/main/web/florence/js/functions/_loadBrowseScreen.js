@@ -1,4 +1,4 @@
-function loadBrowseScreen() {
+function loadBrowseScreen(click) {
 
   return $.ajax({
     url: "/navigation",
@@ -25,20 +25,23 @@ function loadBrowseScreen() {
         $(this).closest('li').children('ul').addClass('active');
       });
 
+      if (click === 'click') {
+        treeNodeSelect(document.getElementById('iframe').contentWindow.location.href);
+      }
+
       //page-list--tree
       $('.page-list--tree .page-item').click(function(){
         //change iframe location
         var newURL = baseURL + $(this).closest('li').attr('data-url');
-        browserContent.document.location.href = newURL;
+        browserContent.location.href = newURL;
         $('.browser-location').val(newURL);
         checkForPageChanged();
-        // console.log(newURL);
       });
-
-      setupMiniBrowser();
+      setupIframeHandler();
     },
     error: function (response) {
       handleApiError(response);
     }
   });
 }
+

@@ -18,7 +18,7 @@ function createCollection() {
       console.log("Collection " + response.name + " created");
       document.cookie = "collection=" + response.id + ";path=/";
       //localStorage.setItem("collection", collectionName);
-      viewWorkspace('', response.id, 'browse');
+      createWorkspace('', response.id, 'browse');
     },
     error: function (response) {
       if(response.status === 409) {

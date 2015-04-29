@@ -162,7 +162,7 @@
       <div class="edit-section__content">
         <div id="sortable-used" class="edit-section__sortable">
           {{#each this.usedIn}}
-            <div class="edit-section__sortable-item">
+            <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea></textarea>
               <button class="btn-markdown-edit">Edit</button>
               <button class="btn-page-delete">Delete</button>
@@ -170,7 +170,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-used">Add article or bulletin</button>
+          <button class="btn-add-used" id="addUsed">Add article or bulletin</button>
         </div>
       </div>
     </div>
@@ -183,15 +183,16 @@
       <div class="edit-section__content">
         <div id="sortable-download" class="edit-section__sortable">
           {{#each this.download}}
-            <div class="edit-section__sortable-item">
-              <textarea></textarea>
-              <button class="btn-markdown-edit">Edit</button>
-              <button class="btn-page-delete">Delete</button>
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="download-title_{{@index}}">{{title}}</textarea>
+              <textarea style="display: none;" id="download-filename_{{@index}}">{{file}}</textarea>
+              <div id="download-filename_show_{{@index}}">{{file}}</div>
+              <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-download">Add file</button>
+          <button class="btn-add-download" id="addFile">Add file</button>
         </div>
       </div>
     </div>
