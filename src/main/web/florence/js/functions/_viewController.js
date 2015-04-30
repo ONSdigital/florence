@@ -2,9 +2,6 @@ function viewController(view) {
 
 	if (logged_in()) {
 
-		//clear view
-		$('.fl-view').empty();
-
 		if (view === 'collections') {
 			viewCollections();
 		}
