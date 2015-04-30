@@ -1,10 +1,5 @@
 function viewCollectionDetails(collectionId) {
 
-  var collectionDetails = {
-    name: Florence.collection.name,
-    date: Florence.collection.date,
-  };
-
   console.log(collectionId)
 
   getCollection(collectionId,
@@ -17,6 +12,17 @@ function viewCollectionDetails(collectionId) {
   );
 
   function populateCollectionDetails(collection, collectionId) {
+
+    // store selected collection details in florence
+    var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+    Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
+
+    // start building the data object for the template.
+    var collectionDetails = {
+      name: Florence.collection.name,
+      date: Florence.collection.date
+    };
+
 
     if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
