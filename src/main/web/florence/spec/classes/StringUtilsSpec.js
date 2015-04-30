@@ -1,6 +1,6 @@
 describe("StringUtils", function() {
 
-  require('../../js/classes/stringUtils.js');
+  var StringUtils = require('../../js/classes/stringUtils.js');
 
   describe(".textareaLines(line, maxLineLength, start, numberOfLinesCovered)", function() {
 
