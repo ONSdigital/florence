@@ -24,3 +24,17 @@ Florence.Authentication = {
   isAuthenticated: function() { return accessToken() !== '' }
 };
 
+Florence.Handler = function () {
+  setTimeout(function () {
+    var browserLocation = document.getElementById('iframe').contentWindow.location.href;
+    $('.browser-location').val(browserLocation);
+    if ($('.workspace-edit').length) {
+      loadPageDataIntoEditor(getPathName(browserLocation), Florence.collection.id);
+    }
+    else if ($('.workspace-browse').length) {
+      treeNodeSelect(browserLocation);
+    }
+    checkForPageChanged();
+    console.log('iframe inner clicked');
+  }, 200);
+};

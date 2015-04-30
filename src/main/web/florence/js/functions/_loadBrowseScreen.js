@@ -37,7 +37,7 @@ function loadBrowseScreen(click) {
         $('.browser-location').val(newURL);
         checkForPageChanged();
       });
-      setupIframeHandler();
+//      setupIframeHandler();
     },
     error: function (response) {
       handleApiError(response);

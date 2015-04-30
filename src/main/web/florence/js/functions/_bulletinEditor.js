@@ -1,16 +1,12 @@
 function bulletinEditor(collectionName, data) {
 
-  var newSections = [];
-  var newTabs = [];
-  var newRelated = [];
-  var newLinks = [];
+  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
-  var setActiveTab;
-  var getActiveTab;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
+    if (setActiveTab !== false) {
       localStorage.setItem('activeTab', setActiveTab);
     }
   });
@@ -65,11 +61,10 @@ function bulletinEditor(collectionName, data) {
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if(data.nationalStatistic === "false" || data.nationalStatistic === false) {
+    if (data.nationalStatistic === "false" || data.nationalStatistic === false) {
       return false;
-    } else {
-      return true;
     }
+    return true;
   };
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
@@ -248,6 +243,8 @@ function bulletinEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -261,13 +258,14 @@ function bulletinEditor(collectionName, data) {
       $("#bulletin-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#bulletin-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        refreshPreview(localStorage.getItem("historicUrl"));
-        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        refreshPreview(reload);
+        loadPageDataIntoEditor(reload, collectionName);
         localStorage.removeItem('historicUrl');
       });
 
       var bulletinurl = $('#iframe')[0].contentWindow.document.location.href;
       var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+
       $.ajax({
         url: bulletinurldata,
         dataType: 'json',
@@ -275,8 +273,7 @@ function bulletinEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
             data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not a bulletin");
           }
@@ -313,7 +310,7 @@ function bulletinEditor(collectionName, data) {
   });
 
   function sortableLinks() {
-    $(".fl-editor__external").sortable();
+    $("#sortable-external").sortable();
   }
   sortableLinks();
 
@@ -344,7 +341,7 @@ function bulletinEditor(collectionName, data) {
     var orderTab = $("#sortable-tabs").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab__' + nameT).val();
+      var title = $('#tab-title_' + nameT).val();
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
@@ -365,6 +362,7 @@ function bulletinEditor(collectionName, data) {
       newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
+//    console.log(data);
   }
 }
 

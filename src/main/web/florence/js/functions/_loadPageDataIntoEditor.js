@@ -2,10 +2,7 @@ function loadPageDataIntoEditor(path, collectionId) {
   var pageUrlData = path + "/data.json";
   getPageData(collectionId, pageUrlData,
     success = function (response) {
-      refreshPreview(path);
-      //setupIframeHandler();
       makeEditSections(collectionId, response);
-      //setPreviewUrl(path);
     },
     error = function (response) {
       handleApiError(response);

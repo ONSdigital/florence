@@ -1,12 +1,8 @@
 function articleEditor(collectionName, data) {
 
-  var newSections = [];
-  var newTabs = [];
-  var newRelated = [];
-  var newLinks = [];
+  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
-  var setActiveTab;
-  var getActiveTab;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -245,6 +241,8 @@ function articleEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -258,13 +256,14 @@ function articleEditor(collectionName, data) {
       $("#article-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#article-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        refreshPreview(localStorage.getItem("historicUrl"));
-        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        refreshPreview(reload);
+        loadPageDataIntoEditor(reload, collectionName);
         localStorage.removeItem('historicUrl');
       });
 
       var articleurl = $('#iframe')[0].contentWindow.document.location.href;
       var articleurldata = "/data" + articleurl.split("#!")[1];
+
       $.ajax({
         url: articleurldata,
         dataType: 'json',
@@ -272,8 +271,7 @@ function articleEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'article') {
             data.relatedArticles.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not an article");
           }
@@ -310,7 +308,7 @@ function articleEditor(collectionName, data) {
   });
 
   function sortableLinks() {
-    $(".fl-editor__external").sortable();
+    $("#sortable-external").sortable();
   }
   sortableLinks();
 
@@ -341,7 +339,7 @@ function articleEditor(collectionName, data) {
     var orderTab = $("#sortable-tabs").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab__' + nameT).val();
+      var title = $('#tab-title_' + nameT).val();
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
@@ -357,10 +355,12 @@ function articleEditor(collectionName, data) {
     // External links
     var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
+      var displayText = $('#link_text_'+nameL).val();
       var link = $('#link__'+nameL).val();
-      newLinks[indexL] = {url: link};
+      newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
+//    console.log(data);
   }
 }
 

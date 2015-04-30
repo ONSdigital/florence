@@ -67,22 +67,24 @@ function loadT4Creator (collectionName) {
     if (pageName.length < 4) {
       alert("This is not a valid file name");
     } else {
-      $.ajax({
-        url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
-        dataType: 'json',
-        crossDomain: true,
-        type: 'POST',
-        data: JSON.stringify(pageData),
-        success: function (message) {
+      postContent(collectionName, newUri, JSON.stringify(pageData),
+        success = function (message) {
           console.log("Updating completed " + message);
-          var path = newUri;
-
-          viewWorkspace(path, collectionName, 'edit');
+          viewWorkspace(newUri, collectionName, 'edit');
+          refreshPreview(newUri);
         },
-        error: function (error) {
-          console.log(error);
+        error = function (response) {
+          if (response.status === 400) {
+            alert("Cannot edit this file. It is already part of another collection.");
+          }
+          else if (response.status === 401) {
+            alert("You are not authorised to update content.");
+          }
+          else {
+            handleApiError(response);
+          }
         }
-      });
+      );
     }
   });
 }

@@ -21,7 +21,6 @@ function viewWorkspace(path, collectionName, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
-    //checkIframe();
     loadPageDataIntoEditor(path, collectionName);
   }
   else if (menu === 'review') {

@@ -15,6 +15,7 @@ function createWorkspace(path, collectionName, menu) {
   var workSpace = templates.workSpace(path);
   $('.section').replaceWith(workSpace);
 
+  setupIframeHandler();
   viewWorkspace(path, collectionName, menu);
 }
 

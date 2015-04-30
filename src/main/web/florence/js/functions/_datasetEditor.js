@@ -1,12 +1,9 @@
 function datasetEditor(collectionName, data) {
 
-  var newFiles = [];
-  var newNotes = [];
-  var newRelated = [];
-  var newUsedIn = [];
-  var lastIndexRelated, lastIndexUsedIn;
-  var lastIndexFile = 0;
+  var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [];
+  var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
   var uriUpload;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -305,6 +302,8 @@ function datasetEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -325,6 +324,7 @@ function datasetEditor(collectionName, data) {
 
       var dataseturl = $('#iframe')[0].contentWindow.document.location.href;
       var dataseturldata = "/data" + dataseturl.split("#!")[1];
+
       $.ajax({
         url: dataseturldata,
         dataType: 'json',
@@ -332,8 +332,7 @@ function datasetEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
             data.relatedDatasets.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not a dataset");
           }
@@ -350,7 +349,7 @@ function datasetEditor(collectionName, data) {
   }
   sortableRelated();
 
-  // Used in (articles or bulletins where dataset is used in)   ********* REFACTOR **********
+  // Used in (articles or bulletins where dataset is used in)
   // Load
   if (data.usedIn.length === 0) {
     lastIndexUsedIn = 0;
@@ -372,6 +371,8 @@ function datasetEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-used').append(
         '<div id="' + lastIndexUsedIn + '" class="edit-section__sortable-item">' +
@@ -392,6 +393,7 @@ function datasetEditor(collectionName, data) {
 
       var usedInurl = $('#iframe')[0].contentWindow.document.location.href;
       var usedInurldata = "/data" + usedInurl.split("#!")[1];
+
       $.ajax({
         url: usedInurldata,
         dataType: 'json',
@@ -399,8 +401,7 @@ function datasetEditor(collectionName, data) {
         success: function (usedInData) {
           if (usedInData.type === 'bulletin' || usedInData.type === 'article') {
             data.usedIn.push({uri: usedInData.uri, title: usedInData.title, summary: usedInData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not an article or a bulletin");
           }
@@ -460,14 +461,13 @@ function datasetEditor(collectionName, data) {
       newRelated[indexD]= {uri: uri, name: name, summary: summary};
     });
     data.relatedDatasets = newRelated;
-    //console.log(data.relatedDatasets);
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#usedIn__'+nameU).val();
       var summary = $('#usedIn_summary_'+nameU).val();
-      var names = $('#usedIn_name_'+nameU).val();
-      newUsedIn[parseInt(indexU)] = {uri: uri, name: names, summary: summary};
+      var name = $('#usedIn_name_'+nameU).val();
+      newUsedIn[parseInt(indexU)] = {uri: uri, name: name, summary: summary};
     });
     data.usedIn = newUsedIn;
 
