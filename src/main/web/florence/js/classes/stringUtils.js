@@ -21,6 +21,13 @@ var StringUtils = {
     //console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
 
     return StringUtils.textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
+  },
+
+  formatIsoDateString: function(input) {
+    var date = new Date(input);
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
+    return formattedDate;
   }
 };
 

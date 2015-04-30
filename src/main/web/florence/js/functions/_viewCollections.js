@@ -15,13 +15,8 @@ function viewCollections() {
   var response = [];
   function populateCollectionTable(data) {
     $.each(data, function (i, collection) {
-      var id = collection.id;
-      var name = collection.name;
-      var date = new Date(collection.publishDate);
-      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-      var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
-      Florence.collection = {id: id, name: name, date: formattedDate};
-      response.push(Florence.collection);
+      var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+      response.push({id: collection.id, name: collection.name, date: formattedDate});
     });
 
     var collectionsHtml = templates.collections(response);

@@ -75,7 +75,7 @@ templates['florence'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":functi
     return "<div class=\"wrapper\">\n  <nav class=\"admin-nav\">\n  </nav>\n  <div class=\"section\">\n  </div>\n</div>";
 },"useData":true});
 templates['login'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<div class=\"col--4 login-wrapper\">\n  <h1>Login</h1>\n\n  <form method=\"post\" action=\"\" class=\"form-login\">\n    <label for=\"email\">Email:</label><input id=\"email\" type=\"email\" value=\"p1@t.com\" class=\"fl-user-and-access__email\"\n                                            name=\"fl-editor__headline\"\n                                            cols=\"40\" rows=\"1\"/>\n    <label for=\"password\">Password:</label><input id=\"password\" type=\"password\" value=\"Doug4l\"\n                                                  class=\"fl-user-and-access__password\"\n                                                  name=\"fl-editor__headline\" cols=\"40\" rows=\"1\"/>\n    <button id=\"login\" class=\"btn-florence-login fl-panel--user-and-access__login \">Log in</button>\n  </form>\n</div>";
+    return "<div class=\"col--4 login-wrapper\">\n  <h1>Login</h1>\n\n  <form method=\"post\" action=\"\" class=\"form-login\">\n    <label for=\"email\">Email:</label><input id=\"email\" type=\"email\" value=\"p1@t.com\" class=\"fl-user-and-access__email\"\n                                            name=\"fl-editor__headline\"\n                                            cols=\"40\" rows=\"1\"/>\n    <label for=\"password\">Password:</label><input id=\"password\" type=\"password\" value=\"Doug4l\"\n                                                  class=\"fl-user-and-access__password\"\n                                                  name=\"fl-editor__headline\" cols=\"40\" rows=\"1\"/>\n    <button type=\"submit\" id=\"login\" class=\"btn-florence-login fl-panel--user-and-access__login \">Log in</button>\n  </form>\n</div>";
 },"useData":true});
 templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1;
@@ -133,19 +133,21 @@ templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
     + "    </ul>\n  </nav>\n</section>";
 },"usePartial":true,"useData":true});
 templates['workCreate'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<section class=\"panel workspace-create\">\n  <h1>New page details</h1>\n  <form>\n    <label for=\"location\" class=\"\">Location</label>\n    <input id=\"location\" type=\"text\" />\n    <label for=\"pagetype\" class=\"\">Page type</label>\n    <select id=\"pagetype\" required>\n      <option name=\"bulletin\">bulletin</option>\n      <option name=\"article\">article</option>\n      <option name=\"dataset\">dataset</option>\n    </select>\n    <label for=\"pagename\" class=\"hidden\">Page type</label>\n    <input id=\"pagename\" class=\"full\" type=\"text\" placeholder=\"Page name\" />\n    <!--Button will be added here-->\n  </form>\n</section>\n";
+    return "<section class=\"panel workspace-create\">\n  <h1>New page details</h1>\n  <form>\n    <label for=\"location\" class=\"\">Location</label>\n    <input id=\"location\" type=\"text\" />\n    <label for=\"pagetype\" class=\"\">Page type</label>\n    <select id=\"pagetype\" class=\"selectbg\" required>\n      <option name=\"\">Select your option</option>\n      <option name=\"bulletin\">bulletin</option>\n      <option name=\"article\">article</option>\n      <option name=\"dataset\">dataset</option>\n    </select>\n    <label for=\"pagename\" class=\"hidden\">Page type</label>\n    <input id=\"pagename\" class=\"full\" type=\"text\" placeholder=\"Page name\" />\n    <!--Button will be added here-->\n  </form>\n</section>\n";
 },"useData":true});
 templates['workEdit'] = template({"1":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "            <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" class=\"edit-section__sortable-item\">\n              <p>Text: <textarea class=\"auto-size\" type=\"text\" id=\"correction_text_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" cols=\"65\" style=\"box-sizing: border-box; min-height: 31px;\">"
-    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.correction : depth0)) != null ? stack1.text : stack1), depth0))
+    + alias3(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"text","hash":{},"data":data}) : helper)))
     + "</textarea></p>\n              <p>Date: <input class=\"auto-size\" type=\"date\" id=\"correction_date_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\""
+    + alias3(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"date","hash":{},"data":data}) : helper)))
     + "\"/></p>\n              <p>Type: <input type=\"radio\" name=\"correctionType"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" value=\"minor\"/><label> Minor</label>\n                <input type=\"radio\" name=\"correctionType"

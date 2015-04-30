@@ -21,6 +21,13 @@ var StringUtils = {
     //console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
 
     return StringUtils.textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
+  },
+
+  formatIsoDateString: function(input) {
+    var date = new Date(input);
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
+    return formattedDate;
   }
 };
 
@@ -53,7 +60,20 @@ Florence.Authentication = {
   isAuthenticated: function() { return accessToken() !== '' }
 };
 
-setupFlorence();
+Florence.Handler = function () {
+  setTimeout(function () {
+    var browserLocation = document.getElementById('iframe').contentWindow.location.href;
+    $('.browser-location').val(browserLocation);
+    if ($('.workspace-edit').length) {
+      loadPageDataIntoEditor(getPathName(browserLocation), Florence.collection.id);
+    }
+    else if ($('.workspace-browse').length) {
+      treeNodeSelect(browserLocation);
+    }
+    checkForPageChanged();
+    console.log('iframe inner clicked');
+  }, 200);
+};setupFlorence();
 
 
 //forms field styling markup injection
@@ -86,13 +106,9 @@ function accordion(active) {
 }
 function articleEditor(collectionName, data) {
 
-  var newSections = [];
-  var newTabs = [];
-  var newRelated = [];
-  var newLinks = [];
+  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
-  var setActiveTab;
-  var getActiveTab;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -331,6 +347,8 @@ function articleEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -344,13 +362,14 @@ function articleEditor(collectionName, data) {
       $("#article-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#article-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        refreshPreview(localStorage.getItem("historicUrl"));
-        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        refreshPreview(reload);
+        loadPageDataIntoEditor(reload, collectionName);
         localStorage.removeItem('historicUrl');
       });
 
       var articleurl = $('#iframe')[0].contentWindow.document.location.href;
       var articleurldata = "/data" + articleurl.split("#!")[1];
+
       $.ajax({
         url: articleurldata,
         dataType: 'json',
@@ -358,8 +377,7 @@ function articleEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'article') {
             data.relatedArticles.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not an article");
           }
@@ -396,7 +414,7 @@ function articleEditor(collectionName, data) {
   });
 
   function sortableLinks() {
-    $(".fl-editor__external").sortable();
+    $("#sortable-external").sortable();
   }
   sortableLinks();
 
@@ -427,7 +445,7 @@ function articleEditor(collectionName, data) {
     var orderTab = $("#sortable-tabs").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab__' + nameT).val();
+      var title = $('#tab-title_' + nameT).val();
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
@@ -443,10 +461,12 @@ function articleEditor(collectionName, data) {
     // External links
     var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
+      var displayText = $('#link_text_'+nameL).val();
       var link = $('#link__'+nameL).val();
-      newLinks[indexL] = {url: link};
+      newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
+//    console.log(data);
   }
 }
 
@@ -477,17 +497,13 @@ function authenticate(email,password) {
 }
 function bulletinEditor(collectionName, data) {
 
-  var newSections = [];
-  var newTabs = [];
-  var newRelated = [];
-  var newLinks = [];
+  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
-  var setActiveTab;
-  var getActiveTab;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
+    if (setActiveTab !== false) {
       localStorage.setItem('activeTab', setActiveTab);
     }
   });
@@ -542,11 +558,10 @@ function bulletinEditor(collectionName, data) {
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if(data.nationalStatistic === "false" || data.nationalStatistic === false) {
+    if (data.nationalStatistic === "false" || data.nationalStatistic === false) {
       return false;
-    } else {
-      return true;
     }
+    return true;
   };
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
@@ -725,6 +740,8 @@ function bulletinEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -738,13 +755,14 @@ function bulletinEditor(collectionName, data) {
       $("#bulletin-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#bulletin-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        refreshPreview(localStorage.getItem("historicUrl"));
-        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionName);
+        refreshPreview(reload);
+        loadPageDataIntoEditor(reload, collectionName);
         localStorage.removeItem('historicUrl');
       });
 
       var bulletinurl = $('#iframe')[0].contentWindow.document.location.href;
       var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+
       $.ajax({
         url: bulletinurldata,
         dataType: 'json',
@@ -752,8 +770,7 @@ function bulletinEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
             data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not a bulletin");
           }
@@ -790,7 +807,7 @@ function bulletinEditor(collectionName, data) {
   });
 
   function sortableLinks() {
-    $(".fl-editor__external").sortable();
+    $("#sortable-external").sortable();
   }
   sortableLinks();
 
@@ -821,7 +838,7 @@ function bulletinEditor(collectionName, data) {
     var orderTab = $("#sortable-tabs").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab__' + nameT).val();
+      var title = $('#tab-title_' + nameT).val();
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
@@ -842,6 +859,7 @@ function bulletinEditor(collectionName, data) {
       newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
+//    console.log(data);
   }
 }
 
@@ -1006,26 +1024,22 @@ function createWorkspace(path, collectionName, menu) {
   localStorage.removeItem("pageurl");
   localStorage.setItem("pageurl", currentPath);
 
-  // tentative reload of nav bar with collection name
-  var mainNavHtml = templates.mainNav(Florence);
-  $('.admin-nav').replaceWith(mainNavHtml);
+  Florence.refreshAdminMenu();
 
   var workSpace = templates.workSpace(path);
-  $('.section').replaceWith(workSpace);
+  $('.section').html(workSpace);
 
+  setupIframeHandler();
   viewWorkspace(path, collectionName, menu);
 }
 
 
 function datasetEditor(collectionName, data) {
 
-  var newFiles = [];
-  var newNotes = [];
-  var newRelated = [];
-  var newUsedIn = [];
-  var lastIndexRelated, lastIndexUsedIn;
-  var lastIndexFile = 0;
+  var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [];
+  var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
   var uriUpload;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -1324,6 +1338,8 @@ function datasetEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
@@ -1344,6 +1360,7 @@ function datasetEditor(collectionName, data) {
 
       var dataseturl = $('#iframe')[0].contentWindow.document.location.href;
       var dataseturldata = "/data" + dataseturl.split("#!")[1];
+
       $.ajax({
         url: dataseturldata,
         dataType: 'json',
@@ -1351,8 +1368,7 @@ function datasetEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
             data.relatedDatasets.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not a dataset");
           }
@@ -1369,7 +1385,7 @@ function datasetEditor(collectionName, data) {
   }
   sortableRelated();
 
-  // Used in (articles or bulletins where dataset is used in)   ********* REFACTOR **********
+  // Used in (articles or bulletins where dataset is used in)
   // Load
   if (data.usedIn.length === 0) {
     lastIndexUsedIn = 0;
@@ -1391,6 +1407,8 @@ function datasetEditor(collectionName, data) {
     var pageurl = localStorage.getItem('pageurl');
     localStorage.setItem('historicUrl', pageurl);
     var reload = localStorage.getItem("historicUrl");
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-used').append(
         '<div id="' + lastIndexUsedIn + '" class="edit-section__sortable-item">' +
@@ -1411,6 +1429,7 @@ function datasetEditor(collectionName, data) {
 
       var usedInurl = $('#iframe')[0].contentWindow.document.location.href;
       var usedInurldata = "/data" + usedInurl.split("#!")[1];
+
       $.ajax({
         url: usedInurldata,
         dataType: 'json',
@@ -1418,8 +1437,7 @@ function datasetEditor(collectionName, data) {
         success: function (usedInData) {
           if (usedInData.type === 'bulletin' || usedInData.type === 'article') {
             data.usedIn.push({uri: usedInData.uri, title: usedInData.title, summary: usedInData.summary});
-            updateContent(collectionName, reload, JSON.stringify(data));
-            localStorage.removeItem('historicUrl');
+            saveRelated(collectionName, reload, data);
           } else {
             alert("This is not an article or a bulletin");
           }
@@ -1479,14 +1497,13 @@ function datasetEditor(collectionName, data) {
       newRelated[indexD]= {uri: uri, name: name, summary: summary};
     });
     data.relatedDatasets = newRelated;
-    //console.log(data.relatedDatasets);
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#usedIn__'+nameU).val();
       var summary = $('#usedIn_summary_'+nameU).val();
-      var names = $('#usedIn_name_'+nameU).val();
-      newUsedIn[parseInt(indexU)] = {uri: uri, name: names, summary: summary};
+      var name = $('#usedIn_name_'+nameU).val();
+      newUsedIn[parseInt(indexU)] = {uri: uri, name: name, summary: summary};
     });
     data.usedIn = newUsedIn;
 
@@ -1617,7 +1634,7 @@ function loadBrowseScreen(click) {
         $('.browser-location').val(newURL);
         checkForPageChanged();
       });
-      setupIframeHandler();
+//      setupIframeHandler();
     },
     error: function (response) {
       handleApiError(response);
@@ -1730,10 +1747,7 @@ function loadPageDataIntoEditor(path, collectionId) {
   var pageUrlData = path + "/data.json";
   getPageData(collectionId, pageUrlData,
     success = function (response) {
-      refreshPreview(path);
-      //setupIframeHandler();
       makeEditSections(collectionId, response);
-      //setPreviewUrl(path);
     },
     error = function (response) {
       handleApiError(response);
@@ -1975,22 +1989,24 @@ function loadT4Creator (collectionName) {
     if (pageName.length < 4) {
       alert("This is not a valid file name");
     } else {
-      $.ajax({
-        url: "/zebedee/content/" + collectionName + "?uri=" + newUri + "/data.json",
-        dataType: 'json',
-        crossDomain: true,
-        type: 'POST',
-        data: JSON.stringify(pageData),
-        success: function (message) {
+      postContent(collectionName, newUri, JSON.stringify(pageData),
+        success = function (message) {
           console.log("Updating completed " + message);
-          var path = newUri;
-
-          viewWorkspace(path, collectionName, 'edit');
+          viewWorkspace(newUri, collectionName, 'edit');
+          refreshPreview(newUri);
         },
-        error: function (error) {
-          console.log(error);
+        error = function (response) {
+          if (response.status === 400) {
+            alert("Cannot edit this file. It is already part of another collection.");
+          }
+          else if (response.status === 401) {
+            alert("You are not authorised to update content.");
+          }
+          else {
+            handleApiError(response);
+          }
         }
-      });
+      );
     }
   });
 }
@@ -2348,7 +2364,30 @@ function removeSubMenus () {
   $('.fl-panel--sub-menu').empty();
 }
 
-function setPreviewUrl (url) {
+function saveRelated (collectionName, path, content) {
+  var iframeEvent = document.getElementById('iframe').contentWindow;
+  postContent(collectionName, path, JSON.stringify(content),
+    success = function (response) {
+      console.log("Updating completed " + response);
+      Florence.Editor.isDirty = false;
+      loadPageDataIntoEditor(path, collectionName);
+      refreshPreview(path);
+      iframeEvent.addEventListener('click', Florence.Handler, true);
+      localStorage.removeItem('historicUrl');
+    },
+    error = function (response) {
+      if (response.status === 400) {
+        alert("Cannot edit this file. It is already part of another collection.");
+      }
+      else if (response.status === 401) {
+        alert("You are not authorised to update content.");
+      }
+      else {
+        handleApiError(response);
+      }
+    }
+  );
+}function setPreviewUrl (url) {
   var baseUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[0] + '#!'; //'http://localhost:8081/index.html#!'
   $('.browser-location').val(baseUrl + url);
 }
@@ -2425,21 +2464,7 @@ function prepareEventHandlers() {
 //get a specific page ID and assign it as a variable
   var iframeEvent = document.getElementById('iframe').contentWindow;
 //initiate this function when the ID is clicked
-  iframeEvent.removeEventListener();
-  iframeEvent.addEventListener('click', function () {
-    setTimeout(function () {
-      var browserLocation = document.getElementById('iframe').contentWindow.location.href;
-      $('.browser-location').val(browserLocation);
-      if ($('.workspace-edit').length) {
-        loadPageDataIntoEditor(getPathName(browserLocation), Florence.collection.id);
-      }
-      else if ($('.workspace-browse').length) {
-        treeNodeSelect(browserLocation);
-      }
-      checkForPageChanged();
-      console.log('iframe inner clicked');
-    }, 200);
-  }, true);
+  iframeEvent.addEventListener('click', Florence.Handler, true);
 }
 
 function transfer(source, destination, uri) {
@@ -2501,11 +2526,6 @@ function updateContent(collectionName, path, content) {
 }
 function viewCollectionDetails(collectionId) {
 
-  var collectionDetails = {
-    name: Florence.collection.name,
-    date: Florence.collection.date,
-  };
-
   console.log(collectionId)
 
   getCollection(collectionId,
@@ -2518,6 +2538,17 @@ function viewCollectionDetails(collectionId) {
   );
 
   function populateCollectionDetails(collection, collectionId) {
+
+    // store selected collection details in florence
+    var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+    Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
+
+    // start building the data object for the template.
+    var collectionDetails = {
+      name: Florence.collection.name,
+      date: Florence.collection.date
+    };
+
 
     if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
@@ -2617,13 +2648,8 @@ function viewCollections() {
   var response = [];
   function populateCollectionTable(data) {
     $.each(data, function (i, collection) {
-      var id = collection.id;
-      var name = collection.name;
-      var date = new Date(collection.publishDate);
-      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-      var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
-      Florence.collection = {id: id, name: name, date: formattedDate};
-      response.push(Florence.collection);
+      var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+      response.push({id: collection.id, name: collection.name, date: formattedDate});
     });
 
     var collectionsHtml = templates.collections(response);
@@ -2648,9 +2674,6 @@ function viewCollections() {
 function viewController(view) {
 
 	if (logged_in()) {
-
-		//clear view
-		$('.fl-view').empty();
 
 		if (view === 'collections') {
 			viewCollections();
@@ -2945,7 +2968,6 @@ function viewWorkspace(path, collectionName, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
-    //checkIframe();
     loadPageDataIntoEditor(path, collectionName);
   }
   else if (menu === 'review') {
