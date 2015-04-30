@@ -1603,7 +1603,7 @@ function loadBrowseScreen(click) {
     type: 'GET',
     success: function (response) {
       var browserContent = $('#iframe')[0].contentWindow;
-      var baseURL = 'http://localhost:8081/index.html#!';
+      var baseURL = 'http://' + window.location.host + '/index.html#!';
       var html = templates.workBrowse(response);
       $('.workspace-menu').html(html);
       $('.workspace-browse').css("overflow", "scroll");
@@ -2344,7 +2344,8 @@ function publish(collectionName) {
 function refreshPreview(url) {
 
   if(url) {
-    var baseUrl = 'http://localhost:8081/index.html#!';
+    //var baseUrl = 'http://localhost:8081/index.html#!';
+    var baseURL = 'http://' + window.location.host + '/index.html#!';
     url = baseUrl + url;
     $('#iframe')[0].contentWindow.document.location.href = url;
   }
@@ -2489,7 +2490,8 @@ function transfer(source, destination, uri) {
 }
 
 function treeNodeSelect(url){
-  var baseURL = 'http://localhost:8081/index.html#!';
+  //var baseURL = 'http://localhost:8081/index.html#!';
+  var baseURL = 'http://' + window.location.host + '/index.html#!';
   var urlPart = url.replace(baseURL, '');
   var selectedListItem = $('.tree-nav-holder li').find('[data-url="' + urlPart + '"]'); //get first li with data-url with url
   $('.page-list li').removeClass('selected hello');
