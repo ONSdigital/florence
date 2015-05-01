@@ -315,19 +315,22 @@ function bulletinEditor(collectionName, data) {
   sortableLinks();
 
   // Save
-  $('.btn-edit-save').click(function () {
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
+
+  editNav.on('click', '.btn-edit-save', function () {
     save();
     updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
   // complete
-  $('.btn-edit-save-and-submit-for-review').click(function () {
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     save();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
   // review
-  $('.btn-edit-save-and-submit-for-approval').click(function () {
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     postReview(collectionName, getPathName());
   });
 

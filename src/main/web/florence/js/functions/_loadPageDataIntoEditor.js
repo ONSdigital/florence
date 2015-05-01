@@ -21,7 +21,6 @@ function loadPageDataIntoEditor(path, collectionId) {
         var pageFile = pagePath + '/data.json';
         var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
         isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
-        console.log('page complete = ' + isPageComplete);
       },
       error = function (response) {
         handleApiError(response);

@@ -419,19 +419,22 @@ function datasetEditor(collectionName, data) {
   sortableUsedIn();
 
   // Save
-  $('.btn-edit-save').click(function () {
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
+
+  editNav.on('click', '.btn-edit-save', function () {
     save();
   });
 
   // complete
-  $('.btn-edit-save-and-submit-for-review').click(function () {
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val(); ???
     saveData();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
   // review
-  $('.btn-edit-save-and-submit-for-approval').click(function () {
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     postReview(collectionName, getPathName());
   });
 
