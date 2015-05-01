@@ -1037,7 +1037,7 @@ function createWorkspace(path, collectionName, menu) {
 
   Florence.refreshAdminMenu();
 
-  var workSpace = templates.workSpace(Florence.tredegarBaseUrl + '/' + path);
+  var workSpace = templates.workSpace(Florence.tredegarBaseUrl + path);
   $('.section').html(workSpace);
 
   setupIframeHandler();
