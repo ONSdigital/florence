@@ -46,8 +46,9 @@ function viewCollectionDetails(collectionId) {
         } else {
           pageDataRequests.push(getPageData(collectionId, uri,
             success = function (response) {
-              var path = response.uri;
-              uri_list.push({path: path, name: response.title});
+              var path = response.uri ? response.uri : uri.replace('/data.json', '');
+              var pageTitle = response.title ? response.title : response.name;
+              uri_list.push({path: path, name: pageTitle});
             },
             error = function (response) {
               handleApiError(response);
