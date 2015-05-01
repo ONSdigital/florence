@@ -2658,17 +2658,13 @@ function viewCollectionDetails(collectionId) {
 
         $('.btn-page-edit').click(function () {
           var path = $(this).attr('data-path');
-          if (path) {
             createWorkspace(path, collectionId, 'edit');
-          }
         });
         $('.btn-page-delete').click(function () {
-          var path = $(this).attr('data-path');
-          if (path) {
+          var path = $(this).attr('data-path')
             deleteContent(collectionId, path, success, error);
             console.log('File deleted');
             viewCollectionDetails(collectionId);
-          }
         });
         $('.btn-collection-work-on').click(function () {
           createWorkspace('', collectionId, 'browse');
