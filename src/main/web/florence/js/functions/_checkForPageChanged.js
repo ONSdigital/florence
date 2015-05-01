@@ -10,7 +10,7 @@ function checkForPageChanged(onChanged) {
       setTimeout(function () {
         localStorage.setItem("pageurl", nowUrl);
       }, 200);
-      onChanged();
+      onChanged(nowUrl);
     }
   }
 }

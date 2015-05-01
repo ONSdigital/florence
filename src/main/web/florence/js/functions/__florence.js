@@ -35,15 +35,16 @@ Florence.Authentication = {
 
 Florence.Handler = function () {
   setTimeout(function () {
-    var browserLocation = document.getElementById('iframe').contentWindow.location.href;
-    $('.browser-location').val(browserLocation);
-    if ($('.workspace-edit').length) {
-      loadPageDataIntoEditor(getPathName(browserLocation), Florence.collection.id);
-    }
-    else if ($('.workspace-browse').length) {
-      treeNodeSelect(browserLocation);
-    }
-    checkForPageChanged();
+    checkForPageChanged(function(newUrl) {
+      var browserLocation = document.getElementById('iframe').contentWindow.location.href;
+      $('.browser-location').val(browserLocation);
+      if ($('.workspace-edit').length) {
+        loadPageDataIntoEditor(newUrl, Florence.collection.id);
+      }
+      else if ($('.workspace-browse').length) {
+        treeNodeSelect(newUrl);
+      }
+    });
     console.log('iframe inner clicked');
   }, 200);
 };

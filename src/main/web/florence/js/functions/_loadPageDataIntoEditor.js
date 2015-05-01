@@ -1,4 +1,9 @@
 function loadPageDataIntoEditor(path, collectionId) {
+
+  if (path === '/') {
+    path = '';
+  }
+
   var pageUrlData = path + "/data.json";
   var pageData, isPageComplete;
   var ajaxRequests = [];
