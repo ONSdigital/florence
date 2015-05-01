@@ -13,9 +13,7 @@ function viewCollectionDetails(collectionId) {
 
   function populateCollectionDetails(collection, collectionId) {
 
-    // store selected collection details in florence
-    var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
-    Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
+    Florence.setActiveCollection(collection);
 
     // start building the data object for the template.
     var collectionDetails = {
@@ -88,8 +86,6 @@ function viewCollectionDetails(collectionId) {
           }
         });
         $('.btn-collection-work-on').click(function () {
-          document.cookie = "collection=" + collectionId + ";path=/";
-          //localStorage.setItem("collection", collectionId);
           createWorkspace('', collectionId, 'browse');
         });
 

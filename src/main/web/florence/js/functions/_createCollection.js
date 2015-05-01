@@ -14,11 +14,13 @@ function createCollection() {
     dataType: 'json',
     type: 'POST',
     data: JSON.stringify({name: collectionName, publishDate: publishDate}),
-    success: function (response) {
-      console.log("Collection " + response.name + " created");
-      document.cookie = "collection=" + response.id + ";path=/";
+    success: function (collection) {
+      console.log("Collection " + collection.name + " created");
+
+      Florence.setActiveCollection(collection);
+
       //localStorage.setItem("collection", collectionName);
-      createWorkspace('', response.id, 'browse');
+      createWorkspace('', collection.id, 'browse');
     },
     error: function (response) {
       if(response.status === 409) {

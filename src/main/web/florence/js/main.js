@@ -35,10 +35,16 @@ var StringUtils = {
 if (typeof module !== 'undefined') { module.exports = StringUtils; }
 
 var Florence = Florence || {
+    tredegarBaseUrl: baseURL = 'http://' + window.location.host + '/index.html#!',
     refreshAdminMenu: function () {
       console.log("refreshing admin menu.." + Florence.Authentication.isAuthenticated())
       var mainNavHtml = templates.mainNav(Florence);
       $('.admin-nav').html(mainNavHtml);
+    },
+    setActiveCollection: function (collection) {
+      document.cookie = "collection=" + collection.id + ";path=/";
+      var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+      Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
     }
   };
 
@@ -50,14 +56,17 @@ Florence.Editor = {
 Florence.collection = {};
 
 Florence.Authentication = {
-  accessToken: function(){
+  accessToken: function () {
     function getCookieValue(a, b) {
       b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
       return b ? b.pop() : '';
     }
+
     return getCookieValue("access_token");
   },
-  isAuthenticated: function() { return accessToken() !== '' }
+  isAuthenticated: function () {
+    return accessToken() !== ''
+  }
 };
 
 Florence.Handler = function () {
@@ -998,11 +1007,13 @@ function createCollection() {
     dataType: 'json',
     type: 'POST',
     data: JSON.stringify({name: collectionName, publishDate: publishDate}),
-    success: function (response) {
-      console.log("Collection " + response.name + " created");
-      document.cookie = "collection=" + response.id + ";path=/";
+    success: function (collection) {
+      console.log("Collection " + collection.name + " created");
+
+      Florence.setActiveCollection(collection);
+
       //localStorage.setItem("collection", collectionName);
-      createWorkspace('', response.id, 'browse');
+      createWorkspace('', collection.id, 'browse');
     },
     error: function (response) {
       if(response.status === 409) {
@@ -1026,7 +1037,7 @@ function createWorkspace(path, collectionName, menu) {
 
   Florence.refreshAdminMenu();
 
-  var workSpace = templates.workSpace(path);
+  var workSpace = templates.workSpace(Florence.tredegarBaseUrl + '/' + path);
   $('.section').html(workSpace);
 
   setupIframeHandler();
@@ -1603,7 +1614,8 @@ function loadBrowseScreen(click) {
     type: 'GET',
     success: function (response) {
       var browserContent = $('#iframe')[0].contentWindow;
-      var baseURL = 'http://' + window.location.host + '/index.html#!';
+      //var baseURL = 'http://' + window.location.host + '/index.html#!';
+      var baseURL = Florence.tredegarBaseUrl;
       var html = templates.workBrowse(response);
       $('.workspace-menu').html(html);
       $('.workspace-browse').css("overflow", "scroll");
@@ -2344,9 +2356,7 @@ function publish(collectionName) {
 function refreshPreview(url) {
 
   if(url) {
-    //var baseUrl = 'http://localhost:8081/index.html#!';
-    var baseURL = 'http://' + window.location.host + '/index.html#!';
-    url = baseUrl + url;
+    url = Florence.tredegarBaseUrl + url;
     $('#iframe')[0].contentWindow.document.location.href = url;
   }
   else {
@@ -2389,8 +2399,8 @@ function saveRelated (collectionName, path, content) {
     }
   );
 }function setPreviewUrl (url) {
-  var baseUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[0] + '#!'; //'http://localhost:8081/index.html#!'
-  $('.browser-location').val(baseUrl + url);
+  //var baseUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[0] + '#!'; //'http://localhost:8081/index.html#!'
+  $('.browser-location').val(Florence.tredegarBaseUrl + url);
 }
 function setupFlorence () {
   window.templates = Handlebars.templates;
@@ -2491,8 +2501,8 @@ function transfer(source, destination, uri) {
 
 function treeNodeSelect(url){
   //var baseURL = 'http://localhost:8081/index.html#!';
-  var baseURL = 'http://' + window.location.host + '/index.html#!';
-  var urlPart = url.replace(baseURL, '');
+ // var baseURL = 'http://' + window.location.host + '/index.html#!';
+  var urlPart = url.replace(Florence.tredegarBaseUrl, '');
   var selectedListItem = $('.tree-nav-holder li').find('[data-url="' + urlPart + '"]'); //get first li with data-url with url
   $('.page-list li').removeClass('selected hello');
   $('.page-options').hide();
@@ -2541,9 +2551,7 @@ function viewCollectionDetails(collectionId) {
 
   function populateCollectionDetails(collection, collectionId) {
 
-    // store selected collection details in florence
-    var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
-    Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
+    Florence.setActiveCollection(collection);
 
     // start building the data object for the template.
     var collectionDetails = {
@@ -2616,8 +2624,6 @@ function viewCollectionDetails(collectionId) {
           }
         });
         $('.btn-collection-work-on').click(function () {
-          document.cookie = "collection=" + collectionId + ";path=/";
-          //localStorage.setItem("collection", collectionId);
           createWorkspace('', collectionId, 'browse');
         });
 

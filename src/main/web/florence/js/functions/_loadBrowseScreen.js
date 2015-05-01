@@ -6,7 +6,8 @@ function loadBrowseScreen(click) {
     type: 'GET',
     success: function (response) {
       var browserContent = $('#iframe')[0].contentWindow;
-      var baseURL = 'http://' + window.location.host + '/index.html#!';
+      //var baseURL = 'http://' + window.location.host + '/index.html#!';
+      var baseURL = Florence.tredegarBaseUrl;
       var html = templates.workBrowse(response);
       $('.workspace-menu').html(html);
       $('.workspace-browse').css("overflow", "scroll");
