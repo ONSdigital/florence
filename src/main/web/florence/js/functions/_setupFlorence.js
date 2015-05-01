@@ -1,6 +1,7 @@
 function setupFlorence () {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
+  Handlebars.registerPartial("editNav", templates.editNav);
 
   localStorage.setItem('activeTab', false); // do we need this?
 
