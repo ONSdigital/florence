@@ -1607,7 +1607,6 @@ function getPageData(collectionName, path, success, error) {
 }
 function getPathName() {
   var parsedUrl = $('#iframe')[0].contentWindow.location.href.split("#!")[1];
-  console.log(parsedUrl)
 
   if (parsedUrl.charAt(0) === '/') {
     parsedUrl = parsedUrl.slice(1);
@@ -2225,7 +2224,7 @@ function refreshEditNavigation() {
       var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
 
       var editNav = templates.editNav({isPageComplete: isPageComplete});
-      $('.editNav').html(editNav);
+      $('.edit-nav').html(editNav);
     },
     error = function (response) {
       handleApiError(response);
@@ -2631,8 +2630,9 @@ function viewCollectionDetails(collectionId) {
         } else {
           pageDataRequests.push(getPageData(collectionId, uri,
             success = function (response) {
-              var path = response.uri;
-              uri_list.push({path: path, name: response.title});
+              var path = response.uri ? response.uri : uri.replace('/data.json', '');
+              var pageTitle = response.title ? response.title : response.name;
+              uri_list.push({path: path, name: pageTitle});
             },
             error = function (response) {
               handleApiError(response);

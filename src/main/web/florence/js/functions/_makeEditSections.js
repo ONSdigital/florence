@@ -70,7 +70,7 @@ function refreshEditNavigation() {
       var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
 
       var editNav = templates.editNav({isPageComplete: isPageComplete});
-      $('.editNav').html(editNav);
+      $('.edit-nav').html(editNav);
     },
     error = function (response) {
       handleApiError(response);
