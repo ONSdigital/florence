@@ -440,6 +440,11 @@ function articleEditor(collectionName, data) {
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
+  // review
+  $('.btn-edit-save-and-submit-for-approval').click(function () {
+    postReview(collectionName, getPathName());
+  });
+
 
   function save() {
     // Sections
@@ -828,11 +833,14 @@ function bulletinEditor(collectionName, data) {
 
   // complete
   $('.btn-edit-save-and-submit-for-review').click(function () {
-    //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
+  // review
+  $('.btn-edit-save-and-submit-for-approval').click(function () {
+    postReview(collectionName, getPathName());
+  });
 
   function save() {
     // Sections
@@ -1477,6 +1485,11 @@ function datasetEditor(collectionName, data) {
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
+  // review
+  $('.btn-edit-save-and-submit-for-approval').click(function () {
+    postReview(collectionName, getPathName());
+  });
+
   function save() {
     saveData();
     updateContent(collectionName, getPathName(), JSON.stringify(data));
@@ -1757,36 +1770,38 @@ function loadEditDatasetScreen(collectionName) {
 //}
 function loadPageDataIntoEditor(path, collectionId) {
   var pageUrlData = path + "/data.json";
-  getPageData(collectionId, pageUrlData,
-    success = function (response) {
-      makeEditSections(collectionId, response);
-    },
-    error = function (response) {
-      handleApiError(response);
-    }
-  );
+  var pageData, isPageComplete;
+  var ajaxRequests = [];
 
-  function checkIfPageIsComplete() {
-
-    getCollection(collectionId,
+  ajaxRequests.push(
+    getPageData(collectionId, pageUrlData,
       success = function (response) {
-        var pageIsComplete = false;
-        var pagePath = getPathName();
-        var pageFile = pagePath + '/data.json';
-        var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
-
-        if (!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs")) {
-          $('.fl-panel--editor__nav__complete').show();
-          $('.fl-panel--editor__nav__review').hide();
-        } else {
-          $('.fl-panel--editor__nav__review').show();
-          $('.fl-panel--editor__nav__complete').hide();
-        }
+        pageData = response;
       },
       error = function (response) {
         handleApiError(response);
-      });
-  }
+      }
+    )
+  );
+
+  ajaxRequests.push(
+    getCollection(collectionId,
+      success = function (response) {
+        var pagePath = getPathName();
+        var pageFile = pagePath + '/data.json';
+        var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
+        isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
+        console.log('page complete = ' + isPageComplete);
+      },
+      error = function (response) {
+        handleApiError(response);
+      })
+  );
+
+  $.when.apply($, ajaxRequests).then(function () {
+    pageData.isPageComplete = isPageComplete;
+    makeEditSections(collectionId, pageData);
+  });
 }
 function loadReviewScreen(collectionName) {
 
@@ -2130,67 +2145,41 @@ function logout() {
 
 function delete_cookie(name) {
   document.cookie = name + '=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}function makeEditSections(collectionId, response) {
-  if (response.type === 'bulletin') {
-    var html = templates.workEdit(response);
-    $('.workspace-menu').empty();
-    $('.workspace-menu').append(html);
+}function makeEditSections(collectionId, pageData) {
+
+  var html = templates.workEdit(pageData);
+  $('.workspace-menu').html(html);
+
+  if (pageData.type === 'bulletin') {
     accordion();
-    bulletinEditor(collectionId, response);
+    bulletinEditor(collectionId, pageData);
   }
 
-  else if (response.type === 'article') {
-    var html = templates.workEdit(response);
-    $('.workspace-menu').empty();
-    $('.workspace-menu').append(html);
+  else if (pageData.type === 'article') {
     accordion();
-    articleEditor(collectionId, response);
+    articleEditor(collectionId, pageData);
   }
 
-  else if (response.type === 'dataset') {
-    var html = templates.workEdit(response);
-    $('.workspace-menu').empty();
-    $('.workspace-menu').append(html);
+  else if (pageData.type === 'dataset') {
     accordion();
-    datasetEditor(collectionId, response);
+    datasetEditor(collectionId, pageData);
   }
 
   else {
-    var workspace_menu_sub_edit =
-        '<section class="workspace-edit">' +
-        '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
-        '     <nav class="edit-nav">' +
-        '       <button class="btn-edit-cancel">Cancel</button>' +
-        '       <button class="btn-edit-save">Save</button>' +
-        '       <button class="btn-edit-save-and-submit-for-review">Save and submit for review</button>' +
-        '     </nav>' +
-        '  </section>'
-          //'  <nav class="fl-panel--editor__nav">' +
-          //'    <button class="fl-panel--editor__nav__cancel">Cancel</button>' +
-          //'    <button class="fl-panel--editor__nav__save">Save</button>' +
-          //'    <button class="fl-panel--editor__nav__complete" style="display: none;">Save and submit for internal review</button>' +
-          //'    <button class="fl-panel--editor__nav__review" style="display: none;">Save and submit for approval</button>' +
-          //'  </nav>' +
-        ;
 
-    $('.workspace-menu').html(workspace_menu_sub_edit);
-
-    $('.fl-editor__headline').val(JSON.stringify(response, null, 2));
-
-    //  $('.fl-panel--editor__nav__save').unbind("click").click(function () {
-    //    pageData = $('.fl-editor__headline').val();
-    //    updateContent(collectionId, getPathName(), pageData);
-    //  });
+    //$('.btn-edit-save').click(function () {
+    //  updateContent(collectionName, getPathName(), JSON.stringify(data));
+    //});
     //
-    //  // complete
-    //  $('.fl-panel--editor__nav__complete').unbind("click").click(function () {
-    //    pageData = $('.fl-editor__headline').val();
-    //    saveAndCompleteContent(collectionId, getPathName(), pageData);
-    //  });
-    //}
+    //// complete
+    //$('.btn-edit-save-and-submit-for-review').click(function () {
+    //  //pageData = $('.fl-editor__headline').val();
+    //  saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
+    //});
     //
-    //$('.fl-panel--editor__nav__review').unbind("click").click(function () {
-    //  postReview(collectionId, getPathName());
+    //// review
+    //$('.btn-edit-save-and-submit-for-review').click(function () {
+    //  saveAndReviewContent(collectionName, getPathName(), JSON.stringify(data));
     //});
 
     $('.workspace-edit :input').on('input', function () {
@@ -2317,7 +2306,23 @@ function postContent(collectionName, path, content, success, error) {
       error(response);
     }
   });
-}function postReview(collectionName, path) {
+}function saveAndReviewContent(collectionName, path, content) {
+  postContent(collectionName, path, content,
+    success = function (response) {
+      Florence.Editor.isDirty = false;
+      postReview(collectionName, path);
+    },
+    error = function (response) {
+      if (response.status === 400) {
+        alert("Cannot edit this file. It is already part of another collection.");
+      }
+      else {
+        handleApiError(response);
+      }
+    });
+}
+
+function postReview(collectionName, path) {
 
   // Open the file for editing
   $.ajax({

@@ -1,33 +1,35 @@
 function loadPageDataIntoEditor(path, collectionId) {
   var pageUrlData = path + "/data.json";
-  getPageData(collectionId, pageUrlData,
-    success = function (response) {
-      makeEditSections(collectionId, response);
-    },
-    error = function (response) {
-      handleApiError(response);
-    }
-  );
+  var pageData, isPageComplete;
+  var ajaxRequests = [];
 
-  function checkIfPageIsComplete() {
-
-    getCollection(collectionId,
+  ajaxRequests.push(
+    getPageData(collectionId, pageUrlData,
       success = function (response) {
-        var pageIsComplete = false;
-        var pagePath = getPathName();
-        var pageFile = pagePath + '/data.json';
-        var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
-
-        if (!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs")) {
-          $('.fl-panel--editor__nav__complete').show();
-          $('.fl-panel--editor__nav__review').hide();
-        } else {
-          $('.fl-panel--editor__nav__review').show();
-          $('.fl-panel--editor__nav__complete').hide();
-        }
+        pageData = response;
       },
       error = function (response) {
         handleApiError(response);
-      });
-  }
+      }
+    )
+  );
+
+  ajaxRequests.push(
+    getCollection(collectionId,
+      success = function (response) {
+        var pagePath = getPathName();
+        var pageFile = pagePath + '/data.json';
+        var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
+        isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
+        console.log('page complete = ' + isPageComplete);
+      },
+      error = function (response) {
+        handleApiError(response);
+      })
+  );
+
+  $.when.apply($, ajaxRequests).then(function () {
+    pageData.isPageComplete = isPageComplete;
+    makeEditSections(collectionId, pageData);
+  });
 }

@@ -430,6 +430,11 @@ function datasetEditor(collectionName, data) {
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
+  // review
+  $('.btn-edit-save-and-submit-for-approval').click(function () {
+    postReview(collectionName, getPathName());
+  });
+
   function save() {
     saveData();
     updateContent(collectionName, getPathName(), JSON.stringify(data));

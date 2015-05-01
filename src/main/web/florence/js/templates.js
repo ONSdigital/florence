@@ -321,6 +321,10 @@ templates['workEdit'] = template({"1":function(depth0,helpers,partials,data) {
     + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"section-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n            </div>\n";
+},"21":function(depth0,helpers,partials,data) {
+    return "          <button class=\"btn-edit-save-and-submit-for-approval\">Submit for approval</button>\n";
+},"23":function(depth0,helpers,partials,data) {
+    return "          <button class=\"btn-edit-save-and-submit-for-review\">Save and submit for review</button>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
@@ -360,7 +364,9 @@ templates['workEdit'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.notes : depth0),{"name":"each","hash":{},"fn":this.program(17, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addNote\">Add note</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Content</h1>\n        <p>Description</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addSection\">Add section</button>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <nav class=\"edit-nav\">\n    <button class=\"btn-edit-cancel\">Cancel</button>\n    <button class=\"btn-edit-save\">Save</button>\n    <button class=\"btn-edit-save-and-submit-for-review\">Save and submit for review</button>\n  </nav>\n\n</section>";
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addSection\">Add section</button>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <nav class=\"edit-nav\">\n    <button class=\"btn-edit-cancel\">Cancel</button>\n    <button class=\"btn-edit-save\">Save</button>\n\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPageComplete : depth0),{"name":"if","hash":{},"fn":this.program(21, data, 0),"inverse":this.program(23, data, 0),"data":data})) != null ? stack1 : "")
+    + "\n  </nav>\n\n</section>";
 },"useData":true});
 templates['workSpace'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<nav class=\"panel col col--1 workspace-nav\">\n  <ul class=\"nav nav--workspace\">\n    <li class=\"nav--workspace__browse selected\" id=\"browse\">Browse</li>\n    <li class=\"nav--workspace__create\" id=\"create\">Create</li>\n    <li class=\"nav--workspace__edit\" id=\"edit\">Edit</li>\n    <li class=\"nav--workspace__review\" id=\"review\">Review</li>\n  </ul>\n</nav>\n<div class=\"col col--4 workspace-menu\" style=\"overflow-y: scroll;\">\n\n</div>\n<section class=\"panel col col--7 workspace-browser\">\n  <div class=\"browser\">\n    <div class=\"addressbar\">\n      <button class=\"browser-btn-back\">&lt;</button>\n      <button class=\"browser-btn-forward\">&gt;</button>\n      <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label><input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n      <button class=\"browser-btn-mobile\">Mobile</button>\n    </div>\n    <iframe id=\"iframe\" src=\""

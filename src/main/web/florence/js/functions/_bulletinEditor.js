@@ -322,11 +322,14 @@ function bulletinEditor(collectionName, data) {
 
   // complete
   $('.btn-edit-save-and-submit-for-review').click(function () {
-    //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
+  // review
+  $('.btn-edit-save-and-submit-for-approval').click(function () {
+    postReview(collectionName, getPathName());
+  });
 
   function save() {
     // Sections
