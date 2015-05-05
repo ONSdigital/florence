@@ -15,8 +15,10 @@ function viewCollections(collectionId) {
   var response = [];
   function populateCollectionTable(data) {
     $.each(data, function (i, collection) {
-      var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
-      response.push({id: collection.id, name: collection.name, date: formattedDate});
+      if(!data.approvedStatus) {
+        var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+        response.push({id: collection.id, name: collection.name, date: formattedDate});
+      }
     });
 
     var collectionsHtml = templates.collections(response);
