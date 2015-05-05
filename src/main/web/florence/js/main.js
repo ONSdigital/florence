@@ -2212,7 +2212,7 @@ function delete_cookie(name) {
 
     // review
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      postReview(collectionName, getPathName());
+      postReview(collectionId, getPathName());
     });
 
     $('.workspace-edit :input').on('input', function () {
