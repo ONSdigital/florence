@@ -2012,7 +2012,10 @@ function loadT4Creator (collectionName) {
   $('#pagetype').change(function () {
     pageType = $(this).val();
   });
-  $('.btn-page-create').click(function () {
+
+
+  $('form').submit(function (e) {
+    e.preventDefault();
     pageData = pageTypeData(pageType);
     parent = $('#location').val().trim();
     pageName = $('#pagename').val().trim();
@@ -2724,10 +2727,7 @@ function viewCollections() {
       createCollection();
     });
   }
-}
-
-PreventPrevent
-function viewController(view) {
+}function viewController(view) {
 
 	if (logged_in()) {
 
