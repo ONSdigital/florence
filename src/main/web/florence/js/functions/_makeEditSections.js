@@ -48,8 +48,8 @@ function makeEditSections(collectionId, pageData) {
     });
 
     // review
-    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-      postReview(collectionId, getPathName());
+    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+      postReview(collectionName, getPathName());
     });
 
     $('.workspace-edit :input').on('input', function () {
