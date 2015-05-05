@@ -82,11 +82,8 @@ function viewCollectionDetails(collectionId) {
             console.log('File deleted');
             viewCollectionDetails(collectionId);
         });
-        $('.btn-collection-work-on').click(function () {
-          createWorkspace('', collectionId, 'browse');
-        });
 
-        $('.collection-selected .btn-cancel').click(function(){
+        $('.collection-selected .btn-edit-cancel').click(function(){
           $('.collection-selected').stop().animate({right: "-50%"}, 500);
           $('.collections-select-table tbody tr').removeClass('selected');
           // Wait until the animation ends
@@ -94,6 +91,15 @@ function viewCollectionDetails(collectionId) {
             viewController('collections');
           }, 500);
         });
+
+        $('.btn-collection-work-on').click(function () {
+          createWorkspace('', collectionId, 'browse');
+        });
+
+        $('.btn-collection-approve').click(function () {
+          approve(collectionId);
+        });
+
       });
     }
   }
