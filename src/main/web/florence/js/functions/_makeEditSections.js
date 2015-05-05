@@ -48,7 +48,7 @@ function makeEditSections(collectionId, pageData) {
     });
 
     // review
-    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
       postReview(collectionId, getPathName());
     });
 
