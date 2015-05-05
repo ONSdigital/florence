@@ -2719,15 +2719,14 @@ function viewCollections() {
       viewCollectionDetails(collectionId);
     });
 
-    //click handlers
-    //$('.btn-collection-create').unbind("click").click(function () {
-    $('.btn-collection-create').click(function () {
+    $('.form-create-collection').submit(function (e) {
+      e.preventDefault();
       createCollection();
     });
   }
 }
 
-
+PreventPrevent
 function viewController(view) {
 
 	if (logged_in()) {
