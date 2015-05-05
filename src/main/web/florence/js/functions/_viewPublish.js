@@ -1,9 +1,9 @@
 function viewPublish() {
 
-  var select_publish = '<section class="fl-panel fl-panel--publish fl-panel--collections fl-panel--collections__not-selected">' +
-    '<h1>Select a publish</h1>' +
-    '<div class="fl-publish-table-holder"></div>' +
-    '</section>';
+//  var select_publish = '<section class="fl-panel fl-panel--publish fl-panel--collections fl-panel--collections__not-selected">' +
+//    '<h1>Select a publish</h1>' +
+//    '<div class="fl-publish-table-holder"></div>' +
+//    '</section>';
 
   $.ajax({
     url: "/zebedee/collections",
@@ -18,16 +18,16 @@ function viewPublish() {
   });
 
   function populatePublishTable(collections) {
-    var table_holder = $('.fl-publish-table-holder');
-
-    var publish_table =
-      '<table class="fl-publish-table">' +
-      '<tbody>' +
-      '<tr>' +
-      '<th>Publish date</th>' +
-      '</tr>';
-
-    $(table_holder).html(publish_table);
+//    var table_holder = $('.fl-publish-table-holder');
+//
+//    var publish_table =
+//      '<table class="fl-publish-table">' +
+//      '<tbody>' +
+//      '<tr>' +
+//      '<th>Publish date</th>' +
+//      '</tr>';
+//
+//    $(table_holder).html(publish_table);
 
     var collectionsByDate = _.chain(collections)
       .filter( function(collection) { return collection.approvedStatus; })

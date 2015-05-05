@@ -426,17 +426,18 @@ function datasetEditor(collectionName, data) {
     save();
   });
 
-  // complete
-  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val(); ???
-    saveData();
-    saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
-  });
+  // completed to review
+    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+      //pageData = $('.fl-editor__headline').val();
+      saveData();
+      saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
+    });
 
-  // review
-  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    postReview(collectionName, getPathName());
-  });
+    // reviewed to approve
+    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+      saveData()
+      saveAndReviewContent(collectionName, getPathName(), JSON.stringify(data));
+    });
 
   function save() {
     saveData();

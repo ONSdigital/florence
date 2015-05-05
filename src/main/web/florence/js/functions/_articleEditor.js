@@ -321,16 +321,17 @@ function articleEditor(collectionName, data) {
     updateContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
-  // complete
+  // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
-  // review
+  // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    postReview(collectionName, getPathName());
+    save()
+    saveAndReviewContent(collectionName, getPathName(), JSON.stringify(data));
   });
 
 

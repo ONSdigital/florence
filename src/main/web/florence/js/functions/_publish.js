@@ -1,8 +1,8 @@
-function publish(collectionName) {
+function publish(collectionId) {
 
   // Open the file for editing
   $.ajax({
-    url: "/zebedee/publish/" + collectionName,
+    url: "/zebedee/publish/" + collectionId,
     dataType: 'json',
     crossDomain: true,
     type: 'POST',

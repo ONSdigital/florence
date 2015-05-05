@@ -1,11 +1,11 @@
-function postApproveCollection(collectionName) {
+function postApproveCollection(collectionId) {
   $.ajax({
-    url: "/zebedee/approve/" + collectionName,
+    url: "/zebedee/approve/" + collectionId,
     crossDomain: true,
     type: 'POST',
     success: function (response) {
       console.log(response);
-      console.log(collectionName + ' collection is now approved');
+      console.log(collectionId + ' collection is now approved');
     },
     error: function (response) {
       if (response.status === 409) {
