@@ -49,7 +49,8 @@ function makeEditSections(collectionId, pageData) {
 
     // review
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      postReview(collectionId, getPathName());
+      pageData = $('.fl-editor__headline').val();
+      saveAndReviewContent(collectionId, getPathName(), pageData);
     });
 
     $('.workspace-edit :input').on('input', function () {
