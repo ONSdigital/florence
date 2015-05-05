@@ -2211,8 +2211,8 @@ function delete_cookie(name) {
     });
 
     // review
-    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-      postReview(collectionId, getPathName());
+    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+      postReview(collectionName, getPathName());
     });
 
     $('.workspace-edit :input').on('input', function () {
@@ -2691,7 +2691,7 @@ function viewCollectionDetails(collectionId) {
     }
   }
 }
-function viewCollections() {
+function viewCollections(collectionId) {
 
   $.ajax({
     url: "/zebedee/collections",
@@ -2726,6 +2726,12 @@ function viewCollections() {
       e.preventDefault();
       createCollection();
     });
+
+    if(collectionId) {
+      $('.collections-select-table tr[data-id="' + collectionId + '"]')
+        .addClass('selected');
+      viewCollectionDetails(collectionId);
+    }
   }
 }function viewController(view) {
 

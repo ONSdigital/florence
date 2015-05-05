@@ -1,4 +1,4 @@
-function viewCollections() {
+function viewCollections(collectionId) {
 
   $.ajax({
     url: "/zebedee/collections",
@@ -33,5 +33,11 @@ function viewCollections() {
       e.preventDefault();
       createCollection();
     });
+
+    if(collectionId) {
+      $('.collections-select-table tr[data-id="' + collectionId + '"]')
+        .addClass('selected');
+      viewCollectionDetails(collectionId);
+    }
   }
 }
