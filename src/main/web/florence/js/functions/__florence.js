@@ -19,6 +19,8 @@ Florence.Editor = {
 
 Florence.collection = {};
 
+Florence.collectionToPublish = {};
+
 Florence.Authentication = {
   accessToken: function () {
     function getCookieValue(a, b) {

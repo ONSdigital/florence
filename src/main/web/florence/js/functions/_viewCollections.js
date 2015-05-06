@@ -15,7 +15,7 @@ function viewCollections(collectionId) {
   var response = [];
   function populateCollectionTable(data) {
     $.each(data, function (i, collection) {
-      if(!data.approvedStatus) {
+      if(!collection.approvedStatus) {
         var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
         response.push({id: collection.id, name: collection.name, date: formattedDate});
       }

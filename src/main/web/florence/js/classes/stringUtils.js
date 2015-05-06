@@ -28,7 +28,15 @@ var StringUtils = {
     var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
     var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
     return formattedDate;
+  },
+
+  formatIsoFullDateString: function(input) {
+    var date = new Date(input);
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var formattedDate = $.datepicker.formatDate('DD dd MM yy', date) + ' ' + date.getHours() + ':' + minutes;
+    return formattedDate;
   }
+
 };
 
 // if running in a node environment export this as a module.
