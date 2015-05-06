@@ -1,7 +1,5 @@
 function viewCollectionDetails(collectionId) {
 
-  console.log(collectionId)
-
   getCollection(collectionId,
     success = function (response) {
       populateCollectionDetails(response, collectionId);
