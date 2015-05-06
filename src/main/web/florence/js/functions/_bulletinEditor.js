@@ -131,6 +131,10 @@ function bulletinEditor(collectionName, data) {
         $('.markdown-editor').stop().fadeOut(200).remove();
       });
 
+      $(".btn-markdown-editor-chart").click(function(){
+        loadChartBuilder();
+      });
+
       $("#wmd-input").on('click', function() {
         markDownEditorSetLines();
       });
