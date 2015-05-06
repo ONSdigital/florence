@@ -7,7 +7,7 @@ templates['browseNode'] = template({"1":function(depth0,helpers,partials,data) {
     + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
     + "\">\n    <span class=\"page-item\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</span>\n    <div class=\"page-options\">\n      <button class=\"\">Button</button>\n      <button class=\"\">Button</button>\n      <button class=\"\">Button</button>\n    </div>\n    "
+    + "</span>\n    <div class=\"page-options\">\n      <button class=\"btn-page-edit\">Edit</button>\n      <button class=\"btn-page-edit\">Create</button>\n      <button class=\"btn-page-delete\">Delete</button>\n    </div>\n    "
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "  </li>\n";
 },"2":function(depth0,helpers,partials,data) {
@@ -21,6 +21,9 @@ templates['browseNode'] = template({"1":function(depth0,helpers,partials,data) {
 
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
+templates['chartBuilder'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"markdown-editor chart-builder\">\n  <div class=\"markdown-editor__header\">\n    <h1>Chart Builder</h1>\n  </div>\n  <div class=\"markdown-editor__content\">\n    <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\">\n      <p><div id=\"chart\"></div></p>\n    </div>\n    <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit col--3\">\n      <h2></h2>\n\n      <p><textarea id=\"chart-data\" placeholder=\"Paste your data here\" rows=\"4\" cols=\"100\"></textarea></p><br />\n      <label>Chart Type</label>\n      <select id=\"chart-type\">\n        <option value=\"bar\">Bar Chart</option>\n        <option value=\"line\">Line Chart</option>\n      </select>\n      <input type=\"text\" id=\"chart-title\" placeholder=\"[Title]\" />\n      <input type=\"text\" id=\"chart-x-axis\" placeholder=\"[X Axis]\" />\n      <input type=\"text\" id=\"chart-y-axis\" placeholder=\"[Y Axis]\" />\n    </div>\n  </div>\n  <div class=\"markdown-editor__footer\">\n    <button class=\"btn-chart-builder-cancel\">Cancel</button>\n    <button class=\"btn-chart-builder-create\">Create Chart</button>\n  </div>\n</div>";
+},"useData":true});
 templates['collection'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
@@ -28,11 +31,11 @@ templates['collection'] = template({"1":function(depth0,helpers,partials,data) {
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
     + "</span>\n        <div class=\"page-options\">\n          <button class=\"btn-page-edit\" data-path=\""
     + alias3(((helper = (helper = helpers.path || (depth0 != null ? depth0.path : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"path","hash":{},"data":data}) : helper)))
-    + "\">Edit file</button>\n          <button class=\"btn-page-delete\" data-path=\""
+    + "\">Edit file</button>\n          <button class=\"btn-page-move\" data-path=\""
     + alias3(((helper = (helper = helpers.path || (depth0 != null ? depth0.path : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"path","hash":{},"data":data}) : helper)))
-    + "\">Delete file</button>\n          <button class=\"btn-page-move\" data-path=\""
+    + "\">Move file</button>\n          <button class=\"btn-page-delete\" data-path=\""
     + alias3(((helper = (helper = helpers.path || (depth0 != null ? depth0.path : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"path","hash":{},"data":data}) : helper)))
-    + "\">Move file</button>\n        </div>\n      </li>\n";
+    + "\">Delete file</button>\n        </div>\n      </li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression, alias4=this.lambda;
 
@@ -52,7 +55,7 @@ templates['collection'] = template({"1":function(depth0,helpers,partials,data) {
     + alias3(alias4(((stack1 = (depth0 != null ? depth0.reviewed : depth0)) != null ? stack1.length : stack1), depth0))
     + " pages awaiting approval</h3>\n  <ul class=\"page-list\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.reviewed : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "  </ul>\n</div>\n\n<nav class=\"section-nav\">\n  <button class=\"btn-cancel\">Cancel</button>\n  <button class=\"btn-collection-work-on\">Work on collection</button>\n  <button class=\"btn-collection-approve\">Approve collection</button>\n</nav>\n";
+    + "  </ul>\n</div>\n\n<nav class=\"section-nav\">\n  <button class=\"btn-edit-cancel\">Cancel</button>\n  <button class=\"btn-collection-work-on\">Work on collection</button>\n  <button class=\"btn-collection-approve\">Approve collection</button>\n</nav>\n";
 },"useData":true});
 templates['collections'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
@@ -72,7 +75,7 @@ templates['collections'] = template({"1":function(depth0,helpers,partials,data) 
     + "    </tbody>\n  </table>\n</section>\n<section class=\"panel col col--6 collection-create\">\n  <h1 class=\"text-align-center\">Create a collection</h1>\n  <form method=\"post\" action=\"\" class=\"form-create-collection\">\n    <label for=\"collectionname\" class=\"hidden\">Scheduled publish</label>\n    <input id=\"collectionname\" type=\"text\" placeholder=\"Collection name\" />\n    <label for=\"team\" class=\"hidden\">Select the team the collection can be previewed by</label>\n    <select id=\"team\">\n      <option selected disabled=\"disabled\">Select the team the collection can be previewed by</option>\n      <option value=\"Team1\">Team 1</option>\n      <option value=\"Team2\">Team 2</option>\n      <option value=\"Team3\">Team 3</option>\n    </select>\n    <input type=\"radio\" id=\"scheduledpublish\" name=\"publishtype\" value=\"scheduled\"><label for=\"scheduledpublish\">Scheduled publish</label>\n    <input type=\"radio\" id=\"manualpublish\" name=\"publishtype\" value=\"manual\"><label for=\"manualpublish\">Manual publish</label>\n    <br>\n    <div class=\"block text-center\">\n      <label for=\"day\" class=\"hidden\">Day</label>\n      <select id=\"day\" class=\"small\">\n        <option selected disabled>Day</option>\n        <option value=\"1\">1</option>\n        <option value=\"2\">2</option>\n        <option value=\"3\">3</option>\n        <option value=\"4\">4</option>\n        <option value=\"5\">5</option>\n        <option value=\"6\">6</option>\n        <option value=\"7\">7</option>\n        <option value=\"8\">8</option>\n        <option value=\"9\">9</option>\n        <option value=\"10\">10</option>\n        <option value=\"11\">11</option>\n        <option value=\"12\">12</option>\n        <option value=\"13\">13</option>\n        <option value=\"14\">14</option>\n        <option value=\"15\">15</option>\n        <option value=\"16\">16</option>\n        <option value=\"17\">17</option>\n        <option value=\"18\">18</option>\n        <option value=\"19\">19</option>\n        <option value=\"20\">20</option>\n        <option value=\"21\">21</option>\n        <option value=\"22\">22</option>\n        <option value=\"23\">23</option>\n        <option value=\"24\">24</option>\n        <option value=\"25\">25</option>\n        <option value=\"26\">26</option>\n        <option value=\"27\">27</option>\n        <option value=\"28\">28</option>\n        <option value=\"29\">29</option>\n        <option value=\"30\">30</option>\n        <option value=\"31\">31</option>\n      </select>\n      <label for=\"month\" class=\"hidden\">Month</label>\n      <select id=\"month\" class=\"small\">\n        <option selected disabled>Month</option>\n        <option value=\"0\">January</option>\n        <option value=\"1\">February</option>\n        <option value=\"2\">March</option>\n        <option value=\"3\">April</option>\n        <option value=\"4\">May</option>\n        <option value=\"5\">June</option>\n        <option value=\"6\">July</option>\n        <option value=\"7\">August</option>\n        <option value=\"8\">September</option>\n        <option value=\"9\">October</option>\n        <option value=\"10\">November</option>\n        <option value=\"11\">December</option>\n      </select>\n      <label for=\"year\" class=\"hidden\">Year</label>\n      <select id=\"year\" class=\"small\">\n        <option selected value=\"2015\">2015</option>\n        <option value=\"2016\">2016</option>\n        <option value=\"2017\">2017</option>\n      </select>\n      <br>\n      <label for=\"time\" class=\"hidden\">Time</label>\n      <select id=\"time\" class=\"small\">\n        <option value=\"0930\">09:30</option>\n      </select>\n    </div>\n    <button class=\"btn-collection-create\">Create collection</button>\n  </form>\n</section>\n<section class=\"panel col col--6 collection-selected\">\n\n</section>";
 },"useData":true});
 templates['editNav'] = template({"1":function(depth0,helpers,partials,data) {
-    return "    <button class=\"btn-edit-save-and-submit-for-approval\">Submit for approval</button>\n";
+    return "    <button class=\"btn-edit-save-and-submit-for-approval\">Save and submit for approval</button>\n";
 },"3":function(depth0,helpers,partials,data) {
     return "    <button class=\"btn-edit-save-and-submit-for-review\">Save and submit for review</button>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -117,7 +120,41 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
 templates['markdownEditor'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class=\"markdown-editor\">\n    <div class=\"markdown-editor__header\">\n        <h1>Section name</h1>\n        <div id=\"wmd-button-bar\"></div>\n    </div>\n    <div class=\"markdown-editor__content\">\n        <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n        <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n            <h2>Markdown:</h2>\n            <textarea class=\"wmd-input\" id=\"wmd-input\">"
     + this.escapeExpression(this.lambda(depth0, depth0))
-    + "</textarea>\n            <div class=\"markdown-editor-line-numbers\"></div>\n        </div>\n    </div>\n    <div class=\"markdown-editor__footer\">\n        <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n        <button class=\"btn-markdown-editor-save\">Save changes</button>\n        <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n    </div>\n</div>";
+    + "</textarea>\n            <div class=\"markdown-editor-line-numbers\"></div>\n        </div>\n    </div>\n    <div class=\"markdown-editor__footer\">\n        <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n        <button class=\"btn-markdown-editor-save\">Save changes</button>\n        <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n        <button class=\"btn-markdown-editor-chart\">Build Chart</button>\n    </div>\n</div>";
+},"useData":true});
+templates['publishDetails'] = template({"1":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "            <li><span class=\"page-item\">"
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.page : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</span>\n              <div class=\"page-options\">\n                <button class=\"\">Remove from this publish</button>\n              </div>\n            </li>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=this.escapeExpression, alias2=this.lambda;
+
+  return "<section class=\"panel col col--6 publish-selected\">\n  <div class=\"section-head\">\n    <h2>"
+    + alias1(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"date","hash":{},"data":data}) : helper)))
+    + "</h2>\n    <p>The following collection(s) have been approved</p>\n  </div>\n\n  <div class=\"section-content section-content--fullwidth\">\n    <div class=\"collections-accordion\">\n      <div class=\"collections-section\">\n        <div class=\"collections-section__head\">\n          <h3 class=\"collection-name\" data-id=\""
+    + alias1(alias2(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.id : stack1), depth0))
+    + "\">"
+    + alias1(alias2(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</h3>\n        </div>\n        <div class=\"collections-section__content\">\n          <button class=\"btn-collection-unlock\">Unlock collection</button>\n          <h4>Pages in this collection</h4>\n          <ul class=\"page-list\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.page : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "          </ul>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <nav class=\"section-nav\">\n    <button class=\"btn-cancel\">Cancel</button>\n  </nav>\n</section>";
+},"useData":true});
+templates['publishList'] = template({"1":function(depth0,helpers,partials,data) {
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "    <tr data-collections=\""
+    + alias2(alias1((depth0 != null ? depth0.ids : depth0), depth0))
+    + "\">\n      <td>"
+    + alias2(alias1((depth0 != null ? depth0.date : depth0), depth0))
+    + "</td>\n    </tr>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "<section class=\"panel col col--6 publish-select\">\n  <h1 class=\"text-align-center\">Select a publish</h1>\n  <table class=\"publish-select-table\">\n    <thead>\n    <tr>\n      <th id=\"publish-name\" scope=\"col\">Publish date</th>\n    </tr>\n    </thead>\n    <tbody>\n"
+    + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </tbody>\n  </table>\n</section>\n";
 },"useData":true});
 templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
@@ -126,7 +163,7 @@ templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
     + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
     + "\">\n            <span class=\"page-item\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</span>\n            <div class=\"page-options\">\n              <button class=\"\">Button</button>\n              <button class=\"\">Button</button>\n              <button class=\"\">Button</button>\n            </div>\n              "
+    + "</span>\n            <div class=\"page-options\">\n              <button class=\"btn-page-edit\">Edit</button>\n              <button class=\"btn-page-edit\">Create</button>\n              <button class=\"btn-page-delete\">Delete</button>\n            </div>\n              "
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "          </li>\n";
 },"2":function(depth0,helpers,partials,data) {

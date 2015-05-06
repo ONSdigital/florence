@@ -81,7 +81,7 @@ function loadChartBuilder() {
   }
 
   function tsvJSON (input) {
-    var lines=tsv.split("\n");
+    var lines=input.split("\n");
     var result = [];
     var headers=lines[0].split("\t");
 
@@ -101,7 +101,7 @@ function loadChartBuilder() {
   }
 
   function tsvJSONval (input) {
-    var lines=tsv.split("\n");
+    var lines=input.split("\n");
     var headers=lines[0].split("\t");
     headers.shift();
     console.log(headers);
