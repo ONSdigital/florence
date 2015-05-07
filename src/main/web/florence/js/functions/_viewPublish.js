@@ -44,12 +44,6 @@ function viewPublish() {
       $('.publish-selected').animate({right: "0%"}, 800);
       $('.publish-select').animate({marginLeft: "0%"}, 500);
     });
-
-//    $('.publish-selected .btn-cancel').click(function(){
-//      $('.publish-selected').animate({right: "-50%"}, 500);
-//      $('.publish-select').animate({marginLeft: "25%"}, 800);
-//      $('.publish-select-table tbody tr').removeClass('selected');
-//    });
   }
 }
 
