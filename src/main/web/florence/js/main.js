@@ -1,3 +1,17 @@
+var PathUtils = {
+  isJsonFile: function (uri) {
+    return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1
+  }
+};
+
+// if running in a node environment export this as a module.
+if (typeof module !== 'undefined') {
+  module.exports = StringUtils;
+}
+
+
+
+
 var StringUtils = {
   textareaLines: function (line, maxLineLength, start, numberOfLinesCovered) {
 
@@ -1890,8 +1904,7 @@ function loadReviewScreen(collectionName) {
     var review_list = '';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
-    function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-    data.completeUris = data.completeUris.filter(function(uri) { return isJsonFile(uri) });
+    data.completeUris = data.completeUris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
 
     $.each(data.completeUris, function (i, uri) {
       pageDataRequests.push(getPageData(collectionName, uri,
@@ -2690,6 +2703,9 @@ function viewCollectionDetails(collectionId) {
       var uri_list = [];
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
       var collectionHtml;
+
+      uris = uris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
+
       $.each(uris, function (i, uri) {
         if (uri.length === 0) {
           collectionDetails[status] = [];
@@ -2919,8 +2935,7 @@ function viewPublishDetails(collections) {
         var page_list = '';
         var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
-        function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-        response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
+        response.reviewedUris = response.reviewedUris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
 
         $.each(response.reviewedUris, function (i, uri) {
           pageDataRequests.push(getPageData(collectionId, uri,
