@@ -1,6 +1,6 @@
 function viewController(view) {
 
-	if (logged_in()) {
+	if (Florence.Authentication.isAuthenticated) {
 
 		if (view === 'collections') {
 			viewCollections();
@@ -28,11 +28,6 @@ function viewController(view) {
     // viewCollections();
     //viewWorkspace();
 		viewLogIn();
-  }
-
-  function logged_in() {
-    // read the cookie here to see if there is an access token, then check if its valid
-    return accessToken() !== '';
   }
 }
 
