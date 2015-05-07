@@ -1,6 +1,6 @@
 function viewController(view) {
 
-	if (Florence.Authentication.isAuthenticated) {
+	if (Florence.Authentication.isAuthenticated()) {
 
 		if (view === 'collections') {
 			viewCollections();
@@ -21,12 +21,7 @@ function viewController(view) {
 			viewController('collections');
 		}
 	}
-
-	//authentication
   else {
-    //authentication calls collections view for now until authentication is implemented
-    // viewCollections();
-    //viewWorkspace();
 		viewLogIn();
   }
 }
