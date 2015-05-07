@@ -17,30 +17,44 @@ function loadChartBuilder() {
     $('.chart-builder').fadeOut(200).remove();
   });
 
+
+
   function renderChart() {
+    var chart = buildChartObject();
+    renderChartObject('#chart', chart);
+  }
 
-    var chart = {};
-    chart.data = $('#chart-data').val();
-    chart.type = $('#chart-type').val();
-    chart.title = $('#chart-title').val();
-    chart.xaxis = $('#chart-x-axis').val();
-    chart.yaxis = $('#chart-y-axis').val();
-    console.log(chart);
 
-    if(chart.title == '') {
-      chart.title = '[Title]'
-    }
+  function buildChartObject() {
+      json = $('#chart-data').val();
 
-    jsonData = tsvJSON(chart.data);
-    series = tsvJSONColNames(chart.data);
-    rows = tsvJSONRowNames(chart.data);
+      var chart = {};
+      chart.type = $('#chart-type').val();
+      chart.title = $('#chart-title').val();
+      chart.xaxis = $('#chart-x-axis').val();
+      chart.yaxis = $('#chart-y-axis').val();
+
+
+      if(chart.title == '') {
+        chart.title = '[Title]'
+      }
+
+      chart.data = tsvJSON(json);
+      chart.series = tsvJSONColNames(json);
+      chart.categories = tsvJSONRowNames(json);
+
+    return chart;
+  }
+
+
+  function renderChartObject(bindTag, chart) {
 
     c3.generate({
-      bindto: '#chart',
+      bindto: bindTag,
       data: {
-        json: jsonData,
+        json: chart.data,
         keys: {
-          value: series
+          value: chart.series
         },
         type: chart.type
       },
@@ -48,7 +62,7 @@ function loadChartBuilder() {
         x: {
           label: chart.xaxis,
           type: 'category',
-          categories: rows
+          categories: chart.categories
         },
         y: {
           label: chart.yaxis
