@@ -1660,9 +1660,9 @@ function deleteContent(collectionName, path, success, error) {
   });
 }
 
-function getCollection(collectionName, success, error) {
+function getCollection(collectionId, success, error) {
   return $.ajax({
-    url: "/zebedee/collection/" + collectionName,
+    url: "/zebedee/collection/" + collectionId,
     dataType: 'json',
     type: 'GET',
     success: function (response) {
@@ -1674,6 +1674,19 @@ function getCollection(collectionName, success, error) {
   });
 }
 
+function getCollectionDetails(collectionId, success, error) {
+  return $.ajax({
+    url: "/zebedee/collectionDetails/" + collectionId,
+    dataType: 'json',
+    type: 'GET',
+    success: function (response) {
+      success(response);
+    },
+    error: function (response) {
+      error(response);
+    }
+  });
+}
 function getPageData(collectionName, path, success, error) {
   return $.ajax({
     url: "/zebedee/content/" + collectionName + "?uri=" + path,
@@ -3001,9 +3014,7 @@ function updateContent(collectionName, path, content) {
 }
 function viewCollectionDetails(collectionId) {
 
-  console.log(collectionId)
-
-  getCollection(collectionId,
+  getCollectionDetails(collectionId,
     success = function (response) {
       populateCollectionDetails(response, collectionId);
     },
@@ -3023,7 +3034,7 @@ function viewCollectionDetails(collectionId) {
     };
 
 
-    if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
+    if (collection.inProgress !== 0 || collection.complete !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
       $('.fl-finish-collection-button').hide();
     }
@@ -3033,79 +3044,45 @@ function viewCollectionDetails(collectionId) {
       });
     }
 
-    CreateUriListHtml(collection.inProgressUris, collectionId, "inProgress");
-    CreateUriListHtml(collection.completeUris, collectionId, "completed");
-    CreateUriListHtml(collection.reviewedUris, collectionId, "reviewed");
+    var collectionHtml = window.templates.collection(collection);
+    $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
-    function CreateUriListHtml(uris, collectionId, status) {
-      var uri_list = [];
-      var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-      var collectionHtml;
+    //page-list
+    $('.page-item').click(function() {
+      $('.page-list li').removeClass('selected');
+      $('.page-options').hide();
 
-      uris = uris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
+      $(this).parent('li').addClass('selected');
+      $(this).next('.page-options').show();
+    });
 
-      $.each(uris, function (i, uri) {
-        if (uri.length === 0) {
-          collectionDetails[status] = [];
-        } else {
-          pageDataRequests.push(getPageData(collectionId, uri,
-            success = function (response) {
-              var path = response.uri ? response.uri : uri.replace('/data.json', '');
-              var pageTitle = response.title ? response.title : response.name;
-              uri_list.push({path: path, name: pageTitle});
-            },
-            error = function (response) {
-              handleApiError(response);
-            })
-          );
-        }
-      });
+    $('.btn-page-edit').click(function () {
+      var path = $(this).attr('data-path');
+      createWorkspace(path, collectionId, 'edit');
+    });
+    $('.btn-page-delete').click(function () {
+      var path = $(this).attr('data-path')
+      deleteContent(collectionId, path, success, error);
+      console.log('File deleted');
+      viewCollectionDetails(collectionId);
+    });
 
-      $.when.apply($, pageDataRequests).then(function () {
-        collectionDetails[status] = uri_list;
+    $('.collection-selected .btn-edit-cancel').click(function(){
+      $('.collection-selected').stop().animate({right: "-50%"}, 500);
+      $('.collections-select-table tbody tr').removeClass('selected');
+      // Wait until the animation ends
+      setTimeout(function(){
+        viewController('collections');
+      }, 500);
+    });
 
-        collectionHtml = window.templates.collection(collectionDetails);
-        $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
+    $('.btn-collection-work-on').click(function () {
+      createWorkspace('', collectionId, 'browse');
+    });
 
-        //page-list
-        $('.page-item').click(function() {
-          $('.page-list li').removeClass('selected');
-          $('.page-options').hide();
-
-          $(this).parent('li').addClass('selected');
-          $(this).next('.page-options').show();
-        });
-
-        $('.btn-page-edit').click(function () {
-          var path = $(this).attr('data-path');
-            createWorkspace(path, collectionId, 'edit');
-        });
-        $('.btn-page-delete').click(function () {
-          var path = $(this).attr('data-path')
-            deleteContent(collectionId, path, success, error);
-            console.log('File deleted');
-            viewCollectionDetails(collectionId);
-        });
-
-        $('.collection-selected .btn-edit-cancel').click(function(){
-          $('.collection-selected').stop().animate({right: "-50%"}, 500);
-          $('.collections-select-table tbody tr').removeClass('selected');
-          // Wait until the animation ends
-          setTimeout(function(){
-            viewController('collections');
-          }, 500);
-        });
-
-        $('.btn-collection-work-on').click(function () {
-          createWorkspace('', collectionId, 'browse');
-        });
-
-        $('.btn-collection-approve').click(function () {
-          approve(collectionId);
-        });
-
-      });
-    }
+    $('.btn-collection-approve').click(function () {
+      approve(collectionId);
+    });
   }
 }
 function viewCollections(collectionId) {
@@ -3249,103 +3226,50 @@ function viewPublish() {
       $('.publish-selected').animate({right: "0%"}, 800);
       $('.publish-select').animate({marginLeft: "0%"}, 500);
     });
-
-//    $('.publish-selected .btn-cancel').click(function(){
-//      $('.publish-selected').animate({right: "-50%"}, 500);
-//      $('.publish-select').animate({marginLeft: "25%"}, 800);
-//      $('.publish-select-table tbody tr').removeClass('selected');
-//    });
   }
 }
 
 function viewPublishDetails(collections) {
 
-  var date = Florence.collectionToPublish.publishDate;
-  var collectionDetails = [];
+  var result = {
+    date: Florence.collectionToPublish.publishDate,
+    collectionDetails: [],
+  }
+  var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+
   $.each(collections, function (i, collectionId) {
-
-//    collection_list +=
-//      '<h2 id="fl-panel--publish-collection-' + collection.id + '"  class="fl-panel--publish-collection" data-id="' + collection.id + '">' + collection.name + '</h2>' +
-//      '<div class="fl-panel--publish-collection-' + collection.id + '"></div>';
-
-    getCollection(collectionId,
-      success = function (response) {
-        var page_list = '';
-        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-
-        response.reviewedUris = response.reviewedUris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
-
-        $.each(response.reviewedUris, function (i, uri) {
-          pageDataRequests.push(getPageData(collectionId, uri,
-            success = function (response) {
-              var path = uri.replace('/data.json', '');
-              path = path.length === 0 ? '/' : path;
-              page_list += '<p class="fl-review-page-list-item" data-path="' + path + '">' +
-              response.name + '</p>';
-
-              console.log(response.name);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }));
-        });
-
-        $.when.apply($, pageDataRequests).then(function () {
-          page_list += '</ul>';
-          $('.fl-panel--publish-collection-' + collectionId).html(page_list);
-          //updateReviewScreenWithCollection(response);
-          console.log(page_list);
-        });
-
-      },
-      error = function (response) {
-        handleApiError(response);
-      }
+    pageDataRequests.push(
+      getCollectionDetails(collectionId,
+        success = function (response) {
+          function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
+          console.log(response);
+          response.reviewed = response.reviewed.filter(function(page) { return isJsonFile(page.uri) });
+          result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      )
     );
   });
+  $.when.apply($, pageDataRequests).then(function () {
+    var publishDetails = templates.publishDetails(result);
+//    console.log(publishDetails);
+    $('.publish-selected').html(publishDetails);
+    console.log(JSON.stringify(result));
+  });
 
+  $('.collections-accordion').accordion({
+    header: '.collections-section__head',
+    active: false,
+    collapsible: true
+  });
 
-
-
-//  $('.collection-name').click(function () {
-//    var collectionId = $(this).attr('data-id');
-//
-//
-//    getCollection(collectionId,
-//      success = function (response) {
-//        var page_list = '';
-//        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-//
-//        function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-//        response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
-//
-//        $.each(response.reviewedUris, function (i, uri) {
-//          pageDataRequests.push(getPageData(collectionId, uri,
-//            success = function (response) {
-//              var path = uri.replace('/data.json', '');
-//              path = path.length === 0 ? '/' : path;
-//              page_list += '<p class="fl-review-page-list-item" data-path="' + path + '">' +
-//              response.name + '</p>';
-//
-//              console.log(response.name);
-//            },
-//            error = function (response) {
-//              handleApiError(response);
-//            }));
-//        });
-//
-//        $.when.apply($, pageDataRequests).then(function () {
-//          page_list += '</ul>';
-//          $('.fl-panel--publish-collection-' + collectionId).html(page_list);
-//          //updateReviewScreenWithCollection(response);
-//
-//        });
-//
-//      },
-//      error = function (response) {
-//        handleApiError(response);
-//      });
-//  });
+  $('.publish-selected .btn-cancel').click(function(){
+    $('.publish-selected').animate({right: "-50%"}, 500);
+    $('.publish-select').animate({marginLeft: "25%"}, 800);
+    $('.publish-select-table tbody tr').removeClass('selected');
+  });
 }
 function viewUserAndAccess(view) {
 
