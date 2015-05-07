@@ -1,5 +1,5 @@
 var Florence = Florence || {
-    tredegarBaseUrl: baseURL = 'http://' + window.location.host + '/index.html#!',
+    tredegarBaseUrl: 'http://' + window.location.host + '/index.html#!',
     refreshAdminMenu: function () {
       console.log("refreshing admin menu.." + Florence.Authentication.isAuthenticated())
       var mainNavHtml = templates.mainNav(Florence);
@@ -31,8 +31,6 @@ Florence.Authentication = {
 };
 
 Florence.Handler = function () {
-
-
   if (Florence.Editor.isDirty) {
     var result = confirm("You have unsaved changes. Are you sure you want to continue");
     if (result === true) {
