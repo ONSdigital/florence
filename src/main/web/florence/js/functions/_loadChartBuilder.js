@@ -74,6 +74,11 @@ function loadChartBuilder() {
           label: chart.yaxis
         }
       },
+      grid: {
+        y: {
+          show: true
+        }
+      },
       padding: {
         top: padding
       }
