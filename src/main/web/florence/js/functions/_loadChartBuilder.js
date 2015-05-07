@@ -31,6 +31,9 @@ function loadChartBuilder() {
       var chart = {};
       chart.type = $('#chart-type').val();
       chart.title = $('#chart-title').val();
+      chart.subtitle = $('#chart-subtitle').val();
+      chart.unit = $('#chart-unit').val();
+
       chart.xaxis = $('#chart-x-axis').val();
       chart.yaxis = $('#chart-y-axis').val();
 
@@ -48,6 +51,9 @@ function loadChartBuilder() {
 
 
   function renderChartObject(bindTag, chart) {
+    var padding = 25;
+    if(chart.subtitle != '') { padding += 16; }
+    if(chart.unit != '') {padding += 24; }
 
     c3.generate({
       bindto: bindTag,
@@ -67,15 +73,39 @@ function loadChartBuilder() {
         y: {
           label: chart.yaxis
         }
+      },
+      padding: {
+        top: padding
       }
     });
 
     d3.select('#chart svg').append('text')
-      .attr('x', d3.select('#chart svg').node().getBoundingClientRect().width / 2)
-      .attr('y', 16)
-      .attr('text-anchor', 'middle')
-      .style('font-size', '1.4em')
+      .attr('x', 20)
+      .attr('y', 18)
+      .attr('text-anchor', 'left')
+      .style('font-size', '1.6em')
+        .style('fill', '#000000')
       .text(chart.title);
+
+    if(chart.subtitle != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', 36)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#999999')
+        .text(chart.subtitle);
+        }
+
+    if(chart.unit != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', padding - 8)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#000000')
+        .text(chart.unit);
+        }
   }
 
 
