@@ -1,6 +1,6 @@
 function viewCollectionDetails(collectionId) {
 
-  getCollection(collectionId,
+  getCollectionDetails(collectionId,
     success = function (response) {
       populateCollectionDetails(response, collectionId);
     },
@@ -20,7 +20,7 @@ function viewCollectionDetails(collectionId) {
     };
 
 
-    if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
+    if (collection.inProgress !== 0 || collection.complete !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
       $('.fl-finish-collection-button').hide();
     }
@@ -30,78 +30,44 @@ function viewCollectionDetails(collectionId) {
       });
     }
 
-    CreateUriListHtml(collection.inProgressUris, collectionId, "inProgress");
-    CreateUriListHtml(collection.completeUris, collectionId, "completed");
-    CreateUriListHtml(collection.reviewedUris, collectionId, "reviewed");
+    var collectionHtml = window.templates.collection(collection);
+    $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
-    function CreateUriListHtml(uris, collectionId, status) {
-      var uri_list = [];
-      var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-      var collectionHtml;
+    //page-list
+    $('.page-item').click(function() {
+      $('.page-list li').removeClass('selected');
+      $('.page-options').hide();
 
-      uris = uris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
+      $(this).parent('li').addClass('selected');
+      $(this).next('.page-options').show();
+    });
 
-      $.each(uris, function (i, uri) {
-        if (uri.length === 0) {
-          collectionDetails[status] = [];
-        } else {
-          pageDataRequests.push(getPageData(collectionId, uri,
-            success = function (response) {
-              var path = response.uri ? response.uri : uri.replace('/data.json', '');
-              var pageTitle = response.title ? response.title : response.name;
-              uri_list.push({path: path, name: pageTitle});
-            },
-            error = function (response) {
-              handleApiError(response);
-            })
-          );
-        }
-      });
+    $('.btn-page-edit').click(function () {
+      var path = $(this).attr('data-path');
+      createWorkspace(path, collectionId, 'edit');
+    });
+    $('.btn-page-delete').click(function () {
+      var path = $(this).attr('data-path')
+      deleteContent(collectionId, path, success, error);
+      console.log('File deleted');
+      viewCollectionDetails(collectionId);
+    });
 
-      $.when.apply($, pageDataRequests).then(function () {
-        collectionDetails[status] = uri_list;
+    $('.collection-selected .btn-edit-cancel').click(function(){
+      $('.collection-selected').stop().animate({right: "-50%"}, 500);
+      $('.collections-select-table tbody tr').removeClass('selected');
+      // Wait until the animation ends
+      setTimeout(function(){
+        viewController('collections');
+      }, 500);
+    });
 
-        collectionHtml = window.templates.collection(collectionDetails);
-        $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
+    $('.btn-collection-work-on').click(function () {
+      createWorkspace('', collectionId, 'browse');
+    });
 
-        //page-list
-        $('.page-item').click(function() {
-          $('.page-list li').removeClass('selected');
-          $('.page-options').hide();
-
-          $(this).parent('li').addClass('selected');
-          $(this).next('.page-options').show();
-        });
-
-        $('.btn-page-edit').click(function () {
-          var path = $(this).attr('data-path');
-            createWorkspace(path, collectionId, 'edit');
-        });
-        $('.btn-page-delete').click(function () {
-          var path = $(this).attr('data-path')
-            deleteContent(collectionId, path, success, error);
-            console.log('File deleted');
-            viewCollectionDetails(collectionId);
-        });
-
-        $('.collection-selected .btn-edit-cancel').click(function(){
-          $('.collection-selected').stop().animate({right: "-50%"}, 500);
-          $('.collections-select-table tbody tr').removeClass('selected');
-          // Wait until the animation ends
-          setTimeout(function(){
-            viewController('collections');
-          }, 500);
-        });
-
-        $('.btn-collection-work-on').click(function () {
-          createWorkspace('', collectionId, 'browse');
-        });
-
-        $('.btn-collection-approve').click(function () {
-          approve(collectionId);
-        });
-
-      });
-    }
+    $('.btn-collection-approve').click(function () {
+      approve(collectionId);
+    });
   }
 }
