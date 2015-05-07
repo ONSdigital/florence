@@ -17,15 +17,15 @@ function bulletinEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $("#metadata-a").remove();
-  $("#metadata-d").remove();
-  $("#abstract").remove();
-  $("#description-p").remove();
   $("#relArticle").remove();
   $("#relDataset").remove();
   $("#used").remove();
   $("#download").remove();
   $("#note").remove();
+  $("#metadata-a").remove();
+  $("#metadata-d").remove();
+  $("#abstract-p").remove();
+  $("#description-p").remove();
 
   // Metadata load, edition and saving
   $("#name").on('click keyup', function () {

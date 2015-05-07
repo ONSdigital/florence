@@ -16,19 +16,19 @@ function articleEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $("#metadata-b").remove();
-  $("#metadata-d").remove();
-  $("#nextRelease").remove();
-  $("#summary").remove();
-  $("#headline1-p").remove();
-  $("#headline2-p").remove();
-  $("#headline3-p").remove();
-  $("#description-p").remove();
   $("#relBulletin").remove();
   $("#relDataset").remove();
   $("#used").remove();
   $("#download").remove();
   $("#note").remove();
+  $("#metadata-b").remove();
+  $("#metadata-d").remove();
+  $("#next-p").remove();
+  $("#summary-p").remove();
+  $("#headline1-p").remove();
+  $("#headline2-p").remove();
+  $("#headline3-p").remove();
+  $("#description-p").remove();
 
 
   // Metadata edition and saving
