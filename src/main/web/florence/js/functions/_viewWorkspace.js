@@ -33,34 +33,39 @@ function viewWorkspace(path, collectionName, menu) {
   //click handlers
   $('.nav--workspace > li').click(function () {
     menu = '';
-    $('.nav--workspace li').removeClass('selected');
-    $(this).addClass('selected');
-
     if (Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
       if (result === true) {
         Florence.Editor.isDirty = false;
+        processMenuClick(this);
       } else {
         return false;
       }
+    } else {
+      processMenuClick(this);
     }
 
-    if ($(this).is('#browse')) {
+  });
+
+  function processMenuClick(clicked) {
+
+    var menuItem = $(clicked);
+
+    $('.nav--workspace li').removeClass('selected');
+    menuItem.addClass('selected');
+
+    if (menuItem.is('#browse')) {
       loadBrowseScreen('click');
-    }
-    else if ($(this).is('#create')) {
+    } else if (menuItem.is('#create')) {
       loadCreateScreen(collectionName);
-    }
-    else if ($(this).is('#edit')) {
+    } else if (menuItem.is('#edit')) {
       loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
-    }
-    else if ($(this).is('#review')) {
+    } else if (menuItem.is('#review')) {
       loadReviewScreen(collectionName);
       checkForPageChanged(updateReviewScreen(collectionName));
-    }
-    else {
+    } else {
       loadBrowseScreen();
     }
-  });
+  }
 }
 

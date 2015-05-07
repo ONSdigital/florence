@@ -13,15 +13,6 @@ function viewCollectionDetails(collectionId) {
 
     Florence.setActiveCollection(collection);
 
-    if (collection.inProgress !== 0 || collection.complete !== 0) {
-      // You can't approve collections unless there is nothing left to be reviewed
-      $('.fl-finish-collection-button').hide();
-    }
-    else {
-      $('.fl-finish-collection-button').show().click(function () {
-        postApproveCollection(collection.id);
-      });
-    }
 
     collection.date = StringUtils.formatIsoFullDateString(collection.publishDate);
 
@@ -31,6 +22,19 @@ function viewCollectionDetails(collectionId) {
 
     var collectionHtml = window.templates.collectionDetails(collection);
     $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
+
+    var approve = $('.btn-collection-approve');
+    if (collection.inProgress.length === 0
+      && collection.complete.length === 0
+      && collection.reviewed.length > 0) {
+      approve.show().click(function () {
+        postApproveCollection(collection.id);
+      });
+    }
+    else {
+      // You can't approve collections unless there is nothing left to be reviewed
+      approve.hide();
+    }
 
     //page-list
     $('.page-item').click(function () {
