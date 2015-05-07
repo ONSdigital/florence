@@ -48,7 +48,7 @@ function viewCollectionDetails(collectionId) {
           pageDataRequests.push(getPageData(collectionId, uri,
             success = function (response) {
               var path = response.uri ? response.uri : uri.replace('/data.json', '');
-              var pageTitle = response.title ? response.title : response.name;
+              var pageTitle = response.name;
               uri_list.push({path: path, name: pageTitle});
             },
             error = function (response) {
