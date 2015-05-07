@@ -1,4 +1,4 @@
-function setupFlorence () {
+function setupFlorence() {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
   Handlebars.registerPartial("editNav", templates.editNav);
@@ -14,49 +14,49 @@ function setupFlorence () {
 
   // dirty checks on admin menu
   adminMenu.on('click', '.nav--admin__item', function () {
-    if(Florence.Editor.isDirty) {
+    if (Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
       if (result === true) {
         Florence.Editor.isDirty = false;
+        processMenuClick(this);
         return true;
       } else {
         return false;
       }
+    } else {
+      processMenuClick(this);
     }
   });
 
   window.onbeforeunload = function () {
-    if(Florence.Editor.isDirty) {
+    if (Florence.Editor.isDirty) {
       return 'You have unsaved changes.';
     }
   };
 
-  adminMenu.on('click', '.nav--admin__item', function () {
-    $('.nav--admin__item').removeClass('selected');
-    $(this).addClass('selected');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--collections', function () {
-    viewController('collections');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--users', function () {
-    viewController('users-and-access');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--publish', function () {
-    viewController('publish');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--login', function () {
-    viewController('login');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--logout', function () {
-    logout();
-    viewController();
-  });
-
   viewController();
+
+  function processMenuClick(clicked) {
+    $('.nav--admin__item').removeClass('selected');
+
+    Florence.collection = {};
+    Florence.refreshAdminMenu();
+
+    var menuItem = $(clicked);
+    menuItem.addClass('selected');
+
+    if (menuItem.hasClass("nav--admin__item--collections")) {
+      viewController('collections');
+    } else if (menuItem.hasClass("nav--admin__item--users")) {
+      viewController('users-and-access');
+    } else if (menuItem.hasClass("nav--admin__item--publish")) {
+      viewController('publish');
+    } else if (menuItem.hasClass("nav--admin__item--login")) {
+      viewController('login');
+    } else if (menuItem.hasClass("nav--admin__item--logout")) {
+      logout();
+      viewController();
+    }
+  }
 }
 
