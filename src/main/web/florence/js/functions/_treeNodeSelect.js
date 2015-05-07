@@ -13,4 +13,18 @@ function treeNodeSelect(url){
   $('.tree-nav-holder ul').removeClass('active');
   $(selectedListItem).parents('ul').addClass('active');
   $(selectedListItem).closest('li').children('ul').addClass('active');
+
+
+  $('.btn-browse-edit').click(function () {
+    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+    viewWorkspace(dest, Florence.collection.id, 'edit');
+    });
+  $('.btn-browse-create').click(function () {
+    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+    viewWorkspace(dest, Florence.collection.id, 'create');
+  });
+//  $('.btn-browse-delete').click(function () {
+//    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+//
+//  });
 }

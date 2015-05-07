@@ -21,7 +21,7 @@ function viewCollections(collectionId) {
       }
     });
 
-    var collectionsHtml = templates.collections(response);
+    var collectionsHtml = templates.collectionList(response);
     $('.section').html(collectionsHtml);
 
     $('.collections-select-table tbody tr').click(function () {

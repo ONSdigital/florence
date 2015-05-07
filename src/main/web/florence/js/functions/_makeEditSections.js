@@ -3,6 +3,10 @@ function makeEditSections(collectionId, pageData) {
   var html = templates.workEdit(pageData);
   $('.workspace-menu').html(html);
 
+//  $('.btn-edit-cancel').click(function (collectionId) {
+//    viewWorkspace('', collectionId, 'browse');
+//  });
+
   if (pageData.type === 'bulletin') {
     accordion();
     bulletinEditor(collectionId, pageData);

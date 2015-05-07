@@ -15,18 +15,18 @@ function datasetEditor(collectionName, data) {
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
 
-  $("#metadata-a").remove();
-  $("#metadata-b").remove();
-  $("#summary").remove();
-  $("#abstract").remove();
-  $("#headline1-p").remove();
-  $("#headline2-p").remove();
-  $("#headline3-p").remove();
   $("#collapsible").remove();
   $("#relBulletin").remove();
   $("#relArticle").remove();
   $("#extLink").remove();
   $("#content").remove();
+  $("#metadata-a").remove();
+  $("#metadata-b").remove();
+  $("#summary-p").remove();
+  $("#abstract-p").remove();
+  $("#headline1-p").remove();
+  $("#headline2-p").remove();
+  $("#headline3-p").remove();
 
 
   // Metadata edition and saving

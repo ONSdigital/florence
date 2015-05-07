@@ -1,6 +1,6 @@
 <div class="section-head">
   <h2>{{date}}</h2>
-  <p>The following collection(s) have been approved</p>
+  <p>{{subtitle}}</p>
 </div>
 
 <div class="section-content section-content--fullwidth">
@@ -17,7 +17,7 @@
           {{#each pageDetails}}
           <li><span class="page-item" data-path="{{uri}}">{{name}}</span>
             <div class="page-options">
-              <button class="">Remove from this publish</button>
+              <button class="btn-page-delete">Remove from this publish</button>
             </div>
           </li>
           {{/each}}
@@ -29,5 +29,5 @@
 </div>
 
 <nav class="section-nav">
-  <button class="btn-cancel">Cancel</button>
+  <button class="btn-edit-cancel">Cancel</button>
 </nav>
