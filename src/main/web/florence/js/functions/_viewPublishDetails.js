@@ -2,11 +2,14 @@ function viewPublishDetails(collections) {
 
   var result = {
     date: Florence.collectionToPublish.publishDate,
+    subtitle: '',
     collectionDetails: [],
   }
   var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+  var onlyOne = 0;
 
   $.each(collections, function (i, collectionId) {
+    onlyOne += 1;
     pageDataRequests.push(
       getCollectionDetails(collectionId,
         success = function (response) {
@@ -20,6 +23,11 @@ function viewPublishDetails(collections) {
       )
     );
   });
+  if (onlyOne < 2) {
+    result.subtitle = 'The following collection has been approved'
+  } else {
+    result.subtitle = 'The following collections have been approved'
+  }
   $.when.apply($, pageDataRequests).then(function () {
     var publishDetails = templates.publishDetails(result);
 //    console.log(publishDetails);

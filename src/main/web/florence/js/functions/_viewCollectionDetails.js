@@ -29,7 +29,7 @@ function viewCollectionDetails(collectionId) {
     ProcessPages(collection.complete);
     ProcessPages(collection.reviewed);
 
-    var collectionHtml = window.templates.collection(collection);
+    var collectionHtml = window.templates.collectionDetails(collection);
     $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
     //page-list
