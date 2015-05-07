@@ -31,21 +31,24 @@ function loadChartBuilder() {
       chart.title = '[Title]'
     }
 
-    uhuh = tsvJSON(chart.data);
-    etet = tsvJSONval(chart.data);
+    jsonData = tsvJSON(chart.data);
+    series = tsvJSONColNames(chart.data);
+    rows = tsvJSONRowNames(chart.data);
 
     c3.generate({
       bindto: '#chart',
       data: {
-        json: uhuh,
+        json: jsonData,
         keys: {
-          value: etet
+          value: series
         },
         type: chart.type
       },
       axis: {
         x: {
-          label: chart.xaxis
+          label: chart.xaxis,
+          type: 'category',
+          categories: rows
         },
         y: {
           label: chart.yaxis
@@ -94,13 +97,23 @@ function loadChartBuilder() {
       }
       result.push(obj);
     }
-    p = JSON.stringify(result);
-    //console.log(p)
-    //return result; //JavaScript object
+
     return result //JSON
   }
 
-  function tsvJSONval (input) {
+  function tsvJSONRowNames (input) {
+      var lines=input.split("\n");
+      var result = [];
+
+      for(var i=1;i<lines.length;i++){
+        var currentline=lines[i].split("\t");
+        result.push(currentline[0]);
+        }
+
+        return result
+  }
+
+  function tsvJSONColNames (input) {
     var lines=input.split("\n");
     var headers=lines[0].split("\t");
     headers.shift();
