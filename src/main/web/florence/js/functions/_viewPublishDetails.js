@@ -10,9 +10,8 @@ function viewPublishDetails(collections) {
     pageDataRequests.push(
       getCollectionDetails(collectionId,
         success = function (response) {
-          function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
           console.log(response);
-          response.reviewed = response.reviewed.filter(function(page) { return isJsonFile(page.uri) });
+          response.reviewed = response.reviewed.filter(function(page) { return PathUtils.isJsonFile(page.uri) });
           result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
         },
         error = function (response) {
