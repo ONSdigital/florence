@@ -6,7 +6,7 @@ var PathUtils = {
 
 // if running in a node environment export this as a module.
 if (typeof module !== 'undefined') {
-  module.exports = StringUtils;
+  module.exports = PathUtils;
 }
 
 
