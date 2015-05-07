@@ -6,7 +6,7 @@ var PathUtils = {
 
 // if running in a node environment export this as a module.
 if (typeof module !== 'undefined') {
-  module.exports = StringUtils;
+  module.exports = PathUtils;
 }
 
 
@@ -2301,8 +2301,8 @@ function delete_cookie(name) {
     $('.workspace-edit :input').on('input', function () {
       Florence.Editor.isDirty = true;
       // remove the handler now we know content has changed.
-      $(':input').unbind('input');
-      //console.log('Changes detected.');
+      //$(':input').unbind('input');
+      console.log('Changes detected.');
     });
   }
 }
@@ -2689,13 +2689,6 @@ function viewCollectionDetails(collectionId) {
 
     Florence.setActiveCollection(collection);
 
-    // start building the data object for the template.
-    var collectionDetails = {
-      name: Florence.collection.name,
-      date: Florence.collection.date
-    };
-
-
     if (collection.inProgress !== 0 || collection.complete !== 0) {
       // You can't approve collections unless there is nothing left to be reviewed
       $('.fl-finish-collection-button').hide();
@@ -2706,11 +2699,17 @@ function viewCollectionDetails(collectionId) {
       });
     }
 
+    collection.date = StringUtils.formatIsoFullDateString(collection.publishDate);
+
+    ProcessPages(collection.inProgress);
+    ProcessPages(collection.complete);
+    ProcessPages(collection.reviewed);
+
     var collectionHtml = window.templates.collection(collection);
     $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
     //page-list
-    $('.page-item').click(function() {
+    $('.page-item').click(function () {
       $('.page-list li').removeClass('selected');
       $('.page-options').hide();
 
@@ -2729,11 +2728,11 @@ function viewCollectionDetails(collectionId) {
       viewCollectionDetails(collectionId);
     });
 
-    $('.collection-selected .btn-edit-cancel').click(function(){
+    $('.collection-selected .btn-edit-cancel').click(function () {
       $('.collection-selected').stop().animate({right: "-50%"}, 500);
       $('.collections-select-table tbody tr').removeClass('selected');
       // Wait until the animation ends
-      setTimeout(function(){
+      setTimeout(function () {
         viewController('collections');
       }, 500);
     });
@@ -2744,6 +2743,13 @@ function viewCollectionDetails(collectionId) {
 
     $('.btn-collection-approve').click(function () {
       approve(collectionId);
+    });
+  }
+
+  function ProcessPages(pages) {
+    _.each(pages, function (page) {
+      page.uri = page.uri.replace('/data.json', '')
+      return page;
     });
   }
 }
