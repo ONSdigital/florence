@@ -40,6 +40,9 @@ function viewCollectionDetails(collectionId) {
       var uri_list = [];
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
       var collectionHtml;
+
+      uris = uris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
+
       $.each(uris, function (i, uri) {
         if (uri.length === 0) {
           collectionDetails[status] = [];
