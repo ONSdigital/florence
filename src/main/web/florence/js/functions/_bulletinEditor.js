@@ -17,6 +17,9 @@ function bulletinEditor(collectionName, data) {
 
   //console.log(data.sections);
 
+  $("#metadata-a").remove();
+  $("#metadata-d").remove();
+  $("#abstract").remove();
   $("#description-p").remove();
   $("#relArticle").remove();
   $("#relDataset").remove();
@@ -25,9 +28,9 @@ function bulletinEditor(collectionName, data) {
   $("#note").remove();
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.name = $(this).val();
   });
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -56,6 +59,10 @@ function bulletinEditor(collectionName, data) {
   $("#headline3").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.headline3 = $(this).val();
+  });
+  $("#keywords").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.keywords = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
