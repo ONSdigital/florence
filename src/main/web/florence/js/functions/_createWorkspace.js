@@ -13,7 +13,13 @@ function createWorkspace(path, collectionName, menu) {
   var workSpace = templates.workSpace(Florence.tredegarBaseUrl + path);
   $('.section').html(workSpace);
 
-  setupIframeHandler();
+  $('iframe').load(function() {
+    var iframe = $('iframe');
+    var browserLocation = iframe.contents().get(0).location.href;
+    $('.browser-location').val(browserLocation);
+    iframe.contents().on('click', 'a', Florence.Handler);
+  });
+
   viewWorkspace(path, collectionName, menu);
 }
 

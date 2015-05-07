@@ -23,30 +23,43 @@ Florence.collectionToPublish = {};
 
 Florence.Authentication = {
   accessToken: function () {
-    function getCookieValue(a, b) {
-      b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
-      return b ? b.pop() : '';
-    }
-
-    return getCookieValue("access_token");
+    return CookieUtils.getCookieValue("access_token");
   },
   isAuthenticated: function () {
-    return accessToken() !== ''
+    return Florence.Authentication.accessToken() !== ''
   }
 };
 
 Florence.Handler = function () {
-  setTimeout(function () {
-    checkForPageChanged(function(newUrl) {
-      var browserLocation = document.getElementById('iframe').contentWindow.location.href;
-      $('.browser-location').val(browserLocation);
-      if ($('.workspace-edit').length) {
-        loadPageDataIntoEditor(newUrl, Florence.collection.id);
-      }
-      else if ($('.workspace-browse').length) {
-        treeNodeSelect(newUrl);
-      }
-    });
+
+
+  if (Florence.Editor.isDirty) {
+    var result = confirm("You have unsaved changes. Are you sure you want to continue");
+    if (result === true) {
+      Florence.Editor.isDirty = false;
+      processPreviewClick(this);
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    processPreviewClick(this);
+  }
+
+  function processPreviewClick() {
+    setTimeout(function () {
+      checkForPageChanged(function (newUrl) {
+        var browserLocation = document.getElementById('iframe').contentWindow.location.href;
+        $('.browser-location').val(browserLocation);
+        if ($('.workspace-edit').length) {
+          loadPageDataIntoEditor(newUrl, Florence.collection.id);
+        }
+        else if ($('.workspace-browse').length) {
+          treeNodeSelect(newUrl);
+        }
+      });
+    }, 200);
+
     console.log('iframe inner clicked');
-  }, 200);
+  }
 };
