@@ -11,7 +11,6 @@ function viewPublishDetails(collections) {
       getCollectionDetails(collectionId,
         success = function (response) {
           function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-          console.log(response);
           response.reviewed = response.reviewed.filter(function(page) { return isJsonFile(page.uri) });
           result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
         },
@@ -25,18 +24,25 @@ function viewPublishDetails(collections) {
     var publishDetails = templates.publishDetails(result);
 //    console.log(publishDetails);
     $('.publish-selected').html(publishDetails);
-    console.log(JSON.stringify(result));
-  });
+    $('.collections-accordion').accordion({
+      header: '.collections-section__head',
+      heightStyle: "content",
+      active: false,
+      collapsible: true
+    });
+    //page-list
+    $('.page-item').click(function(){
+      $('.page-list li').removeClass('selected');
+      $('.page-options').hide();
 
-  $('.collections-accordion').accordion({
-    header: '.collections-section__head',
-    active: false,
-    collapsible: true
-  });
-
-  $('.publish-selected .btn-cancel').click(function(){
-    $('.publish-selected').animate({right: "-50%"}, 500);
-    $('.publish-select').animate({marginLeft: "25%"}, 800);
-    $('.publish-select-table tbody tr').removeClass('selected');
+      $(this).parent('li').addClass('selected');
+      // $(this).addClass('page-item--selected');
+      $(this).next('.page-options').show();
+    });
+    $('.publish-selected .btn-cancel').click(function(){
+      $('.publish-selected').animate({right: "-50%"}, 500);
+      $('.publish-select').animate({marginLeft: "25%"}, 800);
+      $('.publish-select-table tbody tr').removeClass('selected');
+    });
   });
 }

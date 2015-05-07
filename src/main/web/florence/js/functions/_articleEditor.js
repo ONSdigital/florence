@@ -16,7 +16,13 @@ function articleEditor(collectionName, data) {
 
   //console.log(data.sections);
 
+  $("#metadata-b").remove();
+  $("#metadata-d").remove();
   $("#nextRelease").remove();
+  $("#summary").remove();
+  $("#headline1-p").remove();
+  $("#headline2-p").remove();
+  $("#headline3-p").remove();
   $("#description-p").remove();
   $("#relBulletin").remove();
   $("#relDataset").remove();
@@ -26,33 +32,25 @@ function articleEditor(collectionName, data) {
 
 
   // Metadata edition and saving
-  $("#title").val(data.title).on('click keyup', function () {
+  $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.name = $(this).val();
   });
-  $("#contactName").val(data.contact.name).on('click keyup', function () {
+  $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.name = $(this).val();
   });
-  $("#contactEmail").val(data.contact.email).on('click keyup', function () {
+  $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
-  $("#summary").val(data.summary).on('click keyup', function () {
+  $("#abstract").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
   });
-  $("#headline1").val(data.headline1).on('click keyup', function () {
+  $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline1 = $(this).val();
-  });
-  $("#headline2").val(data.headline2).on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.headline2 = $(this).val();
-  });
-  $("#headline3").val(data.headline3).on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.headline3 = $(this).val();
+    data.keywords = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
