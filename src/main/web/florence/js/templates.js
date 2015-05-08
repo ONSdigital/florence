@@ -97,7 +97,7 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
 },"2":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "          <li class=\"selected\">Working on: "
+  return "          <li class=\"nav--admin__item--collection selected\">Working on: "
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
     + "</li>\n";
 },"4":function(depth0,helpers,partials,data) {
