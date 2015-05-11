@@ -23,12 +23,6 @@ function viewWorkspace(path, collectionName, menu) {
     $("#edit").addClass('selected');
     loadPageDataIntoEditor(path, collectionName);
   }
-  else if (menu === 'review') {
-    $('.nav--workspace li').removeClass('selected');
-    $("#review").addClass('selected');
-    loadReviewScreen(collectionName);
-    checkForPageChanged(updateReviewScreen(collectionName));
-  }
 
   //click handlers
   $('.nav--workspace > li').click(function () {
@@ -60,9 +54,6 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateScreen(collectionName);
     } else if (menuItem.is('#edit')) {
       loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
-    } else if (menuItem.is('#review')) {
-      loadReviewScreen(collectionName);
-      checkForPageChanged(updateReviewScreen(collectionName));
     } else {
       loadBrowseScreen();
     }
