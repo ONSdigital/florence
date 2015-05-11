@@ -48,7 +48,10 @@ function loadChartBuilder() {
       chart.xaxis = $('#chart-x-axis').val();
       chart.yaxis = $('#chart-y-axis').val();
 
+      chart.legend = $('#chart-legend').val();
+      chart.hideLegend = (chart.legend == 'false') ? true : false;
 
+      console.log(chart.legend + " " + chart.hideLegend);
 
       if(chart.title == '') {
         chart.title = '[Title]'
@@ -97,6 +100,10 @@ function loadChartBuilder() {
 
     var rotate = (chart.rotated ? true : false);
 
+    // work out position for chart legend
+    var seriesCount = (chart.data.length == 0) ? 0 : Object.keys(chart.data[0]).length - 1;
+    var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 5 : 5;
+
     c3.generate({
       bindto: bindTag,
       data: {
@@ -106,6 +113,15 @@ function loadChartBuilder() {
         },
         type: chart.type
       },
+     legend: {
+       hide: chart.hideLegend,
+       position: 'inset',
+       inset: {
+         anchor: chart.legend,
+         x: 10,
+         y: yOffset
+        }
+       },
       axis: {
         x: {
           label: chart.xaxis,
