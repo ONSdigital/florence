@@ -109,8 +109,13 @@ var StringUtils = {
       return numberOfLinesCovered;
     }
 
-    //console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
+    if (actualLineLength === 0) {
+      actualLineLength = maxLineLength;
+    }
 
+    //if(numberOfLinesCovered < 30) {
+    //  console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
+    //}
     return StringUtils.textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
   },
 
