@@ -51,9 +51,9 @@ function viewCollectionDetails(collectionId) {
     });
     $('.btn-page-delete').click(function () {
       var path = $(this).attr('data-path')
-      deleteContent(collectionId, path, success, error);
+      deleteContent(collectionId, path, function() { viewCollectionDetails(collectionId); }, error);
       console.log('File deleted');
-      viewCollectionDetails(collectionId);
+
     });
 
     $('.collection-selected .btn-edit-cancel').click(function () {

@@ -37,12 +37,13 @@ function setupFlorence() {
   viewController();
 
   function processMenuClick(clicked) {
-    $('.nav--admin__item').removeClass('selected');
 
     Florence.collection = {};
-    Florence.refreshAdminMenu();
+    $('.nav--admin__item--collection').hide();
+    $('.nav--admin__item').removeClass('selected');
 
     var menuItem = $(clicked);
+
     menuItem.addClass('selected');
 
     if (menuItem.hasClass("nav--admin__item--collections")) {

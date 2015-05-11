@@ -1,7 +1,7 @@
 <ul class="nav nav--admin">
     {{#if this.Authentication.isAuthenticated}}
         {{#if this.collection.name}}
-          <li class="selected">Working on: {{this.collection.name}}</li>
+          <li class="nav--admin__item--collection selected">Working on: {{this.collection.name}}</li>
         {{/if}}
     {{/if}}
   <li class="nav--admin__item nav--admin__item--collections {{#if this.Authentication.isAuthenticated}}selected{{/if}}">
