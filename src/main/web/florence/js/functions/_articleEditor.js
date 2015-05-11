@@ -29,6 +29,8 @@ function articleEditor(collectionName, data) {
   $("#headline2-p").remove();
   $("#headline3-p").remove();
   $("#description-p").remove();
+  $("#migrated").remove();
+  $("#natStat").remove();
 
 
   // Metadata edition and saving

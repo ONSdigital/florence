@@ -26,6 +26,7 @@ function bulletinEditor(collectionName, data) {
   $("#metadata-d").remove();
   $("#abstract-p").remove();
   $("#description-p").remove();
+  $("#migrated").remove();
 
   // Metadata load, edition and saving
   $("#name").on('click keyup', function () {
