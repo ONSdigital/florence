@@ -2325,14 +2325,15 @@ function delete_cookie(name) {
       pageData = $('.fl-editor__headline').val();
       saveAndReviewContent(collectionId, getPathName(), pageData);
     });
-
-    $('.workspace-edit :input').on('input', function () {
-      Florence.Editor.isDirty = true;
-      // remove the handler now we know content has changed.
-      $(':input').unbind('input');
-      //console.log('Changes detected.');
-    });
   }
+
+  // Listen on all input within the workspace edit panel for dirty checks.
+  $('.workspace-edit :input').on('input', function () {
+    Florence.Editor.isDirty = true;
+    // remove the handler now we know content has changed.
+    $(':input').unbind('input');
+    console.log('Changes detected.');
+  });
 }
 
 function refreshEditNavigation() {
