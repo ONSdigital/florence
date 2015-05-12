@@ -45,7 +45,7 @@ function loadChartBuilder(onSave) {
         $('.chart-builder').stop().fadeOut(200).remove();
       }
     });
-  });
+  };
 
   // Builds, parses, and renders our chart
   function renderChart() {
@@ -74,9 +74,6 @@ function loadChartBuilder(onSave) {
       chart.title = $('#chart-title').val();
       chart.subtitle = $('#chart-subtitle').val();
       chart.unit = $('#chart-unit').val();
-
-      chart.xaxis = $('#chart-x-axis').val();
-      chart.yaxis = $('#chart-y-axis').val();
 
       chart.legend = $('#chart-legend').val();
       chart.hideLegend = (chart.legend == 'false') ? true : false;
@@ -126,13 +123,13 @@ function loadChartBuilder(onSave) {
   function renderChartObject(bindTag, chart) {
     var padding = 25;
     if(chart.subtitle != '') { padding += 16; }
-    if(chart.unit != '') {padding += 24; }
+    if(chart.unit != '' && chart.rotated == false) {padding += 24; }
 
     var rotate = (chart.rotated ? true : false);
 
     // work out position for chart legend
     var seriesCount = (chart.data.length == 0) ? 0 : Object.keys(chart.data[0]).length - 1;
-    var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 5 : 5;
+    var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
 
     c3.generate({
       bindto: bindTag,
@@ -159,7 +156,7 @@ function loadChartBuilder(onSave) {
           categories: chart.categories
         },
         y: {
-          label: chart.yaxis
+          label: chart.rotated ? chart.unit : ''
         },
         rotated: rotate
       },
@@ -173,11 +170,11 @@ function loadChartBuilder(onSave) {
       }
     });
 
-    var svg = d3.select("#chart svg")
+    var svg = d3.select(bindTag + " svg")
       .attr("viewBox", "0 0 880 320")
       .attr("preserveAspectRatio", "xMinYMin meet");
 
-    d3.select('#chart svg').append('text')
+    d3.select(bindTag + ' svg').append('text')
       .attr('x', 20)
       .attr('y', 18)
       .attr('text-anchor', 'left')
@@ -186,7 +183,7 @@ function loadChartBuilder(onSave) {
       .text(chart.title);
 
     if(chart.subtitle != '') {
-      d3.select('#chart svg').append('text')
+      d3.select(bindTag + ' svg').append('text')
         .attr('x', 20)
         .attr('y', 36)
         .attr('text-anchor', 'left')
@@ -195,8 +192,8 @@ function loadChartBuilder(onSave) {
         .text(chart.subtitle);
         }
 
-    if(chart.unit != '') {
-      d3.select('#chart svg').append('text')
+    if(chart.unit != '' && chart.rotated == false) {
+      d3.select(bindTag + ' svg').append('text')
         .attr('x', 20)
         .attr('y', padding - 8)
         .attr('text-anchor', 'left')
@@ -210,6 +207,7 @@ function loadChartBuilder(onSave) {
     var padding = 25;
     var chart = timeSubchart(timechart, period);
 
+    // Create a dictionary so we can reverse lookup a tooltip label
     var dates_to_label = {};
     _.each(chart.data, function(data_point) {
         dates_to_label[data_point.date] = data_point.label;
@@ -243,9 +241,6 @@ function loadChartBuilder(onSave) {
                   return x.getFullYear();
               }
               }
-        },
-        y: {
-          label: chart.yaxis
         }
       },
       tooltip: {
@@ -263,7 +258,7 @@ function loadChartBuilder(onSave) {
       }
     });
 
-    d3.select('#chart svg').append('text')
+    d3.select(bindTag + ' svg').append('text')
       .attr('x', 20)
       .attr('y', 18)
       .attr('text-anchor', 'left')
@@ -272,7 +267,7 @@ function loadChartBuilder(onSave) {
       .text(chart.title);
 
     if(chart.subtitle != '') {
-      d3.select('#chart svg').append('text')
+      d3.select(bindTag + ' svg').append('text')
         .attr('x', 20)
         .attr('y', 36)
         .attr('text-anchor', 'left')
@@ -282,7 +277,7 @@ function loadChartBuilder(onSave) {
         }
 
     if(chart.unit != '') {
-      d3.select('#chart svg').append('text')
+      d3.select(bindTag + ' svg').append('text')
         .attr('x', 20)
         .attr('y', padding - 8)
         .attr('text-anchor', 'left')
