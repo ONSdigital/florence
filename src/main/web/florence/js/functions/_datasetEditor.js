@@ -120,7 +120,7 @@ function datasetEditor(collectionName, data) {
     $('#sortable-download').append(
         '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
-        '    <p><input type="file" name="files" id="files" multiple>' +
+        '    <p><input type="file" name="files" id="files">' +
         '    <p>' +
         '  </form>' +
         '  <div id="response"></div>' +

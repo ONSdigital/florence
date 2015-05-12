@@ -1,4 +1,6 @@
 function loadChartBuilder() {
+  var pageUrl = localStorage.getItem('pageurl');
+
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display","block");
@@ -14,16 +16,38 @@ function loadChartBuilder() {
   });
 
   $('.btn-chart-builder-create').on('click', function() {
-    $('.chart-builder').fadeOut(200).remove();
+     chart.title = $('#chart-title').val();
+     var uriUploadSVG = pageUrl + "/" + chart.title + ".svg";
+     var uriUploadJSON = pageUrl + "/" + chart.title + ".json";
+
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
+      type: "POST",
+      data: exportToSVG (),
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        console.log("SVG uploaded successfully");
+      }
+    });
+
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
+      type: "POST",
+      data: JSON.stringify(buildChartObject()),
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        console.log("JSON uploaded successfully");
+        $('.chart-builder').stop().fadeOut(200).remove();
+      }
+    });
   });
-
-
 
   function renderChart() {
     var chart = buildChartObject();
     renderChartObject('#chart', chart);
   }
-
 
   function buildChartObject() {
       json = $('#chart-data').val();
@@ -69,6 +93,10 @@ function loadChartBuilder() {
         }
       }
     });
+
+    var svg = d3.select("#chart svg")
+      .attr("viewBox", "0 0 880 320")
+      .attr("preserveAspectRatio", "xMinYMin meet");
 
     d3.select('#chart svg').append('text')
       .attr('x', d3.select('#chart svg').node().getBoundingClientRect().width / 2)
@@ -131,7 +159,26 @@ function loadChartBuilder() {
     var lines=input.split("\n");
     var headers=lines[0].split("\t");
     headers.shift();
-    console.log(headers);
     return headers;
+  }
+
+  function exportToSVG () {
+    var tmp = document.getElementById('chart');
+    var svg = tmp.getElementsByTagName('svg')[0];
+    if ($('#chart-type').val() === 'line') {
+      $('.c3 line').css("fill", "none");
+      console.log($('.c3 line'))
+    }
+    var source = (new XMLSerializer).serializeToString(svg);
+    //add name spaces.
+    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
+        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+    //add xml declaration
+    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+    return source;
   }
 }
