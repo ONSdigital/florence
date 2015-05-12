@@ -15,17 +15,115 @@
 <script type="text/javascript" src="js/third-party/c3.js"></script>
 <script type="text/javascript">
 
-  (function() {
+  (function () {
 
-    var chart = c3.generate({
-      data: {
-        columns: [
-          ['data1', 30, 200, 100, 400, 150, 250],
-          ['data2', 50, 20, 10, 40, 15, 25]
-        ]
+    var path = getParameterByName('path');
+    //var baseUrl = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+    //var full = baseUrl + '/zebedee' + path + '.json';
+
+    $.ajax({
+      url: "/zebedee/content/" + getCookieValue('collection') + "?uri=" + path,
+      type: "GET",
+      success: function (data) {
+        renderChartObject('#chart', data);
       }
     });
 
+    function getCookieValue(a, b) {
+      b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
+      return b ? b.pop() : '';
+    }
+
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    // Do the rendering
+    function renderChartObject(bindTag, chart) {
+      var padding = 25;
+      if (chart.subtitle != '') {
+        padding += 16;
+      }
+      if (chart.unit != '') {
+        padding += 24;
+      }
+
+      var rotate = (chart.rotated ? true : false);
+
+      // work out position for chart legend
+      var seriesCount = (chart.data.length == 0) ? 0 : Object.keys(chart.data[0]).length - 1;
+      var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 5 : 5;
+
+      c3.generate({
+        bindto: bindTag,
+        data: {
+          json: chart.data,
+          keys: {
+            value: chart.series
+          },
+          type: chart.type
+        },
+        legend: {
+          hide: chart.hideLegend,
+          position: 'inset',
+          inset: {
+            anchor: chart.legend,
+            x: 10,
+            y: yOffset
+          }
+        },
+        axis: {
+          x: {
+            label: chart.xaxis,
+            type: 'category',
+            categories: chart.categories
+          },
+          y: {
+            label: chart.yaxis
+          },
+          rotated: rotate
+        },
+        grid: {
+          y: {
+            show: true
+          }
+        },
+        padding: {
+          top: padding
+        }
+      });
+
+      d3.select('#chart svg').append('text')
+          .attr('x', 20)
+          .attr('y', 18)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.6em')
+          .style('fill', '#000000')
+          .text(chart.title);
+
+      if (chart.subtitle != '') {
+        d3.select('#chart svg').append('text')
+            .attr('x', 20)
+            .attr('y', 36)
+            .attr('text-anchor', 'left')
+            .style('font-size', '1.2em')
+            .style('fill', '#999999')
+            .text(chart.subtitle);
+      }
+
+      if (chart.unit != '') {
+        d3.select('#chart svg').append('text')
+            .attr('x', 20)
+            .attr('y', padding - 8)
+            .attr('text-anchor', 'left')
+            .style('font-size', '1.2em')
+            .style('fill', '#000000')
+            .text(chart.unit);
+      }
+    }
 
   })();
 
