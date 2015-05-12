@@ -3,6 +3,10 @@ function makeEditSections(collectionId, pageData) {
   var html = templates.workEdit(pageData);
   $('.workspace-menu').html(html);
 
+//  $('.btn-edit-cancel').click(function (collectionId) {
+//    viewWorkspace('', collectionId, 'browse');
+//  });
+
   if (pageData.type === 'bulletin') {
     accordion();
     bulletinEditor(collectionId, pageData);
@@ -52,14 +56,15 @@ function makeEditSections(collectionId, pageData) {
       pageData = $('.fl-editor__headline').val();
       saveAndReviewContent(collectionId, getPathName(), pageData);
     });
-
-    $('.workspace-edit :input').on('input', function () {
-      Florence.Editor.isDirty = true;
-      // remove the handler now we know content has changed.
-      $(':input').unbind('input');
-      //console.log('Changes detected.');
-    });
   }
+
+  // Listen on all input within the workspace edit panel for dirty checks.
+  $('.workspace-edit :input').on('input', function () {
+    Florence.Editor.isDirty = true;
+    // remove the handler now we know content has changed.
+    $(':input').unbind('input');
+    console.log('Changes detected.');
+  });
 }
 
 function refreshEditNavigation() {

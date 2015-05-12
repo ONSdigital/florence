@@ -17,17 +17,21 @@ function bulletinEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $("#description-p").remove();
   $("#relArticle").remove();
   $("#relDataset").remove();
   $("#used").remove();
   $("#download").remove();
   $("#note").remove();
+  $("#metadata-a").remove();
+  $("#metadata-d").remove();
+  $("#abstract-p").remove();
+  $("#description-p").remove();
+  $("#migrated").remove();
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.name = $(this).val();
   });
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -56,6 +60,10 @@ function bulletinEditor(collectionName, data) {
   $("#headline3").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.headline3 = $(this).val();
+  });
+  $("#keywords").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.keywords = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -132,7 +140,35 @@ function bulletinEditor(collectionName, data) {
       });
 
       $(".btn-markdown-editor-chart").click(function(){
-        loadChartBuilder();
+        loadChartBuilder(function(insertValue) {
+
+          insertAtCursor($('#wmd-input')[0], insertValue);
+
+          Florence.Editor.markdownEditor.refreshPreview();
+
+          // http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
+          function insertAtCursor(field, value) {
+            //IE support
+            if (document.selection) {
+              field.focus();
+              sel = document.selection.createRange();
+              sel.text = value;
+            }
+            //MOZILLA and others
+            else if (field.selectionStart || field.selectionStart == '0') {
+              var startPos = field.selectionStart;
+              var endPos = field.selectionEnd;
+              field.value = field.value.substring(0, startPos)
+              + value
+              + field.value.substring(endPos, field.value.length);
+              field.selectionStart = startPos + value.length;
+              field.selectionEnd = startPos + value.length;
+            } else {
+              field.value += value;
+            }
+          }
+
+        });
       });
 
       $("#wmd-input").on('click', function() {

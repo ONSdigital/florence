@@ -1,49 +1,20 @@
-var StringUtils = {
-  textareaLines: function (line, maxLineLength, start, numberOfLinesCovered) {
-
-    if (start + maxLineLength >= line.length) {
-      //console.log('Line Length = ' + numberOfLinesCovered);
-      return numberOfLinesCovered;
-    }
-
-    var substring = line.substr(start, maxLineLength + 1);
-    var actualLineLength = substring.lastIndexOf(' ') + 1;
-
-    if (actualLineLength === maxLineLength) // edge case - the break is at the end of the line exactly with a space after it
-    {
-      actualLineLength--;
-    }
-
-    if (start + actualLineLength === line.length) {
-      return numberOfLinesCovered;
-    }
-
-    //console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
-
-    return StringUtils.textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
-  },
-
-  formatIsoDateString: function(input) {
-    var date = new Date(input);
-    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-    var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
-    return formattedDate;
-  },
-
-  formatIsoFullDateString: function(input) {
-    var date = new Date(input);
-    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-    var formattedDate = $.datepicker.formatDate('DD dd MM yy', date) + ' ' + date.getHours() + ':' + minutes;
-    return formattedDate;
+var CookieUtils = {
+  getCookieValue: function (a, b) {
+    b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
+    return b ? b.pop() : '';
   }
-
 };
 
 // if running in a node environment export this as a module.
-if (typeof module !== 'undefined') { module.exports = StringUtils; }
+if (typeof module !== 'undefined') {
+  module.exports = CookieUtils;
+}
+
+
+
 
 var Florence = Florence || {
-    tredegarBaseUrl: baseURL = 'http://' + window.location.host + '/index.html#!',
+    tredegarBaseUrl: 'http://' + window.location.host + '/index.html#!',
     refreshAdminMenu: function () {
       console.log("refreshing admin menu.." + Florence.Authentication.isAuthenticated())
       var mainNavHtml = templates.mainNav(Florence);
@@ -67,48 +38,107 @@ Florence.collectionToPublish = {};
 
 Florence.Authentication = {
   accessToken: function () {
-    function getCookieValue(a, b) {
-      b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
-      return b ? b.pop() : '';
-    }
-
-    return getCookieValue("access_token");
+    return CookieUtils.getCookieValue("access_token");
   },
   isAuthenticated: function () {
-    return accessToken() !== ''
+    return Florence.Authentication.accessToken() !== ''
   }
 };
 
 Florence.Handler = function () {
-  setTimeout(function () {
-    checkForPageChanged(function(newUrl) {
-      var browserLocation = document.getElementById('iframe').contentWindow.location.href;
-      $('.browser-location').val(browserLocation);
-      if ($('.workspace-edit').length) {
-        loadPageDataIntoEditor(newUrl, Florence.collection.id);
-      }
-      else if ($('.workspace-browse').length) {
-        treeNodeSelect(newUrl);
-      }
-    });
-    console.log('iframe inner clicked');
-  }, 200);
-};setupFlorence();
-
-
-//forms field styling markup injection
-//$('select:not(.small)').wrap('<span class="selectbg"></span>');
-//$('select.small').wrap('<span class="selectbg selectbg--small"></span>');
-//$('.selectbg--small:eq(1)').addClass('selectbg--small--margin');
-//$('.selectbg--small:eq(3)').addClass('float-right');
-function accessToken() {
-  function getCookieValue(a, b) {
-    b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
-    return b ? b.pop() : '';
+  if (Florence.Editor.isDirty) {
+    var result = confirm("You have unsaved changes. Are you sure you want to continue");
+    if (result === true) {
+      Florence.Editor.isDirty = false;
+      processPreviewClick(this);
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    processPreviewClick(this);
   }
-  return getCookieValue("access_token");
+
+  function processPreviewClick() {
+    setTimeout(function () {
+      checkForPageChanged(function (newUrl) {
+        var browserLocation = document.getElementById('iframe').contentWindow.location.href;
+        $('.browser-location').val(browserLocation);
+        if ($('.workspace-edit').length) {
+          loadPageDataIntoEditor(newUrl, Florence.collection.id);
+        }
+        else if ($('.workspace-browse').length) {
+          treeNodeSelect(newUrl);
+        }
+      });
+    }, 200);
+
+    console.log('iframe inner clicked');
+  }
+};var PathUtils = {
+  isJsonFile: function (uri) {
+    return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1
+  }
+};
+
+// if running in a node environment export this as a module.
+if (typeof module !== 'undefined') {
+  module.exports = PathUtils;
 }
-function accordion(active) {
+
+
+
+
+var StringUtils = {
+  textareaLines: function (line, maxLineLength, start, numberOfLinesCovered) {
+
+    if (start + maxLineLength >= line.length) {
+      //console.log('Line Length = ' + numberOfLinesCovered);
+      return numberOfLinesCovered;
+    }
+
+    var substring = line.substr(start, maxLineLength + 1);
+    var actualLineLength = substring.lastIndexOf(' ') + 1;
+
+    if (actualLineLength === maxLineLength) // edge case - the break is at the end of the line exactly with a space after it
+    {
+      actualLineLength--;
+    }
+
+    if (start + actualLineLength === line.length) {
+      return numberOfLinesCovered;
+    }
+
+    if (actualLineLength === 0) {
+      actualLineLength = maxLineLength;
+    }
+
+    //if(numberOfLinesCovered < 30) {
+    //  console.log('Line: ' + numberOfLinesCovered + ' length = ' + actualLineLength);
+    //}
+    return StringUtils.textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
+  },
+
+  formatIsoDateString: function(input) {
+    var date = new Date(input);
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
+    return formattedDate;
+  },
+
+  formatIsoFullDateString: function(input) {
+    var date = new Date(input);
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var formattedDate = $.datepicker.formatDate('DD dd MM yy', date) + ' ' + date.getHours() + ':' + minutes;
+    return formattedDate;
+  }
+
+};
+
+// if running in a node environment export this as a module.
+if (typeof module !== 'undefined') { module.exports = StringUtils; }
+
+setupFlorence();function accordion(active) {
   var activeTab = parseInt(active);
   if(!activeTab){
     activeTab = 'none';
@@ -163,43 +193,43 @@ function approve(collectionId) {
 
   //console.log(data.sections);
 
-  $("#nextRelease").remove();
-  $("#description-p").remove();
   $("#relBulletin").remove();
   $("#relDataset").remove();
   $("#used").remove();
   $("#download").remove();
   $("#note").remove();
+  $("#metadata-b").remove();
+  $("#metadata-d").remove();
+  $("#next-p").remove();
+  $("#summary-p").remove();
+  $("#headline1-p").remove();
+  $("#headline2-p").remove();
+  $("#headline3-p").remove();
+  $("#description-p").remove();
+  $("#migrated").remove();
+  $("#natStat").remove();
 
 
   // Metadata edition and saving
-  $("#title").val(data.title).on('click keyup', function () {
+  $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.name = $(this).val();
   });
-  $("#contactName").val(data.contact.name).on('click keyup', function () {
+  $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.name = $(this).val();
   });
-  $("#contactEmail").val(data.contact.email).on('click keyup', function () {
+  $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
-  $("#summary").val(data.summary).on('click keyup', function () {
+  $("#abstract").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
   });
-  $("#headline1").val(data.headline1).on('click keyup', function () {
+  $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline1 = $(this).val();
-  });
-  $("#headline2").val(data.headline2).on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.headline2 = $(this).val();
-  });
-  $("#headline3").val(data.headline3).on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.headline3 = $(this).val();
+    data.keywords = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -564,17 +594,21 @@ function bulletinEditor(collectionName, data) {
 
   //console.log(data.sections);
 
-  $("#description-p").remove();
   $("#relArticle").remove();
   $("#relDataset").remove();
   $("#used").remove();
   $("#download").remove();
   $("#note").remove();
+  $("#metadata-a").remove();
+  $("#metadata-d").remove();
+  $("#abstract-p").remove();
+  $("#description-p").remove();
+  $("#migrated").remove();
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.name = $(this).val();
   });
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -603,6 +637,10 @@ function bulletinEditor(collectionName, data) {
   $("#headline3").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.headline3 = $(this).val();
+  });
+  $("#keywords").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.keywords = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -679,7 +717,35 @@ function bulletinEditor(collectionName, data) {
       });
 
       $(".btn-markdown-editor-chart").click(function(){
-        loadChartBuilder();
+        loadChartBuilder(function(insertValue) {
+
+          insertAtCursor($('#wmd-input')[0], insertValue);
+
+          Florence.Editor.markdownEditor.refreshPreview();
+
+          // http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
+          function insertAtCursor(field, value) {
+            //IE support
+            if (document.selection) {
+              field.focus();
+              sel = document.selection.createRange();
+              sel.text = value;
+            }
+            //MOZILLA and others
+            else if (field.selectionStart || field.selectionStart == '0') {
+              var startPos = field.selectionStart;
+              var endPos = field.selectionEnd;
+              field.value = field.value.substring(0, startPos)
+              + value
+              + field.value.substring(endPos, field.value.length);
+              field.selectionStart = startPos + value.length;
+              field.selectionEnd = startPos + value.length;
+            } else {
+              field.value += value;
+            }
+          }
+
+        });
       });
 
       $("#wmd-input").on('click', function() {
@@ -925,32 +991,10 @@ function bulletinEditor(collectionName, data) {
   }
 }
 
-function callZebedee(success, error, opts){
-
-  $.ajax({
-    url: "/zebedee/login",
-    dataType: 'json',
-    crossDomain: true,
-    type: 'POST',
-    data: JSON.stringify({
-      email: email,
-      password: password
-    }),
-    success: function (response) {
-      console.log(response);
-      document.cookie = "access_token=" + response;
-      console.log('authenticated');
-    },
-    error: function (response) {
-      console.log('fail');
-    }
-  });
-}
 function checkForPageChanged(onChanged) {
   var iframeUrl = localStorage.getItem("pageurl");
   console.log(iframeUrl)
   var nowUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[1];
-  console.log(nowUrl)
   if (iframeUrl !== nowUrl) {
     if (!onChanged) {
       localStorage.setItem("pageurl", nowUrl);
@@ -961,16 +1005,6 @@ function checkForPageChanged(onChanged) {
       onChanged(nowUrl);
     }
   }
-}
-
-function collectionContent () {
-
-  var view_collection =
-  '<h1 class="collection-name"></h1>' +
-  '<h2>In progress</h2>'+
-  '<section class="fl-collection" id="in-progress-uris"></section>'+
-  '<h2>Approved</h2>'+
-  '<section class="fl-collection" id="approved-uris"></section>';
 }
 
 function getLastEditedEvent(collection, page) {
@@ -1097,9 +1131,23 @@ function createWorkspace(path, collectionName, menu) {
   var workSpace = templates.workSpace(Florence.tredegarBaseUrl + path);
   $('.section').html(workSpace);
 
-  setupIframeHandler();
+  document.getElementById('iframe').onload = function () {
+    var browserLocation = document.getElementById('iframe').contentWindow.location.href;
+    $('.browser-location').val(browserLocation);
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+    iframeEvent.addEventListener('click', Florence.Handler, true);
+  }
+
+  //$('iframe').load(function() {
+  //  var iframe = $('iframe');
+  //  var browserLocation = iframe.contents().get(0).location.href;
+  //  $('.browser-location').val(browserLocation);
+  //  iframe.contents().on('click', Florence.Handler);
+  //});
+
   viewWorkspace(path, collectionName, menu);
-}
+};
+
 
 
 function datasetEditor(collectionName, data) {
@@ -1119,40 +1167,48 @@ function datasetEditor(collectionName, data) {
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
 
-  $("#headline1-p").remove();
-  $("#headline2-p").remove();
-  $("#headline3-p").remove();
   $("#collapsible").remove();
   $("#relBulletin").remove();
   $("#relArticle").remove();
   $("#extLink").remove();
   $("#content").remove();
+  $("#metadata-a").remove();
+  $("#metadata-b").remove();
+  $("#summary-p").remove();
+  $("#abstract-p").remove();
+  $("#headline1-p").remove();
+  $("#headline2-p").remove();
+  $("#headline3-p").remove();
 
 
   // Metadata edition and saving
-  $("#title").val(data.title).on('click keyup', function () {
+  $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.name = $(this).val();
   });
-  $("#nextRelease").val(data.nextRelease).on('click keyup', function () {
+  $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.nextRelease = $(this).val();
   });
-  $("#contactName").val(data.contact.name).on('click keyup', function () {
+  $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.name = $(this).val();
   });
-  $("#contactEmail").val(data.contact.email).on('click keyup', function () {
+  $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
-  $("#summary").val(data.summary).on('click keyup', function () {
+  $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
   });
-  $("#description").val(data.description).on('click keyup', function () {
+  $("#description").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.description = $(this).val();
+  });
+  $("#keywords").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.keywords = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -1262,7 +1318,7 @@ function datasetEditor(collectionName, data) {
                 return;
               }
             });
-            if (!!file.name.match(/\.csv$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -1289,7 +1345,7 @@ function datasetEditor(collectionName, data) {
               });
             }
           } else {
-            if (!!file.name.match(/\.csv$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -1620,9 +1676,9 @@ function deleteContent(collectionName, path, success, error) {
   });
 }
 
-function getCollection(collectionName, success, error) {
+function getCollection(collectionId, success, error) {
   return $.ajax({
-    url: "/zebedee/collection/" + collectionName,
+    url: "/zebedee/collection/" + collectionId,
     dataType: 'json',
     type: 'GET',
     success: function (response) {
@@ -1634,6 +1690,19 @@ function getCollection(collectionName, success, error) {
   });
 }
 
+function getCollectionDetails(collectionId, success, error) {
+  return $.ajax({
+    url: "/zebedee/collectionDetails/" + collectionId,
+    dataType: 'json',
+    type: 'GET',
+    success: function (response) {
+      success(response);
+    },
+    error: function (response) {
+      error(response);
+    }
+  });
+}
 function getPageData(collectionName, path, success, error) {
   return $.ajax({
     url: "/zebedee/content/" + collectionName + "?uri=" + path,
@@ -1697,9 +1766,22 @@ function loadBrowseScreen(click) {
         $('.tree-nav-holder ul').removeClass('active');
         $(this).parents('ul').addClass('active');
         $(this).closest('li').children('ul').addClass('active');
+
+        $('.btn-browse-edit').click(function () {
+          var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+          viewWorkspace(dest, Florence.collection.id, 'edit');
+          });
+        $('.btn-browse-create').click(function () {
+          var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+          viewWorkspace(dest, Florence.collection.id, 'create');
+        });
+//        $('.btn-browse-delete').click(function () {
+//          var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+//
+//        });
       });
 
-      if (click === 'click') {
+      if (click) {
         treeNodeSelect(document.getElementById('iframe').contentWindow.location.href);
       }
 
@@ -1719,7 +1801,7 @@ function loadBrowseScreen(click) {
   });
 }
 
-function loadChartBuilder() {
+function loadChartBuilder(onSave) {
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display","block");
@@ -1735,72 +1817,245 @@ function loadChartBuilder() {
   });
 
   $('.btn-chart-builder-create').on('click', function() {
+    if(onSave) {
+      onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
+    }
     $('.chart-builder').fadeOut(200).remove();
+
   });
 
+  // Builds, parses, and renders our chart
   function renderChart() {
+    var chart = buildChartObject();
+    parseChartObject(chart);
 
-    var chart = {};
-    chart.data = $('#chart-data').val();
-    chart.type = $('#chart-type').val();
-    chart.title = $('#chart-title').val();
-    chart.xaxis = $('#chart-x-axis').val();
-    chart.yaxis = $('#chart-y-axis').val();
-    console.log(chart);
-
-    if(chart.title == '') {
-      chart.title = '[Title]'
+    if(chart.isTimeSeries) {
+      renderTimeseriesChartObject('#chart', chart, chart.period)
+    } else {
+      renderChartObject('#chart', chart);
     }
+  }
 
-    uhuh = tsvJSON(chart.data);
-    etet = tsvJSONval(chart.data);
+  // Pulls data from the
+  function buildChartObject() {
+      json = $('#chart-data').val();
+
+      var chart = {};
+      chart.type = $('#chart-type').val();
+      if(chart.type == 'rotated') {
+        chart.type = 'bar';
+        chart.rotated = true;
+      }
+      chart.period = $('#chart-period').val();
+
+      chart.title = $('#chart-title').val();
+      chart.subtitle = $('#chart-subtitle').val();
+      chart.unit = $('#chart-unit').val();
+
+      chart.xaxis = $('#chart-x-axis').val();
+      chart.yaxis = $('#chart-y-axis').val();
+
+      chart.legend = $('#chart-legend').val();
+      chart.hideLegend = (chart.legend == 'false') ? true : false;
+
+      console.log(chart.legend + " " + chart.hideLegend);
+
+      if(chart.title == '') {
+        chart.title = '[Title]'
+      }
+
+      chart.data = tsvJSON(json);
+      chart.series = tsvJSONColNames(json);
+      chart.categories = tsvJSONRowNames(json);
+
+    return chart;
+  }
+
+  // Transformations to determine render options for this chart
+  // example - is it a time chart - should we flip axes
+  function parseChartObject(chart) {
+
+    // Determine if we have a time series
+    var timeSeries = axisAsTimeSeries(chart.categories);
+    if(timeSeries && timeSeries.length > 0) {
+      chart.isTimeSeries = true;
+      chart.timeSeries = timeSeries;
+
+      // Subseries
+      var subseries = timeSubSeries(timeSeries, 'year');
+      if(subseries.length > 0) { chart.hasYear = true;}
+
+      subseries = timeSubSeries(timeSeries, 'quarter');
+      if(subseries.length > 0) { chart.hasQuarter = true;}
+
+      subseries = timeSubSeries(timeSeries, 'month');
+      if(subseries.length > 0) { chart.hasMonth = true;}
+
+      subseries = timeSubSeries(timeSeries, 'other');
+      if(subseries.length > 0) { chart.hasOtherPeriod = true; }
+
+    } else {
+      chart.isTimeSeries = false;
+    }
+  }
+
+  // Do the rendering
+  function renderChartObject(bindTag, chart) {
+    var padding = 25;
+    if(chart.subtitle != '') { padding += 16; }
+    if(chart.unit != '') {padding += 24; }
+
+    var rotate = (chart.rotated ? true : false);
+
+    // work out position for chart legend
+    var seriesCount = (chart.data.length == 0) ? 0 : Object.keys(chart.data[0]).length - 1;
+    var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 5 : 5;
 
     c3.generate({
-      bindto: '#chart',
+      bindto: bindTag,
       data: {
-        json: uhuh,
+        json: chart.data,
         keys: {
-          value: etet
+          value: chart.series
         },
         type: chart.type
       },
+     legend: {
+       hide: chart.hideLegend,
+       position: 'inset',
+       inset: {
+         anchor: chart.legend,
+         x: 10,
+         y: yOffset
+        }
+       },
       axis: {
         x: {
-          label: chart.xaxis
+          label: chart.xaxis,
+          type: 'category',
+          categories: chart.categories
         },
         y: {
           label: chart.yaxis
+        },
+        rotated: rotate
+      },
+      grid: {
+        y: {
+          show: true
         }
+      },
+      padding: {
+        top: padding
       }
     });
 
     d3.select('#chart svg').append('text')
-      .attr('x', d3.select('#chart svg').node().getBoundingClientRect().width / 2)
-      .attr('y', 16)
-      .attr('text-anchor', 'middle')
-      .style('font-size', '1.4em')
+      .attr('x', 20)
+      .attr('y', 18)
+      .attr('text-anchor', 'left')
+      .style('font-size', '1.6em')
+        .style('fill', '#000000')
       .text(chart.title);
+
+    if(chart.subtitle != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', 36)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#999999')
+        .text(chart.subtitle);
+        }
+
+    if(chart.unit != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', padding - 8)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#000000')
+        .text(chart.unit);
+        }
   }
 
+  function renderTimeseriesChartObject(bindTag, timechart, period) {
+    var padding = 25;
+    var chart = timeSubchart(timechart, period);
 
-  function csvJSON (csv) {
-    var lines=csv.split("\n");
-    var result = [];
-    var headers=lines[0].split(",");
-    values=headers.shift();
+    if(chart.subtitle != '') { padding += 16; }
+    if(chart.unit != '') {padding += 24; }
+    var showPoints = true;
+    if(chart.data.length > 120) { showPoints = false; }
 
-    for(var i=1;i<lines.length;i++){
-      var obj = {};
-      var currentline=lines[i].split(",");
-
-      for(var j=0;j<headers.length;j++){
-        obj[headers[j]] = currentline[j];
+    c3.generate({
+      bindto: bindTag,
+      data: {
+        json: chart.data,
+        keys: {
+          x: 'date',
+          value: chart.series
+        },
+        type: chart.type,
+        xFormat: '%Y-%m-%d %H:%M:%S'
+      },
+      point: {
+        show: showPoints
+      },
+      axis: {
+        x: {
+          label: chart.xaxis,
+          type: 'timeseries',
+          tick: {
+              format: function (x) {
+                  return x.getFullYear();
+              }
+              }
+        },
+        y: {
+          label: chart.yaxis
+        }
+      },
+      grid: {
+        y: {
+          show: true
+        }
+      },
+      padding: {
+        top: padding
       }
-      result.push(obj);
-    }
-    return result; //JSON
+    });
+
+    d3.select('#chart svg').append('text')
+      .attr('x', 20)
+      .attr('y', 18)
+      .attr('text-anchor', 'left')
+      .style('font-size', '1.6em')
+        .style('fill', '#000000')
+      .text(chart.title);
+
+    if(chart.subtitle != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', 36)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#999999')
+        .text(chart.subtitle);
+        }
+
+    if(chart.unit != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', padding - 8)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#000000')
+        .text(chart.unit);
+        }
   }
 
+// Data load from text box functions
   function tsvJSON (input) {
     var lines=input.split("\n");
     var result = [];
@@ -1815,19 +2070,146 @@ function loadChartBuilder() {
       }
       result.push(obj);
     }
-    p = JSON.stringify(result);
-    //console.log(p)
-    //return result; //JavaScript object
+
     return result //JSON
   }
+  function tsvJSONRowNames (input) {
+      var lines=input.split("\n");
+      var result = [];
 
-  function tsvJSONval (input) {
+      for(var i=1;i<lines.length;i++){
+        var currentline=lines[i].split("\t");
+        result.push(currentline[0]);
+        }
+
+        return result
+  }
+  function tsvJSONColNames (input) {
     var lines=input.split("\n");
     var headers=lines[0].split("\t");
     headers.shift();
-    console.log(headers);
     return headers;
   }
+
+// Date conversion support functions
+function axisAsTimeSeries(axis) {
+  var result = [];
+  var rowNumber = 0;
+
+  _.each(axis, function(tryTimeString) {
+    var time = convertTimeString(tryTimeString);
+    if(time) {
+      time.row = rowNumber;
+      rowNumber = rowNumber + 1;
+
+      result.push(time);
+    } else {
+      return null;
+    }
+  });
+  return result;
+}
+function convertTimeString(timeString) {
+    // First time around parse the time string according to rules from regular timeseries
+    var result = {};
+    result.label = timeString;
+
+    // Format of year only
+    var yearVal = tryYear(timeString);
+    if(yearVal) { result.date = yearVal; result.period = 'year'; return result; }
+
+    // Format with year and quarter
+    var quarterVal = tryQuarter(timeString);
+    if(quarterVal) { result.date = quarterVal; result.period = 'quarter'; return result; }
+
+    // Format with year and month
+    var monthVal = tryMonth(timeString);
+    if(monthVal) { result.date = monthVal; result.period = 'month'; return result; }
+
+    // Other format
+    var date = new Date(timeString);
+    if( !isNaN( date.getTime() ) ) {
+        result.date = monthVal; result.period = 'other'; return result;
+        }
+
+    return(null);
+}
+function tryYear(tryString) {
+    var base = tryString.trim();
+    if(base.length != 4) { return null; }
+
+    var date = new Date(tryString);
+
+    return date;
+}
+function tryQuarter(tryString) {
+    var indices = [0, 1, 2, 3];
+    var quarters = ["Q1", "Q2", "Q3", "Q4"];
+    var months = ["Jan", "Apr", "Jul", "Oct"];
+
+    var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
+    if(quarter != null) {
+        var dateString = tryString.replace(quarters[quarter], months[quarter]);
+        return new Date(dateString);
+        }
+    }
+function tryMonth(tryString) {
+    var date = new Date(tryString);
+    if( !isNaN( date.getTime() ) ) {
+        return date;
+        }
+}
+function timeSubSeries(timeSeries, period) {
+  // Period is one of ['year', 'quarter', 'month', 'other']
+   result = [];
+   _.each(timeSeries, function(time) {
+      if(time['period'] == period) {
+        result.push(time);
+      }
+   });
+   return result;
+}
+
+function timeSubchart(chart, period) {
+        var subchart = {};
+
+        subchart.type = chart['type'];
+        if(subchart.type == 'rotated') {
+          subchart.type = 'bar';
+          subchart.rotated = true;
+        }
+
+        subchart.title = chart.title;
+        subchart.subtitle = chart.subtitle;
+        subchart.unit = chart.unit;
+
+        subchart.xaxis = chart.xaxis
+        subchart.yaxis = chart.yaxis
+
+
+        if(chart.title == '') {
+          chart.title = '[Title]'
+        }
+
+        subchart.series = chart.series;
+
+        // Use timeSubSeries to filter the data
+        var subseries = timeSubSeries(chart.timeSeries, period);
+        var subdata = [];
+        var dates = [];
+        var labels = [];
+
+        _.each(subseries, function(time) {
+          var item = chart.data[time['row']];
+          item.date = time['date'];
+          item.label = time['label'];
+          subdata.push(item);
+        })
+
+        subchart.data = subdata;
+
+      return subchart;
+}
 }function loadCreateScreen(collectionId) {
   var html = templates.workCreate;
   $('.workspace-menu').html(html);
@@ -1890,8 +2272,7 @@ function loadReviewScreen(collectionName) {
     var review_list = '';
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
-    function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-    data.completeUris = data.completeUris.filter(function(uri) { return isJsonFile(uri) });
+    data.completeUris = data.completeUris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
 
     $.each(data.completeUris, function (i, uri) {
       pageDataRequests.push(getPageData(collectionName, uri,
@@ -2075,7 +2456,7 @@ function loadT4Creator (collectionName) {
     pageData = pageTypeData(pageType);
     parent = $('#location').val().trim();
     pageName = $('#pagename').val().trim();
-    pageData.title = pageName;
+    pageData.name = pageName;
     uriSection = pageType + "s";
     pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     pageData.fileName = pageNameTrimmed;
@@ -2127,11 +2508,13 @@ function pageTypeData(pageType) {
       "headline2": "",
       "headline3": "",
       "summary": "",
+      "keywords": [],
       "nationalStatistic": "false",
       "relatedBulletins": [],
       "externalLinks": [],
+      "charts": [],
       "correction": [],
-      "title": "",
+      "name": "",
       "releaseDate": "",
       type: pageType,
       "uri": "",
@@ -2150,15 +2533,14 @@ function pageTypeData(pageType) {
       "more": "",
       "sections": [],
       "accordion": [],
-      "headline1": "",
-      "headline2": "",
-      "headline3": "",
-      "summary": "",
+      "abstract": "",
+      "keywords": [],
       "nationalStatistic": "false",
       "relatedArticles": [],
       "externalLinks": [],
+      "charts": [],
       "correction": [],
-      "title": "",
+      "name": "",
       "releaseDate": "",
       type: pageType,
       "uri": "",
@@ -2179,10 +2561,13 @@ function pageTypeData(pageType) {
       "download": [],
       "notes": [],
       "summary": "",
+      "keywords": [],
       "nationalStatistic": "false",
+      "migrated": "false",
       "description": "",
+      "charts": [],
       "correction": [],
-      "title": "",
+      "name": "",
       "releaseDate": "",
       type: pageType,
       "uri": "",
@@ -2221,6 +2606,10 @@ function delete_cookie(name) {
 
   var html = templates.workEdit(pageData);
   $('.workspace-menu').html(html);
+
+//  $('.btn-edit-cancel').click(function (collectionId) {
+//    viewWorkspace('', collectionId, 'browse');
+//  });
 
   if (pageData.type === 'bulletin') {
     accordion();
@@ -2271,14 +2660,15 @@ function delete_cookie(name) {
       pageData = $('.fl-editor__headline').val();
       saveAndReviewContent(collectionId, getPathName(), pageData);
     });
-
-    $('.workspace-edit :input').on('input', function () {
-      Florence.Editor.isDirty = true;
-      // remove the handler now we know content has changed.
-      $(':input').unbind('input');
-      //console.log('Changes detected.');
-    });
   }
+
+  // Listen on all input within the workspace edit panel for dirty checks.
+  $('.workspace-edit :input').on('input', function () {
+    Florence.Editor.isDirty = true;
+    // remove the handler now we know content has changed.
+    $(':input').unbind('input');
+    console.log('Changes detected.');
+  });
 }
 
 function refreshEditNavigation() {
@@ -2296,14 +2686,30 @@ function refreshEditNavigation() {
       handleApiError(response);
     })
 }function markdownEditor() {
-  var converter = Markdown.getSanitizingConverter();
+
+  var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
+
+  converter.hooks.chain("preBlockGamut", function (text) {
+    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match, capture) {
+
+      var path = $(match).attr('path');
+      //console.log("ons chart: " + text + " " + match + " " + path) ;
+      var output = '<iframe src="http://localhost:8081/florence/chart.html?path=' + path + '.json"></iframe>';
+      //console.log(output);
+
+      return '[chart path="' + path + '" ]';
+    });
+
+    return newText;
+  });
 
   Markdown.Extra.init(converter, {
     extensions: "all"
   });
   var editor = new Markdown.Editor(converter);
+  Florence.Editor.markdownEditor = editor;
   editor.hooks.chain("onPreviewRefresh", function () {
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
   });
   editor.run();
 }
@@ -2477,15 +2883,6 @@ function refreshPreview(url) {
   $('#iframe')[0].contentWindow.document.location.reload(true);
 }
 
-function removePreviewColClasses () {
-  $('.fl-panel--preview').removeClass('col--4').removeClass('col--8');
-}
-
-function removeSubMenus () {
-  //$('.fl-panel--sub-menu').hide();
-  $('.fl-panel--sub-menu').empty();
-}
-
 function saveRelated (collectionName, path, content) {
   var iframeEvent = document.getElementById('iframe').contentWindow;
   postContent(collectionName, path, JSON.stringify(content),
@@ -2509,11 +2906,7 @@ function saveRelated (collectionName, path, content) {
       }
     }
   );
-}function setPreviewUrl (url) {
-  //var baseUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[0] + '#!'; //'http://localhost:8081/index.html#!'
-  $('.browser-location').val(Florence.tredegarBaseUrl + url);
-}
-function setupFlorence () {
+}function setupFlorence() {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
   Handlebars.registerPartial("editNav", templates.editNav);
@@ -2529,65 +2922,51 @@ function setupFlorence () {
 
   // dirty checks on admin menu
   adminMenu.on('click', '.nav--admin__item', function () {
-    if(Florence.Editor.isDirty) {
+    if (Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
       if (result === true) {
         Florence.Editor.isDirty = false;
+        processMenuClick(this);
         return true;
       } else {
         return false;
       }
+    } else {
+      processMenuClick(this);
     }
   });
 
   window.onbeforeunload = function () {
-    if(Florence.Editor.isDirty) {
+    if (Florence.Editor.isDirty) {
       return 'You have unsaved changes.';
     }
   };
 
-  adminMenu.on('click', '.nav--admin__item', function () {
-    $('.nav--admin__item').removeClass('selected');
-    $(this).addClass('selected');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--collections', function () {
-    viewController('collections');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--users', function () {
-    viewController('users-and-access');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--publish', function () {
-    viewController('publish');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--login', function () {
-    viewController('login');
-  });
-
-  adminMenu.on('click', '.nav--admin__item--logout', function () {
-    logout();
-    viewController();
-  });
-
   viewController();
-}
 
-function setupIframeHandler() {
-  document.getElementById('iframe').onload = function () {
-    var browserLocation = document.getElementById('iframe').contentWindow.location.href;
-    $('.browser-location').val(browserLocation);
-    prepareEventHandlers();
-  };
-}
+  function processMenuClick(clicked) {
 
-function prepareEventHandlers() {
-//get a specific page ID and assign it as a variable
-  var iframeEvent = document.getElementById('iframe').contentWindow;
-//initiate this function when the ID is clicked
-  iframeEvent.addEventListener('click', Florence.Handler, true);
+    Florence.collection = {};
+    $('.nav--admin__item--collection').hide();
+    $('.nav--admin__item').removeClass('selected');
+
+    var menuItem = $(clicked);
+
+    menuItem.addClass('selected');
+
+    if (menuItem.hasClass("nav--admin__item--collections")) {
+      viewController('collections');
+    } else if (menuItem.hasClass("nav--admin__item--users")) {
+      viewController('users-and-access');
+    } else if (menuItem.hasClass("nav--admin__item--publish")) {
+      viewController('publish');
+    } else if (menuItem.hasClass("nav--admin__item--login")) {
+      viewController('login');
+    } else if (menuItem.hasClass("nav--admin__item--logout")) {
+      logout();
+      viewController();
+    }
+  }
 }
 
 function transfer(source, destination, uri) {
@@ -2626,6 +3005,20 @@ function treeNodeSelect(url){
   $('.tree-nav-holder ul').removeClass('active');
   $(selectedListItem).parents('ul').addClass('active');
   $(selectedListItem).closest('li').children('ul').addClass('active');
+
+
+  $('.btn-browse-edit').click(function () {
+    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+    viewWorkspace(dest, Florence.collection.id, 'edit');
+    });
+  $('.btn-browse-create').click(function () {
+    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+    viewWorkspace(dest, Florence.collection.id, 'create');
+  });
+//  $('.btn-browse-delete').click(function () {
+//    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+//
+//  });
 }
 function updateContent(collectionName, path, content) {
   postContent(collectionName, path, content,
@@ -2650,9 +3043,7 @@ function updateContent(collectionName, path, content) {
 }
 function viewCollectionDetails(collectionId) {
 
-  console.log(collectionId)
-
-  getCollection(collectionId,
+  getCollectionDetails(collectionId,
     success = function (response) {
       populateCollectionDetails(response, collectionId);
     },
@@ -2665,93 +3056,72 @@ function viewCollectionDetails(collectionId) {
 
     Florence.setActiveCollection(collection);
 
-    // start building the data object for the template.
-    var collectionDetails = {
-      name: Florence.collection.name,
-      date: Florence.collection.date
-    };
 
+    collection.date = StringUtils.formatIsoFullDateString(collection.publishDate);
 
-    if (collection.inProgressUris !== 0 || collection.completeUris !== 0) {
-      // You can't approve collections unless there is nothing left to be reviewed
-      $('.fl-finish-collection-button').hide();
-    }
-    else {
-      $('.fl-finish-collection-button').show().click(function () {
+    ProcessPages(collection.inProgress);
+    ProcessPages(collection.complete);
+    ProcessPages(collection.reviewed);
+
+    var collectionHtml = window.templates.collectionDetails(collection);
+    $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
+
+    var approve = $('.btn-collection-approve');
+    if (collection.inProgress.length === 0
+      && collection.complete.length === 0
+      && collection.reviewed.length > 0) {
+      approve.show().click(function () {
         postApproveCollection(collection.id);
       });
     }
-
-    CreateUriListHtml(collection.inProgressUris, collectionId, "inProgress");
-    CreateUriListHtml(collection.completeUris, collectionId, "completed");
-    CreateUriListHtml(collection.reviewedUris, collectionId, "reviewed");
-
-    function CreateUriListHtml(uris, collectionId, status) {
-      var uri_list = [];
-      var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-      var collectionHtml;
-      $.each(uris, function (i, uri) {
-        if (uri.length === 0) {
-          collectionDetails[status] = [];
-        } else {
-          pageDataRequests.push(getPageData(collectionId, uri,
-            success = function (response) {
-              var path = response.uri ? response.uri : uri.replace('/data.json', '');
-              var pageTitle = response.title ? response.title : response.name;
-              uri_list.push({path: path, name: pageTitle});
-            },
-            error = function (response) {
-              handleApiError(response);
-            })
-          );
-        }
-      });
-
-      $.when.apply($, pageDataRequests).then(function () {
-        collectionDetails[status] = uri_list;
-
-        collectionHtml = window.templates.collection(collectionDetails);
-        $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
-
-        //page-list
-        $('.page-item').click(function() {
-          $('.page-list li').removeClass('selected');
-          $('.page-options').hide();
-
-          $(this).parent('li').addClass('selected');
-          $(this).next('.page-options').show();
-        });
-
-        $('.btn-page-edit').click(function () {
-          var path = $(this).attr('data-path');
-            createWorkspace(path, collectionId, 'edit');
-        });
-        $('.btn-page-delete').click(function () {
-          var path = $(this).attr('data-path')
-            deleteContent(collectionId, path, success, error);
-            console.log('File deleted');
-            viewCollectionDetails(collectionId);
-        });
-
-        $('.collection-selected .btn-edit-cancel').click(function(){
-          $('.collection-selected').stop().animate({right: "-50%"}, 500);
-          $('.collections-select-table tbody tr').removeClass('selected');
-          // Wait until the animation ends
-          setTimeout(function(){
-            viewController('collections');
-          }, 500);
-        });
-
-        $('.btn-collection-work-on').click(function () {
-          createWorkspace('', collectionId, 'browse');
-        });
-
-        $('.btn-collection-approve').click(function () {
-          approve(collectionId);
-        });
-
-      });
+    else {
+      // You can't approve collections unless there is nothing left to be reviewed
+      approve.hide();
     }
+
+    //page-list
+    $('.page-item').click(function () {
+      $('.page-list li').removeClass('selected');
+      $('.page-options').hide();
+
+      $(this).parent('li').addClass('selected');
+      $(this).next('.page-options').show();
+    });
+
+    $('.btn-page-edit').click(function () {
+      var path = $(this).attr('data-path');
+      createWorkspace(path, collectionId, 'edit');
+    });
+    $('.btn-page-delete').click(function () {
+      var path = $(this).attr('data-path')
+      deleteContent(collectionId, path, function() { viewCollectionDetails(collectionId); }, error);
+      console.log('File deleted');
+
+    });
+
+    $('.collection-selected .btn-edit-cancel').click(function () {
+      $('.collection-selected').stop().animate({right: "-50%"}, 500);
+      $('.collections-select-table tbody tr').removeClass('selected');
+      // Wait until the animation ends
+      setTimeout(function () {
+        viewController('collections');
+      }, 500);
+    });
+
+    $('.btn-collection-work-on').click(function () {
+      createWorkspace('', collectionId, 'browse');
+    });
+
+    $('.btn-collection-approve').click(function () {
+      approve(collectionId);
+    });
+  }
+
+  function ProcessPages(pages) {
+    _.each(pages, function (page) {
+      page.uri = page.uri.replace('/data.json', '')
+      return page;
+    });
   }
 }
 function viewCollections(collectionId) {
@@ -2777,7 +3147,7 @@ function viewCollections(collectionId) {
       }
     });
 
-    var collectionsHtml = templates.collections(response);
+    var collectionsHtml = templates.collectionList(response);
     $('.section').html(collectionsHtml);
 
     $('.collections-select-table tbody tr').click(function () {
@@ -2800,7 +3170,7 @@ function viewCollections(collectionId) {
   }
 }function viewController(view) {
 
-	if (logged_in()) {
+	if (Florence.Authentication.isAuthenticated()) {
 
 		if (view === 'collections') {
 			viewCollections();
@@ -2821,18 +3191,8 @@ function viewCollections(collectionId) {
 			viewController('collections');
 		}
 	}
-
-	//authentication
   else {
-    //authentication calls collections view for now until authentication is implemented
-    // viewCollections();
-    //viewWorkspace();
 		viewLogIn();
-  }
-
-  function logged_in() {
-    // read the cookie here to see if there is an access token, then check if its valid
-    return accessToken() !== '';
   }
 }
 
@@ -2895,104 +3255,65 @@ function viewPublish() {
       $('.publish-selected').animate({right: "0%"}, 800);
       $('.publish-select').animate({marginLeft: "0%"}, 500);
     });
-
-//    $('.publish-selected .btn-cancel').click(function(){
-//      $('.publish-selected').animate({right: "-50%"}, 500);
-//      $('.publish-select').animate({marginLeft: "25%"}, 800);
-//      $('.publish-select-table tbody tr').removeClass('selected');
-//    });
   }
 }
 
 function viewPublishDetails(collections) {
 
-  var date = Florence.collectionToPublish.publishDate;
-  var collectionDetails = [];
+  var result = {
+    date: Florence.collectionToPublish.publishDate,
+    subtitle: '',
+    collectionDetails: [],
+  }
+  var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+  var onlyOne = 0;
+
   $.each(collections, function (i, collectionId) {
+    onlyOne += 1;
+    pageDataRequests.push(
+      getCollectionDetails(collectionId,
+        success = function (response) {
+          console.log(response);
+          response.reviewed = response.reviewed.filter(function(page) { return PathUtils.isJsonFile(page.uri) });
 
-//    collection_list +=
-//      '<h2 id="fl-panel--publish-collection-' + collection.id + '"  class="fl-panel--publish-collection" data-id="' + collection.id + '">' + collection.name + '</h2>' +
-//      '<div class="fl-panel--publish-collection-' + collection.id + '"></div>';
-
-    getCollection(collectionId,
-      success = function (response) {
-        var page_list = '';
-        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-
-        function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-        response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
-
-        $.each(response.reviewedUris, function (i, uri) {
-          pageDataRequests.push(getPageData(collectionId, uri,
-            success = function (response) {
-              var path = uri.replace('/data.json', '');
-              path = path.length === 0 ? '/' : path;
-              page_list += '<p class="fl-review-page-list-item" data-path="' + path + '">' +
-              response.name + '</p>';
-
-              console.log(response.name);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }));
-        });
-
-        $.when.apply($, pageDataRequests).then(function () {
-          page_list += '</ul>';
-          $('.fl-panel--publish-collection-' + collectionId).html(page_list);
-          //updateReviewScreenWithCollection(response);
-          console.log(page_list);
-        });
-
-      },
-      error = function (response) {
-        handleApiError(response);
-      }
+          result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      )
     );
   });
+  if (onlyOne < 2) {
+    result.subtitle = 'The following collection has been approved'
+  } else {
+    result.subtitle = 'The following collections have been approved'
+  }
+  $.when.apply($, pageDataRequests).then(function () {
+    var publishDetails = templates.publishDetails(result);
+//    console.log(publishDetails);
+    $('.publish-selected').html(publishDetails);
+    $('.collections-accordion').accordion({
+      header: '.collections-section__head',
+      heightStyle: "content",
+      active: false,
+      collapsible: true
+    });
+    //page-list
+    $('.page-item').click(function(){
+      $('.page-list li').removeClass('selected');
+      $('.page-options').hide();
 
-
-
-
-//  $('.collection-name').click(function () {
-//    var collectionId = $(this).attr('data-id');
-//
-//
-//    getCollection(collectionId,
-//      success = function (response) {
-//        var page_list = '';
-//        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-//
-//        function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-//        response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
-//
-//        $.each(response.reviewedUris, function (i, uri) {
-//          pageDataRequests.push(getPageData(collectionId, uri,
-//            success = function (response) {
-//              var path = uri.replace('/data.json', '');
-//              path = path.length === 0 ? '/' : path;
-//              page_list += '<p class="fl-review-page-list-item" data-path="' + path + '">' +
-//              response.name + '</p>';
-//
-//              console.log(response.name);
-//            },
-//            error = function (response) {
-//              handleApiError(response);
-//            }));
-//        });
-//
-//        $.when.apply($, pageDataRequests).then(function () {
-//          page_list += '</ul>';
-//          $('.fl-panel--publish-collection-' + collectionId).html(page_list);
-//          //updateReviewScreenWithCollection(response);
-//
-//        });
-//
-//      },
-//      error = function (response) {
-//        handleApiError(response);
-//      });
-//  });
+      $(this).parent('li').addClass('selected');
+      // $(this).addClass('page-item--selected');
+      $(this).next('.page-options').show();
+    });
+    $('.publish-selected .btn-cancel').click(function(){
+      $('.publish-selected').animate({right: "-50%"}, 500);
+      $('.publish-select').animate({marginLeft: "25%"}, 800);
+      $('.publish-select-table tbody tr').removeClass('selected');
+    });
+  });
 }
 function viewUserAndAccess(view) {
 
@@ -3089,45 +3410,41 @@ function viewWorkspace(path, collectionName, menu) {
     $("#edit").addClass('selected');
     loadPageDataIntoEditor(path, collectionName);
   }
-  else if (menu === 'review') {
-    $('.nav--workspace li').removeClass('selected');
-    $("#review").addClass('selected');
-    loadReviewScreen(collectionName);
-    checkForPageChanged(updateReviewScreen(collectionName));
-  }
 
   //click handlers
   $('.nav--workspace > li').click(function () {
     menu = '';
-    $('.nav--workspace li').removeClass('selected');
-    $(this).addClass('selected');
-
     if (Florence.Editor.isDirty) {
       var result = confirm("You have unsaved changes. Are you sure you want to continue");
       if (result === true) {
         Florence.Editor.isDirty = false;
+        processMenuClick(this);
       } else {
         return false;
       }
+    } else {
+      processMenuClick(this);
     }
 
-    if ($(this).is('#browse')) {
+  });
+
+  function processMenuClick(clicked) {
+
+    var menuItem = $(clicked);
+
+    $('.nav--workspace li').removeClass('selected');
+    menuItem.addClass('selected');
+
+    if (menuItem.is('#browse')) {
       loadBrowseScreen('click');
-    }
-    else if ($(this).is('#create')) {
+    } else if (menuItem.is('#create')) {
       loadCreateScreen(collectionName);
-    }
-    else if ($(this).is('#edit')) {
+    } else if (menuItem.is('#edit')) {
       loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
-    }
-    else if ($(this).is('#review')) {
-      loadReviewScreen(collectionName);
-      checkForPageChanged(updateReviewScreen(collectionName));
-    }
-    else {
+    } else {
       loadBrowseScreen();
     }
-  });
+  }
 }
 
 "use strict";
@@ -7896,15 +8213,20 @@ else
     }
 
     // (tags that can be opened/closed) | (tags that stand alone)
-    var basic_tag_whitelist = /^(<\/?(b|blockquote|code|del|dd|dl|dt|em|h1|h2|h3|i|kbd|li|ol(?: start="\d+")?|p|pre|s|sup|sub|strong|strike|ul)>|<(br|hr)\s?\/?>)$/i;
+    var basic_tag_whitelist = /^(<\/?(b|blockquote|code|del|dd|dl|dt|em|h1|h2|h3|h4|h5|h6|i|kbd|li|ol(?: start="\d+")?|p|pre|s|sup|sub|strong|strike|ul)>|<(br|hr)\s?\/?>)$/i;
     // <a href="url..." optional title>|</a>
     var a_white = /^(<a\shref="((https?|ftp):\/\/|\/)[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"(\stitle="[^"<>]+")?\s?>|<\/a>)$/i;
 
     // <img src="url..." optional width  optional height  optional alt  optional title
     var img_white = /^(<img\ssrc="(https?:\/\/|\/)[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"(\swidth="\d{1,3}")?(\sheight="\d{1,3}")?(\salt="[^"<>]*")?(\stitle="[^"<>]*")?\s?\/?>)$/i;
 
+    var ons_chart = /(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?><\/ons-chart>)/i;
+
     function sanitizeTag(tag) {
-        if (tag.match(basic_tag_whitelist) || tag.match(a_white) || tag.match(img_white))
+        if (tag.match(basic_tag_whitelist)
+          || tag.match(a_white)
+          || tag.match(img_white)
+          || tag.match(ons_chart))
             return tag;
         else
             return "";

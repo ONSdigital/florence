@@ -1,33 +1,33 @@
-<section class="panel col col--6 publish-selected">
-  <div class="section-head">
-    <h2>{{date}}</h2>
-    <p>The following collection(s) have been approved</p>
-  </div>
+<div class="section-head">
+  <h2>{{date}}</h2>
+  <p>{{subtitle}}</p>
+</div>
 
-  <div class="section-content section-content--fullwidth">
-    <div class="collections-accordion">
-      <div class="collections-section">
-        <div class="collections-section__head">
-          <h3 class="collection-name" data-id="{{collection.id}}">{{collection.name}}</h3>
-        </div>
-        <div class="collections-section__content">
-          <button class="btn-collection-unlock">Unlock collection</button>
-          <h4>Pages in this collection</h4>
-          <ul class="page-list">
-            {{#each page}}
-            <li><span class="page-item">{{page.name}}</span>
-              <div class="page-options">
-                <button class="">Remove from this publish</button>
-              </div>
-            </li>
-            {{/each}}
-          </ul>
-        </div>
+<div class="section-content section-content--fullwidth">
+{{#each collectionDetails}}
+  <div class="collections-accordion">
+    <div class="collections-section">
+      <div class="collections-section__head">
+        <h3 class="collection-name" data-id="{{id}}">{{name}}</h3>
+      </div>
+      <div class="collections-section__content">
+        <button class="btn-collection-unlock">Unlock collection</button>
+        <h4>Pages in this collection</h4>
+        <ul class="page-list">
+          {{#each pageDetails}}
+          <li><span class="page-item" data-path="{{uri}}">{{name}}</span>
+            <div class="page-options">
+              <button class="btn-page-delete">Remove from this publish</button>
+            </div>
+          </li>
+          {{/each}}
+        </ul>
       </div>
     </div>
   </div>
+{{/each}}
+</div>
 
-  <nav class="section-nav">
-    <button class="btn-cancel">Cancel</button>
-  </nav>
-</section>
+<nav class="section-nav">
+  <button class="btn-edit-cancel">Cancel</button>
+</nav>

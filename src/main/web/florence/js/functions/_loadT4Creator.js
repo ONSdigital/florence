@@ -57,7 +57,7 @@ function loadT4Creator (collectionName) {
     pageData = pageTypeData(pageType);
     parent = $('#location').val().trim();
     pageName = $('#pagename').val().trim();
-    pageData.title = pageName;
+    pageData.name = pageName;
     uriSection = pageType + "s";
     pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     pageData.fileName = pageNameTrimmed;
@@ -109,11 +109,13 @@ function pageTypeData(pageType) {
       "headline2": "",
       "headline3": "",
       "summary": "",
+      "keywords": [],
       "nationalStatistic": "false",
       "relatedBulletins": [],
       "externalLinks": [],
+      "charts": [],
       "correction": [],
-      "title": "",
+      "name": "",
       "releaseDate": "",
       type: pageType,
       "uri": "",
@@ -132,15 +134,14 @@ function pageTypeData(pageType) {
       "more": "",
       "sections": [],
       "accordion": [],
-      "headline1": "",
-      "headline2": "",
-      "headline3": "",
-      "summary": "",
+      "abstract": "",
+      "keywords": [],
       "nationalStatistic": "false",
       "relatedArticles": [],
       "externalLinks": [],
+      "charts": [],
       "correction": [],
-      "title": "",
+      "name": "",
       "releaseDate": "",
       type: pageType,
       "uri": "",
@@ -161,10 +162,13 @@ function pageTypeData(pageType) {
       "download": [],
       "notes": [],
       "summary": "",
+      "keywords": [],
       "nationalStatistic": "false",
+      "migrated": "false",
       "description": "",
+      "charts": [],
       "correction": [],
-      "title": "",
+      "name": "",
       "releaseDate": "",
       type: pageType,
       "uri": "",
