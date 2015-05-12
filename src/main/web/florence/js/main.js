@@ -206,6 +206,8 @@ function approve(collectionId) {
   $("#headline2-p").remove();
   $("#headline3-p").remove();
   $("#description-p").remove();
+  $("#migrated").remove();
+  $("#natStat").remove();
 
 
   // Metadata edition and saving
@@ -601,6 +603,7 @@ function bulletinEditor(collectionName, data) {
   $("#metadata-d").remove();
   $("#abstract-p").remove();
   $("#description-p").remove();
+  $("#migrated").remove();
 
   // Metadata load, edition and saving
   $("#name").on('click keyup', function () {
@@ -1313,7 +1316,7 @@ function datasetEditor(collectionName, data) {
                 return;
               }
             });
-            if (!!file.name.match(/\.csv$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -1340,7 +1343,7 @@ function datasetEditor(collectionName, data) {
               });
             }
           } else {
-            if (!!file.name.match(/\.csv$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -2506,6 +2509,7 @@ function pageTypeData(pageType) {
       "nationalStatistic": "false",
       "relatedBulletins": [],
       "externalLinks": [],
+      "charts": [],
       "correction": [],
       "name": "",
       "releaseDate": "",
@@ -2531,6 +2535,7 @@ function pageTypeData(pageType) {
       "nationalStatistic": "false",
       "relatedArticles": [],
       "externalLinks": [],
+      "charts": [],
       "correction": [],
       "name": "",
       "releaseDate": "",
@@ -2555,7 +2560,9 @@ function pageTypeData(pageType) {
       "summary": "",
       "keywords": [],
       "nationalStatistic": "false",
+      "migrated": "false",
       "description": "",
+      "charts": [],
       "correction": [],
       "name": "",
       "releaseDate": "",
@@ -3396,12 +3403,6 @@ function viewWorkspace(path, collectionName, menu) {
     $("#edit").addClass('selected');
     loadPageDataIntoEditor(path, collectionName);
   }
-  else if (menu === 'review') {
-    $('.nav--workspace li').removeClass('selected');
-    $("#review").addClass('selected');
-    loadReviewScreen(collectionName);
-    checkForPageChanged(updateReviewScreen(collectionName));
-  }
 
   //click handlers
   $('.nav--workspace > li').click(function () {
@@ -3433,9 +3434,6 @@ function viewWorkspace(path, collectionName, menu) {
       loadCreateScreen(collectionName);
     } else if (menuItem.is('#edit')) {
       loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
-    } else if (menuItem.is('#review')) {
-      loadReviewScreen(collectionName);
-      checkForPageChanged(updateReviewScreen(collectionName));
     } else {
       loadBrowseScreen();
     }
