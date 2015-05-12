@@ -64,11 +64,8 @@ update_branch_and_push https://github.com/ONSdigital/tredegar.git $TREDEGAR_DIRE
 wait
 
 
-update_branch https://github.com/Carboni/MrRusty.git $MR_RUSTY_DIRECTORY master
-cd "$ROOT_DIRECTORY$MR_RUSTY_DIRECTORY"
-
-
-
-run_tests
+#update_branch https://github.com/Carboni/MrRusty.git $MR_RUSTY_DIRECTORY master
+#cd "$ROOT_DIRECTORY$MR_RUSTY_DIRECTORY"
+#run_tests
 
 

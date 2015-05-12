@@ -1,5 +1,18 @@
 function markdownEditor() {
-  var converter = Markdown.getSanitizingConverter();
+  var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
+
+  converter.hooks.chain("postConversion", function (text) {
+    return text.replace(/<ons-chart.*>/, function(match, capture) {
+      console.log("ons chart: " + match + " " + capture) ;
+
+      var path = $(match).attr('path');
+
+      console.log("ons chart: " + match + " " + path) ;
+
+      return '<iframe src="http://localhost:8081/florence/chart.html?path=' + path + '></iframe>';
+
+    });
+  });
 
   Markdown.Extra.init(converter, {
     extensions: "all"

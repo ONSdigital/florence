@@ -1,4 +1,4 @@
-function loadChartBuilder() {
+function loadChartBuilder(onSave) {
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display","block");
@@ -15,6 +15,9 @@ function loadChartBuilder() {
 
   $('.btn-chart-builder-create').on('click', function() {
     $('.chart-builder').fadeOut(200).remove();
+    if(onSave) {
+      onSave('<ons-chart path="' + getPathName() + '/chart.json">');
+    }
   });
 
   // Builds, parses, and renders our chart
