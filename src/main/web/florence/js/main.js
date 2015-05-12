@@ -679,7 +679,33 @@ function bulletinEditor(collectionName, data) {
       });
 
       $(".btn-markdown-editor-chart").click(function(){
-        loadChartBuilder();
+        loadChartBuilder(function(insertValue) {
+
+          insertAtCursor($('#wmd-input')[0], insertValue);
+
+          // http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
+          function insertAtCursor(field, value) {
+            //IE support
+            if (document.selection) {
+              field.focus();
+              sel = document.selection.createRange();
+              sel.text = value;
+            }
+            //MOZILLA and others
+            else if (field.selectionStart || field.selectionStart == '0') {
+              var startPos = field.selectionStart;
+              var endPos = field.selectionEnd;
+              field.value = field.value.substring(0, startPos)
+              + value
+              + field.value.substring(endPos, field.value.length);
+              field.selectionStart = startPos + value.length;
+              field.selectionEnd = startPos + value.length;
+            } else {
+              field.value += value;
+            }
+          }
+
+        });
       });
 
       $("#wmd-input").on('click', function() {
@@ -1719,7 +1745,7 @@ function loadBrowseScreen(click) {
   });
 }
 
-function loadChartBuilder() {
+function loadChartBuilder(onSave) {
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display","block");
@@ -1736,71 +1762,243 @@ function loadChartBuilder() {
 
   $('.btn-chart-builder-create').on('click', function() {
     $('.chart-builder').fadeOut(200).remove();
+    if(onSave) {
+      onSave('<ons-chart path="' + getPathName() + '/chart.json">');
+    }
   });
 
+  // Builds, parses, and renders our chart
   function renderChart() {
+    var chart = buildChartObject();
+    parseChartObject(chart);
 
-    var chart = {};
-    chart.data = $('#chart-data').val();
-    chart.type = $('#chart-type').val();
-    chart.title = $('#chart-title').val();
-    chart.xaxis = $('#chart-x-axis').val();
-    chart.yaxis = $('#chart-y-axis').val();
-    console.log(chart);
-
-    if(chart.title == '') {
-      chart.title = '[Title]'
+    if(chart.isTimeSeries) {
+      renderTimeseriesChartObject('#chart', chart, chart.period)
+    } else {
+      renderChartObject('#chart', chart);
     }
+  }
 
-    uhuh = tsvJSON(chart.data);
-    etet = tsvJSONval(chart.data);
+  // Pulls data from the
+  function buildChartObject() {
+      json = $('#chart-data').val();
+
+      var chart = {};
+      chart.type = $('#chart-type').val();
+      if(chart.type == 'rotated') {
+        chart.type = 'bar';
+        chart.rotated = true;
+      }
+      chart.period = $('#chart-period').val();
+
+      chart.title = $('#chart-title').val();
+      chart.subtitle = $('#chart-subtitle').val();
+      chart.unit = $('#chart-unit').val();
+
+      chart.xaxis = $('#chart-x-axis').val();
+      chart.yaxis = $('#chart-y-axis').val();
+
+      chart.legend = $('#chart-legend').val();
+      chart.hideLegend = (chart.legend == 'false') ? true : false;
+
+      console.log(chart.legend + " " + chart.hideLegend);
+
+      if(chart.title == '') {
+        chart.title = '[Title]'
+      }
+
+      chart.data = tsvJSON(json);
+      chart.series = tsvJSONColNames(json);
+      chart.categories = tsvJSONRowNames(json);
+
+    return chart;
+  }
+
+  // Transformations to determine render options for this chart
+  // example - is it a time chart - should we flip axes
+  function parseChartObject(chart) {
+
+    // Determine if we have a time series
+    var timeSeries = axisAsTimeSeries(chart.categories);
+    if(timeSeries && timeSeries.length > 0) {
+      chart.isTimeSeries = true;
+      chart.timeSeries = timeSeries;
+
+      // Subseries
+      var subseries = timeSubSeries(timeSeries, 'year');
+      if(subseries.length > 0) { chart.hasYear = true;}
+
+      subseries = timeSubSeries(timeSeries, 'quarter');
+      if(subseries.length > 0) { chart.hasQuarter = true;}
+
+      subseries = timeSubSeries(timeSeries, 'month');
+      if(subseries.length > 0) { chart.hasMonth = true;}
+
+      subseries = timeSubSeries(timeSeries, 'other');
+      if(subseries.length > 0) { chart.hasOtherPeriod = true; }
+
+    } else {
+      chart.isTimeSeries = false;
+    }
+  }
+
+  // Do the rendering
+  function renderChartObject(bindTag, chart) {
+    var padding = 25;
+    if(chart.subtitle != '') { padding += 16; }
+    if(chart.unit != '') {padding += 24; }
+
+    var rotate = (chart.rotated ? true : false);
+
+    // work out position for chart legend
+    var seriesCount = (chart.data.length == 0) ? 0 : Object.keys(chart.data[0]).length - 1;
+    var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 5 : 5;
 
     c3.generate({
-      bindto: '#chart',
+      bindto: bindTag,
       data: {
-        json: uhuh,
+        json: chart.data,
         keys: {
-          value: etet
+          value: chart.series
         },
         type: chart.type
       },
+     legend: {
+       hide: chart.hideLegend,
+       position: 'inset',
+       inset: {
+         anchor: chart.legend,
+         x: 10,
+         y: yOffset
+        }
+       },
       axis: {
         x: {
-          label: chart.xaxis
+          label: chart.xaxis,
+          type: 'category',
+          categories: chart.categories
         },
         y: {
           label: chart.yaxis
+        },
+        rotated: rotate
+      },
+      grid: {
+        y: {
+          show: true
         }
+      },
+      padding: {
+        top: padding
       }
     });
 
     d3.select('#chart svg').append('text')
-      .attr('x', d3.select('#chart svg').node().getBoundingClientRect().width / 2)
-      .attr('y', 16)
-      .attr('text-anchor', 'middle')
-      .style('font-size', '1.4em')
+      .attr('x', 20)
+      .attr('y', 18)
+      .attr('text-anchor', 'left')
+      .style('font-size', '1.6em')
+        .style('fill', '#000000')
       .text(chart.title);
+
+    if(chart.subtitle != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', 36)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#999999')
+        .text(chart.subtitle);
+        }
+
+    if(chart.unit != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', padding - 8)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#000000')
+        .text(chart.unit);
+        }
   }
 
+  function renderTimeseriesChartObject(bindTag, timechart, period) {
+    var padding = 25;
+    var chart = timeSubchart(timechart, period);
 
-  function csvJSON (csv) {
-    var lines=csv.split("\n");
-    var result = [];
-    var headers=lines[0].split(",");
-    values=headers.shift();
+    if(chart.subtitle != '') { padding += 16; }
+    if(chart.unit != '') {padding += 24; }
+    var showPoints = true;
+    if(chart.data.length > 120) { showPoints = false; }
 
-    for(var i=1;i<lines.length;i++){
-      var obj = {};
-      var currentline=lines[i].split(",");
-
-      for(var j=0;j<headers.length;j++){
-        obj[headers[j]] = currentline[j];
+    c3.generate({
+      bindto: bindTag,
+      data: {
+        json: chart.data,
+        keys: {
+          x: 'date',
+          value: chart.series
+        },
+        type: chart.type,
+        xFormat: '%Y-%m-%d %H:%M:%S'
+      },
+      point: {
+        show: showPoints
+      },
+      axis: {
+        x: {
+          label: chart.xaxis,
+          type: 'timeseries',
+          tick: {
+              format: function (x) {
+                  return x.getFullYear();
+              }
+              }
+        },
+        y: {
+          label: chart.yaxis
+        }
+      },
+      grid: {
+        y: {
+          show: true
+        }
+      },
+      padding: {
+        top: padding
       }
-      result.push(obj);
-    }
-    return result; //JSON
+    });
+
+    d3.select('#chart svg').append('text')
+      .attr('x', 20)
+      .attr('y', 18)
+      .attr('text-anchor', 'left')
+      .style('font-size', '1.6em')
+        .style('fill', '#000000')
+      .text(chart.title);
+
+    if(chart.subtitle != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', 36)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#999999')
+        .text(chart.subtitle);
+        }
+
+    if(chart.unit != '') {
+      d3.select('#chart svg').append('text')
+        .attr('x', 20)
+        .attr('y', padding - 8)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.2em')
+        .style('fill', '#000000')
+        .text(chart.unit);
+        }
   }
 
+// Data load from text box functions
   function tsvJSON (input) {
     var lines=input.split("\n");
     var result = [];
@@ -1815,19 +2013,146 @@ function loadChartBuilder() {
       }
       result.push(obj);
     }
-    p = JSON.stringify(result);
-    //console.log(p)
-    //return result; //JavaScript object
+
     return result //JSON
   }
+  function tsvJSONRowNames (input) {
+      var lines=input.split("\n");
+      var result = [];
 
-  function tsvJSONval (input) {
+      for(var i=1;i<lines.length;i++){
+        var currentline=lines[i].split("\t");
+        result.push(currentline[0]);
+        }
+
+        return result
+  }
+  function tsvJSONColNames (input) {
     var lines=input.split("\n");
     var headers=lines[0].split("\t");
     headers.shift();
-    console.log(headers);
     return headers;
   }
+
+// Date conversion support functions
+function axisAsTimeSeries(axis) {
+  var result = [];
+  var rowNumber = 0;
+
+  _.each(axis, function(tryTimeString) {
+    var time = convertTimeString(tryTimeString);
+    if(time) {
+      time.row = rowNumber;
+      rowNumber = rowNumber + 1;
+
+      result.push(time);
+    } else {
+      return null;
+    }
+  });
+  return result;
+}
+function convertTimeString(timeString) {
+    // First time around parse the time string according to rules from regular timeseries
+    var result = {};
+    result.label = timeString;
+
+    // Format of year only
+    var yearVal = tryYear(timeString);
+    if(yearVal) { result.date = yearVal; result.period = 'year'; return result; }
+
+    // Format with year and quarter
+    var quarterVal = tryQuarter(timeString);
+    if(quarterVal) { result.date = quarterVal; result.period = 'quarter'; return result; }
+
+    // Format with year and month
+    var monthVal = tryMonth(timeString);
+    if(monthVal) { result.date = monthVal; result.period = 'month'; return result; }
+
+    // Other format
+    var date = new Date(timeString);
+    if( !isNaN( date.getTime() ) ) {
+        result.date = monthVal; result.period = 'other'; return result;
+        }
+
+    return(null);
+}
+function tryYear(tryString) {
+    var base = tryString.trim();
+    if(base.length != 4) { return null; }
+
+    var date = new Date(tryString);
+
+    return date;
+}
+function tryQuarter(tryString) {
+    var indices = [0, 1, 2, 3];
+    var quarters = ["Q1", "Q2", "Q3", "Q4"];
+    var months = ["Jan", "Apr", "Jul", "Oct"];
+
+    var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
+    if(quarter != null) {
+        var dateString = tryString.replace(quarters[quarter], months[quarter]);
+        return new Date(dateString);
+        }
+    }
+function tryMonth(tryString) {
+    var date = new Date(tryString);
+    if( !isNaN( date.getTime() ) ) {
+        return date;
+        }
+}
+function timeSubSeries(timeSeries, period) {
+  // Period is one of ['year', 'quarter', 'month', 'other']
+   result = [];
+   _.each(timeSeries, function(time) {
+      if(time['period'] == period) {
+        result.push(time);
+      }
+   });
+   return result;
+}
+
+function timeSubchart(chart, period) {
+        var subchart = {};
+
+        subchart.type = chart['type'];
+        if(subchart.type == 'rotated') {
+          subchart.type = 'bar';
+          subchart.rotated = true;
+        }
+
+        subchart.title = chart.title;
+        subchart.subtitle = chart.subtitle;
+        subchart.unit = chart.unit;
+
+        subchart.xaxis = chart.xaxis
+        subchart.yaxis = chart.yaxis
+
+
+        if(chart.title == '') {
+          chart.title = '[Title]'
+        }
+
+        subchart.series = chart.series;
+
+        // Use timeSubSeries to filter the data
+        var subseries = timeSubSeries(chart.timeSeries, period);
+        var subdata = [];
+        var dates = [];
+        var labels = [];
+
+        _.each(subseries, function(time) {
+          var item = chart.data[time['row']];
+          item.date = time['date'];
+          item.label = time['label'];
+          subdata.push(item);
+        })
+
+        subchart.data = subdata;
+
+      return subchart;
+}
 }function loadCreateScreen(collectionId) {
   var html = templates.workCreate;
   $('.workspace-menu').html(html);
@@ -2296,7 +2621,20 @@ function refreshEditNavigation() {
       handleApiError(response);
     })
 }function markdownEditor() {
-  var converter = Markdown.getSanitizingConverter();
+  var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
+
+  converter.hooks.chain("postConversion", function (text) {
+    return text.replace(/<ons-chart.*>/, function(match, capture) {
+      console.log("ons chart: " + match + " " + capture) ;
+
+      var path = $(match).attr('path');
+
+      console.log("ons chart: " + match + " " + path) ;
+
+      return '<iframe src="http://localhost:8081/florence/chart.html?path=' + path + '></iframe>';
+
+    });
+  });
 
   Markdown.Extra.init(converter, {
     extensions: "all"
@@ -7896,7 +8234,7 @@ else
     }
 
     // (tags that can be opened/closed) | (tags that stand alone)
-    var basic_tag_whitelist = /^(<\/?(b|blockquote|code|del|dd|dl|dt|em|h1|h2|h3|i|kbd|li|ol(?: start="\d+")?|p|pre|s|sup|sub|strong|strike|ul)>|<(br|hr)\s?\/?>)$/i;
+    var basic_tag_whitelist = /^(<\/?(b|blockquote|code|del|dd|dl|dt|em|h1|h2|h3|h4|h5|h6|i|kbd|li|ol(?: start="\d+")?|p|pre|s|sup|sub|strong|strike|ul)>|<(br|hr)\s?\/?>)$/i;
     // <a href="url..." optional title>|</a>
     var a_white = /^(<a\shref="((https?|ftp):\/\/|\/)[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"(\stitle="[^"<>]+")?\s?>|<\/a>)$/i;
 

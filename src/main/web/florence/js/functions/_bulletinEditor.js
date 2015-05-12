@@ -132,7 +132,33 @@ function bulletinEditor(collectionName, data) {
       });
 
       $(".btn-markdown-editor-chart").click(function(){
-        loadChartBuilder();
+        loadChartBuilder(function(insertValue) {
+
+          insertAtCursor($('#wmd-input')[0], insertValue);
+
+          // http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
+          function insertAtCursor(field, value) {
+            //IE support
+            if (document.selection) {
+              field.focus();
+              sel = document.selection.createRange();
+              sel.text = value;
+            }
+            //MOZILLA and others
+            else if (field.selectionStart || field.selectionStart == '0') {
+              var startPos = field.selectionStart;
+              var endPos = field.selectionEnd;
+              field.value = field.value.substring(0, startPos)
+              + value
+              + field.value.substring(endPos, field.value.length);
+              field.selectionStart = startPos + value.length;
+              field.selectionEnd = startPos + value.length;
+            } else {
+              field.value += value;
+            }
+          }
+
+        });
       });
 
       $("#wmd-input").on('click', function() {
