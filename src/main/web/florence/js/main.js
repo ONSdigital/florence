@@ -721,6 +721,8 @@ function bulletinEditor(collectionName, data) {
 
           insertAtCursor($('#wmd-input')[0], insertValue);
 
+          Florence.Editor.markdownEditor.refreshPreview();
+
           // http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
           function insertAtCursor(field, value) {
             //IE support
@@ -1815,10 +1817,11 @@ function loadChartBuilder(onSave) {
   });
 
   $('.btn-chart-builder-create').on('click', function() {
-    $('.chart-builder').fadeOut(200).remove();
     if(onSave) {
-      onSave('<ons-chart path="' + getPathName() + '/chart.json">');
+      onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
     }
+    $('.chart-builder').fadeOut(200).remove();
+
   });
 
   // Builds, parses, and renders our chart
@@ -2683,27 +2686,30 @@ function refreshEditNavigation() {
       handleApiError(response);
     })
 }function markdownEditor() {
+
   var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
 
-  converter.hooks.chain("postConversion", function (text) {
-    return text.replace(/<ons-chart.*>/, function(match, capture) {
-      console.log("ons chart: " + match + " " + capture) ;
+  converter.hooks.chain("preBlockGamut", function (text) {
+    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match, capture) {
 
       var path = $(match).attr('path');
+      //console.log("ons chart: " + text + " " + match + " " + path) ;
+      var output = '<iframe src="http://localhost:8081/florence/chart.html?path=' + path + '.json"></iframe>';
+      //console.log(output);
 
-      console.log("ons chart: " + match + " " + path) ;
-
-      return '<iframe src="http://localhost:8081/florence/chart.html?path=' + path + '></iframe>';
-
+      return '[chart path="' + path + '" ]';
     });
+
+    return newText;
   });
 
   Markdown.Extra.init(converter, {
     extensions: "all"
   });
   var editor = new Markdown.Editor(converter);
+  Florence.Editor.markdownEditor = editor;
   editor.hooks.chain("onPreviewRefresh", function () {
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
   });
   editor.run();
 }
@@ -3269,6 +3275,7 @@ function viewPublishDetails(collections) {
         success = function (response) {
           console.log(response);
           response.reviewed = response.reviewed.filter(function(page) { return PathUtils.isJsonFile(page.uri) });
+
           result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
         },
         error = function (response) {
@@ -8213,8 +8220,13 @@ else
     // <img src="url..." optional width  optional height  optional alt  optional title
     var img_white = /^(<img\ssrc="(https?:\/\/|\/)[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"(\swidth="\d{1,3}")?(\sheight="\d{1,3}")?(\salt="[^"<>]*")?(\stitle="[^"<>]*")?\s?\/?>)$/i;
 
+    var ons_chart = /(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?><\/ons-chart>)/i;
+
     function sanitizeTag(tag) {
-        if (tag.match(basic_tag_whitelist) || tag.match(a_white) || tag.match(img_white))
+        if (tag.match(basic_tag_whitelist)
+          || tag.match(a_white)
+          || tag.match(img_white)
+          || tag.match(ons_chart))
             return tag;
         else
             return "";
