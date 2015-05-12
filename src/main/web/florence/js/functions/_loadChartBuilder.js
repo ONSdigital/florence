@@ -14,10 +14,11 @@ function loadChartBuilder(onSave) {
   });
 
   $('.btn-chart-builder-create').on('click', function() {
-    $('.chart-builder').fadeOut(200).remove();
     if(onSave) {
-      onSave('<ons-chart path="' + getPathName() + '/chart.json">');
+      onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
     }
+    $('.chart-builder').fadeOut(200).remove();
+
   });
 
   // Builds, parses, and renders our chart

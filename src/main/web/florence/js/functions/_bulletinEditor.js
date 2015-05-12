@@ -144,6 +144,8 @@ function bulletinEditor(collectionName, data) {
 
           insertAtCursor($('#wmd-input')[0], insertValue);
 
+          Florence.Editor.markdownEditor.refreshPreview();
+
           // http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
           function insertAtCursor(field, value) {
             //IE support
