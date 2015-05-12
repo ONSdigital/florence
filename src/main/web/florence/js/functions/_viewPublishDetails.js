@@ -1,90 +1,57 @@
 function viewPublishDetails(collections) {
 
-  var date = Florence.collectionToPublish.publishDate;
-  var collectionDetails = [];
+  var result = {
+    date: Florence.collectionToPublish.publishDate,
+    subtitle: '',
+    collectionDetails: [],
+  }
+  var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+  var onlyOne = 0;
+
   $.each(collections, function (i, collectionId) {
+    onlyOne += 1;
+    pageDataRequests.push(
+      getCollectionDetails(collectionId,
+        success = function (response) {
+          console.log(response);
+          response.reviewed = response.reviewed.filter(function(page) { return PathUtils.isJsonFile(page.uri) });
 
-//    collection_list +=
-//      '<h2 id="fl-panel--publish-collection-' + collection.id + '"  class="fl-panel--publish-collection" data-id="' + collection.id + '">' + collection.name + '</h2>' +
-//      '<div class="fl-panel--publish-collection-' + collection.id + '"></div>';
-
-    getCollection(collectionId,
-      success = function (response) {
-        var page_list = '';
-        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-
-        function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-        response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
-
-        $.each(response.reviewedUris, function (i, uri) {
-          pageDataRequests.push(getPageData(collectionId, uri,
-            success = function (response) {
-              var path = uri.replace('/data.json', '');
-              path = path.length === 0 ? '/' : path;
-              page_list += '<p class="fl-review-page-list-item" data-path="' + path + '">' +
-              response.name + '</p>';
-
-              console.log(response.name);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }));
-        });
-
-        $.when.apply($, pageDataRequests).then(function () {
-          page_list += '</ul>';
-          $('.fl-panel--publish-collection-' + collectionId).html(page_list);
-          //updateReviewScreenWithCollection(response);
-          console.log(page_list);
-        });
-
-      },
-      error = function (response) {
-        handleApiError(response);
-      }
+          result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      )
     );
   });
+  if (onlyOne < 2) {
+    result.subtitle = 'The following collection has been approved'
+  } else {
+    result.subtitle = 'The following collections have been approved'
+  }
+  $.when.apply($, pageDataRequests).then(function () {
+    var publishDetails = templates.publishDetails(result);
+//    console.log(publishDetails);
+    $('.publish-selected').html(publishDetails);
+    $('.collections-accordion').accordion({
+      header: '.collections-section__head',
+      heightStyle: "content",
+      active: false,
+      collapsible: true
+    });
+    //page-list
+    $('.page-item').click(function(){
+      $('.page-list li').removeClass('selected');
+      $('.page-options').hide();
 
-
-
-
-//  $('.collection-name').click(function () {
-//    var collectionId = $(this).attr('data-id');
-//
-//
-//    getCollection(collectionId,
-//      success = function (response) {
-//        var page_list = '';
-//        var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-//
-//        function isJsonFile(uri) { return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1 }
-//        response.reviewedUris = response.reviewedUris.filter(function(uri) { return isJsonFile(uri) });
-//
-//        $.each(response.reviewedUris, function (i, uri) {
-//          pageDataRequests.push(getPageData(collectionId, uri,
-//            success = function (response) {
-//              var path = uri.replace('/data.json', '');
-//              path = path.length === 0 ? '/' : path;
-//              page_list += '<p class="fl-review-page-list-item" data-path="' + path + '">' +
-//              response.name + '</p>';
-//
-//              console.log(response.name);
-//            },
-//            error = function (response) {
-//              handleApiError(response);
-//            }));
-//        });
-//
-//        $.when.apply($, pageDataRequests).then(function () {
-//          page_list += '</ul>';
-//          $('.fl-panel--publish-collection-' + collectionId).html(page_list);
-//          //updateReviewScreenWithCollection(response);
-//
-//        });
-//
-//      },
-//      error = function (response) {
-//        handleApiError(response);
-//      });
-//  });
+      $(this).parent('li').addClass('selected');
+      // $(this).addClass('page-item--selected');
+      $(this).next('.page-options').show();
+    });
+    $('.publish-selected .btn-cancel').click(function(){
+      $('.publish-selected').animate({right: "-50%"}, 500);
+      $('.publish-select').animate({marginLeft: "25%"}, 800);
+      $('.publish-select-table tbody tr').removeClass('selected');
+    });
+  });
 }

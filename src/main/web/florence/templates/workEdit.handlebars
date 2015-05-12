@@ -4,20 +4,31 @@
     <div class="edit-section">
       <div class="edit-section__head">
         <h1>Metadata</h1>
-        <p>Description</p>
+        <p id="metadata-a">Title | Contact | Abstract | Keywords</p>
+        <p id="metadata-b">Title | Next release | Contact | Summary | NS status | Keywords</p>
+        <p id="metadata-d">Title | Next release | Contact | Description | NS status | Keywords</p>
       </div>
       <div class="edit-section__content">
         <div id="metadata-list">
-          <p>Title: <textarea class="auto-size" type="text" id="title" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.title}}</textarea></p>
-          <p>Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;">{{this.nextRelease}}</textarea></p>
+          <p>Title: <textarea class="auto-size" type="text" id="name" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.name}}</textarea></p>
+          <p id="next-p">Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;">{{this.nextRelease}}</textarea></p>
           <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;">{{this.contact.name}}</textarea></p>
           <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;">{{this.contact.email}}</textarea></p>
-          <p>Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.summary}}</textarea></p>
-          <p>National statistic: <input type="checkbox" name="natStat" value="yes" /> Yes </p>
+          <p id="summary-p">Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.summary}}</textarea></p>
+          <p id="abstract-p">Abstract: <textarea class="auto-size" type="text" id="abstract" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.abstract}}</textarea></p>
+          <div id="natStat">
+            <label for="natStat">National statistic</label>
+            <input type="checkbox" name="natStat" value="false" />
+          </div>
+          <div id="migrated">
+            <label for="migrated">Migrated</label>
+            <input type="checkbox" name="migrated" value="false" />
+          </div>
           <p id="headline1-p">Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline1}}</textarea></p>
           <p id="headline2-p">Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline2}}</textarea></p>
           <p id="headline3-p">Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline3}}</textarea></p>
-          <p id="description-p">Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;"></textarea></p>
+          <p id="description-p">Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.description}}</textarea></p>
+          <p>Keywords: <textarea class="auto-size" type="text" id="keywords" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.keywords}}</textarea></p>
         </div>
       </div>
     </div>
@@ -26,7 +37,7 @@
     <div class="edit-section">
       <div class="edit-section__head">
         <h1>Correction</h1>
-        <p>Description</p>
+        <p>Date | Notice | Severity</p>
       </div>
       <div class="edit-section__content">
           {{#each this.correction}}
@@ -47,8 +58,8 @@
 
     <div class="edit-section" id="collapsible">
       <div class="edit-section__head">
-        <h1>Collapsible section</h1>
-        <p>Description</p>
+        <h1>Collapsible sections</h1>
+        <p>Background notes | References | Footnotes</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-tabs" class="edit-section__sortable">
@@ -62,15 +73,15 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addTab">Add collapsible</button>
+          <button class="btn-add-section" id="addTab">Add tab</button>
         </div>
       </div>
     </div>
 
     <div class="edit-section" id="relBulletin">
       <div class="edit-section__head">
-        <h1>Related bulletin</h1>
-        <p>Description</p>
+        <h1>Related bulletins</h1>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-related" class="edit-section__sortable">
@@ -91,8 +102,8 @@
 
     <div class="edit-section" id="relArticle">
       <div class="edit-section__head">
-        <h1>Related article</h1>
-        <p>Description</p>
+        <h1>Related articles</h1>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-related" class="edit-section__sortable">
@@ -113,8 +124,8 @@
 
     <div class="edit-section" id="relDataset">
       <div class="edit-section__head">
-        <h1>Related dataset</h1>
-        <p>Description</p>
+        <h1>Related datasets</h1>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-related" class="edit-section__sortable">
@@ -136,7 +147,7 @@
     <div class="edit-section" id="extLink">
       <div class="edit-section__head">
         <h1>External links</h1>
-        <p>Description</p>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-external" class="edit-section__sortable">
@@ -156,8 +167,8 @@
 
     <div class="edit-section" id="used">
       <div class="edit-section__head">
-        <h1>Used in</h1>
-        <p>Description</p>
+        <h1>Related bulletins</h1>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-used" class="edit-section__sortable">
@@ -178,8 +189,8 @@
 
     <div class="edit-section" id="download">
       <div class="edit-section__head">
-        <h1>Attach files</h1>
-        <p>Description</p>
+        <h1>Upload files</h1>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-download" class="edit-section__sortable">
@@ -201,7 +212,7 @@
     <div class="edit-section" id="note">
       <div class="edit-section__head">
         <h1>Notes</h1>
-        <p>Description</p>
+        <p>Body copy</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-notes" class="edit-section__sortable">
@@ -222,7 +233,7 @@
     <div class="edit-section" id="content">
       <div class="edit-section__head">
         <h1>Content</h1>
-        <p>Description</p>
+        <p>Main sections | Title | Body copy</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-sections" class="edit-section__sortable">
