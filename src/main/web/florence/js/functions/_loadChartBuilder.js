@@ -179,8 +179,13 @@ function loadChartBuilder(onSave) {
     var padding = 25;
     var chart = timeSubchart(timechart, period);
 
+    var dates_to_label = {};
+    _.each(chart.data, function(data_point) {
+        dates_to_label[data_point.date] = data_point.label;
+        });
+
     if(chart.subtitle != '') { padding += 16; }
-    if(chart.unit != '') {padding += 24; }
+    if(chart.unit != '') { padding += 24; }
     var showPoints = true;
     if(chart.data.length > 120) { showPoints = false; }
 
@@ -210,6 +215,11 @@ function loadChartBuilder(onSave) {
         },
         y: {
           label: chart.yaxis
+        }
+      },
+      tooltip: {
+        format: {
+          title: function(x) { return dates_to_label[x] ;}
         }
       },
       grid: {
