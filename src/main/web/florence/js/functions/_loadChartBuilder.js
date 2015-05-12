@@ -45,7 +45,7 @@ function loadChartBuilder(onSave) {
         $('.chart-builder').stop().fadeOut(200).remove();
       }
     });
-  };
+  });
 
   // Builds, parses, and renders our chart
   function renderChart() {
@@ -123,13 +123,18 @@ function loadChartBuilder(onSave) {
   function renderChartObject(bindTag, chart) {
     var padding = 25;
     if(chart.subtitle != '') { padding += 16; }
-    if(chart.unit != '' && chart.rotated == false) {padding += 24; }
 
     var rotate = (chart.rotated ? true : false);
 
+    var yLabel = rotate == true ? chart.unit : '';
+    if((chart.unit != '') && (rotate == false)) {padding += 24; }
+
+
+
     // work out position for chart legend
-    var seriesCount = (chart.data.length == 0) ? 0 : Object.keys(chart.data[0]).length - 1;
+    var seriesCount = chart.series.length;
     var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
+
 
     c3.generate({
       bindto: bindTag,
@@ -156,7 +161,7 @@ function loadChartBuilder(onSave) {
           categories: chart.categories
         },
         y: {
-          label: chart.rotated ? chart.unit : ''
+          label: yLabel
         },
         rotated: rotate
       },
@@ -192,7 +197,7 @@ function loadChartBuilder(onSave) {
         .text(chart.subtitle);
         }
 
-    if(chart.unit != '' && chart.rotated == false) {
+    if((chart.unit != '') && (rotate == false)) {
       d3.select(bindTag + ' svg').append('text')
         .attr('x', 20)
         .attr('y', padding - 8)
@@ -213,13 +218,22 @@ function loadChartBuilder(onSave) {
         dates_to_label[data_point.date] = data_point.label;
         });
 
+    // make room for titles if necessary
     if(chart.subtitle != '') { padding += 16; }
     if(chart.unit != '') { padding += 24; }
+
+    // should we show
     var showPoints = true;
     if(chart.data.length > 120) { showPoints = false; }
 
+   // work out position for chart legend
+    var seriesCount = chart.series.length;
+    var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
+
+
     c3.generate({
       bindto: bindTag,
+
       data: {
         json: chart.data,
         keys: {
@@ -229,9 +243,21 @@ function loadChartBuilder(onSave) {
         type: chart.type,
         xFormat: '%Y-%m-%d %H:%M:%S'
       },
+
       point: {
         show: showPoints
       },
+
+       legend: {
+         hide: chart.hideLegend,
+         position: 'inset',
+         inset: {
+           anchor: chart.legend,
+           x: 10,
+           y: yOffset
+          }
+         },
+
       axis: {
         x: {
           label: chart.xaxis,
@@ -435,12 +461,14 @@ function timeSubchart(chart, period) {
         subchart.subtitle = chart.subtitle;
         subchart.unit = chart.unit;
 
-        subchart.xaxis = chart.xaxis
-        subchart.yaxis = chart.yaxis
+        subchart.xaxis = chart.xaxis;
+        subchart.yaxis = chart.yaxis;
 
+        subchart.hideLegend = chart.hideLegend;
+        subchart.legend = chart.legend;
 
-        if(chart.title == '') {
-          chart.title = '[Title]'
+        if(subchart.title == '') {
+          subchart.title = '[Title]';
         }
 
         subchart.series = chart.series;
