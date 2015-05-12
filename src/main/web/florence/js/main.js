@@ -1280,7 +1280,7 @@ function datasetEditor(collectionName, data) {
     $('#sortable-download').append(
         '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
-        '    <p><input type="file" name="files" id="files" multiple>' +
+        '    <p><input type="file" name="files" id="files">' +
         '    <p>' +
         '  </form>' +
         '  <div id="response"></div>' +
@@ -1802,6 +1802,7 @@ function loadBrowseScreen(click) {
 }
 
 function loadChartBuilder(onSave) {
+  var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display","block");
@@ -1817,11 +1818,36 @@ function loadChartBuilder(onSave) {
   });
 
   $('.btn-chart-builder-create').on('click', function() {
-    if(onSave) {
-      onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
-    }
-    $('.chart-builder').fadeOut(200).remove();
+     chart.title = $('#chart-title').val();
+     var uriUploadSVG = pageUrl + "/" + chart.title + ".svg";
+     var uriUploadJSON = pageUrl + "/" + chart.title + ".json";
 
+
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
+      type: "POST",
+      data: exportToSVG (),
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        console.log("SVG uploaded successfully");
+      }
+    });
+
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
+      type: "POST",
+      data: JSON.stringify(buildChartObject()),
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        console.log("JSON uploaded successfully");
+        if(onSave) {
+          onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
+        }
+        $('.chart-builder').stop().fadeOut(200).remove();
+      }
+    });
   });
 
   // Builds, parses, and renders our chart
@@ -1836,7 +1862,7 @@ function loadChartBuilder(onSave) {
     }
   }
 
-  // Pulls data from the
+
   function buildChartObject() {
       json = $('#chart-data').val();
 
@@ -1950,6 +1976,10 @@ function loadChartBuilder(onSave) {
       }
     });
 
+    var svg = d3.select("#chart svg")
+      .attr("viewBox", "0 0 880 320")
+      .attr("preserveAspectRatio", "xMinYMin meet");
+
     d3.select('#chart svg').append('text')
       .attr('x', 20)
       .attr('y', 18)
@@ -1983,8 +2013,13 @@ function loadChartBuilder(onSave) {
     var padding = 25;
     var chart = timeSubchart(timechart, period);
 
+    var dates_to_label = {};
+    _.each(chart.data, function(data_point) {
+        dates_to_label[data_point.date] = data_point.label;
+        });
+
     if(chart.subtitle != '') { padding += 16; }
-    if(chart.unit != '') {padding += 24; }
+    if(chart.unit != '') { padding += 24; }
     var showPoints = true;
     if(chart.data.length > 120) { showPoints = false; }
 
@@ -2014,6 +2049,11 @@ function loadChartBuilder(onSave) {
         },
         y: {
           label: chart.yaxis
+        }
+      },
+      tooltip: {
+        format: {
+          title: function(x) { return dates_to_label[x] ;}
         }
       },
       grid: {
@@ -2089,6 +2129,26 @@ function loadChartBuilder(onSave) {
     var headers=lines[0].split("\t");
     headers.shift();
     return headers;
+  }
+
+  function exportToSVG () {
+    var tmp = document.getElementById('chart');
+    var svg = tmp.getElementsByTagName('svg')[0];
+    if ($('#chart-type').val() === 'line') {
+      $('.c3 line').css("fill", "none");
+      console.log($('.c3 line'))
+    }
+    var source = (new XMLSerializer).serializeToString(svg);
+    //add name spaces.
+    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
+        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+    //add xml declaration
+    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+    return source;
   }
 
 // Date conversion support functions
@@ -3129,7 +3189,6 @@ function viewCollections(collectionId) {
   $.ajax({
     url: "/zebedee/collections",
     type: "get",
-    crossDomain: true,
     success: function (data) {
       populateCollectionTable(data);
     },

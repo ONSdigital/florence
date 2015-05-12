@@ -3,7 +3,6 @@ function viewCollections(collectionId) {
   $.ajax({
     url: "/zebedee/collections",
     type: "get",
-    crossDomain: true,
     success: function (data) {
       populateCollectionTable(data);
     },

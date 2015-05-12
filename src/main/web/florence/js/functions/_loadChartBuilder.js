@@ -1,7 +1,5 @@
-function loadChartBuilder() {
-  var pageUrl = localStorage.getItem('pageurl');
-
 function loadChartBuilder(onSave) {
+  var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display","block");
@@ -20,12 +18,7 @@ function loadChartBuilder(onSave) {
      chart.title = $('#chart-title').val();
      var uriUploadSVG = pageUrl + "/" + chart.title + ".svg";
      var uriUploadJSON = pageUrl + "/" + chart.title + ".json";
-    if(onSave) {
-      onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
-    }
-    $('.chart-builder').fadeOut(200).remove();
 
-  });
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
@@ -46,6 +39,9 @@ function loadChartBuilder(onSave) {
       contentType: false,
       success: function (res) {
         console.log("JSON uploaded successfully");
+        if(onSave) {
+          onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
+        }
         $('.chart-builder').stop().fadeOut(200).remove();
       }
     });
