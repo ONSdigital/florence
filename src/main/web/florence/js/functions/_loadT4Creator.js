@@ -125,7 +125,7 @@ function pageTypeData(pageType) {
       "uri": "",
       "fileName": "",
       "breadcrumb": "",
-      "isPageComplete": false
+//      "isPageComplete": false
     };
   }
 
@@ -152,7 +152,7 @@ function pageTypeData(pageType) {
       "uri": "",
       "fileName": "",
       "breadcrumb": "",
-      "isPageComplete": false
+//      "isPageComplete": false
     };
   }
 
@@ -182,7 +182,7 @@ function pageTypeData(pageType) {
       "relatedDatasets": [],
       "usedIn": [],
       "breadcrumb": "",
-      "isPageComplete": false
+//      "isPageComplete": false
     };
   }
 
