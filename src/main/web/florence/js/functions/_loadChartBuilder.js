@@ -51,12 +51,7 @@ function loadChartBuilder(onSave) {
   function renderChart() {
     var chart = buildChartObject();
     parseChartObject(chart);
-
-    if(chart.isTimeSeries) {
-      renderTimeseriesChartObject('#chart', chart, chart.period)
-    } else {
-      renderChartObject('#chart', chart);
-    }
+    renderChartObject('#chart', chart)
   }
 
 
@@ -65,7 +60,7 @@ function loadChartBuilder(onSave) {
 
       var chart = {};
       chart.type = $('#chart-type').val();
-      if(chart.type == 'rotated') {
+      if(chart.type === 'rotated') {
         chart.type = 'bar';
         chart.rotated = true;
       }
@@ -75,15 +70,14 @@ function loadChartBuilder(onSave) {
       chart.subtitle = $('#chart-subtitle').val();
       chart.unit = $('#chart-unit').val();
 
-      chart.xaxis = $('#chart-x-axis').val();
-      chart.yaxis = $('#chart-y-axis').val();
+      chart.source = $('#chart-source').val();
 
       chart.legend = $('#chart-legend').val();
-      chart.hideLegend = (chart.legend == 'false') ? true : false;
+      chart.hideLegend = (chart.legend === 'false') ? true : false;
 
       console.log(chart.legend + " " + chart.hideLegend);
 
-      if(chart.title == '') {
+      if(chart.title === '') {
         chart.title = '[Title]'
       }
 
@@ -126,16 +120,29 @@ function loadChartBuilder(onSave) {
 
   // Do the rendering
   function renderChartObject(bindTag, chart) {
+    if( chart.isTimeSeries ) {
+        renderTimeseriesChartObject(bindTag, chart, chart.period)
+        return;
+    }
+
+    // Calculate padding at top of SVG
     var padding = 25;
     if(chart.subtitle !== '') { padding += 16; }
-    if(chart.unit != '') {padding += 24; }
 
     var rotate = (chart.rotated ? true : false);
 
-    // work out position for chart legend
-    var seriesCount = chart.series.length === 0 ? 0 : chart.series.length;
-    var yOffset = (chart.legend === 'bottom-left' || chart.legend === 'bottom-right') ? seriesCount * 20 + 5 : 5;
+    var yLabel = rotate === true ? chart.unit : '';
+    if((chart.unit !== '') && (rotate === false)) {padding += 24; }
 
+    // Calculate padding at bottom of SVG
+    var bottomPadding = 0;
+    if((chart.source !== '')) {bottomPadding += 16;}
+
+    // work out position for chart legend
+    var seriesCount = chart.series.length;
+    var yOffset = (chart.legend === 'bottom-left' || chart.legend === 'bottom-right') ? seriesCount * 20 + 10 : 5;
+
+    // Generate the chart
     c3.generate({
       bindto: bindTag,
       data: {
@@ -161,7 +168,7 @@ function loadChartBuilder(onSave) {
           categories: chart.categories
         },
         y: {
-          label: chart.yaxis
+          label: yLabel
         },
         rotated: rotate
       },
@@ -171,59 +178,95 @@ function loadChartBuilder(onSave) {
         }
       },
       padding: {
-        top: padding
+        top: padding,
+        bottom: bottomPadding
       }
     });
 
-    var svg = d3.select("#chart svg")
+
+    var svg = d3.select(bindTag + " svg")
       .attr("viewBox", "0 0 880 320")
       .attr("preserveAspectRatio", "xMinYMin meet");
 
-    d3.select('#chart svg').append('text')
-      .attr('x', 20)
-      .attr('y', 18)
-      .attr('text-anchor', 'left')
-      .style('font-size', '1.6em')
-        .style('fill', '#000000')
-      .text(chart.title);
+    // annotate
+    renderAnnotations(bindTag, chart);
+  }
 
-    if(chart.subtitle != '') {
-      d3.select('#chart svg').append('text')
-        .attr('x', 20)
-        .attr('y', 36)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#999999')
-        .text(chart.subtitle);
-        }
 
-    if(chart.unit != '') {
-      d3.select('#chart svg').append('text')
+
+  function renderAnnotations(bindTag, chart) {
+    var rotate = (chart.rotated ? true : false);
+
+    var unitTop = (chart.subtitles !== '') ? 60 : 45; // Hard coded values for unitTop
+
+      // annotate
+      d3.select(bindTag + ' svg').append('text') // Title
         .attr('x', 20)
-        .attr('y', padding - 8)
+        .attr('y', 18)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#000000')
-        .text(chart.unit);
-        }
+        .style('font-size', '1.6em')
+          .style('fill', '#000000')
+        .text(chart.title);
+
+      if(chart.subtitle !== '') {
+        d3.select(bindTag + ' svg').append('text') // Subtitle
+          .attr('x', 20)
+          .attr('y', 36)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#999999')
+          .text(chart.subtitle);
+          }
+
+      if((chart.unit !== '') && (rotate === false)) {
+        d3.select(bindTag + ' svg').append('text') // Unit (if non rotated)
+          .attr('x', 20)
+          .attr('y', unitTop)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#000000')
+          .text(chart.unit);
+          }
+
+      var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
+      if(chart.source !== '') {
+        d3.select(bindTag + ' svg').append('text') // Source
+          .attr('x', 20)
+          .attr('y', 320)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#999999')
+          .text(chart.source);
+          }
+
   }
 
   function renderTimeseriesChartObject(bindTag, timechart, period) {
     var padding = 25;
     var chart = timeSubchart(timechart, period);
 
+    // Create a dictionary so we can reverse lookup a tooltip label
     var dates_to_label = {};
     _.each(chart.data, function(data_point) {
         dates_to_label[data_point.date] = data_point.label;
         });
 
-    if(chart.subtitle != '') { padding += 16; }
-    if(chart.unit != '') { padding += 24; }
+    // make room for titles if necessary
+    if(chart.subtitle !== '') { padding += 16; }
+    if(chart.unit !== '') { padding += 24; }
+
+    // should we show
     var showPoints = true;
     if(chart.data.length > 120) { showPoints = false; }
 
+   // work out position for chart legend
+    var seriesCount = chart.series.length;
+    var yOffset = (chart.legend === 'bottom-left' || chart.legend === 'bottom-right') ? seriesCount * 20 + 10 : 5;
+
+
     c3.generate({
       bindto: bindTag,
+
       data: {
         json: chart.data,
         keys: {
@@ -233,9 +276,21 @@ function loadChartBuilder(onSave) {
         type: chart.type,
         xFormat: '%Y-%m-%d %H:%M:%S'
       },
+
       point: {
         show: showPoints
       },
+
+       legend: {
+         hide: chart.hideLegend,
+         position: 'inset',
+         inset: {
+           anchor: chart.legend,
+           x: 10,
+           y: yOffset
+          }
+         },
+
       axis: {
         x: {
           label: chart.xaxis,
@@ -245,9 +300,6 @@ function loadChartBuilder(onSave) {
                   return x.getFullYear();
               }
               }
-        },
-        y: {
-          label: chart.yaxis
         }
       },
       tooltip: {
@@ -265,33 +317,7 @@ function loadChartBuilder(onSave) {
       }
     });
 
-    d3.select('#chart svg').append('text')
-      .attr('x', 20)
-      .attr('y', 18)
-      .attr('text-anchor', 'left')
-      .style('font-size', '1.6em')
-        .style('fill', '#000000')
-      .text(chart.title);
-
-    if(chart.subtitle != '') {
-      d3.select('#chart svg').append('text')
-        .attr('x', 20)
-        .attr('y', 36)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#999999')
-        .text(chart.subtitle);
-        }
-
-    if(chart.unit != '') {
-      d3.select('#chart svg').append('text')
-        .attr('x', 20)
-        .attr('y', padding - 8)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#000000')
-        .text(chart.unit);
-        }
+    renderAnnotations(bindTag, chart);
   }
 
 // Data load from text box functions
@@ -351,6 +377,8 @@ function loadChartBuilder(onSave) {
   }
 
 // Date conversion support functions
+
+// Steps through time series points
 function axisAsTimeSeries(axis) {
   var result = [];
   var rowNumber = 0;
@@ -368,6 +396,7 @@ function axisAsTimeSeries(axis) {
   });
   return result;
 }
+
 function convertTimeString(timeString) {
     // First time around parse the time string according to rules from regular timeseries
     var result = {};
@@ -395,7 +424,7 @@ function convertTimeString(timeString) {
 }
 function tryYear(tryString) {
     var base = tryString.trim();
-    if(base.length != 4) { return null; }
+    if(base.length !== 4) { return null; }
 
     var date = new Date(tryString);
 
@@ -407,7 +436,7 @@ function tryQuarter(tryString) {
     var months = ["Jan", "Apr", "Jul", "Oct"];
 
     var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
-    if(quarter != null) {
+    if(quarter !== null) {
         var dateString = tryString.replace(quarters[quarter], months[quarter]);
         return new Date(dateString);
         }
@@ -429,11 +458,14 @@ function timeSubSeries(timeSeries, period) {
    return result;
 }
 
+
+// Filters data based on the time period (Year, Month, Quarter) selected by the user
+// Returns a new chart
 function timeSubchart(chart, period) {
         var subchart = {};
 
         subchart.type = chart['type'];
-        if(subchart.type == 'rotated') {
+        if(subchart.type === 'rotated') {
           subchart.type = 'bar';
           subchart.rotated = true;
         }
@@ -441,13 +473,13 @@ function timeSubchart(chart, period) {
         subchart.title = chart.title;
         subchart.subtitle = chart.subtitle;
         subchart.unit = chart.unit;
+        subchart.source = chart.source;
 
-        subchart.xaxis = chart.xaxis
-        subchart.yaxis = chart.yaxis
+        subchart.hideLegend = chart.hideLegend;
+        subchart.legend = chart.legend;
 
-
-        if(chart.title == '') {
-          chart.title = '[Title]'
+        if(subchart.title == '') {
+          subchart.title = '[Title]';
         }
 
         subchart.series = chart.series;
