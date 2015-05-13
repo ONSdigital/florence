@@ -51,12 +51,7 @@ function loadChartBuilder(onSave) {
   function renderChart() {
     var chart = buildChartObject();
     parseChartObject(chart);
-
-    if(chart.isTimeSeries) {
-      renderTimeseriesChartObject('#chart', chart, chart.period)
-    } else {
-      renderChartObject('#chart', chart);
-    }
+    renderChartObject('#chart', chart)
   }
 
 
@@ -74,6 +69,8 @@ function loadChartBuilder(onSave) {
       chart.title = $('#chart-title').val();
       chart.subtitle = $('#chart-subtitle').val();
       chart.unit = $('#chart-unit').val();
+
+      chart.source = $('#chart-source').val();
 
       chart.legend = $('#chart-legend').val();
       chart.hideLegend = (chart.legend == 'false') ? true : false;
@@ -121,6 +118,12 @@ function loadChartBuilder(onSave) {
 
   // Do the rendering
   function renderChartObject(bindTag, chart) {
+    if( chart.isTimeSeries ) {
+        renderTimeseriesChartObject(bindTag, chart, chart.period)
+        return;
+    }
+
+    // Calculate padding at top of SVG
     var padding = 25;
     if(chart.subtitle != '') { padding += 16; }
 
@@ -129,13 +132,15 @@ function loadChartBuilder(onSave) {
     var yLabel = rotate == true ? chart.unit : '';
     if((chart.unit != '') && (rotate == false)) {padding += 24; }
 
-
+    // Calculate padding at bottom of SVG
+    var bottomPadding = 0;
+    if((chart.source != '')) {bottomPadding += 16;}
 
     // work out position for chart legend
     var seriesCount = chart.series.length;
     var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
 
-
+    // Generate the chart
     c3.generate({
       bindto: bindTag,
       data: {
@@ -171,41 +176,67 @@ function loadChartBuilder(onSave) {
         }
       },
       padding: {
-        top: padding
+        top: padding,
+        bottom: bottomPadding
       }
     });
+
 
     var svg = d3.select(bindTag + " svg")
       .attr("viewBox", "0 0 880 320")
       .attr("preserveAspectRatio", "xMinYMin meet");
 
-    d3.select(bindTag + ' svg').append('text')
-      .attr('x', 20)
-      .attr('y', 18)
-      .attr('text-anchor', 'left')
-      .style('font-size', '1.6em')
-        .style('fill', '#000000')
-      .text(chart.title);
+    // annotate
+    renderAnnotations(bindTag, chart);
+  }
 
-    if(chart.subtitle != '') {
-      d3.select(bindTag + ' svg').append('text')
-        .attr('x', 20)
-        .attr('y', 36)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#999999')
-        .text(chart.subtitle);
-        }
 
-    if((chart.unit != '') && (rotate == false)) {
-      d3.select(bindTag + ' svg').append('text')
+
+  function renderAnnotations(bindTag, chart) {
+    var rotate = (chart.rotated ? true : false);
+
+    var unitTop = (chart.subtitles != '') ? 60 : 45; // Hard coded values for unitTop
+
+      // annotate
+      d3.select(bindTag + ' svg').append('text') // Title
         .attr('x', 20)
-        .attr('y', padding - 8)
+        .attr('y', 18)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#000000')
-        .text(chart.unit);
-        }
+        .style('font-size', '1.6em')
+          .style('fill', '#000000')
+        .text(chart.title);
+
+      if(chart.subtitle != '') {
+        d3.select(bindTag + ' svg').append('text') // Subtitle
+          .attr('x', 20)
+          .attr('y', 36)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#999999')
+          .text(chart.subtitle);
+          }
+
+      if((chart.unit != '') && (rotate == false)) {
+        d3.select(bindTag + ' svg').append('text') // Unit (if non rotated)
+          .attr('x', 20)
+          .attr('y', unitTop)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#000000')
+          .text(chart.unit);
+          }
+
+      var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
+      if(chart.source != '') {
+        d3.select(bindTag + ' svg').append('text') // Source
+          .attr('x', 20)
+          .attr('y', 320)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#999999')
+          .text(chart.source);
+          }
+
   }
 
   function renderTimeseriesChartObject(bindTag, timechart, period) {
@@ -284,33 +315,7 @@ function loadChartBuilder(onSave) {
       }
     });
 
-    d3.select(bindTag + ' svg').append('text')
-      .attr('x', 20)
-      .attr('y', 18)
-      .attr('text-anchor', 'left')
-      .style('font-size', '1.6em')
-        .style('fill', '#000000')
-      .text(chart.title);
-
-    if(chart.subtitle != '') {
-      d3.select(bindTag + ' svg').append('text')
-        .attr('x', 20)
-        .attr('y', 36)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#999999')
-        .text(chart.subtitle);
-        }
-
-    if(chart.unit != '') {
-      d3.select(bindTag + ' svg').append('text')
-        .attr('x', 20)
-        .attr('y', padding - 8)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
-        .style('fill', '#000000')
-        .text(chart.unit);
-        }
+    renderAnnotations(bindTag, chart);
   }
 
 // Data load from text box functions
@@ -370,6 +375,8 @@ function loadChartBuilder(onSave) {
   }
 
 // Date conversion support functions
+
+// Steps through time series points
 function axisAsTimeSeries(axis) {
   var result = [];
   var rowNumber = 0;
@@ -387,6 +394,7 @@ function axisAsTimeSeries(axis) {
   });
   return result;
 }
+
 function convertTimeString(timeString) {
     // First time around parse the time string according to rules from regular timeseries
     var result = {};
@@ -448,6 +456,9 @@ function timeSubSeries(timeSeries, period) {
    return result;
 }
 
+
+// Filters data based on the time period (Year, Month, Quarter) selected by the user
+// Returns a new chart
 function timeSubchart(chart, period) {
         var subchart = {};
 
@@ -460,9 +471,7 @@ function timeSubchart(chart, period) {
         subchart.title = chart.title;
         subchart.subtitle = chart.subtitle;
         subchart.unit = chart.unit;
-
-        subchart.xaxis = chart.xaxis;
-        subchart.yaxis = chart.yaxis;
+        subchart.source = chart.source;
 
         subchart.hideLegend = chart.hideLegend;
         subchart.legend = chart.legend;
