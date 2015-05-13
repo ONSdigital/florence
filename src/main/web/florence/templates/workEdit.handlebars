@@ -10,25 +10,69 @@
       </div>
       <div class="edit-section__content">
         <div id="metadata-list">
-          <p>Title: <textarea class="auto-size" type="text" id="name" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.name}}</textarea></p>
-          <p id="next-p">Next release: <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;">{{this.nextRelease}}</textarea></p>
-          <p>Contact name: <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;">{{this.contact.name}}</textarea></p>
-          <p>Contact email: <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;">{{this.contact.email}}</textarea></p>
-          <p id="summary-p">Summary: <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.summary}}</textarea></p>
-          <p id="abstract-p">Abstract: <textarea class="auto-size" type="text" id="abstract" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.abstract}}</textarea></p>
+          <div>
+            <label for="name">Title
+            <textarea class="auto-size" type="text" id="name" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.name}}</textarea>
+            </label>
+          </div>
+          <div class="next-p">
+            <label for="nextRelease">Next release
+            <textarea class="auto-size" type="text" id="nextRelease" cols="20" style="box-sizing: border-box; min-height: 31px;">{{this.nextRelease}}</textarea>
+            </label>
+          </div>
+          <div>
+            <label for="contactName">Contact name
+            <textarea class="auto-size" type="text" id="contactName" cols="20" style="box-sizing: border-box; min-height: 31px;">{{this.contact.name}}</textarea>
+            </label>
+          </div>
+          <div>
+            <label for="contactEmail">Contact email
+            <textarea class="auto-size" type="text" id="contactEmail" cols="30" style="box-sizing: border-box; min-height: 31px;">{{this.contact.email}}</textarea>
+            </label>
+          </div>
+          <div id="summary-p">
+            <label for="summary">Summary
+            <textarea class="auto-size" type="text" id="summary" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.summary}}</textarea>
+            </label>
+          </div>
+          <div id="abstract-p">
+            <label for="abstract">Abstract
+            <textarea class="auto-size" type="text" id="abstract" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.abstract}}</textarea>
+            </label>
+          </div>
           <div id="natStat">
-            <label for="natStat">National statistic</label>
+            <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
           <div id="migrated">
-            <label for="migrated">Migrated</label>
+            <label for="migrated">Migrated </label>
             <input type="checkbox" name="migrated" value="false" />
           </div>
-          <p id="headline1-p">Headline 1: <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline1}}</textarea></p>
-          <p id="headline2-p">Headline 2: <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline2}}</textarea></p>
-          <p id="headline3-p">Headline 3: <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline3}}</textarea></p>
-          <p id="description-p">Description: <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.description}}</textarea></p>
-          <p>Keywords: <textarea class="auto-size" type="text" id="keywords" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.keywords}}</textarea></p>
+          <div id="headline1-p">
+            <label for="headline1">Headline 1
+            <textarea class="auto-size" type="text" id="headline1" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline1}}</textarea>
+            </label>
+          </div>
+          <div id="headline2-p">
+            <label for="headline2">Headline 2
+            <textarea class="auto-size" type="text" id="headline2" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline2}}</textarea>
+            </label>
+          </div>
+          <div id="headline3-p">
+            <label for="headline3">Headline 3
+            <textarea class="auto-size" type="text" id="headline3" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.headline3}}</textarea>
+            </label>
+          </div>
+          <div id="description-p">
+            <label for="description">Description
+            <textarea class="auto-size" type="text" id="description" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.description}}</textarea>
+            </label>
+          </div>
+          <div>
+            <label for="keywords">Keywords
+            <textarea class="auto-size" type="text" id="keywords" cols="40" style="box-sizing: border-box; min-height: 31px;">{{this.keywords}}</textarea>
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -39,7 +83,7 @@
         <h1>Correction</h1>
         <p>Date | Notice | Severity</p>
       </div>
-      <div class="edit-section__content">
+      <div class="edit-section__content edit-section__content--correction">
           {{#each this.correction}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <p>Text: <textarea class="auto-size" type="text" id="correction_text_{{@index}}" cols="65" style="box-sizing: border-box; min-height: 31px;">{{text}}</textarea></p>
