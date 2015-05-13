@@ -77,7 +77,7 @@ function loadChartBuilder(onSave) {
 
       console.log(chart.legend + " " + chart.hideLegend);
 
-      if(chart.title === '') {
+      if(!chart.title) {
         chart.title = '[Title]'
       }
 
@@ -436,7 +436,7 @@ function tryQuarter(tryString) {
     var months = ["Jan", "Apr", "Jul", "Oct"];
 
     var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
-    if(quarter !== null) {
+    if(quarter !== undefined) {
         var dateString = tryString.replace(quarters[quarter], months[quarter]);
         return new Date(dateString);
         }
