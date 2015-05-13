@@ -15,9 +15,9 @@ function loadChartBuilder(onSave) {
   });
 
   $('.btn-chart-builder-create').on('click', function() {
-     chart.title = $('#chart-title').val();
-     var uriUploadSVG = pageUrl + "/" + chart.title + ".svg";
-     var uriUploadJSON = pageUrl + "/" + chart.title + ".json";
+     chart.filename = $('#chart-title').val().replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+     var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
+     var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
 
 
     $.ajax({
@@ -40,7 +40,7 @@ function loadChartBuilder(onSave) {
       success: function (res) {
         console.log("JSON uploaded successfully");
         if(onSave) {
-          onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
+          onSave('<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
         $('.chart-builder').stop().fadeOut(200).remove();
       }
@@ -59,7 +59,7 @@ function loadChartBuilder(onSave) {
 
       var chart = {};
       chart.type = $('#chart-type').val();
-      if(chart.type == 'rotated') {
+      if(chart.type === 'rotated') {
         chart.type = 'bar';
         chart.rotated = true;
       }
@@ -72,13 +72,15 @@ function loadChartBuilder(onSave) {
       chart.source = $('#chart-source').val();
 
       chart.legend = $('#chart-legend').val();
-      chart.hideLegend = (chart.legend == 'false') ? true : false;
+      chart.hideLegend = (chart.legend === 'false') ? true : false;
 
       console.log(chart.legend + " " + chart.hideLegend);
 
-      if(chart.title == '') {
+      if(chart.title === '') {
         chart.title = '[Title]'
       }
+
+      chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
       chart.data = tsvJSON(json);
       chart.series = tsvJSONColNames(json);
@@ -107,6 +109,7 @@ function loadChartBuilder(onSave) {
       chart.isTimeSeries = false;
     }
   }
+
 
 // Data load from text box functions
   function tsvJSON (input) {
@@ -219,7 +222,7 @@ function convertTimeString(timeString) {
 }
 function tryYear(tryString) {
     var base = tryString.trim();
-    if(base.length != 4) { return null; }
+    if(base.length !== 4) { return null; }
 
     var date = new Date(tryString);
 
@@ -231,7 +234,7 @@ function tryQuarter(tryString) {
     var months = ["Jan", "Apr", "Jul", "Oct"];
 
     var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
-    if(quarter != null) {
+    if(quarter !== null) {
         var dateString = tryString.replace(quarters[quarter], months[quarter]);
         return new Date(dateString);
         }
@@ -242,6 +245,5 @@ function tryMonth(tryString) {
         return date;
         }
 }
-
 
 }
