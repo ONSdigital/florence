@@ -127,7 +127,8 @@
 		box-sizing: border-box;
 		overflow-y: scroll;
 		background-color: $quill-gray;
-		padding-bottom: $lineheight * 4;
+		// padding-bottom: $lineheight * 4;
+		height: $lineheight * 35;
 		// position: relative;
 
 		h1 {
@@ -161,6 +162,28 @@
 			position: relative;
 			padding-bottom: $lineheight;
 
+			textarea {
+				// width: 100%;
+				font-size: 12px;
+				// line-height: $lineheight - 3;
+			}
+
+			label {
+				margin: 0 $gutter;
+				display: block;
+			}
+
+			input[type="file"] {
+				float: left;
+			}
+
+			#natStat label {
+				display: inline-block;
+			}
+
+			#migrated label {
+				display: inline-block;
+			}
 			
 
 
@@ -221,6 +244,24 @@
 			&__content {
 				padding-top: $lineheight;
 				// display: none;
+
+				&--correction {
+					
+
+					textarea {
+						width: 100% !important;
+						margin: 0 0 $lineheight 0 !important;
+					}
+
+					input {
+						width: 100% !important;
+						margin: 0 0 $lineheight 0 !important;
+					}
+
+					.edit-section__sortable-item {
+						text-align: left !important;
+					}
+				}
 			}
 
 			&__sortable-item {
@@ -235,6 +276,7 @@
 				margin-bottom: $lineheight / 2;
 				margin-right: $gutter;
 				margin-left: $gutter;
+				overflow: hidden;
 
 				&:before {
 					content: '';
@@ -250,8 +292,17 @@
 
 				input {
 					margin: 0;
-					// margin-right: 5px;
 					width: 50%;
+				}
+
+				textarea {
+					width: 50%;
+					border: 3px solid $scarpa-flow;
+					// min-height: ($lineheight * 2) !important;
+					margin: 0 0 0 10px;
+					line-height: $lineheight - 3;
+					padding: 5px;
+					float: left;
 				}
 
 				button {

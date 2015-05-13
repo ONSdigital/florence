@@ -8,7 +8,8 @@
     "cat": "latest",
     "catw": "latest",
     "jasmine": "^2.2.1",
-    "onchange": "latest"
+    "onchange": "latest",
+    "handlebars": "latest"
   },
   "scripts": {
     "test": "jasmine",

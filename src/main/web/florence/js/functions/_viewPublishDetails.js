@@ -15,7 +15,6 @@ function viewPublishDetails(collections) {
         success = function (response) {
           console.log(response);
           response.reviewed = response.reviewed.filter(function(page) { return PathUtils.isJsonFile(page.uri) });
-
           result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
         },
         error = function (response) {

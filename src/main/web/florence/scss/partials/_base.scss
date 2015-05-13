@@ -669,6 +669,21 @@ button {
 
 }
 
+textarea {
+	box-sizing: border-box;
+	width: 100%;
+	resize: none;
+	padding: 0 5px;
+	margin-bottom: $lineheight;
+	border: 3px solid $white;
+	border-radius: 4px;
+}
+
+input[type="checkbox"] {
+	height: $lineheight;
+	width: auto;
+	
+}
 
 
 
