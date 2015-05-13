@@ -1,5 +1,5 @@
 function loadT4Creator (collectionName) {
-
+  console.log('loadT4');
   var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
@@ -34,7 +34,7 @@ function loadT4Creator (collectionName) {
         };
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
-        return breadcrumb;
+        submitFormHandler ();
       } else {
         $('#location').attr("placeholder", "This is not a valid place to create this page.");
       }
@@ -52,44 +52,47 @@ function loadT4Creator (collectionName) {
   });
 
 
-  $('form').submit(function (e) {
-    e.preventDefault();
-    pageData = pageTypeData(pageType);
-    parent = $('#location').val().trim();
-    pageName = $('#pagename').val().trim();
-    pageData.name = pageName;
-    uriSection = pageType + "s";
-    pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-    pageData.fileName = pageNameTrimmed;
-    newUri = makeUrl(parent, uriSection, pageNameTrimmed);
-    pageData.uri = newUri;
-    date = new Date(releaseDate);
-    pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
-    pageData.breadcrumb = breadcrumb;
+  function submitFormHandler () {
+    $('form').submit(function (e) {
+    console.log(breadcrumb);
+      e.preventDefault();
+      pageData = pageTypeData(pageType);
+      parent = $('#location').val().trim();
+      pageName = $('#pagename').val().trim();
+      pageData.name = pageName;
+      uriSection = pageType + "s";
+      pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+      pageData.fileName = pageNameTrimmed;
+      newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+      pageData.uri = newUri;
+      date = new Date(releaseDate);
+      pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+      pageData.breadcrumb = breadcrumb;
 
-    if (pageName.length < 4) {
-      alert("This is not a valid file name");
-    } else {
-      postContent(collectionName, newUri, JSON.stringify(pageData),
-        success = function (message) {
-          console.log("Updating completed " + message);
-          viewWorkspace(newUri, collectionName, 'edit');
-          refreshPreview(newUri);
-        },
-        error = function (response) {
-          if (response.status === 400) {
-            alert("Cannot edit this file. It is already part of another collection.");
+      if (pageName.length < 4) {
+        alert("This is not a valid file name");
+      } else {
+        postContent(collectionName, newUri, JSON.stringify(pageData),
+          success = function (message) {
+            console.log("Updating completed " + message);
+            viewWorkspace(newUri, collectionName, 'edit');
+            refreshPreview(newUri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+              alert("You are not authorised to update content.");
+            }
+            else {
+              handleApiError(response);
+            }
           }
-          else if (response.status === 401) {
-            alert("You are not authorised to update content.");
-          }
-          else {
-            handleApiError(response);
-          }
-        }
-      );
-    }
+        );
+      }
   });
+  }
 }
 
 function pageTypeData(pageType) {
@@ -120,7 +123,8 @@ function pageTypeData(pageType) {
       type: pageType,
       "uri": "",
       "fileName": "",
-      "breadcrumb": ""
+      "breadcrumb": "",
+      "isPageComplete": false
     };
   }
 
@@ -146,7 +150,8 @@ function pageTypeData(pageType) {
       type: pageType,
       "uri": "",
       "fileName": "",
-      "breadcrumb": ""
+      "breadcrumb": "",
+      "isPageComplete": false
     };
   }
 
@@ -175,7 +180,8 @@ function pageTypeData(pageType) {
       "fileName": "",
       "relatedDatasets": [],
       "usedIn": [],
-      "breadcrumb": ""
+      "breadcrumb": "",
+      "isPageComplete": false
     };
   }
 
