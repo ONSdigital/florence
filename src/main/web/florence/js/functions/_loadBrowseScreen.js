@@ -25,18 +25,6 @@ function loadBrowseScreen(click) {
         $(this).parents('ul').addClass('active');
         $(this).closest('li').children('ul').addClass('active');
 
-        $('.btn-browse-edit').click(function () {
-          var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-          viewWorkspace(dest, Florence.collection.id, 'edit');
-          });
-        $('.btn-browse-create').click(function () {
-          var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-          viewWorkspace(dest, Florence.collection.id, 'create');
-        });
-//        $('.btn-browse-delete').click(function () {
-//          var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-//
-//        });
       });
 
       if (click) {
