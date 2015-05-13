@@ -15,9 +15,9 @@ function loadChartBuilder(onSave) {
   });
 
   $('.btn-chart-builder-create').on('click', function() {
-     chart.title = $('#chart-title').val();
-     var uriUploadSVG = pageUrl + "/" + chart.title + ".svg";
-     var uriUploadJSON = pageUrl + "/" + chart.title + ".json";
+     chart.filename = $('#chart-title').val().replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+     var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
+     var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
 
 
     $.ajax({
@@ -40,7 +40,7 @@ function loadChartBuilder(onSave) {
       success: function (res) {
         console.log("JSON uploaded successfully");
         if(onSave) {
-          onSave('<ons-chart path="' + getPathName() + '/' + $('#chart-title').val() + '" />');
+          onSave('<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
         $('.chart-builder').stop().fadeOut(200).remove();
       }
@@ -87,6 +87,8 @@ function loadChartBuilder(onSave) {
         chart.title = '[Title]'
       }
 
+      chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+
       chart.data = tsvJSON(json);
       chart.series = tsvJSONColNames(json);
       chart.categories = tsvJSONRowNames(json);
@@ -125,14 +127,14 @@ function loadChartBuilder(onSave) {
   // Do the rendering
   function renderChartObject(bindTag, chart) {
     var padding = 25;
-    if(chart.subtitle != '') { padding += 16; }
+    if(chart.subtitle !== '') { padding += 16; }
     if(chart.unit != '') {padding += 24; }
 
     var rotate = (chart.rotated ? true : false);
 
     // work out position for chart legend
-    var seriesCount = (chart.data.length == 0) ? 0 : Object.keys(chart.data[0]).length - 1;
-    var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 5 : 5;
+    var seriesCount = chart.series.length === 0 ? 0 : chart.series.length;
+    var yOffset = (chart.legend === 'bottom-left' || chart.legend === 'bottom-right') ? seriesCount * 20 + 5 : 5;
 
     c3.generate({
       bindto: bindTag,
