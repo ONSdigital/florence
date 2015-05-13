@@ -11,6 +11,14 @@ function loadT4Creator (collectionName) {
     }
   );
 
+  // Default
+    pageType = "bulletin";
+
+    $('select').change(function () {
+      pageType = $(this).val();
+      console.log(pageType);
+    });
+
   $('form').append('<button class="btn-page-create">Create page</button>');
   $('.btn-page-create').hide();
   var parentUrl = localStorage.getItem("pageurl");
@@ -42,13 +50,6 @@ function loadT4Creator (collectionName) {
     error: function () {
       console.log('No page data returned');
     }
-  });
-
-  // Default
-  pageType = "bulletin";
-
-  $('#pagetype').change(function () {
-    pageType = $(this).val();
   });
 
 
