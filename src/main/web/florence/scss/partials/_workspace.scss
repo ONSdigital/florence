@@ -243,6 +243,24 @@
 			&__content {
 				padding-top: $lineheight;
 				// display: none;
+
+				&--correction {
+					
+
+					textarea {
+						width: 100% !important;
+						margin: 0 0 $lineheight 0 !important;
+					}
+
+					input {
+						width: 100% !important;
+						margin: 0 0 $lineheight 0 !important;
+					}
+
+					.edit-section__sortable-item {
+						text-align: left !important;
+					}
+				}
 			}
 
 			&__sortable-item {
