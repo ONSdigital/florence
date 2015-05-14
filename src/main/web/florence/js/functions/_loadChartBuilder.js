@@ -2,7 +2,7 @@ function loadChartBuilder(onSave) {
   var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder();
   $('body').append(html);
-  $('.chart-builder').css("display","block");
+  $('.chart-builder').css("display", "block");
 
   renderChart();
 
@@ -10,27 +10,15 @@ function loadChartBuilder(onSave) {
     renderChart();
   });
 
-  $('.btn-chart-builder-cancel').on('click', function() {
+  $('.btn-chart-builder-cancel').on('click', function () {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
-  $('.btn-chart-builder-create').on('click', function() {
-     chart.filename = $('#chart-title').val().replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-     var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
-     var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
+  $('.btn-chart-builder-create').on('click', function () {
+    chart.filename = $('#chart-title').val().replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
 
-    $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
-      type: "POST",
-      data: exportToSVG (),
-      processData: false,
-      contentType: false,
-      success: function (res) {
-        console.log("SVG uploaded successfully");
-      }
-    });
-
+    var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
       type: "POST",
@@ -39,10 +27,23 @@ function loadChartBuilder(onSave) {
       contentType: false,
       success: function (res) {
         console.log("JSON uploaded successfully");
-        if(onSave) {
-          onSave('<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
-        }
-        $('.chart-builder').stop().fadeOut(200).remove();
+
+        var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
+        $.ajax({
+          url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
+          type: "POST",
+          data: exportToSVG(),
+          processData: false,
+          contentType: false,
+          success: function (res) {
+            console.log("SVG uploaded successfully");
+
+            if (onSave) {
+              onSave('<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+            }
+            $('.chart-builder').stop().fadeOut(200).remove();
+          }
+        });
       }
     });
   });
@@ -51,40 +52,53 @@ function loadChartBuilder(onSave) {
   function renderChart() {
     var chart = buildChartObject();
     parseChartObject(chart);
-    renderChartObject('#chart', chart)
+
+    var preview = $('#wmd-preview');
+
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
+    }
+
+    renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
 
   function buildChartObject() {
-      json = $('#chart-data').val();
+    json = $('#chart-data').val();
 
-      var chart = {};
-      chart.type = $('#chart-type').val();
-      if(chart.type === 'rotated') {
-        chart.type = 'bar';
-        chart.rotated = true;
-      }
-      chart.period = $('#chart-period').val();
+    var chart = {};
+    chart.type = $('#chart-type').val();
+    if (chart.type === 'rotated') {
+      chart.type = 'bar';
+      chart.rotated = true;
+    }
+    chart.period = $('#chart-period').val();
 
-      chart.title = $('#chart-title').val();
-      chart.subtitle = $('#chart-subtitle').val();
-      chart.unit = $('#chart-unit').val();
+    chart.title = $('#chart-title').val();
+    chart.subtitle = $('#chart-subtitle').val();
+    chart.unit = $('#chart-unit').val();
 
-      chart.source = $('#chart-source').val();
+    chart.source = $('#chart-source').val();
 
-      chart.legend = $('#chart-legend').val();
-      chart.hideLegend = (chart.legend === 'false') ? true : false;
+    chart.legend = $('#chart-legend').val();
+    chart.hideLegend = (chart.legend === 'false') ? true : false;
 
-      console.log(chart.legend + " " + chart.hideLegend);
+    console.log(chart.legend + " " + chart.hideLegend);
 
-      if(chart.title === '') {
-        chart.title = '[Title]'
-      }
+    if (chart.title === '') {
+      chart.title = '[Title]'
+    }
 
-      chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
-      chart.data = tsvJSON(json);
-      chart.series = tsvJSONColNames(json);
-      chart.categories = tsvJSONRowNames(json);
+    chart.data = tsvJSON(json);
+    chart.series = tsvJSONColNames(json);
+    chart.categories = tsvJSONRowNames(json);
+
+    chart.aspectRatio = $('#aspect-ratio').val();
 
     return chart;
   }
@@ -95,7 +109,7 @@ function loadChartBuilder(onSave) {
 
     // Determine if we have a time series
     var timeSeries = axisAsTimeSeries(chart.categories);
-    if(timeSeries && timeSeries.length > 0) {
+    if (timeSeries && timeSeries.length > 0) {
       chart.isTimeSeries = true;
       chart.timeSeries = timeSeries;
 
@@ -112,16 +126,16 @@ function loadChartBuilder(onSave) {
 
 
 // Data load from text box functions
-  function tsvJSON (input) {
-    var lines=input.split("\n");
+  function tsvJSON(input) {
+    var lines = input.split("\n");
     var result = [];
-    var headers=lines[0].split("\t");
+    var headers = lines[0].split("\t");
 
-    for(var i=1;i<lines.length;i++){
+    for (var i = 1; i < lines.length; i++) {
       var obj = {};
-      var currentline=lines[i].split("\t");
+      var currentline = lines[i].split("\t");
 
-      for(var j=0;j<headers.length;j++){
+      for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
       result.push(obj);
@@ -129,25 +143,27 @@ function loadChartBuilder(onSave) {
 
     return result //JSON
   }
-  function tsvJSONRowNames (input) {
-      var lines=input.split("\n");
-      var result = [];
 
-      for(var i=1;i<lines.length;i++){
-        var currentline=lines[i].split("\t");
-        result.push(currentline[0]);
-        }
+  function tsvJSONRowNames(input) {
+    var lines = input.split("\n");
+    var result = [];
 
-        return result
+    for (var i = 1; i < lines.length; i++) {
+      var currentline = lines[i].split("\t");
+      result.push(currentline[0]);
+    }
+
+    return result
   }
-  function tsvJSONColNames (input) {
-    var lines=input.split("\n");
-    var headers=lines[0].split("\t");
+
+  function tsvJSONColNames(input) {
+    var lines = input.split("\n");
+    var headers = lines[0].split("\t");
     headers.shift();
     return headers;
   }
 
-  function exportToSVG () {
+  function exportToSVG() {
     var tmp = document.getElementById('chart');
     var svg = tmp.getElementsByTagName('svg')[0];
     if ($('#chart-type').val() === 'line') {
@@ -156,11 +172,11 @@ function loadChartBuilder(onSave) {
     }
     var source = (new XMLSerializer).serializeToString(svg);
     //add name spaces.
-    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
     }
-    if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
-        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
     }
     //add xml declaration
     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
@@ -169,81 +185,104 @@ function loadChartBuilder(onSave) {
 
 
 // Steps through time series points
-function axisAsTimeSeries(axis) {
-  var result = [];
-  var rowNumber = 0;
+  function axisAsTimeSeries(axis) {
+    var result = [];
+    var rowNumber = 0;
 
-  _.each(axis, function(tryTimeString) {
-    var time = convertTimeString(tryTimeString);
-    if(time) {
-      time.row = rowNumber;
-      rowNumber = rowNumber + 1;
+    _.each(axis, function (tryTimeString) {
+      var time = convertTimeString(tryTimeString);
+      if (time) {
+        time.row = rowNumber;
+        rowNumber = rowNumber + 1;
 
-      result.push(time);
-    } else {
-      return null;
-    }
-  });
-  return result;
-}
-function timeSeriesHasPeriod(timeSeries, period) {
-      // Period is one of ['year', 'quarter', 'month', 'other']
-       _.each(timeSeries, function(time) {
-          if(time['period'] == period) {
-            return true;
-          }
-       });
-       return false;
-}
-function convertTimeString(timeString) {
+        result.push(time);
+      } else {
+        return null;
+      }
+    });
+    return result;
+  }
+
+  function timeSeriesHasPeriod(timeSeries, period) {
+    // Period is one of ['year', 'quarter', 'month', 'other']
+    _.each(timeSeries, function (time) {
+      if (time['period'] == period) {
+        return true;
+      }
+    });
+    return false;
+  }
+
+  function convertTimeString(timeString) {
     // First time around parse the time string according to rules from regular timeseries
     var result = {};
     result.label = timeString;
 
     // Format of year only
     var yearVal = tryYear(timeString);
-    if(yearVal) { result.date = yearVal; result.period = 'year'; return result; }
+    if (yearVal) {
+      result.date = yearVal;
+      result.period = 'year';
+      return result;
+    }
 
     // Format with year and quarter
     var quarterVal = tryQuarter(timeString);
-    if(quarterVal) { result.date = quarterVal; result.period = 'quarter'; return result; }
+    if (quarterVal) {
+      result.date = quarterVal;
+      result.period = 'quarter';
+      return result;
+    }
 
     // Format with year and month
     var monthVal = tryMonth(timeString);
-    if(monthVal) { result.date = monthVal; result.period = 'month'; return result; }
+    if (monthVal) {
+      result.date = monthVal;
+      result.period = 'month';
+      return result;
+    }
 
     // Other format
     var date = new Date(timeString);
-    if( !isNaN( date.getTime() ) ) {
-        result.date = monthVal; result.period = 'other'; return result;
-        }
+    if (!isNaN(date.getTime())) {
+      result.date = monthVal;
+      result.period = 'other';
+      return result;
+    }
 
-    return(null);
-}
-function tryYear(tryString) {
+    return (null);
+  }
+
+  function tryYear(tryString) {
     var base = tryString.trim();
-    if(base.length !== 4) { return null; }
+    if (base.length !== 4) {
+      return null;
+    }
 
     var date = new Date(tryString);
 
     return date;
-}
-function tryQuarter(tryString) {
+  }
+
+  function tryQuarter(tryString) {
     var indices = [0, 1, 2, 3];
     var quarters = ["Q1", "Q2", "Q3", "Q4"];
     var months = ["Jan", "Apr", "Jul", "Oct"];
 
-    var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
-    if(quarter !== null) {
-        var dateString = tryString.replace(quarters[quarter], months[quarter]);
-        return new Date(dateString);
-        }
+    var quarter = _.find(indices, function (q) {
+      return (tryString.indexOf(quarters[q]) > -1)
+    });
+    if (quarter !== undefined) {
+      var dateString = tryString.replace(quarters[quarter], months[quarter]);
+      return new Date(dateString);
     }
-function tryMonth(tryString) {
+  }
+
+  function tryMonth(tryString) {
     var date = new Date(tryString);
-    if( !isNaN( date.getTime() ) ) {
-        return date;
-        }
-}
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
 
 }
