@@ -13,6 +13,8 @@
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/third-party/d3.min.js"></script>
 <script type="text/javascript" src="js/third-party/c3.js"></script>
+<script type="text/javascript" src="js/third-party/pym.min.js"></script>
+<script type="text/javascript" src="js/functions/_chartRenderer.js"></script>
 <script type="text/javascript">
 
   (function () {
@@ -21,11 +23,30 @@
     //var baseUrl = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
     //var full = baseUrl + '/zebedee' + path + '.json';
 
+    var chart;
+
+    var $graphic = $('#chart');
+    var pymChild = new pym.Child({});
+
+    function drawGraphic() {
+      //var margin = {top: 10, right: 15, bottom: 25, left: 35};
+      var chartWidth = $graphic.width(); //- margin.left - margin.right;
+      var chartHeight = chartWidth * chart.aspectRatio;
+
+      console.log('render width: ' + chartWidth + ' height: ' + chartHeight);
+
+      renderChartObject('#chart', chart, chartHeight, chartWidth);
+
+      pymChild.sendHeight();
+    }
+
     $.ajax({
       url: "/zebedee/content/" + getCookieValue('collection') + "?uri=" + path,
       type: "GET",
       success: function (data) {
-        renderChartObject('#chart', data);
+        chart = data;
+        drawGraphic();
+        window.onresize = drawGraphic;
       }
     });
 
@@ -39,90 +60,6 @@
       var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
           results = regex.exec(location.search);
       return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
-
-    // Do the rendering
-    function renderChartObject(bindTag, chart) {
-      var padding = 25;
-      if (chart.subtitle !== '') {
-        padding += 16;
-      }
-      if (chart.unit !== '') {
-        padding += 24;
-      }
-
-      var rotate = (chart.rotated ? true : false);
-
-      // work out position for chart legend
-      var seriesCount = chart.series.length === 0 ? 0 : chart.series.length;
-      var yOffset = (chart.legend === 'bottom-left' || chart.legend === 'bottom-right') ? seriesCount * 20 + 5 : 5;
-
-      c3.generate({
-        bindto: bindTag,
-        data: {
-          json: chart.data,
-          keys: {
-            value: chart.series
-          },
-          type: chart.type
-        },
-        legend: {
-          hide: chart.hideLegend,
-          position: 'inset',
-          inset: {
-            anchor: chart.legend,
-            x: 10,
-            y: yOffset
-          }
-        },
-        axis: {
-          x: {
-            label: chart.xaxis,
-            type: 'category',
-            categories: chart.categories
-          },
-          y: {
-            label: chart.yaxis
-          },
-          rotated: rotate
-        },
-        grid: {
-          y: {
-            show: true
-          }
-        },
-        padding: {
-          top: padding
-        }
-      });
-
-      d3.select('#chart svg').append('text')
-          .attr('x', 20)
-          .attr('y', 18)
-          .attr('text-anchor', 'left')
-          .style('font-size', '1.6em')
-          .style('fill', '#000000')
-          .text(chart.title);
-
-      if (chart.subtitle !== '') {
-        d3.select('#chart svg').append('text')
-            .attr('x', 20)
-            .attr('y', 36)
-            .attr('text-anchor', 'left')
-            .style('font-size', '1.2em')
-            .style('fill', '#999999')
-            .text(chart.subtitle);
-      }
-
-      if (chart.unit !== '') {
-        d3.select('#chart svg').append('text')
-            .attr('x', 20)
-            .attr('y', padding - 8)
-            .attr('text-anchor', 'left')
-            .style('font-size', '1.2em')
-            .style('fill', '#000000')
-            .text(chart.unit);
-      }
     }
 
   })();

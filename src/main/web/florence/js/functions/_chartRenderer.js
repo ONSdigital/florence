@@ -1,5 +1,5 @@
   // Do the rendering
-  function renderChartObject(bindTag, chart) {
+  function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
         // Create our svg
          var svg = d3.select(bindTag + " svg")
@@ -30,6 +30,10 @@
         // Generate the chart
         c3.generate({
           bindto: bindTag,
+          size: {
+            height: chartHeight,
+            width: chartWidth
+          },
           data: {
             json: chart.data,
             keys: {
