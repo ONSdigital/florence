@@ -4,13 +4,33 @@
   <meta charset="UTF-8">
   <title>Florence</title>
   <link href="/florence/css/third-party/c3.css" rel="stylesheet" type="text/css">
+  <link href="/florence/css/third-party/responsive-tables.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Chart</a></li>
+    <li><a href="#tabs-2">Table</a></li>
+  </ul>
+  <div id="tabs-1">
+    <p id="chart"></p>
+  </div>
+  <div id="tabs-2" style="overflow: scroll;">
+    <p>
+      <div>
+        <table id="dataTable" class="responsive"></table>
+      </div>
+    </p>
+  </div>
+</div>
 
-<div id="chart"></div>
+
+<!--<div id="chart"></div>-->
 
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/third-party/responsive-tables.js"></script>
 <script type="text/javascript" src="js/third-party/d3.min.js"></script>
 <script type="text/javascript" src="js/third-party/c3.js"></script>
 <script type="text/javascript">
@@ -26,6 +46,7 @@
       type: "GET",
       success: function (data) {
         renderChartObject('#chart', data);
+        drawTable(data);
       }
     });
 
@@ -97,34 +118,58 @@
       });
 
       d3.select('#chart svg').append('text')
-          .attr('x', 20)
-          .attr('y', 18)
-          .attr('text-anchor', 'left')
-          .style('font-size', '1.6em')
-          .style('fill', '#000000')
-          .text(chart.title);
+        .attr('x', 20)
+        .attr('y', 18)
+        .attr('text-anchor', 'left')
+        .style('font-size', '1.6em')
+        .style('fill', '#000000')
+        .text(chart.title);
 
       if (chart.subtitle !== '') {
         d3.select('#chart svg').append('text')
-            .attr('x', 20)
-            .attr('y', 36)
-            .attr('text-anchor', 'left')
-            .style('font-size', '1.2em')
-            .style('fill', '#999999')
-            .text(chart.subtitle);
+          .attr('x', 20)
+          .attr('y', 36)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#999999')
+          .text(chart.subtitle);
       }
 
       if (chart.unit !== '') {
         d3.select('#chart svg').append('text')
-            .attr('x', 20)
-            .attr('y', padding - 8)
-            .attr('text-anchor', 'left')
-            .style('font-size', '1.2em')
-            .style('fill', '#000000')
-            .text(chart.unit);
+          .attr('x', 20)
+          .attr('y', padding - 8)
+          .attr('text-anchor', 'left')
+          .style('font-size', '1.2em')
+          .style('fill', '#000000')
+          .text(chart.unit);
       }
     }
 
+    function drawTable(data) {
+      var title = data.headers;
+      var rows = data.data;
+      drawTitles(title);
+      for (var i = 0; i < rows.length; i++) {
+        drawRow(rows[i]);
+      }
+
+      function drawTitles(title) {
+        var row = $("<tr />");
+        $("#dataTable").append(row);
+        for (var j = 0; j < title.length; j++) {
+          row.append($("<th>" + title[j] + "</th>"));
+        }
+      }
+
+      function drawRow(rowData) {
+        var row = $("<tr />")
+        $("#dataTable").append(row);
+        for (var j = 0; j < title.length; j++) {
+          row.append($("<td>" + rowData[title[j]] + "</td>"));
+        }
+      }
+    }
   })();
 
 </script>
