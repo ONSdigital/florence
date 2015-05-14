@@ -52,6 +52,7 @@ function loadChartBuilder(onSave) {
     var chart = buildChartObject();
     parseChartObject(chart);
     renderChartObject('#chart', chart)
+    drawTable(chart);
   }
 
 
@@ -75,7 +76,7 @@ function loadChartBuilder(onSave) {
       chart.legend = $('#chart-legend').val();
       chart.hideLegend = (chart.legend === 'false') ? true : false;
 
-      console.log(chart.legend + " " + chart.hideLegend);
+//      console.log(chart.legend + " " + chart.hideLegend);
 
       if(!chart.title) {
         chart.title = '[Title]'
@@ -84,6 +85,7 @@ function loadChartBuilder(onSave) {
       chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
       chart.data = tsvJSON(json);
+      chart.headers = tsvJSONHeaders(json);
       chart.series = tsvJSONColNames(json);
       chart.categories = tsvJSONRowNames(json);
 
@@ -316,7 +318,6 @@ function loadChartBuilder(onSave) {
         top: padding
       }
     });
-
     renderAnnotations(bindTag, chart);
   }
 
@@ -328,7 +329,7 @@ function loadChartBuilder(onSave) {
 
     for(var i=1;i<lines.length;i++){
       var obj = {};
-      var currentline=lines[i].split("\t");
+      var currentline=lines[i].split(",").join("").split("\t");
 
       for(var j=0;j<headers.length;j++){
         obj[headers[j]] = currentline[j];
@@ -355,13 +356,17 @@ function loadChartBuilder(onSave) {
     headers.shift();
     return headers;
   }
+  function tsvJSONHeaders (input) {
+    var lines=input.split("\n");
+    var headers=lines[0].split("\t");
+    return headers;
+  }
 
   function exportToSVG () {
     var tmp = document.getElementById('chart');
     var svg = tmp.getElementsByTagName('svg')[0];
     if ($('#chart-type').val() === 'line') {
       $('.c3 line').css("fill", "none");
-      console.log($('.c3 line'))
     }
     var source = (new XMLSerializer).serializeToString(svg);
     //add name spaces.
@@ -376,129 +381,155 @@ function loadChartBuilder(onSave) {
     return source;
   }
 
-// Date conversion support functions
+  // Date conversion support functions
 
-// Steps through time series points
-function axisAsTimeSeries(axis) {
-  var result = [];
-  var rowNumber = 0;
+  // Steps through time series points
+  function axisAsTimeSeries(axis) {
+    var result = [];
+    var rowNumber = 0;
 
-  _.each(axis, function(tryTimeString) {
-    var time = convertTimeString(tryTimeString);
-    if(time) {
-      time.row = rowNumber;
-      rowNumber = rowNumber + 1;
+    _.each(axis, function(tryTimeString) {
+      var time = convertTimeString(tryTimeString);
+      if(time) {
+        time.row = rowNumber;
+        rowNumber = rowNumber + 1;
 
-      result.push(time);
-    } else {
-      return null;
-    }
-  });
-  return result;
-}
-
-function convertTimeString(timeString) {
-    // First time around parse the time string according to rules from regular timeseries
-    var result = {};
-    result.label = timeString;
-
-    // Format of year only
-    var yearVal = tryYear(timeString);
-    if(yearVal) { result.date = yearVal; result.period = 'year'; return result; }
-
-    // Format with year and quarter
-    var quarterVal = tryQuarter(timeString);
-    if(quarterVal) { result.date = quarterVal; result.period = 'quarter'; return result; }
-
-    // Format with year and month
-    var monthVal = tryMonth(timeString);
-    if(monthVal) { result.date = monthVal; result.period = 'month'; return result; }
-
-    // Other format
-    var date = new Date(timeString);
-    if( !isNaN( date.getTime() ) ) {
-        result.date = monthVal; result.period = 'other'; return result;
-        }
-
-    return(null);
-}
-function tryYear(tryString) {
-    var base = tryString.trim();
-    if(base.length !== 4) { return null; }
-
-    var date = new Date(tryString);
-
-    return date;
-}
-function tryQuarter(tryString) {
-    var indices = [0, 1, 2, 3];
-    var quarters = ["Q1", "Q2", "Q3", "Q4"];
-    var months = ["Jan", "Apr", "Jul", "Oct"];
-
-    var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
-    if(quarter !== undefined) {
-        var dateString = tryString.replace(quarters[quarter], months[quarter]);
-        return new Date(dateString);
-        }
-    }
-function tryMonth(tryString) {
-    var date = new Date(tryString);
-    if( !isNaN( date.getTime() ) ) {
-        return date;
-        }
-}
-function timeSubSeries(timeSeries, period) {
-  // Period is one of ['year', 'quarter', 'month', 'other']
-   result = [];
-   _.each(timeSeries, function(time) {
-      if(time['period'] == period) {
         result.push(time);
+      } else {
+        return null;
       }
-   });
-   return result;
-}
+    });
+    return result;
+  }
 
+  function convertTimeString(timeString) {
+      // First time around parse the time string according to rules from regular timeseries
+      var result = {};
+      result.label = timeString;
 
-// Filters data based on the time period (Year, Month, Quarter) selected by the user
-// Returns a new chart
-function timeSubchart(chart, period) {
-        var subchart = {};
+      // Format of year only
+      var yearVal = tryYear(timeString);
+      if(yearVal) { result.date = yearVal; result.period = 'year'; return result; }
 
-        subchart.type = chart['type'];
-        if(subchart.type === 'rotated') {
-          subchart.type = 'bar';
-          subchart.rotated = true;
+      // Format with year and quarter
+      var quarterVal = tryQuarter(timeString);
+      if(quarterVal) { result.date = quarterVal; result.period = 'quarter'; return result; }
+
+      // Format with year and month
+      var monthVal = tryMonth(timeString);
+      if(monthVal) { result.date = monthVal; result.period = 'month'; return result; }
+
+      // Other format
+      var date = new Date(timeString);
+      if( !isNaN( date.getTime() ) ) {
+          result.date = monthVal; result.period = 'other'; return result;
+          }
+
+      return(null);
+  }
+  function tryYear(tryString) {
+      var base = tryString.trim();
+      if(base.length !== 4) { return null; }
+
+      var date = new Date(tryString);
+
+      return date;
+  }
+  function tryQuarter(tryString) {
+      var indices = [0, 1, 2, 3];
+      var quarters = ["Q1", "Q2", "Q3", "Q4"];
+      var months = ["Jan", "Apr", "Jul", "Oct"];
+
+      var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
+      if(quarter !== undefined) {
+          var dateString = tryString.replace(quarters[quarter], months[quarter]);
+          return new Date(dateString);
+          }
+      }
+  function tryMonth(tryString) {
+      var date = new Date(tryString);
+      if( !isNaN( date.getTime() ) ) {
+          return date;
+          }
+  }
+  function timeSubSeries(timeSeries, period) {
+    // Period is one of ['year', 'quarter', 'month', 'other']
+     result = [];
+     _.each(timeSeries, function(time) {
+        if(time['period'] == period) {
+          result.push(time);
         }
+     });
+     return result;
+  }
 
-        subchart.title = chart.title;
-        subchart.subtitle = chart.subtitle;
-        subchart.unit = chart.unit;
-        subchart.source = chart.source;
 
-        subchart.hideLegend = chart.hideLegend;
-        subchart.legend = chart.legend;
+  // Filters data based on the time period (Year, Month, Quarter) selected by the user
+  // Returns a new chart
+  function timeSubchart(chart, period) {
+    var subchart = {};
 
-        if(subchart.title == '') {
-          subchart.title = '[Title]';
-        }
+    subchart.type = chart['type'];
+    if(subchart.type === 'rotated') {
+      subchart.type = 'bar';
+      subchart.rotated = true;
+    }
 
-        subchart.series = chart.series;
+    subchart.title = chart.title;
+    subchart.subtitle = chart.subtitle;
+    subchart.unit = chart.unit;
+    subchart.source = chart.source;
 
-        // Use timeSubSeries to filter the data
-        var subseries = timeSubSeries(chart.timeSeries, period);
-        var subdata = [];
-        var dates = [];
-        var labels = [];
+    subchart.hideLegend = chart.hideLegend;
+    subchart.legend = chart.legend;
 
-        _.each(subseries, function(time) {
-          var item = chart.data[time['row']];
-          item.date = time['date'];
-          item.label = time['label'];
-          subdata.push(item);
-        })
+    if(subchart.title == '') {
+      subchart.title = '[Title]';
+    }
 
-        subchart.data = subdata;
+    subchart.series = chart.series;
 
-      return subchart;
+    // Use timeSubSeries to filter the data
+    var subseries = timeSubSeries(chart.timeSeries, period);
+    var subdata = [];
+    var dates = [];
+    var labels = [];
+
+    _.each(subseries, function(time) {
+      var item = chart.data[time['row']];
+      item.date = time['date'];
+      item.label = time['label'];
+      subdata.push(item);
+    })
+
+    subchart.data = subdata;
+
+    return subchart;
+  }
+
+  function drawTable(data) {
+    var title = data.headers;
+    var rows = data.data;
+    drawTitles(title);
+    for (var i = 0; i < rows.length; i++) {
+      drawRow(rows[i]);
+    }
+
+    function drawTitles(title) {
+      var row = $("<tr />");
+      $("#dataTable").append(row);
+      for (var j = 0; j < title.length; j++) {
+        row.append($("<th>" + title[j] + "</th>"));
+      }
+    }
+
+    function drawRow(rowData) {
+      var row = $("<tr />")
+      $("#dataTable").append(row);
+      for (var j = 0; j < title.length; j++) {
+        row.append($("<td>" + rowData[title[j]] + "</td>"));
+      }
+    }
+  }
 }
-}
+
