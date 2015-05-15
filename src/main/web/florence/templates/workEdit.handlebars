@@ -33,7 +33,6 @@
       </div>
     </div>
 
-
     <div class="edit-section">
       <div class="edit-section__head">
         <h1>Correction</h1>
@@ -229,26 +228,31 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="edit-section" id="content">
-      <div class="edit-section__head">
-        <h1>Content</h1>
-        <p>Main sections | Title | Body copy</p>
+
+  <div id="charts">
+
+  </div>
+
+  <div class="edit-section" id="content">
+    <div class="edit-section__head">
+      <h1>Content</h1>
+      <p>Main sections | Title | Body copy</p>
+    </div>
+    <div class="edit-section__content">
+      <div id="sortable-sections" class="edit-section__sortable">
+        {{#each this.sections}}
+          <div id="{{@index}}" class="edit-section__sortable-item">
+            <textarea id="section-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
+            <textarea style="display: none;" id="section-markdown_{{@index}}">{{markdown}}</textarea>
+            <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
+            <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
+          </div>
+        {{/each}}
       </div>
-      <div class="edit-section__content">
-        <div id="sortable-sections" class="edit-section__sortable">
-          {{#each this.sections}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="section-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="section-markdown_{{@index}}">{{markdown}}</textarea>
-              <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addSection">Add section</button>
-        </div>
+      <div class="text-center">
+        <button class="btn-add-section" id="addSection">Add section</button>
       </div>
     </div>
   </div>
