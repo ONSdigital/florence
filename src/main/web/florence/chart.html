@@ -4,40 +4,106 @@
   <meta charset="UTF-8">
   <title>Florence</title>
   <link href="/florence/css/third-party/c3.css" rel="stylesheet" type="text/css">
-  <link href="/florence/css/third-party/responsive-tables.css" rel="stylesheet" type="text/css">
+  <!--<link href="/florence/css/third-party/responsive-tables.css" rel="stylesheet" type="text/css">-->
+  <style>
+    body{
+    margin-top: 10px;
+    font-family: 'Trebuchet MS', serif;
+    line-height: 1.6
+    }
+    .container{
+    width: 100%;
+    margin: 0 auto;
+    }
+
+    ul.tabs{
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    }
+    ul.tabs li{
+    background: none;
+    color: #222;
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+    }
+
+    ul.tabs li.current{
+    background: #ededed;
+    color: #222;
+    }
+
+    .tab-content{
+    display: none;
+    background: #ededed;
+    padding: 15px;
+    }
+
+    .tab-content.current{
+    display: inherit;
+    }
+
+    table th { font-weight: bold; }
+    table td, table th { padding: 9px 10px; text-align: left; }
+
+    /* Mobile */
+    @media only screen and (max-width: 767px) {
+
+    table.responsive { margin-bottom: 0; }
+
+    .pinned { position: absolute; left: 0; top: 0; background: #fff; width: 35%; overflow: hidden; overflow-x: scroll; border-right: 1px solid #ccc; border-left: 1px solid #ccc; }
+    .pinned table { border-right: none; border-left: none; width: 100%; }
+    .pinned table th, .pinned table td { white-space: nowrap; }
+    .pinned td:last-child { border-bottom: 0; }
+
+    div.table-wrapper { position: relative; margin-bottom: 20px; overflow: hidden; border-right: 1px solid #ccc; }
+    div.table-wrapper div.scrollable table { margin-left: 35%; }
+    div.table-wrapper div.scrollable { overflow: scroll; overflow-y: hidden; }
+
+    table.responsive td, table.responsive th { position: relative; white-space: nowrap; overflow: hidden; }
+    table.responsive th:first-child, table.responsive td:first-child, table.responsive td:first-child, table.responsive.pinned td { display: none; }
+
+    }
+
+  </style>
 </head>
 <body>
 
-<div id="tabs">
-  <ul>
-    <li><a href="#tabs-1">Chart</a></li>
-    <li><a href="#tabs-2">Table</a></li>
+<div class="container">
+  <ul class="tabs">
+    <li class="tab-link current" data-tab="tab-1">Chart</li>
+    <li class="tab-link" data-tab="tab-2">Table</li>
   </ul>
-  <div id="tabs-1">
+  <div id="tab-1" class="tab-content current">
     <p id="chart"></p>
   </div>
-  <div id="tabs-2" style="overflow: scroll;">
-    <p>
-      <div>
-        <table id="dataTable" class="responsive"></table>
-      </div>
-    </p>
+  <div id="tab-2" class="tab-content">
+    <div>
+      <table class="responsive" id="dataTable"></table>
+    </div>
   </div>
 </div>
 
-
-<!--<div id="chart"></div>-->
-
 <script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="js/third-party/responsive-tables.js"></script>
 <script type="text/javascript" src="js/third-party/d3.min.js"></script>
 <script type="text/javascript" src="js/third-party/c3.js"></script>
 <script type="text/javascript" src="js/third-party/pym.min.js"></script>
+<script type="text/javascript" src="js/third-party/responsive-tables.js"></script>
 <script type="text/javascript" src="js/functions/_chartRenderer.js"></script>
 <script type="text/javascript">
 
   (function () {
+
+    $('ul.tabs li').click(function(){
+      var tab_id = $(this).attr('data-tab');
+
+      $('ul.tabs li').removeClass('current');
+      $('.tab-content').removeClass('current');
+
+      $(this).addClass('current');
+      $("#"+tab_id).addClass('current');
+    })
 
     var path = getParameterByName('path');
     //var baseUrl = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');

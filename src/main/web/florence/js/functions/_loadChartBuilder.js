@@ -52,8 +52,8 @@ function loadChartBuilder(onSave) {
   function renderChart() {
     var chart = buildChartObject();
     parseChartObject(chart);
-    drawTable(chart);
-  }
+//    drawTable(chart);
+
 
     var preview = $('#wmd-preview');
 
@@ -293,4 +293,28 @@ function loadChartBuilder(onSave) {
     }
   }
 
+  function drawTable(data) {
+    var title = data.headers;
+    var rows = data.data;
+    drawTitles(title);
+    for (var i = 0; i < rows.length; i++) {
+      drawRow(rows[i]);
+    }
+
+    function drawTitles(title) {
+      var row = $("<tr />");
+      $("#dataTable").append(row);
+      for (var j = 0; j < title.length; j++) {
+        row.append($("<th>" + title[j] + "</th>"));
+      }
+    }
+
+    function drawRow(rowData) {
+      var row = $("<tr />")
+      $("#dataTable").append(row);
+      for (var j = 0; j < title.length; j++) {
+        row.append($("<td>" + rowData[title[j]] + "</td>"));
+      }
+    }
+  }
 }

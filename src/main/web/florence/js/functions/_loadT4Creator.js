@@ -103,7 +103,8 @@ function pageTypeData(pageType) {
       "nextRelease": "",
       "contact": {
         "name": "",
-        "email": ""
+        "email": "",
+        "phone": ""
       },
       "lede": "",
       "more": "",
@@ -133,7 +134,8 @@ function pageTypeData(pageType) {
     return {
       "contact": {
         "name": "",
-        "email": ""
+        "email": "",
+        "phone": ""
       },
       "lede": "",
       "more": "",
@@ -161,7 +163,8 @@ function pageTypeData(pageType) {
       "nextRelease": "",
       "contact": {
         "name": "",
-        "email": ""
+        "email": "",
+        "phone": ""
       },
       "lede": "",
       "more": "",
