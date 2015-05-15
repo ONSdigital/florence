@@ -1,8 +1,13 @@
-function loadChartBuilder(onSave) {
+function loadChartBuilder(pageData, onSave, chart) {
+
   var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display", "block");
+
+  if(chart) {
+    populateForm(chart);
+  }
 
   renderChart();
 
@@ -15,8 +20,16 @@ function loadChartBuilder(onSave) {
   });
 
   $('.btn-chart-builder-create').on('click', function () {
-    chart.filename = $('#chart-title').val().replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
+    if(!pageData.charts) {
+      pageData.charts = []
+    } else {
+      if (_.find(pageData.charts, function(existingChart) {
+          return existingChart.filename === chart.filename })) {
+        alert("A chart with this name already exists.");
+        return;
+      }
+    }
 
     var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
     $.ajax({
@@ -38,8 +51,10 @@ function loadChartBuilder(onSave) {
           success: function (res) {
             console.log("SVG uploaded successfully");
 
+            pageData.charts.push({ title:chart.title, filename:chart.filename });
+
             if (onSave) {
-              onSave('<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+              onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
             }
             $('.chart-builder').stop().fadeOut(200).remove();
           }
@@ -50,7 +65,7 @@ function loadChartBuilder(onSave) {
 
   // Builds, parses, and renders our chart in the chart editor
   function renderChart() {
-    var chart = buildChartObject();
+    chart = buildChartObject();
     parseChartObject(chart);
 
     var preview = $('#wmd-preview');
@@ -66,6 +81,10 @@ function loadChartBuilder(onSave) {
     renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
 
+  function populateForm(chart) {
+    $('#chart-title').val(chart.title);
+  }
+
   function buildChartObject() {
     json = $('#chart-data').val();
 
@@ -78,6 +97,8 @@ function loadChartBuilder(onSave) {
     chart.period = $('#chart-period').val();
 
     chart.title = $('#chart-title').val();
+    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
 
@@ -141,7 +162,7 @@ function loadChartBuilder(onSave) {
       result.push(obj);
     }
 
-    return result //JSON
+    return result; //JSON
   }
 
   function tsvJSONRowNames(input) {
