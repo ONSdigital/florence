@@ -101,41 +101,14 @@ function articleEditor(collectionName, data) {
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = $("#section-markdown_" + index).val();
-      var html = templates.markdownEditor(editedSectionValue);
-      $('body').append(html);
-      $('.markdown-editor').stop().fadeIn(200);
 
-      markdownEditor();
-      markDownEditorSetLines();
-
-      $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-save").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section-title_' + index).val();
-        data.sections[index].title = editedSectionTitle;
+      var saveContent = function(updatedContent) {
+        data.sections[index].markdown = updatedContent;
+        data.sections[index].title = $('#section-title_' + index).val();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
-      });
+      };
 
-      $(".btn-markdown-editor-exit").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section-title_' + index).val();
-        data.sections[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $("#wmd-input").on('click', function() {
-        markDownEditorSetLines();
-      });
-
-      $("#wmd-input").on('keyup', function() {
-        markDownEditorSetLines();
-      });
+      loadMarkdownEditor(editedSectionValue, saveContent);
     });
 
     // Delete
@@ -163,41 +136,14 @@ function articleEditor(collectionName, data) {
 
     $("#tab-edit_"+index).click(function() {
       var editedSectionValue = $("#tab-markdown_" + index).val();
-      var html = templates.markdownEditor(editedSectionValue);
-      $('body').append(html);
-      $('.markdown-editor').stop().fadeIn(200);
 
-      markdownEditor();
-      markDownEditorSetLines();
-
-      $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-save").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.accordion[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#tab-title_' + index).val();
-        data.accordion[index].title = editedSectionTitle;
+      var saveContent = function(updatedContent) {
+        data.accordion[index].markdown = updatedContent;
+        data.accordion[index].title = $('#tab-title_' + index).val();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
-      });
+      };
 
-      $(".btn-markdown-editor-exit").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.accordion[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#tab-title_' + index).val();
-        data.accordion[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $("#wmd-input").on('click', function() {
-        markDownEditorSetLines();
-      });
-
-      $("#wmd-input").on('keyup', function() {
-        markDownEditorSetLines();
-      });
+      loadMarkdownEditor(editedSectionValue, saveContent);
     });
 
     // Delete

@@ -111,73 +111,14 @@ function bulletinEditor(collectionName, data) {
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = $("#section-markdown_" + index).val();
-      var html = templates.markdownEditor(editedSectionValue);
-      $('body').append(html);
-      $('.markdown-editor').stop().fadeIn(200);
 
-      markdownEditor();
-      markDownEditorSetLines();
-
-      $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-save").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section-title_' + index).val();
-        data.sections[index].title = editedSectionTitle;
+      var saveContent = function(updatedContent) {
+        data.sections[index].markdown = updatedContent;
+        data.sections[index].title = $('#section-title_' + index).val();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
-      });
+      };
 
-      $(".btn-markdown-editor-exit").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section-title_' + index).val();
-        data.sections[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-chart").click(function(){
-        loadChartBuilder(function(insertValue) {
-
-          insertAtCursor($('#wmd-input')[0], insertValue);
-
-          Florence.Editor.markdownEditor.refreshPreview();
-
-          // http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
-          function insertAtCursor(field, value) {
-            //IE support
-            if (document.selection) {
-              field.focus();
-              sel = document.selection.createRange();
-              sel.text = value;
-            }
-            //MOZILLA and others
-            else if (field.selectionStart || field.selectionStart == '0') {
-              var startPos = field.selectionStart;
-              var endPos = field.selectionEnd;
-              field.value = field.value.substring(0, startPos)
-              + value
-              + field.value.substring(endPos, field.value.length);
-              field.selectionStart = startPos + value.length;
-              field.selectionEnd = startPos + value.length;
-            } else {
-              field.value += value;
-            }
-          }
-
-        });
-      });
-
-      $("#wmd-input").on('click', function() {
-        markDownEditorSetLines();
-      });
-
-      $("#wmd-input").on('keyup', function() {
-        markDownEditorSetLines();
-      });
+      loadMarkdownEditor(editedSectionValue, saveContent);
     });
 
     // Delete
@@ -205,41 +146,14 @@ function bulletinEditor(collectionName, data) {
 
     $("#tab-edit_"+index).click(function() {
       var editedSectionValue = $("#tab-markdown_" + index).val();
-      var html = templates.markdownEditor(editedSectionValue);
-      $('body').append(html);
-      $('.markdown-editor').stop().fadeIn(200);
 
-      markdownEditor();
-      markDownEditorSetLines();
-
-      $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-save").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.accordion[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#tab-title_' + index).val();
-        data.accordion[index].title = editedSectionTitle;
+      var saveContent = function(updatedContent) {
+        data.accordion[index].markdown = updatedContent;
+        data.accordion[index].title = $('#tab-title_' + index).val();
         updateContent(collectionName, getPathName(), JSON.stringify(data));
-      });
+      };
 
-      $(".btn-markdown-editor-exit").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.accordion[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#tab-title_' + index).val();
-        data.accordion[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $("#wmd-input").on('click', function() {
-        markDownEditorSetLines();
-      });
-
-      $("#wmd-input").on('keyup', function() {
-        markDownEditorSetLines();
-      });
+      loadMarkdownEditor(editedSectionValue, saveContent);
     });
 
     // Delete
