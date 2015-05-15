@@ -236,37 +236,13 @@ function datasetEditor(collectionName, data) {
 
     $("#note-edit_"+index).click(function() {
       var editedSectionValue = $("#note-markdown_" + index).val();
-      var html = templates.markdownEditor(editedSectionValue);
-      $('body').append(html);
-      $('.markdown-editor').stop().fadeIn(200);
 
-      markdownEditor();
-      markDownEditorSetLines();
-
-      $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-save").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.notes[index].data = editedSectionText;
+      var saveContent = function(updatedContent) {
+        data.notes[index].data = updatedContent;
         updateContent(collectionName, getPathName(), JSON.stringify(data));
-      });
+      };
 
-      $(".btn-markdown-editor-exit").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.notes[index].data = editedSectionText;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $("#wmd-input").on('click', function() {
-        markDownEditorSetLines();
-      });
-
-      $("#wmd-input").on('keyup', function() {
-        markDownEditorSetLines();
-      });
+      loadMarkdownEditor(editedSectionValue, saveContent);
     });
 
     // Delete
