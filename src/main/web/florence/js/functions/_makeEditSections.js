@@ -32,7 +32,6 @@ function makeEditSections(collectionId, pageData) {
       '  </section>';
 
     $('.workspace-menu').html(workspace_menu_sub_edit);
-
     $('.fl-editor__headline').val(JSON.stringify(pageData, null, 2));
 
     refreshEditNavigation();
@@ -81,4 +80,41 @@ function refreshEditNavigation() {
     error = function (response) {
       handleApiError(response);
     })
+}
+
+function loadChartsList(data, collectionId) {
+  var html = templates.workEditCharts(data);
+  $('#charts').html(html);
+
+  $(data.charts).each(function (index, chart) {
+
+    var path = getPathName() + '/' + chart.filename + '.json';
+
+    $("#chart-edit_" + chart.filename).click(function () {
+      getPageData(collectionId, path,
+        onSuccess = function (chartData) {
+          loadChartBuilder(chartData, function () {
+          }, chartData);
+        },
+        onError = function (response) {
+          handleApiError(response);
+        }
+      )
+    });
+
+    $("#chart-delete_" + chart.filename).click(function () {
+      $("#chart_" + index).remove();
+
+      deleteContent(collectionId, path,
+        onSuccess = function () {
+          data.charts = _(data.charts).filter(function (item) {
+            return item.filename !== chart.filename
+          });
+          updateContent(collectionId, getPathName(), JSON.stringify(data));
+        },
+        onError = function (response) {
+          handleApiError(response)
+        });
+    });
+  });
 }
