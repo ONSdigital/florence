@@ -1,12 +1,12 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
   var pageUrl = localStorage.getItem('pageurl');
-  var html = templates.chartBuilder();
+  var html = templates.chartBuilder(chart);
   $('body').append(html);
   $('.chart-builder').css("display", "block");
 
   if(chart) {
-    populateForm(chart);
+    $('#chart-data').val(toTsv(chart));
   }
 
   renderChart();
@@ -81,12 +81,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
 
-  function populateForm(chart) {
-    $('#chart-title').val(chart.title);
-  }
-
   function buildChartObject() {
-    json = $('#chart-data').val();
+    var json = $('#chart-data').val();
 
     var chart = {};
     chart.type = $('#chart-type').val();
@@ -163,6 +159,33 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     return result; //JSON
+  }
+
+  function toTsv(data) {
+    var output = "";
+
+    for (var i = 0; i < data.series.length; i++) {
+      output+= "\t" + data.series[i];
+    }
+
+    output += "\n";
+
+    for (var i = 0; i < data.categories.length; i++) {
+      output+= data.categories[i] + toTsvLine(data.data[i], data.series) + "\n";
+    }
+
+    return output;
+  }
+
+  function toTsvLine(data, headers) {
+
+    var output = "";
+
+    for (var i = 0; i < headers.length; i++) {
+      output+= "\t" + data[headers[i]];
+    }
+
+    return output;
   }
 
   function tsvJSONRowNames(input) {
