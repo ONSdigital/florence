@@ -1,4 +1,4 @@
-function loadMarkdownEditor(content, onSave) {
+function loadMarkdownEditor(content, onSave, pageData) {
 
   var html = templates.markdownEditor(content);
   $('body').append(html);
@@ -21,11 +21,13 @@ function loadMarkdownEditor(content, onSave) {
     $('.markdown-editor').stop().fadeOut(200).remove();
   });
 
+  var onChartSave = function(chartName, chartMarkdown) {
+    insertAtCursor($('#wmd-input')[0], chartMarkdown);
+    Florence.Editor.markdownEditor.refreshPreview();
+  };
+
   $(".btn-markdown-editor-chart").click(function(){
-    loadChartBuilder(function(insertValue) {
-      insertAtCursor($('#wmd-input')[0], insertValue);
-      Florence.Editor.markdownEditor.refreshPreview();
-    });
+    loadChartBuilder(pageData, onChartSave);
   });
 
   $("#wmd-input").on('click', function () {

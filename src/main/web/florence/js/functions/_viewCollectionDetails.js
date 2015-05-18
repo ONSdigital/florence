@@ -53,7 +53,6 @@ function viewCollectionDetails(collectionId) {
       var path = $(this).attr('data-path')
       deleteContent(collectionId, path, function() { viewCollectionDetails(collectionId); }, error);
       console.log('File deleted');
-
     });
 
     $('.collection-selected .btn-edit-cancel').click(function () {
