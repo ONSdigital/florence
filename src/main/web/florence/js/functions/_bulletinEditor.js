@@ -110,7 +110,10 @@ function bulletinEditor(collectionName, data) {
   $(data.sections).each(function(index, section) {
 
     $("#section-edit_"+index).click(function() {
-      var editedSectionValue = $("#section-markdown_" + index).val();
+      var editedSectionValue = {
+        "title": $('#section-title_' + index).val(),
+        "markdown": $("#section-markdown_" + index).val()
+      };
 
       var saveContent = function(updatedContent) {
         data.sections[index].markdown = updatedContent;
