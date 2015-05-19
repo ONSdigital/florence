@@ -2080,10 +2080,8 @@ function loadChartBuilder(pageData, onSave, chart) {
       output+= "\t" + data.series[i];
     }
 
-    output += "\n";
-
     for (var i = 0; i < data.categories.length; i++) {
-      output+= data.categories[i] + toTsvLine(data.data[i], data.series) + "\n";
+      output+= "\n" + data.categories[i] + toTsvLine(data.data[i], data.series);
     }
 
     return output;
@@ -2821,6 +2819,7 @@ function loadChartsList(data, collectionId) {
       getPageData(collectionId, path,
         onSuccess = function (chartData) {
           loadChartBuilder(chartData, function () {
+            refreshPreview();
           }, chartData);
         },
         onError = function (response) {
