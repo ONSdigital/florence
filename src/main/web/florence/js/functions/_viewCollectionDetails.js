@@ -70,6 +70,7 @@ function viewCollectionDetails(collectionId) {
 
     $('.btn-collection-approve').click(function () {
       approve(collectionId);
+      viewController('collections');
     });
   }
 

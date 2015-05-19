@@ -130,11 +130,18 @@
       url: "/zebedee/content/" + getCookieValue('collection') + "?uri=" + path,
       type: "GET",
       success: function (data) {
-        renderChartObject('#chart', data);
-        drawTable(data);
-        chart = data;
-        drawGraphic();
-        window.onresize = drawGraphic;
+      console.log(data)
+        if(data.type === "table") {
+          $('.container').html('<div><table id="dataTable" class="responsive"></table></div>');
+          $('.tabs').remove();
+          drawTable(data);
+        } else {
+          renderChartObject('#chart', data);
+          drawTable(data);
+          chart = data;
+          drawGraphic();
+          window.onresize = drawGraphic;
+        }
       }
     });
 
@@ -173,6 +180,8 @@
           row.append($("<td>" + rowData[title[j]] + "</td>"));
         }
       }
+
+      pymChild.sendHeight();
     }
   })();
 
