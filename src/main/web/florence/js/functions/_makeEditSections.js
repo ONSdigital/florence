@@ -94,6 +94,7 @@ function loadChartsList(data, collectionId) {
       getPageData(collectionId, path,
         onSuccess = function (chartData) {
           loadChartBuilder(chartData, function () {
+            refreshPreview();
           }, chartData);
         },
         onError = function (response) {
