@@ -1,13 +1,14 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
   var pageUrl = localStorage.getItem('pageurl');
+  var html = templates.chartBuilder(chart);
   var table = false;
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display", "block");
 
   if(chart) {
-    populateForm(chart);
+    $('#chart-data').val(toTsv(chart));
   }
 
   renderChart();
@@ -95,12 +96,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
   }
 
-  function populateForm(chart) {
-    $('#chart-title').val(chart.title);
-  }
-
   function buildChartObject() {
-    json = $('#chart-data').val();
+    var json = $('#chart-data').val();
 
     var chart = {};
     chart.type = $('#chart-type').val();
@@ -187,6 +184,31 @@ function loadChartBuilder(pageData, onSave, chart) {
     return result; //JSON
   }
 
+  function toTsv(data) {
+    var output = "";
+
+    for (var i = 0; i < data.series.length; i++) {
+      output+= "\t" + data.series[i];
+    }
+
+    for (var i = 0; i < data.categories.length; i++) {
+      output+= "\n" + data.categories[i] + toTsvLine(data.data[i], data.series);
+    }
+
+    return output;
+  }
+
+  function toTsvLine(data, headers) {
+
+    var output = "";
+
+    for (var i = 0; i < headers.length; i++) {
+      output+= "\t" + data[headers[i]];
+    }
+
+    return output;
+  }
+
   function tsvJSONRowNames(input) {
     var lines = input.split("\n");
     var result = [];
@@ -214,10 +236,11 @@ function loadChartBuilder(pageData, onSave, chart) {
   function exportToSVG() {
     var tmp = document.getElementById('chart');
     var svg = tmp.getElementsByTagName('svg')[0];
-
+    if ($('#chart-type').val() === 'line') {
+      $('.c3 line').css("fill", "none");
+      console.log($('.c3 line'))
+    }
     var source = (new XMLSerializer).serializeToString(svg);
-
-    //add padding
     //add name spaces.
     if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
       source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');

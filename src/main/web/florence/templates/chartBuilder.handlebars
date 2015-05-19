@@ -8,48 +8,56 @@
     </div>
     <div id="wmd-edit" class="wmd-panel wmd-preview">
 
-      <input type="text" id="chart-title" class="col--5" placeholder="[Title]"/>
-      <input type="text" id="chart-subtitle" class="col--5" placeholder="[Subtitle]"/>
+      <input type="text" id="chart-title" class="col--5" placeholder="[Title]" value="{{title}}"/>
+      <input type="text" id="chart-subtitle" class="col--5" placeholder="[Subtitle]" value="{{subtitle}}"/>
 
       <textarea id="chart-data" placeholder="Paste your data here" rows="4" cols="120"></textarea>
-      <br />
+      <br/>
       <label>Chart Type</label>
       <select id="chart-type" class="col--5">
-        <option value="bar">Bar Chart</option>
-        <option value="line">Line Chart</option>
-        <option value="rotated">Bar Chart (rotated)</option>
-        <option value="table">Table only</option>
+          {{#select type}}
+            <option value="bar">Bar Chart</option>
+            <option value="line">Line Chart</option>
+            <option value="rotated">Bar Chart (rotated)</option>
+            <option value="table">Table only</option>
+          {{/select}}
       </select>
-      <br />
+      <br/>
       <label>Legend</label>
       <select id="chart-legend" class="col--5">
-        <option value="false">None</option>
-        <option value="top-right">Top Right</option>
-        <option value="top-left">Top Left</option>
-        <option value="bottom-right">Bottom Right</option>
-        <option value="bottom-left">Bottom Left</option>
+          {{#select legend}}
+            <option value="false">None</option>
+            <option value="top-right">Top Right</option>
+            <option value="top-left">Top Left</option>
+            <option value="bottom-right">Bottom Right</option>
+            <option value="bottom-left">Bottom Left</option>
+          {{/select}}
       </select>
 
-      <br />
+      <br/>
       <label>Aspect Ratio</label>
       <select id="aspect-ratio" class="col--5">
-        <option value="0.75">4:3</option>
-        <option value="0.42">21:9</option>
-        <option value="0.56">16:9</option>
-        <option value="1">1:1</option>
-        <option value="1.3">10:13</option>
+          {{#select aspectRatio}}
+            <option value="0.75">4:3</option>
+            <option value="0.42">21:9</option>
+            <option value="0.56">16:9</option>
+            <option value="1">1:1</option>
+            <option value="1.3">10:13</option>
+          {{/select}}
       </select>
 
-      <br />
-      <input type="text" id="chart-unit" placeholder="[Unit]" class="col--2"/>
-      <input type="text" id="chart-source" placeholder="[Source]" class="col--7"/>
+      <br/>
+      <input type="text" id="chart-unit" placeholder="[Unit]" class="col--2" value="{{unit}}"/>
+      <input type="text" id="chart-source" placeholder="[Source]" class="col--7" value="{{source}}"/>
 
-      <br />
+      <br/>
       <label>Time period (if applicable)</label>
       <select id="chart-period" class="col--5">
-        <option value="year">Yearly</option>
-        <option value="quarter">Quarterly</option>
-        <option value="month">Monthly</option>
+          {{#select type}}
+            <option value="year">Yearly</option>
+            <option value="quarter">Quarterly</option>
+            <option value="month">Monthly</option>
+          {{/select}}
       </select>
 
 
@@ -57,6 +65,6 @@
   </div>
   <div class="markdown-editor__footer">
     <button class="btn-chart-builder-cancel">Cancel</button>
-    <button class="btn-chart-builder-create">Create Chart</button>
+    <button class="btn-chart-builder-create">Save Chart</button>
   </div>
 </div>

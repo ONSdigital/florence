@@ -1913,12 +1913,12 @@ function loadBrowseScreen(click) {
 function loadChartBuilder(pageData, onSave, chart) {
 
   var pageUrl = localStorage.getItem('pageurl');
-  var html = templates.chartBuilder();
+  var html = templates.chartBuilder(chart);
   $('body').append(html);
   $('.chart-builder').css("display", "block");
 
   if(chart) {
-    populateForm(chart);
+    $('#chart-data').val(toTsv(chart));
   }
 
   renderChart();
@@ -1993,12 +1993,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
 
-  function populateForm(chart) {
-    $('#chart-title').val(chart.title);
-  }
-
   function buildChartObject() {
-    json = $('#chart-data').val();
+    var json = $('#chart-data').val();
 
     var chart = {};
     chart.type = $('#chart-type').val();
@@ -2075,6 +2071,31 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     return result; //JSON
+  }
+
+  function toTsv(data) {
+    var output = "";
+
+    for (var i = 0; i < data.series.length; i++) {
+      output+= "\t" + data.series[i];
+    }
+
+    for (var i = 0; i < data.categories.length; i++) {
+      output+= "\n" + data.categories[i] + toTsvLine(data.data[i], data.series);
+    }
+
+    return output;
+  }
+
+  function toTsvLine(data, headers) {
+
+    var output = "";
+
+    for (var i = 0; i < headers.length; i++) {
+      output+= "\t" + data[headers[i]];
+    }
+
+    return output;
   }
 
   function tsvJSONRowNames(input) {
@@ -2798,6 +2819,7 @@ function loadChartsList(data, collectionId) {
       getPageData(collectionId, path,
         onSuccess = function (chartData) {
           loadChartBuilder(chartData, function () {
+            refreshPreview();
           }, chartData);
         },
         onError = function (response) {
@@ -2814,7 +2836,16 @@ function loadChartsList(data, collectionId) {
           data.charts = _(data.charts).filter(function (item) {
             return item.filename !== chart.filename
           });
-          updateContent(collectionId, getPathName(), JSON.stringify(data));
+          postContent(collectionId, path, content,
+            success = function () {
+              Florence.Editor.isDirty = false;
+              refreshPreview(path);
+              loadChartsList(data, collectionId);
+            },
+            error = function (response) {
+              handleApiError(response);
+            }
+          );
         },
         onError = function (response) {
           handleApiError(response)
@@ -3018,6 +3049,11 @@ function saveRelated (collectionName, path, content) {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
   Handlebars.registerPartial("editNav", templates.editNav);
+  Handlebars.registerHelper('select', function( value, options ){
+    var $el = $('<select />').html( options.fn(this) );
+    $el.find('[value="' + value + '"]').attr({'selected':'selected'});
+    return $el.html();
+  });
 
   localStorage.setItem('activeTab', false); // do we need this?
 
