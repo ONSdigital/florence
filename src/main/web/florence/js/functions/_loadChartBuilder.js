@@ -217,8 +217,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     var source = (new XMLSerializer).serializeToString(svg);
 
-//    $(source).find('class="c3-grid"')
-
+    //add padding
     //add name spaces.
     if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
       source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
@@ -226,6 +225,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
       source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
     }
+    //add padding
+    source = source.replace(/style="overflow: hidden;"/, 'style="overflow: hidden; padding: 50px;"');
+
     //add xml declaration
     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
     return source;
