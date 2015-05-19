@@ -94,6 +94,7 @@ function loadChartsList(data, collectionId) {
       getPageData(collectionId, path,
         onSuccess = function (chartData) {
           loadChartBuilder(chartData, function () {
+            refreshPreview();
           }, chartData);
         },
         onError = function (response) {
@@ -110,7 +111,16 @@ function loadChartsList(data, collectionId) {
           data.charts = _(data.charts).filter(function (item) {
             return item.filename !== chart.filename
           });
-          updateContent(collectionId, getPathName(), JSON.stringify(data));
+          postContent(collectionId, path, content,
+            success = function () {
+              Florence.Editor.isDirty = false;
+              refreshPreview(path);
+              loadChartsList(data, collectionId);
+            },
+            error = function (response) {
+              handleApiError(response);
+            }
+          );
         },
         onError = function (response) {
           handleApiError(response)
