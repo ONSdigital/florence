@@ -23,6 +23,7 @@ function viewPublishDetails(collections) {
       )
     );
   });
+    console.log(pageDataRequests);
   if (onlyOne < 2) {
     result.subtitle = 'The following collection has been approved'
   } else {

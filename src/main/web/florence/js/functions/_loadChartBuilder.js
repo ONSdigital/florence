@@ -1,6 +1,7 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
   var pageUrl = localStorage.getItem('pageurl');
+  var table = false;
   var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display", "block");
@@ -40,25 +41,30 @@ function loadChartBuilder(pageData, onSave, chart) {
       contentType: false,
       success: function (res) {
         console.log("JSON uploaded successfully");
-
-        var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
-        $.ajax({
-          url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
-          type: "POST",
-          data: exportToSVG(),
-          processData: false,
-          contentType: false,
-          success: function (res) {
-            console.log("SVG uploaded successfully");
-
-            pageData.charts.push({ title:chart.title, filename:chart.filename });
-
-            if (onSave) {
-              onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+        console.log(res)
+        if (!table) {
+          var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
+            $.ajax({
+              url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
+              type: "POST",
+              data: exportToSVG(),
+              processData: false,
+              contentType: false,
+              success: function (res) {
+                console.log("SVG uploaded successfully");
+//              pageData.charts.push({title:chart.title, filename:chart.filename});
+//              if (onSave) {
+//                onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+//              }
+//              $('.chart-builder').stop().fadeOut(200).remove();
             }
-            $('.chart-builder').stop().fadeOut(200).remove();
-          }
-        });
+          });
+        }
+        pageData.charts.push({title:chart.title, filename:chart.filename});
+        if (onSave) {
+          onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+        }
+        $('.chart-builder').stop().fadeOut(200).remove();
       }
     });
   });
@@ -66,21 +72,27 @@ function loadChartBuilder(pageData, onSave, chart) {
   // Builds, parses, and renders our chart in the chart editor
   function renderChart() {
     chart = buildChartObject();
-    parseChartObject(chart);
-//    drawTable(chart);
+    if (table) {
+      $('#preview-chart').empty();
+      $('#preview-chart').html('<div id="dataTable"></div>');
+      drawTable(chart);
+    } else {
+      parseChartObject(chart);
 
+      var preview = $('#preview-chart');
 
-    var preview = $('#wmd-preview');
+      preview.empty();
+      preview.html('<div id="chart"></div>');
 
-    var chartHeight = preview.width() * chart.aspectRatio;
-    var chartWidth = preview.width();
+      var chartHeight = preview.width() * chart.aspectRatio;
+      var chartWidth = preview.width();
 
-    if (chartHeight > preview.height()) {
-      chartHeight = preview.height();
-      chartWidth = preview.height() / chart.aspectRatio;
+      if (chartHeight > preview.height()) {
+        chartHeight = preview.height();
+        chartWidth = preview.height() / chart.aspectRatio;
+      }
+      renderChartObject('#chart', chart, chartHeight, chartWidth);
     }
-
-    renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
 
   function populateForm(chart) {
@@ -92,6 +104,11 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     var chart = {};
     chart.type = $('#chart-type').val();
+    if (chart.type === 'table') {
+      table = true;
+    } else {
+      table = false;
+    }
     if (chart.type === 'rotated') {
       chart.type = 'bar';
       chart.rotated = true;
@@ -157,14 +174,16 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     for (var i = 1; i < lines.length; i++) {
       var obj = {};
-      var currentline = lines[i].split(",").join("").split("\t");
-
+      if (!table) {
+        var currentline = lines[i].split(",").join("").split("\t");
+      } else {
+        var currentline = lines[i].split("\t");
+      }
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
       result.push(obj);
     }
-
     return result; //JSON
   }
 
@@ -176,7 +195,6 @@ function loadChartBuilder(pageData, onSave, chart) {
       var currentline = lines[i].split("\t");
       result.push(currentline[0]);
     }
-
     return result
   }
 
@@ -196,10 +214,11 @@ function loadChartBuilder(pageData, onSave, chart) {
   function exportToSVG() {
     var tmp = document.getElementById('chart');
     var svg = tmp.getElementsByTagName('svg')[0];
-    if ($('#chart-type').val() === 'line') {
-      $('.c3 line').css("fill", "none");
-   }
+
     var source = (new XMLSerializer).serializeToString(svg);
+
+//    $(source).find('class="c3-grid"')
+
     //add name spaces.
     if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
       source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');

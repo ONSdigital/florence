@@ -15,7 +15,10 @@ $(document).ready(function() {
       });
     }
   };
-  $(window).load(updateTables);
+
+  setTimeout (function () {
+    $(window).load(updateTables);
+  }, 300);
   $(window).bind("resize", updateTables);
 
   function splitTable(original) {
@@ -27,7 +30,7 @@ $(document).ready(function() {
       original.closest(".table-wrapper").append(copy);
       copy.wrap("<div class='pinned' />");
       original.wrap("<div class='scrollable' />");
-    }, 1500);
+    }, 700);
   }
 
   function unsplitTable(original) {
