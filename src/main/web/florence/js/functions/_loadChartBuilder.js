@@ -211,6 +211,16 @@ function loadChartBuilder(pageData, onSave, chart) {
       chart.hasMonth = timeSeriesHasPeriod(timeSeries, 'month');
       chart.hasOtherPeriod = timeSeriesHasPeriod(timeSeries, 'other');
 
+      if(chart.hasYear) {
+        chart.period = 'year';
+      } else if(chart.hasQuarter) {
+        chart.period = 'quarter';
+      } else if(chart.hasMonth) {
+        chart.period = 'month';
+      } else {
+        chart.isTimeSeries = false;
+      }
+      chart.type = 'line';
     } else {
       chart.isTimeSeries = false;
     }
@@ -332,11 +342,11 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   function timeSeriesHasPeriod(timeSeries, period) {
     // Period is one of ['year', 'quarter', 'month', 'other']
-    _.each(timeSeries, function (time) {
-      if (time['period'] == period) {
+    for (i = 0; i < timeSeries.length; i++) {
+      if (timeSeries[i]['period'] === period) {
         return true;
       }
-    });
+    }
     return false;
   }
 
