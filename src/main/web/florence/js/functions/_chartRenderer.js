@@ -41,7 +41,9 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       keys: {
         value: chart.series
       },
-      type: chart.type
+      type: chart.type,
+      types: chart.types,
+      groups: chart.groups
     },
    legend: {
      hide: chart.hideLegend,
@@ -89,7 +91,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       .attr('y', 18)
       .attr('text-anchor', 'left')
       .style('font-size', '1.6em')
-        .style('fill', '#000000')
+       .style('fill', '#000000')
       .text(chart.title);
 
     if(chart.subtitle != '') {

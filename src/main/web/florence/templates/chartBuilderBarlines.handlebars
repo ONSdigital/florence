@@ -1,0 +1,11 @@
+{{#each this}}
+  <label>{{this}}</label>
+  <select id="types_{{@index}}" class="col--5">
+    {{#select this}}
+      <option value="bar" selected>Bar</option>
+      <option value="line">Line</option>
+    {{/select}}
+  </select>
+  <input id="{{this}}" name="group_check" value="{{this}}" type="checkbox">
+  <br/>
+{{/each}}

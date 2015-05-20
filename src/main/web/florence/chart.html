@@ -79,7 +79,7 @@
     <p id="chart"></p>
   </div>
   <div id="tab-2" class="tab-content">
-    <div>
+    <div id="table-holder">
       <table class="responsive" id="dataTable"></table>
     </div>
   </div>
@@ -132,14 +132,24 @@
       success: function (data) {
       console.log(data)
         if(data.type === "table") {
-          $('.container').html('<div><table id="dataTable" class="responsive"></table></div>');
+          $('.container').html(
+            '<h3>' + data.title + '</h3>' +
+            '<h4>' + data.subtitle + '</h4>' +
+            '<h6>' + data.source + '</h6>' +
+            '<div><table id="dataTable" class="responsive"></table></div>');
           $('.tabs').remove();
           drawTable(data);
+          $('.container').append('<h4>' + data.source + '</h4>');
         } else {
+          $('#table-holder').prepend(
+            '<h3>' + data.title + '</h3>' +
+            '<h4>' + data.subtitle + '</h4>' +
+            '<h6>' + data.unit + '</h6>');
           renderChartObject('#chart', data);
           drawTable(data);
           chart = data;
           drawGraphic();
+          $('#table-holder').append('<h4>' + data.source + '</h4>');
           window.onresize = drawGraphic;
         }
       }

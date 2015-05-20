@@ -11,11 +11,49 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('#chart-data').val(toTsv(chart));
   }
 
+  checkSeries(true);
   renderChart();
 
-  $('.chart-builder :input').on('input', function () {
+  $('#edit-chart :input').on('input', function () {
+    checkSeries(true);
     renderChart();
   });
+
+  // create series selector
+  function checkSeries (reload) {
+    if (reload) {
+      var valueSelected = $('#chart-type').val();
+      if (valueSelected === 'barline') {
+        chart = buildChartObject();
+        data = chart.series;
+        var html = templates.chartBuilderBarlines(data);
+        $('#barline').html(html);
+        // add new listeners
+        $('#barline').off();
+        $('#barline').on('change', function (e) {
+          renderChart();
+        });
+      }
+    } else {
+      $('#chart-type').on('change', function (e) {
+        var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+        if (valueSelected === 'barline') {
+          chart = buildChartObject();
+          data = chart.series;
+          var html = templates.chartBuilderBarlines(data);
+          $('#barline').html(html);
+          // add new listeners
+          $('#barline').off();
+          $('#barline').on('change', function (e) {
+            renderChart();
+          });
+        } else {
+          $('#barline').empty();
+        }
+      });
+    }
+  }
 
   $('.btn-chart-builder-cancel').on('click', function () {
     $('.chart-builder').stop().fadeOut(200).remove();
@@ -53,11 +91,6 @@ function loadChartBuilder(pageData, onSave, chart) {
               contentType: false,
               success: function (res) {
                 console.log("SVG uploaded successfully");
-//              pageData.charts.push({title:chart.title, filename:chart.filename});
-//              if (onSave) {
-//                onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
-//              }
-//              $('.chart-builder').stop().fadeOut(200).remove();
             }
           });
         }
@@ -82,7 +115,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
       var preview = $('#preview-chart');
 
-      preview.empty();
+//      preview.empty();
       preview.html('<div id="chart"></div>');
 
       var chartHeight = preview.width() * chart.aspectRatio;
@@ -92,6 +125,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chartHeight = preview.height();
         chartWidth = preview.height() / chart.aspectRatio;
       }
+
       renderChartObject('#chart', chart, chartHeight, chartWidth);
     }
   }
@@ -131,13 +165,33 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
-      chart.data = tsvJSON(json);
-      chart.headers = tsvJSONHeaders(json);
-      chart.series = tsvJSONColNames(json);
-      chart.categories = tsvJSONRowNames(json);
+    chart.data = tsvJSON(json);
+    chart.headers = tsvJSONHeaders(json);
+    chart.series = tsvJSONColNames(json);
+    chart.categories = tsvJSONRowNames(json);
 
     chart.aspectRatio = $('#aspect-ratio').val();
 
+    if (chart.type === 'barline') {
+      chart.type = 'bar';
+      var types = {};
+      var groups = [];
+      var group = [];
+      var seriesData = chart.series;
+      for(var i=0; i<seriesData.length; i++) {
+        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
+      }
+      (function () {
+        $('#barline input:checkbox:checked').each(function(){
+          group.push($(this).val());
+        });
+      groups.push(group);
+      return groups;
+      })();
+      chart.types = types;
+      chart.groups = groups;
+    }
+    console.log(chart)
     return chart;
   }
 
@@ -187,12 +241,12 @@ function loadChartBuilder(pageData, onSave, chart) {
   function toTsv(data) {
     var output = "";
 
-    for (var i = 0; i < data.series.length; i++) {
-      output+= "\t" + data.series[i];
+    for (var i = 0; i < data.headers.length; i++) {
+      output+= "\t" + data.headers[i];
     }
 
     for (var i = 0; i < data.categories.length; i++) {
-      output+= "\n" + data.categories[i] + toTsvLine(data.data[i], data.series);
+      output+= "\n" + data.categories[i] + toTsvLine(data.data[i], data.headers);
     }
 
     return output;
