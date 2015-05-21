@@ -1,7 +1,6 @@
 <div class="chart-builder overlay">
-<div class="chart-builder__inner">
+  <div class="chart-builder__inner">
     <!-- <h1>Chart Builder</h1> -->
-  
 
     <div id="edit-chart" class="chart-builder__editor">
 
@@ -24,9 +23,9 @@
         </select>
       </label>
 
-      <!-- <div id="barline">
+      <div id="barline">
 
-      </div> -->
+      </div>
 
       <label>Legend<br>
         <select id="chart-legend">
@@ -52,27 +51,23 @@
         </select>
       </label>
 
-      <!-- <label>Time period (if applicable)
-        <select id="chart-period">
-            {{#select period}}
-              <option value="year">Yearly</option>
-              <option value="quarter">Quarterly</option>
-              <option value="month">Monthly</option>
-            {{/select}}
-        </select>
-      </label> -->
-
     </div>
 
     <div id="preview-chart" class="chart-builder__preview">
       <div id="chart"></div>
-      
     </div>
+
+
+    <div id="hiddenDiv" style="display:none">
+      <canvas id="hiddenCanvas"></canvas>
+      <a id="hiddenPng"/>
+    </div>
+
     <div class="chart-builder__footer">
       <button class="btn-chart-builder-cancel">Cancel</button>
       <button class="btn-chart-builder-create">Save Chart</button>
       <button class="btn-chart-png">Generate PNG</button>
     </div>
-  
-</div>
+
+  </div>
 </div>
