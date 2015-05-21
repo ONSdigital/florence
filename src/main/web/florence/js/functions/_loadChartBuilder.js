@@ -145,8 +145,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       $('#preview-chart').empty();
       $('#preview-chart').html('<div id="dataTable"></div>');
       drawTable(chart);
-    } else {
-      parseChartObject(chart);
+    }
 
       var preview = $('#preview-chart');
 
@@ -224,6 +223,8 @@ function loadChartBuilder(pageData, onSave, chart) {
       chart.groups = groups;
     }
     //console.log(chart);
+    parseChartObject(chart);
+
     return chart;
   }
 
@@ -422,31 +423,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     var result = {};
     result.label = timeString;
 
-    // Format of year only
-    var yearVal = tryYear(timeString);
-    if (yearVal) {
-      result.date = yearVal;
-      result.period = 'year';
-      return result;
-    }
+    // Format time string
+    if(right())
 
-    // Format with year and quarter
-    var quarterVal = tryQuarter(timeString);
-    if (quarterVal) {
-      result.date = quarterVal;
-      result.period = 'quarter';
-      return result;
-    }
-
-    // Format with year and month
-    var monthVal = tryMonth(timeString);
-    if (monthVal) {
-      result.date = monthVal;
-      result.period = 'month';
-      return result;
-    }
-
-    // Other format
+    // We are going with all times in a common format
     var date = new Date(timeString);
     if (!isNaN(date.getTime())) {
       result.date = monthVal;
@@ -455,38 +435,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     return (null);
-  }
-
-  function tryYear(tryString) {
-    var base = tryString.trim();
-    if (base.length !== 4) {
-      return null;
-    }
-
-    var date = new Date(tryString);
-
-    return date;
-  }
-
-  function tryQuarter(tryString) {
-    var indices = [0, 1, 2, 3];
-    var quarters = ["Q1", "Q2", "Q3", "Q4"];
-    var months = ["Jan", "Apr", "Jul", "Oct"];
-
-    var quarter = _.find(indices, function (q) {
-      return (tryString.indexOf(quarters[q]) > -1)
-    });
-    if (quarter !== undefined) {
-      var dateString = tryString.replace(quarters[quarter], months[quarter]);
-      return new Date(dateString);
-    }
-  }
-
-  function tryMonth(tryString) {
-    var date = new Date(tryString);
-    if (!isNaN(date.getTime())) {
-      return date;
-    }
   }
 
   function drawTable(data) {
