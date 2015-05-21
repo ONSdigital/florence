@@ -33,6 +33,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#barline').on('change', function (e) {
           renderChart();
         });
+      } else {
+        $('#barline').empty();
       }
     } else {
       $('#chart-type').on('change', function (e) {
