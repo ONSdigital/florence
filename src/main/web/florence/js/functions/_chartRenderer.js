@@ -16,7 +16,9 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var padding = 25;
   var paddingLeft = 100;
   if(chart.subtitle != '') { padding += 16; }
-  var rotate = (chart.rotated ? true : false);
+
+  var type = chart.type === 'rotated' ? 'bar' : chart.type;
+  var rotate = chart.type === 'rotated';
   var yLabel = rotate == true ? chart.unit : '';
   if((chart.unit != '') && (rotate == false)) {padding += 24; }
   if((chart.unit != '') && (rotate === true)) {paddingLeft += 50; }
@@ -41,7 +43,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       keys: {
         value: chart.series
       },
-      type: chart.type,
+      type: type,
       types: chart.types,
       groups: chart.groups
     },
