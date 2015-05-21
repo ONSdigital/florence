@@ -2004,7 +2004,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
-  $('.btn-chart-png').on('click', function () {
+
+  //generatePng();
+  function generatePng() {
 
     var preview = $('#chart');
     var chartHeight = preview.width() * chart.aspectRatio;
@@ -2015,18 +2017,24 @@ function loadChartBuilder(pageData, onSave, chart) {
       chartWidth = preview.height() / chart.aspectRatio;
     }
 
-    $('body').append('<canvas id="svg-canvas" width="' + chartWidth + '" height="' + chartHeight + '"></canvas><img id="svg-img">');
+
+    //$('body').append('<canvas id="hiddenCanvas" width="' + chartWidth + '" height="' + chartHeight + '"></canvas><img id="hiddenPng">');
 
     var content = exportToSVG().trim();
-    console.log(content);
 
-    var canvas = $('#svg-canvas').get(0);
+    var $canvas = $('#hiddenCanvas');
+    $canvas.width(chartWidth * 2);
+    $canvas.height(chartHeight * 2);
+
+    var canvas = $canvas.get(0);
+
     // Draw svg on canvas
     canvg(canvas, content);
+
     // Change img be SVG representation
     var theImage = canvas.toDataURL('image/png');
-    $('#svg-img').attr('src', theImage);
-  });
+    $('#hiddenPng').attr('src', theImage);
+  }
 
 
   $('.btn-chart-builder-create').on('click', function () {
