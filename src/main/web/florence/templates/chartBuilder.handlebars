@@ -1,76 +1,78 @@
-<div class="markdown-editor chart-builder" xmlns="http://www.w3.org/1999/html">
-  <div class="markdown-editor__header">
-    <h1>Chart Builder</h1>
-  </div>
-  <div class="markdown-editor__content">
-    <div id="preview-chart" class="wmd-panel wmd-preview">
-      <div id="chart"></div>
-    </div>
-    <div id="edit-chart" class="wmd-panel wmd-preview">
+<div class="chart-builder overlay">
+<div class="chart-builder__inner">
+    <!-- <h1>Chart Builder</h1> -->
+  
 
-      <input type="text" id="chart-title" class="col--5" placeholder="[Title]" value="{{title}}"/>
-      <input type="text" id="chart-subtitle" class="col--5" placeholder="[Subtitle]" value="{{subtitle}}"/>
+    <div id="edit-chart" class="chart-builder__editor">
+
+      <input type="text" id="chart-title" placeholder="[Title]" value="{{title}}"/>
+      <input type="text" id="chart-subtitle" placeholder="[Subtitle]" value="{{subtitle}}"/>
+      <input type="text" id="chart-unit" placeholder="[Unit]" value="{{unit}}"/>
+      <input type="text" id="chart-source" placeholder="[Source]" value="{{source}}"/>
 
       <textarea id="chart-data" placeholder="Paste your data here" rows="4" cols="120"></textarea>
       <br/>
-      <label>Chart Type</label>
-      <select id="chart-type" class="col--5">
-          {{#select type}}
-            <option value="bar">Bar Chart</option>
-            <option value="line">Line Chart</option>
-            <option value="barline">Bar + Line Chart</option>
-            <option value="rotated">Bar Chart (rotated)</option>
-            <option value="table">Table only</option>
-          {{/select}}
-      </select>
-      <br/>
+      <label>Chart Type <br>
+        <select id="chart-type">
+            {{#select type}}
+              <option value="bar">Bar Chart</option>
+              <option value="line">Line Chart</option>
+              <option value="barline">Bar + Line Chart</option>
+              <option value="rotated">Bar Chart (rotated)</option>
+              <option value="table">Table only</option>
+            {{/select}}
+        </select>
+      </label>
 
-      <div id="barline">
+      <!-- <div id="barline">
 
-      </div>
+      </div> -->
 
-      <label>Legend</label>
-      <select id="chart-legend" class="col--5">
-          {{#select legend}}
-            <option value="false">None</option>
-            <option value="top-right">Top Right</option>
-            <option value="top-left">Top Left</option>
-            <option value="bottom-right">Bottom Right</option>
-            <option value="bottom-left">Bottom Left</option>
-          {{/select}}
-      </select>
+      <label>Legend<br>
+        <select id="chart-legend">
+            {{#select legend}}
+              <option value="false">None</option>
+              <option value="top-right">Top Right</option>
+              <option value="top-left">Top Left</option>
+              <option value="bottom-right">Bottom Right</option>
+              <option value="bottom-left">Bottom Left</option>
+            {{/select}}
+        </select>
+      </label>
 
-      <br/>
-      <label>Aspect Ratio</label>
-      <select id="aspect-ratio" class="col--5">
-          {{#select aspectRatio}}
-            <option value="0.75">4:3</option>
-            <option value="0.42">21:9</option>
-            <option value="0.56">16:9</option>
-            <option value="1">1:1</option>
-            <option value="1.3">10:13</option>
-          {{/select}}
-      </select>
+      <label>Aspect Ratio<br>
+        <select id="aspect-ratio">
+            {{#select aspectRatio}}
+              <option value="0.75">4:3</option>
+              <option value="0.42">21:9</option>
+              <option value="0.56">16:9</option>
+              <option value="1">1:1</option>
+              <option value="1.3">10:13</option>
+            {{/select}}
+        </select>
+      </label>
 
-      <br/>
-      <input type="text" id="chart-unit" placeholder="[Unit]" class="col--2" value="{{unit}}"/>
-      <input type="text" id="chart-source" placeholder="[Source]" class="col--7" value="{{source}}"/>
-
-      <br/>
-      <label>Time period (if applicable)</label>
-      <select id="chart-period" class="col--5">
-          {{#select period}}
-            <option value="year">Yearly</option>
-            <option value="quarter">Quarterly</option>
-            <option value="month">Monthly</option>
-          {{/select}}
-      </select>
+      <!-- <label>Time period (if applicable)
+        <select id="chart-period">
+            {{#select period}}
+              <option value="year">Yearly</option>
+              <option value="quarter">Quarterly</option>
+              <option value="month">Monthly</option>
+            {{/select}}
+        </select>
+      </label> -->
 
     </div>
-  </div>
-  <div class="markdown-editor__footer">
-    <button class="btn-chart-builder-cancel">Cancel</button>
-    <button class="btn-chart-builder-create">Save Chart</button>
-    <button class="btn-chart-png">Generate PNG</button>
-  </div>
+
+    <div id="preview-chart" class="chart-builder__preview">
+      <div id="chart"></div>
+      
+    </div>
+    <div class="chart-builder__footer">
+      <button class="btn-chart-builder-cancel">Cancel</button>
+      <button class="btn-chart-builder-create">Save Chart</button>
+      <button class="btn-chart-png">Generate PNG</button>
+    </div>
+  
+</div>
 </div>
