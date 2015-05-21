@@ -327,7 +327,7 @@
 	padding-bottom: $lineheight * 4;
 	padding-right: $gutter * 4;
 	padding-left: $gutter * 4;
-	background-color: rgba(0,0,0,0.85);
+	background-color: rgba($black, .85);
 
 	&__header {
 		height: $lineheight * 6;
@@ -516,6 +516,78 @@
 	button {
 		margin-top: $lineheight;
 	}
+}
+
+.chart-builder {
+
+	&__inner {
+		background-color: $wild-sand;
+		height: $lineheight * 30;
+		width: $col--10;
+		margin-top: $lineheight * 6;
+		margin-right: auto;
+		margin-left: auto;
+		// margin-right: $gutter * 6;
+		// margin-left: $gutter * 6;
+		overflow: hidden;
+		position: relative;
+	}
+
+	&__editor {
+		box-sizing: border-box;
+		width: $col--6;
+		height: $lineheight * 26;
+		float: left;
+		padding: ($lineheight * 2) $gutter $lineheight $gutter;
+	}
+
+	&__preview {
+		box-sizing: border-box;
+		width: $col--6;
+		height: $lineheight * 30;
+		float: right;
+		padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+		// background-color: $white;
+	}
+
+	&__footer {
+		height: $lineheight * 2;
+		width: $col--6;
+		padding: $lineheight 0;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		text-align: center;
+		// background-color: $pickled-bluewood;
+
+		button {
+			margin-top: 0;
+		}
+	}
+
+	input, select {
+		margin-top: 0;
+		width: $col--6 - .4%;
+		background-color: $white;
+	}
+
+	textarea {
+		height: $lineheight * 6;
+		width: $col--12 - .3%;
+		border: 3px solid $scarpa-flow;
+	}
+
+	label {
+		display: inline-block;
+		width: $col--6 - .4%;
+		margin-top: -5px;
+		margin-bottom: 4px;
+
+		input, select {
+			width: 100%;
+		}
+	}
+	
 }
 
 
