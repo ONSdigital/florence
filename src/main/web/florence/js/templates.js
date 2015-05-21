@@ -22,33 +22,29 @@ templates['browseNode'] = template({"1":function(depth0,helpers,partials,data) {
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 templates['chartBuilder'] = template({"1":function(depth0,helpers,partials,data) {
-    return "            <option value=\"bar\">Bar Chart</option>\n            <option value=\"line\">Line Chart</option>\n            <option value=\"barline\">Bar + Line Chart</option>\n            <option value=\"rotated\">Bar Chart (rotated)</option>\n            <option value=\"table\">Table only</option>\n";
+    return "              <option value=\"bar\">Bar Chart</option>\n              <option value=\"line\">Line Chart</option>\n              <option value=\"barline\">Bar + Line Chart</option>\n              <option value=\"rotated\">Bar Chart (rotated)</option>\n              <option value=\"table\">Table only</option>\n";
 },"3":function(depth0,helpers,partials,data) {
-    return "            <option value=\"false\">None</option>\n            <option value=\"top-right\">Top Right</option>\n            <option value=\"top-left\">Top Left</option>\n            <option value=\"bottom-right\">Bottom Right</option>\n            <option value=\"bottom-left\">Bottom Left</option>\n";
+    return "              <option value=\"false\">None</option>\n              <option value=\"top-right\">Top Right</option>\n              <option value=\"top-left\">Top Left</option>\n              <option value=\"bottom-right\">Bottom Right</option>\n              <option value=\"bottom-left\">Bottom Left</option>\n";
 },"5":function(depth0,helpers,partials,data) {
-    return "            <option value=\"0.75\">4:3</option>\n            <option value=\"0.42\">21:9</option>\n            <option value=\"0.56\">16:9</option>\n            <option value=\"1\">1:1</option>\n            <option value=\"1.3\">10:13</option>\n";
-},"7":function(depth0,helpers,partials,data) {
-    return "            <option value=\"year\">Yearly</option>\n            <option value=\"quarter\">Quarterly</option>\n            <option value=\"month\">Monthly</option>\n";
+    return "              <option value=\"0.75\">4:3</option>\n              <option value=\"0.42\">21:9</option>\n              <option value=\"0.56\">16:9</option>\n              <option value=\"1\">1:1</option>\n              <option value=\"1.3\">10:13</option>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "<div class=\"markdown-editor chart-builder\" xmlns=\"http://www.w3.org/1999/html\">\n  <div class=\"markdown-editor__header\">\n    <h1>Chart Builder</h1>\n  </div>\n  <div class=\"markdown-editor__content\">\n    <div id=\"preview-chart\" class=\"wmd-panel wmd-preview\">\n      <div id=\"chart\"></div>\n    </div>\n    <div id=\"edit-chart\" class=\"wmd-panel wmd-preview\">\n\n      <input type=\"text\" id=\"chart-title\" class=\"col--5\" placeholder=\"[Title]\" value=\""
+  return "<div class=\"chart-builder overlay\">\n  <div class=\"chart-builder__inner\">\n    <!-- <h1>Chart Builder</h1> -->\n\n    <div id=\"edit-chart\" class=\"chart-builder__editor\">\n\n      <input type=\"text\" id=\"chart-title\" placeholder=\"[Title]\" value=\""
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "\"/>\n      <input type=\"text\" id=\"chart-subtitle\" class=\"col--5\" placeholder=\"[Subtitle]\" value=\""
+    + "\"/>\n      <input type=\"text\" id=\"chart-subtitle\" placeholder=\"[Subtitle]\" value=\""
     + alias3(((helper = (helper = helpers.subtitle || (depth0 != null ? depth0.subtitle : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"subtitle","hash":{},"data":data}) : helper)))
-    + "\"/>\n\n      <textarea id=\"chart-data\" placeholder=\"Paste your data here\" rows=\"4\" cols=\"120\"></textarea>\n      <br/>\n      <label>Chart Type</label>\n      <select id=\"chart-type\" class=\"col--5\">\n"
-    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.type : depth0),{"name":"select","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "      </select>\n      <br/>\n\n      <div id=\"barline\">\n\n      </div>\n\n      <label>Legend</label>\n      <select id=\"chart-legend\" class=\"col--5\">\n"
-    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.legend : depth0),{"name":"select","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "      </select>\n\n      <br/>\n      <label>Aspect Ratio</label>\n      <select id=\"aspect-ratio\" class=\"col--5\">\n"
-    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.aspectRatio : depth0),{"name":"select","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "      </select>\n\n      <br/>\n      <input type=\"text\" id=\"chart-unit\" placeholder=\"[Unit]\" class=\"col--2\" value=\""
+    + "\"/>\n      <input type=\"text\" id=\"chart-unit\" placeholder=\"[Unit]\" value=\""
     + alias3(((helper = (helper = helpers.unit || (depth0 != null ? depth0.unit : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"unit","hash":{},"data":data}) : helper)))
-    + "\"/>\n      <input type=\"text\" id=\"chart-source\" placeholder=\"[Source]\" class=\"col--7\" value=\""
+    + "\"/>\n      <input type=\"text\" id=\"chart-source\" placeholder=\"[Source]\" value=\""
     + alias3(((helper = (helper = helpers.source || (depth0 != null ? depth0.source : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"source","hash":{},"data":data}) : helper)))
-    + "\"/>\n\n      <br/>\n      <label>Time period (if applicable)</label>\n      <select id=\"chart-period\" class=\"col--5\">\n"
-    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.period : depth0),{"name":"select","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "      </select>\n\n    </div>\n  </div>\n  <div class=\"markdown-editor__footer\">\n    <button class=\"btn-chart-builder-cancel\">Cancel</button>\n    <button class=\"btn-chart-builder-create\">Save Chart</button>\n    <button class=\"btn-chart-png\">Generate PNG</button>\n  </div>\n</div>";
+    + "\"/>\n\n      <textarea id=\"chart-data\" placeholder=\"Paste your data here\" rows=\"4\" cols=\"120\"></textarea>\n      <br/>\n      <label>Chart Type <br>\n        <select id=\"chart-type\">\n"
+    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.type : depth0),{"name":"select","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </select>\n      </label>\n\n      <div id=\"barline\">\n\n      </div>\n\n      <label>Legend<br>\n        <select id=\"chart-legend\">\n"
+    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.legend : depth0),{"name":"select","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </select>\n      </label>\n\n      <label>Aspect Ratio<br>\n        <select id=\"aspect-ratio\">\n"
+    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.aspectRatio : depth0),{"name":"select","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </select>\n      </label>\n\n    </div>\n\n    <div id=\"preview-chart\" class=\"chart-builder__preview\">\n      <div id=\"chart\"></div>\n    </div>\n\n\n    <div id=\"hiddenDiv\" style=\"display:none\">\n      <canvas id=\"hiddenCanvas\"></canvas>\n      <a id=\"hiddenPng\"/>\n    </div>\n\n    <div class=\"chart-builder__footer\">\n      <button class=\"btn-chart-builder-cancel\">Cancel</button>\n      <button class=\"btn-chart-builder-create\">Save Chart</button>\n    </div>\n\n  </div>\n</div>";
 },"useData":true});
 templates['chartBuilderBarlines'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing;
@@ -65,7 +61,28 @@ templates['chartBuilderBarlines'] = template({"1":function(depth0,helpers,partia
     + alias2(alias1(depth0, depth0))
     + "\" type=\"checkbox\">\n  <br/>\n";
 },"2":function(depth0,helpers,partials,data) {
-    return "      <option value=\"bar\" selected>Bar</option>\n      <option value=\"line\">Line</option>\n";
+    return "      <option value=\"bar\">Bar</option>\n      <option value=\"line\">Line</option>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"useData":true});
+templates['chartEditBarlines'] = template({"1":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing;
+
+  return "  <label>"
+    + alias2(alias1(depth0, depth0))
+    + "</label>\n  <select id=\"types_"
+    + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias3),(typeof helper === "function" ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"col--5\">\n"
+    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias3).call(depth0,depth0,{"name":"select","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "  </select>\n  <input id=\""
+    + alias2(alias1(depth0, depth0))
+    + "\" name=\"group_check\" value=\""
+    + alias2(alias1(depth0, depth0))
+    + "\" type=\"checkbox\">\n  <br/>\n";
+},"2":function(depth0,helpers,partials,data) {
+    return "      <option value=\"bar\">Bar</option>\n      <option value=\"line\">Line</option>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 

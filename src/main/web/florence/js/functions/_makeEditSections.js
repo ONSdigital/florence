@@ -88,10 +88,11 @@ function loadChartsList(data, collectionId) {
 
   $(data.charts).each(function (index, chart) {
 
-    var path = getPathName() + '/' + chart.filename + '.json';
+    var basePath = getPathName();
+    var chartPath = basePath + '/' + chart.filename + '.json';
 
     $("#chart-edit_" + chart.filename).click(function () {
-      getPageData(collectionId, path,
+      getPageData(collectionId, chartPath,
         onSuccess = function (chartData) {
           loadChartBuilder(chartData, function () {
             refreshPreview();
@@ -106,15 +107,15 @@ function loadChartsList(data, collectionId) {
     $("#chart-delete_" + chart.filename).click(function () {
       $("#chart_" + index).remove();
 
-      deleteContent(collectionId, path,
+      deleteContent(collectionId, chartPath,
         onSuccess = function () {
           data.charts = _(data.charts).filter(function (item) {
             return item.filename !== chart.filename
           });
-          postContent(collectionId, path, content,
+          postContent(collectionId, basePath, JSON.stringify(data),
             success = function () {
               Florence.Editor.isDirty = false;
-              refreshPreview(path);
+              refreshPreview();
               loadChartsList(data, collectionId);
             },
             error = function (response) {
