@@ -1,5 +1,5 @@
 function loadChartBuilder(pageData, onSave, chart) {
-
+  var chart = chart;
   var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder(chart);
   var table = false;
@@ -10,7 +10,32 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('#chart-data').val(toTsv(chart));
   }
 
-  checkSeries(true);
+  if (chart.type === 'barline') {
+  data = editBarline(chart);
+  var html = templates.chartEditBarlines(data);
+  $('#barline').html(html);
+  }
+
+  function editBarline (chart) {
+    var data = [];
+    var series = _.keys(chart.types);
+    var type = _.values(chart.types);
+    for (var i = 0; i < chart.series.length; i += 1) {
+      data.push({series: series[i], type: type[i],
+        isChecked: (function () {
+          var checked = _.indexOf(chart.groups[0], series[i]);
+          if (checked < 0) {
+            return checked = false;
+          } else {
+            return checked = true;
+          }
+        })()
+      });
+    }
+    return data;
+  }
+
+  checkSeries();
   renderChart();
 
   $('#edit-chart :input').on('input', function () {
@@ -24,8 +49,8 @@ function loadChartBuilder(pageData, onSave, chart) {
       var valueSelected = $('#chart-type').val();
       if (valueSelected === 'barline') {
         chart = buildChartObject();
-        data = chart.series;
-        var html = templates.chartBuilderBarlines(data);
+        data = editBarline(chart);
+        var html = templates.chartEditBarlines(data);
         $('#barline').html(html);
         // add new listeners
         $('#barline').off();
@@ -41,9 +66,15 @@ function loadChartBuilder(pageData, onSave, chart) {
         var valueSelected = this.value;
         if (valueSelected === 'barline') {
           chart = buildChartObject();
-          data = chart.series;
-          var html = templates.chartBuilderBarlines(data);
-          $('#barline').html(html);
+          if (!chart.types) {
+            data = chart.series;
+            var html = templates.chartBuilderBarlines(data);
+            $('#barline').html(html);
+          } else {
+            data = editBarline(chart);
+            var html = templates.chartEditBarlines(data);
+            $('#barline').html(html);
+          }
           // add new listeners
           $('#barline').off();
           $('#barline').on('change', function (e) {
@@ -159,8 +190,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   function buildChartObject() {
     var json = $('#chart-data').val();
-
-    var chart = {};
+    if (!chart) {
+      chart = {};
+    }
     chart.type = $('#chart-type').val();
     if (chart.type === 'table') {
       table = true;
@@ -197,23 +229,24 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.aspectRatio = $('#aspect-ratio').val();
 
     if (chart.type === 'barline') {
-      chart.type = 'barline';
-      var types = {};
-      var groups = [];
-      var group = [];
-      var seriesData = chart.series;
-      for(var i=0; i<seriesData.length; i++) {
-        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
+      if (!chart.types) {
+        var types = {};
+        var groups = [];
+        var group = [];
+        var seriesData = chart.series;
+        for(var i=0; i<seriesData.length; i++) {
+          types[seriesData[i]] = $('#types_' + i).val() || 'bar';
+        }
+        (function () {
+          $('#barline input:checkbox:checked').each(function(){
+            group.push($(this).val());
+          });
+        groups.push(group);
+        return groups;
+        })();
+        chart.types = types;
+        chart.groups = groups;
       }
-      (function () {
-        $('#barline input:checkbox:checked').each(function(){
-          group.push($(this).val());
-        });
-      groups.push(group);
-      return groups;
-      })();
-      chart.types = types;
-      chart.groups = groups;
     }
     console.log(chart)
     return chart;
