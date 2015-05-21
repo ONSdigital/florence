@@ -17,7 +17,9 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var paddingLeft = 100;
   if(chart.subtitle != '') { padding += 16; }
 
-  var type = chart.type === 'rotated' ? 'bar' : chart.type;
+  var types = chart.type === 'barline' ? chart.types : {};
+  var groups = chart.type === 'barline' ? chart.groups : [];
+  var type = checkType(chart);
   var rotate = chart.type === 'rotated';
   var yLabel = rotate == true ? chart.unit : '';
   if((chart.unit != '') && (rotate == false)) {padding += 24; }
@@ -44,8 +46,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         value: chart.series
       },
       type: type,
-      types: chart.types,
-      groups: chart.groups
+      types: types,
+      groups: groups
     },
    legend: {
      hide: chart.hideLegend,
@@ -128,6 +130,17 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     }
   }
 
+  function checkType (chart) {
+    if (chart.type === 'rotated') {
+      type = 'bar';
+      return type;
+    } else if (chart.type === 'barline') {
+      type = 'bar';
+      return type;
+    } else {
+      return type = chart.type;
+    }
+  }
 
   //
   // Time series
