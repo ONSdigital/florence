@@ -162,7 +162,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
       renderChartObject('#chart', chart, chartHeight, chartWidth);
     }
-  }
+
 
   function buildChartObject() {
     var json = $('#chart-data').val();
@@ -175,7 +175,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       table = false;
     }
 
-    chart.period = $('#chart-period').val();
+//    chart.period = $('#chart-period').val();
 
     chart.title = $('#chart-title').val();
     chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -228,34 +228,24 @@ function loadChartBuilder(pageData, onSave, chart) {
     return chart;
   }
 
-  // Transformations to determine render options for this chart
-  // example - is it a time chart - should we flip axes
+
   function parseChartObject(chart) {
 
     // Determine if we have a time series
     var timeSeries = axisAsTimeSeries(chart.categories);
     if (timeSeries && timeSeries.length > 0) {
       chart.isTimeSeries = true;
-      chart.timeSeries = timeSeries;
 
-      // Subseries
-      chart.hasYear = timeSeriesHasPeriod(timeSeries, 'year');
-      chart.hasQuarter = timeSeriesHasPeriod(timeSeries, 'quarter');
-      chart.hasMonth = timeSeriesHasPeriod(timeSeries, 'month');
-      chart.hasOtherPeriod = timeSeriesHasPeriod(timeSeries, 'other');
+      // We create data specific to time
+      timeData = [];
+      _.each(timeSeries, function(time) {
+        var item = chart.data[time['row']];
+        item.date = time['date'];
+        item.label = time['label'];
+        timeData.push(item);
+      })
 
-      if(chart.hasYear) {
-        chart.period = 'year';
-      } else if(chart.hasQuarter) {
-        chart.period = 'quarter';
-      } else if(chart.hasMonth) {
-        chart.period = 'month';
-      } else {
-        chart.isTimeSeries = false;
-      }
-      chart.type = 'line';
-    } else {
-      chart.isTimeSeries = false;
+      chart.timeSeries = timeData;
     }
   }
 
@@ -408,34 +398,37 @@ function loadChartBuilder(pageData, onSave, chart) {
     return result;
   }
 
-  function timeSeriesHasPeriod(timeSeries, period) {
-    // Period is one of ['year', 'quarter', 'month', 'other']
-    for (i = 0; i < timeSeries.length; i++) {
-      if (timeSeries[i]['period'] === period) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   function convertTimeString(timeString) {
     // First time around parse the time string according to rules from regular timeseries
     var result = {};
     result.label = timeString;
 
     // Format time string
-    if(right())
+    // Check for strings that will turn themselves into a strange format
+    twoDigitYearEnd = timeString.match(/\W\d\d$/);
+    if(twoDigitYearEnd !== null) {
+      year = parseInt(twoDigitYearEnd = timeString.match(/\W\d\d$/));
+      prefix = timeString.substr(0, timeString.length - 3);
+
+      if(year >= 40) {
+        timeString = prefix + " 19" + year;
+      } else {
+        timeString = prefix + " 20" + year;
+      }
+    }
 
     // We are going with all times in a common format
     var date = new Date(timeString);
     if (!isNaN(date.getTime())) {
-      result.date = monthVal;
+      result.date = date;
       result.period = 'other';
       return result;
     }
 
     return (null);
   }
+
+
 
   function drawTable(data) {
     var title = data.headers;
