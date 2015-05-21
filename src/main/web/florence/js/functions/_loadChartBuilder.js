@@ -165,10 +165,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     } else {
       table = false;
     }
-    if (chart.type === 'rotated') {
-      chart.type = 'bar';
-      chart.rotated = true;
-    }
+
     chart.period = $('#chart-period').val();
 
     chart.title = $('#chart-title').val();
