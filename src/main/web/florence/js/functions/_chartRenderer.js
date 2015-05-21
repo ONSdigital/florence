@@ -7,8 +7,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
-  if( chart.isTimeSeries ) {
-    renderTimeseriesChartObject(bindTag, chart, chart.period)
+  if( chart.isTimeSeries && (chart.type == 'line')) {
+    renderTimeseriesChartObject(bindTag, chart)
     return;
   }
 
@@ -142,60 +142,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     }
   }
 
-  //
-  // Time series
-  //
-  // Filters data based on the time period (Year, Month, Quarter) selected by the user
-  // Returns a new chart
-//  function timeChart(chart) {
-//    var subchart = {};
-//
-//    subchart.type = chart['type'];
-//    if(subchart.type == 'rotated') {
-//      subchart.type = 'bar';
-//      subchart.rotated = true;
-//    }
-//
-//    subchart.title = chart.title;
-//    subchart.subtitle = chart.subtitle;
-//    subchart.unit = chart.unit;
-//    subchart.source = chart.source;
-//
-//    subchart.hideLegend = chart.hideLegend;
-//    subchart.legend = chart.legend;
-//
-//    if(subchart.title == '') {
-//      subchart.title = '[Title]';
-//    }
-//
-//    subchart.series = chart.series;
-//
-//    var subdata = [];
-//    var dates = [];
-//    var labels = [];
-//
-//    _.each(subseries, function(time) {
-//      var item = chart.data[time['row']];
-//      item.date = time['date'];
-//      item.label = time['label'];
-//      subdata.push(item);
-//    })
-//
-//    subchart.data = subdata;
-//
-//    return subchart;
-//  }
-
-//  function timeSubSeries(timeSeries, period) {
-//    // Period is one of ['year', 'quarter', 'month', 'other']
-//    result = [];
-//    _.each(timeSeries, function(time) {
-//      if(time['period'] == period) {
-//        result.push(time);
-//      }
-//    });
-//    return result;
-//  }
 
   function renderTimeseriesChartObject(bindTag, timechart) {
     var padding = 25;
@@ -223,21 +169,34 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     // refers to the issue of time axes not being applicable to non continuous charts
     var axisType;
     var keys;
-    if(chart.type == 'line'){
+
+    if(chart.type == 'line'){ // continuous line charts
       axisType = {
                 label: chart.xaxis,
                 type: 'timeseries',
-                tick: {
-                    format: function (x) {
-                        return x.getFullYear();
-                    }
-                    }
               }
+
+      var monthsOnTimeline = (chart.timeSeries[chart.timeSeries.length - 1].date - chart.timeSeries[0].date) / (1000 * 60 * 60 * 24 * 30);
+      var tick = {
+            format: function (x) {
+                return x.getFullYear();
+            }
+          }
+      if( monthsOnTimeline <= 24.5) {
+          tick = {
+            format: function (x) {
+                return formattedMonthYear(x);
+            }
+          }
+      }
+
+
+      axisType.tick = tick;
       keys = {
         x: 'date',
         value: chart.series
       }
-    } else {
+    } else { // bar charts and other
       axisType = {
         label: chart.xaxis,
         type: 'category',
@@ -293,4 +252,17 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     renderAnnotations(bindTag, chart);
   }
+
+  function formattedMonthYear(date) {
+      var monthNames = [
+          "Jan", "Feb", "Mar",
+          "Apr", "May", "Jun", "Jul",
+          "Aug", "Sep", "Oct",
+          "Nov", "Dec"];
+
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+
+      return monthNames[monthIndex] + " " + year;
+      }
 }
