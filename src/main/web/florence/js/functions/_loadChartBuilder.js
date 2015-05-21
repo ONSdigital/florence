@@ -215,7 +215,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       chart.types = types;
       chart.groups = groups;
     }
-    console.log(chart)
+    //console.log(chart);
     return chart;
   }
 
@@ -361,7 +361,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     //}
 
     var source = (new XMLSerializer).serializeToString(svg[0]);
-    console.log(source);
+    //console.log(source);
 
     //add name spaces.
     if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
