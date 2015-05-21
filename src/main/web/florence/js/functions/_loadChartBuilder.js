@@ -197,7 +197,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.aspectRatio = $('#aspect-ratio').val();
 
     if (chart.type === 'barline') {
-      chart.type = 'bar';
+      chart.type = 'barline';
       var types = {};
       var groups = [];
       var group = [];
@@ -276,11 +276,15 @@ function loadChartBuilder(pageData, onSave, chart) {
     var output = "";
 
     for (var i = 0; i < data.headers.length; i++) {
-      output+= "\t" + data.headers[i];
+      if (i === data.headers.length - 1) {
+        output+= data.headers[i];
+      } else {
+        output+= data.headers[i] + "\t";
+      }
     }
 
     for (var i = 0; i < data.categories.length; i++) {
-      output+= "\n" + data.categories[i] + toTsvLine(data.data[i], data.headers);
+      output+= "\n" + toTsvLine(data.data[i], data.headers);
     }
 
     return output;
@@ -291,9 +295,12 @@ function loadChartBuilder(pageData, onSave, chart) {
     var output = "";
 
     for (var i = 0; i < headers.length; i++) {
-      output += "\t" + data[headers[i]];
+      if (i === headers.length - 1) {
+        output += data[headers[i]];
+      } else {
+        output += data[headers[i]] + "\t";
+      }
     }
-
     return output;
   }
 
