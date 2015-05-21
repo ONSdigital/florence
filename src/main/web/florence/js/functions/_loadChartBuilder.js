@@ -3,11 +3,10 @@ function loadChartBuilder(pageData, onSave, chart) {
   var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder(chart);
   var table = false;
-  var html = templates.chartBuilder();
   $('body').append(html);
   $('.chart-builder').css("display", "block");
 
-  if(chart) {
+  if (chart) {
     $('#chart-data').val(toTsv(chart));
   }
 
@@ -59,13 +58,39 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
+  $('.btn-chart-png').on('click', function () {
+
+    var preview = $('#chart');
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
+    }
+
+    $('body').append('<canvas id="svg-canvas" width="' + chartWidth + '" height="' + chartHeight + '"></canvas><img id="svg-img">');
+
+    var content = exportToSVG().trim();
+    console.log(content);
+
+    var canvas = $('#svg-canvas').get(0);
+    // Draw svg on canvas
+    canvg(canvas, content);
+    // Change img be SVG representation
+    var theImage = canvas.toDataURL('image/png');
+    $('#svg-img').attr('src', theImage);
+  });
+
+
   $('.btn-chart-builder-create').on('click', function () {
 
-    if(!pageData.charts) {
+    if (!pageData.charts) {
       pageData.charts = []
     } else {
-      if (_.find(pageData.charts, function(existingChart) {
-          return existingChart.filename === chart.filename })) {
+      if (_.find(pageData.charts, function (existingChart) {
+          return existingChart.filename === chart.filename
+        })) {
         alert("A chart with this name already exists.");
         return;
       }
@@ -79,22 +104,25 @@ function loadChartBuilder(pageData, onSave, chart) {
       processData: false,
       contentType: false,
       success: function (res) {
-        console.log("JSON uploaded successfully");
-        console.log(res)
         if (!table) {
           var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
-            $.ajax({
-              url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
-              type: "POST",
-              data: exportToSVG(),
-              processData: false,
-              contentType: false,
-              success: function (res) {
-                console.log("SVG uploaded successfully");
+
+          $.ajax({
+            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
+            type: "POST",
+            data: exportToSVG(),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+              console.log("SVG uploaded successfully");
+              pageData.charts.push({title: chart.title, filename: chart.filename});
+              if (onSave) {
+                onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+              }
             }
           });
         }
-        pageData.charts.push({title:chart.title, filename:chart.filename});
+        pageData.charts.push({title: chart.title, filename: chart.filename});
         if (onSave) {
           onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
@@ -166,7 +194,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     chart.data = tsvJSON(json);
-    chart.headers = tsvJSONHeaders(json);
+    chart.headers = tsvJSONHeaders(json);git a
     chart.series = tsvJSONColNames(json);
     chart.categories = tsvJSONRowNames(json);
 
@@ -267,7 +295,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var output = "";
 
     for (var i = 0; i < headers.length; i++) {
-      output+= "\t" + data[headers[i]];
+      output += "\t" + data[headers[i]];
     }
 
     return output;
@@ -290,21 +318,48 @@ function loadChartBuilder(pageData, onSave, chart) {
     headers.shift();
     return headers;
   }
-  
-  function tsvJSONHeaders (input) {
-    var lines=input.split("\n");
-    var headers=lines[0].split("\t");
+
+  function tsvJSONHeaders(input) {
+    var lines = input.split("\n");
+    var headers = lines[0].split("\t");
     return headers;
   }
 
   function exportToSVG() {
-    var tmp = document.getElementById('chart');
-    var svg = tmp.getElementsByTagName('svg')[0];
-    if ($('#chart-type').val() === 'line') {
-      $('.c3 line').css("fill", "none");
-      console.log($('.c3 line'))
+    var svgContainer = $('#chart');
+    var svg = svgContainer.find('svg');
+
+    var styleContent = "\n";
+    for (var i = 0; i < document.styleSheets.length; i++) {
+      str = document.styleSheets[i].href.split("/");
+      if (str[str.length - 1] == "c3.css") {
+        var rules = document.styleSheets[i].rules;
+        for (var j = 0; j < rules.length; j++) {
+          styleContent += (rules[j].cssText + "\n");
+        }
+        break;
+      }
     }
-    var source = (new XMLSerializer).serializeToString(svg);
+
+    //var style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    //$(style).textContent += "\n<![CDATA[\n" + styleContent + "\n]]>\n";
+    //
+    //svg.prepend(style);
+    //svg[0].getElementsByTagName("defs")[0].appendChild(style);
+
+
+    svg.prepend("\n<style type='text/css'></style>");
+    svg.find("style").textContent += "\n<![CDATA[" + styleContent + "]]>\n";
+
+
+    //if ($('#chart-type').val() === 'line') {
+    //  $('.c3 line').css("fill", "none");
+    //  console.log($('.c3 line'))
+    //}
+
+    var source = (new XMLSerializer).serializeToString(svg[0]);
+    console.log(source);
+
     //add name spaces.
     if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
       source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
@@ -317,6 +372,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     //add xml declaration
     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
     return source;
   }
 
@@ -332,13 +388,13 @@ function loadChartBuilder(pageData, onSave, chart) {
         time.row = rowNumber;
         rowNumber = rowNumber + 1;
 
-      result.push(time);
-    } else {
-      return null;
-    }
-  });
-  return result;
-}
+        result.push(time);
+      } else {
+        return null;
+      }
+    });
+    return result;
+  }
 
   function timeSeriesHasPeriod(timeSeries, period) {
     // Period is one of ['year', 'quarter', 'month', 'other']
@@ -447,3 +503,4 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
   }
 }
+

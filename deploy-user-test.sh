@@ -61,7 +61,7 @@ function run_tests {
 send_slack_message "Deploying to user test environment."
 
 # update all projects concurrently with & wait
-update_florence https://github.com/ONSdigital/florence.git $FLORENCE_DIRECTORY develop &
+update_florence https://github.com/ONSdigital/florence.git $FLORENCE_DIRECTORY chart-builder &
 update_branch_and_push https://github.com/Carboni/zebedee.git $ZEBEDEE_DIRECTORY develop &
 update_branch_and_push https://github.com/ONSdigital/tredegar.git $TREDEGAR_DIRECTORY develop
 wait
