@@ -115,13 +115,10 @@ function loadChartBuilder(pageData, onSave, chart) {
             contentType: false,
             success: function (res) {
               console.log("SVG uploaded successfully");
-              pageData.charts.push({title: chart.title, filename: chart.filename});
-              if (onSave) {
-                onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
-              }
             }
           });
         }
+
         pageData.charts.push({title: chart.title, filename: chart.filename});
         if (onSave) {
           onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
@@ -194,7 +191,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     chart.data = tsvJSON(json);
-    chart.headers = tsvJSONHeaders(json);git a
+    chart.headers = tsvJSONHeaders(json);
     chart.series = tsvJSONColNames(json);
     chart.categories = tsvJSONRowNames(json);
 
