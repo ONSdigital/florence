@@ -1976,6 +1976,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#barline').on('change', function (e) {
           renderChart();
         });
+      } else {
+        $('#barline').empty();
       }
     } else {
       $('#chart-type').on('change', function (e) {
@@ -2002,7 +2004,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
-  $('.btn-chart-png').on('click', function () {
+
+  //generatePng();
+  function generatePng() {
 
     var preview = $('#chart');
     var chartHeight = preview.width() * chart.aspectRatio;
@@ -2013,18 +2017,24 @@ function loadChartBuilder(pageData, onSave, chart) {
       chartWidth = preview.height() / chart.aspectRatio;
     }
 
-    $('body').append('<canvas id="svg-canvas" width="' + chartWidth + '" height="' + chartHeight + '"></canvas><img id="svg-img">');
+
+    //$('body').append('<canvas id="hiddenCanvas" width="' + chartWidth + '" height="' + chartHeight + '"></canvas><img id="hiddenPng">');
 
     var content = exportToSVG().trim();
-    console.log(content);
 
-    var canvas = $('#svg-canvas').get(0);
+    var $canvas = $('#hiddenCanvas');
+    $canvas.width(chartWidth * 2);
+    $canvas.height(chartHeight * 2);
+
+    var canvas = $canvas.get(0);
+
     // Draw svg on canvas
     canvg(canvas, content);
+
     // Change img be SVG representation
     var theImage = canvas.toDataURL('image/png');
-    $('#svg-img').attr('src', theImage);
-  });
+    $('#hiddenPng').attr('src', theImage);
+  }
 
 
   $('.btn-chart-builder-create').on('click', function () {
@@ -2139,7 +2149,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.aspectRatio = $('#aspect-ratio').val();
 
     if (chart.type === 'barline') {
-      chart.type = 'bar';
+      chart.type = 'barline';
       var types = {};
       var groups = [];
       var group = [];
@@ -2157,7 +2167,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       chart.types = types;
       chart.groups = groups;
     }
-    console.log(chart)
+    //console.log(chart);
     return chart;
   }
 
@@ -2218,11 +2228,15 @@ function loadChartBuilder(pageData, onSave, chart) {
     var output = "";
 
     for (var i = 0; i < data.headers.length; i++) {
-      output+= "\t" + data.headers[i];
+      if (i === data.headers.length - 1) {
+        output+= data.headers[i];
+      } else {
+        output+= data.headers[i] + "\t";
+      }
     }
 
     for (var i = 0; i < data.categories.length; i++) {
-      output+= "\n" + data.categories[i] + toTsvLine(data.data[i], data.headers);
+      output+= "\n" + toTsvLine(data.data[i], data.headers);
     }
 
     return output;
@@ -2233,9 +2247,12 @@ function loadChartBuilder(pageData, onSave, chart) {
     var output = "";
 
     for (var i = 0; i < headers.length; i++) {
-      output += "\t" + data[headers[i]];
+      if (i === headers.length - 1) {
+        output += data[headers[i]];
+      } else {
+        output += data[headers[i]] + "\t";
+      }
     }
-
     return output;
   }
 
@@ -2296,7 +2313,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     //}
 
     var source = (new XMLSerializer).serializeToString(svg[0]);
-    console.log(source);
+    //console.log(source);
 
     //add name spaces.
     if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
@@ -3026,10 +3043,11 @@ function loadChartsList(data, collectionId) {
 
   $(data.charts).each(function (index, chart) {
 
-    var path = getPathName() + '/' + chart.filename + '.json';
+    var basePath = getPathName();
+    var chartPath = basePath + '/' + chart.filename + '.json';
 
     $("#chart-edit_" + chart.filename).click(function () {
-      getPageData(collectionId, path,
+      getPageData(collectionId, chartPath,
         onSuccess = function (chartData) {
           loadChartBuilder(chartData, function () {
             refreshPreview();
@@ -3044,15 +3062,15 @@ function loadChartsList(data, collectionId) {
     $("#chart-delete_" + chart.filename).click(function () {
       $("#chart_" + index).remove();
 
-      deleteContent(collectionId, path,
+      deleteContent(collectionId, chartPath,
         onSuccess = function () {
           data.charts = _(data.charts).filter(function (item) {
             return item.filename !== chart.filename
           });
-          postContent(collectionId, path, content,
+          postContent(collectionId, basePath, JSON.stringify(data),
             success = function () {
               Florence.Editor.isDirty = false;
-              refreshPreview(path);
+              refreshPreview();
               loadChartsList(data, collectionId);
             },
             error = function (response) {

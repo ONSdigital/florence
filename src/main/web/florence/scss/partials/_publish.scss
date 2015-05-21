@@ -52,6 +52,7 @@
 
 		.collections-section {
 			background: $quill-gray;
+			 overflow: hidden;
 			/*background: $gray-chateau;*/
 
 			h3 {
@@ -80,6 +81,7 @@
 			&__content {
 				padding: 0 $col--2;
 				margin-top: $lineheight;
+				margin-bottom: $lineheight;
 			}
 		}
 	}
