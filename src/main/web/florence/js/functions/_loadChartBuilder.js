@@ -91,39 +91,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
-
-  //generatePng();
-  function generatePng() {
-
-    var preview = $('#chart');
-    var chartHeight = preview.width() * chart.aspectRatio;
-    var chartWidth = preview.width();
-
-    if (chartHeight > preview.height()) {
-      chartHeight = preview.height();
-      chartWidth = preview.height() / chart.aspectRatio;
-    }
-
-
-    //$('body').append('<canvas id="hiddenCanvas" width="' + chartWidth + '" height="' + chartHeight + '"></canvas><img id="hiddenPng">');
-
-    var content = exportToSVG().trim();
-
-    var $canvas = $('#hiddenCanvas');
-    $canvas.width(chartWidth * 2);
-    $canvas.height(chartHeight * 2);
-
-    var canvas = $canvas.get(0);
-
-    // Draw svg on canvas
-    canvg(canvas, content);
-
-    // Change img be SVG representation
-    var theImage = canvas.toDataURL('image/png');
-    $('#hiddenPng').attr('src', theImage);
-  }
-
-
   $('.btn-chart-builder-create').on('click', function () {
 
     if (!pageData.charts) {
@@ -146,18 +113,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       contentType: false,
       success: function (res) {
         if (!table) {
-          var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
-
-          $.ajax({
-            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
-            type: "POST",
-            data: exportToSVG(),
-            processData: false,
-            contentType: false,
-            success: function (res) {
-              console.log("SVG uploaded successfully");
-            }
-          });
+          generatePng();
         }
 
         pageData.charts.push({title: chart.title, filename: chart.filename});
@@ -486,6 +442,61 @@ function loadChartBuilder(pageData, onSave, chart) {
         row.append($("<td>" + rowData[title[j]] + "</td>"));
       }
     }
+  }
+
+
+  //generatePng();
+  function generatePng() {
+
+    var preview = $('#chart');
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
+    }
+
+    var content = exportToSVG().trim();
+
+    var $canvas = $('#hiddenCanvas');
+    $canvas.width(chartWidth);
+    $canvas.height(chartHeight);
+
+    var canvas = $canvas.get(0);
+
+    // Draw svg on canvas
+    canvg(canvas, content);
+
+    // get data url from canvas.
+    var dataUrl = canvas.toDataURL('image/png');
+    var pngData = dataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
+    //console.log(dataUrl);
+
+    // render png
+    //var $png = $('#hiddenPng');
+    //var png = $png[0];
+    //$png.attr('src', dataUrl);
+
+    var raw = window.atob(pngData);
+    var rawLength = raw.length;
+    var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+    for(var i = 0; i < rawLength; i++) {
+      array[i] = raw.charCodeAt(i);
+    }
+
+    var pngUri = pageUrl + "/" + chart.filename + ".png";
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
+      type: "POST",
+      data: new Blob([array], {type: 'image/png'}),
+      contentType:  "image/png",
+      processData: false,
+      success: function (res) {
+        console.log('png uploaded!');
+      }
+    });
   }
 }
 
