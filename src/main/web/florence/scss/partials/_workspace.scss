@@ -575,6 +575,9 @@
 		height: $lineheight * 6;
 		width: $col--12 - .3%;
 		border: 3px solid $scarpa-flow;
+		white-space: pre;
+		word-wrap: normal;
+		tab-size: 30;
 	}
 
 	label {

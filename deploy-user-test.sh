@@ -25,6 +25,7 @@ function update_branch {
     # get the latest for the given branch
     cd $2
     git checkout $3
+    git checkout . # remove any local changes
     git pull --rebase origin $3
 }
 
@@ -36,6 +37,7 @@ function update_branch_and_push {
 function update_florence {
     update_branch $1 $2 $3
     ./build-js.sh
+    git commit . -m "Build JS for deployment."
     git push origin $3:user-test
 }
 
