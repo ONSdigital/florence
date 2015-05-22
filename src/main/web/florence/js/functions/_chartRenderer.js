@@ -3,7 +3,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   // Create our svg
   var svg = d3.select(bindTag + " svg")
-    .attr("viewBox", "0 0 880 320")
+    .attr("viewBox", "0 0 " + chartWidth + " " + chartHeight)
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
@@ -92,18 +92,16 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     // annotate
     d3.select(bindTag + ' svg').append('text') // Title
       .attr('x', 20)
-      .attr('y', 18)
-      .attr('text-anchor', 'left')
-      .style('font-size', '1.6em')
-       .style('fill', '#000000')
+      .attr('y', 25)
+      .style('font-size', '20px')
+      .style('fill', '#000000')
       .text(chart.title);
 
     if(chart.subtitle != '') {
       d3.select(bindTag + ' svg').append('text') // Subtitle
         .attr('x', 20)
-        .attr('y', 36)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .attr('y', 45)
+        .style('font-size', '15px')
         .style('fill', '#999999')
         .text(chart.subtitle);
     }
@@ -113,7 +111,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .attr('x', 20)
         .attr('y', unitTop)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .style('font-size', '15px')
         .style('fill', '#000000')
         .text(chart.unit);
     }
@@ -124,7 +122,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .attr('x', 20)
         .attr('y', 320)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .style('font-size', '15px')
         .style('fill', '#999999')
         .text(chart.source);
     }
