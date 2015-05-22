@@ -3,7 +3,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   // Create our svg
   var svg = d3.select(bindTag + " svg")
-    .attr("viewBox", "0 0 880 320")
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
@@ -15,7 +14,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   // Calculate padding at top (and left) of SVG
   var padding = 25;
   var paddingLeft = 100;
-  if(chart.subtitle != '') { padding += 16; }
+  if(chart.subtitle != '') { padding += 15; }
 
   var types = chart.type === 'barline' ? chart.types : {};
   var groups = chart.type === 'barline' ? chart.groups : [];
@@ -23,11 +22,11 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var rotate = chart.type === 'rotated';
   var yLabel = rotate == true ? chart.unit : '';
   if((chart.unit != '') && (rotate == false)) {padding += 24; }
-  if((chart.unit != '') && (rotate === true)) {paddingLeft += 50; }
+  if((chart.unit != '') && (rotate === true)) {paddingLeft += 100; }
 
   // Calculate padding at bottom of SVG
-  var bottomPadding = 30;
-  if((chart.source != '')) {bottomPadding += 16;}
+  var bottomPadding = 20;
+  if((chart.source != '')) {bottomPadding += 5;}
 
   // work out position for chart legend
   var seriesCount = chart.series.length;
@@ -94,16 +93,16 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       .attr('x', 20)
       .attr('y', 18)
       .attr('text-anchor', 'left')
-      .style('font-size', '1.6em')
-       .style('fill', '#000000')
+      .style('font-size', '20px')
+      .style('fill', '#000000')
       .text(chart.title);
 
     if(chart.subtitle != '') {
       d3.select(bindTag + ' svg').append('text') // Subtitle
         .attr('x', 20)
-        .attr('y', 36)
+        .attr('y', 100)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .style('font-size', '15px')
         .style('fill', '#999999')
         .text(chart.subtitle);
     }
@@ -113,18 +112,22 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .attr('x', 20)
         .attr('y', unitTop)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .style('font-size', '15px')
         .style('fill', '#000000')
         .text(chart.unit);
     }
 
     var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
+    var viewBoxWidth = d3.select(bindTag + ' svg').attr('width');
+
     if(chart.source != '') {
       d3.select(bindTag + ' svg').append('text') // Source
-        .attr('x', 20)
-        .attr('y', 320)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+//        .attr('x', 20)
+//        .attr('y', 320)
+        .attr("transform", "translate(" + (viewBoxWidth) + "," + (viewBoxHeight) + ")")
+        .attr()
+        .attr('text-anchor', 'end')
+        .style('font-size', '12px')
         .style('fill', '#999999')
         .text(chart.source);
     }
