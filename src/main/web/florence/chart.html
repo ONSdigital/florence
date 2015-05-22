@@ -13,29 +13,21 @@
 <script type="text/javascript" src="js/third-party/d3.min.js"></script>
 <script type="text/javascript" src="js/third-party/c3.js"></script>
 <script type="text/javascript" src="js/third-party/pym.min.js"></script>
+<script type="text/javascript" src="js/third-party/underscore-min.js"></script>
 <script type="text/javascript" src="js/functions/_chartRenderer.js"></script>
 <script type="text/javascript">
 
   (function () {
 
     var path = getParameterByName('path');
-    //var baseUrl = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
-    //var full = baseUrl + '/zebedee' + path + '.json';
-
     var chart;
-
     var $graphic = $('#chart');
     var pymChild = new pym.Child({});
 
     function drawGraphic() {
-      //var margin = {top: 10, right: 15, bottom: 25, left: 35};
       var chartWidth = $graphic.width(); //- margin.left - margin.right;
       var chartHeight = chartWidth * chart.aspectRatio;
-
-      //console.log('render width: ' + chartWidth + ' height: ' + chartHeight);
-
       renderChartObject('#chart', chart, chartHeight, chartWidth);
-
       pymChild.sendHeight();
     }
 
