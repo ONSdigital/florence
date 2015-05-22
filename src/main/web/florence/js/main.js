@@ -873,8 +873,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
-  if( chart.isTimeSeries ) {
-    renderTimeseriesChartObject(bindTag, chart, chart.period)
+  if( chart.isTimeSeries && (chart.type == 'line')) {
+    renderTimeseriesChartObject(bindTag, chart)
     return;
   }
 
@@ -883,7 +883,9 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var paddingLeft = 100;
   if(chart.subtitle != '') { padding += 16; }
 
-  var type = chart.type === 'rotated' ? 'bar' : chart.type;
+  var types = chart.type === 'barline' ? chart.types : {};
+  var groups = chart.type === 'barline' ? chart.groups : [];
+  var type = checkType(chart);
   var rotate = chart.type === 'rotated';
   var yLabel = rotate == true ? chart.unit : '';
   if((chart.unit != '') && (rotate == false)) {padding += 24; }
@@ -910,8 +912,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         value: chart.series
       },
       type: type,
-      types: chart.types,
-      groups: chart.groups
+      types: types,
+      groups: groups
     },
    legend: {
      hide: chart.hideLegend,
@@ -994,71 +996,26 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     }
   }
 
-
-  //
-  // Time series
-  //
-  // Filters data based on the time period (Year, Month, Quarter) selected by the user
-  // Returns a new chart
-  function timeSubchart(chart, period) {
-    var subchart = {};
-
-    subchart.type = chart['type'];
-    if(subchart.type == 'rotated') {
-      subchart.type = 'bar';
-      subchart.rotated = true;
+  function checkType (chart) {
+    if (chart.type === 'rotated') {
+      type = 'bar';
+      return type;
+    } else if (chart.type === 'barline') {
+      type = 'bar';
+      return type;
+    } else {
+      return type = chart.type;
     }
-
-    subchart.title = chart.title;
-    subchart.subtitle = chart.subtitle;
-    subchart.unit = chart.unit;
-    subchart.source = chart.source;
-
-    subchart.hideLegend = chart.hideLegend;
-    subchart.legend = chart.legend;
-
-    if(subchart.title == '') {
-      subchart.title = '[Title]';
-    }
-
-    subchart.series = chart.series;
-
-    // Use timeSubSeries to filter the data
-    var subseries = timeSubSeries(chart.timeSeries, period);
-    var subdata = [];
-    var dates = [];
-    var labels = [];
-
-    _.each(subseries, function(time) {
-      var item = chart.data[time['row']];
-      item.date = time['date'];
-      item.label = time['label'];
-      subdata.push(item);
-    })
-
-    subchart.data = subdata;
-
-    return subchart;
   }
 
-  function timeSubSeries(timeSeries, period) {
-    // Period is one of ['year', 'quarter', 'month', 'other']
-    result = [];
-    _.each(timeSeries, function(time) {
-      if(time['period'] == period) {
-        result.push(time);
-      }
-    });
-    return result;
-  }
 
-  function renderTimeseriesChartObject(bindTag, timechart, period) {
+  function renderTimeseriesChartObject(bindTag, timechart) {
     var padding = 25;
-    var chart = timeSubchart(timechart, period);
+    var chart = timechart //timeSubchart(timechart, period);
 
     // Create a dictionary so we can reverse lookup a tooltip label
     var dates_to_label = {};
-    _.each(chart.data, function(data_point) {
+    _.each(chart.timeSeries, function(data_point) {
         dates_to_label[data_point.date] = data_point.label;
         });
 
@@ -1068,22 +1025,61 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     // should we show
     var showPoints = true;
-    if(chart.data.length > 120) { showPoints = false; }
+    if(chart.data.length > 100) { showPoints = false; }
 
    // work out position for chart legend
     var seriesCount = chart.series.length;
     var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
 
 
+    // refers to the issue of time axes not being applicable to non continuous charts
+    var axisType;
+    var keys;
+
+    if(chart.type == 'line'){ // continuous line charts
+      axisType = {
+                label: chart.xaxis,
+                type: 'timeseries',
+              }
+
+      var monthsOnTimeline = (chart.timeSeries[chart.timeSeries.length - 1].date - chart.timeSeries[0].date) / (1000 * 60 * 60 * 24 * 30);
+      var tick = {
+            format: function (x) {
+                return x.getFullYear();
+            }
+          }
+      if( monthsOnTimeline <= 24.5) {
+          tick = {
+            format: function (x) {
+                return formattedMonthYear(x);
+            }
+          }
+      }
+
+
+      axisType.tick = tick;
+      keys = {
+        x: 'date',
+        value: chart.series
+      }
+    } else { // bar charts and other
+      axisType = {
+        label: chart.xaxis,
+        type: 'category',
+        categories: chart.categories
+           }
+      keys = {
+        x: 'label',
+        value: chart.series
+      }
+    }
+
     c3.generate({
       bindto: bindTag,
 
       data: {
-        json: chart.data,
-        keys: {
-          x: 'date',
-          value: chart.series
-        },
+        json: chart.timeSeries,
+        keys: keys,
         type: chart.type,
         xFormat: '%Y-%m-%d %H:%M:%S'
       },
@@ -1103,15 +1099,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
          },
 
       axis: {
-        x: {
-          label: chart.xaxis,
-          type: 'timeseries',
-          tick: {
-              format: function (x) {
-                  return x.getFullYear();
-              }
-              }
-        }
+        x: axisType
       },
       tooltip: {
         format: {
@@ -1130,6 +1118,19 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     renderAnnotations(bindTag, chart);
   }
+
+  function formattedMonthYear(date) {
+      var monthNames = [
+          "Jan", "Feb", "Mar",
+          "Apr", "May", "Jun", "Jul",
+          "Aug", "Sep", "Oct",
+          "Nov", "Dec"];
+
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+
+      return monthNames[monthIndex] + " " + year;
+      }
 }function checkForPageChanged(onChanged) {
   var iframeUrl = localStorage.getItem("pageurl");
   console.log(iframeUrl)
@@ -1943,7 +1944,7 @@ function loadBrowseScreen(click) {
 }
 
 function loadChartBuilder(pageData, onSave, chart) {
-
+  var chart = chart;
   var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder(chart);
   var table = false;
@@ -1954,7 +1955,32 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('#chart-data').val(toTsv(chart));
   }
 
-  checkSeries(true);
+  if (chart.type === 'barline') {
+  data = editBarline(chart);
+  var html = templates.chartEditBarlines(data);
+  $('#barline').html(html);
+  }
+
+  function editBarline (chart) {
+    var data = [];
+    var series = _.keys(chart.types);
+    var type = _.values(chart.types);
+    for (var i = 0; i < chart.series.length; i += 1) {
+      data.push({series: series[i], type: type[i],
+        isChecked: (function () {
+          var checked = _.indexOf(chart.groups[0], series[i]);
+          if (checked < 0) {
+            return checked = false;
+          } else {
+            return checked = true;
+          }
+        })()
+      });
+    }
+    return data;
+  }
+
+  checkSeries();
   renderChart();
 
   $('#edit-chart :input').on('input', function () {
@@ -1968,8 +1994,8 @@ function loadChartBuilder(pageData, onSave, chart) {
       var valueSelected = $('#chart-type').val();
       if (valueSelected === 'barline') {
         chart = buildChartObject();
-        data = chart.series;
-        var html = templates.chartBuilderBarlines(data);
+        data = editBarline(chart);
+        var html = templates.chartEditBarlines(data);
         $('#barline').html(html);
         // add new listeners
         $('#barline').off();
@@ -1985,9 +2011,15 @@ function loadChartBuilder(pageData, onSave, chart) {
         var valueSelected = this.value;
         if (valueSelected === 'barline') {
           chart = buildChartObject();
-          data = chart.series;
-          var html = templates.chartBuilderBarlines(data);
-          $('#barline').html(html);
+          if (!chart.types) {
+            data = chart.series;
+            var html = templates.chartBuilderBarlines(data);
+            $('#barline').html(html);
+          } else {
+            data = editBarline(chart);
+            var html = templates.chartEditBarlines(data);
+            $('#barline').html(html);
+          }
           // add new listeners
           $('#barline').off();
           $('#barline').on('change', function (e) {
@@ -2089,8 +2121,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       $('#preview-chart').empty();
       $('#preview-chart').html('<div id="dataTable"></div>');
       drawTable(chart);
-    } else {
-      parseChartObject(chart);
+    }
 
       var preview = $('#preview-chart');
 
@@ -2107,12 +2138,13 @@ function loadChartBuilder(pageData, onSave, chart) {
 
       renderChartObject('#chart', chart, chartHeight, chartWidth);
     }
-  }
+
 
   function buildChartObject() {
     var json = $('#chart-data').val();
-
-    var chart = {};
+    if (!chart) {
+      chart = {};
+    }
     chart.type = $('#chart-type').val();
     if (chart.type === 'table') {
       table = true;
@@ -2120,7 +2152,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       table = false;
     }
 
-    chart.period = $('#chart-period').val();
+//    chart.period = $('#chart-period').val();
 
     chart.title = $('#chart-title').val();
     chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -2149,56 +2181,49 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.aspectRatio = $('#aspect-ratio').val();
 
     if (chart.type === 'barline') {
-      chart.type = 'barline';
-      var types = {};
-      var groups = [];
-      var group = [];
-      var seriesData = chart.series;
-      for(var i=0; i<seriesData.length; i++) {
-        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
+      if (!chart.types) {
+        var types = {};
+        var groups = [];
+        var group = [];
+        var seriesData = chart.series;
+        for(var i=0; i<seriesData.length; i++) {
+          types[seriesData[i]] = $('#types_' + i).val() || 'bar';
+        }
+        (function () {
+          $('#barline input:checkbox:checked').each(function(){
+            group.push($(this).val());
+          });
+        groups.push(group);
+        return groups;
+        })();
+        chart.types = types;
+        chart.groups = groups;
       }
-      (function () {
-        $('#barline input:checkbox:checked').each(function(){
-          group.push($(this).val());
-        });
-      groups.push(group);
-      return groups;
-      })();
-      chart.types = types;
-      chart.groups = groups;
     }
     //console.log(chart);
+    parseChartObject(chart);
+
     return chart;
   }
 
-  // Transformations to determine render options for this chart
-  // example - is it a time chart - should we flip axes
+
   function parseChartObject(chart) {
 
     // Determine if we have a time series
     var timeSeries = axisAsTimeSeries(chart.categories);
     if (timeSeries && timeSeries.length > 0) {
       chart.isTimeSeries = true;
-      chart.timeSeries = timeSeries;
 
-      // Subseries
-      chart.hasYear = timeSeriesHasPeriod(timeSeries, 'year');
-      chart.hasQuarter = timeSeriesHasPeriod(timeSeries, 'quarter');
-      chart.hasMonth = timeSeriesHasPeriod(timeSeries, 'month');
-      chart.hasOtherPeriod = timeSeriesHasPeriod(timeSeries, 'other');
+      // We create data specific to time
+      timeData = [];
+      _.each(timeSeries, function(time) {
+        var item = chart.data[time['row']];
+        item.date = time['date'];
+        item.label = time['label'];
+        timeData.push(item);
+      })
 
-      if(chart.hasYear) {
-        chart.period = 'year';
-      } else if(chart.hasQuarter) {
-        chart.period = 'quarter';
-      } else if(chart.hasMonth) {
-        chart.period = 'month';
-      } else {
-        chart.isTimeSeries = false;
-      }
-      chart.type = 'line';
-    } else {
-      chart.isTimeSeries = false;
+      chart.timeSeries = timeData;
     }
   }
 
@@ -2351,49 +2376,29 @@ function loadChartBuilder(pageData, onSave, chart) {
     return result;
   }
 
-  function timeSeriesHasPeriod(timeSeries, period) {
-    // Period is one of ['year', 'quarter', 'month', 'other']
-    for (i = 0; i < timeSeries.length; i++) {
-      if (timeSeries[i]['period'] === period) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   function convertTimeString(timeString) {
     // First time around parse the time string according to rules from regular timeseries
     var result = {};
     result.label = timeString;
 
-    // Format of year only
-    var yearVal = tryYear(timeString);
-    if (yearVal) {
-      result.date = yearVal;
-      result.period = 'year';
-      return result;
+    // Format time string
+    // Check for strings that will turn themselves into a strange format
+    twoDigitYearEnd = timeString.match(/\W\d\d$/);
+    if(twoDigitYearEnd !== null) {
+      year = parseInt(twoDigitYearEnd = timeString.match(/\W\d\d$/));
+      prefix = timeString.substr(0, timeString.length - 3);
+
+      if(year >= 40) {
+        timeString = prefix + " 19" + year;
+      } else {
+        timeString = prefix + " 20" + year;
+      }
     }
 
-    // Format with year and quarter
-    var quarterVal = tryQuarter(timeString);
-    if (quarterVal) {
-      result.date = quarterVal;
-      result.period = 'quarter';
-      return result;
-    }
-
-    // Format with year and month
-    var monthVal = tryMonth(timeString);
-    if (monthVal) {
-      result.date = monthVal;
-      result.period = 'month';
-      return result;
-    }
-
-    // Other format
+    // We are going with all times in a common format
     var date = new Date(timeString);
     if (!isNaN(date.getTime())) {
-      result.date = monthVal;
+      result.date = date;
       result.period = 'other';
       return result;
     }
@@ -2401,37 +2406,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     return (null);
   }
 
-  function tryYear(tryString) {
-    var base = tryString.trim();
-    if (base.length !== 4) {
-      return null;
-    }
 
-    var date = new Date(tryString);
-
-    return date;
-  }
-
-  function tryQuarter(tryString) {
-    var indices = [0, 1, 2, 3];
-    var quarters = ["Q1", "Q2", "Q3", "Q4"];
-    var months = ["Jan", "Apr", "Jul", "Oct"];
-
-    var quarter = _.find(indices, function (q) {
-      return (tryString.indexOf(quarters[q]) > -1)
-    });
-    if (quarter !== undefined) {
-      var dateString = tryString.replace(quarters[quarter], months[quarter]);
-      return new Date(dateString);
-    }
-  }
-
-  function tryMonth(tryString) {
-    var date = new Date(tryString);
-    if (!isNaN(date.getTime())) {
-      return date;
-    }
-  }
 
   function drawTable(data) {
     var title = data.headers;
