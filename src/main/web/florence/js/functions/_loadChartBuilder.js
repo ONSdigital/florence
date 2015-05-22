@@ -10,8 +10,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('#chart-data').val(toTsv(chart));
   }
 
+  refreshBarLineSection();
+  renderChart();
+
   function refreshBarLineSection() {
-    chart = buildChartObject();
     var data = editBarline(chart);
     var html = templates.chartEditBarlines(data);
     $('#barline').html(html);
@@ -21,29 +23,34 @@ function loadChartBuilder(pageData, onSave, chart) {
     var data = [];
     var series = chart.series;
 
-    if (chart.type === 'barline') {
-      var type = _.values(chart.types);
-      for (var i = 0; i < chart.series.length; i += 1) {
-        data.push({
-          series: series[i], type: type[i],
-          isChecked: (function () {
-            var checked = _.indexOf(chart.groups[0], series[i]);
-            if (checked < 0) {
-              return checked = false;
-            } else {
-              return checked = true;
-            }
-          })()
-        });
+    if (chart.type === 'barline') { // if we have a bar line we want to populate the entries for each series
+      if (chart.types) { // if we have existing types use them
+        var type = _.values(chart.types);
+        for (var i = 0; i < chart.series.length; i += 1) {
+          data.push({
+            series: series[i], type: type[i],
+            isChecked: (function () {
+              var checked = _.indexOf(chart.groups[0], series[i]);
+              if (checked < 0) {
+                return checked = false;
+              } else {
+                return checked = true;
+              }
+            })()
+          });
+        }
+      } else { // if we have no existing types, default them
+        for (var i = 0; i < chart.series.length; i += 1) {
+          data.push({series: series[i], type: '', isChecked: false});
+        }
       }
     }
     return data;
   }
 
-  refreshBarLineSection();
-  renderChart();
 
-  $('#edit-chart').on('input', ':input', function () {
+  $('#edit-chart').on('input change', ':input', function () {
+    chart = buildChartObject();
     refreshBarLineSection();
     renderChart();
   });
