@@ -54,8 +54,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#barline').html(html);
         // add new listeners
         $('#barline').off();
-        $('#barline').on('change', function (e) {
-          renderChart();
+        $('#barline').on('click', function (e) {
+          renderChart(true);
         });
       } else {
         $('#barline').empty();
@@ -77,8 +77,8 @@ function loadChartBuilder(pageData, onSave, chart) {
           }
           // add new listeners
           $('#barline').off();
-          $('#barline').on('change', function (e) {
-            renderChart();
+          $('#barline').on('click', function (e) {
+            renderChart(true);
           });
         } else {
           $('#barline').empty();
@@ -170,8 +170,9 @@ function loadChartBuilder(pageData, onSave, chart) {
   });
 
   // Builds, parses, and renders our chart in the chart editor
-  function renderChart() {
-    chart = buildChartObject();
+  function renderChart(newBarLines) {
+    var newBarLine = newBarLines
+    chart = buildChartObject(newBarLine);
     if (table) {
       $('#preview-chart').empty();
       $('#preview-chart').html('<div id="dataTable"></div>');
@@ -195,7 +196,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
 
-  function buildChartObject() {
+  function buildChartObject(newBarLine) {
     var json = $('#chart-data').val();
     if (!chart) {
       chart = {};
@@ -236,7 +237,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.aspectRatio = $('#aspect-ratio').val();
 
     if (chart.type === 'barline') {
-      if (!chart.types) {
+      if (newBarLine) {
         var types = {};
         var groups = [];
         var group = [];

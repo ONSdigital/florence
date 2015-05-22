@@ -1,4 +1,4 @@
-function loadT4Creator (collectionName, pageType) {
+function loadT7Creator (collectionName, pageType) {
 
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
@@ -21,7 +21,8 @@ function loadT4Creator (collectionName, pageType) {
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.level === 't3') {
+//      if (pageType === 'something' && checkData.level === 'methodology' ||
+//            pageType === 'somethingElse' && checkData.level === 'about')    { //not working -> no data
         $('.btn-page-create').show();
         $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
@@ -35,9 +36,9 @@ function loadT4Creator (collectionName, pageType) {
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
-      } else {
-        $('#location').attr("placeholder", "This is not a valid place to create this page.");
-      }
+//      } else {
+//        $('#location').attr("placeholder", "This is not a valid place to create this page.");
+//      }
     },
     error: function () {
       console.log('No page data returned');
@@ -58,8 +59,10 @@ function loadT4Creator (collectionName, pageType) {
       pageData.fileName = pageNameTrimmed;
       newUri = makeUrl(parent, uriSection, pageNameTrimmed);
       pageData.uri = newUri;
-      date = new Date(releaseDate);
-      pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+      if (pageData.releaseDate) {
+        date = new Date(releaseDate);
+        pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+      }
       pageData.breadcrumb = breadcrumb;
 
       if (pageName.length < 4) {
@@ -90,78 +93,14 @@ function loadT4Creator (collectionName, pageType) {
 
 function pageTypeData(pageType) {
 
-  if (pageType === "bulletin") {
+  if (pageType === "static") {
     return {
-      "nextRelease": "",
-      "contact": {
-        "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "headline1": "",
-      "headline2": "",
-      "headline3": "",
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "relatedBulletins": [],
-      "externalLinks": [],
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else if (pageType === "article") {
-    return {
-      "nextRelease": "",
-      "contact": {
-        "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "abstract": "",
-      "authors": [],
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "relatedArticles": [],
-      "externalLinks": [],
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  if (pageType === "methodology") {
-    return {
-      "contact": {
-        "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
       "summary": "",
       "keywords": [],
       "metaDescription": "",
       "name": "",
       "releaseDate": "",
+      "content": "",
       type: pageType,
       "uri": "",
       "fileName": "",
@@ -169,31 +108,61 @@ function pageTypeData(pageType) {
     };
   }
 
-  else if (pageType === "dataset") {
-    return {
-      "nextRelease": "",
-      "contact": {
+  else if (pageType === "qmi") {
+      return {
+        "contact": {
+          "name": "",
+          "email": "",
+          "phone": ""
+        },
+        "surveyName": "",
+        "frequency": "",
+        "compilation": "",
+        "geoCoverage": [],
+        "sampleSize": "",
+        "lastRevised": "",
+        "content": "",
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
         "name": "",
-        "email": "",
-        "phone": ""
-      },
+        "download": [],
+        type: pageType,
+        "uri": "",
+        "fileName": "",
+        "breadcrumb": "",
+      };
+    }
+
+  else if (pageType === "foi") {
+    return {
       "download": [],
-      "notes": [],
+      "content": "",
       "summary": "",
       "keywords": [],
       "metaDescription": "",
-      "nationalStatistic": "false",
-      "migrated": "false",
-      "description": "",
-      "charts": [],
-      "correction": [],
       "name": "",
       "releaseDate": "",
       type: pageType,
       "uri": "",
       "fileName": "",
-      "relatedDatasets": [],
-      "usedIn": [],
+      "breadcrumb": "",
+    };
+  }
+
+  else if (pageType === "adHoc") {
+    return {
+      "download": [],
+      "content": "",
+      "summary": "",
+      "keywords": [],
+      "metaDescription": "",
+      "name": "",
+      "releaseDate": "",
+      "reference": "",
+      type: pageType,
+      "uri": "",
+      "fileName": "",
       "breadcrumb": "",
     };
   }

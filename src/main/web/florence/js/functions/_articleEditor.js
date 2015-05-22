@@ -23,7 +23,6 @@ function articleEditor(collectionId, data) {
   $("#note").remove();
   $("#metadata-b").remove();
   $("#metadata-d").remove();
-  $("#next-p").remove();
   $("#summary-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();
@@ -37,6 +36,10 @@ function articleEditor(collectionId, data) {
   $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.name = $(this).val();
+  });
+  $("#nextRelease").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.nextRelease = $(this).val();
   });
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
