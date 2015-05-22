@@ -31,14 +31,14 @@ function update_branch {
 
 function update_branch_and_push {
     update_branch $1 $2 $3
-    git push origin $3:user-test
+    git push origin $3:user-test --force
 }
 
 function update_florence {
     update_branch $1 $2 $3
     ./build-js.sh
     git commit . -m "Build JS for deployment."
-    git push origin $3:user-test
+    git push origin $3:user-test --force
 }
 
 function send_slack_message {
