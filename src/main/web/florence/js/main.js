@@ -869,7 +869,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   // Create our svg
   var svg = d3.select(bindTag + " svg")
-    .attr("viewBox", "0 0 880 320")
+    .attr("viewBox", "0 0 " + chartWidth + " " + chartHeight)
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
@@ -958,18 +958,16 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     // annotate
     d3.select(bindTag + ' svg').append('text') // Title
       .attr('x', 20)
-      .attr('y', 18)
-      .attr('text-anchor', 'left')
-      .style('font-size', '1.6em')
-       .style('fill', '#000000')
+      .attr('y', 25)
+      .style('font-size', '20px')
+      .style('fill', '#000000')
       .text(chart.title);
 
     if(chart.subtitle != '') {
       d3.select(bindTag + ' svg').append('text') // Subtitle
         .attr('x', 20)
-        .attr('y', 36)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .attr('y', 45)
+        .style('font-size', '15px')
         .style('fill', '#999999')
         .text(chart.subtitle);
     }
@@ -979,7 +977,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .attr('x', 20)
         .attr('y', unitTop)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .style('font-size', '15px')
         .style('fill', '#000000')
         .text(chart.unit);
     }
@@ -990,7 +988,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .attr('x', 20)
         .attr('y', 320)
         .attr('text-anchor', 'left')
-        .style('font-size', '1.2em')
+        .style('font-size', '15px')
         .style('fill', '#999999')
         .text(chart.source);
     }
@@ -1953,12 +1951,12 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   if (chart) {
     $('#chart-data').val(toTsv(chart));
-  }
 
-  if (chart.type === 'barline') {
-  data = editBarline(chart);
-  var html = templates.chartEditBarlines(data);
-  $('#barline').html(html);
+    if (chart.type === 'barline') {
+      data = editBarline(chart);
+      var html = templates.chartEditBarlines(data);
+      $('#barline').html(html);
+    }
   }
 
   function editBarline (chart) {
@@ -2036,39 +2034,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
-
-  //generatePng();
-  function generatePng() {
-
-    var preview = $('#chart');
-    var chartHeight = preview.width() * chart.aspectRatio;
-    var chartWidth = preview.width();
-
-    if (chartHeight > preview.height()) {
-      chartHeight = preview.height();
-      chartWidth = preview.height() / chart.aspectRatio;
-    }
-
-
-    //$('body').append('<canvas id="hiddenCanvas" width="' + chartWidth + '" height="' + chartHeight + '"></canvas><img id="hiddenPng">');
-
-    var content = exportToSVG().trim();
-
-    var $canvas = $('#hiddenCanvas');
-    $canvas.width(chartWidth * 2);
-    $canvas.height(chartHeight * 2);
-
-    var canvas = $canvas.get(0);
-
-    // Draw svg on canvas
-    canvg(canvas, content);
-
-    // Change img be SVG representation
-    var theImage = canvas.toDataURL('image/png');
-    $('#hiddenPng').attr('src', theImage);
-  }
-
-
   $('.btn-chart-builder-create').on('click', function () {
 
     if (!pageData.charts) {
@@ -2091,18 +2056,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       contentType: false,
       success: function (res) {
         if (!table) {
-          var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
-
-          $.ajax({
-            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
-            type: "POST",
-            data: exportToSVG(),
-            processData: false,
-            contentType: false,
-            success: function (res) {
-              console.log("SVG uploaded successfully");
-            }
-          });
+          generatePng();
         }
 
         pageData.charts.push({title: chart.title, filename: chart.filename});
@@ -2431,6 +2385,61 @@ function loadChartBuilder(pageData, onSave, chart) {
         row.append($("<td>" + rowData[title[j]] + "</td>"));
       }
     }
+  }
+
+
+  //generatePng();
+  function generatePng() {
+
+    var preview = $('#chart');
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
+    }
+
+    var content = exportToSVG().trim();
+
+    var $canvas = $('#hiddenCanvas');
+    $canvas.width(chartWidth);
+    $canvas.height(chartHeight);
+
+    var canvas = $canvas.get(0);
+
+    // Draw svg on canvas
+    canvg(canvas, content);
+
+    // get data url from canvas.
+    var dataUrl = canvas.toDataURL('image/png');
+    var pngData = dataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
+    //console.log(dataUrl);
+
+    // render png
+    //var $png = $('#hiddenPng');
+    //var png = $png[0];
+    //$png.attr('src', dataUrl);
+
+    var raw = window.atob(pngData);
+    var rawLength = raw.length;
+    var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+    for(var i = 0; i < rawLength; i++) {
+      array[i] = raw.charCodeAt(i);
+    }
+
+    var pngUri = pageUrl + "/" + chart.filename + ".png";
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
+      type: "POST",
+      data: new Blob([array], {type: 'image/png'}),
+      contentType:  "image/png",
+      processData: false,
+      success: function (res) {
+        console.log('png uploaded!');
+      }
+    });
   }
 }
 
