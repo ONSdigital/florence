@@ -8,84 +8,45 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   if (chart) {
     $('#chart-data').val(toTsv(chart));
-
-    if (chart.type === 'barline') {
-      data = editBarline(chart);
-      var html = templates.chartEditBarlines(data);
-      $('#barline').html(html);
-    }
   }
 
-  function editBarline (chart) {
+  function refreshBarLineSection() {
+    chart = buildChartObject();
+    var data = editBarline(chart);
+    var html = templates.chartEditBarlines(data);
+    $('#barline').html(html);
+  }
+
+  function editBarline(chart) {
     var data = [];
-    var series = _.keys(chart.types);
-    var type = _.values(chart.types);
-    for (var i = 0; i < chart.series.length; i += 1) {
-      data.push({series: series[i], type: type[i],
-        isChecked: (function () {
-          var checked = _.indexOf(chart.groups[0], series[i]);
-          if (checked < 0) {
-            return checked = false;
-          } else {
-            return checked = true;
-          }
-        })()
-      });
+    var series = chart.series;
+
+    if (chart.type === 'barline') {
+      var type = _.values(chart.types);
+      for (var i = 0; i < chart.series.length; i += 1) {
+        data.push({
+          series: series[i], type: type[i],
+          isChecked: (function () {
+            var checked = _.indexOf(chart.groups[0], series[i]);
+            if (checked < 0) {
+              return checked = false;
+            } else {
+              return checked = true;
+            }
+          })()
+        });
+      }
     }
     return data;
   }
 
-  checkSeries();
+  refreshBarLineSection();
   renderChart();
 
-  $('#edit-chart :input').on('input', function () {
-    checkSeries(true);
+  $('#edit-chart').on('input', ':input', function () {
+    refreshBarLineSection();
     renderChart();
   });
-
-  // create series selector
-  function checkSeries (reload) {
-    if (reload) {
-      var valueSelected = $('#chart-type').val();
-      if (valueSelected === 'barline') {
-        chart = buildChartObject();
-        data = editBarline(chart);
-        var html = templates.chartEditBarlines(data);
-        $('#barline').html(html);
-        // add new listeners
-        $('#barline').off();
-        $('#barline').on('click', function (e) {
-          renderChart(true);
-        });
-      } else {
-        $('#barline').empty();
-      }
-    } else {
-      $('#chart-type').on('change', function (e) {
-        var optionSelected = $("option:selected", this);
-        var valueSelected = this.value;
-        if (valueSelected === 'barline') {
-          chart = buildChartObject();
-          if (!chart.types) {
-            data = chart.series;
-            var html = templates.chartBuilderBarlines(data);
-            $('#barline').html(html);
-          } else {
-            data = editBarline(chart);
-            var html = templates.chartEditBarlines(data);
-            $('#barline').html(html);
-          }
-          // add new listeners
-          $('#barline').off();
-          $('#barline').on('click', function (e) {
-            renderChart(true);
-          });
-        } else {
-          $('#barline').empty();
-        }
-      });
-    }
-  }
 
   $('.btn-chart-builder-cancel').on('click', function () {
     $('.chart-builder').stop().fadeOut(200).remove();
@@ -126,58 +87,44 @@ function loadChartBuilder(pageData, onSave, chart) {
   });
 
   // Builds, parses, and renders our chart in the chart editor
-  function renderChart(newBarLines) {
-    var newBarLine = newBarLines
-    chart = buildChartObject(newBarLine);
+  function renderChart() {
+    chart = buildChartObject();
     if (table) {
       $('#preview-chart').empty();
       $('#preview-chart').html('<div id="dataTable"></div>');
       drawTable(chart);
     }
 
-      var preview = $('#preview-chart');
+    var preview = $('#preview-chart');
 
 //      preview.empty();
-      preview.html('<div id="chart"></div>');
+    preview.html('<div id="chart"></div>');
 
-      var chartHeight = preview.width() * chart.aspectRatio;
-      var chartWidth = preview.width();
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
 
-      if (chartHeight > preview.height()) {
-        chartHeight = preview.height();
-        chartWidth = preview.height() / chart.aspectRatio;
-      }
-
-      renderChartObject('#chart', chart, chartHeight, chartWidth);
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
     }
 
+    renderChartObject('#chart', chart, chartHeight, chartWidth);
+  }
 
-  function buildChartObject(newBarLine) {
+
+  function buildChartObject() {
     var json = $('#chart-data').val();
     if (!chart) {
       chart = {};
     }
-    chart.type = $('#chart-type').val();
-    if (chart.type === 'table') {
-      table = true;
-    } else {
-      table = false;
-    }
-
-//    chart.period = $('#chart-period').val();
 
     chart.title = $('#chart-title').val();
     chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
-
     chart.source = $('#chart-source').val();
-
     chart.legend = $('#chart-legend').val();
     chart.hideLegend = (chart.legend === 'false') ? true : false;
-
-//      console.log(chart.legend + " " + chart.hideLegend);
 
     if (chart.title === '') {
       chart.title = '[Title]'
@@ -193,25 +140,31 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.aspectRatio = $('#aspect-ratio').val();
 
     if (chart.type === 'barline') {
-      if (newBarLine) {
-        var types = {};
-        var groups = [];
-        var group = [];
-        var seriesData = chart.series;
-        for(var i=0; i<seriesData.length; i++) {
-          types[seriesData[i]] = $('#types_' + i).val() || 'bar';
-        }
-        (function () {
-          $('#barline input:checkbox:checked').each(function(){
-            group.push($(this).val());
-          });
+      var types = {};
+      var groups = [];
+      var group = [];
+      var seriesData = chart.series;
+      for (var i = 0; i < seriesData.length; i++) {
+        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
+      }
+      (function () {
+        $('#barline input:checkbox:checked').each(function () {
+          group.push($(this).val());
+        });
         groups.push(group);
         return groups;
-        })();
-        chart.types = types;
-        chart.groups = groups;
-      }
+      })();
+      chart.types = types;
+      chart.groups = groups;
     }
+
+    chart.type = $('#chart-type').val();
+    if (chart.type === 'table') {
+      table = true;
+    } else {
+      table = false;
+    }
+
     //console.log(chart);
     parseChartObject(chart);
 
@@ -228,7 +181,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
       // We create data specific to time
       timeData = [];
-      _.each(timeSeries, function(time) {
+      _.each(timeSeries, function (time) {
         var item = chart.data[time['row']];
         item.date = time['date'];
         item.label = time['label'];
@@ -266,14 +219,14 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     for (var i = 0; i < data.headers.length; i++) {
       if (i === data.headers.length - 1) {
-        output+= data.headers[i];
+        output += data.headers[i];
       } else {
-        output+= data.headers[i] + "\t";
+        output += data.headers[i] + "\t";
       }
     }
 
     for (var i = 0; i < data.categories.length; i++) {
-      output+= "\n" + toTsvLine(data.data[i], data.headers);
+      output += "\n" + toTsvLine(data.data[i], data.headers);
     }
 
     return output;
@@ -396,11 +349,11 @@ function loadChartBuilder(pageData, onSave, chart) {
     // Format time string
     // Check for strings that will turn themselves into a strange format
     twoDigitYearEnd = timeString.match(/\W\d\d$/);
-    if(twoDigitYearEnd !== null) {
+    if (twoDigitYearEnd !== null) {
       year = parseInt(twoDigitYearEnd = timeString.match(/\W\d\d$/));
       prefix = timeString.substr(0, timeString.length - 3);
 
-      if(year >= 40) {
+      if (year >= 40) {
         timeString = prefix + " 19" + year;
       } else {
         timeString = prefix + " 20" + year;
@@ -417,7 +370,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     return (null);
   }
-
 
 
   function drawTable(data) {
@@ -483,7 +435,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var rawLength = raw.length;
     var array = new Uint8Array(new ArrayBuffer(rawLength));
 
-    for(var i = 0; i < rawLength; i++) {
+    for (var i = 0; i < rawLength; i++) {
       array[i] = raw.charCodeAt(i);
     }
 
@@ -492,7 +444,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
       type: "POST",
       data: new Blob([array], {type: 'image/png'}),
-      contentType:  "image/png",
+      contentType: "image/png",
       processData: false,
       success: function (res) {
         console.log('png uploaded!');

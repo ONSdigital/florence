@@ -7,10 +7,6 @@
     {{/select}}
   </select>
   <label for="{{this.series}}">Bar stack</label>
-  {{#if isChecked}}
-    <input id="{{this.series}}" name="group_check" value="{{this.series}}" type="checkbox" checked>
-  {{else}}
-    <input id="{{this.series}}" name="group_check" value="{{this.series}}" type="checkbox">
-  {{/if}}
+    <input id="{{this.series}}" name="group_check" value="{{this.series}}" type="checkbox"{{#if isChecked}} checked{{/if}}>
   <br/>
 {{/each}}
