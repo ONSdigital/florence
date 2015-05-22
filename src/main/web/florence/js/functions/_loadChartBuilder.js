@@ -8,12 +8,12 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   if (chart) {
     $('#chart-data').val(toTsv(chart));
-  }
 
-  if (chart.type === 'barline') {
-  data = editBarline(chart);
-  var html = templates.chartEditBarlines(data);
-  $('#barline').html(html);
+    if (chart.type === 'barline') {
+      data = editBarline(chart);
+      var html = templates.chartEditBarlines(data);
+      $('#barline').html(html);
+    }
   }
 
   function editBarline (chart) {
