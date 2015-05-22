@@ -55,7 +55,9 @@ templates['chartBuilderBarlines'] = template({"1":function(depth0,helpers,partia
     + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias3),(typeof helper === "function" ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" class=\"col--5\">\n"
     + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias3).call(depth0,depth0,{"name":"select","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "  </select>\n  <input id=\""
+    + "  </select>\n  <label for=\""
+    + alias2(alias1(depth0, depth0))
+    + "\">Bar stack</label>\n  <input id=\""
     + alias2(alias1(depth0, depth0))
     + "\" name=\"group_check\" value=\""
     + alias2(alias1(depth0, depth0))
@@ -71,18 +73,34 @@ templates['chartEditBarlines'] = template({"1":function(depth0,helpers,partials,
     var stack1, helper, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing;
 
   return "  <label>"
-    + alias2(alias1(depth0, depth0))
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
     + "</label>\n  <select id=\"types_"
     + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias3),(typeof helper === "function" ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" class=\"col--5\">\n"
-    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias3).call(depth0,depth0,{"name":"select","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "  </select>\n  <input id=\""
-    + alias2(alias1(depth0, depth0))
-    + "\" name=\"group_check\" value=\""
-    + alias2(alias1(depth0, depth0))
-    + "\" type=\"checkbox\">\n  <br/>\n";
+    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias3).call(depth0,(depth0 != null ? depth0.type : depth0),{"name":"select","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "  </select>\n  <label for=\""
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
+    + "\">Bar stack</label>\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isChecked : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.program(6, data, 0),"data":data})) != null ? stack1 : "")
+    + "  <br/>\n";
 },"2":function(depth0,helpers,partials,data) {
     return "      <option value=\"bar\">Bar</option>\n      <option value=\"line\">Line</option>\n";
+},"4":function(depth0,helpers,partials,data) {
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "    <input id=\""
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
+    + "\" name=\"group_check\" value=\""
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
+    + "\" type=\"checkbox\" checked>\n";
+},"6":function(depth0,helpers,partials,data) {
+    var alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "    <input id=\""
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
+    + "\" name=\"group_check\" value=\""
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
+    + "\" type=\"checkbox\">\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -525,7 +543,7 @@ templates['workEditCharts'] = template({"1":function(depth0,helpers,partials,dat
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"edit-section\">\n  <div class=\"edit-section__head\">\n    <h1>Charts</h1>\n\n    <p>Title</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"chart-list\" class=\"edit-section__sortable\">\n"
+  return "<div class=\"edit-section\">\n  <div class=\"edit-section__head\">\n    <h1>Charts</h1>\n\n    <p>Edit existing charts</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"chart-list\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.charts : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n  </div>\n</div>";
 },"useData":true});
