@@ -8,9 +8,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   if (chart) {
     $('#chart-data').val(toTsv(chart));
+    refreshBarLineSection();
   }
 
-  refreshBarLineSection();
   renderChart();
 
   function refreshBarLineSection() {
