@@ -46,29 +46,6 @@ templates['chartBuilder'] = template({"1":function(depth0,helpers,partials,data)
     + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias1).call(depth0,(depth0 != null ? depth0.aspectRatio : depth0),{"name":"select","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </select>\n      </label>\n\n    </div>\n\n    <div id=\"preview-chart\" class=\"chart-builder__preview\">\n      <div id=\"chart\"></div>\n    </div>\n\n\n    <div id=\"hiddenDiv\" style=\"display:none\">\n      <canvas id=\"hiddenCanvas\"></canvas>\n      <a id=\"hiddenPng\"/>\n    </div>\n\n    <div class=\"chart-builder__footer\">\n      <button class=\"btn-chart-builder-cancel\">Cancel</button>\n      <button class=\"btn-chart-builder-create\">Save Chart</button>\n    </div>\n\n  </div>\n</div>";
 },"useData":true});
-templates['chartBuilderBarlines'] = template({"1":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing;
-
-  return "  <label>"
-    + alias2(alias1(depth0, depth0))
-    + "</label>\n  <select id=\"types_"
-    + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias3),(typeof helper === "function" ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"col--5\">\n"
-    + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias3).call(depth0,depth0,{"name":"select","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "  </select>\n  <label for=\""
-    + alias2(alias1(depth0, depth0))
-    + "\">Bar stack</label>\n  <input id=\""
-    + alias2(alias1(depth0, depth0))
-    + "\" name=\"group_check\" value=\""
-    + alias2(alias1(depth0, depth0))
-    + "\" type=\"checkbox\">\n  <br/>\n";
-},"2":function(depth0,helpers,partials,data) {
-    return "      <option value=\"bar\">Bar</option>\n      <option value=\"line\">Line</option>\n";
-},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
-},"useData":true});
 templates['chartEditBarlines'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing;
 
@@ -80,27 +57,17 @@ templates['chartEditBarlines'] = template({"1":function(depth0,helpers,partials,
     + ((stack1 = (helpers.select || (depth0 && depth0.select) || alias3).call(depth0,(depth0 != null ? depth0.type : depth0),{"name":"select","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "  </select>\n  <label for=\""
     + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
-    + "\">Bar stack</label>\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isChecked : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.program(6, data, 0),"data":data})) != null ? stack1 : "")
-    + "  <br/>\n";
+    + "\">Bar stack</label>\n    <input id=\""
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
+    + "\" name=\"group_check\" value=\""
+    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
+    + "\" type=\"checkbox\""
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isChecked : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ">\n  <br/>\n";
 },"2":function(depth0,helpers,partials,data) {
     return "      <option value=\"bar\">Bar</option>\n      <option value=\"line\">Line</option>\n";
 },"4":function(depth0,helpers,partials,data) {
-    var alias1=this.lambda, alias2=this.escapeExpression;
-
-  return "    <input id=\""
-    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
-    + "\" name=\"group_check\" value=\""
-    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
-    + "\" type=\"checkbox\" checked>\n";
-},"6":function(depth0,helpers,partials,data) {
-    var alias1=this.lambda, alias2=this.escapeExpression;
-
-  return "    <input id=\""
-    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
-    + "\" name=\"group_check\" value=\""
-    + alias2(alias1((depth0 != null ? depth0.series : depth0), depth0))
-    + "\" type=\"checkbox\">\n";
+    return " checked";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -112,7 +79,9 @@ templates['chartTable'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
 templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "      <li><span class=\"page-item\">"
+  return "      <li><span class=\"page-item page-type-"
+    + alias3(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
+    + "\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
     + "</span>\n        <div class=\"page-options\">\n          <button class=\"btn-page-edit\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
@@ -129,6 +98,18 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + "</span>\n        <div class=\"page-options\">\n          <button class=\"btn-page-edit\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">Review file</button>\n          <button class=\"btn-page-move\" data-path=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">Move file</button>\n          <button class=\"btn-page-delete\" data-path=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">Delete file</button>\n        </div>\n      </li>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "      <li><span class=\"page-item\">"
+    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
+    + "</span>\n        <div class=\"page-options\">\n          <button class=\"btn-page-edit\" data-path=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">Edit file</button>\n          <button class=\"btn-page-move\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">Move file</button>\n          <button class=\"btn-page-delete\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
@@ -151,7 +132,7 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + "  </ul>\n  <h3 id=\"reviewed-uris\">"
     + alias3(alias4(((stack1 = (depth0 != null ? depth0.reviewed : depth0)) != null ? stack1.length : stack1), depth0))
     + " pages awaiting approval</h3>\n  <ul class=\"page-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.reviewed : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.reviewed : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "  </ul>\n</div>\n\n<nav class=\"section-nav\">\n  <button class=\"btn-edit-cancel\">Cancel</button>\n  <button class=\"btn-collection-work-on\">Work on collection</button>\n  <button class=\"btn-collection-approve\">Approve collection</button>\n</nav>\n";
 },"useData":true});
 templates['collectionList'] = template({"1":function(depth0,helpers,partials,data) {
@@ -236,7 +217,9 @@ templates['publishDetails'] = template({"1":function(depth0,helpers,partials,dat
 },"2":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "          <li><span class=\"page-item\" data-path=\""
+  return "          <li><span class=\"page-item page-type-"
+    + alias3(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
+    + "\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
