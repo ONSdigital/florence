@@ -6,7 +6,7 @@
   <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
   <ul class="page-list">
     {{#each inProgress}}
-      <li><span class="page-item">{{name}}</span>
+      <li><span class="page-item page-type-{{type}}">{{name}}</span>
         <div class="page-options">
           <button class="btn-page-edit" data-path="{{uri}}">Edit file</button>
           <button class="btn-page-move" data-path="{{uri}}">Move file</button>
