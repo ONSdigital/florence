@@ -206,7 +206,6 @@ function approve(collectionId) {
   $("#note").remove();
   $("#metadata-b").remove();
   $("#metadata-d").remove();
-  $("#next-p").remove();
   $("#summary-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();
@@ -220,6 +219,10 @@ function approve(collectionId) {
   $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.name = $(this).val();
+  });
+  $("#nextRelease").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.nextRelease = $(this).val();
   });
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -881,7 +884,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   // Calculate padding at top (and left) of SVG
   var padding = 25;
   var paddingLeft = 100;
-  if(chart.subtitle != '') { padding += 16; }
+  if(chart.subtitle != '') { padding += 15; }
 
   var types = chart.type === 'barline' ? chart.types : {};
   var groups = chart.type === 'barline' ? chart.groups : [];
@@ -889,11 +892,11 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var rotate = chart.type === 'rotated';
   var yLabel = rotate == true ? chart.unit : '';
   if((chart.unit != '') && (rotate == false)) {padding += 24; }
-  if((chart.unit != '') && (rotate === true)) {paddingLeft += 50; }
+  if((chart.unit != '') && (rotate === true)) {paddingLeft += 100; }
 
   // Calculate padding at bottom of SVG
-  var bottomPadding = 30;
-  if((chart.source != '')) {bottomPadding += 16;}
+  var bottomPadding = 20;
+  if((chart.source != '')) {bottomPadding += 5;}
 
   // work out position for chart legend
   var seriesCount = chart.series.length;
@@ -966,7 +969,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     if(chart.subtitle != '') {
       d3.select(bindTag + ' svg').append('text') // Subtitle
         .attr('x', 20)
-        .attr('y', 45)
+        .attr('y', 36)
+        .attr('text-anchor', 'left')
         .style('font-size', '15px')
         .style('fill', '#999999')
         .text(chart.subtitle);
@@ -983,6 +987,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     }
 
     var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
+    var viewBoxWidth = d3.select(bindTag + ' svg').attr('width');
+
     if(chart.source != '') {
       d3.select(bindTag + ' svg').append('text') // Source
         .attr('x', 20)
@@ -1951,84 +1957,52 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   if (chart) {
     $('#chart-data').val(toTsv(chart));
-
-    if (chart.type === 'barline') {
-      data = editBarline(chart);
-      var html = templates.chartEditBarlines(data);
-      $('#barline').html(html);
-    }
+    refreshBarLineSection();
   }
 
-  function editBarline (chart) {
+  renderChart();
+
+  function refreshBarLineSection() {
+    var data = editBarline(chart);
+    var html = templates.chartEditBarlines(data);
+    $('#barline').html(html);
+  }
+
+  function editBarline(chart) {
     var data = [];
-    var series = _.keys(chart.types);
-    var type = _.values(chart.types);
-    for (var i = 0; i < chart.series.length; i += 1) {
-      data.push({series: series[i], type: type[i],
-        isChecked: (function () {
-          var checked = _.indexOf(chart.groups[0], series[i]);
-          if (checked < 0) {
-            return checked = false;
-          } else {
-            return checked = true;
-          }
-        })()
-      });
+    var series = chart.series;
+
+    if (chart.type === 'barline') { // if we have a bar line we want to populate the entries for each series
+      if (chart.types) { // if we have existing types use them
+        var type = _.values(chart.types);
+        for (var i = 0; i < chart.series.length; i += 1) {
+          data.push({
+            series: series[i], type: type[i],
+            isChecked: (function () {
+              var checked = _.indexOf(chart.groups[0], series[i]);
+              if (checked < 0) {
+                return checked = false;
+              } else {
+                return checked = true;
+              }
+            })()
+          });
+        }
+      } else { // if we have no existing types, default them
+        for (var i = 0; i < chart.series.length; i += 1) {
+          data.push({series: series[i], type: '', isChecked: false});
+        }
+      }
     }
     return data;
   }
 
-  checkSeries();
-  renderChart();
 
-  $('#edit-chart :input').on('input', function () {
-    checkSeries(true);
+  $('#edit-chart').on('input change', ':input', function () {
+    chart = buildChartObject();
+    refreshBarLineSection();
     renderChart();
   });
-
-  // create series selector
-  function checkSeries (reload) {
-    if (reload) {
-      var valueSelected = $('#chart-type').val();
-      if (valueSelected === 'barline') {
-        chart = buildChartObject();
-        data = editBarline(chart);
-        var html = templates.chartEditBarlines(data);
-        $('#barline').html(html);
-        // add new listeners
-        $('#barline').off();
-        $('#barline').on('change', function (e) {
-          renderChart();
-        });
-      } else {
-        $('#barline').empty();
-      }
-    } else {
-      $('#chart-type').on('change', function (e) {
-        var optionSelected = $("option:selected", this);
-        var valueSelected = this.value;
-        if (valueSelected === 'barline') {
-          chart = buildChartObject();
-          if (!chart.types) {
-            data = chart.series;
-            var html = templates.chartBuilderBarlines(data);
-            $('#barline').html(html);
-          } else {
-            data = editBarline(chart);
-            var html = templates.chartEditBarlines(data);
-            $('#barline').html(html);
-          }
-          // add new listeners
-          $('#barline').off();
-          $('#barline').on('change', function (e) {
-            renderChart();
-          });
-        } else {
-          $('#barline').empty();
-        }
-      });
-    }
-  }
 
   $('.btn-chart-builder-cancel').on('click', function () {
     $('.chart-builder').stop().fadeOut(200).remove();
@@ -2077,21 +2051,21 @@ function loadChartBuilder(pageData, onSave, chart) {
       drawTable(chart);
     }
 
-      var preview = $('#preview-chart');
+    var preview = $('#preview-chart');
 
 //      preview.empty();
-      preview.html('<div id="chart"></div>');
+    preview.html('<div id="chart"></div>');
 
-      var chartHeight = preview.width() * chart.aspectRatio;
-      var chartWidth = preview.width();
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
 
-      if (chartHeight > preview.height()) {
-        chartHeight = preview.height();
-        chartWidth = preview.height() / chart.aspectRatio;
-      }
-
-      renderChartObject('#chart', chart, chartHeight, chartWidth);
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
     }
+
+    renderChartObject('#chart', chart, chartHeight, chartWidth);
+  }
 
 
   function buildChartObject() {
@@ -2099,27 +2073,14 @@ function loadChartBuilder(pageData, onSave, chart) {
     if (!chart) {
       chart = {};
     }
-    chart.type = $('#chart-type').val();
-    if (chart.type === 'table') {
-      table = true;
-    } else {
-      table = false;
-    }
-
-//    chart.period = $('#chart-period').val();
 
     chart.title = $('#chart-title').val();
     chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
-
     chart.source = $('#chart-source').val();
-
     chart.legend = $('#chart-legend').val();
     chart.hideLegend = (chart.legend === 'false') ? true : false;
-
-//      console.log(chart.legend + " " + chart.hideLegend);
 
     if (chart.title === '') {
       chart.title = '[Title]'
@@ -2135,25 +2096,31 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.aspectRatio = $('#aspect-ratio').val();
 
     if (chart.type === 'barline') {
-      if (!chart.types) {
-        var types = {};
-        var groups = [];
-        var group = [];
-        var seriesData = chart.series;
-        for(var i=0; i<seriesData.length; i++) {
-          types[seriesData[i]] = $('#types_' + i).val() || 'bar';
-        }
-        (function () {
-          $('#barline input:checkbox:checked').each(function(){
-            group.push($(this).val());
-          });
+      var types = {};
+      var groups = [];
+      var group = [];
+      var seriesData = chart.series;
+      for (var i = 0; i < seriesData.length; i++) {
+        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
+      }
+      (function () {
+        $('#barline input:checkbox:checked').each(function () {
+          group.push($(this).val());
+        });
         groups.push(group);
         return groups;
-        })();
-        chart.types = types;
-        chart.groups = groups;
-      }
+      })();
+      chart.types = types;
+      chart.groups = groups;
     }
+
+    chart.type = $('#chart-type').val();
+    if (chart.type === 'table') {
+      table = true;
+    } else {
+      table = false;
+    }
+
     //console.log(chart);
     parseChartObject(chart);
 
@@ -2170,7 +2137,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
       // We create data specific to time
       timeData = [];
-      _.each(timeSeries, function(time) {
+      _.each(timeSeries, function (time) {
         var item = chart.data[time['row']];
         item.date = time['date'];
         item.label = time['label'];
@@ -2208,14 +2175,14 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     for (var i = 0; i < data.headers.length; i++) {
       if (i === data.headers.length - 1) {
-        output+= data.headers[i];
+        output += data.headers[i];
       } else {
-        output+= data.headers[i] + "\t";
+        output += data.headers[i] + "\t";
       }
     }
 
     for (var i = 0; i < data.categories.length; i++) {
-      output+= "\n" + toTsvLine(data.data[i], data.headers);
+      output += "\n" + toTsvLine(data.data[i], data.headers);
     }
 
     return output;
@@ -2338,11 +2305,11 @@ function loadChartBuilder(pageData, onSave, chart) {
     // Format time string
     // Check for strings that will turn themselves into a strange format
     twoDigitYearEnd = timeString.match(/\W\d\d$/);
-    if(twoDigitYearEnd !== null) {
+    if (twoDigitYearEnd !== null) {
       year = parseInt(twoDigitYearEnd = timeString.match(/\W\d\d$/));
       prefix = timeString.substr(0, timeString.length - 3);
 
-      if(year >= 40) {
+      if (year >= 40) {
         timeString = prefix + " 19" + year;
       } else {
         timeString = prefix + " 20" + year;
@@ -2359,7 +2326,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     return (null);
   }
-
 
 
   function drawTable(data) {
@@ -2425,7 +2391,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var rawLength = raw.length;
     var array = new Uint8Array(new ArrayBuffer(rawLength));
 
-    for(var i = 0; i < rawLength; i++) {
+    for (var i = 0; i < rawLength; i++) {
       array[i] = raw.charCodeAt(i);
     }
 
@@ -2434,7 +2400,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
       type: "POST",
       data: new Blob([array], {type: 'image/png'}),
-      contentType:  "image/png",
+      contentType: "image/png",
       processData: false,
       success: function (res) {
         console.log('png uploaded!');
@@ -2446,7 +2412,20 @@ function loadChartBuilder(pageData, onSave, chart) {
 function loadCreateScreen(collectionId) {
   var html = templates.workCreate;
   $('.workspace-menu').html(html);
-  loadT4Creator(collectionId);
+
+  // Default
+  pageType = "bulletin";
+
+  $('select').change(function () {
+    pageType = $(this).val();
+  });
+
+  if (pageType === 'bulletin' || 'article' || 'dataset' || 'methodology') {
+    loadT4Creator(collectionId, pageType);
+  }
+  else if (pageType === 'static' || 'qmi' || 'foi' || 'adHoc') {
+    loadT7Creator(collectionId, pageType);
+  }
 }
 function loadMarkdownEditor(content, onSave, pageData) {
 
@@ -2722,9 +2701,9 @@ function updateReviewScreen(collectionName) {
 
 
 
-function loadT4Creator (collectionName) {
+function loadT4Creator (collectionName, pageType) {
 
-  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+  var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
     success = function (response) {
@@ -2734,14 +2713,6 @@ function loadT4Creator (collectionName) {
       handleApiError(response);
     }
   );
-
-  // Default
-    pageType = "bulletin";
-
-    $('select').change(function () {
-      pageType = $(this).val();
-      console.log(pageType);
-    });
 
   $('form').append('<button class="btn-page-create">Create page</button>');
   $('.btn-page-create').hide();
@@ -2830,8 +2801,6 @@ function pageTypeData(pageType) {
         "email": "",
         "phone": ""
       },
-      "lede": "",
-      "more": "",
       "sections": [],
       "accordion": [],
       "headline1": "",
@@ -2839,6 +2808,7 @@ function pageTypeData(pageType) {
       "headline3": "",
       "summary": "",
       "keywords": [],
+      "metaDescription": "",
       "nationalStatistic": "false",
       "relatedBulletins": [],
       "externalLinks": [],
@@ -2850,23 +2820,23 @@ function pageTypeData(pageType) {
       "uri": "",
       "fileName": "",
       "breadcrumb": "",
-//      "isPageComplete": false
     };
   }
 
   else if (pageType === "article") {
     return {
+      "nextRelease": "",
       "contact": {
         "name": "",
         "email": "",
         "phone": ""
       },
-      "lede": "",
-      "more": "",
       "sections": [],
       "accordion": [],
       "abstract": "",
+      "authors": [],
       "keywords": [],
+      "metaDescription": "",
       "nationalStatistic": "false",
       "relatedArticles": [],
       "externalLinks": [],
@@ -2878,7 +2848,27 @@ function pageTypeData(pageType) {
       "uri": "",
       "fileName": "",
       "breadcrumb": "",
-//      "isPageComplete": false
+    };
+  }
+
+  if (pageType === "methodology") {
+    return {
+      "contact": {
+        "name": "",
+        "email": "",
+        "phone": ""
+      },
+      "sections": [],
+      "accordion": [],
+      "summary": "",
+      "keywords": [],
+      "metaDescription": "",
+      "name": "",
+      "releaseDate": "",
+      type: pageType,
+      "uri": "",
+      "fileName": "",
+      "breadcrumb": "",
     };
   }
 
@@ -2890,12 +2880,11 @@ function pageTypeData(pageType) {
         "email": "",
         "phone": ""
       },
-      "lede": "",
-      "more": "",
       "download": [],
       "notes": [],
       "summary": "",
       "keywords": [],
+      "metaDescription": "",
       "nationalStatistic": "false",
       "migrated": "false",
       "description": "",
@@ -2909,7 +2898,190 @@ function pageTypeData(pageType) {
       "relatedDatasets": [],
       "usedIn": [],
       "breadcrumb": "",
-//      "isPageComplete": false
+    };
+  }
+
+  else {
+    alert('unsupported page type');
+  }
+}
+
+function makeUrl(args) {
+  var accumulator;
+  accumulator = [];
+  for(var i=0; i < arguments.length; i++) {
+    accumulator =  accumulator.concat(arguments[i]
+                              .split('/')
+                              .filter(function(argument){return argument !== "";}));
+  }
+  return accumulator.join('/');
+}
+function loadT7Creator (collectionName, pageType) {
+
+  var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+
+  getCollection(collectionName,
+    success = function (response) {
+      releaseDate = response.publishDate;
+    },
+    error = function (response) {
+      handleApiError(response);
+    }
+  );
+
+  $('form').append('<button class="btn-page-create">Create page</button>');
+  $('.btn-page-create').hide();
+  var parentUrl = localStorage.getItem("pageurl");
+  var parentUrlData = "/data" + parentUrl;
+
+  $.ajax({
+    url: parentUrlData,
+    dataType: 'json',
+    crossDomain: true,
+    success: function (checkData) {
+//      if (pageType === 'something' && checkData.level === 'methodology' ||
+//            pageType === 'somethingElse' && checkData.level === 'about')    { //not working -> no data
+        $('.btn-page-create').show();
+        $('#location').val(parentUrl);
+        var inheritedBreadcrumb = checkData.breadcrumb;
+        var parentBreadcrumb = {
+          "index": 0,
+          "type": "home",
+          "name": checkData.name,
+          "fileName": checkData.fileName,
+          "breadcrumb": []
+        };
+        inheritedBreadcrumb.push(parentBreadcrumb);
+        breadcrumb = inheritedBreadcrumb;
+        submitFormHandler ();
+//      } else {
+//        $('#location').attr("placeholder", "This is not a valid place to create this page.");
+//      }
+    },
+    error: function () {
+      console.log('No page data returned');
+    }
+  });
+
+
+  function submitFormHandler () {
+    $('form').submit(function (e) {
+    console.log(breadcrumb);
+      e.preventDefault();
+      pageData = pageTypeData(pageType);
+      parent = $('#location').val().trim();
+      pageName = $('#pagename').val().trim();
+      pageData.name = pageName;
+      uriSection = pageType + "s";
+      pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+      pageData.fileName = pageNameTrimmed;
+      newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+      pageData.uri = newUri;
+      if (pageData.releaseDate) {
+        date = new Date(releaseDate);
+        pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+      }
+      pageData.breadcrumb = breadcrumb;
+
+      if (pageName.length < 4) {
+        alert("This is not a valid file name");
+      } else {
+        postContent(collectionName, newUri, JSON.stringify(pageData),
+          success = function (message) {
+            console.log("Updating completed " + message);
+            viewWorkspace(newUri, collectionName, 'edit');
+            refreshPreview(newUri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+              alert("You are not authorised to update content.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      }
+  });
+  }
+}
+
+function pageTypeData(pageType) {
+
+  if (pageType === "static") {
+    return {
+      "summary": "",
+      "keywords": [],
+      "metaDescription": "",
+      "name": "",
+      "releaseDate": "",
+      "content": "",
+      type: pageType,
+      "uri": "",
+      "fileName": "",
+      "breadcrumb": "",
+    };
+  }
+
+  else if (pageType === "qmi") {
+      return {
+        "contact": {
+          "name": "",
+          "email": "",
+          "phone": ""
+        },
+        "surveyName": "",
+        "frequency": "",
+        "compilation": "",
+        "geoCoverage": [],
+        "sampleSize": "",
+        "lastRevised": "",
+        "content": "",
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
+        "name": "",
+        "download": [],
+        type: pageType,
+        "uri": "",
+        "fileName": "",
+        "breadcrumb": "",
+      };
+    }
+
+  else if (pageType === "foi") {
+    return {
+      "download": [],
+      "content": "",
+      "summary": "",
+      "keywords": [],
+      "metaDescription": "",
+      "name": "",
+      "releaseDate": "",
+      type: pageType,
+      "uri": "",
+      "fileName": "",
+      "breadcrumb": "",
+    };
+  }
+
+  else if (pageType === "adHoc") {
+    return {
+      "download": [],
+      "content": "",
+      "summary": "",
+      "keywords": [],
+      "metaDescription": "",
+      "name": "",
+      "releaseDate": "",
+      "reference": "",
+      type: pageType,
+      "uri": "",
+      "fileName": "",
+      "breadcrumb": "",
     };
   }
 
@@ -2952,6 +3124,11 @@ function delete_cookie(name) {
   }
 
   else if (pageData.type === 'article') {
+    accordion();
+    articleEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'methodology') {
     accordion();
     articleEditor(collectionId, pageData);
   }
