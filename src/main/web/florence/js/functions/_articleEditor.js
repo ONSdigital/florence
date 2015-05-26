@@ -49,6 +49,10 @@ function articleEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
+  $("#contactPhone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.contact.phone = $(this).val();
+  });
   $("#abstract").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
@@ -56,6 +60,10 @@ function articleEditor(collectionId, data) {
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.keywords = $(this).val();
+  });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.metaDescription = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
