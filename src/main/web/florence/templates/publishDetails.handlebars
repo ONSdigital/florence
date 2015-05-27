@@ -12,10 +12,10 @@
       </div>
       <div class="collections-section__content">
         <button class="btn-collection-unlock">Unlock collection</button>
-        <h4>Pages in this collection</h4>
+        <h4>Approved pages in this collection</h4>
         <ul class="page-list">
           {{#each pageDetails}}
-          <li><span class="page-item" data-path="{{uri}}">{{name}}</span>
+          <li><span class="page-item page-type-{{type}}" data-path="{{uri}}">{{name}}</span>
             <div class="page-options">
               <button class="btn-page-delete">Remove from this publish</button>
             </div>

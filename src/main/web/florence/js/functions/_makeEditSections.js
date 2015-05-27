@@ -17,6 +17,11 @@ function makeEditSections(collectionId, pageData) {
     articleEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'methodology') {
+    accordion();
+    methodologyEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'dataset') {
     accordion();
     datasetEditor(collectionId, pageData);
@@ -32,7 +37,6 @@ function makeEditSections(collectionId, pageData) {
       '  </section>';
 
     $('.workspace-menu').html(workspace_menu_sub_edit);
-
     $('.fl-editor__headline').val(JSON.stringify(pageData, null, 2));
 
     refreshEditNavigation();
@@ -81,4 +85,52 @@ function refreshEditNavigation() {
     error = function (response) {
       handleApiError(response);
     })
+}
+
+function loadChartsList(data, collectionId) {
+  var html = templates.workEditCharts(data);
+  $('#charts').html(html);
+
+  $(data.charts).each(function (index, chart) {
+
+    var basePath = getPathName();
+    var chartPath = basePath + '/' + chart.filename + '.json';
+
+    $("#chart-edit_" + chart.filename).click(function () {
+      getPageData(collectionId, chartPath,
+        onSuccess = function (chartData) {
+          loadChartBuilder(chartData, function () {
+            refreshPreview();
+          }, chartData);
+        },
+        onError = function (response) {
+          handleApiError(response);
+        }
+      )
+    });
+
+    $("#chart-delete_" + chart.filename).click(function () {
+      $("#chart_" + index).remove();
+
+      deleteContent(collectionId, chartPath,
+        onSuccess = function () {
+          data.charts = _(data.charts).filter(function (item) {
+            return item.filename !== chart.filename
+          });
+          postContent(collectionId, basePath, JSON.stringify(data),
+            success = function () {
+              Florence.Editor.isDirty = false;
+              refreshPreview();
+              loadChartsList(data, collectionId);
+            },
+            error = function (response) {
+              handleApiError(response);
+            }
+          );
+        },
+        onError = function (response) {
+          handleApiError(response)
+        });
+    });
+  });
 }

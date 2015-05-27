@@ -1,36 +1,78 @@
-function loadChartBuilder(onSave) {
+function loadChartBuilder(pageData, onSave, chart) {
+  var chart = chart;
   var pageUrl = localStorage.getItem('pageurl');
-  var html = templates.chartBuilder();
+  var html = templates.chartBuilder(chart);
+  var table = false;
   $('body').append(html);
-  $('.chart-builder').css("display","block");
+  $('.chart-builder').css("display", "block");
+
+  if (chart) {
+    $('#chart-data').val(toTsv(chart));
+    refreshBarLineSection();
+  }
 
   renderChart();
 
-  $('.chart-builder :input').on('input', function () {
+  function refreshBarLineSection() {
+    var data = editBarline(chart);
+    var html = templates.chartEditBarlines(data);
+    $('#barline').html(html);
+  }
+
+  function editBarline(chart) {
+    var data = [];
+    var series = chart.series;
+
+    if (chart.type === 'barline') { // if we have a bar line we want to populate the entries for each series
+      if (chart.types) { // if we have existing types use them
+        var type = _.values(chart.types);
+        for (var i = 0; i < chart.series.length; i += 1) {
+          data.push({
+            series: series[i], type: type[i],
+            isChecked: (function () {
+              var checked = _.indexOf(chart.groups[0], series[i]);
+              if (checked < 0) {
+                return checked = false;
+              } else {
+                return checked = true;
+              }
+            })()
+          });
+        }
+      } else { // if we have no existing types, default them
+        for (var i = 0; i < chart.series.length; i += 1) {
+          data.push({series: series[i], type: '', isChecked: false});
+        }
+      }
+    }
+    return data;
+  }
+
+
+  $('#edit-chart').on('input change', ':input', function () {
+    chart = buildChartObject();
+    refreshBarLineSection();
     renderChart();
   });
 
-  $('.btn-chart-builder-cancel').on('click', function() {
+  $('.btn-chart-builder-cancel').on('click', function () {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
-  $('.btn-chart-builder-create').on('click', function() {
-     chart.filename = $('#chart-title').val().replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-     var uriUploadSVG = pageUrl + "/" + chart.filename + ".svg";
-     var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
+  $('.btn-chart-builder-create').on('click', function () {
 
-
-    $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadSVG,
-      type: "POST",
-      data: exportToSVG (),
-      processData: false,
-      contentType: false,
-      success: function (res) {
-        console.log("SVG uploaded successfully");
+    if (!pageData.charts) {
+      pageData.charts = []
+    } else {
+      if (_.find(pageData.charts, function (existingChart) {
+          return existingChart.filename === chart.filename
+        })) {
+        alert("A chart with this name already exists.");
+        return;
       }
-    });
+    }
 
+    var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
       type: "POST",
@@ -38,467 +80,383 @@ function loadChartBuilder(onSave) {
       processData: false,
       contentType: false,
       success: function (res) {
-        console.log("JSON uploaded successfully");
-        if(onSave) {
-          onSave('<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+        if (!table) {
+          generatePng();
+        }
+
+        pageData.charts.push({title: chart.title, filename: chart.filename});
+        if (onSave) {
+          onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
         $('.chart-builder').stop().fadeOut(200).remove();
       }
     });
   });
 
-  // Builds, parses, and renders our chart
+  // Builds, parses, and renders our chart in the chart editor
   function renderChart() {
-    var chart = buildChartObject();
-    parseChartObject(chart);
-    renderChartObject('#chart', chart)
+    chart = buildChartObject();
+    if (table) {
+      $('#preview-chart').empty();
+      $('#preview-chart').html('<div id="dataTable"></div>');
+      drawTable(chart);
+    }
+
+    var preview = $('#preview-chart');
+
+//      preview.empty();
+    preview.html('<div id="chart"></div>');
+
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
+    }
+
+    renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
 
 
   function buildChartObject() {
-      json = $('#chart-data').val();
+    var json = $('#chart-data').val();
+    if (!chart) {
+      chart = {};
+    }
 
-      var chart = {};
-      chart.type = $('#chart-type').val();
-      if(chart.type === 'rotated') {
-        chart.type = 'bar';
-        chart.rotated = true;
+    chart.title = $('#chart-title').val();
+    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    chart.subtitle = $('#chart-subtitle').val();
+    chart.unit = $('#chart-unit').val();
+    chart.source = $('#chart-source').val();
+    chart.legend = $('#chart-legend').val();
+    chart.hideLegend = (chart.legend === 'false') ? true : false;
+
+    if (chart.title === '') {
+      chart.title = '[Title]'
+    }
+
+    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+
+    chart.data = tsvJSON(json);
+    chart.headers = tsvJSONHeaders(json);
+    chart.series = tsvJSONColNames(json);
+    chart.categories = tsvJSONRowNames(json);
+
+    chart.aspectRatio = $('#aspect-ratio').val();
+
+    if (chart.type === 'barline') {
+      var types = {};
+      var groups = [];
+      var group = [];
+      var seriesData = chart.series;
+      for (var i = 0; i < seriesData.length; i++) {
+        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
       }
-      chart.period = $('#chart-period').val();
+      (function () {
+        $('#barline input:checkbox:checked').each(function () {
+          group.push($(this).val());
+        });
+        groups.push(group);
+        return groups;
+      })();
+      chart.types = types;
+      chart.groups = groups;
+    }
 
-      chart.title = $('#chart-title').val();
-      chart.subtitle = $('#chart-subtitle').val();
-      chart.unit = $('#chart-unit').val();
+    chart.type = $('#chart-type').val();
+    if (chart.type === 'table') {
+      table = true;
+    } else {
+      table = false;
+    }
 
-      chart.source = $('#chart-source').val();
-
-      chart.legend = $('#chart-legend').val();
-      chart.hideLegend = (chart.legend === 'false') ? true : false;
-
-      console.log(chart.legend + " " + chart.hideLegend);
-
-      if(chart.title === '') {
-        chart.title = '[Title]'
-      }
-
-      chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-
-      chart.data = tsvJSON(json);
-      chart.series = tsvJSONColNames(json);
-      chart.categories = tsvJSONRowNames(json);
+    //console.log(chart);
+    parseChartObject(chart);
 
     return chart;
   }
 
-  // Transformations to determine render options for this chart
-  // example - is it a time chart - should we flip axes
+
   function parseChartObject(chart) {
 
     // Determine if we have a time series
     var timeSeries = axisAsTimeSeries(chart.categories);
-    if(timeSeries && timeSeries.length > 0) {
+    if (timeSeries && timeSeries.length > 0) {
       chart.isTimeSeries = true;
-      chart.timeSeries = timeSeries;
 
-      // Subseries
-      var subseries = timeSubSeries(timeSeries, 'year');
-      if(subseries.length > 0) { chart.hasYear = true;}
+      // We create data specific to time
+      timeData = [];
+      _.each(timeSeries, function (time) {
+        var item = chart.data[time['row']];
+        item.date = time['date'];
+        item.label = time['label'];
+        timeData.push(item);
+      })
 
-      subseries = timeSubSeries(timeSeries, 'quarter');
-      if(subseries.length > 0) { chart.hasQuarter = true;}
-
-      subseries = timeSubSeries(timeSeries, 'month');
-      if(subseries.length > 0) { chart.hasMonth = true;}
-
-      subseries = timeSubSeries(timeSeries, 'other');
-      if(subseries.length > 0) { chart.hasOtherPeriod = true; }
-
-    } else {
-      chart.isTimeSeries = false;
+      chart.timeSeries = timeData;
     }
   }
 
-  // Do the rendering
-  function renderChartObject(bindTag, chart) {
-    if( chart.isTimeSeries ) {
-        renderTimeseriesChartObject(bindTag, chart, chart.period)
-        return;
-    }
-
-    // Calculate padding at top of SVG
-    var padding = 25;
-    if(chart.subtitle !== '') { padding += 16; }
-
-    var rotate = (chart.rotated ? true : false);
-
-    var yLabel = rotate === true ? chart.unit : '';
-    if((chart.unit !== '') && (rotate === false)) {padding += 24; }
-
-    // Calculate padding at bottom of SVG
-    var bottomPadding = 0;
-    if((chart.source !== '')) {bottomPadding += 16;}
-
-    // work out position for chart legend
-    var seriesCount = chart.series.length;
-    var yOffset = (chart.legend === 'bottom-left' || chart.legend === 'bottom-right') ? seriesCount * 20 + 10 : 5;
-
-    // Generate the chart
-    c3.generate({
-      bindto: bindTag,
-      data: {
-        json: chart.data,
-        keys: {
-          value: chart.series
-        },
-        type: chart.type
-      },
-     legend: {
-       hide: chart.hideLegend,
-       position: 'inset',
-       inset: {
-         anchor: chart.legend,
-         x: 10,
-         y: yOffset
-        }
-       },
-      axis: {
-        x: {
-          label: chart.xaxis,
-          type: 'category',
-          categories: chart.categories
-        },
-        y: {
-          label: yLabel
-        },
-        rotated: rotate
-      },
-      grid: {
-        y: {
-          show: true
-        }
-      },
-      padding: {
-        top: padding,
-        bottom: bottomPadding
-      }
-    });
-
-
-    var svg = d3.select(bindTag + " svg")
-      .attr("viewBox", "0 0 880 320")
-      .attr("preserveAspectRatio", "xMinYMin meet");
-
-    // annotate
-    renderAnnotations(bindTag, chart);
-  }
-
-
-
-  function renderAnnotations(bindTag, chart) {
-    var rotate = (chart.rotated ? true : false);
-
-    var unitTop = (chart.subtitles !== '') ? 60 : 45; // Hard coded values for unitTop
-
-      // annotate
-      d3.select(bindTag + ' svg').append('text') // Title
-        .attr('x', 20)
-        .attr('y', 18)
-        .attr('text-anchor', 'left')
-        .style('font-size', '1.6em')
-          .style('fill', '#000000')
-        .text(chart.title);
-
-      if(chart.subtitle !== '') {
-        d3.select(bindTag + ' svg').append('text') // Subtitle
-          .attr('x', 20)
-          .attr('y', 36)
-          .attr('text-anchor', 'left')
-          .style('font-size', '1.2em')
-          .style('fill', '#999999')
-          .text(chart.subtitle);
-          }
-
-      if((chart.unit !== '') && (rotate === false)) {
-        d3.select(bindTag + ' svg').append('text') // Unit (if non rotated)
-          .attr('x', 20)
-          .attr('y', unitTop)
-          .attr('text-anchor', 'left')
-          .style('font-size', '1.2em')
-          .style('fill', '#000000')
-          .text(chart.unit);
-          }
-
-      var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
-      if(chart.source !== '') {
-        d3.select(bindTag + ' svg').append('text') // Source
-          .attr('x', 20)
-          .attr('y', 320)
-          .attr('text-anchor', 'left')
-          .style('font-size', '1.2em')
-          .style('fill', '#999999')
-          .text(chart.source);
-          }
-
-  }
-
-  function renderTimeseriesChartObject(bindTag, timechart, period) {
-    var padding = 25;
-    var chart = timeSubchart(timechart, period);
-
-    // Create a dictionary so we can reverse lookup a tooltip label
-    var dates_to_label = {};
-    _.each(chart.data, function(data_point) {
-        dates_to_label[data_point.date] = data_point.label;
-        });
-
-    // make room for titles if necessary
-    if(chart.subtitle !== '') { padding += 16; }
-    if(chart.unit !== '') { padding += 24; }
-
-    // should we show
-    var showPoints = true;
-    if(chart.data.length > 120) { showPoints = false; }
-
-   // work out position for chart legend
-    var seriesCount = chart.series.length;
-    var yOffset = (chart.legend === 'bottom-left' || chart.legend === 'bottom-right') ? seriesCount * 20 + 10 : 5;
-
-
-    c3.generate({
-      bindto: bindTag,
-
-      data: {
-        json: chart.data,
-        keys: {
-          x: 'date',
-          value: chart.series
-        },
-        type: chart.type,
-        xFormat: '%Y-%m-%d %H:%M:%S'
-      },
-
-      point: {
-        show: showPoints
-      },
-
-       legend: {
-         hide: chart.hideLegend,
-         position: 'inset',
-         inset: {
-           anchor: chart.legend,
-           x: 10,
-           y: yOffset
-          }
-         },
-
-      axis: {
-        x: {
-          label: chart.xaxis,
-          type: 'timeseries',
-          tick: {
-              format: function (x) {
-                  return x.getFullYear();
-              }
-              }
-        }
-      },
-      tooltip: {
-        format: {
-          title: function(x) { return dates_to_label[x] ;}
-        }
-      },
-      grid: {
-        y: {
-          show: true
-        }
-      },
-      padding: {
-        top: padding
-      }
-    });
-
-    renderAnnotations(bindTag, chart);
-  }
 
 // Data load from text box functions
-  function tsvJSON (input) {
-    var lines=input.split("\n");
+  function tsvJSON(input) {
+    var lines = input.split("\n");
     var result = [];
-    var headers=lines[0].split("\t");
+    var headers = lines[0].split("\t");
 
-    for(var i=1;i<lines.length;i++){
+    for (var i = 1; i < lines.length; i++) {
       var obj = {};
-      var currentline=lines[i].split("\t");
-
-      for(var j=0;j<headers.length;j++){
+      if (!table) {
+        var currentline = lines[i].split(",").join("").split("\t");
+      } else {
+        var currentline = lines[i].split("\t");
+      }
+      for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
       result.push(obj);
     }
-
-    return result //JSON
+    return result; //JSON
   }
-  function tsvJSONRowNames (input) {
-      var lines=input.split("\n");
-      var result = [];
 
-      for(var i=1;i<lines.length;i++){
-        var currentline=lines[i].split("\t");
-        result.push(currentline[0]);
-        }
+  function toTsv(data) {
+    var output = "";
 
-        return result
+    for (var i = 0; i < data.headers.length; i++) {
+      if (i === data.headers.length - 1) {
+        output += data.headers[i];
+      } else {
+        output += data.headers[i] + "\t";
+      }
+    }
+
+    for (var i = 0; i < data.categories.length; i++) {
+      output += "\n" + toTsvLine(data.data[i], data.headers);
+    }
+
+    return output;
   }
-  function tsvJSONColNames (input) {
-    var lines=input.split("\n");
-    var headers=lines[0].split("\t");
+
+  function toTsvLine(data, headers) {
+
+    var output = "";
+
+    for (var i = 0; i < headers.length; i++) {
+      if (i === headers.length - 1) {
+        output += data[headers[i]];
+      } else {
+        output += data[headers[i]] + "\t";
+      }
+    }
+    return output;
+  }
+
+  function tsvJSONRowNames(input) {
+    var lines = input.split("\n");
+    var result = [];
+
+    for (var i = 1; i < lines.length; i++) {
+      var currentline = lines[i].split("\t");
+      result.push(currentline[0]);
+    }
+    return result
+  }
+
+  function tsvJSONColNames(input) {
+    var lines = input.split("\n");
+    var headers = lines[0].split("\t");
     headers.shift();
     return headers;
   }
 
-  function exportToSVG () {
-    var tmp = document.getElementById('chart');
-    var svg = tmp.getElementsByTagName('svg')[0];
-    if ($('#chart-type').val() === 'line') {
-      $('.c3 line').css("fill", "none");
-      console.log($('.c3 line'))
+  function tsvJSONHeaders(input) {
+    var lines = input.split("\n");
+    var headers = lines[0].split("\t");
+    return headers;
+  }
+
+  function exportToSVG() {
+    var svgContainer = $('#chart');
+    var svg = svgContainer.find('svg');
+
+    var styleContent = "\n";
+    for (var i = 0; i < document.styleSheets.length; i++) {
+      str = document.styleSheets[i].href.split("/");
+      if (str[str.length - 1] == "c3.css") {
+        var rules = document.styleSheets[i].rules;
+        for (var j = 0; j < rules.length; j++) {
+          styleContent += (rules[j].cssText + "\n");
+        }
+        break;
+      }
     }
-    var source = (new XMLSerializer).serializeToString(svg);
+
+    //var style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    //$(style).textContent += "\n<![CDATA[\n" + styleContent + "\n]]>\n";
+    //
+    //svg.prepend(style);
+    //svg[0].getElementsByTagName("defs")[0].appendChild(style);
+
+
+    svg.prepend("\n<style type='text/css'></style>");
+    svg.find("style").textContent += "\n<![CDATA[" + styleContent + "]]>\n";
+
+
+    //if ($('#chart-type').val() === 'line') {
+    //  $('.c3 line').css("fill", "none");
+    //  console.log($('.c3 line'))
+    //}
+
+    var source = (new XMLSerializer).serializeToString(svg[0]);
+    //console.log(source);
+
     //add name spaces.
-    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
     }
-    if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
-        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
     }
+    //add padding
+    source = source.replace(/style="overflow: hidden;"/, 'style="overflow: hidden; padding: 50px;"');
+
     //add xml declaration
     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
     return source;
   }
 
-// Date conversion support functions
 
 // Steps through time series points
-function axisAsTimeSeries(axis) {
-  var result = [];
-  var rowNumber = 0;
+  function axisAsTimeSeries(axis) {
+    var result = [];
+    var rowNumber = 0;
 
-  _.each(axis, function(tryTimeString) {
-    var time = convertTimeString(tryTimeString);
-    if(time) {
-      time.row = rowNumber;
-      rowNumber = rowNumber + 1;
+    _.each(axis, function (tryTimeString) {
+      var time = convertTimeString(tryTimeString);
+      if (time) {
+        time.row = rowNumber;
+        rowNumber = rowNumber + 1;
 
-      result.push(time);
-    } else {
-      return null;
-    }
-  });
-  return result;
-}
+        result.push(time);
+      } else {
+        return null;
+      }
+    });
+    return result;
+  }
 
-function convertTimeString(timeString) {
+  function convertTimeString(timeString) {
     // First time around parse the time string according to rules from regular timeseries
     var result = {};
     result.label = timeString;
 
-    // Format of year only
-    var yearVal = tryYear(timeString);
-    if(yearVal) { result.date = yearVal; result.period = 'year'; return result; }
+    // Format time string
+    // Check for strings that will turn themselves into a strange format
+    twoDigitYearEnd = timeString.match(/\W\d\d$/);
+    if (twoDigitYearEnd !== null) {
+      year = parseInt(twoDigitYearEnd = timeString.match(/\W\d\d$/));
+      prefix = timeString.substr(0, timeString.length - 3);
 
-    // Format with year and quarter
-    var quarterVal = tryQuarter(timeString);
-    if(quarterVal) { result.date = quarterVal; result.period = 'quarter'; return result; }
-
-    // Format with year and month
-    var monthVal = tryMonth(timeString);
-    if(monthVal) { result.date = monthVal; result.period = 'month'; return result; }
-
-    // Other format
-    var date = new Date(timeString);
-    if( !isNaN( date.getTime() ) ) {
-        result.date = monthVal; result.period = 'other'; return result;
-        }
-
-    return(null);
-}
-function tryYear(tryString) {
-    var base = tryString.trim();
-    if(base.length !== 4) { return null; }
-
-    var date = new Date(tryString);
-
-    return date;
-}
-function tryQuarter(tryString) {
-    var indices = [0, 1, 2, 3];
-    var quarters = ["Q1", "Q2", "Q3", "Q4"];
-    var months = ["Jan", "Apr", "Jul", "Oct"];
-
-    var quarter = _.find(indices, function(q) { return (tryString.indexOf(quarters[q]) > -1) });
-    if(quarter !== null) {
-        var dateString = tryString.replace(quarters[quarter], months[quarter]);
-        return new Date(dateString);
-        }
-    }
-function tryMonth(tryString) {
-    var date = new Date(tryString);
-    if( !isNaN( date.getTime() ) ) {
-        return date;
-        }
-}
-function timeSubSeries(timeSeries, period) {
-  // Period is one of ['year', 'quarter', 'month', 'other']
-   result = [];
-   _.each(timeSeries, function(time) {
-      if(time['period'] === period) {
-        result.push(time);
+      if (year >= 40) {
+        timeString = prefix + " 19" + year;
+      } else {
+        timeString = prefix + " 20" + year;
       }
-   });
-   return result;
+    }
+
+    // We are going with all times in a common format
+    var date = new Date(timeString);
+    if (!isNaN(date.getTime())) {
+      result.date = date;
+      result.period = 'other';
+      return result;
+    }
+
+    return (null);
+  }
+
+
+  function drawTable(data) {
+    var title = data.headers;
+    var rows = data.data;
+    drawTitles(title);
+    for (var i = 0; i < rows.length; i++) {
+      drawRow(rows[i]);
+    }
+
+    function drawTitles(title) {
+      var row = $("<tr />");
+      $("#dataTable").append(row);
+      for (var j = 0; j < title.length; j++) {
+        row.append($("<th>" + title[j] + "</th>"));
+      }
+    }
+
+    function drawRow(rowData) {
+      var row = $("<tr />")
+      $("#dataTable").append(row);
+      for (var j = 0; j < title.length; j++) {
+        row.append($("<td>" + rowData[title[j]] + "</td>"));
+      }
+    }
+  }
+
+
+  //generatePng();
+  function generatePng() {
+
+    var preview = $('#chart');
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+
+    if (chartHeight > preview.height()) {
+      chartHeight = preview.height();
+      chartWidth = preview.height() / chart.aspectRatio;
+    }
+
+    var content = exportToSVG().trim();
+
+    var $canvas = $('#hiddenCanvas');
+    $canvas.width(chartWidth);
+    $canvas.height(chartHeight);
+
+    var canvas = $canvas.get(0);
+
+    // Draw svg on canvas
+    canvg(canvas, content);
+
+    // get data url from canvas.
+    var dataUrl = canvas.toDataURL('image/png');
+    var pngData = dataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
+    //console.log(dataUrl);
+
+    // render png
+    //var $png = $('#hiddenPng');
+    //var png = $png[0];
+    //$png.attr('src', dataUrl);
+
+    var raw = window.atob(pngData);
+    var rawLength = raw.length;
+    var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+    for (var i = 0; i < rawLength; i++) {
+      array[i] = raw.charCodeAt(i);
+    }
+
+    var pngUri = pageUrl + "/" + chart.filename + ".png";
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
+      type: "POST",
+      data: new Blob([array], {type: 'image/png'}),
+      contentType: "image/png",
+      processData: false,
+      success: function (res) {
+        console.log('png uploaded!');
+      }
+    });
+  }
 }
 
-
-// Filters data based on the time period (Year, Month, Quarter) selected by the user
-// Returns a new chart
-function timeSubchart(chart, period) {
-        var subchart = {};
-
-        subchart.type = chart['type'];
-        if(subchart.type === 'rotated') {
-          subchart.type = 'bar';
-          subchart.rotated = true;
-        }
-
-        subchart.title = chart.title;
-        subchart.subtitle = chart.subtitle;
-        subchart.unit = chart.unit;
-        subchart.source = chart.source;
-
-        subchart.hideLegend = chart.hideLegend;
-        subchart.legend = chart.legend;
-
-        if(subchart.title === '') {
-          subchart.title = '[Title]';
-        }
-
-        subchart.series = chart.series;
-
-        // Use timeSubSeries to filter the data
-        var subseries = timeSubSeries(chart.timeSeries, period);
-        var subdata = [];
-        var dates = [];
-        var labels = [];
-
-        _.each(subseries, function(time) {
-          var item = chart.data[time['row']];
-          item.date = time['date'];
-          item.label = time['label'];
-          subdata.push(item);
-        })
-
-        subchart.data = subdata;
-
-      return subchart;
-}
-}

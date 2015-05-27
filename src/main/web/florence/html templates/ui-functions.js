@@ -165,7 +165,6 @@ $(document).ready(function(){
 			$('.edit-section__sortable').disableSelection();
 
 			markdownEditor();
-			markDownEditorSetLines()
 
 		}
 		catch(err){

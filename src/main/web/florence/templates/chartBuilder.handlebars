@@ -1,31 +1,72 @@
-<div class="markdown-editor chart-builder">
-  <div class="markdown-editor__header">
-    <h1>Chart Builder</h1>
-  </div>
-  <div class="markdown-editor__content">
-    <div id="wmd-preview" class="wmd-panel wmd-preview">
-      <p><div id="chart"></div></p>
-    </div>
-    <div id="wmd-edit" class="wmd-panel wmd-edit col--3">
-      <h2></h2>
-        {{!----}}
-        {{!--<form id="UploadForm" action="" method="post" enctype="multipart/form-data">--}}
-        {{!--<input type="file" name="files" id="files" multiple>--}}
-        {{!--</form>--}}
+<div class="chart-builder overlay">
+  <div class="chart-builder__inner">
+    <!-- <h1>Chart Builder</h1> -->
 
-      <p><textarea id="chart-data" placeholder="Paste your data here" rows="4" cols="100"></textarea></p><br />
-      <label>Chart Type</label>
-      <select id="chart-type">
-        <option value="bar">Bar Chart</option>
-        <option value="line">Line Chart</option>
-      </select>
-      <input type="text" id="chart-title" placeholder="[Title]" />
-      <input type="text" id="chart-x-axis" placeholder="[X Axis]" />
-      <input type="text" id="chart-y-axis" placeholder="[Y Axis]" />
+    <div id="edit-chart" class="chart-builder__editor">
+
+      <input type="text" id="chart-title" placeholder="[Title]" value="{{title}}"/>
+      <input type="text" id="chart-subtitle" placeholder="[Subtitle]" value="{{subtitle}}"/>
+      <input type="text" id="chart-unit" placeholder="[Unit]" value="{{unit}}"/>
+      <input type="text" id="chart-source" placeholder="[Source]" value="{{source}}"/>
+
+      <textarea id="chart-data" placeholder="Paste your data here" rows="4" cols="120"></textarea>
+      <br/>
+      <label>Chart Type <br>
+        <select id="chart-type">
+            {{#select type}}
+              <option value="bar">Bar Chart</option>
+              <option value="line">Line Chart</option>
+              <option value="barline">Bar + Line Chart</option>
+              <option value="rotated">Bar Chart (rotated)</option>
+              <option value="table">Table only</option>
+            {{/select}}
+        </select>
+      </label>
+
+      <div id="barline">
+
+      </div>
+
+      <label>Legend<br>
+        <select id="chart-legend">
+            {{#select legend}}
+              <option value="false">None</option>
+              <option value="top-right">Top Right</option>
+              <option value="top-left">Top Left</option>
+              <option value="bottom-right">Bottom Right</option>
+              <option value="bottom-left">Bottom Left</option>
+            {{/select}}
+        </select>
+      </label>
+
+      <label>Aspect Ratio<br>
+        <select id="aspect-ratio">
+            {{#select aspectRatio}}
+              <option value="0.75">4:3</option>
+              <option value="0.42">21:9</option>
+              <option value="0.56">16:9</option>
+              <option value="1">1:1</option>
+              <option value="1.3">10:13</option>
+            {{/select}}
+        </select>
+      </label>
+
     </div>
-  </div>
-  <div class="markdown-editor__footer">
-    <button class="btn-chart-builder-cancel">Cancel</button>
-    <button class="btn-chart-builder-create">Create Chart</button>
+
+    <div id="preview-chart" class="chart-builder__preview">
+      <div id="chart"></div>
+    </div>
+
+
+    <div id="hiddenDiv" style="display:none">
+      <canvas id="hiddenCanvas"></canvas>
+      <a id="hiddenPng"/>
+    </div>
+
+    <div class="chart-builder__footer">
+      <button class="btn-chart-builder-cancel">Cancel</button>
+      <button class="btn-chart-builder-create">Save Chart</button>
+    </div>
+
   </div>
 </div>

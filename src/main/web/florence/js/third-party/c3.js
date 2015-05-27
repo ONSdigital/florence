@@ -2809,7 +2809,8 @@
             .data($$.lineData.bind($$));
         $$.mainLine.enter().append('path')
             .attr('class', $$.classLine.bind($$))
-            .style("stroke", $$.color);
+            .style("stroke", $$.color)
+            .style("fill", "none");
         $$.mainLine
             .style("opacity", $$.initialOpacity.bind($$))
             .style('shape-rendering', function (d) { return $$.isStepType(d) ? 'crispEdges' : ''; })
@@ -3492,10 +3493,10 @@
             .attr("clip-path", $$.clipPathForGrid)
             .attr('class', CLASS.grid);
         if (config.grid_x_show) {
-            $$.grid.append("g").attr("class", CLASS.xgrids);
+            $$.grid.append("g").attr("class", CLASS.xgrids).style("stroke-dasharray", "3 3");
         }
         if (config.grid_y_show) {
-            $$.grid.append('g').attr('class', CLASS.ygrids);
+            $$.grid.append('g').attr('class', CLASS.ygrids).style("stroke-dasharray", "3 3");
         }
         if (config.grid_focus_show) {
             $$.grid.append('g')
@@ -3534,7 +3535,10 @@
 
         $$.xgrid = $$.main.select('.' + CLASS.xgrids).selectAll('.' + CLASS.xgrid)
             .data(xgridData);
-        $$.xgrid.enter().append('line').attr("class", CLASS.xgrid);
+        $$.xgrid.enter().append('line')
+            .attr("class", CLASS.xgrid)
+            .style("stroke-dasharray", "3 3")
+            .style("stroke", "#bebebe");
         if (!withoutUpdate) {
             $$.xgrid.attr($$.xgridAttr)
                 .style("opacity", function () { return +d3.select(this).attr(config.axis_rotated ? 'y1' : 'x1') === (config.axis_rotated ? $$.height : 0) ? 0 : 1; });
@@ -3548,7 +3552,9 @@
         $$.ygrid = $$.main.select('.' + CLASS.ygrids).selectAll('.' + CLASS.ygrid)
             .data(gridValues);
         $$.ygrid.enter().append('line')
-            .attr('class', CLASS.ygrid);
+            .attr('class', CLASS.ygrid)
+            .style("stroke-dasharray", "3 3")
+            .style("stroke", "#bebebe");
         $$.ygrid.attr("x1", config.axis_rotated ? $$.y : 0)
             .attr("x2", config.axis_rotated ? $$.y : $$.width)
             .attr("y1", config.axis_rotated ? 0 : $$.y)
@@ -4115,6 +4121,10 @@
         if ($$.isLegendInset && maxWidth > 0 && background.size() === 0) {
             background = $$.legend.insert('g', '.' + CLASS.legendItem)
                 .attr("class", CLASS.legendBackground)
+                .style('fill', "white")
+                .style('opacity', "0.75")
+                .style('stroke', "lightgray")
+                .style('stroke-width', "1")
                 .append('rect');
         }
 
@@ -5382,7 +5392,8 @@
             .data($$.lineData.bind($$));
         $$.contextLine.enter().append('path')
             .attr('class', $$.classLine.bind($$))
-            .style('stroke', $$.color);
+            .style('stroke', $$.color)
+            .style('fill', "none");
         $$.contextLine
             .style("opacity", $$.initialOpacity.bind($$));
         $$.contextLine.exit().transition().duration(durationForExit)
@@ -6817,8 +6828,8 @@
 
                 var range = scale.rangeExtent ? scale.rangeExtent() : scaleExtent(scale.range()),
                     path = g.selectAll(".domain").data([ 0 ]),
-                    pathUpdate = (path.enter().append("path").attr("class", "domain"), transitionise(path));
-                tickEnter.append("line");
+                    pathUpdate = (path.enter().append("path").style("fill", "none").style("stroke", "#000"), transitionise(path));
+                tickEnter.append("line").style("fill", "none").style("stroke", "#000");
                 tickEnter.append("text");
 
                 var lineEnter = tickEnter.select("line"),
