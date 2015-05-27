@@ -1,7 +1,7 @@
 function loadBrowseScreen(click) {
 
   return $.ajax({
-    url: "/navigation",
+    url: "/zebedee/collectionBrowseTree", // url: "/navigation",
     dataType: 'json',
     type: 'GET',
     success: function (response) {
@@ -14,11 +14,25 @@ function loadBrowseScreen(click) {
 
       //page-list
       $('.page-item').click(function () {
-        $('.page-list li').removeClass('selected');
-        $('.page-options').hide();
 
-        $(this).parent('li').addClass('selected');
-        $(this).next('.page-options').show();
+        var uri = $(this).closest('li').attr('data-url');
+
+        if(uri) {
+          var newURL = baseURL + uri;
+
+          $('.page-list li').removeClass('selected');
+          $(this).parent('li').addClass('selected');
+
+          $('.page-options').hide();
+          $(this).next('.page-options').show();
+
+
+
+          //change iframe location
+          browserContent.location.href = newURL;
+          $('.browser-location').val(newURL);
+          checkForPageChanged();
+        }
 
         //page-list-tree
         $('.tree-nav-holder ul').removeClass('active');
@@ -31,15 +45,13 @@ function loadBrowseScreen(click) {
         treeNodeSelect(document.getElementById('iframe').contentWindow.location.href);
       }
 
-      //page-list--tree
-      $('.page-list--tree .page-item').click(function(){
-        //change iframe location
-        var newURL = baseURL + $(this).closest('li').attr('data-url');
-        browserContent.location.href = newURL;
-        $('.browser-location').val(newURL);
-        checkForPageChanged();
-      });
-//      setupIframeHandler();
+      //$('.page-list--tree .page-item').click(function(){
+      //  //change iframe location
+      //  var newURL = baseURL + $(this).closest('li').attr('data-url');
+      //  browserContent.location.href = newURL;
+      //  $('.browser-location').val(newURL);
+      //  checkForPageChanged();
+      //});
     },
     error: function (response) {
       handleApiError(response);
