@@ -1,5 +1,6 @@
 function staticEditor(collectionId, data) {
 
+  var newSections = [];
   var setActiveTab, getActiveTab;
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -101,13 +102,13 @@ function staticEditor(collectionId, data) {
   });
 
   function save() {
-    // Sections
-    var orderSection = $("#sortable-content").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#section-markdown_' + nameS).val();
-      newSections[indexS] = {markdown: markdown};
-    });
-    data.sections = newSections;
+   // Sections
+      var orderSection = $("#sortable-content").sortable('toArray');
+      $(orderSection).each(function (indexS, nameS) {
+        var data = $('#content-markdown_' + nameS).val();
+      newSections[indexS] = {data: data};
+      });
+      data.content = newSections;
   }
 }
 

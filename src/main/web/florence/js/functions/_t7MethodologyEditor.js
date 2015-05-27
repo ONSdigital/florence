@@ -1,6 +1,6 @@
 function methodologyEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [];
+  var newSections = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {

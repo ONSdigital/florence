@@ -1,5 +1,6 @@
 function qmiEditor(collectionId, data) {
 
+  var newSections = [], newFiles = [];
   var lastIndexFile = 0;
   var uriUpload;
   var setActiveTab, getActiveTab;
@@ -259,13 +260,13 @@ function qmiEditor(collectionId, data) {
   });
 
   function save() {
-    // Sections
-    var orderSection = $("#sortable-content").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = $('#content-markdown_' + nameS).val();
-    newSections[indexS] = {markdown: markdown};
-    });
-    data.sections = newSections;
+   // Sections
+      var orderSection = $("#sortable-content").sortable('toArray');
+      $(orderSection).each(function (indexS, nameS) {
+        var data = $('#content-markdown_' + nameS).val();
+      newSections[indexS] = {data: data};
+      });
+      data.content = newSections;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-download").sortable('toArray');
     $(orderFile).each(function(index, name){
