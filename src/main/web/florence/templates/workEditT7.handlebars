@@ -1,0 +1,164 @@
+<section class="panel workspace-edit">
+  <div class="edit-accordion">
+
+    <div class="edit-section">
+      <div class="edit-section__head">
+        <h1>Metadata</h1>
+        <p id="metadata-s">Title | Summary | Keywords</p>
+        <p id="metadata-q">Title | Contact | Survey | Frequency | Compilation | Coverage | Size | Revised | Keywords</p>
+        <p id="metadata-f">Title | Release date | Keywords</p>
+        <p id="metadata-ad">Title | Release date | Reference | Keywords</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="metadata-list">
+          <div>
+            <label for="name">Title
+              <textarea class="auto-size" type="text" id="name">{{this.name}}</textarea>
+            </label>
+          </div>
+          <div id="summary-p">
+            <label for="summary">Summary
+              <textarea class="auto-size" type="text" id="summary">{{this.summary}}</textarea>
+            </label>
+          </div>
+          <div id="contact-p">
+            <label for="contactName">Contact name
+              <textarea class="auto-size" type="text" id="contactName">{{this.contact.name}}</textarea>
+            </label>
+            <label for="contactEmail">Contact email
+              <textarea class="auto-size" type="text" id="contactEmail">{{this.contact.email}}</textarea>
+            </label>
+            <label for="contactPhone">Contact phone
+              <textarea class="auto-size" type="text" id="contactPhone">{{this.contact.phone}}</textarea>
+            </label>
+          </div>
+          <div id="survey-p">
+            <label for="survey">Survey
+              <textarea class="auto-size" type="text" id="survey">{{this.surveyName}}</textarea>
+            </label>
+          </div>
+          <div id="frequency-p">
+            <label for="frequency">Frequency
+              <textarea class="auto-size" type="text" id="frequency">{{this.frequency}}</textarea>
+            </label>
+          </div>
+          <div id="compilation-p">
+            <label for="compilation">Compilation </label>
+            <input type="checkbox" name="compilation" value="false" />
+          </div>
+          <div id="geoCoverage-p">
+            <label for="geoCoverage">Geographic coverage
+              <textarea class="auto-size" type="text" id="geoCoverage">{{this.geoCoverage}}</textarea>
+            </label>
+          </div>
+          <div id="sampleSize-p">
+            <label for="sampleSize">Sample size
+              <textarea class="auto-size" type="text" id="sampleSize">{{this.sampleSize}}</textarea>
+            </label>
+          </div>
+          <div id="lastRevised-p">
+            <label for="lastRevised">Last revised
+              <textarea class="auto-size" type="text" id="lastRevised">{{this.lastRevised}}</textarea>
+            </label>
+          </div>
+          <div class="releaseDate-p">
+            <label for="releaseDate">Release date
+              <textarea class="auto-size" type="text" id="releaseDate">{{this.releaseDate}}</textarea>
+            </label>
+          </div>
+          <div id="reference-p">
+            <label for="reference">Reference
+              <textarea class="auto-size" type="text" id="reference">{{this.reference}}</textarea>
+            </label>
+          </div>
+          <div>
+            <label for="keywords">Keywords
+              <textarea class="auto-size" type="text" id="keywords">{{this.keywords}}</textarea>
+            </label>
+          </div>
+          <div>
+            <label for="metaDescription">Meta description
+              <textarea class="auto-size" type="text" id="metaDescription">{{this.metaDescription}}</textarea>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="content">
+      <div class="edit-section__head">
+        <h1>Content</h1>
+        <p>Body copy</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-sections" class="edit-section__sortable">
+          {{#each this.content}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <p>Click edit to add content</p>
+              <textarea style="display: none;" id="section-markdown_{{@index}}">{{markdown}}</textarea>
+              <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
+              <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addSection">Add content</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="download">
+      <div class="edit-section__head">
+        <h1>Upload files</h1>
+        <p>Title | Link</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-download" class="edit-section__sortable">
+          {{#each this.download}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="download-filename_{{@index}}">{{file}}</textarea>
+              <div id="download-filename_show_{{@index}}">{{file}}</div>
+              <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-download" id="addFile">Add file</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="charts">
+
+    </div>
+
+    <div class="edit-section">
+      <div class="edit-section__head">
+        <h1>Correction</h1>
+        <p>Date | Notice | Severity</p>
+      </div>
+      <div class="edit-section__content edit-section__content--correction">
+        {{#each this.correction}}
+          <div id="{{@index}}" class="edit-section__sortable-item">
+            <p>Text: <textarea class="auto-size" type="text" id="correction_text_{{@index}}" cols="65" style="box-sizing: border-box; min-height: 31px;">{{text}}</textarea></p>
+            <p>Date: <input class="auto-size" type="date" id="correction_date_{{@index}}" value="{{date}}"/></p>
+            <p>Type: <input type="radio" name="correctionType{{@index}}" value="minor"/><label> Minor</label>
+              <input type="radio" name="correctionType{{@index}}" value="major"/><label> Major</label>
+            </p>
+            <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
+          </div>
+        {{/each}}
+        <div class="text-center">
+          <button class="btn-add-section" id="addCorrection">Add correction</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="edit-nav">
+    {{> editNav}}
+  </nav>
+
+</section>

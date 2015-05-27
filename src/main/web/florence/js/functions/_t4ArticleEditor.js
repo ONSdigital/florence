@@ -23,6 +23,7 @@ function articleEditor(collectionId, data) {
   $("#note").remove();
   $("#metadata-b").remove();
   $("#metadata-d").remove();
+  $("#metadata-m").remove();
   $("#summary-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();

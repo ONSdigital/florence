@@ -22,6 +22,7 @@ function datasetEditor(collectionId, data) {
   $("#content").remove();
   $("#metadata-a").remove();
   $("#metadata-b").remove();
+  $("#metadata-m").remove();
   $("#summary-p").remove();
   $("#abstract-p").remove();
   $("#headline1-p").remove();

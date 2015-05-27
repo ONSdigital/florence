@@ -1,28 +1,33 @@
 function makeEditSections(collectionId, pageData) {
 
-  var html = templates.workEdit(pageData);
-  $('.workspace-menu').html(html);
-
 //  $('.btn-edit-cancel').click(function (collectionId) {
 //    viewWorkspace('', collectionId, 'browse');
 //  });
 
   if (pageData.type === 'bulletin') {
+    var html = templates.workEditT4(pageData);
+    $('.workspace-menu').html(html);
     accordion();
     bulletinEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'article') {
+    var html = templates.workEditT4(pageData);
+    $('.workspace-menu').html(html);
     accordion();
     articleEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'methodology') {
+    var html = templates.workEditT4(pageData);
+    $('.workspace-menu').html(html);
     accordion();
     methodologyEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'dataset') {
+    var html = templates.workEditT4(pageData);
+    $('.workspace-menu').html(html);
     accordion();
     datasetEditor(collectionId, pageData);
   }
