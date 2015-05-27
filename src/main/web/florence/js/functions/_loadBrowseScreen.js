@@ -1,7 +1,7 @@
-function loadBrowseScreen(click) {
+function loadBrowseScreen(collectionId, click) {
 
   return $.ajax({
-    url: "/zebedee/collectionBrowseTree", // url: "/navigation",
+    url: "/zebedee/collectionBrowseTree/" + collectionId, // url: "/navigation",
     dataType: 'json',
     type: 'GET',
     success: function (response) {
