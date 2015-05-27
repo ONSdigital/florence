@@ -18,7 +18,7 @@ function loadT4Creator (collectionName) {
     pageType = $(this).val();
     console.log(pageType);
 
-    $('form').append('<button class="btn-page-create">Create page</button>');
+//    $('form').append('<button class="btn-page-create">Create page</button>');
     $('.btn-page-create').hide();
     var parentUrl = localStorage.getItem("pageurl");
     var parentUrlData = "/data" + parentUrl;                //TBC when not angular
@@ -113,7 +113,7 @@ function loadT4Creator (collectionName) {
           "headline2": "",
           "headline3": "",
           "summary": "",
-          "keywords": [],
+          "keywords": "",
           "metaDescription": "",
           "nationalStatistic": "false",
           "relatedBulletins": [],
@@ -141,7 +141,7 @@ function loadT4Creator (collectionName) {
           "accordion": [],
           "abstract": "",
           "authors": [],
-          "keywords": [],
+          "keywords": "",
           "metaDescription": "",
           "nationalStatistic": "false",
           "relatedArticles": [],
@@ -167,7 +167,7 @@ function loadT4Creator (collectionName) {
           "sections": [],
           "accordion": [],
           "summary": "",
-          "keywords": [],
+          "keywords": "",
           "metaDescription": "",
           "name": "",
           "releaseDate": "",
@@ -189,7 +189,7 @@ function loadT4Creator (collectionName) {
           "download": [],
           "notes": [],
           "summary": "",
-          "keywords": [],
+          "keywords": "",
           "metaDescription": "",
           "nationalStatistic": "false",
           "migrated": "false",

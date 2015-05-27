@@ -84,10 +84,10 @@ function pageTypeDataT7(pageType) {
   if (pageType === "static") {
     return {
       "summary": "",
-      "keywords": [],
+      "keywords": "",
       "metaDescription": "",
       "name": "",
-      "content": "",
+      "content": [],
       type: pageType,
       "uri": "",
       "fileName": "",
@@ -105,11 +105,11 @@ function pageTypeDataT7(pageType) {
         "surveyName": "",
         "frequency": "",
         "compilation": "",
-        "geoCoverage": [],
+        "geoCoverage": "",
         "sampleSize": "",
         "lastRevised": "",
-        "content": "",
-        "keywords": [],
+        "content": [],
+        "keywords": "",
         "metaDescription": "",
         "name": "",
         "download": [],
@@ -123,8 +123,8 @@ function pageTypeDataT7(pageType) {
   else if (pageType === "foi") {
     return {
       "download": [],
-      "content": "",
-      "keywords": [],
+      "content": [],
+      "keywords": "",
       "metaDescription": "",
       "name": "",
       "releaseDate": "",
@@ -138,8 +138,8 @@ function pageTypeDataT7(pageType) {
   else if (pageType === "adHoc") {
     return {
       "download": [],
-      "content": "",
-      "keywords": [],
+      "content": [],
+      "keywords": "",
       "metaDescription": "",
       "name": "",
       "releaseDate": "",

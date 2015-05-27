@@ -4,7 +4,14 @@ function makeEditSections(collectionId, pageData) {
 //    viewWorkspace('', collectionId, 'browse');
 //  });
 
-  if (pageData.type === 'bulletin') {
+  if (pageData.type === 'home' && pageData.level === 't3') {
+    var html = templates.workEditT3(pageData);
+    $('.workspace-menu').html(html);
+    accordion();
+    t3Editor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'bulletin') {
     var html = templates.workEditT4(pageData);
     $('.workspace-menu').html(html);
     accordion();
@@ -30,6 +37,34 @@ function makeEditSections(collectionId, pageData) {
     $('.workspace-menu').html(html);
     accordion();
     datasetEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static') {
+    var html = templates.workEditT7(pageData);
+    $('.workspace-menu').html(html);
+    accordion();
+    staticEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'qmi') {
+    var html = templates.workEditT7(pageData);
+    $('.workspace-menu').html(html);
+    accordion();
+    qmiEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'foi') {
+    var html = templates.workEditT7(pageData);
+    $('.workspace-menu').html(html);
+    accordion();
+    foiEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'adHoc') {
+    var html = templates.workEditT7(pageData);
+    $('.workspace-menu').html(html);
+    accordion();
+    adHocEditor(collectionId, pageData);
   }
 
   else {
