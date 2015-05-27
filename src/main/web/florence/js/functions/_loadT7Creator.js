@@ -2,17 +2,6 @@ function loadT7Creator (collectionName, pageType) {
 
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
-  getCollection(collectionName,
-    success = function (response) {
-      releaseDate = response.publishDate;
-    },
-    error = function (response) {
-      handleApiError(response);
-    }
-  );
-
-  $('form').append('<button class="btn-page-create">Create page</button>');
-  $('.btn-page-create').hide();
   var parentUrl = localStorage.getItem("pageurl");
   var parentUrlData = "/data" + parentUrl;
 
@@ -87,7 +76,7 @@ function loadT7Creator (collectionName, pageType) {
           }
         );
       }
-  });
+    });
   }
 }
 

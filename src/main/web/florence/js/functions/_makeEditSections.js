@@ -19,7 +19,7 @@ function makeEditSections(collectionId, pageData) {
 
   else if (pageData.type === 'methodology') {
     accordion();
-    articleEditor(collectionId, pageData);
+    methodologyEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'dataset') {
