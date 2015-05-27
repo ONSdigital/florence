@@ -2701,7 +2701,7 @@ function updateReviewScreen(collectionName) {
 
 
 
-function loadT4Creator (collectionName, pageType) {
+function loadT4Creator(collectionName, pageType) {
 
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
@@ -2737,7 +2737,7 @@ function loadT4Creator (collectionName, pageType) {
         };
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
-        submitFormHandler ();
+        submitFormHandler();
       } else {
         $('#location').attr("placeholder", "This is not a valid place to create this page.");
       }
@@ -2748,9 +2748,9 @@ function loadT4Creator (collectionName, pageType) {
   });
 
 
-  function submitFormHandler () {
+  function submitFormHandler() {
     $('form').submit(function (e) {
-    console.log(breadcrumb);
+      console.log(breadcrumb);
       e.preventDefault();
       pageData = pageTypeData(pageType);
       parent = $('#location').val().trim();
@@ -2787,132 +2787,133 @@ function loadT4Creator (collectionName, pageType) {
           }
         );
       }
-  });
+    });
+
+    function pageTypeData(pageType) {
+      if (pageType === "bulletin") {
+        return {
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "phone": ""
+          },
+          "sections": [],
+          "accordion": [],
+          "headline1": "",
+          "headline2": "",
+          "headline3": "",
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": "false",
+          "relatedBulletins": [],
+          "externalLinks": [],
+          "charts": [],
+          "correction": [],
+          "name": "",
+          "releaseDate": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+      else if (pageType === "article") {
+        return {
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "phone": ""
+          },
+          "sections": [],
+          "accordion": [],
+          "abstract": "",
+          "authors": [],
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": "false",
+          "relatedArticles": [],
+          "externalLinks": [],
+          "charts": [],
+          "correction": [],
+          "name": "",
+          "releaseDate": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      if (pageType === "methodology") {
+        return {
+          "contact": {
+            "name": "",
+            "email": "",
+            "phone": ""
+          },
+          "sections": [],
+          "accordion": [],
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "name": "",
+          "releaseDate": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else if (pageType === "dataset") {
+        return {
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "phone": ""
+          },
+          "download": [],
+          "notes": [],
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": "false",
+          "migrated": "false",
+          "description": "",
+          "charts": [],
+          "correction": [],
+          "name": "",
+          "releaseDate": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "relatedDatasets": [],
+          "usedIn": [],
+          "breadcrumb": "",
+        };
+      }
+
+      else {
+        alert('unsupported page type');
+      }
+    }
   }
 }
 
-function pageTypeData(pageType) {
-
-  if (pageType === "bulletin") {
-    return {
-      "nextRelease": "",
-      "contact": {
-        "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "headline1": "",
-      "headline2": "",
-      "headline3": "",
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "relatedBulletins": [],
-      "externalLinks": [],
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else if (pageType === "article") {
-    return {
-      "nextRelease": "",
-      "contact": {
-        "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "abstract": "",
-      "authors": [],
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "relatedArticles": [],
-      "externalLinks": [],
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  if (pageType === "methodology") {
-    return {
-      "contact": {
-        "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else if (pageType === "dataset") {
-    return {
-      "nextRelease": "",
-      "contact": {
-        "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "download": [],
-      "notes": [],
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "migrated": "false",
-      "description": "",
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "relatedDatasets": [],
-      "usedIn": [],
-      "breadcrumb": "",
-    };
-  }
-
-  else {
-    alert('unsupported page type');
-  }
-}
 
 function makeUrl(args) {
   var accumulator;
   accumulator = [];
-  for(var i=0; i < arguments.length; i++) {
-    accumulator =  accumulator.concat(arguments[i]
-                              .split('/')
-                              .filter(function(argument){return argument !== "";}));
+  for (var i = 0; i < arguments.length; i++) {
+    accumulator = accumulator.concat(arguments[i]
+      .split('/')
+      .filter(function (argument) {
+        return argument !== "";
+      }));
   }
   return accumulator.join('/');
 }
@@ -3006,87 +3007,88 @@ function loadT7Creator (collectionName, pageType) {
         );
       }
   });
-  }
-}
 
-function pageTypeData(pageType) {
+    function pageTypeData(pageType) {
 
-  if (pageType === "static") {
-    return {
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      "content": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else if (pageType === "qmi") {
-      return {
-        "contact": {
+      if (pageType === "static") {
+        return {
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
           "name": "",
-          "email": "",
-          "phone": ""
-        },
-        "surveyName": "",
-        "frequency": "",
-        "compilation": "",
-        "geoCoverage": [],
-        "sampleSize": "",
-        "lastRevised": "",
-        "content": "",
-        "summary": "",
-        "keywords": [],
-        "metaDescription": "",
-        "name": "",
-        "download": [],
-        type: pageType,
-        "uri": "",
-        "fileName": "",
-        "breadcrumb": "",
-      };
+          "releaseDate": "",
+          "content": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else if (pageType === "qmi") {
+        return {
+          "contact": {
+            "name": "",
+            "email": "",
+            "phone": ""
+          },
+          "surveyName": "",
+          "frequency": "",
+          "compilation": "",
+          "geoCoverage": [],
+          "sampleSize": "",
+          "lastRevised": "",
+          "content": "",
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "name": "",
+          "download": [],
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else if (pageType === "foi") {
+        return {
+          "download": [],
+          "content": "",
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "name": "",
+          "releaseDate": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else if (pageType === "adHoc") {
+        return {
+          "download": [],
+          "content": "",
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "name": "",
+          "releaseDate": "",
+          "reference": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else {
+        alert('unsupported page type');
+      }
     }
 
-  else if (pageType === "foi") {
-    return {
-      "download": [],
-      "content": "",
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else if (pageType === "adHoc") {
-    return {
-      "download": [],
-      "content": "",
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      "reference": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else {
-    alert('unsupported page type');
   }
 }
 
