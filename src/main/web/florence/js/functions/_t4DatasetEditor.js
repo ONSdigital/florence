@@ -443,7 +443,7 @@ function datasetEditor(collectionId, data) {
     $(orderFile).each(function(index, name){
       var title = $('#download-title_'+name).val();
       var file = $('#download-filename_' + name).val();
-      newFiles[parseInt(index)] = {title: title, file: file};
+      newFiles[index] = {title: title, file: file};
     });
     data.download = newFiles;
     //console.log(data.download);

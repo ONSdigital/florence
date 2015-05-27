@@ -213,4 +213,45 @@ function adHocEditor(collectionId, data) {
     $("#sortable-download").sortable();
   }
   sortableFiles();
+
+  // Save
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
+
+  editNav.on('click', '.btn-edit-save', function () {
+    save();
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  // completed to review
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+    //pageData = $('.fl-editor__headline').val();
+    save();
+    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  // reviewed to approve
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+    save()
+    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  function save() {
+    // Sections
+    var orderSection = $("#sortable-content").sortable('toArray');
+    $(orderSection).each(function (indexS, nameS) {
+      var markdown = $('#content-markdown_' + nameS).val();
+    newSections[indexS] = {markdown: markdown};
+    });
+    data.sections = newSections;
+    // Files are uploaded. Save metadata
+    var orderFile = $("#sortable-download").sortable('toArray');
+    $(orderFile).each(function(index, name){
+      var title = $('#download-title_'+name).val();
+      var file = $('#download-filename_' + name).val();
+      newFiles[index] = {title: title, file: file};
+    });
+    data.download = newFiles;
+  }
 }
+

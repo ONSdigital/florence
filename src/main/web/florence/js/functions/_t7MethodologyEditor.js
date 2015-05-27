@@ -65,34 +65,6 @@ function methodologyEditor(collectionId, data) {
     data.metaDescription = $(this).val();
   });
 
-/*
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('click keyup', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-*/
-
   // Edit sections
   // Load and edition
   $(data.sections).each(function(index, section) {
@@ -131,41 +103,6 @@ function methodologyEditor(collectionId, data) {
   }
   sortableSections();
 
-  // Edit accordion
-  // Load and edition
-  $(data.accordion).each(function(index, tab) {
-
-    $("#tab-edit_"+index).click(function() {
-      var editedSectionValue = $("#tab-markdown_" + index).val();
-
-      var saveContent = function(updatedContent) {
-        data.accordion[index].markdown = updatedContent;
-        data.accordion[index].title = $('#tab-title_' + index).val();
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#tab-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.accordion.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new tab
-  $("#addTab").one('click', function () {
-    data.accordion.push({title:"", markdown:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableTabs() {
-    $("#sortable-tabs").sortable();
-  }
-  sortableTabs();
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -197,14 +134,6 @@ function methodologyEditor(collectionId, data) {
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
-    // Tabs
-    var orderTab = $("#sortable-tabs").sortable('toArray');
-    $(orderTab).each(function (indexT, nameT) {
-      var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab-title_' + nameT).val();
-      newTabs[indexT] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
 //    console.log(data);
   }
 }
