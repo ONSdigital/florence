@@ -1,9 +1,9 @@
-function loadT7Creator (collectionName, pageType) {
-
+function loadT7Creator (collectionName, releaseDate, pageType) {
+  alert(pageType);
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
   var parentUrl = localStorage.getItem("pageurl");
-  var parentUrlData = "/data" + parentUrl;
+  var parentUrlData = "/data" + parentUrl;              //TBC when not angular
 
   $.ajax({
     url: parentUrlData,
@@ -37,13 +37,12 @@ function loadT7Creator (collectionName, pageType) {
 
   function submitFormHandler () {
     $('form').submit(function (e) {
-    console.log(breadcrumb);
       e.preventDefault();
       pageData = pageTypeDataT7(pageType);
       parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
       pageData.name = pageName;
-      uriSection = pageType + "s";
+      uriSection = pageType;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
       newUri = makeUrl(parent, uriSection, pageNameTrimmed);
@@ -88,7 +87,6 @@ function pageTypeDataT7(pageType) {
       "keywords": [],
       "metaDescription": "",
       "name": "",
-      "releaseDate": "",
       "content": "",
       type: pageType,
       "uri": "",
@@ -111,7 +109,6 @@ function pageTypeDataT7(pageType) {
         "sampleSize": "",
         "lastRevised": "",
         "content": "",
-        "summary": "",
         "keywords": [],
         "metaDescription": "",
         "name": "",
@@ -127,7 +124,6 @@ function pageTypeDataT7(pageType) {
     return {
       "download": [],
       "content": "",
-      "summary": "",
       "keywords": [],
       "metaDescription": "",
       "name": "",
@@ -143,7 +139,6 @@ function pageTypeDataT7(pageType) {
     return {
       "download": [],
       "content": "",
-      "summary": "",
       "keywords": [],
       "metaDescription": "",
       "name": "",

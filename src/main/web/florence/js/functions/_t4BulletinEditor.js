@@ -24,6 +24,7 @@ function bulletinEditor(collectionId, data) {
   $("#note").remove();
   $("#metadata-a").remove();
   $("#metadata-d").remove();
+  $("#metadata-m").remove();
   $("#abstract-p").remove();
   $("#description-p").remove();
   $("#migrated").remove();
