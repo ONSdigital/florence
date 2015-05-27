@@ -43,6 +43,8 @@ function loadBrowseScreen(click) {
 
       if (click) {
         treeNodeSelect(document.getElementById('iframe').contentWindow.location.href);
+      } else {
+        treeNodeSelect('/');
       }
 
       //$('.page-list--tree .page-item').click(function(){
