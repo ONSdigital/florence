@@ -66,6 +66,10 @@ function bulletinEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.keywords = $(this).val();
   });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.metaDescription = $(this).val();
+  });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */

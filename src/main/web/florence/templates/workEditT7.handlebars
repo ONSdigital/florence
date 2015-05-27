@@ -33,7 +33,7 @@
             </label>
           </div>
           <div id="survey-p">
-            <label for="survey">Survey
+            <label for="survey">Survey name
               <textarea class="auto-size" type="text" id="survey">{{this.surveyName}}</textarea>
             </label>
           </div>
@@ -43,8 +43,9 @@
             </label>
           </div>
           <div id="compilation-p">
-            <label for="compilation">Compilation </label>
-            <input type="checkbox" name="compilation" value="false" />
+            <label for="compilation">Compilation
+              <textarea class="auto-size" type="text" id="compilation">{{this.compilation}}</textarea>
+            </label>
           </div>
           <div id="geoCoverage-p">
             <label for="geoCoverage">Geographic coverage
@@ -61,7 +62,7 @@
               <textarea class="auto-size" type="text" id="lastRevised">{{this.lastRevised}}</textarea>
             </label>
           </div>
-          <div class="releaseDate-p">
+          <div id="releaseDate-p">
             <label for="releaseDate">Release date
               <textarea class="auto-size" type="text" id="releaseDate">{{this.releaseDate}}</textarea>
             </label>
@@ -91,18 +92,17 @@
         <p>Body copy</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-sections" class="edit-section__sortable">
+        <div id="sortable-content" class="edit-section__sortable">
           {{#each this.content}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p>Click edit to add content</p>
-              <textarea style="display: none;" id="section-markdown_{{@index}}">{{markdown}}</textarea>
-              <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
+              <textarea class="auto-size" id="content-markdown_{{@index}}" placeholder="Click edit to add content">{{data}}</textarea>
+              <button class="btn-markdown-edit" id="content-edit_{{@index}}">Edit</button>
+              <button class="btn-page-delete" id="content-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addSection">Add content</button>
+          <button class="btn-add-section" id="addContent">Add content</button>
         </div>
       </div>
     </div>
@@ -131,28 +131,6 @@
 
     <div id="charts">
 
-    </div>
-
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Correction</h1>
-        <p>Date | Notice | Severity</p>
-      </div>
-      <div class="edit-section__content edit-section__content--correction">
-        {{#each this.correction}}
-          <div id="{{@index}}" class="edit-section__sortable-item">
-            <p>Text: <textarea class="auto-size" type="text" id="correction_text_{{@index}}" cols="65" style="box-sizing: border-box; min-height: 31px;">{{text}}</textarea></p>
-            <p>Date: <input class="auto-size" type="date" id="correction_date_{{@index}}" value="{{date}}"/></p>
-            <p>Type: <input type="radio" name="correctionType{{@index}}" value="minor"/><label> Minor</label>
-              <input type="radio" name="correctionType{{@index}}" value="major"/><label> Major</label>
-            </p>
-            <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
-          </div>
-        {{/each}}
-        <div class="text-center">
-          <button class="btn-add-section" id="addCorrection">Add correction</button>
-        </div>
-      </div>
     </div>
 
   </div>
