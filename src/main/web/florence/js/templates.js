@@ -4,7 +4,7 @@ templates['browseNode'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return " \n  <li data-url=\""
-    + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">\n    <span class=\"page-item\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
     + "</span>\n    <div class=\"page-options\">\n      <button class=\"btn-browse-edit\">Edit</button>\n      <button class=\"btn-browse-create\">Create</button>\n      <button class=\"btn-browse-delete\">Delete</button>\n    </div>\n    "
@@ -251,27 +251,21 @@ templates['publishList'] = template({"1":function(depth0,helpers,partials,data) 
     + "    </tbody>\n  </table>\n</section>\n<section class=\"panel col col--6 publish-selected\">\n\n</section>";
 },"useData":true});
 templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
-
-  return " \n          <li data-url=\""
-    + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
-    + "\">\n            <span class=\"page-item\">"
-    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</span>\n            <div class=\"page-options\">\n              <button class=\"btn-browse-edit\">Edit</button>\n              <button class=\"btn-browse-create\">Create</button>\n              <button class=\"btn-browse-delete\">Delete</button>\n            </div>\n              "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "          </li>\n";
-},"2":function(depth0,helpers,partials,data) {
     var stack1;
 
   return " \n                <ul>\n                    "
     + ((stack1 = this.invokePartial(partials.browseNode,depth0,{"name":"browseNode","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + " \n                </ul>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1;
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "<section class=\"panel workspace-browse\">\n  <nav class=\"tree-nav-holder\">\n    <ul class=\"page-list page-list--tree\">\n        "
-    + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "    </ul>\n  </nav>\n</section>";
+  return "<section class=\"panel workspace-browse\">\n  <nav class=\"tree-nav-holder\">\n    <ul class=\"page-list page-list--tree\">\n          <li data-url=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">\n            <span class=\"page-item\">"
+    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
+    + "</span>\n            <div class=\"page-options\">\n              <button class=\"btn-browse-edit\">Edit</button>\n              <button class=\"btn-browse-create\">Create</button>\n              <button class=\"btn-browse-delete\">Delete</button>\n            </div>\n              "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "          </li>\n    </ul>\n  </nav>\n</section>";
 },"usePartial":true,"useData":true});
 templates['workCreate'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<section class=\"panel workspace-create\">\n  <h1>New page details</h1>\n  <form>\n    <label for=\"location\" class=\"\">Location</label>\n    <input id=\"location\" type=\"text\" />\n    <label for=\"pagetype\" class=\"\">Page type</label>\n    <select id=\"pagetype\" class=\"selectbg\" required>\n      <option value=\"\" name=\"\">Select your option</option>\n      <option value=\"bulletin\" name=\"bulletin\">Bulletin</option>\n      <option value=\"article\" name=\"article\">Article</option>\n      <option value=\"dataset\" name=\"dataset\">Dataset</option>\n      <option value=\"methodology\" name=\"methodology\">Methodology</option>\n      <option value=\"static\" name=\"static\">Static</option>\n      <option value=\"qmi\" name=\"qmi\">QMI</option>\n      <option value=\"foi\" name=\"foi\">FOI</option>\n      <option value=\"adHoc\" name=\"adHoc\">Ad hoc</option>\n    </select>\n    <label for=\"pagename\" class=\"hidden\">Page type</label>\n    <input id=\"pagename\" class=\"full\" type=\"text\" placeholder=\"Page name\" />\n    <!--Button will be added here-->\n  </form>\n</section>\n";

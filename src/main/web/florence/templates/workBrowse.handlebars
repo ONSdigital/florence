@@ -1,8 +1,7 @@
 <section class="panel workspace-browse">
   <nav class="tree-nav-holder">
     <ul class="page-list page-list--tree">
-        {{#each this}} {{! Each item is an "li" }}
-          <li data-url="{{url}}">
+          <li data-url="{{uri}}">
             <span class="page-item">{{name}}</span>
             <div class="page-options">
               <button class="btn-browse-edit">Edit</button>
@@ -15,7 +14,6 @@
                 </ul>
               {{/if}}
           </li>
-        {{/each}}
     </ul>
   </nav>
 </section>
