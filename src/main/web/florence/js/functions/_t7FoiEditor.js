@@ -1,5 +1,6 @@
 function foiEditor(collectionId, data) {
 
+  var newSections = [], newFiles = [];
   var lastIndexFile = 0;
   var uriUpload;
   var setActiveTab, getActiveTab;
@@ -236,10 +237,10 @@ function foiEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-content").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-      var markdown = $('#content-markdown_' + nameS).val();
-    newSections[indexS] = {markdown: markdown};
+      var data = $('#content-markdown_' + nameS).val();
+    newSections[indexS] = {data: data};
     });
-    data.sections = newSections;
+    data.content = newSections;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-download").sortable('toArray');
     $(orderFile).each(function(index, name){
