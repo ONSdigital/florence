@@ -36,13 +36,13 @@ function createWorkspace(path, collectionName, menu) {
     menuItem.addClass('selected');
 
     if (menuItem.is('#browse')) {
-      loadBrowseScreen('click');
+      loadBrowseScreen(collectionName, 'click');
     } else if (menuItem.is('#create')) {
       loadCreateScreen(collectionName);
     } else if (menuItem.is('#edit')) {
       loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
     } else {
-      loadBrowseScreen();
+      loadBrowseScreen(collectionName);
     }
   }
 
