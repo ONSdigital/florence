@@ -88,87 +88,88 @@ function loadT7Creator (collectionName, pageType) {
         );
       }
   });
-  }
-}
 
-function pageTypeData(pageType) {
+    function pageTypeData(pageType) {
 
-  if (pageType === "static") {
-    return {
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      "content": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else if (pageType === "qmi") {
-      return {
-        "contact": {
+      if (pageType === "static") {
+        return {
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
           "name": "",
-          "email": "",
-          "phone": ""
-        },
-        "surveyName": "",
-        "frequency": "",
-        "compilation": "",
-        "geoCoverage": [],
-        "sampleSize": "",
-        "lastRevised": "",
-        "content": "",
-        "summary": "",
-        "keywords": [],
-        "metaDescription": "",
-        "name": "",
-        "download": [],
-        type: pageType,
-        "uri": "",
-        "fileName": "",
-        "breadcrumb": "",
-      };
+          "releaseDate": "",
+          "content": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else if (pageType === "qmi") {
+        return {
+          "contact": {
+            "name": "",
+            "email": "",
+            "phone": ""
+          },
+          "surveyName": "",
+          "frequency": "",
+          "compilation": "",
+          "geoCoverage": [],
+          "sampleSize": "",
+          "lastRevised": "",
+          "content": "",
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "name": "",
+          "download": [],
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else if (pageType === "foi") {
+        return {
+          "download": [],
+          "content": "",
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "name": "",
+          "releaseDate": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else if (pageType === "adHoc") {
+        return {
+          "download": [],
+          "content": "",
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "name": "",
+          "releaseDate": "",
+          "reference": "",
+          type: pageType,
+          "uri": "",
+          "fileName": "",
+          "breadcrumb": "",
+        };
+      }
+
+      else {
+        alert('unsupported page type');
+      }
     }
 
-  else if (pageType === "foi") {
-    return {
-      "download": [],
-      "content": "",
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else if (pageType === "adHoc") {
-    return {
-      "download": [],
-      "content": "",
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      "reference": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
-
-  else {
-    alert('unsupported page type');
   }
 }
 
