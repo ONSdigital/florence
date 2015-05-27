@@ -1,4 +1,4 @@
-function articleEditor(collectionName, data) {
+function articleEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
@@ -23,7 +23,6 @@ function articleEditor(collectionName, data) {
   $("#note").remove();
   $("#metadata-b").remove();
   $("#metadata-d").remove();
-  $("#next-p").remove();
   $("#summary-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();
@@ -38,6 +37,10 @@ function articleEditor(collectionName, data) {
     $(this).textareaAutoSize();
     data.name = $(this).val();
   });
+  $("#nextRelease").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.nextRelease = $(this).val();
+  });
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.contact.name = $(this).val();
@@ -46,6 +49,10 @@ function articleEditor(collectionName, data) {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
+  $("#contactPhone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.contact.phone = $(this).val();
+  });
   $("#abstract").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
@@ -53,6 +60,10 @@ function articleEditor(collectionName, data) {
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.keywords = $(this).val();
+  });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.metaDescription = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -85,14 +96,14 @@ function articleEditor(collectionName, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
   // Edit sections
@@ -101,55 +112,28 @@ function articleEditor(collectionName, data) {
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = $("#section-markdown_" + index).val();
-      var html = templates.markdownEditor(editedSectionValue);
-      $('body').append(html);
-      $('.markdown-editor').stop().fadeIn(200);
 
-      markdownEditor();
-      markDownEditorSetLines();
+      var saveContent = function(updatedContent) {
+        data.sections[index].markdown = updatedContent;
+        data.sections[index].title = $('#section-title_' + index).val();
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      };
 
-      $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-save").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section-title_' + index).val();
-        data.sections[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-      });
-
-      $(".btn-markdown-editor-exit").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.sections[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#section-title_' + index).val();
-        data.sections[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $("#wmd-input").on('click', function() {
-        markDownEditorSetLines();
-      });
-
-      $("#wmd-input").on('keyup', function() {
-        markDownEditorSetLines();
-      });
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
     });
 
     // Delete
     $("#section-delete_"+index).click(function() {
       $("#"+index).remove();
       data.sections.splice(index, 1);
-      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new sections
   $("#addSection").one('click', function () {
     data.sections.push({title:"", markdown:""});
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
   function sortableSections() {
@@ -163,55 +147,28 @@ function articleEditor(collectionName, data) {
 
     $("#tab-edit_"+index).click(function() {
       var editedSectionValue = $("#tab-markdown_" + index).val();
-      var html = templates.markdownEditor(editedSectionValue);
-      $('body').append(html);
-      $('.markdown-editor').stop().fadeIn(200);
 
-      markdownEditor();
-      markDownEditorSetLines();
+      var saveContent = function(updatedContent) {
+        data.accordion[index].markdown = updatedContent;
+        data.accordion[index].title = $('#tab-title_' + index).val();
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      };
 
-      $('.btn-markdown-editor-cancel').on('click', function() {
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $(".btn-markdown-editor-save").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.accordion[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#tab-title_' + index).val();
-        data.accordion[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-      });
-
-      $(".btn-markdown-editor-exit").click(function(){
-        var editedSectionText = $('#wmd-input').val();
-        data.accordion[index].markdown = editedSectionText;
-        var editedSectionTitle = $('#tab-title_' + index).val();
-        data.accordion[index].title = editedSectionTitle;
-        updateContent(collectionName, getPathName(), JSON.stringify(data));
-        $('.markdown-editor').stop().fadeOut(200).remove();
-      });
-
-      $("#wmd-input").on('click', function() {
-        markDownEditorSetLines();
-      });
-
-      $("#wmd-input").on('keyup', function() {
-        markDownEditorSetLines();
-      });
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
     });
 
     // Delete
     $("#tab-delete_"+index).click(function() {
       $("#"+index).remove();
       data.accordion.splice(index, 1);
-      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new tab
   $("#addTab").one('click', function () {
     data.accordion.push({title:"", markdown:""});
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
   function sortableTabs() {
@@ -231,7 +188,7 @@ function articleEditor(collectionName, data) {
       $(".fl-panel--editor__related__article-item__delete_" + iArticle).click(function () {
         $("#" + iArticle).remove();
         data.relatedArticles.splice(iArticle, 1);
-        articleEditor(collectionName, data);
+        articleEditor(collectionId, data);
       });
     });
   }
@@ -257,7 +214,7 @@ function articleEditor(collectionName, data) {
         $("#article-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
         refreshPreview(reload);
-        loadPageDataIntoEditor(reload, collectionName);
+        loadPageDataIntoEditor(reload, collectionId);
         localStorage.removeItem('historicUrl');
       });
 
@@ -271,7 +228,7 @@ function articleEditor(collectionName, data) {
         success: function (relatedData) {
           if (relatedData.type === 'article') {
             data.relatedArticles.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            saveRelated(collectionName, reload, data);
+            saveRelated(collectionId, reload, data);
           } else {
             alert("This is not an article");
           }
@@ -297,14 +254,14 @@ function articleEditor(collectionName, data) {
     $("#link-delete_"+iLink).click(function() {
       $("#"+iLink).remove();
       data.externalLinks.splice(iLink, 1);
-      updateContent(collectionName, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new external
   $("#addLink").click(function () {
     data.externalLinks.push({url:"", linkText:""});
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
   function sortableLinks() {
@@ -318,20 +275,20 @@ function articleEditor(collectionName, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionName, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val();
     save();
-    saveAndCompleteContent(collectionName, getPathName(), JSON.stringify(data));
+    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     save()
-    saveAndReviewContent(collectionName, getPathName(), JSON.stringify(data));
+    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
 
@@ -371,5 +328,7 @@ function articleEditor(collectionName, data) {
     data.externalLinks = newLinks;
 //    console.log(data);
   }
+
+  loadChartsList(data, collectionId);
 }
 
