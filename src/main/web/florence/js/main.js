@@ -232,6 +232,10 @@ function approve(collectionId) {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
+  $("#contactPhone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.contact.phone = $(this).val();
+  });
   $("#abstract").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
@@ -239,6 +243,10 @@ function approve(collectionId) {
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.keywords = $(this).val();
+  });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.metaDescription = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -1378,6 +1386,10 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.contact.email = $(this).val();
   });
+  $("#contactPhone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.contact.phone = $(this).val();
+  });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
@@ -1389,6 +1401,10 @@ function datasetEditor(collectionId, data) {
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.keywords = $(this).val();
+  });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.metaDescription = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -2412,20 +2428,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 function loadCreateScreen(collectionId) {
   var html = templates.workCreate;
   $('.workspace-menu').html(html);
-
-  // Default
-  pageType = "bulletin";
-
-  $('select').change(function () {
-    pageType = $(this).val();
-  });
-
-  if (pageType === 'bulletin' || 'article' || 'dataset' || 'methodology') {
-    loadT4Creator(collectionId, pageType);
-  }
-  else if (pageType === 'static' || 'qmi' || 'foi' || 'adHoc') {
-    loadT7Creator(collectionId, pageType);
-  }
+  loadT4Creator(collectionId);
 }
 function loadMarkdownEditor(content, onSave, pageData) {
 
@@ -2701,9 +2704,9 @@ function updateReviewScreen(collectionName) {
 
 
 
-function loadT4Creator (collectionName, pageType) {
-
-  var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+function loadT4Creator (collectionName) {
+  console.log('loadT4');
+  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
     success = function (response) {
@@ -2714,45 +2717,56 @@ function loadT4Creator (collectionName, pageType) {
     }
   );
 
+  // Default
+  pageType = "bulletin";
+
+  $('select').change(function () {
+    pageType = $(this).val();
+    console.log(pageType);
+  });
+
   $('form').append('<button class="btn-page-create">Create page</button>');
   $('.btn-page-create').hide();
   var parentUrl = localStorage.getItem("pageurl");
   var parentUrlData = "/data" + parentUrl;
 
-  $.ajax({
-    url: parentUrlData,
-    dataType: 'json',
-    crossDomain: true,
-    success: function (checkData) {
-      if (checkData.level === 't3') {
-        $('.btn-page-create').show();
-        $('#location').val(parentUrl);
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "index": 0,
-          "type": "home",
-          "name": checkData.name,
-          "fileName": checkData.fileName,
-          "breadcrumb": []
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
-        submitFormHandler ();
-      } else {
-        $('#location').attr("placeholder", "This is not a valid place to create this page.");
+  if (pageType === 'static' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adHoc') {
+      loadT7Creator(releaseDate, pageType);
+  }
+  else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
+    $.ajax({
+      url: parentUrlData,
+      dataType: 'json',
+      crossDomain: true,
+      success: function (checkData) {
+        if (checkData.level === 't3') {
+          $('.btn-page-create').show();
+          $('#location').val(parentUrl);
+          var inheritedBreadcrumb = checkData.breadcrumb;
+          var parentBreadcrumb = {
+            "index": 0,
+            "type": "home",
+            "name": checkData.name,
+            "fileName": checkData.fileName,
+            "breadcrumb": []
+          };
+          inheritedBreadcrumb.push(parentBreadcrumb);
+          breadcrumb = inheritedBreadcrumb;
+          submitFormHandler ();
+        } else {
+          $('#location').attr("placeholder", "This is not a valid place to create this page.");
+        }
+      },
+      error: function () {
+        console.log('No page data returned');
       }
-    },
-    error: function () {
-      console.log('No page data returned');
-    }
-  });
-
+    });
+  }
 
   function submitFormHandler () {
     $('form').submit(function (e) {
-    console.log(breadcrumb);
       e.preventDefault();
-      pageData = pageTypeData(pageType);
+      pageData = pageTypeDataT4(pageType);
       parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
       pageData.name = pageName;
@@ -2787,122 +2801,122 @@ function loadT4Creator (collectionName, pageType) {
           }
         );
       }
-  });
+    });
   }
-}
 
-function pageTypeData(pageType) {
+  function pageTypeDataT4(pageType) {
 
-  if (pageType === "bulletin") {
-    return {
-      "nextRelease": "",
-      "contact": {
+    if (pageType === "bulletin") {
+      return {
+        "nextRelease": "",
+        "contact": {
+          "name": "",
+          "email": "",
+          "phone": ""
+        },
+        "sections": [],
+        "accordion": [],
+        "headline1": "",
+        "headline2": "",
+        "headline3": "",
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
+        "nationalStatistic": "false",
+        "relatedBulletins": [],
+        "externalLinks": [],
+        "charts": [],
+        "correction": [],
         "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "headline1": "",
-      "headline2": "",
-      "headline3": "",
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "relatedBulletins": [],
-      "externalLinks": [],
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
+        "releaseDate": "",
+        type: pageType,
+        "uri": "",
+        "fileName": "",
+        "breadcrumb": "",
+      };
+    }
 
-  else if (pageType === "article") {
-    return {
-      "nextRelease": "",
-      "contact": {
+    else if (pageType === "article") {
+      return {
+        "nextRelease": "",
+        "contact": {
+          "name": "",
+          "email": "",
+          "phone": ""
+        },
+        "sections": [],
+        "accordion": [],
+        "abstract": "",
+        "authors": [],
+        "keywords": [],
+        "metaDescription": "",
+        "nationalStatistic": "false",
+        "relatedArticles": [],
+        "externalLinks": [],
+        "charts": [],
+        "correction": [],
         "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "abstract": "",
-      "authors": [],
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "relatedArticles": [],
-      "externalLinks": [],
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
+        "releaseDate": "",
+        type: pageType,
+        "uri": "",
+        "fileName": "",
+        "breadcrumb": "",
+      };
+    }
 
-  if (pageType === "methodology") {
-    return {
-      "contact": {
+    else if (pageType === "methodology") {
+      return {
+        "contact": {
+          "name": "",
+          "email": "",
+          "phone": ""
+        },
+        "sections": [],
+        "accordion": [],
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
         "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "sections": [],
-      "accordion": [],
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "breadcrumb": "",
-    };
-  }
+        "releaseDate": "",
+        type: pageType,
+        "uri": "",
+        "fileName": "",
+        "breadcrumb": "",
+      };
+    }
 
-  else if (pageType === "dataset") {
-    return {
-      "nextRelease": "",
-      "contact": {
+    else if (pageType === "dataset") {
+      return {
+        "nextRelease": "",
+        "contact": {
+          "name": "",
+          "email": "",
+          "phone": ""
+        },
+        "download": [],
+        "notes": [],
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
+        "nationalStatistic": "false",
+        "migrated": "false",
+        "description": "",
+        "charts": [],
+        "correction": [],
         "name": "",
-        "email": "",
-        "phone": ""
-      },
-      "download": [],
-      "notes": [],
-      "summary": "",
-      "keywords": [],
-      "metaDescription": "",
-      "nationalStatistic": "false",
-      "migrated": "false",
-      "description": "",
-      "charts": [],
-      "correction": [],
-      "name": "",
-      "releaseDate": "",
-      type: pageType,
-      "uri": "",
-      "fileName": "",
-      "relatedDatasets": [],
-      "usedIn": [],
-      "breadcrumb": "",
-    };
-  }
+        "releaseDate": "",
+        type: pageType,
+        "uri": "",
+        "fileName": "",
+        "relatedDatasets": [],
+        "usedIn": [],
+        "breadcrumb": "",
+      };
+    }
 
-  else {
-    alert('unsupported page type');
+    else {
+      alert('unsupported page type');
+    }
   }
 }
 
@@ -2920,17 +2934,6 @@ function loadT7Creator (collectionName, pageType) {
 
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
-  getCollection(collectionName,
-    success = function (response) {
-      releaseDate = response.publishDate;
-    },
-    error = function (response) {
-      handleApiError(response);
-    }
-  );
-
-  $('form').append('<button class="btn-page-create">Create page</button>');
-  $('.btn-page-create').hide();
   var parentUrl = localStorage.getItem("pageurl");
   var parentUrlData = "/data" + parentUrl;
 
@@ -2968,7 +2971,7 @@ function loadT7Creator (collectionName, pageType) {
     $('form').submit(function (e) {
     console.log(breadcrumb);
       e.preventDefault();
-      pageData = pageTypeData(pageType);
+      pageData = pageTypeDataT7(pageType);
       parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
       pageData.name = pageName;
@@ -3005,11 +3008,11 @@ function loadT7Creator (collectionName, pageType) {
           }
         );
       }
-  });
+    });
   }
 }
 
-function pageTypeData(pageType) {
+function pageTypeDataT7(pageType) {
 
   if (pageType === "static") {
     return {
@@ -3130,7 +3133,7 @@ function delete_cookie(name) {
 
   else if (pageData.type === 'methodology') {
     accordion();
-    articleEditor(collectionId, pageData);
+    methodologyEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'dataset') {
@@ -3317,6 +3320,217 @@ function loadChartsList(data, collectionId) {
 
 
 }
+function methodologyEditor(collectionId, data) {
+
+  var newSections = [], newTabs = [];
+  var setActiveTab, getActiveTab;
+
+  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+    setActiveTab = $(".edit-accordion").accordion("option", "active");
+    if (setActiveTab !== false) {
+      localStorage.setItem('activeTab', setActiveTab);
+    }
+  });
+
+  getActiveTab = localStorage.getItem('activeTab');
+  accordion(getActiveTab);
+
+
+  //console.log(data.sections);
+
+  $("#relArticle").remove();
+  $("#relBulletin").remove();
+  $("#relDataset").remove();
+  $("#extLink").remove();
+  $("#used").remove();
+  $("#download").remove();
+  $("#note").remove();
+  $("#metadata-a").remove();
+  $("#metadata-b").remove();
+  $("#metadata-d").remove();
+  $(".next-p").remove();
+  $("#headline1-p").remove();
+  $("#headline2-p").remove();
+  $("#headline3-p").remove();
+  $("#abstract-p").remove();
+  $("#description-p").remove();
+  $("#migrated").remove();
+  $("#natStat").remove();
+
+  // Metadata load, edition and saving
+  $("#name").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.name = $(this).val();
+  });
+  $("#contactName").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.contact.name = $(this).val();
+  });
+  $("#contactEmail").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.contact.email = $(this).val();
+  });
+  $("#contactPhone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.contact.phone = $(this).val();
+  });
+  $("#summary").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.summary = $(this).val();
+  });
+  $("#keywords").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.keywords = $(this).val();
+  });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.metaDescription = $(this).val();
+  });
+
+/*
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $("#correction-delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  // New correction
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+*/
+
+  // Edit sections
+  // Load and edition
+  $(data.sections).each(function(index, section) {
+
+    $("#section-edit_"+index).click(function() {
+      var editedSectionValue = {
+        "title": $('#section-title_' + index).val(),
+        "markdown": $("#section-markdown_" + index).val()
+      };
+
+      var saveContent = function(updatedContent) {
+        data.sections[index].markdown = updatedContent;
+        data.sections[index].title = $('#section-title_' + index).val();
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      };
+
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
+
+    // Delete
+    $("#section-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.sections.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new section
+  $("#addSection").one('click', function () {
+    data.sections.push({title:"", markdown:""});
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  function sortableSections() {
+    $("#sortable-sections").sortable();
+  }
+  sortableSections();
+
+  // Edit accordion
+  // Load and edition
+  $(data.accordion).each(function(index, tab) {
+
+    $("#tab-edit_"+index).click(function() {
+      var editedSectionValue = $("#tab-markdown_" + index).val();
+
+      var saveContent = function(updatedContent) {
+        data.accordion[index].markdown = updatedContent;
+        data.accordion[index].title = $('#tab-title_' + index).val();
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      };
+
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
+
+    // Delete
+    $("#tab-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.accordion.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new tab
+  $("#addTab").one('click', function () {
+    data.accordion.push({title:"", markdown:""});
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  function sortableTabs() {
+    $("#sortable-tabs").sortable();
+  }
+  sortableTabs();
+
+  // Save
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
+
+  editNav.on('click', '.btn-edit-save', function () {
+    save();
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  // completed to review
+    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+      //pageData = $('.fl-editor__headline').val();
+      save();
+      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+
+    // reviewed to approve
+    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+      save()
+      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+
+  function save() {
+    // Sections
+    var orderSection = $("#sortable-sections").sortable('toArray');
+    $(orderSection).each(function (indexS, nameS) {
+        var markdown = $('#section-markdown_' + nameS).val();
+        var title = $('#section-title_' + nameS).val();
+      newSections[indexS] = {title: title, markdown: markdown};
+    });
+    data.sections = newSections;
+    // Tabs
+    var orderTab = $("#sortable-tabs").sortable('toArray');
+    $(orderTab).each(function (indexT, nameT) {
+      var markdown = data.accordion[parseInt(nameT)].markdown;
+      var title = $('#tab-title_' + nameT).val();
+      newTabs[indexT] = {title: title, markdown: markdown};
+    });
+    data.accordion = newTabs;
+//    console.log(data);
+  }
+}
+
 function postApproveCollection(collectionId) {
   $.ajax({
     url: "/zebedee/approve/" + collectionId,

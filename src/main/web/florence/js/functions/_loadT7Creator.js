@@ -39,7 +39,7 @@ function loadT7Creator (collectionName, pageType) {
     $('form').submit(function (e) {
     console.log(breadcrumb);
       e.preventDefault();
-      pageData = pageTypeData(pageType);
+      pageData = pageTypeDataT7(pageType);
       parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
       pageData.name = pageName;
@@ -80,7 +80,7 @@ function loadT7Creator (collectionName, pageType) {
   }
 }
 
-function pageTypeData(pageType) {
+function pageTypeDataT7(pageType) {
 
   if (pageType === "static") {
     return {
