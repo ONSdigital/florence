@@ -2,11 +2,11 @@ function treeNodeSelect(url){
   //var baseURL = 'http://localhost:8081/index.html#!';
  // var baseURL = 'http://' + window.location.host + '/index.html#!';
   var urlPart = url.replace(Florence.tredegarBaseUrl, '');
-  var selectedListItem = $('.tree-nav-holder li').find('[data-url="' + urlPart + '"]'); //get first li with data-url with url
-  $('.page-list li').removeClass('selected hello');
+  var selectedListItem = $('[data-url="' + urlPart + '"]'); //get first li with data-url with url
+  $('.page-list li').removeClass('selected');
   $('.page-options').hide();
 
-  $(selectedListItem).addClass('selected hello');
+  $(selectedListItem).addClass('selected');
   $(selectedListItem).children('.page-options').show();
 
   //page-list-tree

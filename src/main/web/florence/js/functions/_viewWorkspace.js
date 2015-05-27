@@ -11,7 +11,7 @@ function viewWorkspace(path, collectionName, menu) {
   if (menu === 'browse') {
     $('.nav--workspace li').removeClass('selected');
     $("#browse").addClass('selected');
-    loadBrowseScreen();
+    loadBrowseScreen(collectionName);
   }
   else if (menu === 'create') {
     $('.nav--workspace li').removeClass('selected');
