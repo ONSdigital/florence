@@ -60,7 +60,7 @@ function loadT4Creator (collectionName) {
   function submitFormHandler () {
     $('form').submit(function (e) {
       e.preventDefault();
-      pageData = pageTypeData(pageType);
+      pageData = pageTypeDataT4(pageType);
       parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
       pageData.name = pageName;
@@ -98,7 +98,7 @@ function loadT4Creator (collectionName) {
     });
   }
 
-  function pageTypeData(pageType) {
+  function pageTypeDataT4(pageType) {
 
     if (pageType === "bulletin") {
       return {
