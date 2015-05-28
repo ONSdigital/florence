@@ -1995,7 +1995,7 @@ function delete_cookie(name) {
 //  $('.btn-edit-cancel').click(function (collectionId) {
 //    viewWorkspace('', collectionId, 'browse');
 //  });
-Prevent
+
   if (pageData.type === 'home' && pageData.level === 't2') {
       var html = templates.workEditT2(templateData);
       $('.workspace-menu').html(html);
@@ -2373,6 +2373,29 @@ function saveRelated (collectionName, path, content) {
     var $el = $('<select />').html( options.fn(this) );
     $el.find('[value="' + value + '"]').attr({'selected':'selected'});
     return $el.html();
+  });
+  Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+
+    switch (operator) {
+      case '==':
+        return (v1 == v2) ? options.fn(this) : options.inverse(this);
+      case '===':
+        return (v1 === v2) ? options.fn(this) : options.inverse(this);
+      case '<':
+        return (v1 < v2) ? options.fn(this) : options.inverse(this);
+      case '<=':
+        return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+      case '>':
+        return (v1 > v2) ? options.fn(this) : options.inverse(this);
+      case '>=':
+        return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+      case '&&':
+        return (v1 && v2) ? options.fn(this) : options.inverse(this);
+      case '||':
+        return (v1 || v2) ? options.fn(this) : options.inverse(this);
+      default:
+        return options.inverse(this);
+    }
   });
 
   localStorage.setItem('activeTab', false); // do we need this?

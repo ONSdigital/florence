@@ -1,12 +1,12 @@
 {{#each children}} {{! Each item is an "li" }}
   <li data-url="{{uri}}">
-    <span class="page-item">{{name}}</span>
+    <span class="page-item{{#ifCond uri '===' ''}} page-directory{{else}} page-type-{{type}}{{/ifCond}}">{{name}}</span>
     <div class="page-options">
       <button class="btn-browse-edit">Edit</button>
       <button class="btn-browse-create">Create</button>
       <button class="btn-browse-delete">Delete</button>
     </div>
-    {{#if children}} {{! Within the context of the current item }}
+      {{#if children}} {{! Within the context of the current item }}
         <ul>
           {{> browseNode}} {{! Recursively render the partial }}
         </ul>
