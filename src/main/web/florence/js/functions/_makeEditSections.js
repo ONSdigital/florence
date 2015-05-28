@@ -6,7 +6,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
 //  $('.btn-edit-cancel').click(function (collectionId) {
 //    viewWorkspace('', collectionId, 'browse');
 //  });
-Prevent
+
   if (pageData.type === 'home' && pageData.level === 't2') {
       var html = templates.workEditT2(templateData);
       $('.workspace-menu').html(html);
