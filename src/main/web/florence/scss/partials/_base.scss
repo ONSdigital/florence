@@ -260,9 +260,11 @@ $panel-height-2-top-nav: 756px;
 				height: 15px;
 			}
 
-			&--directory--selected {
+			&--selected {
 				&:after {
 					background: transparent url(../img/sprite.png) no-repeat -4px -445px;
+					background-size: 30px auto;
+				height: 15px;
 				}
 			}
 		}
