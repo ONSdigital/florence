@@ -38,6 +38,8 @@ function loadBrowseScreen(collectionId, click) {
         $('.tree-nav-holder ul').removeClass('active');
         $(this).parents('ul').addClass('active');
         $(this).closest('li').children('ul').addClass('active');
+        $('.page-item--directory').removeClass('page-item--directory--selected');
+        $(this).addClass('page-item--directory--selected');
 
       });
 
