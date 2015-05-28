@@ -1,7 +1,6 @@
 function t1Editor(collectionId, data) {
 
   var newSections = [];
-  var lastIndexSections = 0;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
