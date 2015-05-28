@@ -7,7 +7,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
-  if( chart.isTimeSeries && (chart.type == 'line')) {
+  if (chart.isTimeSeries && (chart.type == 'line')) {
     renderTimeseriesChartObject(bindTag, chart)
     return;
   }
@@ -15,19 +15,27 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   // Calculate padding at top (and left) of SVG
   var padding = 25;
   var paddingLeft = 100;
-  if(chart.subtitle != '') { padding += 15; }
+  if (chart.subtitle != '') {
+    padding += 15;
+  }
 
   var types = chart.type === 'barline' ? chart.types : {};
   var groups = chart.type === 'barline' ? chart.groups : [];
   var type = checkType(chart);
   var rotate = chart.type === 'rotated';
   var yLabel = rotate == true ? chart.unit : '';
-  if((chart.unit != '') && (rotate == false)) {padding += 24; }
-  if((chart.unit != '') && (rotate === true)) {paddingLeft += 100; }
+  if ((chart.unit != '') && (rotate == false)) {
+    padding += 24;
+  }
+  if ((chart.unit != '') && (rotate === true)) {
+    paddingLeft += 100;
+  }
 
   // Calculate padding at bottom of SVG
   var bottomPadding = 20;
-  if((chart.source != '')) {bottomPadding += 5;}
+  if ((chart.source != '')) {
+    bottomPadding += 5;
+  }
 
   // work out position for chart legend
   var seriesCount = chart.series.length;
@@ -49,15 +57,15 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       types: types,
       groups: groups
     },
-   legend: {
-     hide: chart.hideLegend,
-     position: 'inset',
-     inset: {
-       anchor: chart.legend,
-       x: 10,
-       y: yOffset
+    legend: {
+      hide: chart.hideLegend,
+      position: 'inset',
+      inset: {
+        anchor: chart.legend,
+        x: 10,
+        y: yOffset
       }
-     },
+    },
     axis: {
       x: {
         label: chart.xaxis,
@@ -77,7 +85,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     padding: {
       top: padding,
       bottom: bottomPadding,
-      left : paddingLeft
+      left: paddingLeft
     }
   });
 
@@ -97,7 +105,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       .style('fill', '#000000')
       .text(chart.title);
 
-    if(chart.subtitle != '') {
+    if (chart.subtitle != '') {
       d3.select(bindTag + ' svg').append('text') // Subtitle
         .attr('x', 20)
         .attr('y', 36)
@@ -107,7 +115,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .text(chart.subtitle);
     }
 
-    if((chart.unit != '') && (rotate == false)) {
+    if ((chart.unit != '') && (rotate == false)) {
       d3.select(bindTag + ' svg').append('text') // Unit (if non rotated)
         .attr('x', 20)
         .attr('y', unitTop)
@@ -120,7 +128,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
     var viewBoxWidth = d3.select(bindTag + ' svg').attr('width');
 
-    if(chart.source != '') {
+    if (chart.source != '') {
       d3.select(bindTag + ' svg').append('text') // Source
         .attr('x', 20)
         .attr('y', 320)
@@ -131,7 +139,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     }
   }
 
-  function checkType (chart) {
+  function checkType(chart) {
     if (chart.type === 'rotated') {
       type = 'bar';
       return type;
@@ -150,19 +158,26 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     // Create a dictionary so we can reverse lookup a tooltip label
     var dates_to_label = {};
-    _.each(chart.timeSeries, function(data_point) {
-        dates_to_label[data_point.date] = data_point.label;
-        });
+    _.each(chart.timeSeries, function (data_point) {
+      data_point.date = new Date(data_point.date);
+      dates_to_label[data_point.date] = data_point.label;
+    });
 
     // make room for titles if necessary
-    if(chart.subtitle != '') { padding += 16; }
-    if(chart.unit != '') { padding += 24; }
+    if (chart.subtitle != '') {
+      padding += 16;
+    }
+    if (chart.unit != '') {
+      padding += 24;
+    }
 
     // should we show
     var showPoints = true;
-    if(chart.data.length > 100) { showPoints = false; }
+    if (chart.data.length > 100) {
+      showPoints = false;
+    }
 
-   // work out position for chart legend
+    // work out position for chart legend
     var seriesCount = chart.series.length;
     var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
 
@@ -171,24 +186,24 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     var axisType;
     var keys;
 
-    if(chart.type == 'line'){ // continuous line charts
+    if (chart.type == 'line') { // continuous line charts
       axisType = {
-                label: chart.xaxis,
-                type: 'timeseries',
-              }
+        label: chart.xaxis,
+        type: 'timeseries',
+      }
 
       var monthsOnTimeline = (chart.timeSeries[chart.timeSeries.length - 1].date - chart.timeSeries[0].date) / (1000 * 60 * 60 * 24 * 30);
       var tick = {
-            format: function (x) {
-                return x.getFullYear();
-            }
+        format: function (x) {
+          return x.getFullYear();
+        }
+      }
+      if (monthsOnTimeline <= 24.5) {
+        tick = {
+          format: function (x) {
+            return formattedMonthYear(x);
           }
-      if( monthsOnTimeline <= 24.5) {
-          tick = {
-            format: function (x) {
-                return formattedMonthYear(x);
-            }
-          }
+        }
       }
 
 
@@ -202,7 +217,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         label: chart.xaxis,
         type: 'category',
         categories: chart.categories
-           }
+      }
       keys = {
         x: 'label',
         value: chart.series
@@ -223,22 +238,24 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         show: showPoints
       },
 
-       legend: {
-         hide: chart.hideLegend,
-         position: 'inset',
-         inset: {
-           anchor: chart.legend,
-           x: 10,
-           y: yOffset
-          }
-         },
+      legend: {
+        hide: chart.hideLegend,
+        position: 'inset',
+        inset: {
+          anchor: chart.legend,
+          x: 10,
+          y: yOffset
+        }
+      },
 
       axis: {
         x: axisType
       },
       tooltip: {
         format: {
-          title: function(x) { return dates_to_label[x] ;}
+          title: function (x) {
+            return dates_to_label[x];
+          }
         }
       },
       grid: {
@@ -255,15 +272,15 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   }
 
   function formattedMonthYear(date) {
-      var monthNames = [
-          "Jan", "Feb", "Mar",
-          "Apr", "May", "Jun", "Jul",
-          "Aug", "Sep", "Oct",
-          "Nov", "Dec"];
+    var monthNames = [
+      "Jan", "Feb", "Mar",
+      "Apr", "May", "Jun", "Jul",
+      "Aug", "Sep", "Oct",
+      "Nov", "Dec"];
 
-      var monthIndex = date.getMonth();
-      var year = date.getFullYear();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
 
-      return monthNames[monthIndex] + " " + year;
-      }
+    return monthNames[monthIndex] + " " + year;
+  }
 }

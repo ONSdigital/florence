@@ -33,7 +33,6 @@ function loadPageDataIntoEditor(path, collectionId) {
   );
 
   $.when.apply($, ajaxRequests).then(function () {
-    pageData.isPageComplete = isPageComplete;
-    makeEditSections(collectionId, pageData);
+    makeEditSections(collectionId, pageData, isPageComplete);
   });
 }
