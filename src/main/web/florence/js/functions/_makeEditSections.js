@@ -4,7 +4,14 @@ function makeEditSections(collectionId, pageData) {
 //    viewWorkspace('', collectionId, 'browse');
 //  });
 
-  if (pageData.type === 'home' && pageData.level === 't2') {
+  if (pageData.type === 'home' && pageData.level === 't1') {
+        var html = templates.workEditT1(pageData);
+        $('.workspace-menu').html(html);
+        accordion();
+        t1Editor(collectionId, pageData);
+      }
+
+  else if (pageData.type === 'home' && pageData.level === 't2') {
       var html = templates.workEditT2(pageData);
       $('.workspace-menu').html(html);
       accordion();

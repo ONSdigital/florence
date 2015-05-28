@@ -1,6 +1,6 @@
-function postContent(collectionName, path, content, success, error) {
+function postContent(collectionId, path, content, success, error) {
   $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + path + "/data.json",
+    url: "/zebedee/content/" + collectionId + "?uri=" + path + "/data.json",
     dataType: 'json',
     type: 'POST',
     data: content,
