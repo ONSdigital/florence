@@ -8,20 +8,18 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
 //  });
 
   if (pageData.type === 'home' && pageData.level === 't1') {
-        var html = templates.workEditT1(templateData);
-        $('.workspace-menu').html(html);
-        accordion();
-        t1Editor(collectionId, pageData);
-      }
+    var html = templates.workEditT1(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    t1Editor(collectionId, pageData);
+  }
 
   else if (pageData.type === 'home' && pageData.level === 't2') {
-      var html = templates.workEditT2(pageData);
-  if (pageData.type === 'home' && pageData.level === 't2') {
-      var html = templates.workEditT2(templateData);
-      $('.workspace-menu').html(html);
-      accordion();
-      t2Editor(collectionId, pageData);
-    }
+    var html = templates.workEditT2(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    t2Editor(collectionId, pageData);
+  }
 
   else if (pageData.type === 'home' && pageData.level === 't3') {
     var html = templates.workEditT3(templateData);
