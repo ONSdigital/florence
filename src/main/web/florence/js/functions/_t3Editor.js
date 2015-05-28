@@ -82,10 +82,8 @@ function t3Editor(collectionId, data) {
     // Timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, nameT) {
-//        var uri = $('#section-uri_' + nameT).html();
-        var uri = data.items[parseInt(nameT)].uri;
-        var name = data.items[parseInt(nameT)].name;
-//        var name = $('#section-name_' + nameT).html();
+      var uri = data.items[parseInt(nameT)].uri;
+      var name = data.items[parseInt(nameT)].name;
       newTimeseries[indexT] = {name: name, uri: uri};
     });
     data.items = newTimeseries;
@@ -97,7 +95,6 @@ function t3Editor(collectionId, data) {
       var uri = data.statsBulletins[parseInt(nameB)].uri;
       var summary = data.statsBulletins[parseInt(nameB)].summary;
       var name = data.statsBulletins[parseInt(nameB)].name;
-//      var name = $('#item-name_' + nameB).html();
       newBulletins[indexB] = {uri: uri, name: name, summary: summary};
     });
     data.statsBulletins = newBulletins;
@@ -117,12 +114,9 @@ function t3Editor(collectionId, data) {
       var uri = data.datasets[parseInt(nameD)].uri;
       var summary = data.datasets[parseInt(nameD)].summary;
       var name = data.datasets[parseInt(nameD)].name;
-//      var name = $('#item-name_' + nameD).html();
       newDatasets[indexD] = {uri: uri, name: name, summary: summary};
     });
     data.datasets = newDatasets;
   }
-
-  loadChartsList(data, collectionId);
 }
 
