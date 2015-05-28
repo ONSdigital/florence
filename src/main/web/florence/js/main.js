@@ -1438,8 +1438,7 @@ function loadPageDataIntoEditor(path, collectionId) {
   );
 
   $.when.apply($, ajaxRequests).then(function () {
-    pageData.isPageComplete = isPageComplete;
-    makeEditSections(collectionId, pageData);
+    makeEditSections(collectionId, pageData, isPageComplete);
   });
 }
 function loadReviewScreen(collectionName) {
@@ -1988,77 +1987,80 @@ function logout() {
 
 function delete_cookie(name) {
   document.cookie = name + '=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}function makeEditSections(collectionId, pageData) {
+}function makeEditSections(collectionId, pageData, isPageComplete) {
+
+  var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
+  templateData.isPageComplete = isPageComplete;
 
 //  $('.btn-edit-cancel').click(function (collectionId) {
 //    viewWorkspace('', collectionId, 'browse');
 //  });
-
+Prevent
   if (pageData.type === 'home' && pageData.level === 't2') {
-      var html = templates.workEditT2(pageData);
+      var html = templates.workEditT2(templateData);
       $('.workspace-menu').html(html);
       accordion();
       t2Editor(collectionId, pageData);
     }
 
   else if (pageData.type === 'home' && pageData.level === 't3') {
-    var html = templates.workEditT3(pageData);
+    var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
     accordion();
     t3Editor(collectionId, pageData);
   }
 
   else if (pageData.type === 'bulletin') {
-    var html = templates.workEditT4(pageData);
+    var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
     accordion();
     bulletinEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'article') {
-    var html = templates.workEditT4(pageData);
+    var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
     accordion();
     articleEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'methodology') {
-    var html = templates.workEditT4(pageData);
+    var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
     accordion();
     methodologyEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'dataset') {
-    var html = templates.workEditT4(pageData);
+    var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
     accordion();
     datasetEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'static') {
-    var html = templates.workEditT7(pageData);
+    var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();
     staticEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'qmi') {
-    var html = templates.workEditT7(pageData);
+    var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();
     qmiEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'foi') {
-    var html = templates.workEditT7(pageData);
+    var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();
     foiEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'adHoc') {
-    var html = templates.workEditT7(pageData);
+    var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();
     adHocEditor(collectionId, pageData);
