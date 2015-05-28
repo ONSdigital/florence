@@ -13,11 +13,11 @@ templates['browseNode'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "  </li>\n";
 },"2":function(depth0,helpers,partials,data) {
-    return " page-directory";
+    return " page-item--directory";
 },"4":function(depth0,helpers,partials,data) {
     var helper;
 
-  return " page-type-"
+  return " page-item--"
     + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)));
 },"6":function(depth0,helpers,partials,data) {
     var stack1;
@@ -88,7 +88,7 @@ templates['chartTable'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
 templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "      <li><span class=\"page-item page-type-"
+  return "      <li><span class=\"page-item page-item--"
     + alias3(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
@@ -102,7 +102,7 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
 },"3":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "      <li><span class=\"page-item page-type-"
+  return "      <li><span class=\"page-item page-item--"
     + alias3(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
@@ -290,6 +290,31 @@ templates['workEditCharts'] = template({"1":function(depth0,helpers,partials,dat
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.charts : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n  </div>\n</div>";
 },"useData":true});
+templates['workEditT1'] = template({"1":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <p id=\"item-name_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(this.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.items : depth0)) != null ? stack1['0'] : stack1)) != null ? stack1.name : stack1), depth0))
+    + "</p>\n              <button class=\"btn-markdown-edit\" id=\"section-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n            </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p>Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + alias2(alias1((depth0 != null ? depth0.keywords : depth0), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + alias2(alias1((depth0 != null ? depth0.metaDescription : depth0), depth0))
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"sections\">\n      <div class=\"edit-section__head\">\n        <h1>Statistical highlights</h1>\n        <p></p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "  </nav>\n\n</section>";
+},"usePartial":true,"useData":true});
 templates['workEditT2'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 

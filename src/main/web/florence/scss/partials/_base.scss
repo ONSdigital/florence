@@ -206,7 +206,7 @@ $panel-height-2-top-nav: 756px;
 	&-item {
 		display: inline-block;
 		position: relative;
-		padding-left: $gutter; 
+		padding-left: $gutter + 10; 
 		&:hover {
 			cursor: pointer;
 			color: $mine-shaft;
@@ -214,13 +214,57 @@ $panel-height-2-top-nav: 756px;
 		}
 		&:after {
 			content: '';
-			width: 30px;
-			height: 30px;
+			width: 20px;
+			height: 22px;
 			position: absolute;
 			left: 0;
 			top: -5px;
 			background: transparent url(../img/sprite.png) no-repeat -8px 0;
-			background-size: 30px auto;
+			background-size: 32px auto;
+			display: block;
+			font-size: 9px;
+			font-weight: normal;
+			color: #555;
+			padding: 6px 3px;
+		}
+
+		&--home {
+			&:after {
+				content: 'T1';
+			}
+		}
+		&--bulletin {
+			&:after {
+				content: 'SB';
+			}
+		}
+		&--dataset {
+			&:after {
+				content: 'DA';
+			}
+		}
+		&--timeseries {
+			&:after {
+				content: 'TS';
+			}
+		}
+		&--article {
+			&:after {
+				content: 'AR';
+			}
+		}
+		&--directory {
+			&:after {
+				background: transparent url(../img/sprite.png) no-repeat -4px -418px;
+				background-size: 30px auto;
+				height: 15px;
+			}
+
+			&--directory--selected {
+				&:after {
+					background: transparent url(../img/sprite.png) no-repeat -4px -445px;
+				}
+			}
 		}
 	}
 
