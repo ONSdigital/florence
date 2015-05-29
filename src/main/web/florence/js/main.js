@@ -822,6 +822,7 @@ function loadBrowseScreen(collectionId, click) {
         $(this).parents('ul').addClass('active');
         $(this).closest('li').children('ul').addClass('active');
         
+        $(this).closest('li').find('.page-item--directory').removeClass('page-item--directory--selected');
         if ($(this).hasClass('page-item--directory')) {
           $('.page-item--directory').removeClass('page-item--directory--selected');
           $(this).addClass('page-item--directory--selected');
