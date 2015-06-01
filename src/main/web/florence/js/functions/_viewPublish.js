@@ -1,10 +1,16 @@
 function viewPublish() {
+var manual = '[manual collection]';
 
   $.ajax({
     url: "/zebedee/collections",
     type: "get",
     crossDomain: true,
     success: function (collections) {
+    $(collections).each(function (i) {
+      if (!collections[i].publishDate) {
+        collections[i].publishDate = manual;
+      }
+    });
       populatePublishTable(collections);
     },
     error: function (response) {
@@ -12,8 +18,9 @@ function viewPublish() {
     }
   });
 
- var result = [];
+  var result = [];
   function populatePublishTable(collections) {
+
 
     var collectionsByDate = _.chain(collections)
       .filter( function(collection) { return collection.approvedStatus; })
@@ -21,11 +28,13 @@ function viewPublish() {
       .groupBy('publishDate')
       .value();
 
-      console.log(collectionsByDate)
-
     for (var key in collectionsByDate) {
       var response = [];
-      var formattedDate = StringUtils.formatIsoFullDateString(key);
+      if (key === manual) {
+        var formattedDate = manual;
+      } else {
+        var formattedDate = StringUtils.formatIsoFullDateString(key);
+      }
       $(collectionsByDate[key]).each(function (n) {
         var id = collectionsByDate[key][n].id;
         response.push(id);

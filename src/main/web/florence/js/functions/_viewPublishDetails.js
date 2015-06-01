@@ -29,7 +29,6 @@ function viewPublishDetails(collections) {
   }
 
   $.when.apply($, pageDataRequests).then(function () {
-          console.log(result);
     var publishDetails = templates.publishDetails(result);
     $('.publish-selected').html(publishDetails);
     $('.collections-accordion').accordion({

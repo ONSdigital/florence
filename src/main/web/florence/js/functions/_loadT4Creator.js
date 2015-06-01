@@ -4,26 +4,24 @@ function loadT4Creator (collectionName) {
 
   getCollection(collectionName,
     success = function (response) {
-      releaseDate = response.publishDate;
+      if (response.publishDate === '[manual collection]') {
+        releaseDate = null;
+      } else {
+        releaseDate = response.publishDate;
+      }
     },
     error = function (response) {
       handleApiError(response);
     }
   );
 
-  // Default
-//  pageType = "bulletin";
-
   $('select').change(function () {
     pageType = $(this).val();
-    console.log(pageType);
-
-//    $('form').append('<button class="btn-page-create">Create page</button>');
     $('.btn-page-create').hide();
     var parentUrl = localStorage.getItem("pageurl");
     var parentUrlData = "/data" + parentUrl;                //TBC when not angular
 
-    if (pageType === 'static' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adHoc') {
+    if (pageType === 'staticpage' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
         loadT7Creator(collectionName, releaseDate, pageType);
     }
     else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
@@ -68,8 +66,12 @@ function loadT4Creator (collectionName) {
         pageData.fileName = pageNameTrimmed;
         newUri = makeUrl(parent, uriSection, pageNameTrimmed);
         pageData.uri = newUri;
-        date = new Date(releaseDate);
-        pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+        if (!releaseDate) {
+          pageData.releaseDate = null;
+        } else {
+          date = new Date(releaseDate);
+          pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+        }
         pageData.breadcrumb = breadcrumb;
 
         if (pageName.length < 4) {
