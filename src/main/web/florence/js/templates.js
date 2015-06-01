@@ -199,7 +199,7 @@ templates['markdownEditor'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":
 
   return "<div class=\"markdown-editor\">\n    <div class=\"markdown-editor__header\">\n        <h1>"
     + alias2(alias1((depth0 != null ? depth0.title : depth0), depth0))
-    + "</h1>\n        <div class=\"custom-markdown-buttons\">\n            <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n        </div>\n        <div id=\"wmd-button-bar\"></div>\n    </div>\n    <div class=\"markdown-editor__content\">\n        <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n        <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n            <h2>Markdown:</h2>\n            <textarea class=\"wmd-input\" id=\"wmd-input\">"
+    + "</h1>\n        <div class=\"custom-markdown-buttons\">\n            <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n            <button class=\"btn-markdown-editor-table\" title=\"Build Table\"></button>\n        </div>\n        <div id=\"wmd-button-bar\"></div>\n    </div>\n    <div class=\"markdown-editor__content\">\n        <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n        <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n            <h2>Markdown:</h2>\n            <textarea class=\"wmd-input\" id=\"wmd-input\">"
     + alias2(alias1((depth0 != null ? depth0.markdown : depth0), depth0))
     + "</textarea>\n            <div class=\"markdown-editor-line-numbers\"></div>\n        </div>\n    </div>\n    <div class=\"markdown-editor__footer\">\n        <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n        <button class=\"btn-markdown-editor-save\">Save changes</button>\n        <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n    </div>\n</div>";
 },"useData":true});
@@ -257,6 +257,13 @@ templates['publishList'] = template({"1":function(depth0,helpers,partials,data) 
   return "<section class=\"panel col col--6 publish-select\">\n  <h1 class=\"text-align-center\">Select a publish date</h1>\n  <table class=\"publish-select-table\">\n    <thead>\n    <tr>\n      <th id=\"publish-name\" scope=\"col\">Publish date</th>\n    </tr>\n    </thead>\n    <tbody>\n"
     + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tbody>\n  </table>\n</section>\n<section class=\"panel col col--6 publish-selected\">\n\n</section>";
+},"useData":true});
+templates['tableBuilder'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "<div class=\"chart-builder overlay\">\n  <div class=\"chart-builder__inner\">\n\n    <div id=\"edit-chart\" class=\"chart-builder__editor\">\n      <form id=\"upload-table-form\">\n        <input type=\"text\" id=\"table-title\" placeholder=\"[Title]\" value=\""
+    + this.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "\"/>\n        <input type=\"file\" name=\"files\" id=\"files\">\n        <input type=\"submit\" value=\"Submit\">\n      </form>\n    </div>\n\n    <div id=\"preview-chart\" class=\"chart-builder__preview\">\n      <div id=\"chart\"></div>\n    </div>\n\n    <div class=\"chart-builder__footer\">\n      <button class=\"btn-table-builder-cancel\">Cancel</button>\n      <button class=\"btn-table-builder-create\">Save Chart</button>\n    </div>\n\n  </div>\n</div>";
 },"useData":true});
 templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1;
