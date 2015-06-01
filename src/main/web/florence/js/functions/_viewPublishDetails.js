@@ -13,8 +13,6 @@ function viewPublishDetails(collections) {
     pageDataRequests.push(
       getCollectionDetails(collectionId,
         success = function (response) {
-          console.log(response);
-          response.reviewed = response.reviewed.filter(function(page) { return PathUtils.isJsonFile(page.uri) });
           result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
         },
         error = function (response) {
@@ -23,15 +21,16 @@ function viewPublishDetails(collections) {
       )
     );
   });
-    console.log(pageDataRequests);
+
   if (onlyOne < 2) {
     result.subtitle = 'The following collection has been approved'
   } else {
     result.subtitle = 'The following collections have been approved'
   }
+
   $.when.apply($, pageDataRequests).then(function () {
+          console.log(result);
     var publishDetails = templates.publishDetails(result);
-//    console.log(publishDetails);
     $('.publish-selected').html(publishDetails);
     $('.collections-accordion').accordion({
       header: '.collections-section__head',
@@ -48,7 +47,7 @@ function viewPublishDetails(collections) {
       // $(this).addClass('page-item--selected');
       $(this).next('.page-options').show();
     });
-    $('.publish-selected .btn-cancel').click(function(){
+    $('.publish-selected .btn-edit-cancel').click(function(){
       $('.publish-selected').animate({right: "-50%"}, 500);
       $('.publish-select').animate({marginLeft: "25%"}, 800);
       $('.publish-select-table tbody tr').removeClass('selected');
