@@ -13,8 +13,11 @@ function viewCollectionDetails(collectionId) {
 
     Florence.setActiveCollection(collection);
 
-
-    collection.date = StringUtils.formatIsoFullDateString(collection.publishDate);
+    if (!collection.publishDate) {
+      collection.date = '[manual collection]';
+    } else {
+      collection.date = StringUtils.formatIsoFullDateString(collection.publishDate);
+    }
 
     ProcessPages(collection.inProgress);
     ProcessPages(collection.complete);
