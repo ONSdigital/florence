@@ -12,7 +12,6 @@ function viewPublish() {
     }
   });
 
- var response = [];
  var result = [];
   function populatePublishTable(collections) {
 
@@ -22,14 +21,17 @@ function viewPublish() {
       .groupBy('publishDate')
       .value();
 
-    _.mapObject(collectionsByDate, function (val, key) {
-      var formattedDate = StringUtils.formatIsoFullDateString(key);
-      $.each(val, function (i) {
-        response.push(val[i].id)
-      });
+      console.log(collectionsByDate)
 
+    for (var key in collectionsByDate) {
+      var response = [];
+      var formattedDate = StringUtils.formatIsoFullDateString(key);
+      $(collectionsByDate[key]).each(function (n) {
+        var id = collectionsByDate[key][n].id;
+        response.push(id);
+      });
       result.push({date: formattedDate, ids: response});
-    });
+    }
 
     var publishList = templates.publishList(result);
     $('.section').html(publishList);

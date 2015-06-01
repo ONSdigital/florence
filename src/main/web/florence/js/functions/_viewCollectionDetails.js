@@ -68,10 +68,10 @@ function viewCollectionDetails(collectionId) {
       createWorkspace('', collectionId, 'browse');
     });
 
-    $('.btn-collection-approve').click(function () {
-      approve(collectionId);
-      viewController('collections');
-    });
+//    $('.btn-collection-approve').click(function () {
+//      approve(collectionId);
+//      viewController('collections');
+//    });
   }
 
   function ProcessPages(pages) {
