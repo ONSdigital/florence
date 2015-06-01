@@ -27,13 +27,17 @@ function loadMarkdownEditor(content, onSave, pageData) {
     $('.markdown-editor').stop().fadeOut(200).remove();
   });
 
-  var onChartSave = function(chartName, chartMarkdown) {
-    insertAtCursor($('#wmd-input')[0], chartMarkdown);
+  var onInsertSave = function(name, markdown) {
+    insertAtCursor($('#wmd-input')[0], markdown);
     Florence.Editor.markdownEditor.refreshPreview();
   };
 
   $(".btn-markdown-editor-chart").click(function(){
-    loadChartBuilder(pageData, onChartSave);
+    loadChartBuilder(pageData, onInsertSave);
+  });
+
+  $(".btn-markdown-editor-table").click(function(){
+    loadTableBuilder(pageData, onInsertSave);
   });
 
   $("#wmd-input").on('click', function () {

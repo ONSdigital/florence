@@ -83,7 +83,8 @@ public class Proxy implements Filter {
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
 
-                if (headerName.equals("Cookie"))
+                if (StringUtils.equalsIgnoreCase(headerName, "Cookie") ||
+                        StringUtils.equalsIgnoreCase(headerName, "Content-Type"))
                     proxyRequest.addHeader(headerName, request.getHeader(headerName));
             }
 
