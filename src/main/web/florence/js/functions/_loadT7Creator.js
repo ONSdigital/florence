@@ -1,5 +1,4 @@
 function loadT7Creator (collectionName, releaseDate, pageType) {
-  alert(pageType);
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
 
   var parentUrl = localStorage.getItem("pageurl");
@@ -81,7 +80,7 @@ function loadT7Creator (collectionName, releaseDate, pageType) {
 
 function pageTypeDataT7(pageType) {
 
-  if (pageType === "static") {
+  if (pageType === "staticpage") {
     return {
       "summary": "",
       "keywords": "",
@@ -135,7 +134,7 @@ function pageTypeDataT7(pageType) {
     };
   }
 
-  else if (pageType === "adHoc") {
+  else if (pageType === "adhoc") {
     return {
       "download": [],
       "content": [],
