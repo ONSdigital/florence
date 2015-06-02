@@ -21,7 +21,6 @@
 
     function draw() {
       pymChild.sendHeight();
-
     }
 
     $.ajax({
@@ -30,6 +29,7 @@
       success: function (data) {
         $('#table').html(data);
         window.onresize = draw;
+        draw();
       }
     });
 
