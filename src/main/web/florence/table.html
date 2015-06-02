@@ -26,7 +26,7 @@
 
     $.ajax({
       url: "/zebedee/table/" + getCookieValue('collection') + "?uri=" + path,
-      type: "GET",
+      type: "POST",
       success: function (data) {
         $('#table').html(data);
         window.onresize = draw;

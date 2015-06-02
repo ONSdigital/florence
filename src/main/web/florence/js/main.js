@@ -2000,10 +2000,10 @@ $('#upload-table-form').submit(function(event) {
 
   var formData = new FormData($(this)[0]);
   var table = buildJsonObjectFromForm();
-  var uriUpload = getPathName() + "/" + table.filename + ".xls";
+  var path = getPathName() + "/" + table.filename;
 
   $.ajax({
-    url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUpload,
+    url: "/zebedee/content/" + Florence.collection.id + "?uri=" + path + ".xls",
     type: 'POST',
     data: formData,
     async: false,
@@ -2011,33 +2011,18 @@ $('#upload-table-form').submit(function(event) {
     contentType: false,
     processData: false,
     success: function (returndata) {
-      renderTable(uriUpload);
+      renderTable(path);
     }
   });
 
   return false;
 });
 
-  function renderTable(uriUpload) {
+  function renderTable(path) {
 
-    // call new api method - pass the json file path and get back html
-    //$.ajax({
-    //  url: "/zebedee/table/" + Florence.collection.id + "?uri=" + uriUpload,
-    //  type: "GET",
-    //  processData: false,
-    //  contentType: false,
-    //  success: function (res) {
-    //    console.log(res);
-    //    var table = $(res);
-    //
-    //
-    //  }
-    //});
-
-
-
-
-    $('#chart').html('<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="/zebedee/table/' + Florence.collection.id + '?uri=' + uriUpload + '"></iframe>');
+    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="/florence/table.html?path=' + path + '.xls"></iframe>'
+    console.log(iframeMarkup);
+    $('#chart').html(iframeMarkup);
 
     document.getElementById('preview-frame').height= "500px";
     document.getElementById('preview-frame').width= "100%";
