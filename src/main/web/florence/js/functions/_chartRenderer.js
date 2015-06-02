@@ -23,8 +23,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var groups = chart.type === 'barline' ? chart.groups : [];
   var type = checkType(chart);
   var rotate = chart.type === 'rotated';
-  var yLabel = rotate == true ? chart.unit : '';
-  if ((chart.unit != '') && (rotate == false)) {
+  var yLabel = rotate === true ? chart.unit : '';
+  if ((chart.unit != '') && (rotate === false)) {
     padding += 24;
   }
   if ((chart.unit != '') && (rotate === true)) {
@@ -93,7 +93,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   renderAnnotations(bindTag, chart);
 
   function renderAnnotations(bindTag, chart) {
-    var rotate = (chart.rotated ? true : false);
 
     var unitTop = (chart.subtitles != '') ? 60 : 45; // Hard coded values for unitTop
 
@@ -115,7 +114,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .text(chart.subtitle);
     }
 
-    if ((chart.unit != '') && (rotate == false)) {
+    if (chart.unit && !rotate) {
       d3.select(bindTag + ' svg').append('text') // Unit (if non rotated)
         .attr('x', 20)
         .attr('y', unitTop)
@@ -130,10 +129,9 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     if (chart.source != '') {
       d3.select(bindTag + ' svg').append('text') // Source
-        .attr('x', 20)
-        .attr('y', 320)
-        .attr('text-anchor', 'left')
-        .style('font-size', '15px')
+        .attr("transform", "translate(" + (viewBoxWidth) + "," + (viewBoxHeight) + ")")
+        .attr('text-anchor', 'end')
+        .style('font-size', '12px')
         .style('fill', '#999999')
         .text(chart.source);
     }

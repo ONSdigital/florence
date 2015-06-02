@@ -56,7 +56,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     datasetEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'static') {
+  else if (pageData.type === 'staticpage') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();
@@ -77,7 +77,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     foiEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'adHoc') {
+  else if (pageData.type === 'adhoc') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();
