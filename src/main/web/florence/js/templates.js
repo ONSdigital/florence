@@ -215,10 +215,14 @@ templates['publishDetails'] = template({"1":function(depth0,helpers,partials,dat
     + alias3(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"id","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</h3>\n      </div>\n      <div class=\"collections-section__content\">\n        <button class=\"btn-collection-unlock\">Unlock collection</button>\n        <h4>Approved pages in this collection</h4>\n        <ul class=\"page-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pageDetails : depth0),{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</h3>\n      </div>\n      <div class=\"collections-section__content\">\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pageType : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        <button class=\"btn-collection-unlock\">Unlock collection</button>\n        <h4>Approved pages in this collection</h4>\n        <ul class=\"page-list\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pageDetails : depth0),{"name":"each","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n      </div>\n    </div>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
+    return "          <button class=\"btn-collection-publish\">Publish collection</button>\n";
+},"4":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "          <li><span class=\"page-item page-item--"

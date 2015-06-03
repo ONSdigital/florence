@@ -477,7 +477,20 @@
 		float: left;
 		width: 40px;
 		height: 42px;
-		background: $pickled-bluewood url(../img/sprite.png) no-repeat 0px -380px;
+		background: $pickled-bluewood url(../img/sprite.png) no-repeat 0px -475px;
+		background-size: 30px auto;
+		margin: 10.5px 0 0 20px;
+
+		&:hover:after {
+			background-color: transparent;
+		}
+	}
+
+	.btn-markdown-editor-table {
+		float: left;
+		width: 40px;
+		height: 42px;
+		background: $pickled-bluewood url(../img/sprite.png) no-repeat 0px -515px;
 		background-size: 30px auto;
 		margin: 10.5px 0 0 20px;
 

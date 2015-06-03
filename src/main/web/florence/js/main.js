@@ -1772,6 +1772,7 @@ function loadT4Creator (collectionName) {
           "download": [],
           "notes": [],
           "summary": "",
+          "datasetID":"",
           "keywords": "",
           "metaDescription": "",
           "nationalStatistic": "false",
@@ -2073,10 +2074,11 @@ function delete_cookie(name) {
 
     var workspace_menu_sub_edit =
       '<section class="workspace-edit">' +
-      '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
-      '     <nav class="edit-nav">' +
-      '     </nav>' +
-      '  </section>';
+      '  <p style="font-size:20px; color:red;">Page: ' + pageData.type + ' is not supported.</p>' +
+      '  <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
+      '  <nav class="edit-nav">' +
+      '  </nav>' +
+      '</section>';
 
     $('.workspace-menu').html(workspace_menu_sub_edit);
     $('.fl-editor__headline').val(JSON.stringify(pageData, null, 2));
@@ -2330,7 +2332,7 @@ function publish(collectionId) {
     type: 'POST',
     success: function () {
       console.log("File published");
-      document.cookie = 'collection=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+//      document.cookie = 'collection=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       alert("Published!");
     },
     error: function () {
@@ -2834,6 +2836,10 @@ function articleEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.name = $(this).val();
   });
+  $("#releaseDate").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.releaseDate = $(this).val();
+  });
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.nextRelease = $(this).val();
@@ -3164,6 +3170,10 @@ function bulletinEditor(collectionId, data) {
   $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.name = $(this).val();
+  });
+  $("#releaseDate").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.releaseDate = $(this).val();
   });
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -3505,6 +3515,10 @@ function datasetEditor(collectionId, data) {
   $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.name = $(this).val();
+  });
+  $("#releaseDate").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.releaseDate = $(this).val();
   });
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -5190,6 +5204,20 @@ function viewCollections(collectionId) {
       viewCollectionDetails(collectionId);
     });
 
+    $('form input[type=radio]').click(function () {
+      if ($('form input[type=radio]:checked').val() === 'manual') {
+        $('#day').hide();
+        $('#month').hide();
+        $('#year').hide();
+        $('#time').hide();
+      } else {
+        $('#day').show();
+        $('#month').show();
+        $('#year').show();
+        $('#time').show();
+      }
+    });
+
     $('.form-create-collection').submit(function (e) {
       e.preventDefault();
       createCollection();
@@ -5304,6 +5332,7 @@ var manual = '[manual collection]';
 
 function viewPublishDetails(collections) {
 
+  var manual = '[manual collection]';
   var result = {
     date: Florence.collectionToPublish.publishDate,
     subtitle: '',
@@ -5317,7 +5346,11 @@ function viewPublishDetails(collections) {
     pageDataRequests.push(
       getCollectionDetails(collectionId,
         success = function (response) {
-          result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
+          if (result.date === manual) {
+            result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed, pageType: 'manual'});
+          } else {
+            result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
+          }
         },
         error = function (response) {
           handleApiError(response);
@@ -5333,6 +5366,7 @@ function viewPublishDetails(collections) {
   }
 
   $.when.apply($, pageDataRequests).then(function () {
+//  console.log(result)
     var publishDetails = templates.publishDetails(result);
     $('.publish-selected').html(publishDetails);
     $('.collections-accordion').accordion({
@@ -5341,13 +5375,23 @@ function viewPublishDetails(collections) {
       active: false,
       collapsible: true
     });
+
+    $('.btn-collection-publish').click(function(){
+      var collection = $('.btn-collection-publish').closest('.collections-section').find('.collection-name').attr('data-id');
+      publish(collection);
+      $('.publish-selected').animate({right: "-50%"}, 500);
+      // Wait until the animation ends
+      setTimeout(function () {
+        viewController('publish');
+      }, 500);
+    });
+
     //page-list
     $('.page-item').click(function(){
       $('.page-list li').removeClass('selected');
       $('.page-options').hide();
 
       $(this).parent('li').addClass('selected');
-      // $(this).addClass('page-item--selected');
       $(this).next('.page-options').show();
     });
     $('.publish-selected .btn-edit-cancel').click(function(){
