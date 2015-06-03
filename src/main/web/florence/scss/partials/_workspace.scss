@@ -536,9 +536,10 @@
 	&__editor {
 		box-sizing: border-box;
 		width: $col--6;
-		height: $lineheight * 26;
+		height: $lineheight * 30;
 		float: left;
 		padding: ($lineheight * 2) $gutter $lineheight $gutter;
+		overflow-y: scroll;
 	}
 
 	&__preview {
