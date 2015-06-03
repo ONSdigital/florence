@@ -88,10 +88,11 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
 
     var workspace_menu_sub_edit =
       '<section class="workspace-edit">' +
-      '     <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
-      '     <nav class="edit-nav">' +
-      '     </nav>' +
-      '  </section>';
+      '  <p style="font-size:20px; color:red;">Page: ' + pageData.type + ' is not supported.</p>' +
+      '  <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
+      '  <nav class="edit-nav">' +
+      '  </nav>' +
+      '</section>';
 
     $('.workspace-menu').html(workspace_menu_sub_edit);
     $('.fl-editor__headline').val(JSON.stringify(pageData, null, 2));

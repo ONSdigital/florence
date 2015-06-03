@@ -8,7 +8,7 @@ function publish(collectionId) {
     type: 'POST',
     success: function () {
       console.log("File published");
-      document.cookie = 'collection=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+//      document.cookie = 'collection=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       alert("Published!");
     },
     error: function () {

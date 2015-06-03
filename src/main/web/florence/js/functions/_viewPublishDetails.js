@@ -1,5 +1,6 @@
 function viewPublishDetails(collections) {
 
+  var manual = '[manual collection]';
   var result = {
     date: Florence.collectionToPublish.publishDate,
     subtitle: '',
@@ -13,7 +14,11 @@ function viewPublishDetails(collections) {
     pageDataRequests.push(
       getCollectionDetails(collectionId,
         success = function (response) {
-          result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
+          if (result.date === manual) {
+            result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed, pageType: 'manual'});
+          } else {
+            result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
+          }
         },
         error = function (response) {
           handleApiError(response);
@@ -29,6 +34,7 @@ function viewPublishDetails(collections) {
   }
 
   $.when.apply($, pageDataRequests).then(function () {
+//  console.log(result)
     var publishDetails = templates.publishDetails(result);
     $('.publish-selected').html(publishDetails);
     $('.collections-accordion').accordion({
@@ -37,13 +43,23 @@ function viewPublishDetails(collections) {
       active: false,
       collapsible: true
     });
+
+    $('.btn-collection-publish').click(function(){
+      var collection = $('.btn-collection-publish').closest('.collections-section').find('.collection-name').attr('data-id');
+      publish(collection);
+      $('.publish-selected').animate({right: "-50%"}, 500);
+      // Wait until the animation ends
+      setTimeout(function () {
+        viewController('publish');
+      }, 500);
+    });
+
     //page-list
     $('.page-item').click(function(){
       $('.page-list li').removeClass('selected');
       $('.page-options').hide();
 
       $(this).parent('li').addClass('selected');
-      // $(this).addClass('page-item--selected');
       $(this).next('.page-options').show();
     });
     $('.publish-selected .btn-edit-cancel').click(function(){

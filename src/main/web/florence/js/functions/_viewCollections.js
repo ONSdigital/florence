@@ -35,6 +35,20 @@ function viewCollections(collectionId) {
       viewCollectionDetails(collectionId);
     });
 
+    $('form input[type=radio]').click(function () {
+      if ($('form input[type=radio]:checked').val() === 'manual') {
+        $('#day').hide();
+        $('#month').hide();
+        $('#year').hide();
+        $('#time').hide();
+      } else {
+        $('#day').show();
+        $('#month').show();
+        $('#year').show();
+        $('#time').show();
+      }
+    });
+
     $('.form-create-collection').submit(function (e) {
       e.preventDefault();
       createCollection();
