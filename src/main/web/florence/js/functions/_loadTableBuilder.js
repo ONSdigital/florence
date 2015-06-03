@@ -43,7 +43,7 @@ $('#upload-table-form').submit(function(event) {
 
     var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="/florence/table.html?path=' + path + '.xls"></iframe>'
     console.log(iframeMarkup);
-    $('#chart').html(iframeMarkup);
+    $('#table').html(iframeMarkup);
 
     document.getElementById('preview-frame').height= "500px";
     document.getElementById('preview-frame').width= "100%";
@@ -84,7 +84,7 @@ $('#upload-table-form').submit(function(event) {
         if (onSave) {
           onSave(table.filename, '<ons-table path="' + getPathName() + '/' + table.filename + '" />');
         }
-        $('.chart-builder').stop().fadeOut(200).remove();
+        $('.table-builder').stop().fadeOut(200).remove();
       }
     });
   });
