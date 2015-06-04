@@ -1,0 +1,18 @@
+<div class="edit-section">
+  <div class="edit-section__head">
+    <h1>Charts</h1>
+
+    <p>Edit existing tables</p>
+  </div>
+  <div class="edit-section__content">
+    <div id="table-list" class="edit-section__sortable">
+        {{#each this.tables}}
+          <div id="table_{{filename}}" class="edit-section__sortable-item">
+              {{title}}
+            <button class="btn-markdown-edit" id="table-edit_{{filename}}">Edit</button>
+            <button class="btn-page-delete" id="table-delete_{{filename}}">Delete</button>
+          </div>
+        {{/each}}
+    </div>
+  </div>
+</div>
