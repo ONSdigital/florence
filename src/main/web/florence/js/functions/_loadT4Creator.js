@@ -103,6 +103,7 @@ function loadT4Creator (collectionName) {
 
       if (pageType === "bulletin") {
         return {
+          "release": "",
           "nextRelease": "",
           "contact": {
             "name": "",
@@ -133,6 +134,7 @@ function loadT4Creator (collectionName) {
 
       else if (pageType === "article") {
         return {
+          "release": "",
           "nextRelease": "",
           "contact": {
             "name": "",
@@ -182,6 +184,7 @@ function loadT4Creator (collectionName) {
 
       else if (pageType === "dataset") {
         return {
+          "release": "",
           "nextRelease": "",
           "contact": {
             "name": "",

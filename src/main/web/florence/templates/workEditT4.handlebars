@@ -16,6 +16,12 @@
             <textarea class="auto-size" type="text" id="name">{{this.name}}</textarea>
             </label>
           </div>
+          <div class="release">
+            <label for="release">Release (version)
+              <!--<textarea class="auto-size" type="text" id="release"></textarea>-->
+              <input class="auto-size" type="date" id="release" value="{{this.release}}"/>
+            </label>
+          </div>
           {{#unless this.releaseDate}}
             <div class="release-date">
               <label for="releaseDate">Release date
