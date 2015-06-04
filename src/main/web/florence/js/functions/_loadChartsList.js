@@ -1,12 +1,12 @@
 function loadChartsList(data, collectionId) {
   var html = templates.workEditCharts(data);
-  $('#charts').html(html);
+  $('#charts').replaceWith(html);
 
   $(data.charts).each(function (index, chart) {
 
     var basePath = getPathName();
     var chartPath = basePath + '/' + chart.filename;
-    var chartJson = chartPath + '.json'
+    var chartJson = chartPath + '.json';
 
     $("#chart-edit_" + chart.filename).click(function () {
       getPageData(collectionId, chartJson,

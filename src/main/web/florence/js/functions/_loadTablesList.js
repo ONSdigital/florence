@@ -1,6 +1,6 @@
 function loadTablesList(data, collectionId) {
   var html = templates.workEditTables(data);
-  $('#tables').html(html);
+  $('#tables').replaceWith(html);
 
   $(data.tables).each(function (index, table) {
 
