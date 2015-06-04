@@ -299,7 +299,7 @@ templates['workEditCharts'] = template({"1":function(depth0,helpers,partials,dat
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"edit-section\">\n  <div class=\"edit-section__head\">\n    <h1>Charts</h1>\n\n    <p>Edit existing charts</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"chart-list\" class=\"edit-section__sortable\">\n"
+  return "<div class=\"edit-section\" id=\"charts\">\n  <div class=\"edit-section__head\">\n    <h1>Charts</h1>\n\n    <p>Edit existing charts</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"chart-list\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.charts : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n  </div>\n</div>";
 },"useData":true});
@@ -757,7 +757,7 @@ templates['workEditTables'] = template({"1":function(depth0,helpers,partials,dat
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"edit-section\">\n  <div class=\"edit-section__head\">\n    <h1>Tables</h1>\n\n    <p>Edit existing tables</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"table-list\" class=\"edit-section__sortable\">\n"
+  return "<div class=\"edit-section\" id=\"tables\">\n  <div class=\"edit-section__head\">\n    <h1>Tables</h1>\n\n    <p>Edit existing tables</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"table-list\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.tables : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n  </div>\n</div>";
 },"useData":true});

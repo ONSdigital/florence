@@ -1294,13 +1294,13 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 function loadChartsList(data, collectionId) {
   var html = templates.workEditCharts(data);
-  $('#charts').html(html);
+  $('#charts').replaceWith(html);
 
   $(data.charts).each(function (index, chart) {
 
     var basePath = getPathName();
     var chartPath = basePath + '/' + chart.filename;
-    var chartJson = chartPath + '.json'
+    var chartJson = chartPath + '.json';
 
     $("#chart-edit_" + chart.filename).click(function () {
       getPageData(collectionId, chartJson,
@@ -2139,7 +2139,7 @@ $('#upload-table-form').submit(function(event) {
 
 function loadTablesList(data, collectionId) {
   var html = templates.workEditTables(data);
-  $('#tables').html(html);
+  $('#tables').replaceWith(html);
 
   $(data.tables).each(function (index, table) {
 
@@ -2205,29 +2205,29 @@ function delete_cookie(name) {
   if (pageData.type === 'home' && pageData.level === 't1') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     t1Editor(collectionId, pageData);
+    accordion();
   }
 
   else if (pageData.type === 'home' && pageData.level === 't2') {
     var html = templates.workEditT2(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     t2Editor(collectionId, pageData);
+    accordion();
   }
 
   else if (pageData.type === 'home' && pageData.level === 't3') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     t3Editor(collectionId, pageData);
+    accordion();
   }
 
   else if (pageData.type === 'bulletin') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     bulletinEditor(collectionId, pageData);
+    accordion();
   }
 
   else if (pageData.type === 'article') {
@@ -2963,6 +2963,14 @@ function articleEditor(collectionId, data) {
   var lastIndexRelated;
   var setActiveTab, getActiveTab;
 
+  if (data.charts) {
+    loadChartsList(data, collectionId);
+  }
+
+  if (data.tables) {
+    loadTablesList(data, collectionId);
+  }
+
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
@@ -3292,6 +3300,13 @@ function articleEditor(collectionId, data) {
     data.externalLinks = newLinks;
 //    console.log(data);
   }
+}
+
+function bulletinEditor(collectionId, data) {
+
+  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
+  var lastIndexRelated;
+  var setActiveTab, getActiveTab;
 
   if (data.charts) {
     loadChartsList(data, collectionId);
@@ -3300,13 +3315,6 @@ function articleEditor(collectionId, data) {
   if (data.tables) {
     loadTablesList(data, collectionId);
   }
-}
-
-function bulletinEditor(collectionId, data) {
-
-  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
-  var lastIndexRelated;
-  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -3642,14 +3650,6 @@ function bulletinEditor(collectionId, data) {
     data.externalLinks = newLinks;
 //    console.log(data);
   }
-
-  if (data.charts) {
-    loadChartsList(data, collectionId);
-  }
-
-  if (data.tables) {
-    loadTablesList(data, collectionId);
-  }
 }
 
 function datasetEditor(collectionId, data) {
@@ -3658,6 +3658,14 @@ function datasetEditor(collectionId, data) {
   var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
   var uriUpload;
   var setActiveTab, getActiveTab;
+
+  if (data.charts) {
+    loadChartsList(data, collectionId);
+  }
+
+  if (data.tables) {
+    loadTablesList(data, collectionId);
+  }
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -4133,14 +4141,6 @@ function datasetEditor(collectionId, data) {
 
     //console.log(data);
     datasetEditor(collectionId, data);
-  }
-
-  if (data.charts) {
-    loadChartsList(data, collectionId);
-  }
-
-  if (data.tables) {
-    loadTablesList(data, collectionId);
   }
 }
 
