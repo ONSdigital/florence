@@ -906,9 +906,10 @@ function loadChartBuilder(pageData, onSave, chart) {
       }
     }
 
-    var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
+    var path = pageUrl + "/" + chart.filename;
+    var jsonPath = path + ".json";
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
       type: "POST",
       data: JSON.stringify(buildChartObject()),
       processData: false,
@@ -918,7 +919,7 @@ function loadChartBuilder(pageData, onSave, chart) {
           generatePng();
         }
 
-        pageData.charts.push({title: chart.title, filename: chart.filename});
+        pageData.charts.push({title: chart.title, filename: chart.filename, path:path});
         if (onSave) {
           onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
@@ -937,8 +938,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     var preview = $('#preview-chart');
-
-//      preview.empty();
     preview.html('<div id="chart"></div>');
 
     var chartHeight = preview.width() * chart.aspectRatio;
@@ -951,7 +950,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
-
 
   function buildChartObject() {
     var json = $('#chart-data').val();
@@ -1294,7 +1292,54 @@ function loadChartBuilder(pageData, onSave, chart) {
   }
 }
 
-function loadCreateScreen(collectionId) {
+function loadChartsList(data, collectionId) {
+  var html = templates.workEditCharts(data);
+  $('#charts').html(html);
+
+  $(data.charts).each(function (index, chart) {
+
+    var basePath = getPathName();
+    var chartPath = basePath + '/' + chart.filename;
+    var chartJson = chartPath + '.json'
+
+    $("#chart-edit_" + chart.filename).click(function () {
+      getPageData(collectionId, chartJson,
+        onSuccess = function (chartData) {
+          loadChartBuilder(chartData, function () {
+            refreshPreview();
+          }, chartData);
+        },
+        onError = function (response) {
+          handleApiError(response);
+        }
+      )
+    });
+
+    $("#chart-delete_" + chart.filename).click(function () {
+      $("#chart_" + index).remove();
+
+      deleteContent(collectionId, chartJson,
+        onSuccess = function () {
+          data.charts = _(data.charts).filter(function (item) {
+            return item.filename !== chart.filename
+          });
+          postContent(collectionId, basePath, JSON.stringify(data),
+            success = function () {
+              Florence.Editor.isDirty = false;
+              refreshPreview();
+              loadChartsList(data, collectionId);
+            },
+            error = function (response) {
+              handleApiError(response);
+            }
+          );
+        },
+        onError = function (response) {
+          handleApiError(response)
+        });
+    });
+  });
+}function loadCreateScreen(collectionId) {
   var html = templates.workCreate;
   $('.workspace-menu').html(html);
   loadT4Creator(collectionId);
@@ -1377,12 +1422,21 @@ function markdownEditor() {
 
   var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
 
+  // output chart tag as text instead of the actual tag.
   converter.hooks.chain("preBlockGamut", function (text) {
-    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match, capture) {
+    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
       var path = $(match).attr('path');
       return '[chart path="' + path + '" ]';
     });
+    return newText;
+  });
 
+  // output table tag as text instead of the actual tag.
+  converter.hooks.chain("preBlockGamut", function (text) {
+    var newText = text.replace(/(<ons-table\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+      var path = $(match).attr('path');
+      return '[table path="' + path + '" ]';
+    });
     return newText;
   });
 
@@ -1985,10 +2039,9 @@ function loadTableBuilder(pageData, onSave, table) {
 
   //$('.table-builder').css("display", "block");
 
-  //if (table) {
-  //  $('#table-data').val(toTsv(table));
-  //  refreshBarLineSection();
-  //}
+  if (table) {
+    renderTable(table.path);
+  }
 
   //renderChart();
 
@@ -2022,7 +2075,7 @@ $('#upload-table-form').submit(function(event) {
 
     var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="/florence/table.html?path=' + path + '.xls"></iframe>'
     console.log(iframeMarkup);
-    $('#chart').html(iframeMarkup);
+    $('#table').html(iframeMarkup);
 
     document.getElementById('preview-frame').height= "500px";
     document.getElementById('preview-frame').width= "100%";
@@ -2046,9 +2099,10 @@ $('#upload-table-form').submit(function(event) {
     }
 
 
-    var uriUploadJSON = pageUrl + "/" + table.filename + ".json";
+    var tablePath = pageUrl + "/" + table.filename;
+    var tableJson = tablePath  + ".json";
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
       type: "POST",
       data: JSON.stringify(buildJsonObjectFromForm()),
       processData: false,
@@ -2056,14 +2110,13 @@ $('#upload-table-form').submit(function(event) {
       success: function (res) {
 
         // upload xls
-
         // create html from xls
 
-        pageData.tables.push({title: table.title, filename: table.filename});
+        pageData.tables.push({title: table.title, filename: table.filename, path: tablePath});
         if (onSave) {
           onSave(table.filename, '<ons-table path="' + getPathName() + '/' + table.filename + '" />');
         }
-        $('.chart-builder').stop().fadeOut(200).remove();
+        $('.table-builder').stop().fadeOut(200).remove();
       }
     });
   });
@@ -2084,7 +2137,54 @@ $('#upload-table-form').submit(function(event) {
   }
 }
 
-function logout() {
+function loadTablesList(data, collectionId) {
+  var html = templates.workEditTables(data);
+  $('#tables').html(html);
+
+  $(data.tables).each(function (index, table) {
+
+    var basePath = getPathName();
+    var tablePath = basePath + '/' + table.filename;
+    var tableJson = tablePath + '.json';
+
+    $("#table-edit_" + table.filename).click(function () {
+      getPageData(collectionId, tableJson,
+        onSuccess = function (tableData) {
+          loadTableBuilder(tableData, function () {
+            refreshPreview();
+          }, tableData);
+        },
+        onError = function (response) {
+          handleApiError(response);
+        }
+      )
+    });
+
+    $("#table-delete_" + table.filename).click(function () {
+      $("#table_" + index).remove();
+
+      deleteContent(collectionId, tableJson,
+        onSuccess = function () {
+          data.tables = _(data.tables).filter(function (item) {
+            return item.filename !== table.filename
+          });
+          postContent(collectionId, basePath, JSON.stringify(data),
+            success = function () {
+              Florence.Editor.isDirty = false;
+              refreshPreview();
+              loadTablesList(data, collectionId);
+            },
+            error = function (response) {
+              handleApiError(response);
+            }
+          );
+        },
+        onError = function (response) {
+          handleApiError(response)
+        });
+    });
+  });
+}function logout() {
   delete_cookie('access_token');
   localStorage.removeItem("loggedInAs");
   Florence.refreshAdminMenu();
@@ -2238,54 +2338,6 @@ function refreshEditNavigation() {
     error = function (response) {
       handleApiError(response);
     })
-}
-
-function loadChartsList(data, collectionId) {
-  var html = templates.workEditCharts(data);
-  $('#charts').html(html);
-
-  $(data.charts).each(function (index, chart) {
-
-    var basePath = getPathName();
-    var chartPath = basePath + '/' + chart.filename + '.json';
-
-    $("#chart-edit_" + chart.filename).click(function () {
-      getPageData(collectionId, chartPath,
-        onSuccess = function (chartData) {
-          loadChartBuilder(chartData, function () {
-            refreshPreview();
-          }, chartData);
-        },
-        onError = function (response) {
-          handleApiError(response);
-        }
-      )
-    });
-
-    $("#chart-delete_" + chart.filename).click(function () {
-      $("#chart_" + index).remove();
-
-      deleteContent(collectionId, chartPath,
-        onSuccess = function () {
-          data.charts = _(data.charts).filter(function (item) {
-            return item.filename !== chart.filename
-          });
-          postContent(collectionId, basePath, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              refreshPreview();
-              loadChartsList(data, collectionId);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }
-          );
-        },
-        onError = function (response) {
-          handleApiError(response)
-        });
-    });
-  });
 }function markDownEditorSetLines() {
   var textarea = $("#wmd-input");
   // var linesHolder = $('.markdown-editor-line-numbers');
@@ -3241,7 +3293,13 @@ function articleEditor(collectionId, data) {
 //    console.log(data);
   }
 
-  loadChartsList(data, collectionId);
+  if (data.charts) {
+    loadChartsList(data, collectionId);
+  }
+
+  if (data.tables) {
+    loadTablesList(data, collectionId);
+  }
 }
 
 function bulletinEditor(collectionId, data) {
@@ -3585,7 +3643,13 @@ function bulletinEditor(collectionId, data) {
 //    console.log(data);
   }
 
-  loadChartsList(data, collectionId);
+  if (data.charts) {
+    loadChartsList(data, collectionId);
+  }
+
+  if (data.tables) {
+    loadTablesList(data, collectionId);
+  }
 }
 
 function datasetEditor(collectionId, data) {
@@ -4071,7 +4135,13 @@ function datasetEditor(collectionId, data) {
     datasetEditor(collectionId, data);
   }
 
-  loadChartsList(data, collectionId);
+  if (data.charts) {
+    loadChartsList(data, collectionId);
+  }
+
+  if (data.tables) {
+    loadTablesList(data, collectionId);
+  }
 }
 
 function adHocEditor(collectionId, data) {

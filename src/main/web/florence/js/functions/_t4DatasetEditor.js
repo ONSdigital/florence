@@ -481,6 +481,12 @@ function datasetEditor(collectionId, data) {
     datasetEditor(collectionId, data);
   }
 
-  loadChartsList(data, collectionId);
+  if (data.charts) {
+    loadChartsList(data, collectionId);
+  }
+
+  if (data.tables) {
+    loadTablesList(data, collectionId);
+  }
 }
 
