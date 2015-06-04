@@ -72,9 +72,10 @@ function loadChartBuilder(pageData, onSave, chart) {
       }
     }
 
-    var uriUploadJSON = pageUrl + "/" + chart.filename + ".json";
+    var path = pageUrl + "/" + chart.filename;
+    var jsonPath = path + ".json";
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
       type: "POST",
       data: JSON.stringify(buildChartObject()),
       processData: false,
@@ -84,7 +85,7 @@ function loadChartBuilder(pageData, onSave, chart) {
           generatePng();
         }
 
-        pageData.charts.push({title: chart.title, filename: chart.filename});
+        pageData.charts.push({title: chart.title, filename: chart.filename, path:path});
         if (onSave) {
           onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
@@ -103,8 +104,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     var preview = $('#preview-chart');
-
-//      preview.empty();
     preview.html('<div id="chart"></div>');
 
     var chartHeight = preview.width() * chart.aspectRatio;
@@ -117,7 +116,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
-
 
   function buildChartObject() {
     var json = $('#chart-data').val();

@@ -6,10 +6,9 @@ function loadTableBuilder(pageData, onSave, table) {
 
   //$('.table-builder').css("display", "block");
 
-  //if (table) {
-  //  $('#table-data').val(toTsv(table));
-  //  refreshBarLineSection();
-  //}
+  if (table) {
+    renderTable(table.path);
+  }
 
   //renderChart();
 
@@ -67,9 +66,10 @@ $('#upload-table-form').submit(function(event) {
     }
 
 
-    var uriUploadJSON = pageUrl + "/" + table.filename + ".json";
+    var tablePath = pageUrl + "/" + table.filename;
+    var tableJson = tablePath  + ".json";
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + uriUploadJSON,
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
       type: "POST",
       data: JSON.stringify(buildJsonObjectFromForm()),
       processData: false,
@@ -77,10 +77,9 @@ $('#upload-table-form').submit(function(event) {
       success: function (res) {
 
         // upload xls
-
         // create html from xls
 
-        pageData.tables.push({title: table.title, filename: table.filename});
+        pageData.tables.push({title: table.title, filename: table.filename, path: tablePath});
         if (onSave) {
           onSave(table.filename, '<ons-table path="' + getPathName() + '/' + table.filename + '" />');
         }

@@ -76,12 +76,21 @@ function markdownEditor() {
 
   var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
 
+  // output chart tag as text instead of the actual tag.
   converter.hooks.chain("preBlockGamut", function (text) {
-    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match, capture) {
+    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
       var path = $(match).attr('path');
       return '[chart path="' + path + '" ]';
     });
+    return newText;
+  });
 
+  // output table tag as text instead of the actual tag.
+  converter.hooks.chain("preBlockGamut", function (text) {
+    var newText = text.replace(/(<ons-table\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+      var path = $(match).attr('path');
+      return '[table path="' + path + '" ]';
+    });
     return newText;
   });
 
