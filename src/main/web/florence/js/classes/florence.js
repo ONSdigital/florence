@@ -1,7 +1,6 @@
 var Florence = Florence || {
-    tredegarBaseUrl: 'http://' + window.location.host + '/index.html#!',
+    tredegarBaseUrl: '//' + window.location.host + '/index.html#!',
     refreshAdminMenu: function () {
-      console.log("refreshing admin menu.." + Florence.Authentication.isAuthenticated())
       var mainNavHtml = templates.mainNav(Florence);
       $('.admin-nav').html(mainNavHtml);
     },
