@@ -34,7 +34,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   // Calculate padding at bottom of SVG
   var bottomPadding = 20;
   if ((chart.source != '')) {
-    bottomPadding += 5;
+    bottomPadding += 25;
   }
 
   // work out position for chart legend
@@ -64,7 +64,9 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         anchor: chart.legend,
         x: 10,
         y: yOffset
-      }
+      },
+      title: chart.title,
+      subTitle: chart.subtitle
     },
     axis: {
       x: {
@@ -73,7 +75,8 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         categories: chart.categories
       },
       y: {
-        label: yLabel
+        label: yLabel,
+        position: 'outer-top'
       },
       rotated: rotate
     },
@@ -94,22 +97,24 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   function renderAnnotations(bindTag, chart) {
 
-    var unitTop = (chart.subtitles != '') ? 60 : 45; // Hard coded values for unitTop
+    var unitTop = (chart.subtitles != '') ? 70 : 45; // Hard coded values for unitTop
 
     // annotate
     d3.select(bindTag + ' svg').append('text') // Title
       .attr('x', 20)
       .attr('y', 25)
       .style('font-size', '20px')
+      .style('font-family', '"DaxlinePro", sans-serif')
       .style('fill', '#000000')
       .text(chart.title);
 
     if (chart.subtitle != '') {
       d3.select(bindTag + ' svg').append('text') // Subtitle
         .attr('x', 20)
-        .attr('y', 36)
+        .attr('y', 45)
         .attr('text-anchor', 'left')
         .style('font-size', '15px')
+        .style('font-family', '"Open Sans", sans-serif')
         .style('fill', '#999999')
         .text(chart.subtitle);
     }
@@ -120,6 +125,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .attr('y', unitTop)
         .attr('text-anchor', 'left')
         .style('font-size', '15px')
+        .style('font-family', '"Open Sans", sans-serif')
         .style('fill', '#000000')
         .text(chart.unit);
     }
@@ -129,9 +135,10 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     if (chart.source != '') {
       d3.select(bindTag + ' svg').append('text') // Source
-        .attr("transform", "translate(" + (viewBoxWidth) + "," + (viewBoxHeight) + ")")
+        .attr("transform", "translate(" + (viewBoxWidth) + "," + (viewBoxHeight + 200) + ")")
         .attr('text-anchor', 'end')
         .style('font-size', '12px')
+        .style('font-family', '"Open Sans", sans-serif')
         .style('fill', '#999999')
         .text(chart.source);
     }
