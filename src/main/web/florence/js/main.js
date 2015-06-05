@@ -14,7 +14,7 @@ if (typeof module !== 'undefined') {
 
 
 var Florence = Florence || {
-    tredegarBaseUrl: '//' + window.location.host + '/index.html#!',
+    tredegarBaseUrl: window.location.origin + '/index.html#!',
     refreshAdminMenu: function () {
       var mainNavHtml = templates.mainNav(Florence);
       $('.admin-nav').html(mainNavHtml);
