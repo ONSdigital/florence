@@ -75,7 +75,6 @@ function markdownEditor() {
   converter.hooks.chain("preBlockGamut", function (text) {
     var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match, capture) {
       var path = $(match).attr('path');
-      var output = '<iframe src="http://localhost:8081/florence/chart.html?path=' + path + '.json"></iframe>';
       return '[chart path="' + path + '" ]';
     });
 
