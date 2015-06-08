@@ -19,7 +19,8 @@
           <div class="release">
             <label for="release">Release (version)
               <!--<textarea class="auto-size" type="text" id="release"></textarea>-->
-              <input class="auto-size" type="date" id="release" value="{{this.release}}"/>
+              <input class="auto-size" type="text" id="release" value="{{this.release.label}}"/>
+              <input style="display: none;" class="auto-size" type="text" id="alt-release" value="{{this.release.value}}"/>
             </label>
           </div>
           {{#unless this.releaseDate}}

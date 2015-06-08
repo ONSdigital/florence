@@ -55,11 +55,24 @@ function loadT4Creator (collectionName) {
     }
 
     function submitFormHandler () {
+      if (pageType === 'bulletin' || pageType === 'article') {
+        $('.version').append(
+          '<label for="version">Version</label>' +
+          '<input id="alt-version" class="validate[required]" type="text" placeholder="" />' +
+          '<input id="version" type="text" style="display: none;"/>'
+        );
+        $('#alt-version').datepicker({dateFormat: "MM yy", altFormat: "yymm", altField: "#version"});
+      }
       $('form').submit(function (e) {
         e.preventDefault();
+        console.log(version)
         pageData = pageTypeDataT4(pageType);
         parent = $('#location').val().trim();
         pageName = $('#pagename').val().trim();
+        if (pageType === 'bulletin' || pageType === 'article') {
+          pageData.release.label = $('#alt-version').val();
+          pageData.release.value = $('#version').val();
+        }
         pageData.name = pageName;
         uriSection = pageType + "s";
         pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -103,7 +116,7 @@ function loadT4Creator (collectionName) {
 
       if (pageType === "bulletin") {
         return {
-          "release": "",
+          "release": {},
           "nextRelease": "",
           "contact": {
             "name": "",
@@ -134,7 +147,7 @@ function loadT4Creator (collectionName) {
 
       else if (pageType === "article") {
         return {
-          "release": "",
+          "release": {},
           "nextRelease": "",
           "contact": {
             "name": "",
