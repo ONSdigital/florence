@@ -1650,7 +1650,6 @@ function loadT4Creator (collectionName) {
 
   $('select').change(function () {
     pageType = $(this).val();
-    $('.btn-page-create').hide();
     var parentUrl = localStorage.getItem("pageurl");
     var parentUrlData = "/data" + parentUrl;                //TBC when not angular
 
@@ -1678,6 +1677,7 @@ function loadT4Creator (collectionName) {
             breadcrumb = inheritedBreadcrumb;
             submitFormHandler ();
           } else {
+            $('.btn-page-create').hide();
             $('#location').attr("placeholder", "This is not a valid place to create this page.");
           }
         },
