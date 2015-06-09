@@ -191,19 +191,18 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.Authentication : depth0)) != null ? stack1.isAuthenticated : stack1),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "")
     + "</ul>\n";
 },"useData":true});
-templates['markdownEditor'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var alias1=this.lambda, alias2=this.escapeExpression;
+templates['markdownEditor'] = template({"1":function(depth0,helpers,partials,data) {
+    return this.escapeExpression(this.lambda((depth0 != null ? depth0.title : depth0), depth0));
+},"3":function(depth0,helpers,partials,data) {
+    return "Content Editor";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
 
-  return "<div class=\"markdown-editor\">\n    <div class=\"markdown-editor__header\">\n        <h1>"
-    + alias2(alias1((depth0 != null ? depth0.title : depth0), depth0))
-    + "</h1>\n        <div class=\"custom-markdown-buttons\">\n            <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n            <button class=\"btn-markdown-editor-table\" title=\"Build Table\"></button>\n        </div>\n        <div id=\"wmd-button-bar\"></div>\n    </div>\n    <div class=\"markdown-editor__content\">\n        <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n        <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n            <h2>Markdown:</h2>\n            <textarea class=\"wmd-input\" id=\"wmd-input\">"
-    + alias2(alias1((depth0 != null ? depth0.markdown : depth0), depth0))
-    + "</textarea>\n            <div class=\"markdown-editor-line-numbers\"></div>\n        </div>\n    </div>\n    <div class=\"markdown-editor__footer\">\n        <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n        <button class=\"btn-markdown-editor-save\">Save changes</button>\n        <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n    </div>\n</div>";
-},"useData":true});
-templates['markdownEditorNoTitle'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<div class=\"markdown-editor\">\n  <div class=\"markdown-editor__header\">\n    <h1>Content editor</h1>\n    <div class=\"custom-markdown-buttons\">\n      <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n      <button class=\"btn-markdown-editor-table\" title=\"Build Table\"></button>\n    </div>\n    <div id=\"wmd-button-bar\"></div>\n  </div>\n  <div class=\"markdown-editor__content\">\n    <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n    <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n      <h2>Markdown:</h2>\n      <textarea class=\"wmd-input\" id=\"wmd-input\">"
-    + this.escapeExpression(this.lambda(depth0, depth0))
-    + "</textarea>\n      <div class=\"markdown-editor-line-numbers\"></div>\n    </div>\n  </div>\n  <div class=\"markdown-editor__footer\">\n    <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n    <button class=\"btn-markdown-editor-save\">Save changes</button>\n    <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n  </div>\n</div>";
+  return "<div class=\"markdown-editor\">\n  <div class=\"markdown-editor__header\">\n    <h1>"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.title : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "")
+    + "</h1>\n\n    <div class=\"custom-markdown-buttons\">\n      <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n      <button class=\"btn-markdown-editor-table\" title=\"Build Table\"></button>\n    </div>\n    <div id=\"wmd-button-bar\"></div>\n  </div>\n  <div class=\"markdown-editor__content\">\n    <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n    <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n      <h2>Markdown:</h2>\n      <textarea class=\"wmd-input\" id=\"wmd-input\">"
+    + this.escapeExpression(this.lambda((depth0 != null ? depth0.markdown : depth0), depth0))
+    + "</textarea>\n\n      <div class=\"markdown-editor-line-numbers\"></div>\n    </div>\n  </div>\n  <div class=\"markdown-editor__footer\">\n    <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n    <button class=\"btn-markdown-editor-save\">Save changes</button>\n    <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n  </div>\n</div>";
 },"useData":true});
 templates['publishDetails'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;

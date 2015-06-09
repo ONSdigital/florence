@@ -1,14 +1,8 @@
 function loadMarkdownEditor(content, onSave, pageData) {
 
-  if (!content.title) {
-    var html = templates.markdownEditorNoTitle(content);
-    $('body').append(html);
-    $('.markdown-editor').stop().fadeIn(200);
-  } else {
-    var html = templates.markdownEditor(content);
-    $('body').append(html);
-    $('.markdown-editor').stop().fadeIn(200);
-  }
+  var html = templates.markdownEditor(content);
+  $('body').append(html);
+  $('.markdown-editor').stop().fadeIn(200);
 
   markdownEditor();
 
