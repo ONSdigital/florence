@@ -480,13 +480,5 @@ function datasetEditor(collectionId, data) {
     //console.log(data);
     datasetEditor(collectionId, data);
   }
-
-  if (data.charts) {
-    loadChartsList(data, collectionId);
-  }
-
-  if (data.tables) {
-    loadTablesList(data, collectionId);
-  }
 }
 
