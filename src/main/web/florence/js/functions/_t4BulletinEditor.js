@@ -338,13 +338,5 @@ function bulletinEditor(collectionId, data) {
     data.externalLinks = newLinks;
 //    console.log(data);
   }
-
-  if (data.charts) {
-    loadChartsList(data, collectionId);
-  }
-
-  if (data.tables) {
-    loadTablesList(data, collectionId);
-  }
 }
 
