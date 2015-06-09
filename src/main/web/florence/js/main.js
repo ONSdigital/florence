@@ -469,8 +469,9 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   }
 }function checkForPageChanged(onChanged) {
   var iframeUrl = localStorage.getItem("pageurl");
-  console.log(iframeUrl)
+  console.log(iframeUrl);
   var nowUrl = $('#iframe')[0].contentWindow.document.location.href.split("#!")[1];
+  console.log(nowUrl);
   if (iframeUrl !== nowUrl) {
     if (!onChanged) {
       localStorage.setItem("pageurl", nowUrl);
@@ -648,6 +649,7 @@ function createWorkspace(path, collectionName, menu) {
 
   $('.workspace-menu').on('click', '.btn-browse-create', function () {
     var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+    console.log(dest);
     viewWorkspace(dest, Florence.collection.id, 'create');
   });
 
@@ -2198,84 +2200,69 @@ function delete_cookie(name) {
   var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
   templateData.isPageComplete = isPageComplete;
 
-//  $('.btn-edit-cancel').click(function (collectionId) {
-//    viewWorkspace('', collectionId, 'browse');
-//  });
-
   if (pageData.type === 'home' && pageData.level === 't1') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
     t1Editor(collectionId, pageData);
-    accordion();
   }
 
   else if (pageData.type === 'home' && pageData.level === 't2') {
     var html = templates.workEditT2(templateData);
     $('.workspace-menu').html(html);
     t2Editor(collectionId, pageData);
-    accordion();
   }
 
   else if (pageData.type === 'home' && pageData.level === 't3') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
     t3Editor(collectionId, pageData);
-    accordion();
   }
 
   else if (pageData.type === 'bulletin') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
     bulletinEditor(collectionId, pageData);
-    accordion();
   }
 
   else if (pageData.type === 'article') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     articleEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'methodology') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     methodologyEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'dataset') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     datasetEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'staticpage') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     staticEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'qmi') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     qmiEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'foi') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     foiEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'adhoc') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
-    accordion();
     adHocEditor(collectionId, pageData);
   }
 
@@ -2314,6 +2301,8 @@ function delete_cookie(name) {
       saveAndReviewContent(collectionId, getPathName(), pageData);
     });
   }
+
+  accordion();
 
   // Listen on all input within the workspace edit panel for dirty checks.
   $('.workspace-edit :input').on('input', function () {
@@ -2963,14 +2952,6 @@ function articleEditor(collectionId, data) {
   var lastIndexRelated;
   var setActiveTab, getActiveTab;
 
-  if (data.charts) {
-    loadChartsList(data, collectionId);
-  }
-
-  if (data.tables) {
-    loadTablesList(data, collectionId);
-  }
-
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
@@ -3300,13 +3281,6 @@ function articleEditor(collectionId, data) {
     data.externalLinks = newLinks;
 //    console.log(data);
   }
-}
-
-function bulletinEditor(collectionId, data) {
-
-  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
-  var lastIndexRelated;
-  var setActiveTab, getActiveTab;
 
   if (data.charts) {
     loadChartsList(data, collectionId);
@@ -3315,6 +3289,13 @@ function bulletinEditor(collectionId, data) {
   if (data.tables) {
     loadTablesList(data, collectionId);
   }
+}
+
+function bulletinEditor(collectionId, data) {
+
+  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
+  var lastIndexRelated;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -3650,14 +3631,6 @@ function bulletinEditor(collectionId, data) {
     data.externalLinks = newLinks;
 //    console.log(data);
   }
-}
-
-function datasetEditor(collectionId, data) {
-
-  var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [];
-  var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
-  var uriUpload;
-  var setActiveTab, getActiveTab;
 
   if (data.charts) {
     loadChartsList(data, collectionId);
@@ -3666,6 +3639,14 @@ function datasetEditor(collectionId, data) {
   if (data.tables) {
     loadTablesList(data, collectionId);
   }
+}
+
+function datasetEditor(collectionId, data) {
+
+  var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [];
+  var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
+  var uriUpload;
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -4141,6 +4122,14 @@ function datasetEditor(collectionId, data) {
 
     //console.log(data);
     datasetEditor(collectionId, data);
+  }
+
+  if (data.charts) {
+    loadChartsList(data, collectionId);
+  }
+
+  if (data.tables) {
+    loadTablesList(data, collectionId);
   }
 }
 
@@ -5225,15 +5214,6 @@ function treeNodeSelect(url){
   $(selectedListItem).parents('ul').addClass('active');
   $(selectedListItem).closest('li').children('ul').addClass('active');
 
-
-  $('.btn-browse-edit').click(function () {
-    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-    viewWorkspace(dest, Florence.collection.id, 'edit');
-    });
-  $('.btn-browse-create').click(function () {
-    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-    viewWorkspace(dest, Florence.collection.id, 'create');
-  });
 //  $('.btn-browse-delete').click(function () {
 //    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
 //
