@@ -3,10 +3,6 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
   templateData.isPageComplete = isPageComplete;
 
-//  $('.btn-edit-cancel').click(function (collectionId) {
-//    viewWorkspace('', collectionId, 'browse');
-//  });
-
   if (pageData.type === 'home' && pageData.level === 't1') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
@@ -31,6 +27,12 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'bulletin') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
     accordion();
     bulletinEditor(collectionId, pageData);
   }
@@ -38,6 +40,12 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'article') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
     accordion();
     articleEditor(collectionId, pageData);
   }
@@ -83,6 +91,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     accordion();
     adHocEditor(collectionId, pageData);
   }
+
 
   else {
 
@@ -143,52 +152,4 @@ function refreshEditNavigation() {
     error = function (response) {
       handleApiError(response);
     })
-}
-
-function loadChartsList(data, collectionId) {
-  var html = templates.workEditCharts(data);
-  $('#charts').html(html);
-
-  $(data.charts).each(function (index, chart) {
-
-    var basePath = getPathName();
-    var chartPath = basePath + '/' + chart.filename + '.json';
-
-    $("#chart-edit_" + chart.filename).click(function () {
-      getPageData(collectionId, chartPath,
-        onSuccess = function (chartData) {
-          loadChartBuilder(chartData, function () {
-            refreshPreview();
-          }, chartData);
-        },
-        onError = function (response) {
-          handleApiError(response);
-        }
-      )
-    });
-
-    $("#chart-delete_" + chart.filename).click(function () {
-      $("#chart_" + index).remove();
-
-      deleteContent(collectionId, chartPath,
-        onSuccess = function () {
-          data.charts = _(data.charts).filter(function (item) {
-            return item.filename !== chart.filename
-          });
-          postContent(collectionId, basePath, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              refreshPreview();
-              loadChartsList(data, collectionId);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }
-          );
-        },
-        onError = function (response) {
-          handleApiError(response)
-        });
-    });
-  });
 }

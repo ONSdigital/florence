@@ -51,6 +51,7 @@ function loadT4Creator (collectionName) {
             pageName = checkData.name;
             submitFormHandler (pageName, contentUrl);
           } else {
+            $('.btn-page-create').hide();
             $('#location').attr("placeholder", "This is not a valid place to create this page.");
           }
         },
