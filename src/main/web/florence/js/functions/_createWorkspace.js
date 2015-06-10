@@ -48,6 +48,7 @@ function createWorkspace(path, collectionName, menu) {
 
   $('.workspace-menu').on('click', '.btn-browse-create', function () {
     var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+    console.log(dest);
     viewWorkspace(dest, Florence.collection.id, 'create');
   });
 

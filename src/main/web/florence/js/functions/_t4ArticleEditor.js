@@ -120,7 +120,10 @@ function articleEditor(collectionId, data) {
   $(data.sections).each(function(index, section){
 
     $("#section-edit_"+index).click(function() {
-      var editedSectionValue = $("#section-markdown_" + index).val();
+      var editedSectionValue = {
+        "title": $('#section-title_' + index).val(),
+        "markdown": $("#section-markdown_" + index).val()
+      };
 
       var saveContent = function(updatedContent) {
         data.sections[index].markdown = updatedContent;
@@ -305,8 +308,8 @@ function articleEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-      var markdown = $('#section_markdown_' + nameS).val();
-      var title = $('#section__' + nameS).val();
+      var markdown = $('#section-markdown_' + nameS).val();
+      var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
@@ -321,23 +324,21 @@ function articleEditor(collectionId, data) {
     // Related links
     var orderArticle = $("#sortable-related").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
-      var uri = $('#article__' + nameB).val();
-      var summary = $('#article_summary_' + nameB).val();
-      var name = $('#article_name_' + nameB).val();
+      var uri = $('#article-uri_' + nameB).val();
+      var summary = $('#article-summary_' + nameB).val();
+      var name = $('#article-title_' + nameB).val();
       newRelated[indexB]= {uri: uri, name: name, summary: summary};
     });
     data.relatedArticles = newRelated;
     // External links
     var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link_text_'+nameL).val();
-      var link = $('#link__'+nameL).val();
+      var displayText = $('#link-title_'+nameL).val();
+      var link = $('#link-url_'+nameL).val();
       newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
 //    console.log(data);
   }
-
-  loadChartsList(data, collectionId);
 }
 
