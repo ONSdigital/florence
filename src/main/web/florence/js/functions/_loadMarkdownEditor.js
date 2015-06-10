@@ -1,14 +1,8 @@
 function loadMarkdownEditor(content, onSave, pageData) {
 
-  if (!content.title) {
-    var html = templates.markdownEditorNoTitle(content);
-    $('body').append(html);
-    $('.markdown-editor').stop().fadeIn(200);
-  } else {
-    var html = templates.markdownEditor(content);
-    $('body').append(html);
-    $('.markdown-editor').stop().fadeIn(200);
-  }
+  var html = templates.markdownEditor(content);
+  $('body').append(html);
+  $('.markdown-editor').stop().fadeIn(200);
 
   markdownEditor();
 
@@ -27,13 +21,17 @@ function loadMarkdownEditor(content, onSave, pageData) {
     $('.markdown-editor').stop().fadeOut(200).remove();
   });
 
-  var onChartSave = function(chartName, chartMarkdown) {
-    insertAtCursor($('#wmd-input')[0], chartMarkdown);
+  var onInsertSave = function(name, markdown) {
+    insertAtCursor($('#wmd-input')[0], markdown);
     Florence.Editor.markdownEditor.refreshPreview();
   };
 
   $(".btn-markdown-editor-chart").click(function(){
-    loadChartBuilder(pageData, onChartSave);
+    loadChartBuilder(pageData, onInsertSave);
+  });
+
+  $(".btn-markdown-editor-table").click(function(){
+    loadTableBuilder(pageData, onInsertSave);
   });
 
   $("#wmd-input").on('click', function () {
@@ -72,13 +70,21 @@ function markdownEditor() {
 
   var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
 
+  // output chart tag as text instead of the actual tag.
   converter.hooks.chain("preBlockGamut", function (text) {
-    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match, capture) {
+    var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
       var path = $(match).attr('path');
-      var output = '<iframe src="http://localhost:8081/florence/chart.html?path=' + path + '.json"></iframe>';
       return '[chart path="' + path + '" ]';
     });
+    return newText;
+  });
 
+  // output table tag as text instead of the actual tag.
+  converter.hooks.chain("preBlockGamut", function (text) {
+    var newText = text.replace(/(<ons-table\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+      var path = $(match).attr('path');
+      return '[table path="' + path + '" ]';
+    });
     return newText;
   });
 

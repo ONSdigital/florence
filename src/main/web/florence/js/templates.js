@@ -82,9 +82,6 @@ templates['chartEditBarlines'] = template({"1":function(depth0,helpers,partials,
 
   return ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
-templates['chartTable'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<table>\n  <tbody>\n    <tr>\n      <th></th>\n    </tr>\n    <tr class=\"row\">\n      <td></td>\n    </tr>\n  </tbody>\n</table>";
-},"useData":true});
 templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
@@ -194,19 +191,18 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.Authentication : depth0)) != null ? stack1.isAuthenticated : stack1),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "")
     + "</ul>\n";
 },"useData":true});
-templates['markdownEditor'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var alias1=this.lambda, alias2=this.escapeExpression;
+templates['markdownEditor'] = template({"1":function(depth0,helpers,partials,data) {
+    return this.escapeExpression(this.lambda((depth0 != null ? depth0.title : depth0), depth0));
+},"3":function(depth0,helpers,partials,data) {
+    return "Content Editor";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
 
-  return "<div class=\"markdown-editor\">\n    <div class=\"markdown-editor__header\">\n        <h1>"
-    + alias2(alias1((depth0 != null ? depth0.title : depth0), depth0))
-    + "</h1>\n        <div class=\"custom-markdown-buttons\">\n            <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n        </div>\n        <div id=\"wmd-button-bar\"></div>\n    </div>\n    <div class=\"markdown-editor__content\">\n        <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n        <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n            <h2>Markdown:</h2>\n            <textarea class=\"wmd-input\" id=\"wmd-input\">"
-    + alias2(alias1((depth0 != null ? depth0.markdown : depth0), depth0))
-    + "</textarea>\n            <div class=\"markdown-editor-line-numbers\"></div>\n        </div>\n    </div>\n    <div class=\"markdown-editor__footer\">\n        <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n        <button class=\"btn-markdown-editor-save\">Save changes</button>\n        <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n    </div>\n</div>";
-},"useData":true});
-templates['markdownEditorNoTitle'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<div class=\"markdown-editor\">\n  <div class=\"markdown-editor__header\">\n    <h1>Content editor</h1>\n    <div class=\"custom-markdown-buttons\">\n      <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n    </div>\n    <div id=\"wmd-button-bar\"></div>\n  </div>\n  <div class=\"markdown-editor__content\">\n    <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n    <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n      <h2>Markdown:</h2>\n      <textarea class=\"wmd-input\" id=\"wmd-input\">"
-    + this.escapeExpression(this.lambda(depth0, depth0))
-    + "</textarea>\n      <div class=\"markdown-editor-line-numbers\"></div>\n    </div>\n  </div>\n  <div class=\"markdown-editor__footer\">\n    <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n    <button class=\"btn-markdown-editor-save\">Save changes</button>\n    <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n  </div>\n</div>";
+  return "<div class=\"markdown-editor\">\n  <div class=\"markdown-editor__header\">\n    <h1>"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.title : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "")
+    + "</h1>\n\n    <div class=\"custom-markdown-buttons\">\n      <button class=\"btn-markdown-editor-chart\" title=\"Build Chart\"></button>\n      <button class=\"btn-markdown-editor-table\" title=\"Build Table\"></button>\n    </div>\n    <div id=\"wmd-button-bar\"></div>\n  </div>\n  <div class=\"markdown-editor__content\">\n    <div id=\"wmd-preview\" class=\"wmd-panel wmd-preview\"></div>\n    <div id=\"wmd-edit\" class=\"wmd-panel wmd-edit\">\n      <h2>Markdown:</h2>\n      <textarea class=\"wmd-input\" id=\"wmd-input\">"
+    + this.escapeExpression(this.lambda((depth0 != null ? depth0.markdown : depth0), depth0))
+    + "</textarea>\n\n      <div class=\"markdown-editor-line-numbers\"></div>\n    </div>\n  </div>\n  <div class=\"markdown-editor__footer\">\n    <button class=\"btn-markdown-editor-cancel\">Cancel</button>\n    <button class=\"btn-markdown-editor-save\">Save changes</button>\n    <button class=\"btn-markdown-editor-exit\">Save changes and exit</button>\n  </div>\n</div>";
 },"useData":true});
 templates['publishDetails'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
@@ -258,6 +254,13 @@ templates['publishList'] = template({"1":function(depth0,helpers,partials,data) 
     + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </tbody>\n  </table>\n</section>\n<section class=\"panel col col--6 publish-selected\">\n\n</section>";
 },"useData":true});
+templates['tableBuilder'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "<div class=\"table-builder overlay\">\n  <div class=\"table-builder__inner\">\n\n    <div id=\"edit-table\" class=\"table-builder__editor\">\n      <form id=\"upload-table-form\">\n        <input type=\"text\" id=\"table-title\" placeholder=\"[Title]\" value=\""
+    + this.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "\"/>\n        <input type=\"file\" name=\"files\" id=\"files\">\n        <input type=\"submit\" value=\"Submit\">\n      </form>\n    </div>\n\n    <div id=\"preview-table\" class=\"table-builder__preview\">\n      <div id=\"table\"></div>\n    </div>\n\n    <div class=\"table-builder__footer\">\n      <button class=\"btn-table-builder-cancel\">Cancel</button>\n      <button class=\"btn-table-builder-create\">Save Table</button>\n    </div>\n\n  </div>\n</div>";
+},"useData":true});
 templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -295,7 +298,7 @@ templates['workEditCharts'] = template({"1":function(depth0,helpers,partials,dat
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"edit-section\">\n  <div class=\"edit-section__head\">\n    <h1>Charts</h1>\n\n    <p>Edit existing charts</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"chart-list\" class=\"edit-section__sortable\">\n"
+  return "<div class=\"edit-section\" id=\"charts\">\n  <div class=\"edit-section__head\">\n    <h1>Charts</h1>\n\n    <p>Edit existing charts</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"chart-list\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.charts : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n  </div>\n</div>";
 },"useData":true});
@@ -537,14 +540,14 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
 
   return "            <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"link-url_"
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"link-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
-    + "</textarea>\n              <textarea id=\"link-title_"
+    + "\" placeholder=\"Title\">"
+    + alias3(((helper = (helper = helpers.linkText || (depth0 != null ? depth0.linkText : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"linkText","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea id=\"link-url_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" placeholder=\"Paste link here and save\">"
-    + alias3(((helper = (helper = helpers.linkText || (depth0 != null ? depth0.linkText : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"linkText","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
     + "</textarea>\n              <button class=\"btn-page-delete\" id=\"link-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n            </div>\n";
@@ -553,7 +556,7 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
 
   return "            <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"dataset-uri_"
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"used-uri_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
@@ -657,7 +660,7 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.usedIn : depth0),{"name":"each","hash":{},"fn":this.program(17, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-used\" id=\"addUsed\">Add article or bulletin</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.download : depth0),{"name":"each","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\">\n\n    </div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Correction</h1>\n        <p>Date | Notice | Severity</p>\n      </div>\n      <div class=\"edit-section__content edit-section__content--correction\">\n"
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Correction</h1>\n        <p>Date | Notice | Severity</p>\n      </div>\n      <div class=\"edit-section__content edit-section__content--correction\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"each","hash":{},"fn":this.program(21, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addCorrection\">Add correction</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"      ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
@@ -734,10 +737,29 @@ templates['workEditT7'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.content : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addContent\">Add content</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.download : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\">\n\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
+templates['workEditTables'] = template({"1":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "          <div id=\"table_"
+    + alias3(((helper = (helper = helpers.filename || (depth0 != null ? depth0.filename : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"filename","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "\n            <button class=\"btn-markdown-edit\" id=\"table-edit_"
+    + alias3(((helper = (helper = helpers.filename || (depth0 != null ? depth0.filename : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"filename","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n            <button class=\"btn-page-delete\" id=\"table-delete_"
+    + alias3(((helper = (helper = helpers.filename || (depth0 != null ? depth0.filename : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"filename","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n          </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "<div class=\"edit-section\" id=\"tables\">\n  <div class=\"edit-section__head\">\n    <h1>Tables</h1>\n\n    <p>Edit existing tables</p>\n  </div>\n  <div class=\"edit-section__content\">\n    <div id=\"table-list\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.tables : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </div>\n  </div>\n</div>";
+},"useData":true});
 templates['workSpace'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<nav class=\"panel col col--1 workspace-nav\">\n  <ul class=\"nav nav--workspace\">\n    <li class=\"nav--workspace__browse selected\" id=\"browse\"><a href=\"#\">Browse</a></li>\n    <li class=\"nav--workspace__create\" id=\"create\"><a href=\"#\">Create</a></li>\n    <li class=\"nav--workspace__edit\" id=\"edit\"><a href=\"#\">Edit</a></li>\n  </ul>\n</nav>\n<div class=\"col col--4 workspace-menu\">\n\n</div>\n<section class=\"panel col col--7 workspace-browser\">\n  <div class=\"browser\">\n    <div class=\"addressbar\">\n      <button class=\"browser-btn-back\">&lt;</button>\n      <button class=\"browser-btn-forward\">&gt;</button>\n      <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label><input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n      <button class=\"browser-btn-mobile\">Mobile</button>\n    </div>\n    <iframe id=\"iframe\" src=\""
     + this.escapeExpression(this.lambda(depth0, depth0))
