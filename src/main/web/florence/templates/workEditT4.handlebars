@@ -17,19 +17,15 @@
             </label>
           </div>
           <div class="release">
-            <label for="release">Release (version)
-              <!--<textarea class="auto-size" type="text" id="release"></textarea>-->
-              <input class="auto-size" type="text" id="release" value="{{this.release.label}}"/>
-              <input style="display: none;" class="auto-size" type="text" id="alt-release" value="{{this.release.value}}"/>
+            <label for="release">Release
+              <textarea class="auto-size" type="text" id="release">{{this.release}}</textarea>
             </label>
           </div>
-          {{#unless this.releaseDate}}
-            <div class="release-date">
-              <label for="releaseDate">Release date
-                <textarea class="auto-size" type="text" id="releaseDate"></textarea>
-              </label>
-            </div>
-          {{/unless}}
+          <div class="release-date">
+            <label for="releaseDate">Release date
+              <textarea class="auto-size" type="text" id="releaseDate">{{this.releaseDate}}</textarea>
+            </label>
+          </div>
           <div class="next-p">
             <label for="nextRelease">Next release
             <textarea class="auto-size" type="text" id="nextRelease">{{this.nextRelease}}</textarea>

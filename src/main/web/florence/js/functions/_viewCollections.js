@@ -35,19 +35,34 @@ function viewCollections(collectionId) {
       viewCollectionDetails(collectionId);
     });
 
+//    $('form input[type=radio]:checked').val() = 'scheduled';
     $('form input[type=radio]').click(function () {
       if ($('form input[type=radio]:checked').val() === 'manual') {
-        $('#day').hide();
-        $('#month').hide();
-        $('#year').hide();
+        $('#date').hide();
         $('#time').hide();
       } else {
-        $('#day').show();
-        $('#month').show();
-        $('#year').show();
+        $('#date').show();
         $('#time').show();
       }
     });
+
+    var noBefore = function (date){
+      if (date < new Date()){
+      return [false];
+      }
+      return [true];
+      }
+
+      a = new Date();
+
+      $(function() {
+         $('#date').datepicker({
+                      minDate: a,
+                      dateFormat: 'dd/mm/yy',
+                      constrainInput: true,
+                      beforeShowDay: noBefore
+                    });
+      });
 
     $('.form-create-collection').submit(function (e) {
       e.preventDefault();
