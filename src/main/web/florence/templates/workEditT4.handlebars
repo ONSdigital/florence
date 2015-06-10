@@ -235,8 +235,8 @@
         <div id="sortable-external" class="edit-section__sortable">
           {{#each this.externalLinks}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="link-url_{{@index}}">{{url}}</textarea>
-              <textarea id="link-title_{{@index}}" placeholder="Paste link here and save">{{linkText}}</textarea>
+              <textarea id="link-title_{{@index}}" placeholder="Title">{{linkText}}</textarea>
+              <textarea id="link-url_{{@index}}" placeholder="Paste link here and save">{{url}}</textarea>
               <button class="btn-page-delete" id="link-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
@@ -256,7 +256,7 @@
         <div id="sortable-used" class="edit-section__sortable">
           {{#each this.usedIn}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
+              <textarea id="used-uri_{{@index}}">{{uri}}</textarea>
               <textarea style="display: none;" id="used-title_{{@index}}">{{title}}</textarea>
               <textarea style="display: none;" id="used-summary_{{@index}}">{{summary}}</textarea>
               <button class="btn-page-delete" id="used-delete_{{@index}}">Delete</button>

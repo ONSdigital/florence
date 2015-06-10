@@ -322,17 +322,17 @@ function bulletinEditor(collectionId, data) {
     // Related links
     var orderBulletin = $("#sortable-related").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
-      var uri = $('#bulletin__' + nameB).val();
-      var summary = $('#bulletin_summary_' + nameB).val();
-      var name = $('#bulletin_name_' + nameB).val();
+      var uri = $('#bulletin-uri_' + nameB).val();
+      var summary = $('#bulletin-summary_' + nameB).val();
+      var name = $('#bulletin-title_' + nameB).val();
       newRelated[indexB] = {uri: uri, name: name, summary: summary};
     });
     data.relatedBulletins = newRelated;
     // External links
     var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link_text_'+nameL).val();
-      var link = $('#link_url_'+nameL).val();
+      var displayText = $('#link-title_'+nameL).val();
+      var link = $('#link-url_'+nameL).val();
       newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
