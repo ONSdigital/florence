@@ -62,7 +62,7 @@ function loadT4Creator (collectionName) {
 
     function submitFormHandler (name, uri) {
       $('select').off().change(function () {
-        createWorkspace(contentUrl, Florence.collection.id, 'create');
+        createWorkspace(parentUrl, Florence.collection.id, 'create');
       });
       var releaseDateManual;
       if (pageType === 'bulletin' || pageType === 'article') {
@@ -80,14 +80,22 @@ function loadT4Creator (collectionName) {
         );
         $('#releaseDateAlt').datepicker({dateFormat: 'dd/mm/yy', altFormat: 'yymmdd', altField: '#releaseDate'});
       }
-      pageName = name ? name : $('#pagename').val().trim();
-      $('#pagename').val(name);
+      if (name) {
+        pageName = name;
+        $('#pagename').val(name);
+      }
+
       $('form').submit(function (e) {
         releaseDateManual = $('#releaseDate').val()
         pageData = pageTypeDataT4(pageType);
         parent = $('#location').val().trim();
         if (pageType === 'bulletin' || pageType === 'article') {
           pageData.release = $('#release').val();
+        }
+        if (name) {
+          //do nothing;
+        } else {
+          pageName = $('#pagename').val();
         }
         pageData.name = pageName;
         uriSection = pageType + "s";
