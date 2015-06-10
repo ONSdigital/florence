@@ -461,18 +461,18 @@ function datasetEditor(collectionId, data) {
     // Related links
     var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
-      var uri = $('#dataset__' + nameD).val();
-      var summary = $('#dataset_summary_' + nameD).val();
-      var name = $('#dataset_name_' + nameD).val();
+      var uri = $('#dataset-uri_' + nameD).val();
+      var summary = $('#dataset-summary_' + nameD).val();
+      var name = $('#dataset-title_' + nameD).val();
       newRelated[indexD]= {uri: uri, name: name, summary: summary};
     });
     data.relatedDatasets = newRelated;
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#usedIn__'+nameU).val();
-      var summary = $('#usedIn_summary_'+nameU).val();
-      var name = $('#usedIn_name_'+nameU).val();
+      var uri = $('#used-uri_'+nameU).val();
+      var summary = $('#used-summary_'+nameU).val();
+      var name = $('#used-title_'+nameU).val();
       newUsedIn[parseInt(indexU)] = {uri: uri, name: name, summary: summary};
     });
     data.usedIn = newUsedIn;

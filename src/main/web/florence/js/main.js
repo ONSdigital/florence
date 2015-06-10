@@ -3080,7 +3080,10 @@ function articleEditor(collectionId, data) {
   $(data.sections).each(function(index, section){
 
     $("#section-edit_"+index).click(function() {
-      var editedSectionValue = $("#section-markdown_" + index).val();
+      var editedSectionValue = {
+        "title": $('#section-title_' + index).val(),
+        "markdown": $("#section-markdown_" + index).val()
+      };
 
       var saveContent = function(updatedContent) {
         data.sections[index].markdown = updatedContent;
@@ -3265,8 +3268,8 @@ function articleEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-      var markdown = $('#section_markdown_' + nameS).val();
-      var title = $('#section__' + nameS).val();
+      var markdown = $('#section-markdown_' + nameS).val();
+      var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
@@ -3281,17 +3284,17 @@ function articleEditor(collectionId, data) {
     // Related links
     var orderArticle = $("#sortable-related").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
-      var uri = $('#article__' + nameB).val();
-      var summary = $('#article_summary_' + nameB).val();
-      var name = $('#article_name_' + nameB).val();
+      var uri = $('#article-uri_' + nameB).val();
+      var summary = $('#article-summary_' + nameB).val();
+      var name = $('#article-title_' + nameB).val();
       newRelated[indexB]= {uri: uri, name: name, summary: summary};
     });
     data.relatedArticles = newRelated;
     // External links
     var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link_text_'+nameL).val();
-      var link = $('#link__'+nameL).val();
+      var displayText = $('#link-title_'+nameL).val();
+      var link = $('#link-url_'+nameL).val();
       newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
@@ -3623,17 +3626,17 @@ function bulletinEditor(collectionId, data) {
     // Related links
     var orderBulletin = $("#sortable-related").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
-      var uri = $('#bulletin__' + nameB).val();
-      var summary = $('#bulletin_summary_' + nameB).val();
-      var name = $('#bulletin_name_' + nameB).val();
+      var uri = $('#bulletin-uri_' + nameB).val();
+      var summary = $('#bulletin-summary_' + nameB).val();
+      var name = $('#bulletin-title_' + nameB).val();
       newRelated[indexB] = {uri: uri, name: name, summary: summary};
     });
     data.relatedBulletins = newRelated;
     // External links
     var orderLink = $("#sortable-external").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link_text_'+nameL).val();
-      var link = $('#link_url_'+nameL).val();
+      var displayText = $('#link-title_'+nameL).val();
+      var link = $('#link-url_'+nameL).val();
       newLinks[indexL] = {url: link, linkText: displayText};
     });
     data.externalLinks = newLinks;
@@ -4104,18 +4107,18 @@ function datasetEditor(collectionId, data) {
     // Related links
     var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
-      var uri = $('#dataset__' + nameD).val();
-      var summary = $('#dataset_summary_' + nameD).val();
-      var name = $('#dataset_name_' + nameD).val();
+      var uri = $('#dataset-uri_' + nameD).val();
+      var summary = $('#dataset-summary_' + nameD).val();
+      var name = $('#dataset-title_' + nameD).val();
       newRelated[indexD]= {uri: uri, name: name, summary: summary};
     });
     data.relatedDatasets = newRelated;
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#usedIn__'+nameU).val();
-      var summary = $('#usedIn_summary_'+nameU).val();
-      var name = $('#usedIn_name_'+nameU).val();
+      var uri = $('#used-uri_'+nameU).val();
+      var summary = $('#used-summary_'+nameU).val();
+      var name = $('#used-title_'+nameU).val();
       newUsedIn[parseInt(indexU)] = {uri: uri, name: name, summary: summary};
     });
     data.usedIn = newUsedIn;
