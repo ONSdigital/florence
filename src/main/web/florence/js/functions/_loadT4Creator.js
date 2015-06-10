@@ -42,6 +42,14 @@ function loadT4Creator (collectionName) {
             inheritedBreadcrumb.push(parentBreadcrumb);
             breadcrumb = inheritedBreadcrumb;
             submitFormHandler ();
+          } if ((checkData.type === 'bulletin'&& pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
+            contentUrlTmp = parentUrl.split('/');
+            contentUrlTmp.splice(-1, 1);
+            contentUrl = contentUrlTmp.join('/');
+            $('#location').val(contentUrl);
+            breadcrumb = checkData.breadcrumb;
+            pageName = checkData.name;
+            submitFormHandler (pageName, contentUrl);
           } else {
             $('#location').attr("placeholder", "This is not a valid place to create this page.");
           }
@@ -52,7 +60,10 @@ function loadT4Creator (collectionName) {
       });
     }
 
-    function submitFormHandler () {
+    function submitFormHandler (name, uri) {
+      $('select').off().change(function () {
+        createWorkspace(contentUrl, Florence.collection.id, 'create');
+      });
       var releaseDateManual;
       if (pageType === 'bulletin' || pageType === 'article') {
         $('.release').append(
@@ -69,11 +80,12 @@ function loadT4Creator (collectionName) {
         );
         $('#releaseDateAlt').datepicker({dateFormat: 'dd/mm/yy', altFormat: 'yymmdd', altField: '#releaseDate'});
       }
+      pageName = name ? name : $('#pagename').val().trim();
+      $('#pagename').val(name);
       $('form').submit(function (e) {
         releaseDateManual = $('#releaseDate').val()
         pageData = pageTypeDataT4(pageType);
         parent = $('#location').val().trim();
-        pageName = $('#pagename').val().trim();
         if (pageType === 'bulletin' || pageType === 'article') {
           pageData.release = $('#release').val();
         }
@@ -91,7 +103,7 @@ function loadT4Creator (collectionName) {
           pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);;
         }
         if (pageType === 'bulletin' || pageType === 'article') {
-          newUri = makeUrl(parent, uriSection, pageNameTrimmed, releaseDateManual);
+          newUri = uri ? uri : makeUrl(parent, uriSection, pageNameTrimmed, releaseDateManual);
         } else {
           newUri = makeUrl(parent, uriSection, pageNameTrimmed);
         }
