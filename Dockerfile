@@ -1,4 +1,4 @@
-from java
+from java:8
 
 # Install git and maven
 
@@ -34,7 +34,7 @@ EXPOSE 8080
 ENV PACKAGE_PREFIX com.github.onsdigital.florence.api
 RUN echo "#!/bin/bash" >> container.sh
 # Disabled for now: RUN echo "consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join=dockerhost &" > container.sh
-RUN echo "java -Drestolino.packageprefix=$PACKAGE_PREFIX -jar target/*-jar-with-dependencies.jar" >> container.sh
+RUN echo "java -Drestolino.files="target/web" -Drestolino.packageprefix=$PACKAGE_PREFIX -jar target/*-jar-with-dependencies.jar" >> container.sh
 RUN chmod u+x container.sh
 
 ENTRYPOINT ["./container.sh"]
