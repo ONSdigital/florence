@@ -25,9 +25,9 @@
     var pymChild = new pym.Child({});
 
     function drawGraphic() {
-      var chartWidth = $graphic.width(); //- margin.left - margin.right;
-      var chartHeight = chartWidth * chart.aspectRatio;
-      renderChartObject('#chart', chart, chartHeight, chartWidth);
+        var chartWidth = $graphic.width(); //- margin.left - margin.right;
+        var chartHeight = chartWidth * chart.aspectRatio;
+        renderChartObject('#chart', chart, chartHeight, chartWidth);
       pymChild.sendHeight();
     }
 
@@ -35,7 +35,6 @@
       url: "/zebedee/content/" + getCookieValue('collection') + "?uri=" + path,
       type: "GET",
       success: function (data) {
-        renderChartObject('#chart', data);
         chart = data;
         drawGraphic();
         window.onresize = drawGraphic;
