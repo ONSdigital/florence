@@ -1,9 +1,7 @@
 <section class="panel workspace-create">
   <h1>New page details</h1>
   <form>
-    <label for="location" class="">Location</label>
-    <input id="location" type="text" />
-    <label for="pagetype" class="">Page type</label>
+    <label for="pagetype" class="hidden">Page type</label>
     <select id="pagetype" class="selectbg" required>
       <option value="" name="">Select your option</option>
       <option value="bulletin" name="bulletin">Bulletin</option>
@@ -15,7 +13,10 @@
       <option value="foi" name="foi">FOI</option>
       <option value="adhoc" name="adhoc">Ad hoc</option>
     </select>
-    <label for="pagename" class="hidden">Page type</label>
+    <label for="location" class="">Location</label>
+    <input id="location" type="text" />
+    <div class="release"></div>
+    <label for="pagename" class="hidden">Page name</label>
     <input id="pagename" class="full" type="text" placeholder="Page name" />
     <button class="btn-page-create">Create page</button>
   </form>

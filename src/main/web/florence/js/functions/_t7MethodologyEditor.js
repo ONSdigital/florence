@@ -23,6 +23,7 @@ function methodologyEditor(collectionId, data) {
   $("#used").remove();
   $("#download").remove();
   $("#note").remove();
+  $(".release").hide();
   $("#metadata-a").remove();
   $("#metadata-b").remove();
   $("#metadata-d").remove();

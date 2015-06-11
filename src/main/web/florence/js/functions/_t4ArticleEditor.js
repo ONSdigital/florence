@@ -38,6 +38,10 @@ function articleEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.name = $(this).val();
   });
+  $("#release").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.release.label = $(this).val();
+  });
   $("#releaseDate").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.releaseDate = $(this).val();

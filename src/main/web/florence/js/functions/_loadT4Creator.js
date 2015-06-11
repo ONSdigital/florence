@@ -30,7 +30,6 @@ function loadT4Creator (collectionName) {
         crossDomain: true,
         success: function (checkData) {
           if (checkData.level === 't3') {
-            $('.btn-page-create').show();
             $('#location').val(parentUrl);
             var inheritedBreadcrumb = checkData.breadcrumb;
             var parentBreadcrumb = {
@@ -43,6 +42,14 @@ function loadT4Creator (collectionName) {
             inheritedBreadcrumb.push(parentBreadcrumb);
             breadcrumb = inheritedBreadcrumb;
             submitFormHandler ();
+          } if ((checkData.type === 'bulletin'&& pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
+            contentUrlTmp = parentUrl.split('/');
+            contentUrlTmp.splice(-1, 1);
+            contentUrl = contentUrlTmp.join('/');
+            $('#location').val(contentUrl);
+            breadcrumb = checkData.breadcrumb;
+            pageName = checkData.name;
+            submitFormHandler (pageName, contentUrl);
           } else {
             $('.btn-page-create').hide();
             $('#location').attr("placeholder", "This is not a valid place to create this page.");
@@ -54,29 +61,75 @@ function loadT4Creator (collectionName) {
       });
     }
 
-    function submitFormHandler () {
+    function submitFormHandler (name, uri) {
+      $('select').off().change(function () {
+        createWorkspace(parentUrl, Florence.collection.id, 'create');
+      });
+      var releaseDateManual;
+      if (pageType === 'bulletin' || pageType === 'article') {
+        $('.release').append(
+          '<label for="release">Release</label>' +
+          '<input id="release" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
+        );
+      } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
+        $('.release').append(
+          '<div>' +
+          '  <label for="releaseDate">Release date</label>' +
+          '  <input id="releaseDateAlt" type="text" placeholder="dd/mm/yyyy" />' +
+          '  <input id="releaseDate" type="text" style="display: none;" />' +
+          '</div>'
+        );
+        $('#releaseDateAlt').datepicker({dateFormat: 'dd/mm/yy', altFormat: 'yymmdd', altField: '#releaseDate'});
+      }
+      if (name) {
+        pageName = name;
+        $('#pagename').val(name);
+      }
+
       $('form').submit(function (e) {
-        e.preventDefault();
+        releaseDateManual = $('#releaseDate').val()
         pageData = pageTypeDataT4(pageType);
         parent = $('#location').val().trim();
-        pageName = $('#pagename').val().trim();
+        if (pageType === 'bulletin' || pageType === 'article') {
+          pageData.release = $('#release').val();
+        }
+        if (name) {
+          //do nothing;
+        } else {
+          pageName = $('#pagename').val();
+        }
         pageData.name = pageName;
         uriSection = pageType + "s";
         pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         pageData.fileName = pageNameTrimmed;
-        newUri = makeUrl(parent, uriSection, pageNameTrimmed);
-        pageData.uri = newUri;
-        if (!releaseDate) {
+
+        if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
+          pageData.releaseDate = $('#releaseDateAlt').val();
+        } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
           pageData.releaseDate = null;
         } else {
           date = new Date(releaseDate);
-          pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+          pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);;
         }
+        if (pageType === 'bulletin' || pageType === 'article') {
+          newUri = uri ? uri : makeUrl(parent, uriSection, pageNameTrimmed, releaseDateManual);
+        } else {
+          newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+        }
+        pageData.uri = newUri;
         pageData.breadcrumb = breadcrumb;
 
-        if (pageName.length < 4) {
+        if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.release)) {
+          alert('Release can not be empty');
+          return true;
+        } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.releaseDate)) {
+          alert('Release date can not be empty');
+          return true;
+        } if (pageName.length < 4) {
           alert("This is not a valid file name");
-        } else {
+          return true;
+        }
+         else {
           postContent(collectionName, newUri, JSON.stringify(pageData),
             success = function (message) {
               console.log("Updating completed " + message);
@@ -96,6 +149,7 @@ function loadT4Creator (collectionName) {
             }
           );
         }
+        e.preventDefault();
       });
     }
 
@@ -103,6 +157,7 @@ function loadT4Creator (collectionName) {
 
       if (pageType === "bulletin") {
         return {
+          "release": "",
           "nextRelease": "",
           "contact": {
             "name": "",
@@ -133,6 +188,7 @@ function loadT4Creator (collectionName) {
 
       else if (pageType === "article") {
         return {
+          "release": "",
           "nextRelease": "",
           "contact": {
             "name": "",
@@ -182,6 +238,7 @@ function loadT4Creator (collectionName) {
 
       else if (pageType === "dataset") {
         return {
+          "release": "",
           "nextRelease": "",
           "contact": {
             "name": "",
