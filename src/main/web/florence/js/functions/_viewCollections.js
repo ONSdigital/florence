@@ -53,11 +53,11 @@ function viewCollections(collectionId) {
       return [true];
       }
 
-      a = new Date();
+      today = new Date();
 
       $(function() {
          $('#date').datepicker({
-                      minDate: a,
+                      minDate: today,
                       dateFormat: 'dd/mm/yy',
                       constrainInput: true,
                       beforeShowDay: noBefore

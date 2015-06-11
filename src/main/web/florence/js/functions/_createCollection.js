@@ -8,19 +8,21 @@ function createCollection() {
   var tempDate = publishDate + ' ' + publishTime;
 
   if (collectionType === 'scheduled') {
-    var collectionDate = new Date(tempDate);
+    publishDate = tempDate;
   } else {
-    var publishDate = null;
+    publishDate = null;
   };
 
+
+  forTestDate = $('#date').datepicker("getDate");
   // inline tests
   if (collectionName === '') {
     alert('This is not a valid collection name');
     return true;
-  } if ((collectionType === 'scheduled') && (isValidDate(new Date(tempDate)))) {
+  } if ((collectionType === 'scheduled') && (isValidDate(new Date(forTestDate)))) {
     alert('This is not a valid date');
     return true;
-  } if ((collectionType === 'scheduled') && (collectionDate < new Date())) {
+  } if ((collectionType === 'scheduled') && (forTestDate < new Date())) {
     alert('This is not a valid date');
     return true;
   } else {
@@ -29,7 +31,7 @@ function createCollection() {
       url: "/zebedee/collection",
       dataType: 'json',
       type: 'POST',
-      data: JSON.stringify({name: collectionName, publishDate: collectionDate}),
+      data: JSON.stringify({name: collectionName, publishDate: publishDate}),
       success: function (collection) {
         console.log("Collection " + collection.name + " created");
         collection.type = collectionType;
