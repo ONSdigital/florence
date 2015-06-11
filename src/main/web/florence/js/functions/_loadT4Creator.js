@@ -1,6 +1,6 @@
 function loadT4Creator (collectionName) {
   console.log('loadT4');
-  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
     success = function (response) {
@@ -43,14 +43,15 @@ function loadT4Creator (collectionName) {
             breadcrumb = inheritedBreadcrumb;
             submitFormHandler ();
             return true;
-          } if ((checkData.type === 'bulletin'&& pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
+          } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
             contentUrlTmp = parentUrl.split('/');
             contentUrlTmp.splice(-1, 1);
             contentUrl = contentUrlTmp.join('/');
             $('#location').val(contentUrl);
             breadcrumb = checkData.breadcrumb;
             pageName = checkData.name;
-            submitFormHandler (pageName, contentUrl);
+            isBullArt = true;
+            submitFormHandler (pageName, contentUrl, isBullArt);
             return true;
           } else {
             $('.btn-page-create').hide();
@@ -63,11 +64,10 @@ function loadT4Creator (collectionName) {
       });
     }
 
-    function submitFormHandler (name, uri) {
+    function submitFormHandler (name, uri, isBullArt) {
       $('select').off().change(function () {
         createWorkspace(parentUrl, Florence.collection.id, 'create');
       });
-      var releaseDateManual;
       if (pageType === 'bulletin' || pageType === 'article') {
         $('.release').append(
           '<label for="release">Release</label>' +
@@ -77,11 +77,10 @@ function loadT4Creator (collectionName) {
         $('.release').append(
           '<div>' +
           '  <label for="releaseDate">Release date</label>' +
-          '  <input id="releaseDateAlt" type="text" placeholder="dd/mm/yyyy" />' +
-          '  <input id="releaseDate" type="text" style="display: none;" />' +
+          '  <input id="releaseDate" type="text" placeholder="dd/mm/yyyy" />' +
           '</div>'
-        );
-        $('#releaseDateAlt').datepicker({dateFormat: 'dd/mm/yy', altFormat: 'yymmdd', altField: '#releaseDate'});
+        );   //style="display: none;
+        $('#releaseDate').datepicker({dateFormat: 'dd/mm/yy'});
       }
       if (name) {
         pageName = name;
@@ -104,17 +103,24 @@ function loadT4Creator (collectionName) {
         uriSection = pageType + "s";
         pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         pageData.fileName = pageNameTrimmed;
+        if (releaseDateManual) {              //Manual collections
+          date = new Date(releaseDateManual);
+          releaseUri = $.datepicker.formatDate('yymmdd', date);
+        } else {
+          date = new Date(releaseDate);
+          releaseUri = $.datepicker.formatDate('yymmdd', date);
+        }
 
         if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-          pageData.releaseDate = $('#releaseDateAlt').val();
+          pageData.releaseDate = $('#releaseDate').val();
         } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
           pageData.releaseDate = null;
         } else {
           date = new Date(releaseDate);
-          pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);;
+          pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
         }
-        if (pageType === 'bulletin' || pageType === 'article') {
-          newUri = uri ? uri : makeUrl(parent, uriSection, pageNameTrimmed, releaseDateManual);
+        if (isBullArt) {
+          newUri = makeUrl(parent, releaseUri);
         } else {
           newUri = makeUrl(parent, uriSection, pageNameTrimmed);
         }
