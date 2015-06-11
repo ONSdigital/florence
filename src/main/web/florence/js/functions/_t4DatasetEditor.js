@@ -455,7 +455,8 @@ function datasetEditor(collectionId, data) {
     // Notes
     var orderNote = $("#sortable-notes").sortable('toArray');
     $(orderNote).each(function (indexT, nameT) {
-      var markdown = data.notes[parseInt(nameT)].data;
+//      var markdown = data.notes[parseInt(nameT)].data;
+      var markdown = $('#note-markdown_' + nameT).val();
       newNotes[indexT] = {data: markdown};
     });
     data.notes = newNotes;
