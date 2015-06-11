@@ -1,8 +1,5 @@
 function saveAndCompleteContent(collectionName, path, content) {
-  if (!Florence.Editor.isDirty) {
-    completeContent(collectionName, path);
-  } else {
-    postContent(collectionName, path, content,
+  postContent(collectionName, path, content,
     success = function (response) {
       Florence.Editor.isDirty = false;
       completeContent(collectionName, path);
@@ -18,7 +15,6 @@ function saveAndCompleteContent(collectionName, path, content) {
         handleApiError(response);
       }
     });
-  }
 }
 
 function completeContent(collectionName, path) {
