@@ -16,13 +16,16 @@
             <textarea class="auto-size" type="text" id="name">{{this.name}}</textarea>
             </label>
           </div>
-          {{#unless this.releaseDate}}
-            <div class="release-date">
-              <label for="releaseDate">Release date
-                <textarea class="auto-size" type="text" id="releaseDate"></textarea>
-              </label>
-            </div>
-          {{/unless}}
+          <div class="release">
+            <label for="release">Release
+              <textarea class="auto-size" type="text" id="release">{{this.release}}</textarea>
+            </label>
+          </div>
+          <div class="release-date">
+            <label for="releaseDate">Release date
+              <textarea class="auto-size" type="text" id="releaseDate">{{this.releaseDate}}</textarea>
+            </label>
+          </div>
           <div class="next-p">
             <label for="nextRelease">Next release
             <textarea class="auto-size" type="text" id="nextRelease">{{this.nextRelease}}</textarea>

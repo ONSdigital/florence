@@ -20,6 +20,7 @@ function datasetEditor(collectionId, data) {
   $("#relArticle").remove();
   $("#extLink").remove();
   $("#content").remove();
+  $(".release").hide();
   $("#metadata-a").remove();
   $("#metadata-b").remove();
   $("#metadata-m").remove();

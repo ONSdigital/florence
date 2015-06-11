@@ -1,5 +1,6 @@
 function bulletinEditor(collectionId, data) {
 
+  var index = data.release.value;
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
   var setActiveTab, getActiveTab;
@@ -33,6 +34,10 @@ function bulletinEditor(collectionId, data) {
   $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.name = $(this).val();
+  });
+  $("#release").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.release = $(this).val();
   });
   $("#releaseDate").on('click keyup', function () {
     $(this).textareaAutoSize();
