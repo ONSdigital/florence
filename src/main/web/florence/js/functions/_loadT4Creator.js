@@ -104,10 +104,10 @@ function loadT4Creator (collectionName) {
         pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         pageData.fileName = pageNameTrimmed;
         if (releaseDateManual) {              //Manual collections
-          date = new Date(releaseDateManual);
+          date = $.datepicker.parseDate("dd/mm/yy", releaseDateManual);
           releaseUri = $.datepicker.formatDate('yymmdd', date);
         } else {
-          date = new Date(releaseDate);
+          date = $.datepicker.parseDate("dd/mm/yy", releaseDate);
           releaseUri = $.datepicker.formatDate('yymmdd', date);
         }
 
@@ -116,8 +116,7 @@ function loadT4Creator (collectionName) {
         } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
           pageData.releaseDate = null;
         } else {
-          date = new Date(releaseDate);
-          pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+          pageData.releaseDate = releaseDate;
         }
         if (isBullArt) {
           newUri = makeUrl(parent, releaseUri);
