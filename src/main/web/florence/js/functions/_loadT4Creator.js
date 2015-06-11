@@ -42,6 +42,7 @@ function loadT4Creator (collectionName) {
             inheritedBreadcrumb.push(parentBreadcrumb);
             breadcrumb = inheritedBreadcrumb;
             submitFormHandler ();
+            return true;
           } if ((checkData.type === 'bulletin'&& pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
             contentUrlTmp = parentUrl.split('/');
             contentUrlTmp.splice(-1, 1);
@@ -50,6 +51,7 @@ function loadT4Creator (collectionName) {
             breadcrumb = checkData.breadcrumb;
             pageName = checkData.name;
             submitFormHandler (pageName, contentUrl);
+            return true;
           } else {
             $('.btn-page-create').hide();
             $('#location').attr("placeholder", "This is not a valid place to create this page.");
