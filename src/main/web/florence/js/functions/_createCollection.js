@@ -5,16 +5,16 @@ function createCollection() {
   publishTime  = $('#time').val();
   collectionName = $('#collectionname').val();
   collectionType = $('form input[type=radio]:checked').val();
-  var tempDate = publishDate + ' ' + publishTime;
+  var forTestDate = $('#date').datepicker("getDate");
+  var tempDate = parseInt(new Date(forTestDate).getTime()) + parseInt(publishTime);
 
   if (collectionType === 'scheduled') {
-    publishDate = tempDate;
+    publishDate = new Date(tempDate);
   } else {
     publishDate = null;
   };
 
 
-  forTestDate = $('#date').datepicker("getDate");
   // inline tests
   if (collectionName === '') {
     alert('This is not a valid collection name');
