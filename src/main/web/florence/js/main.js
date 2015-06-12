@@ -315,7 +315,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     chartGroup.attr("transform", "translate(" + (100) + "," + (titleHeight + 8 + subtitleHeight + 20) + ")");
 
-
     if (chart.unit && !rotate) {
       svg.append('text') // Unit (if non rotated)
         .attr('x', 20)
@@ -1414,7 +1413,7 @@ function loadChartsList(data, collectionId) {
 }
 function loadMarkdownEditor(content, onSave, pageData) {
 
-  if (!content.title) {
+  if (content.title == undefined) {
     var html = templates.markdownEditorNoTitle(content);
     $('body').append(html);
     $('.markdown-editor').stop().fadeIn(200);

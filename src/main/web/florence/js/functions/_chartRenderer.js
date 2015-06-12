@@ -129,7 +129,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     chartGroup.attr("transform", "translate(" + (100) + "," + (titleHeight + 8 + subtitleHeight + 20) + ")");
 
-
     if (chart.unit && !rotate) {
       svg.append('text') // Unit (if non rotated)
         .attr('x', 20)
