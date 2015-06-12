@@ -1,9 +1,9 @@
 // Do the rendering
-function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
+function renderChartObject_old(bindTag, chart, chartHeight, chartWidth) {
 
   // Create our svg
   var svg = d3.select(bindTag + " svg")
-    .attr("viewBox", "0 0 " + chartWidth * 2 + " " + chartHeight * 2)
+    .attr("viewBox", "0 0 " + chartWidth + " " + chartHeight)
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
@@ -42,8 +42,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
 
   // Generate the chart
-
-  var c3Config = {
+  c3.generate({
     bindto: bindTag,
     size: {
       height: chartHeight,
@@ -88,122 +87,61 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     },
     padding: {
       top: padding,
-      bottom: bottomPadding
+      bottom: bottomPadding,
+      left: paddingLeft
     }
-  };
-
-  var c3Chart = c3.generate(c3Config);
+  });
 
   // annotate
-  var chartOffset = renderAnnotations(bindTag, chart, chartHeight, chartWidth);
+  renderAnnotations(bindTag, chart);
 
- // c3Chart.resize({height:chartHeight + chartOffset});
+  function renderAnnotations(bindTag, chart) {
 
-  function renderAnnotations(bindTag, chart, chartHeight, chartWidth) {
+    var unitTop = (chart.subtitles != '') ? 70 : 45; // Hard coded values for unitTop
 
-
-    var svg = d3.select(bindTag + ' svg');
-    var chartGroup = d3.select('g');
-    var splitParts = chartGroup.attr("transform").split(",");
-    var chartXOffset = ~~splitParts [0].split("(")[1];
-    var chartYOffset = 0;
-
-
-    var headerGroup = svg.append('g');
-
-    //var chartHeight = chartGroup.node().getBBox().height
     // annotate
-    var title = headerGroup.append('text') // Title
+    d3.select(bindTag + ' svg').append('text') // Title
+      .attr('x', 20)
+      .attr('y', 25)
       .style('font-size', '20px')
       .style('font-family', '"DaxlinePro", sans-serif')
       .style('fill', '#000000')
       .text(chart.title);
 
-    var currentYOffset = 8 + applyLineWrap(title, chartWidth);
-
-
     if (chart.subtitle != '') {
-      var subtitle = headerGroup.append('text') // Subtitle
-        .attr("transform", "translate(0," + currentYOffset + ")")
+      d3.select(bindTag + ' svg').append('text') // Subtitle
+        .attr('x', 20)
+        .attr('y', 45)
+        .attr('text-anchor', 'left')
         .style('font-size', '15px')
         .style('font-family', '"Open Sans", sans-serif')
         .style('fill', '#999999')
         .text(chart.subtitle);
-
-      currentYOffset += 8 + applyLineWrap(subtitle, chartWidth);
     }
 
-
     if (chart.unit && !rotate) {
-      var unit = headerGroup.append('text') // Unit (if non rotated)
-        .attr("transform", "translate(" + (chartXOffset - 20) + "," + currentYOffset + ")")
+      d3.select(bindTag + ' svg').append('text') // Unit (if non rotated)
+        .attr('x', 20)
+        .attr('y', unitTop)
         .attr('text-anchor', 'left')
-        .style('font-size', '12px')
+        .style('font-size', '15px')
         .style('font-family', '"Open Sans", sans-serif')
         .style('fill', '#000000')
         .text(chart.unit);
-
-      currentYOffset += 5 + applyLineWrap(unit, chartWidth);
     }
 
+    var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
+    var viewBoxWidth = d3.select(bindTag + ' svg').attr('width');
 
-
-    currentYOffset += 5;
-    chartYOffset = currentYOffset;
-    chartGroup.attr("transform", "translate(" + (chartXOffset) + "," + currentYOffset + ")");
-
-    console.log(currentYOffset);
-    currentYOffset += chartHeight;
-    console.log(currentYOffset);
-
-    d3.select(bindTag + ' svg').style('height', currentYOffset + 100);
-
-
-    //var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
-    //var viewBoxWidth = d3.select(bindTag + ' svg').attr('width');
-    //
-    //if (chart.source != '') {
-    //  d3.select(bindTag + ' svg').append('text') // Source
-    //    .attr("transform", "translate(" + (viewBoxWidth) + "," + (viewBoxHeight + 200) + ")")
-    //    .attr('text-anchor', 'end')
-    //    .style('font-size', '12px')
-    //    .style('font-family', '"Open Sans", sans-serif')
-    //    .style('fill', '#999999')
-    //    .text(chart.source);
-    //}
-
-    return chartYOffset;
-  }
-
-  // apply word wrap if required on text we have inserted
-  function applyLineWrap(text, width) {
-
-    var wrappedHeight = 0;
-
-    text.each(function() {
-      var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 1.2,
-        y = text.attr("y"),
-        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", lineHeight + "em");
-      while (word = words.pop()) {
-        line.push(word);
-        tspan.text(line.join(" "));
-        if (tspan.node().getComputedTextLength() > width) {
-          line.pop();
-          tspan.text(line.join(" "));
-          line = [word];
-          tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("y", ((++lineNumber + 1) * lineHeight) + "em").text(word);
-        }
-      }
-
-      wrappedHeight = tspan.node().getBBox().height;
-    });
-
-    return wrappedHeight;
+    if (chart.source != '') {
+      d3.select(bindTag + ' svg').append('text') // Source
+        .attr("transform", "translate(" + (viewBoxWidth) + "," + (viewBoxHeight + 200) + ")")
+        .attr('text-anchor', 'end')
+        .style('font-size', '12px')
+        .style('font-family', '"Open Sans", sans-serif')
+        .style('fill', '#999999')
+        .text(chart.source);
+    }
   }
 
   function checkType(chart) {
