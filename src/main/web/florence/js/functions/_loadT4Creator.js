@@ -1,6 +1,6 @@
 function loadT4Creator (collectionName) {
   console.log('loadT4');
-  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
+  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
     success = function (response) {
@@ -65,9 +65,11 @@ function loadT4Creator (collectionName) {
     }
 
     function submitFormHandler (name, uri, isBullArt) {
-      $('select').off().change(function () {
-        createWorkspace(parentUrl, Florence.collection.id, 'create');
-      });
+      if (isBullArt == undefined) {
+        $('select').off().change(function () {
+          createWorkspace(parentUrl, Florence.collection.id, 'create');
+        });
+        }
       if (pageType === 'bulletin' || pageType === 'article') {
         $('.release').append(
           '<label for="release">Release</label>' +
@@ -103,12 +105,13 @@ function loadT4Creator (collectionName) {
         uriSection = pageType + "s";
         pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         pageData.fileName = pageNameTrimmed;
-        if (releaseDateManual) {              //Manual collections
+        if (releaseDateManual) {                                                          //Manual collections
           date = $.datepicker.parseDate("dd/mm/yy", releaseDateManual);
           releaseUri = $.datepicker.formatDate('yymmdd', date);
         } else {
-          date = $.datepicker.parseDate("dd/mm/yy", releaseDate);
-          releaseUri = $.datepicker.formatDate('yymmdd', date);
+          releaseUri = $.datepicker.formatDate('yymmdd', new Date(releaseDate));
+          releaseDateTemp = $.datepicker.formatDate('dd/mm/yy', new Date(releaseDate));
+          releaseDate = releaseDateTemp;
         }
 
         if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
@@ -121,7 +124,11 @@ function loadT4Creator (collectionName) {
         if (isBullArt) {
           newUri = makeUrl(parent, releaseUri);
         } else {
-          newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+          if ((pageType === 'bulletin' || pageType === 'article')) {
+            newUri = makeUrl(parent, uriSection, pageNameTrimmed, releaseUri);
+          } else {
+            newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+          }
         }
         pageData.uri = newUri;
         pageData.breadcrumb = breadcrumb;
