@@ -1,6 +1,6 @@
 function loadMarkdownEditor(content, onSave, pageData) {
 
-  if (!content.title) {
+  if (content.title == undefined) {
     var html = templates.markdownEditorNoTitle(content);
     $('body').append(html);
     $('.markdown-editor').stop().fadeIn(200);
