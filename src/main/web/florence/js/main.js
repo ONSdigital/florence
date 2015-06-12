@@ -124,24 +124,33 @@ var StringUtils = {
     return StringUtils.textareaLines(line, maxLineLength, start + actualLineLength, numberOfLinesCovered + 1);
   },
 
-  formatIsoDateString: function(input) {
+  formatIsoDateString: function (input) {
     var date = new Date(input);
     var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
     var formattedDate = $.datepicker.formatDate('dd/mm/yy', date) + ' ' + date.getHours() + ':' + minutes;
     return formattedDate;
   },
 
-  formatIsoFullDateString: function(input) {
+  formatIsoFullDateString: function (input) {
     var date = new Date(input);
     var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
     var formattedDate = $.datepicker.formatDate('DD dd MM yy', date) + ' ' + date.getHours() + ':' + minutes;
     return formattedDate;
+  },
+
+  randomId: function () {
+    var S4 = function () {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    };
+    return (S4() + S4());
   }
 
 };
 
 // if running in a node environment export this as a module.
-if (typeof module !== 'undefined') { module.exports = StringUtils; }
+if (typeof module !== 'undefined') {
+  module.exports = StringUtils;
+}
 
 setupFlorence();function accordion(active) {
   var activeTab = parseInt(active);
@@ -921,16 +930,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   $('.btn-chart-builder-create').on('click', function () {
 
-    if (!pageData.charts) {
-      pageData.charts = []
-    } else {
-      if (_.find(pageData.charts, function (existingChart) {
-          return existingChart.filename === chart.filename
-        })) {
-        alert("A chart with this name already exists.");
-        return;
-      }
-    }
 
     var path = pageUrl + "/" + chart.filename;
     var jsonPath = path + ".json";
@@ -945,7 +944,20 @@ function loadChartBuilder(pageData, onSave, chart) {
           generatePng();
         }
 
-        pageData.charts.push({title: chart.title, filename: chart.filename, path:path});
+        if (!pageData.charts) {
+          pageData.charts = []
+        }
+
+        existingChart = _.find(pageData.charts, function (existingChart) {
+          return existingChart.filename === chart.filename
+        });
+
+        if (existingChart) {
+          existingChart.title = chart.title;
+        } else {
+          pageData.charts.push({title: chart.title, filename: chart.filename, path: path});
+        }
+
         if (onSave) {
           onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
@@ -984,7 +996,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     chart.title = $('#chart-title').val();
-    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
     chart.source = $('#chart-source').val();
@@ -994,8 +1006,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     if (chart.title === '') {
       chart.title = '[Title]'
     }
-
-    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     chart.data = tsvJSON(json);
     chart.headers = tsvJSONHeaders(json);
@@ -1331,8 +1341,20 @@ function loadChartsList(data, collectionId) {
     $("#chart-edit_" + chart.filename).click(function () {
       getPageData(collectionId, chartJson,
         onSuccess = function (chartData) {
-          loadChartBuilder(chartData, function () {
+
+          loadChartBuilder(data, function () {
             refreshPreview();
+
+            postContent(collectionId, basePath, JSON.stringify(data),
+              success = function () {
+                Florence.Editor.isDirty = false;
+                refreshPreview();
+                loadChartsList(data, collectionId);
+              },
+              error = function (response) {
+                handleApiError(response);
+              }
+            );
           }, chartData);
         },
         onError = function (response) {
@@ -1359,6 +1381,7 @@ function loadChartsList(data, collectionId) {
               handleApiError(response);
             }
           );
+          deleteContent(collectionId, chartPath + '.png');
         },
         onError = function (response) {
           handleApiError(response)
@@ -1663,7 +1686,7 @@ function updateReviewScreen(collectionName) {
 
 function loadT4Creator (collectionName) {
   console.log('loadT4');
-  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
+  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
 
   getCollection(collectionName,
     success = function (response) {
@@ -1728,9 +1751,11 @@ function loadT4Creator (collectionName) {
     }
 
     function submitFormHandler (name, uri, isBullArt) {
-      $('select').off().change(function () {
-        createWorkspace(parentUrl, Florence.collection.id, 'create');
-      });
+      if (isBullArt == undefined) {
+        $('select').off().change(function () {
+          createWorkspace(parentUrl, Florence.collection.id, 'create');
+        });
+        }
       if (pageType === 'bulletin' || pageType === 'article') {
         $('.release').append(
           '<label for="release">Release</label>' +
@@ -1766,12 +1791,13 @@ function loadT4Creator (collectionName) {
         uriSection = pageType + "s";
         pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         pageData.fileName = pageNameTrimmed;
-        if (releaseDateManual) {              //Manual collections
+        if (releaseDateManual) {                                                          //Manual collections
           date = $.datepicker.parseDate("dd/mm/yy", releaseDateManual);
           releaseUri = $.datepicker.formatDate('yymmdd', date);
         } else {
-          date = $.datepicker.parseDate("dd/mm/yy", releaseDate);
-          releaseUri = $.datepicker.formatDate('yymmdd', date);
+          releaseUri = $.datepicker.formatDate('yymmdd', new Date(releaseDate));
+          releaseDateTemp = $.datepicker.formatDate('dd/mm/yy', new Date(releaseDate));
+          releaseDate = releaseDateTemp;
         }
 
         if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
@@ -1784,7 +1810,11 @@ function loadT4Creator (collectionName) {
         if (isBullArt) {
           newUri = makeUrl(parent, releaseUri);
         } else {
-          newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+          if ((pageType === 'bulletin' || pageType === 'article')) {
+            newUri = makeUrl(parent, uriSection, pageNameTrimmed, releaseUri);
+          } else {
+            newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+          }
         }
         pageData.uri = newUri;
         pageData.breadcrumb = breadcrumb;
