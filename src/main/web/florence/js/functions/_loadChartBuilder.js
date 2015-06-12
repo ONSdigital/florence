@@ -61,16 +61,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   $('.btn-chart-builder-create').on('click', function () {
 
-    if (!pageData.charts) {
-      pageData.charts = []
-    } else {
-      if (_.find(pageData.charts, function (existingChart) {
-          return existingChart.filename === chart.filename
-        })) {
-        alert("A chart with this name already exists.");
-        return;
-      }
-    }
 
     var path = pageUrl + "/" + chart.filename;
     var jsonPath = path + ".json";
@@ -85,7 +75,20 @@ function loadChartBuilder(pageData, onSave, chart) {
           generatePng();
         }
 
-        pageData.charts.push({title: chart.title, filename: chart.filename, path:path});
+        if (!pageData.charts) {
+          pageData.charts = []
+        }
+
+        existingChart = _.find(pageData.charts, function (existingChart) {
+          return existingChart.filename === chart.filename
+        });
+
+        if (existingChart) {
+          existingChart.title = chart.title;
+        } else {
+          pageData.charts.push({title: chart.title, filename: chart.filename, path: path});
+        }
+
         if (onSave) {
           onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
@@ -124,7 +127,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     chart.title = $('#chart-title').val();
-    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
     chart.source = $('#chart-source').val();
@@ -134,8 +137,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     if (chart.title === '') {
       chart.title = '[Title]'
     }
-
-    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     chart.data = tsvJSON(json);
     chart.headers = tsvJSONHeaders(json);
