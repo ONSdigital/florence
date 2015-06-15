@@ -32,7 +32,7 @@ public class Proxy implements Filter {
     private static final String tredegarBaseUrl = Configuration.getTredegarUrl();
     private static final String zebedeeBaseUrl = Configuration.getZebedeeUrl();
 
-    private static final List<String> florencePaths = Arrays.asList("/");
+    private static final List<String> florencePaths = Arrays.asList("");
 
     @Override
     public boolean filter(HttpServletRequest request, HttpServletResponse response) {
