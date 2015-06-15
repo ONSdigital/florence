@@ -15,8 +15,9 @@ function loadT4Creator (collectionName) {
     }
   );
 
-  $('select').change(function () {
+  $('select').off().change(function () {
     pageType = $(this).val();
+    $('.release-div').remove();
     var parentUrl = localStorage.getItem("pageurl");
     var parentUrlData = "/data" + parentUrl;                //TBC when not angular
 
@@ -65,19 +66,16 @@ function loadT4Creator (collectionName) {
     }
 
     function submitFormHandler (name, uri, isBullArt) {
-      if (isBullArt == undefined) {
-        $('select').off().change(function () {
-          createWorkspace(parentUrl, Florence.collection.id, 'create');
-        });
-        }
       if (pageType === 'bulletin' || pageType === 'article') {
         $('.release').append(
-          '<label for="release">Release</label>' +
-          '<input id="release" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
+          '<div class="release-div">' +
+          '  <label for="release">Release</label>' +
+          '  <input id="release" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
+          '</div>'
         );
       } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
         $('.release').append(
-          '<div>' +
+          '<div class="release-div">' +
           '  <label for="releaseDate">Release date</label>' +
           '  <input id="releaseDate" type="text" placeholder="dd/mm/yyyy" />' +
           '</div>'
