@@ -31,7 +31,7 @@
         <div id="sortable-sections" class="edit-section__sortable">
           {{#each this.sections}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="item-name_{{@index}}">{{items.0.name}}</p>
+              <p id="item-title_{{@index}}">{{statistics.data.title}}</p>
               <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
             </div>
           {{/each}}

@@ -1,7 +1,7 @@
 function refreshPreview(url) {
 
   if(url) {
-    url = Florence.tredegarBaseUrl + url;
+    url = Florence.tredegarBaseUrl + "/" + url;
     $('#iframe')[0].contentWindow.document.location.href = url;
   }
   else {

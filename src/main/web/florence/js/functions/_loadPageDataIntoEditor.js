@@ -4,7 +4,7 @@ function loadPageDataIntoEditor(path, collectionId) {
     path = '';
   }
 
-  var pageUrlData = path + "/data.json";
+  var pageUrlData = path + "/data.json&resolve";
   var pageData, isPageComplete;
   var ajaxRequests = [];
 
@@ -23,7 +23,7 @@ function loadPageDataIntoEditor(path, collectionId) {
     getCollection(collectionId,
       success = function (response) {
         var pagePath = getPathName();
-        var pageFile = pagePath + '/data.json';
+        var pageFile = pagePath + '/data.json&resolve';
         var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
         isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
       },

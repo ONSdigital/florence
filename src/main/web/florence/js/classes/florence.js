@@ -56,8 +56,6 @@ Florence.Handler = function () {
         }
       });
     }, 200);
-
-    console.log('iframe inner clicked');
   }
 };
 
