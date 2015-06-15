@@ -51,8 +51,8 @@ function t1Editor(collectionId, data) {
           localStorage.removeItem('historicUrl');
         });
 
-        var sectionUrl = $('#iframe')[0].contentWindow.document.location.href;
-        var sectionUrlData = "/data" + sectionUrl.split("#!")[1];
+        var sectionUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var sectionUrlData = sectionUrl + "/data";
 
         $.ajax({
           url: sectionUrlData,
@@ -61,12 +61,12 @@ function t1Editor(collectionId, data) {
           success: function (sectionData) {
             if (sectionData.type === 'timeseries') {
               data.sections.splice(index, 1,
-              {name: sectionData.breadcrumb[0].name,
-              link: sectionData.breadcrumb[0].fileName,
-              items: [{
-                name: sectionData.name,
+              {theme: {
+              title: sectionData.breadcrumb[1].title,
+              uri: sectionData.breadcrumb[1].uri},
+              statistics: {
                 uri: sectionData.uri
-              }]
+              }
               });
               postContent(collectionId, reload, JSON.stringify(data),
                 success = function (response) {
@@ -136,17 +136,16 @@ function t1Editor(collectionId, data) {
     // sections
     var orderSections = $("#sortable-sections").sortable('toArray');
     $(orderSections).each(function(indexS, nameS){
-      var uri = data.sections[parseInt(nameS)].items[0].uri;
-      var name = data.sections[parseInt(nameS)].items[0].name;
-      var link = data.sections[parseInt(nameS)].link;
-      var linkName = data.sections[parseInt(nameS)].name;
-      newSections[parseInt(indexS)] = {name: linkName,
-                                     link: link,
-                                     items: [{
-                                       name: name,
-                                       uri: uri
-                                       }]
-                                     };
+      var uri = data.sections[parseInt(nameS)].statistics.uri;
+      var link = data.sections[parseInt(nameS)].theme.uri;
+      var linkName = data.sections[parseInt(nameS)].theme.title;
+      newSections[parseInt(indexS)] = {theme: {
+                                                title: linkName,
+                                                uri: link},
+                                                statistics: {
+                                                  uri: uri
+                                                }
+                                      };
     });
     data.sections = newSections;
   }

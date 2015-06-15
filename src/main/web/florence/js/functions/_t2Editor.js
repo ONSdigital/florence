@@ -13,13 +13,13 @@ function t2Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata load, edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.title = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.lede = $(this).val();
+    data.summary = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();

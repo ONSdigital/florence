@@ -3,21 +3,22 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
   templateData.isPageComplete = isPageComplete;
 
-  if (pageData.type === 'home' && pageData.level === 't1') {
+  if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
     accordion();
     t1Editor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'home' && pageData.level === 't2') {
+  else if (pageData.type === 'taxonomy_landing_page') {
     var html = templates.workEditT2(templateData);
     $('.workspace-menu').html(html);
     accordion();
     t2Editor(collectionId, pageData);
+    console.log(templateData)
   }
 
-  else if (pageData.type === 'home' && pageData.level === 't3') {
+  else if (pageData.type === 'product_page') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
     accordion();
