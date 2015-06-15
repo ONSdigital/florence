@@ -87,27 +87,20 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       }
     },
     padding: {
-      top: padding,
-      bottom: bottomPadding
     }
   };
 
-  var c3Chart = c3.generate(c3Config);
+  c3.generate(c3Config);
 
   // annotate
-  var chartOffset = renderAnnotations(bindTag, chart, chartHeight, chartWidth);
-
- // c3Chart.resize({height:chartHeight + chartOffset});
+  renderAnnotations(bindTag, chart, chartHeight, chartWidth);
 
   function renderAnnotations(bindTag, chart, chartHeight, chartWidth) {
-
 
     var svg = d3.select(bindTag + ' svg');
     var chartGroup = d3.select('g');
     var splitParts = chartGroup.attr("transform").split(",");
     var chartXOffset = ~~splitParts [0].split("(")[1];
-    var chartYOffset = 0;
-
 
     var headerGroup = svg.append('g');
 
@@ -120,7 +113,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       .text(chart.title);
 
     var currentYOffset = 8 + applyLineWrap(title, chartWidth);
-
 
     if (chart.subtitle != '') {
       var subtitle = headerGroup.append('text') // Subtitle
@@ -146,33 +138,32 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       currentYOffset += 5 + applyLineWrap(unit, chartWidth);
     }
 
-
-
-    currentYOffset += 5;
-    chartYOffset = currentYOffset;
+    currentYOffset += 2;
     chartGroup.attr("transform", "translate(" + (chartXOffset) + "," + currentYOffset + ")");
-
-    console.log(currentYOffset);
     currentYOffset += chartHeight;
+
+
     console.log(currentYOffset);
 
-    d3.select(bindTag + ' svg').style('height', currentYOffset + 100);
+    if (chart.source != '') {
+      var source = d3.select(bindTag + ' svg').append('text') // Source
+        .attr("transform", "translate(" + chartWidth + "," + currentYOffset + ")")
+        .attr('text-anchor', 'end')
+        .style('font-size', '12px')
+        .style('font-family', '"Open Sans", sans-serif')
+        .style('fill', '#999999')
+        .text(chart.source);
+
+      currentYOffset += 5 + applyLineWrap(source, chartWidth);
+    }
 
 
-    //var viewBoxHeight = d3.select(bindTag + ' svg').attr('height');
-    //var viewBoxWidth = d3.select(bindTag + ' svg').attr('width');
-    //
-    //if (chart.source != '') {
-    //  d3.select(bindTag + ' svg').append('text') // Source
-    //    .attr("transform", "translate(" + (viewBoxWidth) + "," + (viewBoxHeight + 200) + ")")
-    //    .attr('text-anchor', 'end')
-    //    .style('font-size', '12px')
-    //    .style('font-family', '"Open Sans", sans-serif')
-    //    .style('fill', '#999999')
-    //    .text(chart.source);
-    //}
+    // reset the max height property of the container div.
+    // C3 seems to set this and it becomes a stale value after rendering annotations.
+    $(bindTag + ' svg').attr('height', currentYOffset);
+    $(bindTag).css('max-height', currentYOffset +'px');
 
-    return chartYOffset;
+    return currentYOffset;
   }
 
   // apply word wrap if required on text we have inserted
