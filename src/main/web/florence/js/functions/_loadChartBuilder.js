@@ -356,14 +356,23 @@ function loadChartBuilder(pageData, onSave, chart) {
     // Check for strings that will turn themselves into a strange format
     twoDigitYearEnd = timeString.match(/\W\d\d$/);
     if (twoDigitYearEnd !== null) {
-      year = parseInt(twoDigitYearEnd = timeString.match(/\W\d\d$/));
-      prefix = timeString.substr(0, timeString.length - 3);
+      year = parseInt(timeString.substr(timeString.length - 2, timeString.length));
+      prefix = timeString.substr(0, timeString.length - 2).trim();
 
       if (year >= 40) {
         timeString = prefix + " 19" + year;
       } else {
         timeString = prefix + " 20" + year;
       }
+    }
+
+    // Check for quarters
+    quarter = timeString.match(/Q\d/);
+    year = timeString.match(/\d\d\d\d/);
+    if((quarter !== null) && (year !== null)) {
+      months = ["February ", "May ", "August ", "November "];
+      quarterMid = parseInt(quarter[0][1]);
+      timeString = months[quarterMid - 1] + year[0];
     }
 
     // We are going with all times in a common format
