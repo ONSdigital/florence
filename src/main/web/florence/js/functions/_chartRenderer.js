@@ -8,7 +8,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   // If we are talking time series skip
   if (chart.isTimeSeries && (chart.type == 'line')) {
-    renderTimeseriesChartObject(bindTag, chart)
+    renderTimeseriesChartObject(bindTag, chart, chartWidth, chartHeight)
     return;
   }
 
@@ -210,7 +210,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   }
 
 
-  function renderTimeseriesChartObject(bindTag, timechart) {
+  function renderTimeseriesChartObject(bindTag, timechart, chartWidth, chartHeight) {
     var padding = 25;
     var chart = timechart //timeSubchart(timechart, period);
 
@@ -326,7 +326,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       }
     });
 
-    renderAnnotations(bindTag, chart);
+    renderAnnotations(bindTag, chart, chartWidth, chartHeight);
   }
 
   function formattedMonthYear(date) {
