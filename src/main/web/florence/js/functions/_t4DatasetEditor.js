@@ -32,9 +32,9 @@ function datasetEditor(collectionId, data) {
 
 
   // Metadata edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.title = $(this).val();
   });
   $("#releaseDate").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -59,10 +59,6 @@ function datasetEditor(collectionId, data) {
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.summary = $(this).val();
-  });
-  $("#description").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.description = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -460,13 +456,13 @@ function datasetEditor(collectionId, data) {
       newNotes[indexT] = {data: markdown};
     });
     data.notes = newNotes;
-    // Related links
+    // Related datasets
     var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = $('#dataset-uri_' + nameD).val();
       var summary = $('#dataset-summary_' + nameD).val();
-      var name = $('#dataset-title_' + nameD).val();
-      newRelated[indexD]= {uri: uri, name: name, summary: summary};
+      var title = $('#dataset-title_' + nameD).val();
+      newRelated[indexD]= {uri: uri, title: title, summary: summary};
     });
     data.relatedDatasets = newRelated;
     // Used in links
@@ -474,8 +470,8 @@ function datasetEditor(collectionId, data) {
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#used-uri_'+nameU).val();
       var summary = $('#used-summary_'+nameU).val();
-      var name = $('#used-title_'+nameU).val();
-      newUsedIn[parseInt(indexU)] = {uri: uri, name: name, summary: summary};
+      var title = $('#used-title_'+nameU).val();
+      newUsedIn[parseInt(indexU)] = {uri: uri, title: title, summary: summary};
     });
     data.usedIn = newUsedIn;
 

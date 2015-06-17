@@ -35,7 +35,6 @@ function viewCollections(collectionId) {
       viewCollectionDetails(collectionId);
     });
 
-//    $('form input[type=radio]:checked').val() = 'scheduled';
     $('form input[type=radio]').click(function () {
       if ($('form input[type=radio]:checked').val() === 'manual') {
         $('#date').hide();

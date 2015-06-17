@@ -1,15 +1,15 @@
 function createCollection() {
 
   var publishDate, publishTime, collectionName, collectionType;
-  publishDate  = $('#date').val();
-  publishTime  = $('#time').val();
   collectionName = $('#collectionname').val();
   collectionType = $('form input[type=radio]:checked').val();
-  var forTestDate = $('#date').datepicker("getDate");
-  var tempDate = parseInt(new Date(forTestDate).getTime()) + parseInt(publishTime);
 
   if (collectionType === 'scheduled') {
-    publishDate = new Date(tempDate);
+    publishDate  = $('#date').val();
+    publishTime  = $('#time').val();
+    var toIsoDate = $('#date').datepicker("getDate");
+    var collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + parseInt(publishTime)).toISOString();
+    publishDate = new Date(collectionDate);
   } else {
     publishDate = null;
   };
@@ -19,10 +19,10 @@ function createCollection() {
   if (collectionName === '') {
     alert('This is not a valid collection name');
     return true;
-  } if ((collectionType === 'scheduled') && (isValidDate(new Date(forTestDate)))) {
+  } if ((collectionType === 'scheduled') && (isValidDate(new Date(collectionDate)))) {
     alert('This is not a valid date');
     return true;
-  } if ((collectionType === 'scheduled') && (forTestDate < new Date())) {
+  } if ((collectionType === 'scheduled') && (Date.parse(collectionDate) < new Date())) {
     alert('This is not a valid date');
     return true;
   } else {
@@ -31,7 +31,7 @@ function createCollection() {
       url: "/zebedee/collection",
       dataType: 'json',
       type: 'POST',
-      data: JSON.stringify({name: collectionName, publishDate: publishDate}),
+      data: JSON.stringify({name: collectionName, publishDate: collectionDate}),
       success: function (collection) {
         console.log("Collection " + collection.name + " created");
         collection.type = collectionType;
