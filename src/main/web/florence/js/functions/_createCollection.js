@@ -31,7 +31,7 @@ function createCollection() {
       url: "/zebedee/collection",
       dataType: 'json',
       type: 'POST',
-      data: JSON.stringify({name: collectionName, publishDate: collectionDate}),
+      data: JSON.stringify({name: collectionName, type: collectionType, publishDate: collectionDate}),
       success: function (collection) {
         console.log("Collection " + collection.name + " created");
         collection.type = collectionType;

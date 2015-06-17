@@ -61,6 +61,10 @@ function articleEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
+  $("#contactTelephone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.contact.telephone = $(this).val();
+  });
   $("#contactPhone").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.description.contact.phone = $(this).val();

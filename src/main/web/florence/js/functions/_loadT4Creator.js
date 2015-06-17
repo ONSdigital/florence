@@ -33,8 +33,7 @@ function loadT4Creator (collectionId) {
             $('#location').val(parentUrl);
             var inheritedBreadcrumb = checkData.breadcrumb;
             var parentBreadcrumb = {
-              "uri": checkData.uri,
-              "breadcrumb": []
+              "uri": checkData.uri
             };
             inheritedBreadcrumb.push(parentBreadcrumb);
             breadcrumb = inheritedBreadcrumb;
@@ -121,11 +120,11 @@ function loadT4Creator (collectionId) {
             newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
           }
         }
-        pageData.description.uri = newUri;
+        pageData.uri = newUri;
         pageData.breadcrumb = breadcrumb;
 
-        if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.description.release)) {
-          alert('Release can not be empty');
+        if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.description.edition)) {
+          alert('Edition can not be empty');
           return true;
         } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.description.releaseDate)) {
           alert('Release date can not be empty');
@@ -168,13 +167,13 @@ function loadT4Creator (collectionId) {
             "headline3": "",
             "nationalStatistic": false,
             "contact": {
-              "title": "",
+              "name": "",
               "email": "",
-              "phone": ""
+              "telephone": ""
             },
             "title": "",
             "summary": "",
-            "keywords": "",
+            "keywords": [],
             "edition": "",
             "releaseDate": "",
             "nextRelease": "",
@@ -200,11 +199,11 @@ function loadT4Creator (collectionId) {
             "contact": {
               "name": "",
               "email": "",
-              "phone": ""
+              "telephone": ""
             },
             "abstract": "",
             "authors": [],
-            "keywords": "",
+            "keywords": [],
             "metaDescription": "",
             "nationalStatistic": false,
             "title": "",
@@ -228,10 +227,10 @@ function loadT4Creator (collectionId) {
             "contact": {
               "name": "",
               "email": "",
-              "phone": ""
+              "telephone": ""
             },
             "summary": "",
-            "keywords": "",
+            "keywords": [],
             "metaDescription": "",
             "title": "",
             "releaseDate": "",
@@ -252,11 +251,11 @@ function loadT4Creator (collectionId) {
             "contact": {
               "name": "",
               "email": "",
-              "phone": ""
+              "telephone": ""
             },
             "summary": "",
             "datasetID":"",
-            "keywords": "",
+            "keywords": [],
             "metaDescription": "",
             "nationalStatistic": false,
             "migrated": false,
