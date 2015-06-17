@@ -13,29 +13,12 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   }
 
   // Calculate padding at top (and left) of SVG
-  var padding = 25;
-  var paddingLeft = 100;
-  if (chart.subtitle != '') {
-    padding += 15;
-  }
-
   var types = chart.type === 'barline' ? chart.types : {};
   var groups = chart.type === 'barline' ? chart.groups : [];
   var type = checkType(chart);
   var rotate = chart.type === 'rotated';
   var yLabel = rotate === true ? chart.unit : '';
-  if ((chart.unit != '') && (rotate === false)) {
-    padding += 24;
-  }
-  if ((chart.unit != '') && (rotate === true)) {
-    paddingLeft += 100;
-  }
-
-  // Calculate padding at bottom of SVG
-  var bottomPadding = 20;
-  if ((chart.source != '')) {
-    bottomPadding += 25;
-  }
+  var chartYOffset = 0;
 
   // work out position for chart legend
   var seriesCount = chart.series.length;
@@ -85,8 +68,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       y: {
         show: true
       }
-    },
-    padding: {
     }
   };
 
@@ -98,11 +79,12 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   function renderAnnotations(bindTag, chart, chartHeight, chartWidth) {
 
     var svg = d3.select(bindTag + ' svg');
+
+    var svgGroups = $(bindTag + ' svg > g').get();
+    var headerGroup = svg.append('g');
     var chartGroup = d3.select('g');
     var splitParts = chartGroup.attr("transform").split(",");
     var chartXOffset = ~~splitParts [0].split("(")[1];
-
-    var headerGroup = svg.append('g');
 
     //var chartHeight = chartGroup.node().getBBox().height
     // annotate
@@ -139,11 +121,20 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     }
 
     currentYOffset += 2;
-    chartGroup.attr("transform", "translate(" + (chartXOffset) + "," + currentYOffset + ")");
+
+    chartYOffset = currentYOffset;
+
+    // offset all the existing top level groups. This includes the chart and the legend
+    var arrayLength = svgGroups.length;
+    for (var i = 0; i < arrayLength; i++) { // ignore the last group as we just added it
+      var group = svgGroups[i];
+      var splitParts = $(group).attr("transform").split(",");
+      var xOffset = ~~splitParts [0].split("(")[1];
+      var yOffset = ~~splitParts [1].split("(")[1];
+      $(group).attr("transform", "translate(" + (xOffset) + "," + (currentYOffset + yOffset) + ")");
+    }
+
     currentYOffset += chartHeight;
-
-
-    console.log(currentYOffset);
 
     if (chart.source != '') {
       var source = d3.select(bindTag + ' svg').append('text') // Source
@@ -157,11 +148,21 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       currentYOffset += 5 + applyLineWrap(source, chartWidth);
     }
 
-
     // reset the max height property of the container div.
     // C3 seems to set this and it becomes a stale value after rendering annotations.
     $(bindTag + ' svg').attr('height', currentYOffset);
     $(bindTag).css('max-height', currentYOffset +'px');
+
+    if (chart.notes) {
+      if (typeof Markdown !== 'undefined') {
+        var converter = new Markdown.getSanitizingConverter();
+        Markdown.Extra.init(converter, {
+          extensions: "all"
+        });
+        var notes = converter.makeHtml(chart.notes);
+        $(bindTag).append(notes);
+      }
+    }
 
     return currentYOffset;
   }
