@@ -3,7 +3,7 @@ function updateContent(collectionName, path, content) {
     success = function (response) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      refreshPreview(path);
+//      refreshPreview(path);
       loadPageDataIntoEditor(path, collectionName);
     },
     error = function (response) {

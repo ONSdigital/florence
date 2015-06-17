@@ -15,19 +15,19 @@ function t2Editor(collectionId, data) {
   // Metadata load, edition and saving
   $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.description.title = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.summary = $(this).val();
+    data.description.summary = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   // Save

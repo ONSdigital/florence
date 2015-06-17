@@ -32,23 +32,27 @@ function bulletinEditor(collectionId, data) {
   // Metadata load, edition and saving
   $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.description.title = $(this).val();
   });
-  $("#release").on('click keyup', function () {
+  $("#edition").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.release = $(this).val();
+    data.description.edition = $(this).val();
   });
-  if (!data.releaseDate){
+  if (!data.description.releaseDate){
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     $('#releaseDate').on('change', function () {
-      data.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
     });
   } else {
-    $('.release-date').hide();
+      dateTmp = $('#releaseDate').val();
+      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(a);
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+//    $('.release-date').hide();
   }
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.nextRelease = $(this).val();
+    data.description.nextRelease = $(this).val();
   });
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -56,44 +60,44 @@ function bulletinEditor(collectionId, data) {
   });
   $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.email = $(this).val();
+    data.description.contact.email = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.summary = $(this).val();
+    data.description.summary = $(this).val();
   });
   $("#headline1").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline1 = $(this).val();
+    data.description.headline1 = $(this).val();
   });
   $("#headline2").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline2 = $(this).val();
+    data.description.headline2 = $(this).val();
   });
   $("#headline3").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline3 = $(this).val();
+    data.description.headline3 = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if (data.nationalStatistic === "false" || data.nationalStatistic === false) {
+    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
       return false;
     }
     return true;
   };
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
   // Correction section

@@ -20,19 +20,19 @@ function t3Editor(collectionId, data) {
   // Metadata load, edition and saving
   $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.title = $(this).val();
+    data.description.title = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.summary = $(this).val();
+    data.description.summary = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   function sortableTimeseries() {
@@ -82,41 +82,38 @@ function t3Editor(collectionId, data) {
     // Timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {
-      var uri = data.items[parseInt(titleT)].uri;
+      var uri = data.items[parseInt(titleT)].data.uri;
       newTimeseries[indexT] = {uri: uri};
     });
     data.items = newTimeseries;
-    data.headline = newTimeseries[0];
     // Bulletins
     var orderBulletins = $("#sortable-bulletins").sortable('toArray');
     $(orderBulletins).each(function (indexB, titleB) {
       var uri = data.statsBulletins[parseInt(titleB)].uri;
-      var summary = data.statsBulletins[parseInt(titleB)].summary;
-      var title = data.statsBulletins[parseInt(titleB)].title;
-      var headline1 = data.statsBulletins[parseInt(titleB)].headline1;
-      var headline2 = data.statsBulletins[parseInt(titleB)].headline2;
-      var headline3 = data.statsBulletins[parseInt(titleB)].headline3;
-      newBulletins[indexB] = {uri: uri, title: title, summary: summary,
-                              headline1: headline1, headline2: headline2, headline3: headline3};
+//      var summary = data.statsBulletins[parseInt(titleB)].description.summary;
+//      var title = data.statsBulletins[parseInt(titleB)].description.title;
+//      var headline1 = data.statsBulletins[parseInt(titleB)].description.headline1;
+//      var headline2 = data.statsBulletins[parseInt(titleB)].description.headline2;
+//      var headline3 = data.statsBulletins[parseInt(titleB)].description.headline3;
+      newBulletins[indexB] = {uri: uri};        // , title: title, summary: summary, headline1: headline1, headline2: headline2, headline3: headline3};
     });
     data.statsBulletins = newBulletins;
-    data.statsBulletinHeadline = newBulletins[0];
     // Articles
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
       var uri = data.articles[parseInt(titleA)].uri;
-      var abstract = data.articles[parseInt(titleA)]._abstract;
-      var title = data.articles[parseInt(titleA)].title;
-      newArticles[indexA] = {uri: uri, title: title, abstract: _abstract};
+//      var abstract = data.articles[parseInt(titleA)].description._abstract;
+//      var title = data.articles[parseInt(titleA)].description.title;
+      newArticles[indexA] = {uri: uri};      //, title: title, abstract: _abstract};
     });
     data.articles = newArticles;
     // Datasets
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {
       var uri = data.datasets[parseInt(titleD)].uri;
-      var summary = data.datasets[parseInt(titleD)].summary;
-      var title = data.datasets[parseInt(titleD)].title;
-      newDatasets[indexD] = {uri: uri, title: title, summary: summary};
+//      var summary = data.datasets[parseInt(titleD)].description.summary;
+//      var title = data.datasets[parseInt(titleD)].description.title;
+      newDatasets[indexD] = {uri: uri}        //, title: title, summary: summary};
     });
     data.datasets = newDatasets;
   }
