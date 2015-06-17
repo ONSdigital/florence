@@ -82,14 +82,15 @@ function pageTypeDataT7(pageType) {
 
   if (pageType === "staticpage") {
     return {
-      "summary": "",
-      "keywords": "",
-      "metaDescription": "",
-      "name": "",
+      "description": {
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
+        "name": "",
+      },
       "content": [],
       type: pageType,
       "uri": "",
-      "fileName": "",
       "breadcrumb": "",
     };
   }
@@ -108,7 +109,7 @@ function pageTypeDataT7(pageType) {
         "sampleSize": "",
         "lastRevised": "",
         "content": [],
-        "keywords": "",
+        "keywords": [],
         "metaDescription": "",
         "name": "",
         "download": [],
@@ -123,7 +124,7 @@ function pageTypeDataT7(pageType) {
     return {
       "download": [],
       "content": [],
-      "keywords": "",
+      "keywords": [],
       "metaDescription": "",
       "name": "",
       "releaseDate": "",
@@ -138,7 +139,7 @@ function pageTypeDataT7(pageType) {
     return {
       "download": [],
       "content": [],
-      "keywords": "",
+      "keywords": [],
       "metaDescription": "",
       "name": "",
       "releaseDate": "",

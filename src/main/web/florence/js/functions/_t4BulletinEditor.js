@@ -56,11 +56,15 @@ function bulletinEditor(collectionId, data) {
   });
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.name = $(this).val();
+    data.description.contact.name = $(this).val();
   });
   $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
+  });
+  $("#contactTelephone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.contact.telephone = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();

@@ -36,7 +36,7 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  if (!data.releaseDate){
+  if (!data.description.releaseDate){
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     $('#releaseDate').on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
@@ -56,9 +56,9 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactPhone").on('click keyup', function () {
+  $("#contactTelephone").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.description.contact.phone = $(this).val();
+    data.description.contact.telephone = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
