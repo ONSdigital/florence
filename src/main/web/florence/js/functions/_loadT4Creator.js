@@ -1,10 +1,9 @@
-function loadT4Creator (collectionName) {
-  console.log('loadT4');
-  var parent, pageType, pageName, uriSection, pageNameTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
+function loadT4Creator (collectionId) {
+  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
 
-  getCollection(collectionName,
+  getCollection(collectionId,
     success = function (response) {
-      if (response.publishDate === '[manual collection]') {
+      if (!response.publishDate) {
         releaseDate = null;
       } else {
         releaseDate = response.publishDate;
@@ -22,7 +21,7 @@ function loadT4Creator (collectionName) {
     var parentUrlData = "/data" + parentUrl;                //TBC when not angular
 
     if (pageType === 'staticpage' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
-        loadT7Creator(collectionName, releaseDate, pageType);
+        loadT7Creator(collectionId, releaseDate, pageType);
     }
     else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
       $.ajax({
@@ -30,14 +29,13 @@ function loadT4Creator (collectionName) {
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {
-          if (checkData.level === 't3') {
+          if (checkData.type === 'product_page') {
             $('#location').val(parentUrl);
             var inheritedBreadcrumb = checkData.breadcrumb;
             var parentBreadcrumb = {
-              "index": 0,
-              "type": "home",
-              "name": checkData.name,
-              "fileName": checkData.fileName,
+              "title": checkData.title,
+              "summary": checkData.summary,
+              "uri": checkData.uri,
               "breadcrumb": []
             };
             inheritedBreadcrumb.push(parentBreadcrumb);
@@ -50,9 +48,9 @@ function loadT4Creator (collectionName) {
             contentUrl = contentUrlTmp.join('/');
             $('#location').val(contentUrl);
             breadcrumb = checkData.breadcrumb;
-            pageName = checkData.name;
+            pageTitle = checkData.title;
             isBullArt = true;
-            submitFormHandler (pageName, contentUrl, isBullArt);
+            submitFormHandler (pageTitle, contentUrl, isBullArt);
             return true;
           } else {
             $('.btn-page-create').hide();
@@ -65,7 +63,7 @@ function loadT4Creator (collectionName) {
       });
     }
 
-    function submitFormHandler (name, uri, isBullArt) {
+    function submitFormHandler (title, uri, isBullArt) {
       if (pageType === 'bulletin' || pageType === 'article') {
         $('.release').append(
           '<div class="release-div">' +
@@ -77,14 +75,14 @@ function loadT4Creator (collectionName) {
         $('.release').append(
           '<div class="release-div">' +
           '  <label for="releaseDate">Release date</label>' +
-          '  <input id="releaseDate" type="text" placeholder="dd/mm/yyyy" />' +
+          '  <input id="releaseDate" type="text" placeholder="day month year" />' +
           '</div>'
-        );   //style="display: none;
-        $('#releaseDate').datepicker({dateFormat: 'dd/mm/yy'});
+        );
+        $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       }
-      if (name) {
-        pageName = name;
-        $('#pagename').val(name);
+      if (title) {
+        pageTitle = title;
+        $('#pagename').val(title);
       }
 
       $('form').submit(function (e) {
@@ -94,38 +92,36 @@ function loadT4Creator (collectionName) {
         if (pageType === 'bulletin' || pageType === 'article') {
           pageData.release = $('#release').val();
         }
-        if (name) {
+        if (title) {
           //do nothing;
         } else {
-          pageName = $('#pagename').val();
+          pageTitle = $('#pagename').val();
         }
-        pageData.name = pageName;
+        pageData.title = pageTitle;
         uriSection = pageType + "s";
-        pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-        pageData.fileName = pageNameTrimmed;
+        pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         if (releaseDateManual) {                                                          //Manual collections
-          date = $.datepicker.parseDate("dd/mm/yy", releaseDateManual);
+          date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
           releaseUri = $.datepicker.formatDate('yymmdd', date);
         } else {
           releaseUri = $.datepicker.formatDate('yymmdd', new Date(releaseDate));
-          releaseDateTemp = $.datepicker.formatDate('dd/mm/yy', new Date(releaseDate));
-          releaseDate = releaseDateTemp;
+//          releaseDate = new Date(releaseDate).toISOString();;
         }
 
         if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-          pageData.releaseDate = $('#releaseDate').val();
+          pageData.releaseDate = new Date($('#releaseDate').val()).toISOString();
         } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
           pageData.releaseDate = null;
         } else {
           pageData.releaseDate = releaseDate;
         }
         if (isBullArt) {
-          newUri = makeUrl(parent, releaseUri);
+          newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
         } else {
           if ((pageType === 'bulletin' || pageType === 'article')) {
-            newUri = makeUrl(parent, uriSection, pageNameTrimmed, releaseUri);
+            newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
           } else {
-            newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+            newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
           }
         }
         pageData.uri = newUri;
@@ -137,15 +133,15 @@ function loadT4Creator (collectionName) {
         } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.releaseDate)) {
           alert('Release date can not be empty');
           return true;
-        } if (pageName.length < 4) {
-          alert("This is not a valid file name");
+        } if (pageTitle.length < 4) {
+          alert("This is not a valid file title");
           return true;
         }
          else {
-          postContent(collectionName, newUri, JSON.stringify(pageData),
+          postContent(collectionId, newUri, JSON.stringify(pageData),
             success = function (message) {
               console.log("Updating completed " + message);
-              viewWorkspace(newUri, collectionName, 'edit');
+              viewWorkspace(newUri, collectionId, 'edit');
               refreshPreview(newUri);
             },
             error = function (response) {
@@ -172,7 +168,7 @@ function loadT4Creator (collectionName) {
           "release": "",
           "nextRelease": "",
           "contact": {
-            "name": "",
+            "title": "",
             "email": "",
             "phone": ""
           },
@@ -189,11 +185,10 @@ function loadT4Creator (collectionName) {
           "externalLinks": [],
           "charts": [],
           "correction": [],
-          "name": "",
+          "title": "",
           "releaseDate": "",
           type: pageType,
           "uri": "",
-          "fileName": "",
           "breadcrumb": "",
         };
       }
@@ -218,11 +213,10 @@ function loadT4Creator (collectionName) {
           "externalLinks": [],
           "charts": [],
           "correction": [],
-          "name": "",
+          "title": "",
           "releaseDate": "",
           type: pageType,
           "uri": "",
-          "fileName": "",
           "breadcrumb": "",
         };
       }
@@ -239,11 +233,10 @@ function loadT4Creator (collectionName) {
           "summary": "",
           "keywords": "",
           "metaDescription": "",
-          "name": "",
+          "title": "",
           "releaseDate": "",
           type: pageType,
           "uri": "",
-          "fileName": "",
           "breadcrumb": "",
         };
       }
@@ -265,14 +258,12 @@ function loadT4Creator (collectionName) {
           "metaDescription": "",
           "nationalStatistic": "false",
           "migrated": "false",
-          "description": "",
           "charts": [],
           "correction": [],
-          "name": "",
+          "title": "",
           "releaseDate": "",
           type: pageType,
           "uri": "",
-          "fileName": "",
           "relatedDatasets": [],
           "usedIn": [],
           "breadcrumb": "",

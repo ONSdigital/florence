@@ -28,15 +28,14 @@ function articleEditor(collectionId, data) {
   $("#headline1-p").remove();
   $("#headline2-p").remove();
   $("#headline3-p").remove();
-  $("#description-p").remove();
   $("#migrated").remove();
   $("#natStat").remove();
 
 
   // Metadata edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.title = $(this).val();
   });
   $("#release").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -326,8 +325,8 @@ function articleEditor(collectionId, data) {
     $(orderArticle).each(function (indexB, nameB) {
       var uri = $('#article-uri_' + nameB).val();
       var summary = $('#article-summary_' + nameB).val();
-      var name = $('#article-title_' + nameB).val();
-      newRelated[indexB]= {uri: uri, name: name, summary: summary};
+      var title = $('#article-title_' + nameB).val();
+      newRelated[indexB]= {uri: uri, title: title, summary: summary};
     });
     data.relatedArticles = newRelated;
     // External links

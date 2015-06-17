@@ -1,6 +1,6 @@
 function bulletinEditor(collectionId, data) {
 
-  var index = data.release.value;
+//  var index = data.release;
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
   var setActiveTab, getActiveTab;
@@ -27,22 +27,25 @@ function bulletinEditor(collectionId, data) {
   $("#metadata-d").remove();
   $("#metadata-m").remove();
   $("#abstract-p").remove();
-  $("#description-p").remove();
   $("#migrated").remove();
 
   // Metadata load, edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.title = $(this).val();
   });
   $("#release").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.release = $(this).val();
   });
-  $("#releaseDate").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.releaseDate = $(this).val();
-  });
+  if (!data.releaseDate){
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    $('#releaseDate').on('change', function () {
+      data.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+    });
+  } else {
+    $('.release-date').hide();
+  }
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.nextRelease = $(this).val();
@@ -234,8 +237,8 @@ function bulletinEditor(collectionId, data) {
         localStorage.removeItem('historicUrl');
       });
 
-      var bulletinurl = $('#iframe')[0].contentWindow.document.location.href;
-      var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+      var bulletinurl = $('#iframe')[0].contentWindow.document.location.pathname;
+      var bulletinurldata = bulletinurl + "/data.json";
 
       $.ajax({
         url: bulletinurldata,
@@ -329,8 +332,8 @@ function bulletinEditor(collectionId, data) {
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = $('#bulletin-uri_' + nameB).val();
       var summary = $('#bulletin-summary_' + nameB).val();
-      var name = $('#bulletin-title_' + nameB).val();
-      newRelated[indexB] = {uri: uri, name: name, summary: summary};
+      var title = $('#bulletin-title_' + nameB).val();
+      newRelated[indexB] = {uri: uri, title: title, summary: summary};
     });
     data.relatedBulletins = newRelated;
     // External links
