@@ -112,10 +112,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
 
-    if (chartHeight > preview.height()) {
-      chartHeight = preview.height();
-      chartWidth = preview.height() / chart.aspectRatio;
-    }
+    //if (chartHeight > preview.height()) {
+    //  chartHeight = preview.height();
+    //  chartWidth = preview.height() / chart.aspectRatio;
+    //}
 
     renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
@@ -133,6 +133,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.source = $('#chart-source').val();
     chart.legend = $('#chart-legend').val();
     chart.hideLegend = (chart.legend === 'false') ? true : false;
+
+    chart.notes = $('#chart-notes').val();
+    chart.altText = $('#chart-alt-text').val();
 
     if (chart.title === '') {
       chart.title = '[Title]'

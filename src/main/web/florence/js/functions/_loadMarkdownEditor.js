@@ -74,7 +74,7 @@ function loadMarkdownEditor(content, onSave, pageData) {
 
 function markdownEditor() {
 
-  var converter = new Markdown.Converter(); //Markdown.getSanitizingConverter();
+  var converter = new Markdown.getSanitizingConverter();
 
   // output chart tag as text instead of the actual tag.
   converter.hooks.chain("preBlockGamut", function (text) {
