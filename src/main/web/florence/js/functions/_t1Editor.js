@@ -14,13 +14,17 @@ function t1Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata edition and saving
+  $("#summary").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.summary = $(this).val();
+  });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   //Edit section
@@ -61,12 +65,8 @@ function t1Editor(collectionId, data) {
           success: function (sectionData) {
             if (sectionData.type === 'timeseries') {
               data.sections.splice(index, 1,
-              {theme: {
-              title: sectionData.breadcrumb[1].title,
-              uri: sectionData.breadcrumb[1].uri},
-              statistics: {
-                uri: sectionData.uri
-              }
+              {theme: {uri: sectionData.breadcrumb[1].uri},
+               statistics: {uri: sectionData.uri}
               });
               postContent(collectionId, reload, JSON.stringify(data),
                 success = function (response) {
@@ -90,7 +90,7 @@ function t1Editor(collectionId, data) {
                 }
                );
             } else {
-              alert("This is not an article or a bulletin");
+              alert("This is not a time series");
             }
           },
           error: function () {
@@ -136,15 +136,10 @@ function t1Editor(collectionId, data) {
     // sections
     var orderSections = $("#sortable-sections").sortable('toArray');
     $(orderSections).each(function(indexS, nameS){
-      var uri = data.sections[parseInt(nameS)].statistics.uri;
+      var uri = data.sections[parseInt(nameS)].statistics.data.uri;
       var link = data.sections[parseInt(nameS)].theme.uri;
-      var linkName = data.sections[parseInt(nameS)].theme.title;
-      newSections[parseInt(indexS)] = {theme: {
-                                                title: linkName,
-                                                uri: link},
-                                                statistics: {
-                                                  uri: uri
-                                                }
+      newSections[parseInt(indexS)] = {theme: {uri: link},
+                                       statistics: {uri: uri}
                                       };
     });
     data.sections = newSections;

@@ -33,8 +33,6 @@ function loadT4Creator (collectionId) {
             $('#location').val(parentUrl);
             var inheritedBreadcrumb = checkData.breadcrumb;
             var parentBreadcrumb = {
-              "title": checkData.title,
-              "summary": checkData.summary,
               "uri": checkData.uri,
               "breadcrumb": []
             };
@@ -48,7 +46,7 @@ function loadT4Creator (collectionId) {
             contentUrl = contentUrlTmp.join('/');
             $('#location').val(contentUrl);
             breadcrumb = checkData.breadcrumb;
-            pageTitle = checkData.title;
+            pageTitle = checkData.description.title;
             isBullArt = true;
             submitFormHandler (pageTitle, contentUrl, isBullArt);
             return true;
@@ -65,15 +63,15 @@ function loadT4Creator (collectionId) {
 
     function submitFormHandler (title, uri, isBullArt) {
       if (pageType === 'bulletin' || pageType === 'article') {
-        $('.release').append(
-          '<div class="release-div">' +
-          '  <label for="release">Release</label>' +
-          '  <input id="release" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
+        $('.edition').append(
+          '<div class="edition-div">' +
+          '  <label for="edition">Edition</label>' +
+          '  <input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
           '</div>'
         );
       } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-        $('.release').append(
-          '<div class="release-div">' +
+        $('.edition').append(
+          '<div class="edition-div">' +
           '  <label for="releaseDate">Release date</label>' +
           '  <input id="releaseDate" type="text" placeholder="day month year" />' +
           '</div>'
@@ -90,14 +88,14 @@ function loadT4Creator (collectionId) {
         pageData = pageTypeDataT4(pageType);
         parent = $('#location').val().trim();
         if (pageType === 'bulletin' || pageType === 'article') {
-          pageData.release = $('#release').val();
+          pageData.description.edition = $('#edition').val();
         }
         if (title) {
           //do nothing;
         } else {
           pageTitle = $('#pagename').val();
         }
-        pageData.title = pageTitle;
+        pageData.description.title = pageTitle;
         uriSection = pageType + "s";
         pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         if (releaseDateManual) {                                                          //Manual collections
@@ -105,15 +103,14 @@ function loadT4Creator (collectionId) {
           releaseUri = $.datepicker.formatDate('yymmdd', date);
         } else {
           releaseUri = $.datepicker.formatDate('yymmdd', new Date(releaseDate));
-//          releaseDate = new Date(releaseDate).toISOString();;
         }
 
         if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-          pageData.releaseDate = new Date($('#releaseDate').val()).toISOString();
+          pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
         } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
-          pageData.releaseDate = null;
+          pageData.description.releaseDate = null;
         } else {
-          pageData.releaseDate = releaseDate;
+          pageData.description.releaseDate = releaseDate;
         }
         if (isBullArt) {
           newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
@@ -124,13 +121,13 @@ function loadT4Creator (collectionId) {
             newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
           }
         }
-        pageData.uri = newUri;
+        pageData.description.uri = newUri;
         pageData.breadcrumb = breadcrumb;
 
-        if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.release)) {
+        if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.description.release)) {
           alert('Release can not be empty');
           return true;
-        } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.releaseDate)) {
+        } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.description.releaseDate)) {
           alert('Release date can not be empty');
           return true;
         } if (pageTitle.length < 4) {
@@ -165,108 +162,115 @@ function loadT4Creator (collectionId) {
 
       if (pageType === "bulletin") {
         return {
-          "release": "",
-          "nextRelease": "",
-          "contact": {
+          "description": {
+            "headline1": "",
+            "headline2": "",
+            "headline3": "",
+            "nationalStatistic": false,
+            "contact": {
+              "title": "",
+              "email": "",
+              "phone": ""
+            },
             "title": "",
-            "email": "",
-            "phone": ""
+            "summary": "",
+            "keywords": "",
+            "edition": "",
+            "releaseDate": "",
+            "nextRelease": "",
+            "metaDescription": "",
           },
           "sections": [],
           "accordion": [],
-          "headline1": "",
-          "headline2": "",
-          "headline3": "",
-          "summary": "",
-          "keywords": "",
-          "metaDescription": "",
-          "nationalStatistic": "false",
           "relatedBulletins": [],
           "externalLinks": [],
           "charts": [],
           "correction": [],
-          "title": "",
-          "releaseDate": "",
           type: pageType,
           "uri": "",
-          "breadcrumb": "",
+          "breadcrumb": [],
         };
       }
 
       else if (pageType === "article") {
         return {
-          "release": "",
-          "nextRelease": "",
-          "contact": {
-            "name": "",
-            "email": "",
-            "phone": ""
+          "description": {
+            "edition": "",
+            "nextRelease": "",
+            "contact": {
+              "name": "",
+              "email": "",
+              "phone": ""
+            },
+            "abstract": "",
+            "authors": [],
+            "keywords": "",
+            "metaDescription": "",
+            "nationalStatistic": false,
+            "title": "",
+            "releaseDate": "",
           },
           "sections": [],
           "accordion": [],
-          "abstract": "",
-          "authors": [],
-          "keywords": "",
-          "metaDescription": "",
-          "nationalStatistic": "false",
           "relatedArticles": [],
           "externalLinks": [],
           "charts": [],
           "correction": [],
-          "title": "",
-          "releaseDate": "",
           type: pageType,
           "uri": "",
-          "breadcrumb": "",
+          "breadcrumb": [],
         };
       }
 
       else if (pageType === "methodology") {
         return {
-          "contact": {
-            "name": "",
-            "email": "",
-            "phone": ""
+          "description": {
+            "contact": {
+              "name": "",
+              "email": "",
+              "phone": ""
+            },
+            "summary": "",
+            "keywords": "",
+            "metaDescription": "",
+            "title": "",
+            "releaseDate": "",
           },
           "sections": [],
           "accordion": [],
-          "summary": "",
-          "keywords": "",
-          "metaDescription": "",
-          "title": "",
-          "releaseDate": "",
           type: pageType,
           "uri": "",
-          "breadcrumb": "",
+          "breadcrumb": [],
         };
       }
 
       else if (pageType === "dataset") {
         return {
-          "release": "",
-          "nextRelease": "",
-          "contact": {
-            "name": "",
-            "email": "",
-            "phone": ""
+          "description": {
+            "releaseDate": "",
+            "nextRelease": "",
+            "contact": {
+              "name": "",
+              "email": "",
+              "phone": ""
+            },
+            "summary": "",
+            "datasetID":"",
+            "keywords": "",
+            "metaDescription": "",
+            "nationalStatistic": false,
+            "migrated": false,
+            "title": "",
           },
           "download": [],
           "notes": [],
-          "summary": "",
-          "datasetID":"",
-          "keywords": "",
-          "metaDescription": "",
-          "nationalStatistic": "false",
-          "migrated": "false",
           "charts": [],
           "correction": [],
-          "title": "",
-          "releaseDate": "",
-          type: pageType,
-          "uri": "",
           "relatedDatasets": [],
           "usedIn": [],
-          "breadcrumb": "",
+          type: pageType,
+          "uri": "",
+          "breadcrumb": [],
         };
       }
 
