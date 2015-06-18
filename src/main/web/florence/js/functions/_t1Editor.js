@@ -33,10 +33,11 @@ function t1Editor(collectionId, data) {
     $("#section-edit_"+index).click(function() {
 
       var pageurl = localStorage.getItem('pageurl');
-      localStorage.setItem('historicUrl', pageurl);
-      var reload = (localStorage.getItem("historicUrl") === "/") ? "" : localStorage.getItem("historicUrl");
+//      localStorage.setItem('historicUrl', pageurl);
+//      var reload = (localStorage.getItem("historicUrl") === "/") ? "" : localStorage.getItem("historicUrl");
       var iframeEvent = document.getElementById('iframe').contentWindow;
           iframeEvent.removeEventListener('click', Florence.Handler, true);
+      createWorkspace(pageurl, collectionId, '', true);
 
       $('#' + index).replaceWith(
           '<div id="' + index + '" class="edit-section__sortable-item">' +
@@ -50,9 +51,8 @@ function t1Editor(collectionId, data) {
         $("#section-cancel_" + index).show().one('click', function () {
           $('#section-cancel_' + index).hide();
           $('#' + index).hide();
-          refreshPreview(localStorage.getItem("historicUrl"));
-          loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionId);
-          localStorage.removeItem('historicUrl');
+          createWorkspace(pageurl, collectionId, 'edit');
+//          localStorage.removeItem('historicUrl');
         });
 
         var sectionUrl = $('#iframe')[0].contentWindow.document.location.pathname;
@@ -72,10 +72,7 @@ function t1Editor(collectionId, data) {
                 success = function (response) {
                   console.log("Updating completed " + response);
                   Florence.Editor.isDirty = false;
-                  loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionId);
-                  refreshPreview(localStorage.getItem("historicUrl"));
-                  iframeEvent.addEventListener('click', Florence.Handler, true);
-                  localStorage.removeItem('historicUrl');
+                  createWorkspace(pageurl, collectionId, 'edit');
                 },
                 error = function (response) {
                   if (response.status === 400) {

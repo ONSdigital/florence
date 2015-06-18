@@ -18,6 +18,7 @@ function datasetEditor(collectionId, data) {
   $("#collapsible").remove();
   $("#relBulletin").remove();
   $("#relArticle").remove();
+  $("#relData").remove();
   $("#extLink").remove();
   $("#content").remove();
   $(".edition").hide();

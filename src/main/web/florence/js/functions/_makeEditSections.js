@@ -15,7 +15,6 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     accordion();
     t2Editor(collectionId, pageData);
-    console.log(templateData)
   }
 
   else if (pageData.type === 'product_page') {

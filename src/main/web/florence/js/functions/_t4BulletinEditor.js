@@ -2,7 +2,7 @@ function bulletinEditor(collectionId, data) {
 
 //  var index = data.release;
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
-  var lastIndexRelated;
+  var lastIndexRelated, pastedUrl;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -220,42 +220,38 @@ function bulletinEditor(collectionId, data) {
     });
   }
 
-  //Add new related
+  //Add new related bulletins
   $("#addBulletin").one('click', function () {
-    var pageurl = localStorage.getItem('pageurl');
-    localStorage.setItem('historicUrl', pageurl);
-    var reload = localStorage.getItem("historicUrl");
+    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
         '  <textarea id="bulletin-uri_' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get"></textarea>' +
         '  <button class="btn-page-get" id="bulletin-get_' + lastIndexRelated + '">Get</button>' +
         '  <button class="btn-page-cancel" id="bulletin-cancel_' + lastIndexRelated + '">Cancel</button>' +
-        '</div>');
-    $("#bulletin-cancel_" + lastIndexRelated).hide();
+        '</div>').trigger('create');
 
     $("#bulletin-get_" + lastIndexRelated).one('click', function () {
-      $("#bulletin-cancel_" + lastIndexRelated).show().one('click', function () {
-        $("#bulletin-cancel_" + lastIndexRelated).hide();
-        $('#' + lastIndexRelated).hide();
-        refreshPreview(reload);
-        loadPageDataIntoEditor(reload, collectionId);
-        localStorage.removeItem('historicUrl');
-      });
-
-      var bulletinurl = $('#iframe')[0].contentWindow.document.location.pathname;
-      var bulletinurldata = bulletinurl + "/data.json";
+      pastedUrl = $('#bulletin-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var bulletinUrlData = myUrl.pathname + "/data";
+      } else {
+        var bulletinUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var bulletinUrlData = bulletinUrl + "/data";
+      }
 
       $.ajax({
-        url: bulletinurldata,
+        url: bulletinUrlData,
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
-            data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            saveRelated(collectionId, reload, data);
+            data.relatedBulletins.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not a bulletin");
           }
@@ -265,12 +261,74 @@ function bulletinEditor(collectionId, data) {
         }
       });
     });
+
+    $("#bulletin-cancel_" + lastIndexRelated).one('click', function () {
+      $("#bulletin-cancel_" + lastIndexRelated).hide();
+      $('#' + lastIndexRelated).hide();
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
   });
 
   function sortableRelated() {
     $("#sortable-related").sortable();
   }
   sortableRelated();
+
+
+  //Add new related data
+  $("#addData").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-related-data').append(
+        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
+        '  <textarea id="data-uri_' + lastIndexRelated + '" placeholder="Go to the related data and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="data-get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#data-get_" + lastIndexRelated).one('click', function () {
+      pastedUrl = $('#bulletin-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var dataUrlData = myUrl.pathname + "/data";
+      } else {
+        var dataUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var dataUrlData = bulletinUrl + "/data";
+      }
+
+      $.ajax({
+        url: dataUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'data') {
+            data.relatedData.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a data");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#data-cancel_" + lastIndexRelated).one('click', function () {
+      $("#data-cancel_" + lastIndexRelated).hide();
+      $('#' + lastIndexRelated).hide();
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
+
+  function sortableRelated() {
+    $("#sortable-related").sortable();
+  }
+  sortableRelated();
+
 
   // Edit external
   // Load and edition
