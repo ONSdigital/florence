@@ -17,7 +17,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   var groups = chart.chartType === 'barline' ? chart.groups : [];
   var type = checkType(chart);
   var rotate = chart.chartType === 'rotated';
-  var yLabel = chart.unit;// rotate === true ? chart.unit : '';
+  var yLabel = rotate === true ? chart.unit : '';
   var chartYOffset = 0;
 
   // work out position for chart legend
@@ -73,15 +73,32 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   c3.generate(c3Config);
 
+  renderChartUnit();
+
+  function renderChartUnit() {
+
+    var svg = d3.select(bindTag + ' svg');
+    var headerGroup = svg.append('g');
+    var chartGroup = d3.select('g');
+    var splitParts = chartGroup.attr("transform").split(",");
+    var chartXOffset = ~~splitParts [0].split("(")[1];
+    if (chart.unit && !rotate) {
+      headerGroup.append('text') // Unit (if non rotated)
+        .attr("transform", "translate(" + (chartXOffset + 10) + "," + 15 + ")")
+        .attr('text-anchor', 'left')
+        .style('font-size', '12px')
+        .style('font-family', '"Open Sans", sans-serif')
+        .style('fill', '#000000')
+        .text(chart.unit);
+    }
+  }
+
   function renderSvgAnnotations(bindTag, chart, chartHeight, chartWidth) {
 
     var svg = d3.select(bindTag + ' svg');
 
     var svgGroups = $(bindTag + ' svg > g').get();
     var headerGroup = svg.append('g');
-    var chartGroup = d3.select('g');
-    var splitParts = chartGroup.attr("transform").split(",");
-    var chartXOffset = ~~splitParts [0].split("(")[1];
 
     //var chartHeight = chartGroup.node().getBBox().height
     // annotate
@@ -102,19 +119,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         .text(chart.subtitle);
 
       currentYOffset += 8 + applyLineWrap(subtitle, chartWidth);
-    }
-
-
-    if (chart.unit && !rotate) {
-      var unit = headerGroup.append('text') // Unit (if non rotated)
-        .attr("transform", "translate(" + (chartXOffset - 20) + "," + currentYOffset + ")")
-        .attr('text-anchor', 'left')
-        .style('font-size', '12px')
-        .style('font-family', '"Open Sans", sans-serif')
-        .style('fill', '#000000')
-        .text(chart.unit);
-
-      currentYOffset += 5 + applyLineWrap(unit, chartWidth);
     }
 
     currentYOffset += 2;
@@ -206,7 +210,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       return type = chart.chartType;
     }
   }
-
 
   function renderTimeseriesChartObject(bindTag, timechart, chartWidth, chartHeight) {
     var padding = 25;
