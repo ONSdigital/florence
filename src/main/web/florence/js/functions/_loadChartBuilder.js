@@ -2,7 +2,6 @@ function loadChartBuilder(pageData, onSave, chart) {
   var chart = chart;
   var pageUrl = localStorage.getItem('pageurl');
   var html = templates.chartBuilder(chart);
-  var table = false;
   $('body').append(html);
   $('.chart-builder').css("display", "block");
 
@@ -23,9 +22,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     var data = [];
     var series = chart.series;
 
-    if (chart.type === 'barline') { // if we have a bar line we want to populate the entries for each series
-      if (chart.types) { // if we have existing types use them
-        var type = _.values(chart.types);
+    if (chart.chartType === 'barline') { // if we have a bar line we want to populate the entries for each series
+      if (chart.chartTypes) { // if we have existing types use them
+        var type = _.values(chart.chartTypes);
         for (var i = 0; i < chart.series.length; i += 1) {
           data.push({
             series: series[i], type: type[i],
@@ -71,9 +70,9 @@ function loadChartBuilder(pageData, onSave, chart) {
       processData: false,
       contentType: false,
       success: function (res) {
-        if (!table) {
-          generatePng();
-        }
+        generatePng();
+
+        // todo: generate download png
 
         if (!pageData.charts) {
           pageData.charts = []
@@ -100,24 +99,27 @@ function loadChartBuilder(pageData, onSave, chart) {
   // Builds, parses, and renders our chart in the chart editor
   function renderChart() {
     chart = buildChartObject();
-    if (table) {
-      $('#preview-chart').empty();
-      $('#preview-chart').html('<div id="dataTable"></div>');
-      drawTable(chart);
-    }
+    $('#preview-chart').empty();
 
     var preview = $('#preview-chart');
-    preview.html('<div id="chart"></div>');
+    var previewHtml = templates.chartBuilderPreview(chart);
+    preview.html(previewHtml);
 
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
 
-    //if (chartHeight > preview.height()) {
-    //  chartHeight = preview.height();
-    //  chartWidth = preview.height() / chart.aspectRatio;
-    //}
-
     renderChartObject('#chart', chart, chartHeight, chartWidth);
+
+    if (chart.notes) {
+      if (typeof Markdown !== 'undefined') {
+        var converter = new Markdown.getSanitizingConverter();
+        Markdown.Extra.init(converter, {
+          extensions: "all"
+        });
+        var notes = converter.makeHtml(chart.notes);
+        preview.append(notes);
+      }
+    }
   }
 
   function buildChartObject() {
@@ -126,6 +128,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       chart = {};
     }
 
+    chart.type = "chart";
     chart.title = $('#chart-title').val();
     chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     chart.subtitle = $('#chart-subtitle').val();
@@ -148,7 +151,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     chart.aspectRatio = $('#aspect-ratio').val();
 
-    if (chart.type === 'barline') {
+    if (chart.chartType === 'barline') {
       var types = {};
       var groups = [];
       var group = [];
@@ -163,16 +166,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         groups.push(group);
         return groups;
       })();
-      chart.types = types;
+      chart.chartTypes = types;
       chart.groups = groups;
     }
 
-    chart.type = $('#chart-type').val();
-    if (chart.type === 'table') {
-      table = true;
-    } else {
-      table = false;
-    }
+    chart.chartType = $('#chart-type').val();
 
     //console.log(chart);
     parseChartObject(chart);
@@ -195,7 +193,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         item.date = time['date'];
         item.label = time['label'];
         timeData.push(item);
-      })
+      });
 
       chart.timeSeries = timeData;
     }
@@ -210,11 +208,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     for (var i = 1; i < lines.length; i++) {
       var obj = {};
-      if (!table) {
-        var currentline = lines[i].split(",").join("").split("\t");
-      } else {
-        var currentline = lines[i].split("\t");
-      }
+      var currentline = lines[i].split(",").join("").split("\t");
+
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
@@ -372,7 +367,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     // Check for quarters
     quarter = timeString.match(/Q\d/);
     year = timeString.match(/\d\d\d\d/);
-    if((quarter !== null) && (year !== null)) {
+    if ((quarter !== null) && (year !== null)) {
       months = ["February ", "May ", "August ", "November "];
       quarterMid = parseInt(quarter[0][1]);
       timeString = months[quarterMid - 1] + year[0];
@@ -388,33 +383,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     return (null);
   }
-
-
-  function drawTable(data) {
-    var title = data.headers;
-    var rows = data.data;
-    drawTitles(title);
-    for (var i = 0; i < rows.length; i++) {
-      drawRow(rows[i]);
-    }
-
-    function drawTitles(title) {
-      var row = $("<tr />");
-      $("#dataTable").append(row);
-      for (var j = 0; j < title.length; j++) {
-        row.append($("<th>" + title[j] + "</th>"));
-      }
-    }
-
-    function drawRow(rowData) {
-      var row = $("<tr />")
-      $("#dataTable").append(row);
-      for (var j = 0; j < title.length; j++) {
-        row.append($("<td>" + rowData[title[j]] + "</td>"));
-      }
-    }
-  }
-
 
   //generatePng();
   function generatePng() {

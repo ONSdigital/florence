@@ -13,11 +13,11 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   }
 
   // Calculate padding at top (and left) of SVG
-  var types = chart.type === 'barline' ? chart.types : {};
-  var groups = chart.type === 'barline' ? chart.groups : [];
+  var types = chart.chartType === 'barline' ? chart.chartTypes : {};
+  var groups = chart.chartType === 'barline' ? chart.groups : [];
   var type = checkType(chart);
-  var rotate = chart.type === 'rotated';
-  var yLabel = rotate === true ? chart.unit : '';
+  var rotate = chart.chartType === 'rotated';
+  var yLabel = chart.unit;// rotate === true ? chart.unit : '';
   var chartYOffset = 0;
 
   // work out position for chart legend
@@ -73,10 +73,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   c3.generate(c3Config);
 
-  // annotate
-  renderAnnotations(bindTag, chart, chartHeight, chartWidth);
-
-  function renderAnnotations(bindTag, chart, chartHeight, chartWidth) {
+  function renderSvgAnnotations(bindTag, chart, chartHeight, chartWidth) {
 
     var svg = d3.select(bindTag + ' svg');
 
@@ -199,14 +196,14 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   }
 
   function checkType(chart) {
-    if (chart.type === 'rotated') {
+    if (chart.chartType === 'rotated') {
       type = 'bar';
       return type;
-    } else if (chart.type === 'barline') {
+    } else if (chart.chartType === 'barline') {
       type = 'bar';
       return type;
     } else {
-      return type = chart.type;
+      return type = chart.chartType;
     }
   }
 
@@ -245,7 +242,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     var axisType;
     var keys;
 
-    if (chart.type == 'line') { // continuous line charts
+    if (chart.chartType == 'line') { // continuous line charts
       axisType = {
         label: chart.xaxis,
         type: 'timeseries',
@@ -289,7 +286,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       data: {
         json: chart.timeSeries,
         keys: keys,
-        type: chart.type,
+        type: chart.chartType,
         xFormat: '%Y-%m-%d %H:%M:%S'
       },
 
@@ -326,8 +323,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         top: padding
       }
     });
-
-    renderAnnotations(bindTag, chart, chartWidth, chartHeight);
   }
 
   function formattedMonthYear(date) {
