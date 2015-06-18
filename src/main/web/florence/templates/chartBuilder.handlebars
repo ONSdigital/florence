@@ -11,9 +11,13 @@
 
       <textarea id="chart-data" placeholder="Paste your data here" rows="4" cols="120"></textarea>
       <br/>
+
+      <label>Alt Text</label>
+      <input type="text" id="chart-alt-text" placeholder="[Alt Text]" value="{{altText}}"/>
+
       <label>Chart Type <br>
         <select id="chart-type">
-            {{#select type}}
+            {{#select chartType}}
               <option value="bar">Bar Chart</option>
               <option value="line">Line Chart</option>
               <option value="barline">Bar + Line Chart</option>
@@ -42,25 +46,22 @@
       <label>Aspect Ratio<br>
         <select id="aspect-ratio">
             {{#select aspectRatio}}
+              <option value="0.56">16:9</option>
               <option value="0.75">4:3</option>
               <option value="0.42">21:9</option>
-              <option value="0.56">16:9</option>
               <option value="1">1:1</option>
               <option value="1.3">10:13</option>
             {{/select}}
         </select>
       </label>
 
+      <textarea id="chart-notes" placeholder="Add chart notes here" rows="4" cols="120">{{notes}}</textarea>
+      <br/>
+
     </div>
 
     <div id="preview-chart" class="chart-builder__preview">
-      <div id="chart"></div>
-    </div>
 
-
-    <div id="hiddenDiv" style="display:none">
-      <canvas id="hiddenCanvas"></canvas>
-      <a id="hiddenPng"/>
     </div>
 
     <div class="chart-builder__footer">
@@ -69,4 +70,15 @@
     </div>
 
   </div>
+
+
+  <div id="hiddenDiv" style="display:none">
+    <canvas id="hiddenCanvas"></canvas>
+
+  </div>
+
+
+  <div id="hiddenSvgForDownload"></div>
+  <canvas id="hiddenCanvasForDownload"></canvas>
+
 </div>
