@@ -1,4 +1,4 @@
-from java:8
+from java:7
 
 # Install git and maven
 
@@ -21,9 +21,9 @@ RUN git clone https://github.com/ONSdigital/florence.git
 WORKDIR florence
 RUN git checkout develop
 
-# Pne-download dependencies:
+# Build the jar-with-dependencies:
 
-RUN mvn install
+RUN mvn install -DskipTests
 
 # Expose port
 
