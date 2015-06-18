@@ -61,16 +61,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   $('.btn-chart-builder-create').on('click', function () {
 
-    if (!pageData.charts) {
-      pageData.charts = []
-    } else {
-      if (_.find(pageData.charts, function (existingChart) {
-          return existingChart.filename === chart.filename
-        })) {
-        alert("A chart with this name already exists.");
-        return;
-      }
-    }
 
     var path = pageUrl + "/" + chart.filename;
     var jsonPath = path + ".json";
@@ -85,7 +75,20 @@ function loadChartBuilder(pageData, onSave, chart) {
           generatePng();
         }
 
-        pageData.charts.push({title: chart.title, filename: chart.filename, path:path});
+        if (!pageData.charts) {
+          pageData.charts = []
+        }
+
+        existingChart = _.find(pageData.charts, function (existingChart) {
+          return existingChart.filename === chart.filename
+        });
+
+        if (existingChart) {
+          existingChart.title = chart.title;
+        } else {
+          pageData.charts.push({title: chart.title, filename: chart.filename, path: path});
+        }
+
         if (onSave) {
           onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
         }
@@ -109,10 +112,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
 
-    if (chartHeight > preview.height()) {
-      chartHeight = preview.height();
-      chartWidth = preview.height() / chart.aspectRatio;
-    }
+    //if (chartHeight > preview.height()) {
+    //  chartHeight = preview.height();
+    //  chartWidth = preview.height() / chart.aspectRatio;
+    //}
 
     renderChartObject('#chart', chart, chartHeight, chartWidth);
   }
@@ -124,18 +127,19 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     chart.title = $('#chart-title').val();
-    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
     chart.source = $('#chart-source').val();
     chart.legend = $('#chart-legend').val();
     chart.hideLegend = (chart.legend === 'false') ? true : false;
 
+    chart.notes = $('#chart-notes').val();
+    chart.altText = $('#chart-alt-text').val();
+
     if (chart.title === '') {
       chart.title = '[Title]'
     }
-
-    chart.filename = chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     chart.data = tsvJSON(json);
     chart.headers = tsvJSONHeaders(json);
@@ -355,14 +359,23 @@ function loadChartBuilder(pageData, onSave, chart) {
     // Check for strings that will turn themselves into a strange format
     twoDigitYearEnd = timeString.match(/\W\d\d$/);
     if (twoDigitYearEnd !== null) {
-      year = parseInt(twoDigitYearEnd = timeString.match(/\W\d\d$/));
-      prefix = timeString.substr(0, timeString.length - 3);
+      year = parseInt(timeString.substr(timeString.length - 2, timeString.length));
+      prefix = timeString.substr(0, timeString.length - 2).trim();
 
       if (year >= 40) {
         timeString = prefix + " 19" + year;
       } else {
         timeString = prefix + " 20" + year;
       }
+    }
+
+    // Check for quarters
+    quarter = timeString.match(/Q\d/);
+    year = timeString.match(/\d\d\d\d/);
+    if((quarter !== null) && (year !== null)) {
+      months = ["February ", "May ", "August ", "November "];
+      quarterMid = parseInt(quarter[0][1]);
+      timeString = months[quarterMid - 1] + year[0];
     }
 
     // We are going with all times in a common format
