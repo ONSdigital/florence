@@ -29,8 +29,6 @@ function articleEditor(collectionId, data) {
   $("#headline2-p").remove();
   $("#headline3-p").remove();
   $("#migrated").remove();
-  $("#natStat").remove();
-
 
   // Metadata edition and saving
   $("#title").on('click keyup', function () {
@@ -39,15 +37,19 @@ function articleEditor(collectionId, data) {
   });
   $("#edition").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.description.edition.label = $(this).val();
+    data.description.edition = $(this).val();
   });
-  if (!data.releaseDate){
+  if (!data.description.releaseDate){
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     $('#releaseDate').on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
     });
   } else {
-    $('.release-date').hide();
+    dateTmp = $('#releaseDate').val();
+    a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#releaseDate').val(a);
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+//    $('.release-date').hide();
   }
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -64,10 +66,6 @@ function articleEditor(collectionId, data) {
   $("#contactTelephone").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
-  });
-  $("#contactPhone").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.description.contact.phone = $(this).val();
   });
   $("#abstract").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -212,10 +210,10 @@ function articleEditor(collectionId, data) {
     });
   }
 
-  //Add new related
+  //Add new related articles
   $("#addArticle").one('click', function () {
-    var pageurl = localStorage.getItem('pageurl');
-    localStorage.setItem('historicUrl', pageurl);
+    var pageUrl = localStorage.getItem('pageurl');
+    localStorage.setItem('historicUrl', pageUrl);
     var reload = localStorage.getItem("historicUrl");
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
@@ -232,22 +230,20 @@ function articleEditor(collectionId, data) {
       $("#article-cancel_" + lastIndexRelated).show().one('click', function () {
         $("#article-cancel_" + lastIndexRelated).hide();
         $('#' + lastIndexRelated).hide();
-        refreshPreview(reload);
-        loadPageDataIntoEditor(reload, collectionId);
-        localStorage.removeItem('historicUrl');
+        createWorkspace(pageUrl, collectionId, 'edit');
       });
 
-      var articleurl = $('#iframe')[0].contentWindow.document.location.href;
-      var articleurldata = "/data" + articleurl.split("#!")[1];
+      var articleUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+      var articleUrlData = articleUrl + "/data";
 
       $.ajax({
-        url: articleurldata,
+        url: articleUrlData,
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'article') {
-            data.relatedArticles.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            saveRelated(collectionId, reload, data);
+            data.relatedArticles.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not an article");
           }

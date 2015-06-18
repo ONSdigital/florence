@@ -1,12 +1,10 @@
-function saveRelated (collectionName, path, content) {
+function saveRelated (collectionId, path, content) {
   var iframeEvent = document.getElementById('iframe').contentWindow;
-  postContent(collectionName, path, JSON.stringify(content),
+  postContent(collectionId, path, JSON.stringify(content),
     success = function (response) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      loadPageDataIntoEditor(path, collectionName);
-      refreshPreview(path);
-      iframeEvent.addEventListener('click', Florence.Handler, true);
+      createWorkspace(path, collectionId, 'edit');
       localStorage.removeItem('historicUrl');
     },
     error = function (response) {
