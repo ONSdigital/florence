@@ -70,7 +70,10 @@ function loadChartBuilder(pageData, onSave, chart) {
       processData: false,
       contentType: false,
       success: function (res) {
-        generatePng();
+        generatePng('#chart', '#hiddenCanvas');
+        renderDownloadChart();
+        generatePng('#hiddenSvgForDownload', '#hiddenCanvasForDownload', '-download');
+
 
         // todo: generate download png
 
@@ -121,6 +124,20 @@ function loadChartBuilder(pageData, onSave, chart) {
       }
     }
   }
+
+  function renderDownloadChart() {
+    chart = buildChartObject();
+    var preview = $('#preview-chart');
+    $('#hiddenSvgForDownload').empty();
+
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+
+    renderChartObject('#hiddenSvgForDownload', chart, chartHeight, chartWidth);
+    renderSvgAnnotations('#hiddenSvgForDownload', chart, chartHeight, chartWidth)
+  }
+
+
 
   function buildChartObject() {
     var json = $('#chart-data').val();
@@ -274,8 +291,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     return headers;
   }
 
-  function exportToSVG() {
-    var svgContainer = $('#chart');
+  function exportToSVG(sourceSelector) {
+    var svgContainer = $(sourceSelector);
     var svg = svgContainer.find('svg');
 
     var styleContent = "\n";
@@ -384,21 +401,15 @@ function loadChartBuilder(pageData, onSave, chart) {
     return (null);
   }
 
-  //generatePng();
-  function generatePng() {
+  function generatePng(sourceSelector, canvasSelector, fileSuffix) {
 
-    var preview = $('#chart');
-    var chartHeight = preview.width() * chart.aspectRatio;
+    var preview = $(sourceSelector);
+    var chartHeight = preview.height();
     var chartWidth = preview.width();
 
-    if (chartHeight > preview.height()) {
-      chartHeight = preview.height();
-      chartWidth = preview.height() / chart.aspectRatio;
-    }
+    var content = exportToSVG(sourceSelector).trim();
 
-    var content = exportToSVG().trim();
-
-    var $canvas = $('#hiddenCanvas');
+    var $canvas = $(canvasSelector);
     $canvas.width(chartWidth);
     $canvas.height(chartHeight);
 
@@ -412,11 +423,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     var pngData = dataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
     //console.log(dataUrl);
 
-    // render png
-    //var $png = $('#hiddenPng');
-    //var png = $png[0];
-    //$png.attr('src', dataUrl);
-
     var raw = window.atob(pngData);
     var rawLength = raw.length;
     var array = new Uint8Array(new ArrayBuffer(rawLength));
@@ -425,7 +431,13 @@ function loadChartBuilder(pageData, onSave, chart) {
       array[i] = raw.charCodeAt(i);
     }
 
-    var pngUri = pageUrl + "/" + chart.filename + ".png";
+    var suffix = "";
+
+    if(fileSuffix) {
+      suffix = fileSuffix
+    }
+
+    var pngUri = pageUrl + "/" + chart.filename + suffix + ".png";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
       type: "POST",
