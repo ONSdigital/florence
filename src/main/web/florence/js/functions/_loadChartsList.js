@@ -11,8 +11,20 @@ function loadChartsList(data, collectionId) {
     $("#chart-edit_" + chart.filename).click(function () {
       getPageData(collectionId, chartJson,
         onSuccess = function (chartData) {
-          loadChartBuilder(chartData, function () {
+
+          loadChartBuilder(data, function () {
             refreshPreview();
+
+            postContent(collectionId, basePath, JSON.stringify(data),
+              success = function () {
+                Florence.Editor.isDirty = false;
+                refreshPreview();
+                loadChartsList(data, collectionId);
+              },
+              error = function (response) {
+                handleApiError(response);
+              }
+            );
           }, chartData);
         },
         onError = function (response) {
@@ -39,6 +51,7 @@ function loadChartsList(data, collectionId) {
               handleApiError(response);
             }
           );
+          deleteContent(collectionId, chartPath + '.png');
         },
         onError = function (response) {
           handleApiError(response)
