@@ -14,34 +14,41 @@ function loadTablesList(data, collectionId) {
           loadTableBuilder(tableData, function () {
             refreshPreview();
           }, tableData);
-        },
-        onError = function (response) {
-          handleApiError(response);
-        }
-      )
+        })
     });
 
     $("#table-delete_" + table.filename).click(function () {
       $("#table_" + index).remove();
 
-      deleteContent(collectionId, tableJson,
-        onSuccess = function () {
-          data.tables = _(data.tables).filter(function (item) {
-            return item.filename !== table.filename
+      getPageData(collectionId, tableJson,
+        onSuccess = function (tableData) {
+
+          // delete any files associated with the table.
+          _(tableData.files).each(function (file) {
+            var fileToDelete = basePath + '/' + file.filename;
+            deleteContent(collectionId, fileToDelete,
+              onSuccess = function () {
+                console.log("deleted table file: " + fileToDelete)
+              });
           });
-          postContent(collectionId, basePath, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              refreshPreview();
-              loadTablesList(data, collectionId);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }
-          );
-        },
-        onError = function (response) {
-          handleApiError(response)
+
+          // delete the table json file
+          deleteContent(collectionId, tableJson,
+            onSuccess = function () {
+
+              // remove the table from the page json when its deleted
+              data.tables = _(data.tables).filter(function (item) {
+                return item.filename !== table.filename
+              });
+
+              // save the updated page json
+              postContent(collectionId, basePath, JSON.stringify(data),
+                success = function () {
+                  Florence.Editor.isDirty = false;
+                  refreshPreview();
+                  loadTablesList(data, collectionId);
+                });
+            });
         });
     });
   });

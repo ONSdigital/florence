@@ -8,7 +8,11 @@ function postContent(collectionId, path, content, success, error) {
       success(response);
     },
     error: function (response) {
-      error(response);
+      if (error) {
+        error(response);
+      } else {
+        handleApiError(response);
+      }
     }
   });
 }
