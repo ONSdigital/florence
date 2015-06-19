@@ -4,13 +4,9 @@ function loadTableBuilder(pageData, onSave, table) {
   var html = templates.tableBuilder(table);
   $('body').append(html);
 
-  //$('.table-builder').css("display", "block");
-
   if (table) {
     renderTable(table.path);
   }
-
-  //renderChart();
 
   var input = document.getElementById("files"), formdata = false;
 
@@ -93,12 +89,16 @@ $('#upload-table-form').submit(function(event) {
       table = {};
     }
 
+    table.type = 'table';
     table.title = $('#table-title').val();
-    table.filename = table.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    table.filename = table.filename ? table.filename : StringUtils.randomId();
     
     if (table.title === '') {
       table.title = '[Title]'
     }
+
+    table.files = [];
+    table.files.push({ type:'download-xls', filename:table.filename + '.xls' })
 
     return table;
   }

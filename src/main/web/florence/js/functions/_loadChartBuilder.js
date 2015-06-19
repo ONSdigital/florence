@@ -192,6 +192,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     //console.log(chart);
     parseChartObject(chart);
 
+    chart.files = [];
+    chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
+    chart.files.push({ type:'png', filename:chart.filename + '.png' });
+
     return chart;
   }
 
