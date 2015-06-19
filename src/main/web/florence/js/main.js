@@ -779,8 +779,11 @@ function deleteContent(collectionName, path, success, error) {
         success(response);
     },
     error: function (response) {
-      if (error)
+      if (error) {
         error(response);
+      } else {
+        handleApiError(response);
+      }
     }
   });
 }
@@ -822,8 +825,11 @@ function getPageData(collectionName, path, success, error) {
         success(response);
     },
     error: function (response) {
-      if (error)
+      if (error) {
         error(response);
+      } else {
+        handleApiError(response);
+      }
     }
   });
 }
@@ -1112,6 +1118,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     //console.log(chart);
     parseChartObject(chart);
 
+    chart.files = [];
+    chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
+    chart.files.push({ type:'png', filename:chart.filename + '.png' });
+
     return chart;
   }
 
@@ -1393,41 +1403,35 @@ function loadChartsList(data, collectionId) {
                 Florence.Editor.isDirty = false;
                 refreshPreview();
                 loadChartsList(data, collectionId);
-              },
-              error = function (response) {
-                handleApiError(response);
-              }
-            );
+              });
           }, chartData);
-        },
-        onError = function (response) {
-          handleApiError(response);
-        }
-      )
+        })
     });
 
     $("#chart-delete_" + chart.filename).click(function () {
       $("#chart_" + index).remove();
 
-      deleteContent(collectionId, chartJson,
-        onSuccess = function () {
-          data.charts = _(data.charts).filter(function (item) {
-            return item.filename !== chart.filename
+      getPageData(collectionId, chartJson,
+        onSuccess = function (chartData) {
+
+          // delete any files associated with the table.
+          _(chartData.files).each(function (file) {
+            var fileToDelete = basePath + '/' + file.filename;
+            deleteContent(collectionId, fileToDelete);
           });
-          postContent(collectionId, basePath, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              refreshPreview();
-              loadChartsList(data, collectionId);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }
-          );
-          deleteContent(collectionId, chartPath + '.png');
-        },
-        onError = function (response) {
-          handleApiError(response)
+
+          deleteContent(collectionId, chartJson,
+            onSuccess = function () {
+              data.charts = _(data.charts).filter(function (item) {
+                return item.filename !== chart.filename
+              });
+              postContent(collectionId, basePath, JSON.stringify(data),
+                success = function () {
+                  Florence.Editor.isDirty = false;
+                  refreshPreview();
+                  loadChartsList(data, collectionId);
+                });
+            });
         });
     });
   });
@@ -2200,13 +2204,9 @@ function loadTableBuilder(pageData, onSave, table) {
   var html = templates.tableBuilder(table);
   $('body').append(html);
 
-  //$('.table-builder').css("display", "block");
-
   if (table) {
     renderTable(table.path);
   }
-
-  //renderChart();
 
   var input = document.getElementById("files"), formdata = false;
 
@@ -2289,12 +2289,16 @@ $('#upload-table-form').submit(function(event) {
       table = {};
     }
 
+    table.type = 'table';
     table.title = $('#table-title').val();
-    table.filename = table.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    table.filename = table.filename ? table.filename : StringUtils.randomId();
     
     if (table.title === '') {
       table.title = '[Title]'
     }
+
+    table.files = [];
+    table.files.push({ type:'download-xls', filename:table.filename + '.xls' })
 
     return table;
   }
@@ -2316,34 +2320,41 @@ function loadTablesList(data, collectionId) {
           loadTableBuilder(tableData, function () {
             refreshPreview();
           }, tableData);
-        },
-        onError = function (response) {
-          handleApiError(response);
-        }
-      )
+        })
     });
 
     $("#table-delete_" + table.filename).click(function () {
       $("#table_" + index).remove();
 
-      deleteContent(collectionId, tableJson,
-        onSuccess = function () {
-          data.tables = _(data.tables).filter(function (item) {
-            return item.filename !== table.filename
+      getPageData(collectionId, tableJson,
+        onSuccess = function (tableData) {
+
+          // delete any files associated with the table.
+          _(tableData.files).each(function (file) {
+            var fileToDelete = basePath + '/' + file.filename;
+            deleteContent(collectionId, fileToDelete,
+              onSuccess = function () {
+                console.log("deleted table file: " + fileToDelete)
+              });
           });
-          postContent(collectionId, basePath, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              refreshPreview();
-              loadTablesList(data, collectionId);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }
-          );
-        },
-        onError = function (response) {
-          handleApiError(response)
+
+          // delete the table json file
+          deleteContent(collectionId, tableJson,
+            onSuccess = function () {
+
+              // remove the table from the page json when its deleted
+              data.tables = _(data.tables).filter(function (item) {
+                return item.filename !== table.filename
+              });
+
+              // save the updated page json
+              postContent(collectionId, basePath, JSON.stringify(data),
+                success = function () {
+                  Florence.Editor.isDirty = false;
+                  refreshPreview();
+                  loadTablesList(data, collectionId);
+                });
+            });
         });
     });
   });
@@ -2619,7 +2630,11 @@ function postContent(collectionId, path, content, success, error) {
       success(response);
     },
     error: function (response) {
-      error(response);
+      if (error) {
+        error(response);
+      } else {
+        handleApiError(response);
+      }
     }
   });
 }function saveAndReviewContent(collectionName, path, content) {
