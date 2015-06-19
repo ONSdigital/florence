@@ -50,6 +50,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     articleEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'timeseries') {
+    var html = templates.workEditT5(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    articleEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'methodology') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);

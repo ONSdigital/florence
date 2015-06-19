@@ -104,7 +104,6 @@ function datasetEditor(collectionId, data) {
       $("#" + index).remove();
       data.correction.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
-      bulletinEditor(collectionId, data);
     });
   });
 
@@ -253,7 +252,7 @@ function datasetEditor(collectionId, data) {
       var editedSectionValue = $("#note-markdown_" + index).val();
 
       var saveContent = function(updatedContent) {
-        data.notes[index].data = updatedContent;
+        data.notes[index].markdown = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -270,7 +269,7 @@ function datasetEditor(collectionId, data) {
 
   //Add new note
   $("#addNote").one('click', function () {
-    data.notes.push({data:""});
+    data.notes.push({markdown:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
@@ -291,47 +290,44 @@ function datasetEditor(collectionId, data) {
       $("#dataset-delete_" + iDataset).click(function () {
         $("#" + iDataset).remove();
         data.relatedDatasets.splice(iDataset, 1);
-        datasetEditor(collectionId, data);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
       });
     });
   }
 
   //Add new related
   $("#addDataset").one('click', function () {
-    var pageurl = localStorage.getItem('pageurl');
-    localStorage.setItem('historicUrl', pageurl);
-    var reload = localStorage.getItem("historicUrl");
+    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
         '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
         '  <button class="btn-page-get" id="dataset-get_' + lastIndexRelated + '">Get</button>' +
         '  <button class="btn-page-cancel" id="dataset-cancel_' + lastIndexRelated + '">Cancel</button>' +
-        '</div>');
-    $("#dataset-cancel_" + lastIndexRelated).hide();
+        '</div>').trigger('create');
 
     $("#dataset-get_" + lastIndexRelated).one('click', function () {
-      $("#dataset-cancel_" + lastIndexRelated).show().one('click', function () {
-        $("#dataset-cancel_" + lastIndexRelated).hide();
-        $('#' + lastIndexRelated).hide();
-        refreshPreview(localStorage.getItem("historicUrl"));
-        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionId);
-        localStorage.removeItem('historicUrl');
-      });
-
-      var dataseturl = $('#iframe')[0].contentWindow.document.location.href;
-      var dataseturldata = "/data" + dataseturl.split("#!")[1];
+      pastedUrl = $('#bulletin-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var datasetUrlData = myUrl.pathname + "/data";
+      } else {
+        var datasetUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var datasetUrlData = datasetUrl + "/data";
+      }
+      pastedUrl = null;
 
       $.ajax({
-        url: dataseturldata,
+        url: datasetUrlData,
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
             data.relatedDatasets.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            saveRelated(collectionId, reload, data);
+            saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not a dataset");
           }
@@ -340,6 +336,10 @@ function datasetEditor(collectionId, data) {
           console.log('No page data returned');
         }
       });
+    });
+
+    $("#dataset-cancel_" + lastIndexRelated).show().one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
 
@@ -360,47 +360,44 @@ function datasetEditor(collectionId, data) {
       $("#used-delete_" + iUsed).click(function () {
         $("#" + iUsed).remove();
         data.usedIn.splice(iUsed, 1);
-        datasetEditor(collectionId, data);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
       });
     });
   }
 
   //Add new articles or bulletins where dataset is used in
   $("#addUsed").one('click', function () {
-    var pageurl = localStorage.getItem('pageurl');
-    localStorage.setItem('historicUrl', pageurl);
-    var reload = localStorage.getItem("historicUrl");
+    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-used').append(
         '<div id="' + lastIndexUsedIn + '" class="edit-section__sortable-item">' +
-        '  <textarea id="dataset-uri_' + lastIndexUsedIn + '" placeholder="Go to the related document and click Get"></textarea>' +
+        '  <textarea id="used-uri_' + lastIndexUsedIn + '" placeholder="Go to the related document and click Get"></textarea>' +
         '  <button class="btn-page-get" id="used-get_' + lastIndexUsedIn + '">Get</button>' +
         '  <button class="btn-page-cancel" id="used-cancel_' + lastIndexUsedIn + '">Cancel</button>' +
-        '</div>');
-    $("#used-cancel_" + lastIndexUsedIn).hide();
+        '</div>').trigger('create');
 
     $("#used-get_" + lastIndexUsedIn).one('click', function () {
-      $("#used-cancel_" + lastIndexUsedIn).show().one('click', function () {
-        $('#used-cancel_' + lastIndexUsedIn).hide();
-        $('#' + lastIndexUsedIn).hide();
-        refreshPreview(localStorage.getItem("historicUrl"));
-        loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionId);
-        localStorage.removeItem('historicUrl');
-      });
-
-      var usedInurl = $('#iframe')[0].contentWindow.document.location.href;
-      var usedInurldata = "/data" + usedInurl.split("#!")[1];
+      pastedUrl = $('#bulletin-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var usedInUrlData = myUrl.pathname + "/data";
+      } else {
+        var usedInUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var usedInUrlData = usedInUrl + "/data";
+      }
+      pastedUrl = null;
 
       $.ajax({
-        url: usedInurldata,
+        url: usedInUrldata,
         dataType: 'json',
         crossDomain: true,
         success: function (usedInData) {
           if (usedInData.type === 'bulletin' || usedInData.type === 'article') {
             data.usedIn.push({uri: usedInData.uri, title: usedInData.title, summary: usedInData.summary});
-            saveRelated(collectionId, reload, data);
+            saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not an article or a bulletin");
           }
@@ -409,6 +406,10 @@ function datasetEditor(collectionId, data) {
           console.log('No page data returned');
         }
       });
+    });
+
+    $("#used-cancel_" + lastIndexUsedIn).show().one('click', function () {
+     createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
 
@@ -456,32 +457,24 @@ function datasetEditor(collectionId, data) {
     // Notes
     var orderNote = $("#sortable-notes").sortable('toArray');
     $(orderNote).each(function (indexT, nameT) {
-//      var markdown = data.notes[parseInt(nameT)].data;
       var markdown = $('#note-markdown_' + nameT).val();
-      newNotes[indexT] = {data: markdown};
+      newNotes[indexT] = {markdown: markdown};
     });
     data.notes = newNotes;
     // Related datasets
     var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = $('#dataset-uri_' + nameD).val();
-      var summary = $('#dataset-summary_' + nameD).val();
-      var title = $('#dataset-title_' + nameD).val();
-      newRelated[indexD]= {uri: uri, title: title, summary: summary};
+      newRelated[indexD]= {uri: uri};
     });
     data.relatedDatasets = newRelated;
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#used-uri_'+nameU).val();
-      var summary = $('#used-summary_'+nameU).val();
-      var title = $('#used-title_'+nameU).val();
-      newUsedIn[parseInt(indexU)] = {uri: uri, title: title, summary: summary};
+      newUsedIn[parseInt(indexU)] = {uri: uri};
     });
     data.usedIn = newUsedIn;
-
-    //console.log(data);
-    datasetEditor(collectionId, data);
   }
 }
 

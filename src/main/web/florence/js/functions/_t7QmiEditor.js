@@ -25,51 +25,51 @@ function qmiEditor(collectionId, data) {
   // Metadata edition and saving
   $("#name").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.description.name = $(this).val();
   });
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.name = $(this).val();
+    data.description.contact.name = $(this).val();
   });
   $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.email = $(this).val();
+    data.description.contact.email = $(this).val();
   });
-  $("#contactPhone").on('click keyup', function () {
+  $("#contactTelephone").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.phone = $(this).val();
+    data.description.contact.telephone = $(this).val();
   });
   $("#survey").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.surveyName = $(this).val();
+    data.description.surveyName = $(this).val();
   });
   $("#frequency").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.frequency = $(this).val();
+    data.description.frequency = $(this).val();
   });
   $("#compilation").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.compilation = $(this).val();
+    data.description.compilation = $(this).val();
   });
   $("#geoCoverage").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.geoCoverage = $(this).val();
+    data.description.geoCoverage = $(this).val();
   });
   $("#sampleSize").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.sampleSize = $(this).val();
+    data.description.sampleSize = $(this).val();
   });
   $("#lastRevised").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.lastRevised = $(this).val();
+    data.description.lastRevised = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
  // Edit content
@@ -80,7 +80,7 @@ function qmiEditor(collectionId, data) {
       var editedSectionValue = $("#content-markdown_" + index).val();
 
       var saveContent = function(updatedContent) {
-        data.content[index].data = updatedContent;
+        data.content[index].markdown = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -263,8 +263,8 @@ function qmiEditor(collectionId, data) {
    // Sections
       var orderSection = $("#sortable-content").sortable('toArray');
       $(orderSection).each(function (indexS, nameS) {
-        var data = $('#content-markdown_' + nameS).val();
-      newSections[indexS] = {data: data};
+        var markdown = $('#content-markdown_' + nameS).val();
+      newSections[indexS] = {markdown: markdown};
       });
       data.content = newSections;
     // Files are uploaded. Save metadata
