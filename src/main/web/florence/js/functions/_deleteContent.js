@@ -8,8 +8,11 @@ function deleteContent(collectionName, path, success, error) {
         success(response);
     },
     error: function (response) {
-      if (error)
+      if (error) {
         error(response);
+      } else {
+        handleApiError(response);
+      }
     }
   });
 }

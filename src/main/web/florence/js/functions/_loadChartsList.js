@@ -20,41 +20,35 @@ function loadChartsList(data, collectionId) {
                 Florence.Editor.isDirty = false;
                 refreshPreview();
                 loadChartsList(data, collectionId);
-              },
-              error = function (response) {
-                handleApiError(response);
-              }
-            );
+              });
           }, chartData);
-        },
-        onError = function (response) {
-          handleApiError(response);
-        }
-      )
+        })
     });
 
     $("#chart-delete_" + chart.filename).click(function () {
       $("#chart_" + index).remove();
 
-      deleteContent(collectionId, chartJson,
-        onSuccess = function () {
-          data.charts = _(data.charts).filter(function (item) {
-            return item.filename !== chart.filename
+      getPageData(collectionId, chartJson,
+        onSuccess = function (chartData) {
+
+          // delete any files associated with the table.
+          _(chartData.files).each(function (file) {
+            var fileToDelete = basePath + '/' + file.filename;
+            deleteContent(collectionId, fileToDelete);
           });
-          postContent(collectionId, basePath, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              refreshPreview();
-              loadChartsList(data, collectionId);
-            },
-            error = function (response) {
-              handleApiError(response);
-            }
-          );
-          deleteContent(collectionId, chartPath + '.png');
-        },
-        onError = function (response) {
-          handleApiError(response)
+
+          deleteContent(collectionId, chartJson,
+            onSuccess = function () {
+              data.charts = _(data.charts).filter(function (item) {
+                return item.filename !== chart.filename
+              });
+              postContent(collectionId, basePath, JSON.stringify(data),
+                success = function () {
+                  Florence.Editor.isDirty = false;
+                  refreshPreview();
+                  loadChartsList(data, collectionId);
+                });
+            });
         });
     });
   });
