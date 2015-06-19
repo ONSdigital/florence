@@ -263,7 +263,7 @@ function loadT4Creator (collectionId) {
             "migrated": false,
             "title": "",
           },
-          "download": [],
+          "downloads": [],
           "notes": [],
           "charts": [],
           "correction": [],
