@@ -60,22 +60,19 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   $('.btn-chart-builder-create').on('click', function () {
 
+    chart = buildChartObject();
 
-    var path = pageUrl + "/" + chart.filename;
-    var jsonPath = path + ".json";
+    var jsonPath = chart.uri + ".json";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
       type: "POST",
-      data: JSON.stringify(buildChartObject()),
+      data: JSON.stringify(chart),
       processData: false,
       contentType: false,
       success: function (res) {
         generatePng('#chart', '#hiddenCanvas');
         renderDownloadChart();
         generatePng('#hiddenSvgForDownload', '#hiddenCanvasForDownload', '-download');
-
-
-        // todo: generate download png
 
         if (!pageData.charts) {
           pageData.charts = []
@@ -88,11 +85,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         if (existingChart) {
           existingChart.title = chart.title;
         } else {
-          pageData.charts.push({title: chart.title, filename: chart.filename, path: path});
+          pageData.charts.push({title: chart.title, filename: chart.filename, uri: chart.uri});
         }
 
         if (onSave) {
-          onSave(chart.filename, '<ons-chart path="' + getPathName() + '/' + chart.filename + '" />');
+          onSave(chart.filename, '<ons-chart path="' + chart.uri + '" />');
         }
         $('.chart-builder').stop().fadeOut(200).remove();
       }
@@ -148,6 +145,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.type = "chart";
     chart.title = $('#chart-title').val();
     chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    chart.uri = pageUrl + "/" + chart.filename;
+
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
     chart.source = $('#chart-source').val();
