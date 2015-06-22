@@ -22,8 +22,12 @@ function loadPageDataIntoEditor(path, collectionId) {
   ajaxRequests.push(
     getCollection(collectionId,
       success = function (response) {
-        var pagePath = getPathName();
-        var pageFile = pagePath + '/data.json&resolve';
+
+        if (path.charAt(0) === '/') {
+          path = path.slice(1);
+        }
+
+        var pageFile = path + '/data.json';
         var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
         isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
       },
