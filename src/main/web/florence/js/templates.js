@@ -281,22 +281,29 @@ templates['tableBuilder'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":fu
     + "\"/>\n        <input type=\"file\" name=\"files\" id=\"files\">\n        <input type=\"submit\" value=\"Submit\">\n      </form>\n    </div>\n\n    <div id=\"preview-table\" class=\"table-builder__preview\">\n      <div id=\"table\"></div>\n    </div>\n\n    <div class=\"table-builder__footer\">\n      <button class=\"btn-table-builder-cancel\">Cancel</button>\n      <button class=\"btn-table-builder-create\">Save Table</button>\n    </div>\n\n  </div>\n</div>";
 },"useData":true});
 templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
+    return " page-item--directory";
+},"3":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return " page-item--"
+    + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)));
+},"5":function(depth0,helpers,partials,data) {
     var stack1;
 
   return " \n                <ul>\n                    "
     + ((stack1 = this.invokePartial(partials.browseNode,depth0,{"name":"browseNode","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + " \n                </ul>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var stack1, helper, alias1=this.escapeExpression;
 
   return "<section class=\"panel workspace-browse\">\n  <nav class=\"tree-nav-holder\">\n    <ul class=\"page-list page-list--tree\">\n          <li data-url=\""
-    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "\">\n            <span class=\"page-item page-type-"
-    + alias3(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
+    + alias1(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">\n            <span class=\"page-item"
+    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "")
     + "\">"
-    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
+    + alias1(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
     + "</span>\n            <div class=\"page-options\">\n              <button class=\"btn-browse-edit\">Edit</button>\n              <button class=\"btn-browse-create\">Create</button>\n              <button class=\"btn-browse-delete\">Delete</button>\n            </div>\n            "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "          </li>\n    </ul>\n  </nav>\n</section>";
 },"usePartial":true,"useData":true});
 templates['workCreate'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
