@@ -39,6 +39,9 @@ function timeseriesEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
+  if (!data.description.contact) {
+    data.description.contact = {};
+  }
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
