@@ -29,9 +29,9 @@ function foiEditor(collectionId, data) {
   $("#reference-p").remove();
 
   // Metadata edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.description.name = $(this).val();
+    data.description.title = $(this).val();
   });
   $("#releaseDate").on('click keyup', function () {
     $(this).textareaAutoSize();

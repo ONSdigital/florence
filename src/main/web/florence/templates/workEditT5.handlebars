@@ -138,12 +138,13 @@
     <div class="edit-section" id="relDocument">
       <div class="edit-section__head">
         <h1>Related bulletins and articles</h1>
-        <p>Link</p>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-document" class="edit-section__sortable">
           {{#each this.relatedDocuments}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="document-uri_{{@index}}">{{uri}}</textarea>
               <button class="btn-page-delete" id="document-delete_{{@index}}">Delete</button>
             </div>
@@ -158,12 +159,13 @@
     <div class="edit-section" id="relTimeseries">
       <div class="edit-section__head">
         <h1>Related time series</h1>
-        <p>Link</p>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-timeseries" class="edit-section__sortable">
           {{#each this.relatedData}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="timeseries-uri_{{@index}}">{{uri}}</textarea>
               <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
             </div>
@@ -178,12 +180,13 @@
     <div class="edit-section" id="relDataset">
       <div class="edit-section__head">
         <h1>Related datasets</h1>
-        <p>Link</p>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-dataset" class="edit-section__sortable">
           {{#each this.relatedDatasets}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
               <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
             </div>

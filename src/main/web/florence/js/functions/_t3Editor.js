@@ -82,7 +82,7 @@ function t3Editor(collectionId, data) {
     // Timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {
-      var uri = data.items[parseInt(titleT)].data.uri;
+      var uri = data.items[parseInt(titleT)].uri;
       newTimeseries[indexT] = {uri: uri};
     });
     data.items = newTimeseries;
@@ -90,21 +90,14 @@ function t3Editor(collectionId, data) {
     var orderBulletins = $("#sortable-bulletins").sortable('toArray');
     $(orderBulletins).each(function (indexB, titleB) {
       var uri = data.statsBulletins[parseInt(titleB)].uri;
-//      var summary = data.statsBulletins[parseInt(titleB)].description.summary;
-//      var title = data.statsBulletins[parseInt(titleB)].description.title;
-//      var headline1 = data.statsBulletins[parseInt(titleB)].description.headline1;
-//      var headline2 = data.statsBulletins[parseInt(titleB)].description.headline2;
-//      var headline3 = data.statsBulletins[parseInt(titleB)].description.headline3;
-      newBulletins[indexB] = {uri: uri};        // , title: title, summary: summary, headline1: headline1, headline2: headline2, headline3: headline3};
+      newBulletins[indexB] = {uri: uri};
     });
     data.statsBulletins = newBulletins;
     // Articles
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
       var uri = data.articles[parseInt(titleA)].uri;
-//      var abstract = data.articles[parseInt(titleA)].description._abstract;
-//      var title = data.articles[parseInt(titleA)].description.title;
-      newArticles[indexA] = {uri: uri};      //, title: title, abstract: _abstract};
+      newArticles[indexA] = {uri: uri};
     });
     data.articles = newArticles;
     // Datasets
