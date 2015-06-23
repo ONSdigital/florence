@@ -269,20 +269,8 @@ function timeseriesEditor(collectionId, data) {
             alert("This is not an article or a bulletin");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                    // Hack to work with 404 Error
-                    error: function (relatedData) {
-                      if (relatedData.responseJSON.type === 'article' || relatedData.responseJSON.type === 'bulletin') {
-                        if (!data.relatedDocuments) {
-                          data.relatedDocuments = [];
-                        }
-                      data.relatedDocuments.push({uri: relatedData.responseJSON.uri});
-                        saveRelated(collectionId, pageUrl, data);
-                      } else {
-                        alert("This is not an article or a bulletin");
-                      }
-                      // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -336,20 +324,8 @@ function timeseriesEditor(collectionId, data) {
             alert("This is not a timeseries");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                  // Hack to work with 404 Error
-                  error: function (relatedData) {
-                    if (relatedData.responseJSON.type === 'timeseries') {
-                      if (!data.relatedData) {
-                        data.relatedData = [];
-                      }
-                      data.relatedData.push({uri: relatedData.responseJSON.uri});
-                      saveRelated(collectionId, pageUrl, data);
-                    } else {
-                      alert("This is not a timeseries");
-                    }
-                    // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -404,20 +380,8 @@ function timeseriesEditor(collectionId, data) {
             alert("This is not a dataset");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                 // Hack to work with 404 Error
-                 error: function (relatedData) {
-                   if (relatedData.responseJSON.type === 'dataset') {
-                      if (!data.relatedDatasets) {
-                        data.relatedDatasets = [];
-                      }
-                     data.relatedDatasets.push({uri: relatedData.responseJSON.uri});
-                     saveRelated(collectionId, pageUrl, data);
-                   } else {
-                     alert("This is not a dataset");
-                   }
-                   // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -472,20 +436,8 @@ function timeseriesEditor(collectionId, data) {
             alert("This is not a methodology");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                       // Hack to work with 404 Error
-                           error: function (relatedData) {
-                             if (relatedData.responseJSON.type === 'methodology') {
-                               if (!data.relatedMethodology) {
-                                 data.relatedMethodology = [];
-                               }
-                               data.relatedMethodology.push({uri: relatedData.responseJSON.uri});
-                               saveRelated(collectionId, pageUrl, data);
-                             } else {
-                               alert("This is not a methodology");
-                             }
-                             // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
