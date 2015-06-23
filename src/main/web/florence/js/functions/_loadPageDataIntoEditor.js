@@ -1,5 +1,9 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
+  if (path === '/') {
+    path = '';
+  }
+
   var pageUrlData = path + "/data.json";
   var pageUrlDataTemplate = path + "/data.json&resolve";
   var pageData, pageDataTemplate, isPageComplete;
