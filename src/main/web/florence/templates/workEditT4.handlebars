@@ -6,7 +6,6 @@
         <h1>Metadata</h1>
         <p id="metadata-a">Title | Contact | Abstract | Keywords</p>
         <p id="metadata-b">Title | Next release | Contact | Summary | NS status | Keywords</p>
-        <p id="metadata-d">Title | Next release | Contact | Summary | NS status | Keywords</p>
         <p id="metadata-m">Title | Contact | Summary | Keywords</p>
       </div>
       <div class="edit-section__content">
@@ -61,10 +60,6 @@
             <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
-          <div id="migrated">
-            <label for="migrated">Migrated </label>
-            <input type="checkbox" name="migrated" value="false" />
-          </div>
           <div id="headline1-p">
             <label for="headline1">Headline 1
             <textarea class="auto-size" type="text" id="headline1">{{this.description.headline1}}</textarea>
@@ -116,27 +111,6 @@
       </div>
     </div>
 
-    <div class="edit-section" id="note">
-      <div class="edit-section__head">
-        <h1>Notes</h1>
-        <p>Body copy</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-notes" class="edit-section__sortable">
-          {{#each this.notes}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>
-              <button class="btn-markdown-edit" id="note-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="note-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addNote">Add note</button>
-        </div>
-      </div>
-    </div>
-
     <div class="edit-section" id="collapsible">
       <div class="edit-section__head">
         <h1>Collapsible sections</h1>
@@ -168,9 +142,8 @@
         <div id="sortable-related" class="edit-section__sortable">
           {{#each this.relatedBulletins}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="bulletin-uri_{{@index}}">{{uri}}</textarea>
-              <textarea style="display: none;" id="bulletin-title_{{@index}}">{{title}}</textarea>
-              <textarea style="display: none;" id="bulletin-summary_{{@index}}">{{summary}}</textarea>
               <button class="btn-page-delete" id="bulletin-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
@@ -190,9 +163,8 @@
         <div id="sortable-related" class="edit-section__sortable">
           {{#each this.relatedArticles}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="article-uri_{{@index}}">{{uri}}</textarea>
-              <textarea style="display: none;" id="article-title_{{@index}}">{{title}}</textarea>
-              <textarea style="display: none;" id="article-summary_{{@index}}">{{summary}}</textarea>
               <button class="btn-page-delete" id="article-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
@@ -212,9 +184,8 @@
         <div id="sortable-related" class="edit-section__sortable">
           {{#each this.relatedDatasets}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
-              <textarea style="display: none;" id="dataset-title_{{@index}}">{{title}}</textarea>
-              <textarea style="display: none;" id="dataset-summary_{{@index}}">{{summary}}</textarea>
               <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
@@ -246,28 +217,6 @@
       </div>
     </div>
 
-    <div class="edit-section" id="used">
-      <div class="edit-section__head">
-        <h1>Related bulletins</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-used" class="edit-section__sortable">
-          {{#each this.usedIn}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="used-uri_{{@index}}">{{uri}}</textarea>
-              <textarea style="display: none;" id="used-title_{{@index}}">{{title}}</textarea>
-              <textarea style="display: none;" id="used-summary_{{@index}}">{{summary}}</textarea>
-              <button class="btn-page-delete" id="used-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-used" id="addUsed">Add article or bulletin</button>
-        </div>
-      </div>
-    </div>
-
     <div class="edit-section" id="relData">
       <div class="edit-section__head">
         <h1>Related data</h1>
@@ -277,9 +226,8 @@
         <div id="sortable-related-data" class="edit-section__sortable">
           {{#each this.relatedData}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="data-uri_{{@index}}">{{uri}}</textarea>
-              <textarea style="display: none;" id="data-title_{{@index}}">{{title}}</textarea>
-              <textarea style="display: none;" id="data-summary_{{@index}}">{{summary}}</textarea>
               <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
@@ -297,10 +245,10 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-download" class="edit-section__sortable">
-          {{#each this.download}}
+          {{#each this.downloads}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="download-filename_{{@index}}">{{file}}</textarea>
+              <textarea style="display: none;" id="download-filename_{{@index}}">{{xls}}</textarea>
               <div id="download-filename_show_{{@index}}">{{file}}</div>
               <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
             </div>

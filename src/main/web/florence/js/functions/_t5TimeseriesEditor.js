@@ -1,6 +1,6 @@
 function timeseriesEditor(collectionId, data) {
 
-  var newSections = [], newNotes = [], newDocument = [], newRelated = [], newTimeseries = [];
+  var newSections = [], newNotes = [], newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
   var lastIndexRelated;
   var setActiveTab, getActiveTab;
 
@@ -154,7 +154,7 @@ function timeseriesEditor(collectionId, data) {
 //    data.section.push({markdown:""});
 //    updateContent(collectionId, getPathName(), JSON.stringify(data));
 //  });
-  if (!data.section.markdown) {
+  if (!data.section) {
     $("#addSection").one('click', function () {
       data.section = {markdown:""};
       updateContent(collectionId, getPathName(), JSON.stringify(data));
@@ -260,6 +260,9 @@ function timeseriesEditor(collectionId, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'article' || relatedData.type === 'bulletin') {
+            if (!data.relatedDocuments) {
+              data.relatedDocuments = [];
+            }
             data.relatedDocuments.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
@@ -271,7 +274,10 @@ function timeseriesEditor(collectionId, data) {
                     // Hack to work with 404 Error
                     error: function (relatedData) {
                       if (relatedData.responseJSON.type === 'article' || relatedData.responseJSON.type === 'bulletin') {
-                        data.relatedDocuments.push({uri: relatedData.responseJSON.uri});
+                        if (!data.relatedDocuments) {
+                          data.relatedDocuments = [];
+                        }
+                      data.relatedDocuments.push({uri: relatedData.responseJSON.uri});
                         saveRelated(collectionId, pageUrl, data);
                       } else {
                         alert("This is not an article or a bulletin");
@@ -321,6 +327,9 @@ function timeseriesEditor(collectionId, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'timeseries') {
+            if (!data.relatedData) {
+              data.relatedData = [];
+            }
             data.relatedData.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
@@ -386,6 +395,9 @@ function timeseriesEditor(collectionId, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
+            if (!data.relatedDatasets) {
+              data.relatedDatasets = [];
+            }
             data.relatedDatasets.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
@@ -397,6 +409,9 @@ function timeseriesEditor(collectionId, data) {
                  // Hack to work with 404 Error
                  error: function (relatedData) {
                    if (relatedData.responseJSON.type === 'dataset') {
+                      if (!data.relatedDatasets) {
+                        data.relatedDatasets = [];
+                      }
                      data.relatedDatasets.push({uri: relatedData.responseJSON.uri});
                      saveRelated(collectionId, pageUrl, data);
                    } else {
@@ -412,10 +427,78 @@ function timeseriesEditor(collectionId, data) {
     });
   });
 
-  function sortableRelated() {
+  function sortableRelatedDataset() {
     $("#sortable-dataset").sortable();
   }
-  sortableRelated();
+  sortableRelatedDataset();
+
+  //Add related methodology
+  $("#addMethodology").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-methodology').append(
+        '<div id="' + lastIndexRelatedMethodology + '" class="edit-section__sortable-item">' +
+        '  <textarea id="methodology-uri_' + lastIndexRelatedMethodology + '" placeholder="Go to the related document and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="methodology-get_' + lastIndexRelatedMethodology + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="methodology-cancel_' + lastIndexRelatedMethodology + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
+      pastedUrl = $('#methodology-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var relatedMethodologyUrlData = myUrl.pathname + "/data";
+      } else {
+        var relatedMethodologyUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var relatedMethodologyUrlData = relatedMethodologyUrl + "/data";
+      }
+      pastedUrl = null;
+
+      $.ajax({
+        url: relatedMethodologyUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedMethodologyData) {
+          if (relatedMethodologyData.type === 'methodology') {
+            if (!data.relatedMethodology) {
+              data.relatedMethodology = [];
+            }
+            data.relatedMethodology.push({uri: relatedMethodologyData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a methodology");
+          }
+        },
+//        error: function () {
+//          console.log('No page data returned');
+                       // Hack to work with 404 Error
+                           error: function (relatedData) {
+                             if (relatedData.responseJSON.type === 'methodology') {
+                               if (!data.relatedMethodology) {
+                                 data.relatedMethodology = [];
+                               }
+                               data.relatedMethodology.push({uri: relatedData.responseJSON.uri});
+                               saveRelated(collectionId, pageUrl, data);
+                             } else {
+                               alert("This is not a methodology");
+                             }
+                             // End of hack
+        }
+      });
+    });
+
+    $("#methodology-cancel_" + lastIndexRelatedMethodology).one('click', function () {
+     createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
+
+  function sortableRelatedMethodology() {
+    $("#sortable-methodology").sortable();
+  }
+  sortableRelatedMethodology();
 
 
   // Save
@@ -482,6 +565,13 @@ function timeseriesEditor(collectionId, data) {
       newRelated[indexD]= {uri: uri};
     });
     data.relatedDatasets = newRelated;
+    // Related methodology
+    var orderUsedIn = $("#sortable-methodology").sortable('toArray');
+    $(orderUsedIn).each(function(indexM, nameM){
+      var uri = $('#methodology-uri_'+nameM).val();
+      newRelatedMethodology[parseInt(indexM)] = {uri: uri};
+    });
+    data.relatedMethodology = newRelatedMethodology;
   }
 }
 

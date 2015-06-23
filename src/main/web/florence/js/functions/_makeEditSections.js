@@ -1,7 +1,4 @@
-function makeEditSections(collectionId, pageData, isPageComplete) {
-
-  var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
-  templateData.isPageComplete = isPageComplete;
+function makeEditSections(collectionId, pageData, templateData) {
 
   if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);
@@ -65,7 +62,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   }
 
   else if (pageData.type === 'dataset') {
-    var html = templates.workEditT4(templateData);
+    var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     accordion();
     datasetEditor(collectionId, pageData);

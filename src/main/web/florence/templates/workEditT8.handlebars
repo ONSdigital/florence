@@ -4,7 +4,7 @@
     <div class="edit-section">
       <div class="edit-section__head">
         <h1>Metadata</h1>
-        <p id="metadata-a">Title | Next release | Key note | Unit | NS | Source</p>
+        <p id="metadata-d">Title | Next release | Contact | Summary | NS status | Keywords</p>
       </div>
       <div class="edit-section__content">
         <div id="metadata-list">
@@ -13,17 +13,21 @@
               <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
             </label>
           </div>
-          <!--<div class="edition">-->
-            <!--<label for="edition">Edition-->
-              <!--<textarea class="auto-size" type="text" id="edition">{{this.description.edition}}</textarea>-->
-            <!--</label>-->
-          <!--</div>-->
-          <!--<div class="release-date">-->
-            <!--<label for="releaseDate">Release date-->
-              <!--<input id="releaseDate" type="text" placeholder="Day month year" value="{{this.description.releaseDate}}"/>-->
-              <!--&lt;!&ndash;<textarea class="auto-size" type="text" id="releaseDate">{{this.description.releaseDate}}</textarea>&ndash;&gt;-->
-            <!--</label>-->
-          <!--</div>-->
+          <div id="summary-p">
+            <label for="summary">Summary
+              <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
+            </label>
+          </div>
+          <div class="edition">
+            <label for="edition">Edition
+              <textarea class="auto-size" type="text" id="edition">{{this.description.edition}}</textarea>
+            </label>
+          </div>
+          <div class="release-date">
+            <label for="releaseDate">Release date
+              <input id="releaseDate" type="text" placeholder="Day month year" value="{{this.description.releaseDate}}"/>
+            </label>
+          </div>
           <div class="next-p">
             <label for="nextRelease">Next release
               <textarea class="auto-size" type="text" id="nextRelease">{{this.description.nextRelease}}</textarea>
@@ -44,38 +48,13 @@
               <textarea class="auto-size" type="text" id="contactTelephone">{{this.description.contact.telephone}}</textarea>
             </label>
           </div>
-          <div id="number">
-            <label for="number">Number
-              <textarea class="auto-size" type="text" id="number">{{this.description.number}}</textarea>
-            </label>
-          </div>
-          <div id="keyNote">
-            <label for="keyNote">Key note
-              <textarea class="auto-size" type="text" id="keyNote">{{this.description.keyNote}}</textarea>
-            </label>
-          </div>
           <div id="natStat">
             <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
-          <!--<div id="migrated">-->
-            <!--<label for="migrated">Migrated </label>-->
-            <!--<input type="checkbox" name="migrated" value="false" />-->
-          <!--</div>-->
-          <div id="unit">
-            <label for="unit">Unit
-              <textarea class="auto-size" type="text" id="unit">{{this.description.unit}}</textarea>
-            </label>
-          </div>
-          <div id="preUnit">
-            <label for="preUnit">Pre unit
-              <textarea class="auto-size" type="text" id="preUnit">{{this.description.preUnit}}</textarea>
-            </label>
-          </div>
-          <div id="source">
-            <label for="source">Source
-              <textarea class="auto-size" type="text" id="source">{{this.description.source}}</textarea>
-            </label>
+          <div id="migrated">
+            <label for="migrated">Migrated </label>
+            <input type="checkbox" name="migrated" value="false" />
           </div>
           <div>
             <label for="keywords">Keywords
@@ -91,36 +70,14 @@
       </div>
     </div>
 
-    <div class="edit-section" id="content">
-      <div class="edit-section__head">
-        <h1>Section</h1>
-        <p>Body copy</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-sections" class="edit-section__sortable">
-          {{#each this.section}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <!--<textarea id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
-              <textarea id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
-              <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addSection">Add section</button>
-        </div>
-      </div>
-    </div>
-
     <div class="edit-section" id="note">
       <div class="edit-section__head">
-        <h1>Notes</h1>
+        <h1>Note</h1>
         <p>Body copy</p>
       </div>
       <div class="edit-section__content">
         <div id="sortable-notes" class="edit-section__sortable">
-          {{#each this.notes}}
+          {{#each this.section}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <!--<textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
               <textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
@@ -135,55 +92,16 @@
       </div>
     </div>
 
-    <div class="edit-section" id="relDocument">
-      <div class="edit-section__head">
-        <h1>Related bulletins and articles</h1>
-        <p>Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-document" class="edit-section__sortable">
-          {{#each this.relatedDocuments}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="document-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="document-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addDocument">Add bulletin or article</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section" id="relTimeseries">
-      <div class="edit-section__head">
-        <h1>Related time series</h1>
-        <p>Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-timeseries" class="edit-section__sortable">
-          {{#each this.relatedData}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="timeseries-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addTimeseries">Add time series</button>
-        </div>
-      </div>
-    </div>
-
     <div class="edit-section" id="relDataset">
       <div class="edit-section__head">
         <h1>Related datasets</h1>
-        <p>Link</p>
+        <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-dataset" class="edit-section__sortable">
+        <div id="sortable-related" class="edit-section__sortable">
           {{#each this.relatedDatasets}}
             <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
               <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
               <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
             </div>
@@ -191,6 +109,27 @@
         </div>
         <div class="text-center">
           <button class="btn-add-section" id="addDataset">Add dataset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="used">
+      <div class="edit-section__head">
+        <h1>Related documents</h1>
+        <p>Title | Link</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-used" class="edit-section__sortable">
+          {{#each this.usedIn}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
+              <textarea id="used-uri_{{@index}}">{{uri}}</textarea>
+              <button class="btn-page-delete" id="used-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-used" id="addUsed">Add article or bulletin</button>
         </div>
       </div>
     </div>
@@ -212,6 +151,28 @@
         </div>
         <div class="text-center">
           <button class="btn-add-methodology" id="addMethodology">Add methodology</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="download">
+      <div class="edit-section__head">
+        <h1>Upload files</h1>
+        <p>Title | Link</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-download" class="edit-section__sortable">
+          {{#each this.downloads}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="download-filename_{{@index}}">{{xls}}</textarea>
+              <div id="download-filename_show_{{@index}}">{{file}}</div>
+              <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-download" id="addFile">Add file</button>
         </div>
       </div>
     </div>

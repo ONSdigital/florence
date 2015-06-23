@@ -20,14 +20,10 @@ function bulletinEditor(collectionId, data) {
 
   $("#relArticle").remove();
   $("#relDataset").remove();
-  $("#used").remove();
   $("#download").remove();
-  $("#note").remove();
   $("#metadata-a").remove();
-  $("#metadata-d").remove();
   $("#metadata-m").remove();
   $("#abstract-p").remove();
-  $("#migrated").remove();
 
   // Metadata load, edition and saving
   $("#title").on('click keyup', function () {

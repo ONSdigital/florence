@@ -1,11 +1,8 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
-  if (path === '/') {
-    path = '';
-  }
-
-  var pageUrlData = path + "/data.json&resolve";
-  var pageData, isPageComplete;
+  var pageUrlData = path + "/data.json";
+  var pageUrlDataTemplate = path + "/data.json&resolve";
+  var pageData, pageDataTemplate, isPageComplete;
   var ajaxRequests = [];
 
   ajaxRequests.push(
@@ -20,15 +17,20 @@ function loadPageDataIntoEditor(path, collectionId) {
   );
 
   ajaxRequests.push(
+    getPageData(collectionId, pageUrlDataTemplate,
+      success = function (response) {
+        pageDataTemplate = response;
+      },
+      error = function (response) {
+        handleApiError(response);
+      }
+    )
+  );
+
+  ajaxRequests.push(
     getCollection(collectionId,
       success = function (response) {
-
-        if (path.charAt(0) === '/') {
-          path = path.slice(1);
-        }
-
-        var pageFile = path + '/data.json';
-        var lastCompletedEvent = getLastCompletedEvent(response, pageFile);
+        var lastCompletedEvent = getLastCompletedEvent(response, pageUrlData);
         isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
       },
       error = function (response) {
@@ -37,6 +39,7 @@ function loadPageDataIntoEditor(path, collectionId) {
   );
 
   $.when.apply($, ajaxRequests).then(function () {
-    makeEditSections(collectionId, pageData, isPageComplete);
+    pageDataTemplate.isPageComplete = isPageComplete;
+    makeEditSections(collectionId, pageData, pageDataTemplate);
   });
 }

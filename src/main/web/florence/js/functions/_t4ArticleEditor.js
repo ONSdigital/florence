@@ -18,17 +18,13 @@ function articleEditor(collectionId, data) {
 
   $("#relBulletin").remove();
   $("#relDataset").remove();
-  $("#used").remove();
   $("#download").remove();
-  $("#note").remove();
   $("#metadata-b").remove();
-  $("#metadata-d").remove();
   $("#metadata-m").remove();
   $("#summary-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();
   $("#headline3-p").remove();
-  $("#migrated").remove();
 
   // Metadata edition and saving
   $("#title").on('click keyup', function () {
