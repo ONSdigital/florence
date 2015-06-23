@@ -1,6 +1,6 @@
 function timeseriesEditor(collectionId, data) {
 
-  var newRelated = [], newLinks = [];
+  var newSections = [], newNotes = [], newDocument = [], newRelated = [], newTimeseries = [];
   var lastIndexRelated;
   var setActiveTab, getActiveTab;
 
@@ -122,13 +122,14 @@ function timeseriesEditor(collectionId, data) {
 
   // Edit sections
   // Load and edition
-  $(data.sections).each(function(index, section){
+  $(data.section).each(function(index, section){
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = $("#section-markdown_" + index).val();
 
       var saveContent = function(updatedContent) {
-        data.section[index].markdown = updatedContent;
+//        data.section[index].markdown = updatedContent;      //section[].markdown (not implemented yet)
+        data.section.markdown = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -136,23 +137,39 @@ function timeseriesEditor(collectionId, data) {
     });
 
     // Delete
+//    $("#section-delete_"+index).click(function() {
+//      $("#"+index).remove();
+//      data.section.splice(index, 1);
+//      updateContent(collectionId, getPathName(), JSON.stringify(data));
+//    });
     $("#section-delete_"+index).click(function() {
       $("#"+index).remove();
-      data.section.splice(index, 1);
+      data.section = {};
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new sections
-  $("#addSection").one('click', function () {
-    data.section.push({markdown:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableSections() {
-    $("#sortable-sections").sortable();
+//  $("#addSection").one('click', function () {
+//    data.section.push({markdown:""});
+//    updateContent(collectionId, getPathName(), JSON.stringify(data));
+//  });
+  if (!data.section.markdown) {
+    $("#addSection").one('click', function () {
+      data.section = {markdown:""};
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  } else {
+    $("#addSection").one('click', function () {
+      alert('At the moment you can have one section here.')
+    });
   }
-  sortableSections();
+
+
+//  function sortableSections() {               //Only one at the moment
+//    $("#sortable-sections").sortable();
+//  }
+//  sortableSections();
 
   // Edit notes
   // Load and edition
@@ -161,8 +178,12 @@ function timeseriesEditor(collectionId, data) {
     $("#note-edit_"+index).click(function() {
       var editedSectionValue = $("#note-markdown_" + index).val();
 
+//      var saveContent = function(updatedContent) {              //notes[].markdown (not implemented yet)
+//        data.notes[index].markdown = updatedContent;
+//        updateContent(collectionId, getPathName(), JSON.stringify(data));
+//      };
       var saveContent = function(updatedContent) {
-        data.notes[index].markdown = updatedContent;
+        data.notes[index] = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -178,8 +199,12 @@ function timeseriesEditor(collectionId, data) {
   });
 
   //Add new note
+//  $("#addNote").one('click', function () {
+//    data.notes.push({markdown:""});
+//    updateContent(collectionId, getPathName(), JSON.stringify(data));
+//  });
   $("#addNote").one('click', function () {
-    data.notes.push({markdown:""});
+    data.notes.push("");
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
@@ -206,12 +231,13 @@ function timeseriesEditor(collectionId, data) {
   }
 
   //Add new related documents
-  $("#addArticle").one('click', function () {
+  $("#addDocument").one('click', function () {
     var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
 
-    $('#sortable-related').append(
+    $('#sortable-document').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
         '  <textarea id="document-uri_' + lastIndexRelated + '" placeholder="Go to the related document and click Get"></textarea>' +
         '  <button class="btn-page-get" id="document-get_' + lastIndexRelated + '">Get</button>' +
@@ -237,11 +263,20 @@ function timeseriesEditor(collectionId, data) {
             data.relatedDocuments.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
-            alert("This is not an article or bulletin");
+            alert("This is not an article or a bulletin");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                    // Hack to work with 404 Error
+                    error: function (relatedData) {
+                      if (relatedData.responseJSON.type === 'article' || relatedData.responseJSON.type === 'bulletin') {
+                        data.relatedDocuments.push({uri: relatedData.responseJSON.uri});
+                        saveRelated(collectionId, pageUrl, data);
+                      } else {
+                        alert("This is not an article or a bulletin");
+                      }
+                      // End of hack
         }
       });
     });
@@ -292,8 +327,20 @@ function timeseriesEditor(collectionId, data) {
             alert("This is not a timeseries");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                  // Hack to work with 404 Error
+                  error: function (relatedData) {
+                    if (relatedData.responseJSON.type === 'timeseries') {
+                      if (!data.relatedData) {
+                        data.relatedData = [];
+                      }
+                      data.relatedData.push({uri: relatedData.responseJSON.uri});
+                      saveRelated(collectionId, pageUrl, data);
+                    } else {
+                      alert("This is not a timeseries");
+                    }
+                    // End of hack
         }
       });
     });
@@ -315,7 +362,7 @@ function timeseriesEditor(collectionId, data) {
         iframeEvent.removeEventListener('click', Florence.Handler, true);
     createWorkspace(pageUrl, collectionId, '', true);
 
-    $('#sortable-related').append(
+    $('#sortable-dataset').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
         '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
         '  <button class="btn-page-get" id="dataset-get_' + lastIndexRelated + '">Get</button>' +
@@ -323,7 +370,7 @@ function timeseriesEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#dataset-get_" + lastIndexRelated).one('click', function () {
-      pastedUrl = $('#bulletin-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#dataset-uri_'+lastIndexRelated).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var datasetUrlData = myUrl.pathname + "/data";
@@ -339,14 +386,23 @@ function timeseriesEditor(collectionId, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
-            data.relatedDatasets.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
+            data.relatedDatasets.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not a dataset");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                 // Hack to work with 404 Error
+                 error: function (relatedData) {
+                   if (relatedData.responseJSON.type === 'dataset') {
+                     data.relatedDatasets.push({uri: relatedData.responseJSON.uri});
+                     saveRelated(collectionId, pageUrl, data);
+                   } else {
+                     alert("This is not a dataset");
+                   }
+                   // End of hack
         }
       });
     });
@@ -357,7 +413,7 @@ function timeseriesEditor(collectionId, data) {
   });
 
   function sortableRelated() {
-    $("#sortable-related").sortable();
+    $("#sortable-dataset").sortable();
   }
   sortableRelated();
 
@@ -387,19 +443,22 @@ function timeseriesEditor(collectionId, data) {
 
   function save() {
     // Sections
-    var orderSection = $("#sortable-sections").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = $('#section-markdown_' + nameS).val();
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
-    });
-    data.section = newSections;
+//    var orderSection = $("#sortable-sections").sortable('toArray');
+//    $(orderSection).each(function (indexS, nameS) {
+//      var markdown = $('#section-markdown_' + nameS).val();
+//      newSections[indexS] = {markdown: markdown};
+//    });
+//    data.section = newSections;
+    data.section = {markdown: $('#section-markdown_0').val()};
     // Notes
     var orderNote = $("#sortable-notes").sortable('toArray');
+//    $(orderNote).each(function (indexN, nameN) {
+//      var markdown = $('#note-markdown_' + nameN).val();
+//      newNotes[indexN] = {markdown: markdown};
+//    });
     $(orderNote).each(function (indexN, nameN) {
-      var markdown = data.notes[parseInt(nameN)].markdown;
-      var title = $('#tab-title_' + nameN).val();
-      newNotes[indexN] = {title: title, markdown: markdown};
+      var markdown = $('#note-markdown_' + nameN).val();
+      newNotes[indexN] = markdown;
     });
     data.notes = newNotes;
     // Related documents
@@ -415,7 +474,7 @@ function timeseriesEditor(collectionId, data) {
       var uri = $('#timeseries-uri_' + nameT).val();
       newTimeseries[indexT]= {uri: uri};
     });
-    data.relatedTimeseries = newTimeseries;
+    data.relatedData = newTimeseries;
     // Related datasets
     var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {

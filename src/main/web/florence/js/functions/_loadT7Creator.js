@@ -80,7 +80,7 @@ function loadT7Creator (collectionName, releaseDate, pageType) {
 
 function pageTypeDataT7(pageType) {
 
-  if (pageType === "staticpage") {
+  if (pageType === "about_us") {
     return {
       "description": {
         "summary": "",

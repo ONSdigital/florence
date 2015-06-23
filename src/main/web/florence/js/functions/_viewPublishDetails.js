@@ -15,9 +15,9 @@ function viewPublishDetails(collections) {
       getCollectionDetails(collectionId,
         success = function (response) {
           if (result.date === manual) {
-            result.collectionDetails.push({id: response.id, title: response.title, pageDetails: response.reviewed, pageType: 'manual'});
+            result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed, pageType: 'manual'});
           } else {
-            result.collectionDetails.push({id: response.id, title: response.title, pageDetails: response.reviewed});
+            result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
           }
         },
         error = function (response) {
