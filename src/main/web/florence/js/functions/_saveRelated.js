@@ -1,5 +1,4 @@
 function saveRelated (collectionId, path, content) {
-  var iframeEvent = document.getElementById('iframe').contentWindow;
   postContent(collectionId, path, JSON.stringify(content),
     success = function (response) {
       console.log("Updating completed " + response);

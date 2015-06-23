@@ -32,12 +32,9 @@ function t1Editor(collectionId, data) {
 //  lastIndexSections = index + 1;
     $("#section-edit_"+index).click(function() {
 
-      var pageurl = localStorage.getItem('pageurl');
-//      localStorage.setItem('historicUrl', pageurl);
-//      var reload = (localStorage.getItem("historicUrl") === "/") ? "" : localStorage.getItem("historicUrl");
       var iframeEvent = document.getElementById('iframe').contentWindow;
           iframeEvent.removeEventListener('click', Florence.Handler, true);
-      createWorkspace(pageurl, collectionId, '', true);
+      createWorkspace('/', collectionId, '', true);
 
       $('#' + index).replaceWith(
           '<div id="' + index + '" class="edit-section__sortable-item">' +
@@ -48,12 +45,6 @@ function t1Editor(collectionId, data) {
       $("#section-cancel_" + index).hide();
 
       $("#section-get_" + index).one('click', function () {
-        $("#section-cancel_" + index).show().one('click', function () {
-          $('#section-cancel_' + index).hide();
-          $('#' + index).hide();
-          createWorkspace(pageurl, collectionId, 'edit');
-//          localStorage.removeItem('historicUrl');
-        });
 
         var sectionUrl = $('#iframe')[0].contentWindow.document.location.pathname;
         var sectionUrlData = sectionUrl + "/data";
@@ -68,11 +59,11 @@ function t1Editor(collectionId, data) {
               {theme: {uri: sectionData.breadcrumb[1].uri},
                statistics: {uri: sectionData.uri}
               });
-              postContent(collectionId, reload, JSON.stringify(data),
+              postContent(collectionId, '', JSON.stringify(data),
                 success = function (response) {
                   console.log("Updating completed " + response);
                   Florence.Editor.isDirty = false;
-                  createWorkspace(pageurl, collectionId, 'edit');
+                  createWorkspace('/', collectionId, 'edit');
                 },
                 error = function (response) {
                   if (response.status === 400) {
@@ -94,6 +85,10 @@ function t1Editor(collectionId, data) {
             console.log('No page data returned');
           }
         });
+      });
+
+      $("#section-cancel_" + index).show().one('click', function () {
+        createWorkspace(pageUrl, collectionId, 'edit');
       });
     });
   });

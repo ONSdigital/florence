@@ -313,17 +313,8 @@ function bulletinEditor(collectionId, data) {
             alert("This is not a data document");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                // Hack to work with 404 Error
-                error: function (relatedData) {
-                  if (relatedData.responseJSON.type === 'timeseries') {
-                    data.relatedData.push({uri: relatedData.responseJSON.uri});
-                    saveRelated(collectionId, pageUrl, data);
-                  } else {
-                    alert("This is not a data document");
-                  }
-                  // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
