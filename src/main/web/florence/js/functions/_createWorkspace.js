@@ -19,7 +19,7 @@ function createWorkspace(path, collectionName, menu, stopEventListener) {
 
     Florence.refreshAdminMenu();
 
-    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + path);
+    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + '/' + path);
      $('.section').html(workSpace);
 
     //click handlers
