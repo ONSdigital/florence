@@ -54,7 +54,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT5(templateData);
     $('.workspace-menu').html(html);
     accordion();
-    articleEditor(collectionId, pageData);
+    timeseriesEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'methodology') {

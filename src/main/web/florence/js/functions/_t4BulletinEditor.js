@@ -259,8 +259,17 @@ function bulletinEditor(collectionId, data) {
             alert("This is not a bulletin");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                      // Hack to work with 404 Error
+                      error: function (relatedData) {
+                        if (relatedData.responseJSON.type === 'bulletin') {
+                          data.relatedBulletins.push({uri: relatedData.responseJSON.uri});
+                          saveRelated(collectionId, pageUrl, data);
+                        } else {
+                          alert("This is not a bulletin");
+                        }
+                        // End of hack
         }
       });
     });
@@ -308,11 +317,20 @@ function bulletinEditor(collectionId, data) {
             data.relatedData.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
-            alert("This is not a data");
+            alert("This is not a data document");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                // Hack to work with 404 Error
+                error: function (relatedData) {
+                  if (relatedData.responseJSON.type === 'timeseries') {
+                    data.relatedData.push({uri: relatedData.responseJSON.uri});
+                    saveRelated(collectionId, pageUrl, data);
+                  } else {
+                    alert("This is not a data document");
+                  }
+                  // End of hack
         }
       });
     });
@@ -377,9 +395,9 @@ function bulletinEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-//        var markdown = $('#section-markdown_' + nameS).val();
-        var markdown = data.sections[parseInt(nameT)].markdown;
-        var title = $('#section-title_' + nameS).val();
+//      var markdown = $('#section-markdown_' + nameS).val();
+      var markdown = data.sections[parseInt(nameS)].markdown;
+      var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;

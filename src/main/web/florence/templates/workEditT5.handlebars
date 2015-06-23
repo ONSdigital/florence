@@ -98,9 +98,10 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-sections" class="edit-section__sortable">
-          {{#each this.sections}}
+          {{#each this.section}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea style="display: none;" id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>
+              <!--<textarea style="display: none;" id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
+              <textarea style="display: none;" id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
               <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
               <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
             </div>
@@ -121,7 +122,8 @@
         <div id="sortable-notes" class="edit-section__sortable">
           {{#each this.notes}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>
+              <!--<textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
+              <textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
               <button class="btn-markdown-edit" id="note-edit_{{@index}}">Edit</button>
               <button class="btn-page-delete" id="note-delete_{{@index}}">Delete</button>
             </div>
@@ -133,7 +135,7 @@
       </div>
     </div>
 
-    <div class="edit-section" id="relBulletin">
+    <div class="edit-section" id="relDocument">
       <div class="edit-section__head">
         <h1>Related bulletins and articles</h1>
         <p>Link</p>
@@ -148,7 +150,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addBulletin">Add bulletin or article</button>
+          <button class="btn-add-section" id="addDocument">Add bulletin or article</button>
         </div>
       </div>
     </div>
@@ -160,7 +162,7 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-timeseries" class="edit-section__sortable">
-          {{#each this.relatedTimeseries}}
+          {{#each this.relatedData}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea id="timeseries-uri_{{@index}}">{{uri}}</textarea>
               <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>

@@ -50,18 +50,18 @@ function viewCollections(collectionId) {
       return [false];
       }
       return [true];
-      }
+    }
 
-      today = new Date();
 
-      $(function() {
-         $('#date').datepicker({
-                      minDate: today,
-                      dateFormat: 'dd/mm/yy',
-                      constrainInput: true,
-                      beforeShowDay: noBefore
-                    });
-      });
+    $(function() {
+      var today = new Date();
+       $('#date').datepicker({
+                    minDate: today,
+                    dateFormat: 'dd/mm/yy',
+                    constrainInput: true,
+                    beforeShowDay: noBefore
+                  });
+    });
 
     $('.form-create-collection').submit(function (e) {
       e.preventDefault();

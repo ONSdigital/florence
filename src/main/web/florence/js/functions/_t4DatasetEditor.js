@@ -326,14 +326,23 @@ function datasetEditor(collectionId, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'dataset') {
-            data.relatedDatasets.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
+            data.relatedDatasets.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not a dataset");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                       // Hack to work with 404 Error
+                           error: function (relatedData) {
+                             if (relatedData.responseJSON.type === 'dataset') {
+                               data.relatedDatasets.push({uri: relatedData.responseJSON.uri});
+                               saveRelated(collectionId, pageUrl, data);
+                             } else {
+                               alert("This is not a dataset");
+                             }
+                             // End of hack
         }
       });
     });
@@ -396,14 +405,23 @@ function datasetEditor(collectionId, data) {
         crossDomain: true,
         success: function (usedInData) {
           if (usedInData.type === 'bulletin' || usedInData.type === 'article') {
-            data.usedIn.push({uri: usedInData.uri, title: usedInData.title, summary: usedInData.summary});
+            data.usedIn.push({uri: usedInData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not an article or a bulletin");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                       // Hack to work with 404 Error
+                           error: function (relatedData) {
+                             if (relatedData.responseJSON.type === 'article' || relatedData.responseJSON.type === 'bulletin') {
+                               data.usedIn.push({uri: relatedData.responseJSON.uri});
+                               saveRelated(collectionId, pageUrl, data);
+                             } else {
+                               alert("This is not an article or a bulletin");
+                             }
+                             // End of hack
         }
       });
     });

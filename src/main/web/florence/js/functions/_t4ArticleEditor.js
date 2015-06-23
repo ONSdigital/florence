@@ -248,8 +248,17 @@ function articleEditor(collectionId, data) {
             alert("This is not an article");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                    // Hack to work with 404 Error
+                    error: function (relatedData) {
+                      if (relatedData.responseJSON.type === 'article') {
+                        data.relatedArticles.push({uri: relatedData.responseJSON.uri});
+                        saveRelated(collectionId, pageUrl, data);
+                      } else {
+                        alert("This is not a article");
+                      }
+                      // End of hack
         }
       });
     });
@@ -297,11 +306,20 @@ function articleEditor(collectionId, data) {
             data.relatedData.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
-            alert("This is not a data");
+            alert("This is not a data document");
           }
         },
-        error: function () {
-          console.log('No page data returned');
+//        error: function () {
+//          console.log('No page data returned');
+                  // Hack to work with 404 Error
+                  error: function (relatedData) {
+                    if (relatedData.responseJSON.type === 'timeseries') {
+                      data.relatedData.push({uri: relatedData.responseJSON.uri});
+                      saveRelated(collectionId, pageUrl, data);
+                    } else {
+                      alert("This is not a data document");
+                    }
+                    // End of hack
         }
       });
     });
