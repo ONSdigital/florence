@@ -20,20 +20,15 @@ function methodologyEditor(collectionId, data) {
   $("#relBulletin").remove();
   $("#relDataset").remove();
   $("#extLink").remove();
-  $("#used").remove();
   $("#download").remove();
-  $("#note").remove();
   $(".edition").hide();
   $("#metadata-a").remove();
   $("#metadata-b").remove();
-  $("#metadata-d").remove();
   $(".next-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();
   $("#headline3-p").remove();
   $("#abstract-p").remove();
-  $("#description-p").remove();
-  $("#migrated").remove();
   $("#natStat").remove();
 
   // Metadata load, edition and saving
