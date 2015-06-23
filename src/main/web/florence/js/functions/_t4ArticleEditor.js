@@ -238,23 +238,17 @@ function articleEditor(collectionId, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'article') {
+            if (!data.relatedArticles) {
+              data.relatedArticles = [];
+            }
             data.relatedArticles.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not an article");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                    // Hack to work with 404 Error
-                    error: function (relatedData) {
-                      if (relatedData.responseJSON.type === 'article') {
-                        data.relatedArticles.push({uri: relatedData.responseJSON.uri});
-                        saveRelated(collectionId, pageUrl, data);
-                      } else {
-                        alert("This is not a article");
-                      }
-                      // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -298,24 +292,18 @@ function articleEditor(collectionId, data) {
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
-          if (relatedData.type === 'timeseries') {                //TO BE CHANGED
+          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
+            if (!data.relatedData) {
+              data.relatedData = [];
+            }
             data.relatedData.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not a data document");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                  // Hack to work with 404 Error
-                  error: function (relatedData) {
-                    if (relatedData.responseJSON.type === 'timeseries') {
-                      data.relatedData.push({uri: relatedData.responseJSON.uri});
-                      saveRelated(collectionId, pageUrl, data);
-                    } else {
-                      alert("This is not a data document");
-                    }
-                    // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });

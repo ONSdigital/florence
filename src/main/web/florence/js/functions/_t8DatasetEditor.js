@@ -343,20 +343,8 @@ function datasetEditor(collectionId, data) {
             alert("This is not a dataset");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                       // Hack to work with 404 Error
-                           error: function (relatedData) {
-                             if (relatedData.responseJSON.type === 'dataset') {
-                               if (!data.relatedDatasets) {
-                                 data.relatedDatasets = [];
-                               }
-                             data.relatedDatasets.push({uri: relatedData.responseJSON.uri});
-                               saveRelated(collectionId, pageUrl, data);
-                             } else {
-                               alert("This is not a dataset");
-                             }
-                             // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -428,20 +416,8 @@ function datasetEditor(collectionId, data) {
             alert("This is not an article or a bulletin");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                       // Hack to work with 404 Error
-                           error: function (relatedData) {
-                             if (relatedData.responseJSON.type === 'article' || relatedData.responseJSON.type === 'bulletin') {
-                               if (!data.relatedDocuments) {
-                                 data.relatedDocuments = [];
-                               }
-                               data.relatedDocuments.push({uri: relatedData.responseJSON.uri});
-                               saveRelated(collectionId, pageUrl, data);
-                             } else {
-                               alert("This is not an article or a bulletin");
-                             }
-                             // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -513,20 +489,8 @@ function datasetEditor(collectionId, data) {
             alert("This is not a methodology");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                       // Hack to work with 404 Error
-                           error: function (relatedData) {
-                             if (relatedData.responseJSON.type === 'methodology') {
-                               if (!data.relatedMethodology) {
-                                 data.relatedMethodology = [];
-                               }
-                               data.relatedMethodology.push({uri: relatedData.responseJSON.uri});
-                               saveRelated(collectionId, pageUrl, data);
-                             } else {
-                               alert("This is not a methodology");
-                             }
-                             // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -600,8 +564,8 @@ function datasetEditor(collectionId, data) {
     });
     data.relatedDocuments = newUsedIn;
     // Related methodology
-    var orderUsedIn = $("#sortable-methodology").sortable('toArray');
-    $(orderUsedIn).each(function(indexM, nameM){
+    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
       newRelatedMethodology[parseInt(indexM)] = {uri: uri};
     });

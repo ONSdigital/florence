@@ -249,23 +249,17 @@ function bulletinEditor(collectionId, data) {
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
+            if (!data.relatedBulletins) {
+              data.relatedBulletins = [];
+            }
             data.relatedBulletins.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not a bulletin");
           }
         },
-//        error: function () {
-//          console.log('No page data returned');
-                      // Hack to work with 404 Error
-                      error: function (relatedData) {
-                        if (relatedData.responseJSON.type === 'bulletin') {
-                          data.relatedBulletins.push({uri: relatedData.responseJSON.uri});
-                          saveRelated(collectionId, pageUrl, data);
-                        } else {
-                          alert("This is not a bulletin");
-                        }
-                        // End of hack
+        error: function () {
+          console.log('No page data returned');
         }
       });
     });
@@ -309,7 +303,10 @@ function bulletinEditor(collectionId, data) {
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
-          if (relatedData.type === 'timeseries') {                //TO BE CHANGED
+          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
+            if (!data.relatedData) {
+              data.relatedData = [];
+            }
             data.relatedData.push({uri: relatedData.uri});
             saveRelated(collectionId, pageUrl, data);
           } else {
