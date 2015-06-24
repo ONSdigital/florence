@@ -99,9 +99,9 @@ function loadT4Creator (collectionId) {
         pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         if (releaseDateManual) {                                                          //Manual collections
           date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
-          releaseUri = $.datepicker.formatDate('yymmdd', date);
+          releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
         } else {
-          releaseUri = $.datepicker.formatDate('yymmdd', new Date(releaseDate));
+          releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
         }
 
         if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
