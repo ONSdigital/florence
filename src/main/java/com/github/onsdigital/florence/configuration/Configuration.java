@@ -4,11 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Configuration {
 
-    private static final String DEFAULT_TREDEGAR_URL = "http://localhost:8080";
+    private static final String DEFAULT_BABBAGE_URL = "http://localhost:8080";
     private static final String DEFAULT_ZEBEDEE_URL = "http://localhost:8082";
 
-    public static String getTredegarUrl() {
-        return StringUtils.defaultIfBlank(getValue("TREDEGAR_URL"), DEFAULT_TREDEGAR_URL);
+    public static String getBabbageUrl() {
+        return StringUtils.defaultIfBlank(getValue("BABBAGE_URL"), DEFAULT_BABBAGE_URL);
     }
 
     public static String getZebedeeUrl() {
