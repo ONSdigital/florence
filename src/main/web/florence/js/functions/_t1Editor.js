@@ -14,13 +14,17 @@ function t1Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata edition and saving
+  $("#summary").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.summary = $(this).val();
+  });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   //Edit section
@@ -28,11 +32,9 @@ function t1Editor(collectionId, data) {
 //  lastIndexSections = index + 1;
     $("#section-edit_"+index).click(function() {
 
-      var pageurl = localStorage.getItem('pageurl');
-      localStorage.setItem('historicUrl', pageurl);
-      var reload = (localStorage.getItem("historicUrl") === "/") ? "" : localStorage.getItem("historicUrl");
       var iframeEvent = document.getElementById('iframe').contentWindow;
           iframeEvent.removeEventListener('click', Florence.Handler, true);
+      createWorkspace('/', collectionId, '', true);
 
       $('#' + index).replaceWith(
           '<div id="' + index + '" class="edit-section__sortable-item">' +
@@ -43,16 +45,9 @@ function t1Editor(collectionId, data) {
       $("#section-cancel_" + index).hide();
 
       $("#section-get_" + index).one('click', function () {
-        $("#section-cancel_" + index).show().one('click', function () {
-          $('#section-cancel_' + index).hide();
-          $('#' + index).hide();
-          refreshPreview(localStorage.getItem("historicUrl"));
-          loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionId);
-          localStorage.removeItem('historicUrl');
-        });
 
-        var sectionUrl = $('#iframe')[0].contentWindow.document.location.href;
-        var sectionUrlData = "/data" + sectionUrl.split("#!")[1];
+        var sectionUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var sectionUrlData = sectionUrl + "/data";
 
         $.ajax({
           url: sectionUrlData,
@@ -61,21 +56,14 @@ function t1Editor(collectionId, data) {
           success: function (sectionData) {
             if (sectionData.type === 'timeseries') {
               data.sections.splice(index, 1,
-              {name: sectionData.breadcrumb[0].name,
-              link: sectionData.breadcrumb[0].fileName,
-              items: [{
-                name: sectionData.name,
-                uri: sectionData.uri
-              }]
+              {theme: {uri: sectionData.breadcrumb[1].uri},
+               statistics: {uri: sectionData.uri}
               });
-              postContent(collectionId, reload, JSON.stringify(data),
+              postContent(collectionId, '', JSON.stringify(data),
                 success = function (response) {
                   console.log("Updating completed " + response);
                   Florence.Editor.isDirty = false;
-                  loadPageDataIntoEditor(localStorage.getItem("historicUrl"), collectionId);
-                  refreshPreview(localStorage.getItem("historicUrl"));
-                  iframeEvent.addEventListener('click', Florence.Handler, true);
-                  localStorage.removeItem('historicUrl');
+                  createWorkspace('/', collectionId, 'edit');
                 },
                 error = function (response) {
                   if (response.status === 400) {
@@ -90,13 +78,17 @@ function t1Editor(collectionId, data) {
                 }
                );
             } else {
-              alert("This is not an article or a bulletin");
+              alert("This is not a time series");
             }
           },
           error: function () {
             console.log('No page data returned');
           }
         });
+      });
+
+      $("#section-cancel_" + index).show().one('click', function () {
+        createWorkspace(pageUrl, collectionId, 'edit');
       });
     });
   });
@@ -136,17 +128,11 @@ function t1Editor(collectionId, data) {
     // sections
     var orderSections = $("#sortable-sections").sortable('toArray');
     $(orderSections).each(function(indexS, nameS){
-      var uri = data.sections[parseInt(nameS)].items[0].uri;
-      var name = data.sections[parseInt(nameS)].items[0].name;
-      var link = data.sections[parseInt(nameS)].link;
-      var linkName = data.sections[parseInt(nameS)].name;
-      newSections[parseInt(indexS)] = {name: linkName,
-                                     link: link,
-                                     items: [{
-                                       name: name,
-                                       uri: uri
-                                       }]
-                                     };
+      var uri = data.sections[parseInt(nameS)].statistics.data.uri;
+      var link = data.sections[parseInt(nameS)].theme.uri;
+      newSections[parseInt(indexS)] = {theme: {uri: link},
+                                       statistics: {uri: uri}
+                                      };
     });
     data.sections = newSections;
   }

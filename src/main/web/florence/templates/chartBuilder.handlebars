@@ -12,12 +12,13 @@
       <textarea id="chart-data" placeholder="Paste your data here" rows="4" cols="120"></textarea>
       <br/>
 
-      <label>Alt Text</label>
-      <input type="text" id="chart-alt-text" placeholder="[Alt Text]" value="{{altText}}"/>
+      <label>Alt Text <br>
+        <input type="text" id="chart-alt-text" placeholder="[Alt Text]" value="{{altText}}"/>
+      </label>
 
       <label>Chart Type <br>
         <select id="chart-type">
-            {{#select type}}
+            {{#select chartType}}
               <option value="bar">Bar Chart</option>
               <option value="line">Line Chart</option>
               <option value="barline">Bar + Line Chart</option>
@@ -61,13 +62,7 @@
     </div>
 
     <div id="preview-chart" class="chart-builder__preview">
-      <div id="chart"></div>
-    </div>
 
-
-    <div id="hiddenDiv" style="display:none">
-      <canvas id="hiddenCanvas"></canvas>
-      <a id="hiddenPng"/>
     </div>
 
     <div class="chart-builder__footer">
@@ -76,4 +71,15 @@
     </div>
 
   </div>
+
+
+  <div id="hiddenDiv" style="display:none">
+    <canvas id="hiddenCanvas"></canvas>
+
+  </div>
+
+
+  <div id="hiddenSvgForDownload"></div>
+  <canvas id="hiddenCanvasForDownload"></canvas>
+
 </div>

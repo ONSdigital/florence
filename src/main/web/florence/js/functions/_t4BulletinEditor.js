@@ -1,6 +1,6 @@
 function bulletinEditor(collectionId, data) {
 
-  var index = data.release.value;
+//  var index = data.release;
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
   var setActiveTab, getActiveTab;
@@ -20,77 +20,87 @@ function bulletinEditor(collectionId, data) {
 
   $("#relArticle").remove();
   $("#relDataset").remove();
-  $("#used").remove();
   $("#download").remove();
-  $("#note").remove();
   $("#metadata-a").remove();
-  $("#metadata-d").remove();
   $("#metadata-m").remove();
   $("#abstract-p").remove();
-  $("#description-p").remove();
-  $("#migrated").remove();
 
   // Metadata load, edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.description.title = $(this).val();
   });
-  $("#release").on('click keyup', function () {
+  $("#edition").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.release = $(this).val();
+    data.description.edition = $(this).val();
   });
-  $("#releaseDate").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.releaseDate = $(this).val();
-  });
+  if (!data.description.releaseDate){
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    $('#releaseDate').on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+    });
+  } else {
+      dateTmp = $('#releaseDate').val();
+      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(a);
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+//    $('.release-date').hide();
+  }
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.nextRelease = $(this).val();
+    data.description.nextRelease = $(this).val();
   });
+  if (!data.description.contact) {
+    data.description.contact = {};
+  }
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.name = $(this).val();
+    data.description.contact.name = $(this).val();
   });
   $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.email = $(this).val();
+    data.description.contact.email = $(this).val();
+  });
+  $("#contactTelephone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.contact.telephone = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.summary = $(this).val();
+    data.description.summary = $(this).val();
   });
   $("#headline1").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline1 = $(this).val();
+    data.description.headline1 = $(this).val();
   });
   $("#headline2").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline2 = $(this).val();
+    data.description.headline2 = $(this).val();
   });
   $("#headline3").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.headline3 = $(this).val();
+    data.description.headline3 = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if (data.nationalStatistic === "false" || data.nationalStatistic === false) {
+    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
       return false;
     }
     return true;
   };
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
   // Correction section
@@ -162,7 +172,10 @@ function bulletinEditor(collectionId, data) {
   $(data.accordion).each(function(index, tab) {
 
     $("#tab-edit_"+index).click(function() {
-      var editedSectionValue = $("#tab-markdown_" + index).val();
+      var editedSectionValue = {
+        "title": $('#tab-title_' + index).val(),
+        "markdown": $("#tab-markdown_" + index).val()
+      };
 
       var saveContent = function(updatedContent) {
         data.accordion[index].markdown = updatedContent;
@@ -209,42 +222,41 @@ function bulletinEditor(collectionId, data) {
     });
   }
 
-  //Add new related
+  //Add new related bulletins
   $("#addBulletin").one('click', function () {
-    var pageurl = localStorage.getItem('pageurl');
-    localStorage.setItem('historicUrl', pageurl);
-    var reload = localStorage.getItem("historicUrl");
+    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
         '  <textarea id="bulletin-uri_' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get"></textarea>' +
         '  <button class="btn-page-get" id="bulletin-get_' + lastIndexRelated + '">Get</button>' +
         '  <button class="btn-page-cancel" id="bulletin-cancel_' + lastIndexRelated + '">Cancel</button>' +
-        '</div>');
-    $("#bulletin-cancel_" + lastIndexRelated).hide();
+        '</div>').trigger('create');
 
     $("#bulletin-get_" + lastIndexRelated).one('click', function () {
-      $("#bulletin-cancel_" + lastIndexRelated).show().one('click', function () {
-        $("#bulletin-cancel_" + lastIndexRelated).hide();
-        $('#' + lastIndexRelated).hide();
-        refreshPreview(reload);
-        loadPageDataIntoEditor(reload, collectionId);
-        localStorage.removeItem('historicUrl');
-      });
-
-      var bulletinurl = $('#iframe')[0].contentWindow.document.location.href;
-      var bulletinurldata = "/data" + bulletinurl.split("#!")[1];
+      var pastedUrl = $('#bulletin-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var bulletinUrlData = myUrl.pathname + "/data";
+      } else {
+        var bulletinUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var bulletinUrlData = bulletinUrl + "/data";
+      }
 
       $.ajax({
-        url: bulletinurldata,
+        url: bulletinUrlData,
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'bulletin') {
-            data.relatedBulletins.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            saveRelated(collectionId, reload, data);
+            if (!data.relatedBulletins) {
+              data.relatedBulletins = [];
+            }
+            data.relatedBulletins.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not a bulletin");
           }
@@ -254,12 +266,71 @@ function bulletinEditor(collectionId, data) {
         }
       });
     });
+
+    $("#bulletin-cancel_" + lastIndexRelated).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
   });
 
   function sortableRelated() {
     $("#sortable-related").sortable();
   }
   sortableRelated();
+
+  //Add new related data
+  $("#addData").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-related-data').append(
+        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
+        '  <textarea id="data-uri_' + lastIndexRelated + '" placeholder="Go to the related data and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="data-get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#data-get_" + lastIndexRelated).one('click', function () {
+      var pastedUrl = $('#data-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var dataUrlData = myUrl.pathname + "/data";
+      } else {
+        var dataUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var dataUrlData = dataUrl + "/data";
+      }
+
+      $.ajax({
+        url: dataUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
+            if (!data.relatedData) {
+              data.relatedData = [];
+            }
+            data.relatedData.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a data document");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#data-cancel_" + lastIndexRelated).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
+
+  function sortableRelatedData() {
+    $("#sortable-related-data").sortable();
+  }
+  sortableRelatedData();
 
   // Edit external
   // Load and edition
@@ -311,8 +382,9 @@ function bulletinEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-sections").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#section-markdown_' + nameS).val();
-        var title = $('#section-title_' + nameS).val();
+//      var markdown = $('#section-markdown_' + nameS).val();
+      var markdown = data.sections[parseInt(nameS)].markdown;
+      var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
@@ -324,13 +396,11 @@ function bulletinEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-    // Related links
+    // Related bulletins
     var orderBulletin = $("#sortable-related").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = $('#bulletin-uri_' + nameB).val();
-      var summary = $('#bulletin-summary_' + nameB).val();
-      var name = $('#bulletin-title_' + nameB).val();
-      newRelated[indexB] = {uri: uri, name: name, summary: summary};
+      newRelated[indexB] = {uri: uri};
     });
     data.relatedBulletins = newRelated;
     // External links

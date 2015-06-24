@@ -1,13 +1,19 @@
 function refreshPreview(url) {
 
-  if(url) {
-    url = Florence.tredegarBaseUrl + url;
-    $('#iframe')[0].contentWindow.document.location.href = url;
+  if (url) {
+    if (url.charAt(0) === '/') {
+      url = url.slice(1);
+    }
+    url = Florence.tredegarBaseUrl + "/" + url;
+    document.getElementById('iframe').contentWindow.location.href = url;
+    console.log(document.getElementById('iframe').contentWindow.location.href)
   }
   else {
-    $('#iframe')[0].contentWindow.document.location.href = localStorage.getItem("pageurl");
+    var url = Florence.tredegarBaseUrl + "/" + localStorage.getItem("pageurl");
+    document.getElementById('iframe').contentWindow.location.href = url;
   }
+// reload here is redundant
+//  document.getElementById('iframe').contentWindow.location.reload(true);
 
-  $('#iframe')[0].contentWindow.document.location.reload(true);
 }
 

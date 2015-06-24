@@ -1,5 +1,5 @@
 function getPathName() {
-  var parsedUrl = $('#iframe')[0].contentWindow.location.href.split("#!")[1];
+  var parsedUrl = document.getElementById('iframe').contentWindow.location.pathname;
 
   if (parsedUrl.charAt(0) === '/') {
     parsedUrl = parsedUrl.slice(1);
