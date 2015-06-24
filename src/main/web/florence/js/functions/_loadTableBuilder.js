@@ -4,13 +4,9 @@ function loadTableBuilder(pageData, onSave, table) {
   var html = templates.tableBuilder(table);
   $('body').append(html);
 
-  //$('.table-builder').css("display", "block");
-
   if (table) {
-    renderTable(table.path);
+    renderTable(table.uri);
   }
-
-  //renderChart();
 
   var input = document.getElementById("files"), formdata = false;
 
@@ -20,10 +16,14 @@ $('#upload-table-form').submit(function(event) {
 
   var formData = new FormData($(this)[0]);
   var table = buildJsonObjectFromForm();
-  var path = getPathName() + "/" + table.filename;
+  var path = table.uri;
+  var xlsPath = path + ".xls";
+  var htmlPath = path + ".html";
 
+
+  // send xls file to zebedee
   $.ajax({
-    url: "/zebedee/content/" + Florence.collection.id + "?uri=" + path + ".xls",
+    url: "/zebedee/content/" + Florence.collection.id + "?uri=" + xlsPath,
     type: 'POST',
     data: formData,
     async: false,
@@ -31,9 +31,32 @@ $('#upload-table-form').submit(function(event) {
     contentType: false,
     processData: false,
     success: function (returndata) {
-      renderTable(path);
+      createTableHtml();
     }
   });
+
+  function createTableHtml() {
+    $.ajax({
+      url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
+      type: "POST",
+      success: function (html) {
+        saveTableJson();
+        saveTableHtml(html);
+      }
+    });
+  }
+
+  function saveTableHtml(data) {
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath,
+      type: 'POST',
+      data: data,
+      processData: false,
+      success: function (response) {
+        renderTable(path);
+      }
+    });
+  }
 
   return false;
 });
@@ -52,40 +75,44 @@ $('#upload-table-form').submit(function(event) {
     $('.table-builder').stop().fadeOut(200).remove();
   });
 
-  $('.btn-table-builder-create').on('click', function () {
+  function saveTableJson() {
 
+    table = buildJsonObjectFromForm();
+    var tableJson = table.uri  + ".json";
+
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
+      type: "POST",
+      data: JSON.stringify(table),
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        addTableToPageJson(table);
+      }
+    });
+  }
+
+  function addTableToPageJson(table) {
     if (!pageData.tables) {
       pageData.tables = []
     } else {
       if (_.find(pageData.tables, function (existingTable) {
           return existingTable.filename === table.filename
         })) {
-        alert("A table with this name already exists.");
         return;
       }
     }
 
+    pageData.tables.push({title: table.title, filename: table.filename, uri: table.uri});
+  }
 
-    var tablePath = pageUrl + "/" + table.filename;
-    var tableJson = tablePath  + ".json";
-    $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
-      type: "POST",
-      data: JSON.stringify(buildJsonObjectFromForm()),
-      processData: false,
-      contentType: false,
-      success: function (res) {
+  $('.btn-table-builder-create').on('click', function () {
 
-        // upload xls
-        // create html from xls
+    if (onSave) {
+      onSave(table.filename, '<ons-table path="' + table.uri + '" />');
+    }
+    $('.table-builder').stop().fadeOut(200).remove();
 
-        pageData.tables.push({title: table.title, filename: table.filename, path: tablePath});
-        if (onSave) {
-          onSave(table.filename, '<ons-table path="' + getPathName() + '/' + table.filename + '" />');
-        }
-        $('.table-builder').stop().fadeOut(200).remove();
-      }
-    });
   });
 
   function buildJsonObjectFromForm() {
@@ -93,12 +120,19 @@ $('#upload-table-form').submit(function(event) {
       table = {};
     }
 
+    table.type = 'table';
     table.title = $('#table-title').val();
-    table.filename = table.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-    
+    table.filename = table.filename ? table.filename : StringUtils.randomId();
+
+    table.uri = pageUrl + "/" + table.filename;
+
     if (table.title === '') {
       table.title = '[Title]'
     }
+
+    table.files = [];
+    table.files.push({ type:'download-xls', filename:table.filename + '.xls' });
+    table.files.push({ type:'html', filename:table.filename + '.html' });
 
     return table;
   }

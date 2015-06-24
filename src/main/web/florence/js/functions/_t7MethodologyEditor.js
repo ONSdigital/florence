@@ -20,50 +20,48 @@ function methodologyEditor(collectionId, data) {
   $("#relBulletin").remove();
   $("#relDataset").remove();
   $("#extLink").remove();
-  $("#used").remove();
   $("#download").remove();
-  $("#note").remove();
-  $(".release").hide();
+  $(".edition").hide();
   $("#metadata-a").remove();
   $("#metadata-b").remove();
-  $("#metadata-d").remove();
   $(".next-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();
   $("#headline3-p").remove();
   $("#abstract-p").remove();
-  $("#description-p").remove();
-  $("#migrated").remove();
   $("#natStat").remove();
 
   // Metadata load, edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.description.title = $(this).val();
   });
+  if (!data.description.contact) {
+    data.description.contact = {};
+  }
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.name = $(this).val();
+    data.description.contact.name = $(this).val();
   });
   $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.email = $(this).val();
+    data.description.contact.email = $(this).val();
   });
-  $("#contactPhone").on('click keyup', function () {
+  $("#contactTelephone").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.phone = $(this).val();
+    data.description.contact.telephone = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.summary = $(this).val();
+    data.description.summary = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   // Edit sections

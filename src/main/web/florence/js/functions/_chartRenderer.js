@@ -3,7 +3,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
   // Create our svg
   var svg = d3.select(bindTag + " svg")
-    .attr("viewBox", "0 0 " + chartWidth * 2 + " " + chartHeight * 2)
+    .attr("viewBox", "0 0 " + chartWidth + " " + chartHeight)
     .attr("preserveAspectRatio", "xMinYMin meet");
 
   // If we are talking time series skip
@@ -13,19 +13,17 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   }
 
   // Calculate padding at top (and left) of SVG
-  var types = chart.type === 'barline' ? chart.types : {};
-  var groups = chart.type === 'barline' ? chart.groups : [];
+  var types = chart.chartType === 'barline' ? chart.chartTypes : {};
+  var groups = chart.chartType === 'barline' ? chart.groups : [];
   var type = checkType(chart);
-  var rotate = chart.type === 'rotated';
+  var rotate = chart.chartType === 'rotated';
   var yLabel = rotate === true ? chart.unit : '';
-  var chartYOffset = 0;
 
   // work out position for chart legend
   var seriesCount = chart.series.length;
   var yOffset = (chart.legend == 'bottom-left' || chart.legend == 'bottom-right') ? seriesCount * 20 + 10 : 5;
 
   // Generate the chart
-
   var c3Config = {
     bindto: bindTag,
     size: {
@@ -72,144 +70,42 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
   };
 
   c3.generate(c3Config);
+  renderChartUnit();
 
-  // annotate
-  renderAnnotations(bindTag, chart, chartHeight, chartWidth);
-
-  function renderAnnotations(bindTag, chart, chartHeight, chartWidth) {
+  function renderChartUnit() {
 
     var svg = d3.select(bindTag + ' svg');
-
-    var svgGroups = $(bindTag + ' svg > g').get();
     var headerGroup = svg.append('g');
     var chartGroup = d3.select('g');
-    var splitParts = chartGroup.attr("transform").split(",");
-    var chartXOffset = ~~splitParts [0].split("(")[1];
 
-    //var chartHeight = chartGroup.node().getBBox().height
-    // annotate
-    var title = headerGroup.append('text') // Title
-      .style('font-size', '20px')
-      .style('font-family', '"DaxlinePro", sans-serif')
-      .style('fill', '#000000')
-      .text(chart.title);
+    var transform = chartGroup.attr("transform");
+    var chartXOffset = 0;
 
-    var currentYOffset = 8 + applyLineWrap(title, chartWidth);
-
-    if (chart.subtitle != '') {
-      var subtitle = headerGroup.append('text') // Subtitle
-        .attr("transform", "translate(0," + currentYOffset + ")")
-        .style('font-size', '15px')
-        .style('font-family', '"Open Sans", sans-serif')
-        .style('fill', '#999999')
-        .text(chart.subtitle);
-
-      currentYOffset += 8 + applyLineWrap(subtitle, chartWidth);
+    if (typeof transform !== 'undefined') {
+      var splitParts = transform.split(",");
+      chartXOffset = ~~splitParts [0].split("(")[1];
     }
-
-
     if (chart.unit && !rotate) {
-      var unit = headerGroup.append('text') // Unit (if non rotated)
-        .attr("transform", "translate(" + (chartXOffset - 20) + "," + currentYOffset + ")")
-        .attr('text-anchor', 'left')
+      headerGroup.append('text') // Unit (if non rotated)
+        .attr("transform", "translate(" + (chartXOffset + 10) + "," + 15 + ")")
         .style('font-size', '12px')
         .style('font-family', '"Open Sans", sans-serif')
         .style('fill', '#000000')
         .text(chart.unit);
-
-      currentYOffset += 5 + applyLineWrap(unit, chartWidth);
     }
-
-    currentYOffset += 2;
-
-    chartYOffset = currentYOffset;
-
-    // offset all the existing top level groups. This includes the chart and the legend
-    var arrayLength = svgGroups.length;
-    for (var i = 0; i < arrayLength; i++) { // ignore the last group as we just added it
-      var group = svgGroups[i];
-      var splitParts = $(group).attr("transform").split(",");
-      var xOffset = ~~splitParts [0].split("(")[1];
-      var yOffset = ~~splitParts [1].split("(")[1];
-      $(group).attr("transform", "translate(" + (xOffset) + "," + (currentYOffset + yOffset) + ")");
-    }
-
-    currentYOffset += chartHeight;
-
-    if (chart.source != '') {
-      var source = d3.select(bindTag + ' svg').append('text') // Source
-        .attr("transform", "translate(" + chartWidth + "," + currentYOffset + ")")
-        .attr('text-anchor', 'end')
-        .style('font-size', '12px')
-        .style('font-family', '"Open Sans", sans-serif')
-        .style('fill', '#999999')
-        .text(chart.source);
-
-      currentYOffset += 5 + applyLineWrap(source, chartWidth);
-    }
-
-    // reset the max height property of the container div.
-    // C3 seems to set this and it becomes a stale value after rendering annotations.
-    $(bindTag + ' svg').attr('height', currentYOffset);
-    $(bindTag).css('max-height', currentYOffset +'px');
-
-    if (chart.notes) {
-      if (typeof Markdown !== 'undefined') {
-        var converter = new Markdown.getSanitizingConverter();
-        Markdown.Extra.init(converter, {
-          extensions: "all"
-        });
-        var notes = converter.makeHtml(chart.notes);
-        $(bindTag).append(notes);
-      }
-    }
-
-    return currentYOffset;
-  }
-
-  // apply word wrap if required on text we have inserted
-  function applyLineWrap(text, width) {
-
-    var wrappedHeight = 0;
-
-    text.each(function() {
-      var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 1.2,
-        y = text.attr("y"),
-        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", lineHeight + "em");
-      while (word = words.pop()) {
-        line.push(word);
-        tspan.text(line.join(" "));
-        if (tspan.node().getComputedTextLength() > width) {
-          line.pop();
-          tspan.text(line.join(" "));
-          line = [word];
-          tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("y", ((++lineNumber + 1) * lineHeight) + "em").text(word);
-        }
-      }
-
-      wrappedHeight = tspan.node().getBBox().height;
-    });
-
-    return wrappedHeight;
   }
 
   function checkType(chart) {
-    if (chart.type === 'rotated') {
+    if (chart.chartType === 'rotated') {
       type = 'bar';
       return type;
-    } else if (chart.type === 'barline') {
+    } else if (chart.chartType === 'barline') {
       type = 'bar';
       return type;
     } else {
-      return type = chart.type;
+      return type = chart.chartType;
     }
   }
-
 
   function renderTimeseriesChartObject(bindTag, timechart, chartWidth, chartHeight) {
     var padding = 25;
@@ -245,7 +141,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     var axisType;
     var keys;
 
-    if (chart.type == 'line') { // continuous line charts
+    if (chart.chartType == 'line') { // continuous line charts
       axisType = {
         label: chart.xaxis,
         type: 'timeseries',
@@ -289,7 +185,7 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
       data: {
         json: chart.timeSeries,
         keys: keys,
-        type: chart.type,
+        type: chart.chartType,
         xFormat: '%Y-%m-%d %H:%M:%S'
       },
 
@@ -326,8 +222,6 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         top: padding
       }
     });
-
-    renderAnnotations(bindTag, chart, chartWidth, chartHeight);
   }
 
   function formattedMonthYear(date) {
@@ -341,5 +235,108 @@ function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
     var year = date.getFullYear();
 
     return monthNames[monthIndex] + " " + year;
+  }
+}
+
+function renderSvgAnnotations(bindTag, chart, chartHeight, chartWidth) {
+
+  var svg = d3.select(bindTag + ' svg');
+
+  var svgGroups = $(bindTag + ' svg > g').get();
+  var headerGroup = svg.append('g');
+
+  //var chartHeight = chartGroup.node().getBBox().height
+  // annotate
+  var title = headerGroup.append('text') // Title
+    .style('font-size', '20px')
+    .style('font-family', '"DaxlinePro", sans-serif')
+    .style('fill', '#000000')
+    .text(chart.title);
+
+  var currentYOffset = 8 + applyLineWrap(title, chartWidth);
+
+  if (chart.subtitle != '') {
+    var subtitle = headerGroup.append('text') // Subtitle
+      .attr("transform", "translate(0," + currentYOffset + ")")
+      .style('font-size', '15px')
+      .style('font-family', '"Open Sans", sans-serif')
+      .style('fill', '#999999')
+      .text(chart.subtitle);
+
+    currentYOffset += 8 + applyLineWrap(subtitle, chartWidth);
+  }
+
+  currentYOffset += 2;
+
+  // offset all the existing top level groups. This includes the chart and the legend
+  var arrayLength = svgGroups.length;
+  for (var i = 0; i < arrayLength; i++) { // ignore the last group as we just added it
+    var group = svgGroups[i];
+
+
+    var transform = $(group).attr("transform");
+    var xOffset = 0;
+    var yOffset = 0;
+
+    if (typeof transform !== 'undefined') {
+      var splitParts = transform.split(",");
+      xOffset = ~~splitParts [0].split("(")[1];
+      yOffset = ~~splitParts [1].split("(")[1];
+    }
+
+    $(group).attr("transform", "translate(" + (xOffset) + "," + (currentYOffset + yOffset) + ")");
+  }
+
+  currentYOffset += chartHeight;
+
+  if (chart.source != '') {
+    var source = d3.select(bindTag + ' svg').append('text') // Source
+      .attr("transform", "translate(" + chartWidth + "," + currentYOffset + ")")
+      .attr('text-anchor', 'end')
+      .style('font-size', '12px')
+      .style('font-family', '"Open Sans", sans-serif')
+      .style('fill', '#999999')
+      .text(chart.source);
+
+    currentYOffset += 5 + applyLineWrap(source, chartWidth);
+  }
+
+  // reset the max height property of the container div.
+  // C3 seems to set this and it becomes a stale value after rendering annotations.
+  $(bindTag + ' svg').attr('height', currentYOffset);
+  $(bindTag).css('max-height', currentYOffset +'px');
+
+  return currentYOffset;
+
+
+  // apply word wrap if required on text we have inserted
+  function applyLineWrap(text, width) {
+
+    var wrappedHeight = 0;
+
+    text.each(function() {
+      var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.2,
+        y = text.attr("y"),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", lineHeight + "em");
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("y", ((++lineNumber + 1) * lineHeight) + "em").text(word);
+        }
+      }
+
+      wrappedHeight = tspan.node().getBBox().height;
+    });
+
+    return wrappedHeight;
   }
 }
