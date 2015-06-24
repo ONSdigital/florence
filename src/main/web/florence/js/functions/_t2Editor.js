@@ -13,21 +13,21 @@ function t2Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata load, edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.description.title = $(this).val();
   });
   $("#summary").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.lede = $(this).val();
+    data.description.summary = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   // Save

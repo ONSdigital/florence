@@ -561,6 +561,7 @@
 		height: $lineheight * 30;
 		float: right;
 		padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+		overflow-y: scroll;
 		// background-color: $white;
 	}
 
@@ -572,6 +573,7 @@
 		bottom: 0;
 		right: 0;
 		text-align: center;
+		background-color: $wild-sand;
 		// background-color: $pickled-bluewood;
 
 		button {
@@ -637,6 +639,7 @@
 		height: $lineheight * 30;
 		float: right;
 		padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+		overflow-y: scroll;
 		// background-color: $white;
 	}
 
@@ -648,6 +651,7 @@
 		bottom: 0;
 		right: 0;
 		text-align: center;
+		background-color: $wild-sand;
 		// background-color: $pickled-bluewood;
 
 		button {
@@ -695,8 +699,6 @@
 	}
 	
 }
-
-
 
 
 

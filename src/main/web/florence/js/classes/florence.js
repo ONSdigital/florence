@@ -1,5 +1,5 @@
 var Florence = Florence || {
-    tredegarBaseUrl: window.location.origin + '/index.html#!',
+    tredegarBaseUrl: window.location.origin,
     refreshAdminMenu: function () {
       var mainNavHtml = templates.mainNav(Florence);
       $('.admin-nav').html(mainNavHtml);

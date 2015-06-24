@@ -1,23 +1,20 @@
-function makeEditSections(collectionId, pageData, isPageComplete) {
+function makeEditSections(collectionId, pageData, templateData) {           //pageData (plain), templateData (resolved)
 
-  var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
-  templateData.isPageComplete = isPageComplete;
-
-  if (pageData.type === 'home' && pageData.level === 't1') {
+  if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
     accordion();
     t1Editor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'home' && pageData.level === 't2') {
+  else if (pageData.type === 'taxonomy_landing_page') {
     var html = templates.workEditT2(templateData);
     $('.workspace-menu').html(html);
     accordion();
     t2Editor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'home' && pageData.level === 't3') {
+  else if (pageData.type === 'product_page') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
     accordion();
@@ -50,6 +47,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     articleEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'timeseries') {
+    var html = templates.workEditT5(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    timeseriesEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'methodology') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
@@ -58,7 +62,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   }
 
   else if (pageData.type === 'dataset') {
-    var html = templates.workEditT4(templateData);
+    var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     accordion();
     datasetEditor(collectionId, pageData);

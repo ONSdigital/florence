@@ -4,7 +4,7 @@ function loadTablesList(data, collectionId) {
 
   $(data.tables).each(function (index, table) {
 
-    var basePath = getPathName();
+    var basePath = data.uri;
     var tablePath = basePath + '/' + table.filename;
     var tableJson = tablePath + '.json';
 
