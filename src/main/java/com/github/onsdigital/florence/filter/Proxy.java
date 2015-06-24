@@ -21,7 +21,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * Routes all traffic to Tredegar, Unless it is recognised as a florence file being requested.
+ * Routes all traffic to Babbage, Unless it is recognised as a florence file being requested.
  */
 public class Proxy implements Filter {
 
@@ -29,7 +29,7 @@ public class Proxy implements Filter {
     private static final String florenceToken = "/florence";
     private static final String zebedeeToken = "/zebedee";
 
-    private static final String tredegarBaseUrl = Configuration.getTredegarUrl();
+    private static final String babbageBaseUrl = Configuration.getBabbageUrl();
     private static final String zebedeeBaseUrl = Configuration.getZebedeeUrl();
 
     private static final List<String> florencePaths = Arrays.asList("");
@@ -46,7 +46,7 @@ public class Proxy implements Filter {
                 return true; // carry on and serve the file from florence
             }
 
-            String requestBaseUrl = tredegarBaseUrl; // proxy to tredegar by default.
+            String requestBaseUrl = babbageBaseUrl; // proxy to babbage by default.
 
             if (requestUri.startsWith(zebedeeToken)) {
                 requestUri = requestUri.replace(zebedeeToken, "");
