@@ -4,7 +4,7 @@ function loadChartsList(data, collectionId) {
 
   $(data.charts).each(function (index, chart) {
 
-    var basePath = getPathName();
+    var basePath = data.uri;
     var chartPath = basePath + '/' + chart.filename;
     var chartJson = chartPath + '.json';
 

@@ -18,67 +18,71 @@ function articleEditor(collectionId, data) {
 
   $("#relBulletin").remove();
   $("#relDataset").remove();
-  $("#used").remove();
   $("#download").remove();
-  $("#note").remove();
   $("#metadata-b").remove();
-  $("#metadata-d").remove();
   $("#metadata-m").remove();
   $("#summary-p").remove();
   $("#headline1-p").remove();
   $("#headline2-p").remove();
   $("#headline3-p").remove();
-  $("#description-p").remove();
-  $("#migrated").remove();
-  $("#natStat").remove();
-
 
   // Metadata edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.description.title = $(this).val();
   });
-  $("#release").on('click keyup', function () {
+  $("#edition").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.release.label = $(this).val();
+    data.description.edition = $(this).val();
   });
-  $("#releaseDate").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.releaseDate = $(this).val();
-  });
+  if (!data.description.releaseDate){
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    $('#releaseDate').on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+    });
+  } else {
+    dateTmp = $('#releaseDate').val();
+    a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#releaseDate').val(a);
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+//    $('.release-date').hide();
+  }
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.nextRelease = $(this).val();
+    data.description.nextRelease = $(this).val();
   });
+  if (!data.description.contact) {
+    data.description.contact = {};
+  }
   $("#contactName").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.name = $(this).val();
+    data.description.contact.name = $(this).val();
   });
   $("#contactEmail").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.email = $(this).val();
+    data.description.contact.email = $(this).val();
   });
-  $("#contactPhone").on('click keyup', function () {
+  $("#contactTelephone").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.contact.phone = $(this).val();
+    data.description.contact.telephone = $(this).val();
   });
   $("#abstract").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.summary = $(this).val();
+    data.description.summary = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if(data.nationalStatistic === "false" || data.nationalStatistic === false) {
+    if(data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
       return false;
     } else {
       return true;
@@ -86,7 +90,7 @@ function articleEditor(collectionId, data) {
   };
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
   // Correction section
@@ -158,7 +162,10 @@ function articleEditor(collectionId, data) {
   $(data.accordion).each(function(index, tab) {
 
     $("#tab-edit_"+index).click(function() {
-      var editedSectionValue = $("#tab-markdown_" + index).val();
+      var editedSectionValue = {
+        "title": $('#tab-title_' + index).val(),
+        "markdown": $("#tab-markdown_" + index).val()
+      };
 
       var saveContent = function(updatedContent) {
         data.accordion[index].markdown = updatedContent;
@@ -197,50 +204,48 @@ function articleEditor(collectionId, data) {
       lastIndexRelated = iArticle + 1;
 
       // Delete
-      $(".fl-panel--editor__related__article-item__delete_" + iArticle).click(function () {
+      $("#article-delete_" + iArticle).click(function () {
         $("#" + iArticle).remove();
         data.relatedArticles.splice(iArticle, 1);
-        articleEditor(collectionId, data);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
       });
     });
   }
 
-  //Add new related
+  //Add new related articles
   $("#addArticle").one('click', function () {
-    var pageurl = localStorage.getItem('pageurl');
-    localStorage.setItem('historicUrl', pageurl);
-    var reload = localStorage.getItem("historicUrl");
+    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
         '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="bulletin-uri_' + lastIndexRelated + '" placeholder="Go to the related article and click Get"></textarea>' +
+        '  <textarea id="article-uri_' + lastIndexRelated + '" placeholder="Go to the related article and click Get"></textarea>' +
         '  <button class="btn-page-get" id="article-get_' + lastIndexRelated + '">Get</button>' +
         '  <button class="btn-page-cancel" id="article-cancel_' + lastIndexRelated + '">Cancel</button>' +
-        '</div>');
-    $("#article-cancel_" + lastIndexRelated).hide();
+        '</div>').trigger('create');
 
     $("#article-get_" + lastIndexRelated).one('click', function () {
-      $("#article-cancel_" + lastIndexRelated).show().one('click', function () {
-        $("#article-cancel_" + lastIndexRelated).hide();
-        $('#' + lastIndexRelated).hide();
-        refreshPreview(reload);
-        loadPageDataIntoEditor(reload, collectionId);
-        localStorage.removeItem('historicUrl');
-      });
-
-      var articleurl = $('#iframe')[0].contentWindow.document.location.href;
-      var articleurldata = "/data" + articleurl.split("#!")[1];
+      var pastedUrl = $('#article-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var articleUrlData = myUrl.pathname + "/data";
+      } else {
+        var articleUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var articleUrlData = articleUrl + "/data";
+      }
 
       $.ajax({
-        url: articleurldata,
+        url: articleUrlData,
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
           if (relatedData.type === 'article') {
-            data.relatedArticles.push({uri: relatedData.uri, title: relatedData.title, summary: relatedData.summary});
-            saveRelated(collectionId, reload, data);
+            if (!data.relatedArticles) {
+              data.relatedArticles = [];
+            }
+            data.relatedArticles.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
           } else {
             alert("This is not an article");
           }
@@ -250,12 +255,71 @@ function articleEditor(collectionId, data) {
         }
       });
     });
+
+    $("#article-cancel_" + lastIndexRelated).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
   });
 
   function sortableRelated() {
     $("#sortable-related").sortable();
   }
   sortableRelated();
+
+  //Add new related data
+  $("#addData").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-related-data').append(
+        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
+        '  <textarea id="data-uri_' + lastIndexRelated + '" placeholder="Go to the related data and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="data-get_' + lastIndexRelated + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#data-get_" + lastIndexRelated).one('click', function () {
+      var pastedUrl = $('#data-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var dataUrlData = myUrl.pathname + "/data";
+      } else {
+        var dataUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var dataUrlData = dataUrl + "/data";
+      }
+
+      $.ajax({
+        url: dataUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
+            if (!data.relatedData) {
+              data.relatedData = [];
+            }
+            data.relatedData.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a data document");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#data-cancel_" + lastIndexRelated).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
+
+  function sortableRelatedData() {
+    $("#sortable-related-data").sortable();
+  }
+  sortableRelatedData();
 
   // Edit external
   // Load and edition
@@ -321,13 +385,11 @@ function articleEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-    // Related links
+    // Related articles
     var orderArticle = $("#sortable-related").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = $('#article-uri_' + nameB).val();
-      var summary = $('#article-summary_' + nameB).val();
-      var name = $('#article-title_' + nameB).val();
-      newRelated[indexB]= {uri: uri, name: name, summary: summary};
+      newRelated[indexB]= {uri: uri};
     });
     data.relatedArticles = newRelated;
     // External links

@@ -5,9 +5,7 @@ function loadTableBuilder(pageData, onSave, table) {
   $('body').append(html);
 
   if (table) {
-    var basePath = getPathName();
-    var tablePath = basePath + '/' + table.filename;
-    renderTable(tablePath);
+    renderTable(table.uri);
   }
 
   var input = document.getElementById("files"), formdata = false;
@@ -18,7 +16,7 @@ $('#upload-table-form').submit(function(event) {
 
   var formData = new FormData($(this)[0]);
   var table = buildJsonObjectFromForm();
-  var path = getPathName() + "/" + table.filename;
+  var path = table.uri;
   var xlsPath = path + ".xls";
   var htmlPath = path + ".html";
 
@@ -79,10 +77,8 @@ $('#upload-table-form').submit(function(event) {
 
   function saveTableJson() {
 
-    var table = buildJsonObjectFromForm();
-
-    var tablePath = pageUrl + "/" + table.filename;
-    var tableJson = tablePath  + ".json";
+    table = buildJsonObjectFromForm();
+    var tableJson = table.uri  + ".json";
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
@@ -103,19 +99,17 @@ $('#upload-table-form').submit(function(event) {
       if (_.find(pageData.tables, function (existingTable) {
           return existingTable.filename === table.filename
         })) {
-        alert("A table with this name already exists.");
         return;
       }
     }
 
-    var tablePath = pageUrl + "/" + table.filename;
-    pageData.tables.push({title: table.title, filename: table.filename, path: tablePath});
+    pageData.tables.push({title: table.title, filename: table.filename, uri: table.uri});
   }
 
   $('.btn-table-builder-create').on('click', function () {
 
     if (onSave) {
-      onSave(table.filename, '<ons-table path="' + getPathName() + '/' + table.filename + '" />');
+      onSave(table.filename, '<ons-table path="' + table.uri + '" />');
     }
     $('.table-builder').stop().fadeOut(200).remove();
 
@@ -129,7 +123,9 @@ $('#upload-table-form').submit(function(event) {
     table.type = 'table';
     table.title = $('#table-title').val();
     table.filename = table.filename ? table.filename : StringUtils.randomId();
-    
+
+    table.uri = pageUrl + "/" + table.filename;
+
     if (table.title === '') {
       table.title = '[Title]'
     }

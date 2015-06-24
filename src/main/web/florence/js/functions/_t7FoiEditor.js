@@ -29,21 +29,21 @@ function foiEditor(collectionId, data) {
   $("#reference-p").remove();
 
   // Metadata edition and saving
-  $("#name").on('click keyup', function () {
+  $("#title").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.name = $(this).val();
+    data.description.title = $(this).val();
   });
   $("#releaseDate").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.releaseDate = $(this).val();
+    data.description.releaseDate = $(this).val();
   });
   $("#keywords").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.keywords = $(this).val();
+    data.description.keywords = $(this).val();
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
-    data.metaDescription = $(this).val();
+    data.description.metaDescription = $(this).val();
   });
 
  // Edit content
@@ -54,7 +54,7 @@ function foiEditor(collectionId, data) {
       var editedSectionValue = $("#content-markdown_" + index).val();
 
       var saveContent = function(updatedContent) {
-        data.content[index].data = updatedContent;
+        data.content[index].markdown = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -237,8 +237,8 @@ function foiEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-content").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-      var data = $('#content-markdown_' + nameS).val();
-    newSections[indexS] = {data: data};
+      var markdown = $('#content-markdown_' + nameS).val();
+    newSections[indexS] = {markdown: markdown};
     });
     data.content = newSections;
     // Files are uploaded. Save metadata
