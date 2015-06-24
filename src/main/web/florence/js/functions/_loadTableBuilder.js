@@ -99,7 +99,6 @@ $('#upload-table-form').submit(function(event) {
       if (_.find(pageData.tables, function (existingTable) {
           return existingTable.filename === table.filename
         })) {
-        alert("A table with this name already exists.");
         return;
       }
     }
