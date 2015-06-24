@@ -11,6 +11,9 @@ WORKDIR /usr/src
 RUN git clone https://github.com/ONSdigital/florence.git .
 RUN git checkout develop
 
+# Build web
+npm --prefix ./src/main/web/florence install
+
 # Build jar-with-dependencies
 
 RUN mvn install -DskipTests
