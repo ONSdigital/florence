@@ -1,4 +1,4 @@
-function makeEditSections(collectionId, pageData, templateData) {
+function makeEditSections(collectionId, pageData, templateData) {           //pageData (plain), templateData (resolved)
 
   if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);

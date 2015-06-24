@@ -11,6 +11,9 @@ function createWorkspace(path, collectionName, menu, stopEventListener) {
   } else {
     var currentPath = '';
     if (path) {
+      if (path.charAt(0) === '/') {
+        path = path.slice(1);
+      }
       currentPath = path;
     }
 
