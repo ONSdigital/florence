@@ -1,8 +1,5 @@
-function loadT7Creator (collectionName, releaseDate, pageType) {
+function loadT7Creator (collectionId, releaseDate, pageType, parentUrlData) {
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
-
-  var parentUrl = localStorage.getItem("pageurl");
-  var parentUrlData = "/data" + parentUrl;              //TBC when not angular
 
   $.ajax({
     url: parentUrlData,
