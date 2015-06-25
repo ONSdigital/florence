@@ -1,6 +1,6 @@
 function loadChartBuilder(pageData, onSave, chart) {
   var chart = chart;
-  var pageUrl = localStorage.getItem('pageurl');
+  var pageUrl = pageData.uri;
   var html = templates.chartBuilder(chart);
   $('body').append(html);
   $('.chart-builder').css("display", "block");
@@ -197,7 +197,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     return chart;
   }
-
 
   function parseChartObject(chart) {
 
