@@ -78,7 +78,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
 
       if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else if ((pageType === 'methodology') {           // does not have release date
+      } else if (pageType === 'methodology') {           // does not have release date
         pageData.description.releaseDate = null;
       } else {
         pageData.description.releaseDate = releaseDate;
