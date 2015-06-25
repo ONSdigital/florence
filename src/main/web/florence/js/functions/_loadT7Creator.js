@@ -1,13 +1,13 @@
-function loadT7Creator (collectionId, releaseDate, pageType, parentUrlData) {
+function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
   var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
-
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-//      if (pageType === 'something' && checkData.level === 'methodology' ||
-//            pageType === 'somethingElse' && checkData.level === 'about')    { //not working -> no data
+      if (pageType === 'methodology_landing_page' && checkData.type === 'methodology_landing_page' ||
+            pageType === 'about_us_landing_page' && checkData.type === 'about_us_landing_page') {
         $('.btn-page-create').show();
         $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
@@ -21,15 +21,15 @@ function loadT7Creator (collectionId, releaseDate, pageType, parentUrlData) {
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
-//      } else {
-//        $('#location').attr("placeholder", "This is not a valid place to create this page.");
-//      }
+      } else {
+        alert("This is not a valid place to create this page.");
+        loadCreateScreen(collectionId);
+      }
     },
     error: function () {
       console.log('No page data returned');
     }
   });
-
 
   function submitFormHandler () {
     $('form').submit(function (e) {
@@ -153,13 +153,4 @@ function pageTypeDataT7(pageType) {
   }
 }
 
-function makeUrl(args) {
-  var accumulator;
-  accumulator = [];
-  for(var i=0; i < arguments.length; i++) {
-    accumulator =  accumulator.concat(arguments[i]
-                              .split('/')
-                              .filter(function(argument){return argument !== "";}));
-  }
-  return accumulator.join('/');
-}
+

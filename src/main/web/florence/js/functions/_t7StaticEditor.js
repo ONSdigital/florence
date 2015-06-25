@@ -1,4 +1,4 @@
-function staticEditor(collectionId, data) {
+function aboutUsEditor(collectionId, data) {
 
   var newSections = [];
   var setActiveTab, getActiveTab;

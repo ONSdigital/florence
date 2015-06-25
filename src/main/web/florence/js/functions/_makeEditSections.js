@@ -54,6 +54,13 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     timeseriesEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'compendium') {
+    var html = templates.workEditT6(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    compendiumEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'methodology') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
@@ -68,7 +75,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     datasetEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'staticpage') {
+  else if (pageData.type === 'about_us') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();

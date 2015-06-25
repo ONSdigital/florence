@@ -1,6 +1,6 @@
-function loadT4Creator (collectionId, releaseDate, pageType, parentUrlData) {
+function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
-
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -27,8 +27,8 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrlData) {
         submitFormHandler (pageTitle, contentUrl, isBullArt);
         return true;
       } else {
-        $('.btn-page-create').hide();
         alert("This is not a valid place to create this page.");
+        loadCreateScreen(collectionId);
       }
     },
     error: function () {
@@ -39,17 +39,13 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrlData) {
   function submitFormHandler (title, uri, isBullArt) {
     if (pageType === 'bulletin' || pageType === 'article') {
       $('.edition').append(
-        '<div class="edition-div">' +
-        '  <label for="edition">Edition</label>' +
-        '  <input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
-        '</div>'
+        '<label for="edition">Edition</label>' +
+        '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
       );
     } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
       $('.edition').append(
-        '<div class="edition-div">' +
-        '  <label for="releaseDate">Release date</label>' +
-        '  <input id="releaseDate" type="text" placeholder="day month year" />' +
-        '</div>'
+        '<label for="releaseDate">Release date</label>' +
+        '<input id="releaseDate" type="text" placeholder="day month year" />'
       );
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     }
@@ -82,7 +78,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrlData) {
 
       if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
+      } else if ((pageType === 'methodology') {           // does not have release date
         pageData.description.releaseDate = null;
       } else {
         pageData.description.releaseDate = releaseDate;
@@ -199,34 +195,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrlData) {
       };
     }
 
-    else if (pageType === "compendium") {
-      return {
-        "description": {
-          "releaseDate": "",
-          "nextRelease": "",
-          "contact": {
-            "name": "",
-            "email": "",
-            "telephone": ""
-          },
-          "summary": "",
-          "datasetID":"",
-          "keywords": [],
-          "metaDescription": "",
-          "nationalStatistic": false,
-          "title": "",
-        },
-        "data": [],
-        "chapters": [],
-        "charts": [],
-        "correction": [],
-        "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
-      };
-    }
-
     else if (pageType === "methodology") {
       return {
         "description": {
@@ -239,7 +207,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrlData) {
           "keywords": [],
           "metaDescription": "",
           "title": "",
-          "releaseDate": "",
+//          "releaseDate": "",
         },
         "sections": [],
         "accordion": [],
@@ -285,13 +253,3 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrlData) {
   }
 }
 
-function makeUrl(args) {
-  var accumulator;
-  accumulator = [];
-  for(var i=0; i < arguments.length; i++) {
-    accumulator =  accumulator.concat(arguments[i]
-                              .split('/')
-                              .filter(function(argument){return argument !== "";}));
-  }
-  return accumulator.join('/');
-}
