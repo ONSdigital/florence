@@ -59,9 +59,9 @@ function compendiumEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    data.description.keywords.push($(this).val());
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();

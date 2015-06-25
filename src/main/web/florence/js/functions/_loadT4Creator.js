@@ -1,5 +1,5 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
+  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -23,8 +23,8 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         $('#location').val(contentUrl);
         breadcrumb = checkData.breadcrumb;
         pageTitle = checkData.description.title;
-        isBullArt = true;
-        submitFormHandler (pageTitle, contentUrl, isBullArt);
+        isInheriting = true;
+        submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -36,7 +36,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
   });
 
-  function submitFormHandler (title, uri, isBullArt) {
+  function submitFormHandler (title, uri, isInheriting) {
     if (pageType === 'bulletin' || pageType === 'article') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -83,7 +83,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      if (isBullArt) {
+      if (isInheriting) {
         newUri = makeUrl(parent, releaseUri);
       } else {
         if ((pageType === 'bulletin' || pageType === 'article')) {

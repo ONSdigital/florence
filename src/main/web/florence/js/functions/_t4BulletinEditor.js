@@ -34,17 +34,20 @@ function bulletinEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  if (!data.description.releaseDate){
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-    $('#releaseDate').on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-    });
-  } else {
+  if (!Florence.collection.date) {
+    if (!data.description.releaseDate){
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      });
+    } else {
       dateTmp = $('#releaseDate').val();
       a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(a);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//    $('.release-date').hide();
+    }
+  } else {
+      $('.release-date').hide();
   }
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -81,9 +84,9 @@ function bulletinEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.headline3 = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    data.description.keywords.push($(this).val());
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
