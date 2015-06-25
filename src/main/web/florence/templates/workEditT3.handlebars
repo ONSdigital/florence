@@ -41,10 +41,13 @@
         <div id="sortable-timeseries" class="edit-section__sortable">
           {{#each this.items}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="item-title_{{@index}}">{{data.description.title}}</p>
-              <!--<p style="display: none;" id="item-uri_{{@index}}">{{uri}}</p>-->
+              <p id="timeseries-title_{{@index}}">{{data.description.title}}</p>
+              <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addTimeseries">Add timeseries</button>
         </div>
       </div>
     </div>
@@ -58,9 +61,13 @@
         <div id="sortable-bulletins" class="edit-section__sortable">
           {{#each this.statsBulletins}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="item-title_{{@index}}">{{description.title}}</p>
+              <p id="bulletins-title_{{@index}}">{{description.title}}</p>
+              <button class="btn-page-delete" id="bulletins-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addBulletins">Add bulletins</button>
         </div>
       </div>
     </div>
@@ -74,11 +81,13 @@
         <div id="sortable-articles" class="edit-section__sortable">
           {{#each this.relatedArticles}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="item-title_{{@index}}">{{description.title}}</p>
-              <!--<p style="display: none;" id="item-abstract_{{@index}}">{{description._abstract}}</p>-->
-              <!--<p style="display: none;" id="item-uri_{{@index}}">{{uri}}</p>-->
+              <p id="articles-title_{{@index}}">{{description.title}}</p>
+              <button class="btn-page-delete" id="articles-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addArticles">Add articles</button>
         </div>
       </div>
     </div>
@@ -92,11 +101,13 @@
         <div id="sortable-datasets" class="edit-section__sortable">
           {{#each this.datasets}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="item-title_{{@index}}">{{description.title}}</p>
-              <!--<p style="display: none;" id="item-summary_{{@index}}">{{description.summary}}</p>-->
-              <!--<p style="display: none;" id="item-uri_{{@index}}">{{uri}}</p>-->
+              <p id="datasets-title_{{@index}}">{{description.title}}</p>
+              <button class="btn-page-delete" id="datasets-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addDatasets">Add datasets</button>
         </div>
       </div>
     </div>
