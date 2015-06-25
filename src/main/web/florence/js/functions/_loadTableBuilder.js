@@ -1,5 +1,5 @@
 function loadTableBuilder(pageData, onSave, table) {
-  var pageUrl = localStorage.getItem('pageurl');
+  var pageUrl = pageData.uri;
 
   var html = templates.tableBuilder(table);
   $('body').append(html);
@@ -62,8 +62,8 @@ $('#upload-table-form').submit(function(event) {
 });
 
   function renderTable(path) {
-
-    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="/florence/table.html?path=' + path + '.xls"></iframe>'
+    var uri = "/" + path + "/table";
+    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + uri + '"></iframe>';
     console.log(iframeMarkup);
     $('#table').html(iframeMarkup);
 
