@@ -1,64 +1,41 @@
-function loadT6Creator (collectionId) {
+function loadT6Creator (collectionId, releaseDate, pageType, parentUrlData) {
   var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
 
-  getCollection(collectionId,
-    success = function (response) {
-      if (!response.publishDate) {
-        releaseDate = null;
+  $.ajax({
+    url: parentUrlData,
+    dataType: 'json',
+    crossDomain: true,
+    success: function (checkData) {
+      if (checkData.type === 'product_page') {
+        $('#location').val(parentUrl);
+        var inheritedBreadcrumb = checkData.breadcrumb;
+        var parentBreadcrumb = {
+          "uri": checkData.uri
+        };
+        inheritedBreadcrumb.push(parentBreadcrumb);
+        breadcrumb = inheritedBreadcrumb;
+        submitFormHandler ();
+        return true;
+      } if (checkData.type === 'compendium' && pageType === 'compendium') {
+        contentUrlTmp = parentUrl.split('/');
+        contentUrlTmp.splice(-1, 1);
+        contentUrl = contentUrlTmp.join('/');
+        $('#location').val(contentUrl);
+        breadcrumb = checkData.breadcrumb;
+        pageTitle = checkData.description.title;
+        isBullArt = true;
+        submitFormHandler (pageTitle, contentUrl, isBullArt);
+        return true;
       } else {
-        releaseDate = response.publishDate;
+        $('.btn-page-create').hide();
+        $('#location').attr("placeholder", "This is not a valid place to create this page.");
       }
     },
-    error = function (response) {
-      handleApiError(response);
+    error: function () {
+      console.log('No page data returned');
     }
-  );
+  });
 
-  $('select').off().change(function () {
-    pageType = $(this).val();
-    $('.release-div').remove();
-    var parentUrl = localStorage.getItem("pageurl");
-    var parentUrlData = parentUrl + "/data";
-
-    if (pageType === 'staticpage' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
-        loadT7Creator(collectionId, releaseDate, pageType);
-    }
-    else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
-      $.ajax({
-        url: parentUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (checkData) {
-          if (checkData.type === 'product_page') {
-            $('#location').val(parentUrl);
-            var inheritedBreadcrumb = checkData.breadcrumb;
-            var parentBreadcrumb = {
-              "uri": checkData.uri
-            };
-            inheritedBreadcrumb.push(parentBreadcrumb);
-            breadcrumb = inheritedBreadcrumb;
-            submitFormHandler ();
-            return true;
-          } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
-            contentUrlTmp = parentUrl.split('/');
-            contentUrlTmp.splice(-1, 1);
-            contentUrl = contentUrlTmp.join('/');
-            $('#location').val(contentUrl);
-            breadcrumb = checkData.breadcrumb;
-            pageTitle = checkData.description.title;
-            isBullArt = true;
-            submitFormHandler (pageTitle, contentUrl, isBullArt);
-            return true;
-          } else {
-            $('.btn-page-create').hide();
-            $('#location').attr("placeholder", "This is not a valid place to create this page.");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    }
 
     function submitFormHandler (title, uri, isBullArt) {
       if (pageType === 'bulletin' || pageType === 'article') {
@@ -84,7 +61,7 @@ function loadT6Creator (collectionId) {
 
       $('form').submit(function (e) {
         releaseDateManual = $('#releaseDate').val()
-        pageData = pageTypeDataT4(pageType);
+        pageData = pageTypeDataT6(pageType);
         parent = $('#location').val().trim();
         if (pageType === 'bulletin' || pageType === 'article') {
           pageData.description.edition = $('#edition').val();
@@ -157,7 +134,7 @@ function loadT6Creator (collectionId) {
       });
     }
 
-    function pageTypeDataT4(pageType) {
+    function pageTypeDataT6(pageType) {
 
       if (pageType === "bulletin") {
         return {
@@ -307,7 +284,7 @@ function loadT6Creator (collectionId) {
         alert('unsupported page type');
       }
     }
-  });
+
 }
 
 function makeUrl(args) {
