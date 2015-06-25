@@ -1,6 +1,6 @@
-function loadT6Creator (collectionId, releaseDate, pageType, parentUrlData) {
+function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
   var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
-
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -27,8 +27,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrlData) {
         submitFormHandler (pageTitle, contentUrl, isBullArt);
         return true;
       } else {
-        $('.btn-page-create').hide();
-        $('#location').attr("placeholder", "This is not a valid place to create this page.");
+        alert("This is not a valid place to create this page.");
+        loadCreateScreen(collectionId);
       }
     },
     error: function () {
@@ -36,264 +36,130 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrlData) {
     }
   });
 
+  function submitFormHandler (title, uri, isBullArt) {
+    if (pageType === 'compendium') {
+      $('.edition').append(
+        '<label for="edition">Edition</label>' +
+        '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
+      );
+    } if ((pageType === 'compendium') && (!releaseDate)) {
+      $('.edition').append(
+        '<label for="releaseDate">Release date</label>' +
+        '<input id="releaseDate" type="text" placeholder="day month year" />'
+      );
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    }
+    if (title) {
+      pageTitle = title;
+      $('#pagename').val(title);
+    }
 
-    function submitFormHandler (title, uri, isBullArt) {
-      if (pageType === 'bulletin' || pageType === 'article') {
-        $('.edition').append(
-          '<div class="edition-div">' +
-          '  <label for="edition">Edition</label>' +
-          '  <input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
-          '</div>'
-        );
-      } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-        $('.edition').append(
-          '<div class="edition-div">' +
-          '  <label for="releaseDate">Release date</label>' +
-          '  <input id="releaseDate" type="text" placeholder="day month year" />' +
-          '</div>'
-        );
-        $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    $('form').submit(function (e) {
+      releaseDateManual = $('#releaseDate').val()
+      pageData = pageTypeDataT6(pageType);
+      parent = $('#location').val().trim();
+      if (pageType === 'compendium' || pageType === 'article') {
+        pageData.description.edition = $('#edition').val();
       }
       if (title) {
-        pageTitle = title;
-        $('#pagename').val(title);
+        //do nothing;
+      } else {
+        pageTitle = $('#pagename').val();
+      }
+      pageData.description.title = pageTitle;
+      uriSection = pageType + "s";
+      pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+      if (releaseDateManual) {                                                          //Manual collections
+        date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
+        releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
+      } else {
+        releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
-      $('form').submit(function (e) {
-        releaseDateManual = $('#releaseDate').val()
-        pageData = pageTypeDataT6(pageType);
-        parent = $('#location').val().trim();
-        if (pageType === 'bulletin' || pageType === 'article') {
-          pageData.description.edition = $('#edition').val();
-        }
-        if (title) {
-          //do nothing;
+      if ((pageType === 'compendium') && (!releaseDate)) {
+        pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+      } else {
+        pageData.description.releaseDate = releaseDate;
+      }
+      if (isBullArt) {
+        newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
+      } else {
+        if ((pageType === 'compendium')) {
+          newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
         } else {
-          pageTitle = $('#pagename').val();
+          newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
         }
-        pageData.description.title = pageTitle;
-        uriSection = pageType + "s";
-        pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-        if (releaseDateManual) {                                                          //Manual collections
-          date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
-          releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
-        } else {
-          releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
-        }
+      }
+      pageData.uri = newUri;
+      pageData.breadcrumb = breadcrumb;
 
-        if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-          pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-        } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
-          pageData.description.releaseDate = null;
-        } else {
-          pageData.description.releaseDate = releaseDate;
-        }
-        if (isBullArt) {
-          newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
-        } else {
-          if ((pageType === 'bulletin' || pageType === 'article')) {
-            newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
-          } else {
-            newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
-          }
-        }
-        pageData.uri = newUri;
-        pageData.breadcrumb = breadcrumb;
-
-        if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.description.edition)) {
-          alert('Edition can not be empty');
-          return true;
-        } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.description.releaseDate)) {
-          alert('Release date can not be empty');
-          return true;
-        } if (pageTitle.length < 4) {
-          alert("This is not a valid file title");
-          return true;
-        }
-         else {
-          postContent(collectionId, newUri, JSON.stringify(pageData),
-            success = function (message) {
-              console.log("Updating completed " + message);
-              viewWorkspace(newUri, collectionId, 'edit');
-              refreshPreview(newUri);
-            },
-            error = function (response) {
-              if (response.status === 400) {
-                alert("Cannot edit this file. It is already part of another collection.");
-              }
-              else if (response.status === 401) {
-                alert("You are not authorised to update content.");
-              }
-              else {
-                handleApiError(response);
-              }
+      if ((pageType === 'compendium') && (!pageData.description.edition)) {
+        alert('Edition can not be empty');
+        return true;
+      } if ((pageType === 'compendium') && (!pageData.description.releaseDate)) {
+        alert('Release date can not be empty');
+        return true;
+      } if (pageTitle.length < 4) {
+        alert("This is not a valid file title");
+        return true;
+      }
+       else {
+        postContent(collectionId, newUri, JSON.stringify(pageData),
+          success = function (message) {
+            console.log("Updating completed " + message);
+            viewWorkspace(newUri, collectionId, 'edit');
+            refreshPreview(newUri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this file. It is already part of another collection.");
             }
-          );
-        }
-        e.preventDefault();
-      });
-    }
-
-    function pageTypeDataT6(pageType) {
-
-      if (pageType === "bulletin") {
-        return {
-          "description": {
-            "headline1": "",
-            "headline2": "",
-            "headline3": "",
-            "nationalStatistic": false,
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "title": "",
-            "summary": "",
-            "keywords": [],
-            "edition": "",
-            "releaseDate": "",
-            "nextRelease": "",
-            "metaDescription": "",
-          },
-          "sections": [],
-          "accordion": [],
-          "relatedBulletins": [],
-          "relatedData": [],
-          "externalLinks": [],
-          "charts": [],
-          "correction": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
+            else if (response.status === 401) {
+              alert("You are not authorised to update content.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
       }
-
-      else if (pageType === "article") {
-        return {
-          "description": {
-            "edition": "",
-            "nextRelease": "",
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "abstract": "",
-            "authors": [],
-            "keywords": [],
-            "metaDescription": "",
-            "nationalStatistic": false,
-            "title": "",
-            "releaseDate": "",
-          },
-          "sections": [],
-          "accordion": [],
-          "relatedArticles": [],
-          "relatedData": [],
-          "externalLinks": [],
-          "charts": [],
-          "correction": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else if (pageType === "compendium") {
-        return {
-          "description": {
-            "releaseDate": "",
-            "nextRelease": "",
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "summary": "",
-            "datasetID":"",
-            "keywords": [],
-            "metaDescription": "",
-            "nationalStatistic": false,
-            "title": "",
-          },
-          "data": [],
-          "chapters": [],
-          "charts": [],
-          "correction": [],
-          "relatedMethodology": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else if (pageType === "methodology") {
-        return {
-          "description": {
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "summary": "",
-            "keywords": [],
-            "metaDescription": "",
-            "title": "",
-            "releaseDate": "",
-          },
-          "sections": [],
-          "accordion": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else if (pageType === "dataset") {
-        return {
-          "description": {
-            "releaseDate": "",
-            "nextRelease": "",
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "summary": "",
-            "datasetID":"",
-            "keywords": [],
-            "metaDescription": "",
-            "nationalStatistic": false,
-            "migrated": false,
-            "title": "",
-          },
-          "downloads": [],
-          "section": {},
-          "correction": [],
-          "relatedDatasets": [],
-          "relatedDocuments": [],
-          "relatedMethodology": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else {
-        alert('unsupported page type');
-      }
-    }
-
-}
-
-function makeUrl(args) {
-  var accumulator;
-  accumulator = [];
-  for(var i=0; i < arguments.length; i++) {
-    accumulator =  accumulator.concat(arguments[i]
-                              .split('/')
-                              .filter(function(argument){return argument !== "";}));
+      e.preventDefault();
+    });
   }
-  return accumulator.join('/');
+
+  function pageTypeDataT6(pageType) {
+
+    if (pageType === "compendium") {
+      return {
+        "description": {
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "summary": "",
+          "datasetID":"",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": false,
+          "title": "",
+        },
+        "data": [],
+        "chapters": [],
+        "correction": [],
+        "relatedMethodology": [],
+        type: pageType,
+        "uri": "",
+        "breadcrumb": [],
+      };
+    }
+
+    else {
+      alert('unsupported page type');
+    }
+  }
+
 }
+
