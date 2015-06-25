@@ -1,4 +1,4 @@
-function loadT4Creator (collectionId) {
+function loadT6Creator (collectionId) {
   var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
 
   getCollection(collectionId,
@@ -20,10 +20,8 @@ function loadT4Creator (collectionId) {
     var parentUrl = localStorage.getItem("pageurl");
     var parentUrlData = parentUrl + "/data";
 
-    if (pageType === 'compendium-landing-page') {
-      loadT6Creator(collectionId, releaseDate, pageType);
-    } else if (pageType === 'staticpage' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
-      loadT7Creator(collectionId, releaseDate, pageType);
+    if (pageType === 'staticpage' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
+        loadT7Creator(collectionId, releaseDate, pageType);
     }
     else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
       $.ajax({
@@ -114,7 +112,7 @@ function loadT4Creator (collectionId) {
           pageData.description.releaseDate = releaseDate;
         }
         if (isBullArt) {
-          newUri = makeUrl(parent, releaseUri);
+          newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
         } else {
           if ((pageType === 'bulletin' || pageType === 'article')) {
             newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
