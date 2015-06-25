@@ -1,5 +1,5 @@
 function loadTableBuilder(pageData, onSave, table) {
-  var pageUrl = localStorage.getItem('pageurl');
+  var pageUrl = pageData.uri;
 
   var html = templates.tableBuilder(table);
   $('body').append(html);
