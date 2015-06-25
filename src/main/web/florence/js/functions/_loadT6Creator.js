@@ -1,5 +1,5 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
+  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -23,8 +23,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         $('#location').val(contentUrl);
         breadcrumb = checkData.breadcrumb;
         pageTitle = checkData.description.title;
-        isBullArt = true;
-        submitFormHandler (pageTitle, contentUrl, isBullArt);
+        isInheriting = true;
+        submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -36,7 +36,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
   });
 
-  function submitFormHandler (title, uri, isBullArt) {
+  function submitFormHandler (title, uri, isInheriting) {
     if (pageType === 'compendium') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -58,7 +58,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       releaseDateManual = $('#releaseDate').val()
       pageData = pageTypeDataT6(pageType);
       parent = $('#location').val().trim();
-      if (pageType === 'compendium' || pageType === 'article') {
+      if (pageType === 'compendium') {
         pageData.description.edition = $('#edition').val();
       }
       if (title) {
@@ -81,7 +81,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      if (isBullArt) {
+      if (isInheriting) {
         newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
       } else {
         if ((pageType === 'compendium')) {
@@ -140,13 +140,12 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
             "telephone": ""
           },
           "summary": "",
-          "datasetID":"",
           "keywords": [],
           "metaDescription": "",
           "nationalStatistic": false,
           "title": "",
         },
-        "data": [],
+        "datasets": [],
         "chapters": [],
         "correction": [],
         "relatedMethodology": [],

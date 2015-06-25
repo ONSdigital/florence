@@ -6,7 +6,11 @@ var Florence = Florence || {
     },
     setActiveCollection: function (collection) {
       document.cookie = "collection=" + collection.id + ";path=/";
-      var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+      if (!collection.publishDate) {
+        var formattedDate = null;
+      } else {
+        var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+      }
       Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
     }
   };
