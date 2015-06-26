@@ -28,25 +28,27 @@ function adHocEditor(collectionId, data) {
   $("#lastRevised-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#releaseDate").on('click keyup', function () {
+  $("#releaseDate").on('input', function () {
     $(this).textareaAutoSize();
     data.description.releaseDate = $(this).val();
   });
-  $("#reference").on('click keyup', function () {
+  $("#reference").on('input', function () {
     $(this).textareaAutoSize();
     data.description.reference = $(this).val();
   });
-  $("#keywords").on('change', function () {
-    $(this).textareaAutoSize();
-    var stringToArray = $(this).val();
-    var resultArray = stringToArray.split(', ')
-    data.description.keywords = resultArray;
+  $("#keywordsTag").tagit({availableTags: data.description.keywords,
+                        availableTags: data.description.keywords,
+                        singleField: true,
+                        singleFieldNode: $('#keywords')
   });
-  $("#metaDescription").on('click keyup', function () {
+  $('#keywords').on('change', function () {
+    data.description.keywords = [$('#keywords').val()];
+  });
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
