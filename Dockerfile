@@ -11,7 +11,7 @@ WORKDIR /usr/src
 RUN git clone -b develop --single-branch --depth 1 https://github.com/ONSdigital/florence.git .
 
 # Build web
-RUN npm --prefix ./src/main/web/florence install
+RUN npm install --prefix ./src/main/web/florence  --unsafe-perm
 
 # Build jar-with-dependencies
 
