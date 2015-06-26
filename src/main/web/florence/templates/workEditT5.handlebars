@@ -44,17 +44,17 @@
               <textarea class="auto-size" type="text" id="contactTelephone">{{this.description.contact.telephone}}</textarea>
             </label>
           </div>
-          <div id="number">
+          <div>
             <label for="number">Number
               <textarea class="auto-size" type="text" id="number">{{this.description.number}}</textarea>
             </label>
           </div>
-          <div id="keyNote">
+          <div>
             <label for="keyNote">Key note
               <textarea class="auto-size" type="text" id="keyNote">{{this.description.keyNote}}</textarea>
             </label>
           </div>
-          <div id="natStat">
+          <div>
             <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
@@ -62,25 +62,26 @@
             <!--<label for="migrated">Migrated </label>-->
             <!--<input type="checkbox" name="migrated" value="false" />-->
           <!--</div>-->
-          <div id="unit">
+          <div>
             <label for="unit">Unit
               <textarea class="auto-size" type="text" id="unit">{{this.description.unit}}</textarea>
             </label>
           </div>
-          <div id="preUnit">
+          <div>
             <label for="preUnit">Pre unit
               <textarea class="auto-size" type="text" id="preUnit">{{this.description.preUnit}}</textarea>
             </label>
           </div>
-          <div id="source">
+          <div>
             <label for="source">Source
               <textarea class="auto-size" type="text" id="source">{{this.description.source}}</textarea>
             </label>
           </div>
           <div>
             <label for="keywords">Keywords
-              <textarea class="auto-size" type="text" id="keywords">{{this.description.keywords}}</textarea>
+              <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
             </label>
+            <ul id="keywordsTag"></ul>
           </div>
           <div>
             <label for="metaDescription">Meta description
