@@ -27,11 +27,11 @@ function articleEditor(collectionId, data) {
   $("#headline3-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#edition").on('click keyup', function () {
+  $("#edition").on('input', function () {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
@@ -47,26 +47,26 @@ function articleEditor(collectionId, data) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
 //    $('.release-date').hide();
   }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#abstract").on('click keyup', function () {
+  $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -78,7 +78,7 @@ function articleEditor(collectionId, data) {
   $('#keywords').on('change', function () {
     data.description.keywords = [$('#keywords').val()];
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -101,11 +101,11 @@ function articleEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 

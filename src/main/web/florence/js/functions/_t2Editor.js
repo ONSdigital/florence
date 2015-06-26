@@ -13,11 +13,11 @@ function t2Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -29,7 +29,7 @@ function t2Editor(collectionId, data) {
   $('#keywords').on('change', function () {
     data.description.keywords = [$('#keywords').val()];
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });

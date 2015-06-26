@@ -29,11 +29,11 @@ function foiEditor(collectionId, data) {
   $("#reference-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#releaseDate").on('click keyup', function () {
+  $("#releaseDate").on('input', function () {
     $(this).textareaAutoSize();
     data.description.releaseDate = $(this).val();
   });
@@ -45,7 +45,7 @@ function foiEditor(collectionId, data) {
   $('#keywords').on('change', function () {
     data.description.keywords = [$('#keywords').val()];
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });

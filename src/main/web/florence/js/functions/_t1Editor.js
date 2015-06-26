@@ -14,7 +14,7 @@ function t1Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata edition and saving
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -26,7 +26,7 @@ function t1Editor(collectionId, data) {
   $('#keywords').on('change', function () {
     data.description.keywords = [$('#keywords').val()];
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
