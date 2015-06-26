@@ -21,7 +21,11 @@ var Florence = Florence || {
     },
     setActiveCollection: function (collection) {
       document.cookie = "collection=" + collection.id + ";path=/";
-      var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+      if (!collection.publishDate) {
+        var formattedDate = null;
+      } else {
+        var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+      }
       Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
     }
   };
@@ -133,8 +137,8 @@ var StringUtils = {
 
   formatIsoFullDateString: function (input) {
     var date = new Date(input);
-    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-    var formattedDate = $.datepicker.formatDate('DD dd MM yy', date) + ' ' + date.getHours() + ':' + minutes;
+//    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var formattedDate = $.datepicker.formatDate('DD dd MM yy', date);        //+ ' ' + date.getHours() + ':' + minutes;
     return formattedDate;
   },
 
@@ -1106,8 +1110,40 @@ function loadChartsList(data, collectionId) {
 }function loadCreateScreen(collectionId) {
   var html = templates.workCreate;
   $('.workspace-menu').html(html);
-  loadT4Creator(collectionId);
+  loadCreator(collectionId);
 }
+function loadCreator (collectionId) {
+  var pageType, releaseDate;
+
+  $('#location').hide();
+  getCollection(collectionId,
+    success = function (response) {
+      if (!response.publishDate) {
+        releaseDate = null;
+      } else {
+        releaseDate = response.publishDate;
+      }
+    },
+    error = function (response) {
+      handleApiError(response);
+    }
+  );
+
+  $('select').off().change(function () {
+    pageType = $(this).val();
+    var parentUrl = localStorage.getItem("pageurl");
+
+    if (pageType === 'compendium-landing-page') {
+      loadT6Creator(collectionId, releaseDate, pageType, parentUrl);
+    } else if (pageType === 'about_us' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
+      loadT7Creator(collectionId, releaseDate, pageType, parentUrl);
+    }
+    else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
+      loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
+    }
+  });
+}
+
 function loadMarkdownEditor(content, onSave, pageData) {
 
   if (content.title == undefined) {
@@ -1410,314 +1446,435 @@ function updateReviewScreen(collectionName) {
 
 
 
-function loadT4Creator (collectionId) {
-  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isBullArt, newUri, pageData, breadcrumb;
-
-  getCollection(collectionId,
-    success = function (response) {
-      if (!response.publishDate) {
-        releaseDate = null;
-      } else {
-        releaseDate = response.publishDate;
-      }
-    },
-    error = function (response) {
-      handleApiError(response);
-    }
-  );
-
-  $('select').off().change(function () {
-    pageType = $(this).val();
-    $('.release-div').remove();
-    var parentUrl = localStorage.getItem("pageurl");
-    var parentUrlData = "/data" + parentUrl;                //TBC when not angular
-
-    if (pageType === 'staticpage' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
-        loadT7Creator(collectionId, releaseDate, pageType);
-    }
-    else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
-      $.ajax({
-        url: parentUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (checkData) {
-          if (checkData.type === 'product_page') {
-            $('#location').val(parentUrl);
-            var inheritedBreadcrumb = checkData.breadcrumb;
-            var parentBreadcrumb = {
-              "uri": checkData.uri
-            };
-            inheritedBreadcrumb.push(parentBreadcrumb);
-            breadcrumb = inheritedBreadcrumb;
-            submitFormHandler ();
-            return true;
-          } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
-            contentUrlTmp = parentUrl.split('/');
-            contentUrlTmp.splice(-1, 1);
-            contentUrl = contentUrlTmp.join('/');
-            $('#location').val(contentUrl);
-            breadcrumb = checkData.breadcrumb;
-            pageTitle = checkData.description.title;
-            isBullArt = true;
-            submitFormHandler (pageTitle, contentUrl, isBullArt);
-            return true;
-          } else {
-            $('.btn-page-create').hide();
-            $('#location').attr("placeholder", "This is not a valid place to create this page.");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    }
-
-    function submitFormHandler (title, uri, isBullArt) {
-      if (pageType === 'bulletin' || pageType === 'article') {
-        $('.edition').append(
-          '<div class="edition-div">' +
-          '  <label for="edition">Edition</label>' +
-          '  <input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
-          '</div>'
-        );
-      } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-        $('.edition').append(
-          '<div class="edition-div">' +
-          '  <label for="releaseDate">Release date</label>' +
-          '  <input id="releaseDate" type="text" placeholder="day month year" />' +
-          '</div>'
-        );
-        $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      }
-      if (title) {
-        pageTitle = title;
-        $('#pagename').val(title);
-      }
-
-      $('form').submit(function (e) {
-        releaseDateManual = $('#releaseDate').val()
-        pageData = pageTypeDataT4(pageType);
-        parent = $('#location').val().trim();
-        if (pageType === 'bulletin' || pageType === 'article') {
-          pageData.description.edition = $('#edition').val();
-        }
-        if (title) {
-          //do nothing;
-        } else {
-          pageTitle = $('#pagename').val();
-        }
-        pageData.description.title = pageTitle;
-        uriSection = pageType + "s";
-        pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-        if (releaseDateManual) {                                                          //Manual collections
-          date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
-          releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
-        } else {
-          releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
-        }
-
-        if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
-          pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-        } else if ((pageType !== 'bulletin' || pageType !== 'article' || pageType !== 'dataset') && (!releaseDate)) {
-          pageData.description.releaseDate = null;
-        } else {
-          pageData.description.releaseDate = releaseDate;
-        }
-        if (isBullArt) {
-          newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
-        } else {
-          if ((pageType === 'bulletin' || pageType === 'article')) {
-            newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
-          } else {
-            newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
-          }
-        }
-        pageData.uri = newUri;
-        pageData.breadcrumb = breadcrumb;
-
-        if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.description.edition)) {
-          alert('Edition can not be empty');
-          return true;
-        } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.description.releaseDate)) {
-          alert('Release date can not be empty');
-          return true;
-        } if (pageTitle.length < 4) {
-          alert("This is not a valid file title");
-          return true;
-        }
-         else {
-          postContent(collectionId, newUri, JSON.stringify(pageData),
-            success = function (message) {
-              console.log("Updating completed " + message);
-              viewWorkspace(newUri, collectionId, 'edit');
-              refreshPreview(newUri);
-            },
-            error = function (response) {
-              if (response.status === 400) {
-                alert("Cannot edit this file. It is already part of another collection.");
-              }
-              else if (response.status === 401) {
-                alert("You are not authorised to update content.");
-              }
-              else {
-                handleApiError(response);
-              }
-            }
-          );
-        }
-        e.preventDefault();
-      });
-    }
-
-    function pageTypeDataT4(pageType) {
-
-      if (pageType === "bulletin") {
-        return {
-          "description": {
-            "headline1": "",
-            "headline2": "",
-            "headline3": "",
-            "nationalStatistic": false,
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "title": "",
-            "summary": "",
-            "keywords": [],
-            "edition": "",
-            "releaseDate": "",
-            "nextRelease": "",
-            "metaDescription": "",
-          },
-          "sections": [],
-          "accordion": [],
-          "relatedBulletins": [],
-          "relatedData": [],
-          "externalLinks": [],
-          "charts": [],
-          "correction": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else if (pageType === "article") {
-        return {
-          "description": {
-            "edition": "",
-            "nextRelease": "",
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "abstract": "",
-            "authors": [],
-            "keywords": [],
-            "metaDescription": "",
-            "nationalStatistic": false,
-            "title": "",
-            "releaseDate": "",
-          },
-          "sections": [],
-          "accordion": [],
-          "relatedArticles": [],
-          "relatedData": [],
-          "externalLinks": [],
-          "charts": [],
-          "correction": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else if (pageType === "methodology") {
-        return {
-          "description": {
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "summary": "",
-            "keywords": [],
-            "metaDescription": "",
-            "title": "",
-            "releaseDate": "",
-          },
-          "sections": [],
-          "accordion": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else if (pageType === "dataset") {
-        return {
-          "description": {
-            "releaseDate": "",
-            "nextRelease": "",
-            "contact": {
-              "name": "",
-              "email": "",
-              "telephone": ""
-            },
-            "summary": "",
-            "datasetID":"",
-            "keywords": [],
-            "metaDescription": "",
-            "nationalStatistic": false,
-            "migrated": false,
-            "title": "",
-          },
-          "downloads": [],
-          "section": {},
-          "charts": [],
-          "correction": [],
-          "relatedDatasets": [],
-          "relatedDocuments": [],
-          "relatedMethodology": [],
-          type: pageType,
-          "uri": "",
-          "breadcrumb": [],
-        };
-      }
-
-      else {
-        alert('unsupported page type');
-      }
-    }
-  });
-}
-
-function makeUrl(args) {
-  var accumulator;
-  accumulator = [];
-  for(var i=0; i < arguments.length; i++) {
-    accumulator =  accumulator.concat(arguments[i]
-                              .split('/')
-                              .filter(function(argument){return argument !== "";}));
-  }
-  return accumulator.join('/');
-}
-function loadT7Creator (collectionName, releaseDate, pageType) {
-  var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
-
-  var parentUrl = localStorage.getItem("pageurl");
-  var parentUrlData = "/data" + parentUrl;              //TBC when not angular
-
+function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
+  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-//      if (pageType === 'something' && checkData.level === 'methodology' ||
-//            pageType === 'somethingElse' && checkData.level === 'about')    { //not working -> no data
+      if (checkData.type === 'product_page') {
+        $('#location').val(parentUrl);
+        var inheritedBreadcrumb = checkData.breadcrumb;
+        var parentBreadcrumb = {
+          "uri": checkData.uri
+        };
+        inheritedBreadcrumb.push(parentBreadcrumb);
+        breadcrumb = inheritedBreadcrumb;
+        submitFormHandler ();
+        return true;
+      } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
+        contentUrlTmp = parentUrl.split('/');
+        contentUrlTmp.splice(-1, 1);
+        contentUrl = contentUrlTmp.join('/');
+        $('#location').val(contentUrl);
+        breadcrumb = checkData.breadcrumb;
+        pageTitle = checkData.description.title;
+        isInheriting = true;
+        submitFormHandler (pageTitle, contentUrl, isInheriting);
+        return true;
+      } else {
+        alert("This is not a valid place to create this page.");
+        loadCreateScreen(collectionId);
+      }
+    },
+    error: function () {
+      console.log('No page data returned');
+    }
+  });
+
+  function submitFormHandler (title, uri, isInheriting) {
+    if (pageType === 'bulletin' || pageType === 'article') {
+      $('.edition').append(
+        '<label for="edition">Edition</label>' +
+        '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
+      );
+    } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
+      $('.edition').append(
+        '<label for="releaseDate">Release date</label>' +
+        '<input id="releaseDate" type="text" placeholder="day month year" />'
+      );
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    }
+    if (title) {
+      pageTitle = title;
+      $('#pagename').val(title);
+    }
+
+    $('form').submit(function (e) {
+      releaseDateManual = $('#releaseDate').val()
+      pageData = pageTypeDataT4(pageType);
+      parent = $('#location').val().trim();
+      if (pageType === 'bulletin' || pageType === 'article') {
+        pageData.description.edition = $('#edition').val();
+      }
+      if (title) {
+        //do nothing;
+      } else {
+        pageTitle = $('#pagename').val();
+      }
+      pageData.description.title = pageTitle;
+      uriSection = pageType + "s";
+      pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+      if (releaseDateManual) {                                                          //Manual collections
+        date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
+        releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
+      } else {
+        releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
+      }
+
+      if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
+        pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+      } else if (pageType === 'methodology') {           // does not have release date
+        pageData.description.releaseDate = null;
+      } else {
+        pageData.description.releaseDate = releaseDate;
+      }
+      if (isInheriting) {
+        newUri = makeUrl(parent, releaseUri);
+      } else {
+        if ((pageType === 'bulletin' || pageType === 'article')) {
+          newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
+        } else {
+          newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
+        }
+      }
+      pageData.uri = newUri;
+      pageData.breadcrumb = breadcrumb;
+
+      if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.description.edition)) {
+        alert('Edition can not be empty');
+        return true;
+      } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!pageData.description.releaseDate)) {
+        alert('Release date can not be empty');
+        return true;
+      } if (pageTitle.length < 4) {
+        alert("This is not a valid file title");
+        return true;
+      }
+       else {
+        postContent(collectionId, newUri, JSON.stringify(pageData),
+          success = function (message) {
+            console.log("Updating completed " + message);
+            viewWorkspace(newUri, collectionId, 'edit');
+            refreshPreview(newUri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+              alert("You are not authorised to update content.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      }
+      e.preventDefault();
+    });
+  }
+
+  function pageTypeDataT4(pageType) {
+
+    if (pageType === "bulletin") {
+      return {
+        "description": {
+          "headline1": "",
+          "headline2": "",
+          "headline3": "",
+          "nationalStatistic": false,
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "title": "",
+          "summary": "",
+          "keywords": [],
+          "edition": "",
+          "releaseDate": "",
+          "nextRelease": "",
+          "metaDescription": "",
+        },
+        "sections": [],
+        "accordion": [],
+        "relatedBulletins": [],
+        "relatedData": [],
+        "externalLinks": [],
+        "charts": [],
+        "correction": [],
+        type: pageType,
+        "uri": "",
+        "breadcrumb": [],
+      };
+    }
+
+    else if (pageType === "article") {
+      return {
+        "description": {
+          "edition": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "abstract": "",
+          "authors": [],
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": false,
+          "title": "",
+          "releaseDate": "",
+        },
+        "sections": [],
+        "accordion": [],
+        "relatedArticles": [],
+        "relatedData": [],
+        "externalLinks": [],
+        "charts": [],
+        "correction": [],
+        type: pageType,
+        "uri": "",
+        "breadcrumb": [],
+      };
+    }
+
+    else if (pageType === "methodology") {
+      return {
+        "description": {
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "title": "",
+//          "releaseDate": "",
+        },
+        "sections": [],
+        "accordion": [],
+        type: pageType,
+        "uri": "",
+        "breadcrumb": [],
+      };
+    }
+
+    else if (pageType === "dataset") {
+      return {
+        "description": {
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "summary": "",
+          "datasetID":"",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": false,
+          "migrated": false,
+          "title": "",
+        },
+        "downloads": [],
+        "section": {},
+        "correction": [],
+        "relatedDatasets": [],
+        "relatedDocuments": [],
+        "relatedMethodology": [],
+        type: pageType,
+        "uri": "",
+        "breadcrumb": [],
+      };
+    }
+
+    else {
+      alert('unsupported page type');
+    }
+  }
+}
+
+function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
+  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+  var parentUrlData = parentUrl + "/data";
+  $.ajax({
+    url: parentUrlData,
+    dataType: 'json',
+    crossDomain: true,
+    success: function (checkData) {
+      if (checkData.type === 'product_page') {
+        $('#location').val(parentUrl);
+        var inheritedBreadcrumb = checkData.breadcrumb;
+        var parentBreadcrumb = {
+          "uri": checkData.uri
+        };
+        inheritedBreadcrumb.push(parentBreadcrumb);
+        breadcrumb = inheritedBreadcrumb;
+        submitFormHandler ();
+        return true;
+      } if (checkData.type === 'compendium-landing-page' && pageType === 'compendium-landing-page') {
+        contentUrlTmp = parentUrl.split('/');
+        contentUrlTmp.splice(-1, 1);
+        contentUrl = contentUrlTmp.join('/');
+        $('#location').val(contentUrl);
+        breadcrumb = checkData.breadcrumb;
+        pageTitle = checkData.description.title;
+        isInheriting = true;
+        submitFormHandler (pageTitle, contentUrl, isInheriting);
+        return true;
+      } else {
+        alert("This is not a valid place to create this page.");
+        loadCreateScreen(collectionId);
+      }
+    },
+    error: function () {
+      console.log('No page data returned');
+    }
+  });
+
+  function submitFormHandler (title, uri, isInheriting) {
+    if (pageType === 'compendium-landing-page') {
+      $('.edition').append(
+        '<label for="edition">Edition</label>' +
+        '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
+      );
+    } if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
+      $('.edition').append(
+        '<label for="releaseDate">Release date</label>' +
+        '<input id="releaseDate" type="text" placeholder="day month year" />'
+      );
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    }
+    if (title) {
+      pageTitle = title;
+      $('#pagename').val(title);
+    }
+
+    $('form').submit(function (e) {
+      releaseDateManual = $('#releaseDate').val()
+      pageData = pageTypeDataT6(pageType);
+      parent = $('#location').val().trim();
+      if (pageType === 'compendium-landing-page') {
+        pageData.description.edition = $('#edition').val();
+      }
+      if (title) {
+        //do nothing;
+      } else {
+        pageTitle = $('#pagename').val();
+      }
+      pageData.description.title = pageTitle;
+      uriSection = pageType + "s";
+      pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+      if (releaseDateManual) {                                                          //Manual collections
+        date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
+        releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
+      } else {
+        releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
+      }
+
+      if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
+        pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+      } else {
+        pageData.description.releaseDate = releaseDate;
+      }
+      if (isInheriting) {
+        newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
+      } else {
+        if ((pageType === 'compendium-landing-page')) {
+          newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
+        } else {
+          newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
+        }
+      }
+      pageData.uri = newUri;
+      pageData.breadcrumb = breadcrumb;
+
+      if ((pageType === 'compendium-landing-page') && (!pageData.description.edition)) {
+        alert('Edition can not be empty');
+        return true;
+      } if ((pageType === 'compendium-landing-page') && (!pageData.description.releaseDate)) {
+        alert('Release date can not be empty');
+        return true;
+      } if (pageTitle.length < 4) {
+        alert("This is not a valid file title");
+        return true;
+      }
+       else {
+        postContent(collectionId, newUri, JSON.stringify(pageData),
+          success = function (message) {
+            console.log("Updating completed " + message);
+            viewWorkspace(newUri, collectionId, 'edit');
+            refreshPreview(newUri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+              alert("You are not authorised to update content.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      }
+      e.preventDefault();
+    });
+  }
+
+  function pageTypeDataT6(pageType) {
+
+    if (pageType === "compendium-landing-page") {
+      return {
+        "description": {
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "summary": "",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": false,
+          "title": "",
+        },
+        "datasets": [],
+        "chapters": [],
+        "correction": [],
+        "relatedMethodology": [],
+        type: pageType,
+        "uri": "",
+        "breadcrumb": [],
+      };
+    }
+
+    else {
+      alert('unsupported page type');
+    }
+  }
+
+}
+
+function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
+  var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+  var parentUrlData = parentUrl + "/data";
+  $.ajax({
+    url: parentUrlData,
+    dataType: 'json',
+    crossDomain: true,
+    success: function (checkData) {
+      if (pageType === 'methodology_landing_page' && checkData.type === 'methodology_landing_page' ||
+            pageType === 'about_us_landing_page' && checkData.type === 'about_us_landing_page') {
         $('.btn-page-create').show();
         $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
@@ -1731,15 +1888,15 @@ function loadT7Creator (collectionName, releaseDate, pageType) {
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
-//      } else {
-//        $('#location').attr("placeholder", "This is not a valid place to create this page.");
-//      }
+      } else {
+        alert("This is not a valid place to create this page.");
+        loadCreateScreen(collectionId);
+      }
     },
     error: function () {
       console.log('No page data returned');
     }
   });
-
 
   function submitFormHandler () {
     $('form').submit(function (e) {
@@ -1863,16 +2020,7 @@ function pageTypeDataT7(pageType) {
   }
 }
 
-function makeUrl(args) {
-  var accumulator;
-  accumulator = [];
-  for(var i=0; i < arguments.length; i++) {
-    accumulator =  accumulator.concat(arguments[i]
-                              .split('/')
-                              .filter(function(argument){return argument !== "";}));
-  }
-  return accumulator.join('/');
-}
+
 function loadTableBuilder(pageData, onSave, table) {
   var pageUrl = pageData.uri;
 
@@ -2132,6 +2280,13 @@ function delete_cookie(name) {
     timeseriesEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'compendium') {
+    var html = templates.workEditT6(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    compendiumEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'methodology') {
     var html = templates.workEditT4(templateData);
     $('.workspace-menu').html(html);
@@ -2146,7 +2301,7 @@ function delete_cookie(name) {
     datasetEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'staticpage') {
+  else if (pageData.type === 'about_us') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     accordion();
@@ -2234,7 +2389,18 @@ function refreshEditNavigation() {
     error = function (response) {
       handleApiError(response);
     })
-}function markDownEditorSetLines() {
+}function makeUrl(args) {
+  var accumulator;
+  accumulator = [];
+  for(var i=0; i < arguments.length; i++) {
+    accumulator =  accumulator.concat(arguments[i]
+                              .split('/')
+                              .filter(function(argument){return argument !== "";}));
+  }
+  return accumulator.join('/');
+}
+
+function markDownEditorSetLines() {
   var textarea = $("#wmd-input");
   // var linesHolder = $('.markdown-editor-line-numbers');
   var textareaWidth = textarea.width();
@@ -2576,9 +2742,11 @@ function t1Editor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -2719,9 +2887,11 @@ function t2Editor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -2751,6 +2921,7 @@ function t2Editor(collectionId, data) {
 function t3Editor(collectionId, data) {
 
   var newTimeseries = [], newBulletins = [], newArticles = [], newDatasets = [];
+  var lastIndexTimeseries, lastIndexBulletins, lastIndexArticles, lastIndexDatasets;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -2776,13 +2947,75 @@ function t3Editor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
+  });
+
+  $(data.items).each(function(index, section) {
+    lastIndexTimeseries = index + 1;
+    // Delete
+    $("#timeseries-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.items.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new related timeseries
+  $("#addTimeseries").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-timeseries').append(
+        '<div id="' + lastIndexTimeseries + '" class="edit-section__sortable-item">' +
+        '  <textarea id="timeseries-uri_' + lastIndexTimeseries + '" placeholder="Go to the related timeseries and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="timeseries-get_' + lastIndexTimeseries + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="timeseries-cancel_' + lastIndexTimeseries + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#timeseries-get_" + lastIndexTimeseries).one('click', function () {
+      var pastedUrl = $('#timeseries-uri_'+lastIndexTimeseries).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var timeseriesUrlData = myUrl.pathname + "/data";
+      } else {
+        var timeseriesUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var timeseriesUrlData = timeseriesUrl + "/data";
+      }
+
+      $.ajax({
+        url: timeseriesUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'timeseries') {
+            if (!data.items) {
+              data.items = [];
+            }
+            data.items.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a timeseries");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#timeseries-cancel_" + lastIndexTimeseries).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
   });
 
   function sortableTimeseries() {
@@ -2790,15 +3023,199 @@ function t3Editor(collectionId, data) {
   }
   sortableTimeseries();
 
+
+
+  $(data.statsBulletins).each(function(index, section) {
+    lastIndexBulletins = index + 1;
+    // Delete
+    $("#bulletins-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.statsBulletins.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new related bulletins
+  $("#addBulletins").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-bulletins').append(
+        '<div id="' + lastIndexBulletins + '" class="edit-section__sortable-item">' +
+        '  <textarea id="bulletins-uri_' + lastIndexBulletins + '" placeholder="Go to the related bulletins and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="bulletins-get_' + lastIndexBulletins + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="bulletins-cancel_' + lastIndexBulletins + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#bulletins-get_" + lastIndexBulletins).one('click', function () {
+      var pastedUrl = $('#bulletins-uri_'+lastIndexBulletins).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var bulletinsUrlData = myUrl.pathname + "/data";
+      } else {
+        var bulletinsUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var bulletinsUrlData = bulletinsUrl + "/data";
+      }
+
+      $.ajax({
+        url: bulletinsUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'bulletin') {
+            if (!data.statsBulletins) {
+              data.statsBulletins = [];
+            }
+            data.statsBulletins.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a bulletin");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#bulletins-cancel_" + lastIndexBulletins).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
+
   function sortableBulletins() {
       $("#sortable-bulletins").sortable();
   }
   sortableBulletins();
 
+
+  $(data.relatedArticles).each(function(index, section) {
+    lastIndexArticles = index + 1;
+    // Delete
+    $("#articles-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.relatedArticles.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new related articles
+  $("#addArticles").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-articles').append(
+        '<div id="' + lastIndexArticles + '" class="edit-section__sortable-item">' +
+        '  <textarea id="articles-uri_' + lastIndexArticles + '" placeholder="Go to the related articles and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="articles-get_' + lastIndexArticles + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="articles-cancel_' + lastIndexArticles + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#articles-get_" + lastIndexArticles).one('click', function () {
+      var pastedUrl = $('#articles-uri_'+lastIndexArticles).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var articlesUrlData = myUrl.pathname + "/data";
+      } else {
+        var articlesUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var articlesUrlData = articlesUrl + "/data";
+      }
+
+      $.ajax({
+        url: articlesUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'article') {
+            if (!data.relatedArticles) {
+              data.relatedArticles = [];
+            }
+            data.relatedArticles.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a article");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#articles-cancel_" + lastIndexArticles).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
+
   function sortableArticles() {
     $("#sortable-articles").sortable();
   }
   sortableArticles();
+
+
+  $(data.datasets).each(function(index, section) {
+    lastIndexDatasets = index + 1;
+    // Delete
+    $("#datasets-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.datasets.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new related datasets
+  $("#addDatasets").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-datasets').append(
+        '<div id="' + lastIndexDatasets + '" class="edit-section__sortable-item">' +
+        '  <textarea id="datasets-uri_' + lastIndexDatasets + '" placeholder="Go to the related datasets and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="datasets-get_' + lastIndexDatasets + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="datasets-cancel_' + lastIndexDatasets + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#datasets-get_" + lastIndexDatasets).one('click', function () {
+      var pastedUrl = $('#datasets-uri_'+lastIndexDatasets).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var datasetsUrlData = myUrl.pathname + "/data";
+      } else {
+        var datasetsUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var datasetsUrlData = datasetsUrl + "/data";
+      }
+
+      $.ajax({
+        url: datasetsUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedData) {
+          if (relatedData.type === 'dataset') {
+            if (!data.datasets) {
+              data.datasets = [];
+            }
+            data.datasets.push({uri: relatedData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a dataset");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#datasets-cancel_" + lastIndexDatasets).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
 
   function sortableDatasets() {
     $("#sortable-datasets").sortable();
@@ -2846,7 +3263,7 @@ function t3Editor(collectionId, data) {
     // Articles
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
-      var uri = data.articles[parseInt(titleA)].uri;
+      var uri = data.relatedArticles[parseInt(titleA)].uri;
       newArticles[indexA] = {uri: uri};
     });
     data.articles = newArticles;
@@ -2854,9 +3271,7 @@ function t3Editor(collectionId, data) {
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {
       var uri = data.datasets[parseInt(titleD)].uri;
-//      var summary = data.datasets[parseInt(titleD)].description.summary;
-//      var title = data.datasets[parseInt(titleD)].description.title;
-      newDatasets[indexD] = {uri: uri}        //, title: title, summary: summary};
+      newDatasets[indexD] = {uri: uri};
     });
     data.datasets = newDatasets;
   }
@@ -2934,9 +3349,11 @@ function articleEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -3304,17 +3721,20 @@ function bulletinEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  if (!data.description.releaseDate){
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-    $('#releaseDate').on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-    });
-  } else {
+  if (!Florence.collection.date) {
+    if (!data.description.releaseDate){
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      });
+    } else {
       dateTmp = $('#releaseDate').val();
       a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(a);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//    $('.release-date').hide();
+    }
+  } else {
+      $('.release-date').hide();
   }
   $("#nextRelease").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -3351,9 +3771,11 @@ function bulletinEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.headline3 = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -3761,9 +4183,11 @@ function timeseriesEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.source = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -4217,6 +4641,426 @@ function timeseriesEditor(collectionId, data) {
   }
 }
 
+function compendiumEditor(collectionId, data) {
+
+//  var index = data.release;
+  var newChapters = [], newDatasets = [];
+  var lastIndexChapter, lastIndexDataset, lastIndexRelatedMethodology = 0;
+  var setActiveTab, getActiveTab;
+
+  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+    setActiveTab = $(".edit-accordion").accordion("option", "active");
+    if (setActiveTab !== false) {
+      localStorage.setItem('activeTab', setActiveTab);
+    }
+  });
+
+  getActiveTab = localStorage.getItem('activeTab');
+  accordion(getActiveTab);
+
+  // Metadata load, edition and saving
+  $("#title").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.title = $(this).val();
+  });
+  $("#edition").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.edition = $(this).val();
+  });
+  if (!data.description.releaseDate){
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    $('#releaseDate').on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+    });
+  } else {
+      dateTmp = $('#releaseDate').val();
+      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(a);
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+//    $('.release-date').hide();
+  }
+  $("#nextRelease").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.nextRelease = $(this).val();
+  });
+  if (!data.description.contact) {
+    data.description.contact = {};
+  }
+  $("#contactName").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.contact.name = $(this).val();
+  });
+  $("#contactEmail").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.contact.email = $(this).val();
+  });
+  $("#contactTelephone").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.contact.telephone = $(this).val();
+  });
+  $("#abstract").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.summary = $(this).val();
+  });
+  $("#keywords").on('change', function () {
+    $(this).textareaAutoSize();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
+  });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.metaDescription = $(this).val();
+  });
+
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function () {
+    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
+      return false;
+    }
+    return true;
+  };
+
+  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  });
+
+  // Correction section
+  // Load
+  $(data.correction).each(function (index, correction) {
+
+    $("#correction_text_" + index).on('click keyup', function () {
+      $(this).textareaAutoSize();
+      data.correction[index].text = $(this).val();
+    });
+    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+      data.correction[index].date = $(this).val();
+    });
+
+    // Delete
+    $("#correction-delete_" + index).click(function () {
+      $("#" + index).remove();
+      data.correction.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  // New correction
+  $("#addCorrection").one('click', function () {
+    data.correction.push({text:"", date:""});
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  // Edit chapters
+  // Load and edition
+  $(data.sections).each(function(index, section) {
+
+    $("#section-edit_"+index).click(function() {
+      var editedSectionValue = {
+        "title": $('#section-title_' + index).val(),
+        "markdown": $("#section-markdown_" + index).val()
+      };
+
+      var saveContent = function(updatedContent) {
+        data.sections[index].markdown = updatedContent;
+        data.sections[index].title = $('#section-title_' + index).val();
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      };
+
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
+
+    // Delete
+    $("#section-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.sections.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new chapter
+  $("#addChapter").one('click', function () {
+    // append title and on edit create url (parent/chapter)
+    $('#sortable-chapters').append(
+            '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
+            '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
+            '    <p><input type="file" name="files" id="files">' +
+            '    <p>' +
+            '  </form>' +
+            '  <div id="response"></div>' +
+            '  <ul id="list"></ul>' +
+            '</div>');
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    // redirect to new article that inherits description
+    // on save/cancel come back here
+  });
+
+  function sortableSections() {
+    $("#sortable-sections").sortable();
+  }
+  sortableSections();
+
+  // Edit accordion
+  // Load and edition
+  $(data.accordion).each(function(index, tab) {
+
+    $("#tab-edit_"+index).click(function() {
+      var editedSectionValue = {
+        "title": $('#tab-title_' + index).val(),
+        "markdown": $("#tab-markdown_" + index).val()
+      };
+
+      var saveContent = function(updatedContent) {
+        data.accordion[index].markdown = updatedContent;
+        data.accordion[index].title = $('#tab-title_' + index).val();
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      };
+
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
+
+    // Delete
+    $("#tab-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.accordion.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new tab
+  $("#addTab").one('click', function () {
+    data.accordion.push({title:"", markdown:""});
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  function sortableTabs() {
+    $("#sortable-tabs").sortable();
+  }
+  sortableTabs();
+
+  //Add related methodology
+  $("#addMethodology").one('click', function () {
+    var pageUrl = localStorage.getItem('pageurl');
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    createWorkspace(pageUrl, collectionId, '', true);
+
+    $('#sortable-methodology').append(
+        '<div id="' + lastIndexRelatedMethodology + '" class="edit-section__sortable-item">' +
+        '  <textarea id="methodology-uri_' + lastIndexRelatedMethodology + '" placeholder="Go to the related document and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="methodology-get_' + lastIndexRelatedMethodology + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="methodology-cancel_' + lastIndexRelatedMethodology + '">Cancel</button>' +
+        '</div>').trigger('create');
+
+    $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
+      pastedUrl = $('#methodology-uri_'+lastIndexRelated).val();
+      if (pastedUrl) {
+        var myUrl = parseURL(pastedUrl);
+        var relatedMethodologyUrlData = myUrl.pathname + "/data";
+      } else {
+        var relatedMethodologyUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var relatedMethodologyUrlData = relatedMethodologyUrl + "/data";
+      }
+      pastedUrl = null;
+
+      $.ajax({
+        url: relatedMethodologyUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (relatedMethodologyData) {
+          if (relatedMethodologyData.type === 'methodology') {
+            if (!data.relatedMethodology) {
+              data.relatedMethodology = [];
+            }
+            data.relatedMethodology.push({uri: relatedMethodologyData.uri});
+            saveRelated(collectionId, pageUrl, data);
+          } else {
+            alert("This is not a methodology");
+          }
+        },
+        error: function () {
+          console.log('No page data returned');
+        }
+      });
+    });
+
+    $("#methodology-cancel_" + lastIndexRelatedMethodology).one('click', function () {
+     createWorkspace(pageUrl, collectionId, 'edit');
+    });
+  });
+
+  function sortableRelatedMethodology() {
+    $("#sortable-methodology").sortable();
+  }
+  sortableRelatedMethodology();
+
+  // Save
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
+
+  editNav.on('click', '.btn-edit-save', function () {
+    save();
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  // completed to review
+    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+      //pageData = $('.fl-editor__headline').val();
+      save();
+      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+
+    // reviewed to approve
+    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+      save()
+      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+
+  function save() {
+    // Sections
+    var orderSection = $("#sortable-sections").sortable('toArray');
+    $(orderSection).each(function (indexS, nameS) {
+//      var markdown = $('#section-markdown_' + nameS).val();
+      var markdown = data.sections[parseInt(nameS)].markdown;
+      var title = $('#section-title_' + nameS).val();
+      newSections[indexS] = {title: title, markdown: markdown};
+    });
+    data.sections = newSections;
+    // Tabs
+    var orderTab = $("#sortable-tabs").sortable('toArray');
+    $(orderTab).each(function (indexT, nameT) {
+      var markdown = data.accordion[parseInt(nameT)].markdown;
+      var title = $('#tab-title_' + nameT).val();
+      newTabs[indexT] = {title: title, markdown: markdown};
+    });
+    data.accordion = newTabs;
+    // Related methodology
+    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    $(orderRelatedMethodology).each(function(indexM, nameM){
+      var uri = $('#methodology-uri_'+nameM).val();
+      newRelatedMethodology[parseInt(indexM)] = {uri: uri};
+    });
+    data.relatedMethodology = newRelatedMethodology;
+  }
+}
+
+function aboutUsEditor(collectionId, data) {
+
+  var newSections = [];
+  var setActiveTab, getActiveTab;
+  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+    setActiveTab = $(".edit-accordion").accordion("option", "active");
+    if(setActiveTab !== false) {
+      localStorage.setItem('activeTab', setActiveTab);
+    }
+  });
+
+  getActiveTab = localStorage.getItem('activeTab');
+  accordion(getActiveTab);
+
+  $("#metadata-q").remove();
+  $("#metadata-f").remove();
+  $("#metadata-ad").remove();
+  $("#contact-p").remove();
+  $("#survey-p").remove();
+  $("#metadata-b").remove();
+  $("#frequency-p").remove();
+  $("#compilation-p").remove();
+  $("#geoCoverage-p").remove();
+  $("#sampleSize-p").remove();
+  $("#lastRevised-p").remove();
+  $("#releaseDate-p").remove();
+  $("#reference-p").remove();
+  $("#download").remove();
+
+  // Metadata edition and saving
+  $("#title").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.title = $(this).val();
+  });
+  $("#summary").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.summary = $(this).val();
+  });
+  $("#keywords").on('change', function () {
+    $(this).textareaAutoSize();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
+  });
+  $("#metaDescription").on('click keyup', function () {
+    $(this).textareaAutoSize();
+    data.description.metaDescription = $(this).val();
+  });
+
+ // Edit content
+  // Load and edition
+  $(data.content).each(function(index, note) {
+
+    $("#content-edit_"+index).click(function() {
+      var editedSectionValue = $("#content-markdown_" + index).val();
+
+      var saveContent = function(updatedContent) {
+        data.content[index].markdown = updatedContent;
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      };
+
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
+
+    // Delete
+    $("#content-delete_"+index).click(function() {
+      $("#"+index).remove();
+      data.content.splice(index, 1);
+      updateContent(collectionId, getPathName(), JSON.stringify(data));
+    });
+  });
+
+  //Add new content
+  $("#addContent").one('click', function () {
+    data.content.push({data:""});
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  function sortableContent() {
+    $("#sortable-content").sortable();
+  }
+  sortableContent();
+
+ // Save
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
+
+  editNav.on('click', '.btn-edit-save', function () {
+    save();
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  // completed to review
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+    //pageData = $('.fl-editor__headline').val();
+    save();
+    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  // reviewed to approve
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+    save()
+    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  function save() {
+   // Sections
+      var orderSection = $("#sortable-content").sortable('toArray');
+      $(orderSection).each(function (indexS, nameS) {
+        var markdown = $('#content-markdown_' + nameS).val();
+      newSections[indexS] = {markdown: markdown};
+      });
+      data.content = newSections;
+  }
+}
+
 function adHocEditor(collectionId, data) {
 
   var newSections = [], newFiles = [];
@@ -4259,9 +5103,11 @@ function adHocEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.reference = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -4513,9 +5359,11 @@ function foiEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.releaseDate = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -4785,9 +5633,11 @@ function methodologyEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -4935,9 +5785,11 @@ function qmiEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.lastRevised = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
@@ -5149,120 +6001,6 @@ function qmiEditor(collectionId, data) {
     data.download = newFiles;
   }
 }
-function staticEditor(collectionId, data) {
-
-  var newSections = [];
-  var setActiveTab, getActiveTab;
-  $(".edit-accordion").on('accordionactivate', function(event, ui) {
-    setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
-    }
-  });
-
-  getActiveTab = localStorage.getItem('activeTab');
-  accordion(getActiveTab);
-
-  $("#metadata-q").remove();
-  $("#metadata-f").remove();
-  $("#metadata-ad").remove();
-  $("#contact-p").remove();
-  $("#survey-p").remove();
-  $("#metadata-b").remove();
-  $("#frequency-p").remove();
-  $("#compilation-p").remove();
-  $("#geoCoverage-p").remove();
-  $("#sampleSize-p").remove();
-  $("#lastRevised-p").remove();
-  $("#releaseDate-p").remove();
-  $("#reference-p").remove();
-  $("#download").remove();
-
-  // Metadata edition and saving
-  $("#title").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.description.title = $(this).val();
-  });
-  $("#summary").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.description.summary = $(this).val();
-  });
-  $("#keywords").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
-  });
-  $("#metaDescription").on('click keyup', function () {
-    $(this).textareaAutoSize();
-    data.description.metaDescription = $(this).val();
-  });
-
- // Edit content
-  // Load and edition
-  $(data.content).each(function(index, note) {
-
-    $("#content-edit_"+index).click(function() {
-      var editedSectionValue = $("#content-markdown_" + index).val();
-
-      var saveContent = function(updatedContent) {
-        data.content[index].markdown = updatedContent;
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#content-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.content.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new content
-  $("#addContent").one('click', function () {
-    data.content.push({data:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableContent() {
-    $("#sortable-content").sortable();
-  }
-  sortableContent();
-
- // Save
-  var editNav = $('.edit-nav');
-  editNav.off(); // remove any existing event handlers.
-
-  editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  // completed to review
-  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  // reviewed to approve
-  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save()
-    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function save() {
-   // Sections
-      var orderSection = $("#sortable-content").sortable('toArray');
-      $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#content-markdown_' + nameS).val();
-      newSections[indexS] = {markdown: markdown};
-      });
-      data.content = newSections;
-  }
-}
-
 function datasetEditor(collectionId, data) {
 
   var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
@@ -5324,9 +6062,11 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('click keyup', function () {
+  $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords = $(this).val();
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
