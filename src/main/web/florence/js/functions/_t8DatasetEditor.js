@@ -20,11 +20,11 @@ function datasetEditor(collectionId, data) {
 
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -36,36 +36,38 @@ function datasetEditor(collectionId, data) {
   } else {
     $('.release-date').hide();
   }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('change', function () {
-    $(this).textareaAutoSize();
-    var stringToArray = $(this).val();
-    var resultArray = stringToArray.split(', ')
-    data.description.keywords = resultArray;
+  $("#keywordsTag").tagit({availableTags: data.description.keywords,
+                        availableTags: data.description.keywords,
+                        singleField: true,
+                        singleFieldNode: $('#keywords')
   });
-  $("#metaDescription").on('click keyup', function () {
+  $('#keywords').on('change', function () {
+    data.description.keywords = [$('#keywords').val()];
+  });
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -87,11 +89,11 @@ function datasetEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 
@@ -176,7 +178,7 @@ function datasetEditor(collectionId, data) {
                 return;
               }
             });
-            if (!!file.name.match(/\.csv$|.xls$|.file$|.zip$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -203,7 +205,7 @@ function datasetEditor(collectionId, data) {
               });
             }
           } else {
-            if (!!file.name.match(/\.csv$|.xls$|.file$|.zip$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);

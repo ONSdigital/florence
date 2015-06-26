@@ -74,8 +74,9 @@
           </div>
           <div>
             <label for="keywords">Keywords
-              <textarea class="auto-size" type="text" id="keywords">{{this.description.keywords}}</textarea>
+              <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
             </label>
+            <ul id="keywordsTag"></ul>
           </div>
           <div>
             <label for="metaDescription">Meta description

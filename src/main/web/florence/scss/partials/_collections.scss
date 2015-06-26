@@ -35,3 +35,35 @@
 
 
 }
+
+.collections-select-table {
+
+	thead {
+		display: block;
+
+		tr {
+			display: block;
+		}
+	}
+
+
+	tbody {
+		max-height: $lineheight * 24;
+		overflow-y: scroll;
+		display: block;
+
+		tr {
+			display: block;
+		}
+	}
+
+	tr {
+		display: block;
+	}
+
+	th, td {
+		display: inline-block;
+		width: 49%;
+		box-sizing: border-box;
+	}
+}
