@@ -24,17 +24,20 @@ function compendiumEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  if (!data.description.releaseDate){
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-    $('#releaseDate').on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-    });
-  } else {
+  if (!Florence.collection.date) {
+    if (!data.description.releaseDate){
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      });
+    } else {
       dateTmp = $('#releaseDate').val();
       a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(a);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//    $('.release-date').hide();
+    }
+  } else {
+      $('.release-date').hide();
   }
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
@@ -142,7 +145,7 @@ function compendiumEditor(collectionId, data) {
   $("#addChapter").one('click', function () {
     // append title and on edit create url (parent/chapter)
     $('#sortable-chapters').append(
-            '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
+            '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
             '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
             '    <p><input type="file" name="files" id="files">' +
             '    <p>' +

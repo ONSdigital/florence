@@ -44,6 +44,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       );
     } if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
       $('.edition').append(
+        '<br>' +
         '<label for="releaseDate">Release date</label>' +
         '<input id="releaseDate" type="text" placeholder="day month year" />'
       );

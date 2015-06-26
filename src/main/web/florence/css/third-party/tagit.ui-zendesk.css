@@ -3,10 +3,11 @@
 
 
 ul.tagit {
-    border-style: solid;
+/*  border-style: solid;
     border-width: 1px;
     border-color: #C6C6C6;
-    background: inherit;
+    background: inherit;   */
+    margin: 0 20px;
 }
 ul.tagit li.tagit-choice {
     -moz-border-radius: 6px;
@@ -51,7 +52,7 @@ ul.tagit input[type="text"] {
     background: white;
 }
 .ui-widget {
-    font-size: 1.1em;
+    font-size: .95em;
 }
 
 /* Forked from a jQuery UI theme, so that we don't require the jQuery UI CSS as a dependency. */

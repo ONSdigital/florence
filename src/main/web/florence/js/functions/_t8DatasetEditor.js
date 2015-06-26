@@ -178,7 +178,7 @@ function datasetEditor(collectionId, data) {
                 return;
               }
             });
-            if (!!file.name.match(/\.csv$|.xls$|.file$|.zip$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -205,7 +205,7 @@ function datasetEditor(collectionId, data) {
               });
             }
           } else {
-            if (!!file.name.match(/\.csv$|.xls$|.file$|.zip$/)) {
+            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
