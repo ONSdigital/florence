@@ -23,6 +23,7 @@
           <div class="release-date">
             <label for="releaseDate">Release date
               <input id="releaseDate" type="text" placeholder="Day month year" value="{{this.description.releaseDate}}"/>
+
             </label>
           </div>
           <div class="next-p">
@@ -76,8 +77,10 @@
           </div>
           <div>
             <label for="keywords">Keywords
-            <textarea class="auto-size" type="text" id="keywords">{{this.description.keywords}}</textarea>
-            </label>
+            <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
+            <ul id="keywordsTag"></ul>
+            <!--<textarea class="auto-size" type="text" id="keywords">{{this.description.keywords}}</textarea>-->
+            <!--</label>-->
           </div>
           <div>
             <label for="metaDescription">Meta description

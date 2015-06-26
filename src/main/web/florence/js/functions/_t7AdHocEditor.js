@@ -40,11 +40,13 @@ function adHocEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.reference = $(this).val();
   });
-  $("#keywords").on('change', function () {
-    $(this).textareaAutoSize();
-    var stringToArray = $(this).val();
-    var resultArray = stringToArray.split(', ')
-    data.description.keywords = resultArray;
+  $("#keywordsTag").tagit({availableTags: data.description.keywords,
+                        availableTags: data.description.keywords,
+                        singleField: true,
+                        singleFieldNode: $('#keywords')
+  });
+  $('#keywords').on('change', function () {
+    data.description.keywords = [$('#keywords').val()];
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
