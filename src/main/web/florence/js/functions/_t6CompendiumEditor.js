@@ -16,56 +16,61 @@ function compendiumEditor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#edition").on('click keyup', function () {
+  $("#edition").on('input', function () {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  if (!data.description.releaseDate){
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-    $('#releaseDate').on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-    });
-  } else {
+  if (!Florence.collection.date) {
+    if (!data.description.releaseDate){
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      });
+    } else {
       dateTmp = $('#releaseDate').val();
       a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(a);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//    $('.release-date').hide();
+    }
+  } else {
+      $('.release-date').hide();
   }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#abstract").on('click keyup', function () {
+  $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#keywords").on('change', function () {
-    $(this).textareaAutoSize();
-    var stringToArray = $(this).val();
-    var resultArray = stringToArray.split(', ')
-    data.description.keywords = resultArray;
+  $("#keywordsTag").tagit({availableTags: data.description.keywords,
+                        availableTags: data.description.keywords,
+                        singleField: true,
+                        singleFieldNode: $('#keywords')
   });
-  $("#metaDescription").on('click keyup', function () {
+  $('#keywords').on('change', function () {
+    data.description.keywords = [$('#keywords').val()];
+  });
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -87,11 +92,11 @@ function compendiumEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 
@@ -140,7 +145,7 @@ function compendiumEditor(collectionId, data) {
   $("#addChapter").one('click', function () {
     // append title and on edit create url (parent/chapter)
     $('#sortable-chapters').append(
-            '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
+            '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
             '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
             '    <p><input type="file" name="files" id="files">' +
             '    <p>' +

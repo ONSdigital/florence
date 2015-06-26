@@ -2370,8 +2370,8 @@ function delete_cookie(name) {
   $('.workspace-edit :input').on('input', function () {
     Florence.Editor.isDirty = true;
     // remove the handler now we know content has changed.
-    $(':input').unbind('input');
-    console.log('Changes detected.');
+    //$(':input').unbind('input');
+    //console.log('Changes detected.');
   });
 }
 
@@ -2738,7 +2738,7 @@ function t1Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata edition and saving
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -2748,7 +2748,7 @@ function t1Editor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -2879,11 +2879,11 @@ function t2Editor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -2893,7 +2893,7 @@ function t2Editor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -2939,11 +2939,11 @@ function t3Editor(collectionId, data) {
 
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -2953,7 +2953,7 @@ function t3Editor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -3306,11 +3306,11 @@ function articleEditor(collectionId, data) {
   $("#headline3-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#edition").on('click keyup', function () {
+  $("#edition").on('input', function () {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
@@ -3326,26 +3326,26 @@ function articleEditor(collectionId, data) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
 //    $('.release-date').hide();
   }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#abstract").on('click keyup', function () {
+  $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -3355,7 +3355,7 @@ function articleEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -3378,11 +3378,11 @@ function articleEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 
@@ -3713,11 +3713,11 @@ function bulletinEditor(collectionId, data) {
   $("#abstract-p").remove();
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#edition").on('click keyup', function () {
+  $("#edition").on('input', function () {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
@@ -3736,38 +3736,38 @@ function bulletinEditor(collectionId, data) {
   } else {
       $('.release-date').hide();
   }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
-  $("#headline1").on('click keyup', function () {
+  $("#headline1").on('input', function () {
     $(this).textareaAutoSize();
     data.description.headline1 = $(this).val();
   });
-  $("#headline2").on('click keyup', function () {
+  $("#headline2").on('input', function () {
     $(this).textareaAutoSize();
     data.description.headline2 = $(this).val();
   });
-  $("#headline3").on('click keyup', function () {
+  $("#headline3").on('input', function () {
     $(this).textareaAutoSize();
     data.description.headline3 = $(this).val();
   });
@@ -3777,7 +3777,7 @@ function bulletinEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -3799,11 +3799,11 @@ function bulletinEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 
@@ -4124,11 +4124,11 @@ function timeseriesEditor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-//  $("#edition").on('click keyup', function () {
+//  $("#edition").on('input', function () {
 //    $(this).textareaAutoSize();
 //    data.description.edition = $(this).val();
 //  });
@@ -4144,42 +4144,42 @@ function timeseriesEditor(collectionId, data) {
 //    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
 ////    $('.release-date').hide();
 //  }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#number").on('click keyup', function () {
+  $("#number").on('input', function () {
     $(this).textareaAutoSize();
     data.description.number = $(this).val();
   });
-  $("#keyNote").on('click keyup', function () {
+  $("#keyNote").on('input', function () {
     $(this).textareaAutoSize();
     data.description.keyNote = $(this).val();
   });
-  $("#unit").on('click keyup', function () {
+  $("#unit").on('input', function () {
     $(this).textareaAutoSize();
     data.description.unit = $(this).val();
   });
-  $("#preUnit").on('click keyup', function () {
+  $("#preUnit").on('input', function () {
     $(this).textareaAutoSize();
     data.description.preUnit = $(this).val();
   });
-  $("#source").on('click keyup', function () {
+  $("#source").on('input', function () {
     $(this).textareaAutoSize();
     data.description.source = $(this).val();
   });
@@ -4189,7 +4189,7 @@ function timeseriesEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -4212,11 +4212,11 @@ function timeseriesEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 
@@ -4659,11 +4659,11 @@ function compendiumEditor(collectionId, data) {
   accordion(getActiveTab);
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#edition").on('click keyup', function () {
+  $("#edition").on('input', function () {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
@@ -4679,26 +4679,26 @@ function compendiumEditor(collectionId, data) {
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
 //    $('.release-date').hide();
   }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#abstract").on('click keyup', function () {
+  $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -4708,7 +4708,7 @@ function compendiumEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -4730,11 +4730,11 @@ function compendiumEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 
@@ -4975,11 +4975,11 @@ function aboutUsEditor(collectionId, data) {
   $("#download").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -4989,7 +4989,7 @@ function aboutUsEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -5091,15 +5091,15 @@ function adHocEditor(collectionId, data) {
   $("#lastRevised-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#releaseDate").on('click keyup', function () {
+  $("#releaseDate").on('input', function () {
     $(this).textareaAutoSize();
     data.description.releaseDate = $(this).val();
   });
-  $("#reference").on('click keyup', function () {
+  $("#reference").on('input', function () {
     $(this).textareaAutoSize();
     data.description.reference = $(this).val();
   });
@@ -5109,7 +5109,7 @@ function adHocEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -5351,11 +5351,11 @@ function foiEditor(collectionId, data) {
   $("#reference-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#releaseDate").on('click keyup', function () {
+  $("#releaseDate").on('input', function () {
     $(this).textareaAutoSize();
     data.description.releaseDate = $(this).val();
   });
@@ -5365,7 +5365,7 @@ function foiEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -5610,26 +5610,26 @@ function methodologyEditor(collectionId, data) {
   $("#natStat").remove();
 
   // Metadata load, edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -5639,7 +5639,7 @@ function methodologyEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -5742,46 +5742,46 @@ function qmiEditor(collectionId, data) {
   $("#reference-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#survey").on('click keyup', function () {
+  $("#survey").on('input', function () {
     $(this).textareaAutoSize();
     data.description.surveyName = $(this).val();
   });
-  $("#frequency").on('click keyup', function () {
+  $("#frequency").on('input', function () {
     $(this).textareaAutoSize();
     data.description.frequency = $(this).val();
   });
-  $("#compilation").on('click keyup', function () {
+  $("#compilation").on('input', function () {
     $(this).textareaAutoSize();
     data.description.compilation = $(this).val();
   });
-  $("#geoCoverage").on('click keyup', function () {
+  $("#geoCoverage").on('input', function () {
     $(this).textareaAutoSize();
     data.description.geoCoverage = $(this).val();
   });
-  $("#sampleSize").on('click keyup', function () {
+  $("#sampleSize").on('input', function () {
     $(this).textareaAutoSize();
     data.description.sampleSize = $(this).val();
   });
-  $("#lastRevised").on('click keyup', function () {
+  $("#lastRevised").on('input', function () {
     $(this).textareaAutoSize();
     data.description.lastRevised = $(this).val();
   });
@@ -5791,7 +5791,7 @@ function qmiEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -6023,11 +6023,11 @@ function datasetEditor(collectionId, data) {
 
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -6039,26 +6039,26 @@ function datasetEditor(collectionId, data) {
   } else {
     $('.release-date').hide();
   }
-  $("#nextRelease").on('click keyup', function () {
+  $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#summary").on('click keyup', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
   });
@@ -6068,7 +6068,7 @@ function datasetEditor(collectionId, data) {
     var resultArray = stringToArray.split(', ')
     data.description.keywords = resultArray;
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
@@ -6090,11 +6090,11 @@ function datasetEditor(collectionId, data) {
   // Load
   $(data.correction).each(function (index, correction) {
 
-    $("#correction_text_" + index).on('click keyup', function () {
+    $("#correction_text_" + index).on('input', function () {
       $(this).textareaAutoSize();
       data.correction[index].text = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('click keyup', function () {
+    $("#correction_date_" + index).val(correction.date).on('input', function () {
       data.correction[index].date = $(this).val();
     });
 

@@ -44,6 +44,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       );
     } if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
       $('.edition').append(
+        '<br>' +
         '<label for="releaseDate">Release date</label>' +
         '<input id="releaseDate" type="text" placeholder="day month year" />'
       );
@@ -92,7 +93,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
           newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
         }
       }
-      pageData.uri = newUri;
+      pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
 
       if ((pageType === 'bulletin' || pageType === 'article') && (!pageData.description.edition)) {
