@@ -90,7 +90,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
           newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
         }
       }
-      pageData.uri = newUri;
+      pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
 
       if ((pageType === 'compendium-landing-page') && (!pageData.description.edition)) {
