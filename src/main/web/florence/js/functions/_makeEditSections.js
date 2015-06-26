@@ -144,8 +144,8 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   $('.workspace-edit :input').on('input', function () {
     Florence.Editor.isDirty = true;
     // remove the handler now we know content has changed.
-    $(':input').unbind('input');
-    console.log('Changes detected.');
+    //$(':input').unbind('input');
+    //console.log('Changes detected.');
   });
 }
 

@@ -23,46 +23,46 @@ function qmiEditor(collectionId, data) {
   $("#reference-p").remove();
 
   // Metadata edition and saving
-  $("#title").on('click keyup', function () {
+  $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
-  $("#contactName").on('click keyup', function () {
+  $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
   });
-  $("#contactEmail").on('click keyup', function () {
+  $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
   });
-  $("#contactTelephone").on('click keyup', function () {
+  $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#survey").on('click keyup', function () {
+  $("#survey").on('input', function () {
     $(this).textareaAutoSize();
     data.description.surveyName = $(this).val();
   });
-  $("#frequency").on('click keyup', function () {
+  $("#frequency").on('input', function () {
     $(this).textareaAutoSize();
     data.description.frequency = $(this).val();
   });
-  $("#compilation").on('click keyup', function () {
+  $("#compilation").on('input', function () {
     $(this).textareaAutoSize();
     data.description.compilation = $(this).val();
   });
-  $("#geoCoverage").on('click keyup', function () {
+  $("#geoCoverage").on('input', function () {
     $(this).textareaAutoSize();
     data.description.geoCoverage = $(this).val();
   });
-  $("#sampleSize").on('click keyup', function () {
+  $("#sampleSize").on('input', function () {
     $(this).textareaAutoSize();
     data.description.sampleSize = $(this).val();
   });
-  $("#lastRevised").on('click keyup', function () {
+  $("#lastRevised").on('input', function () {
     $(this).textareaAutoSize();
     data.description.lastRevised = $(this).val();
   });
@@ -74,7 +74,7 @@ function qmiEditor(collectionId, data) {
   $('#keywords').on('change', function () {
     data.description.keywords = [$('#keywords').val()];
   });
-  $("#metaDescription").on('click keyup', function () {
+  $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
