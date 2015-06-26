@@ -35,17 +35,20 @@ function articleEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  if (!data.description.releaseDate){
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-    $('#releaseDate').on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-    });
+  if (!Florence.collection.date) {
+    if (!data.description.releaseDate){
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      });
+    } else {
+      dateTmp = $('#releaseDate').val();
+      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(a);
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    }
   } else {
-    dateTmp = $('#releaseDate').val();
-    a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#releaseDate').val(a);
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//    $('.release-date').hide();
+      $('.release-date').hide();
   }
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
