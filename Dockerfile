@@ -8,7 +8,7 @@ RUN echo '{"service": {"name": "florence", "tags": ["blue"], "port": 8080, "chec
 # Check out from Github
 
 WORKDIR /usr/src
-RUN git clone -b develop --single-branch --depth 1 https://github.com/ONSdigital/florence.git .
+RUN git clone -b live --single-branch --depth 1 https://github.com/ONSdigital/florence.git .
 
 # Build web
 RUN npm install --prefix ./src/main/web/florence  --unsafe-perm
