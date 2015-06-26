@@ -16,7 +16,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
         return true;
-      } if (checkData.type === 'compendium' && pageType === 'compendium') {
+      } if (checkData.type === 'compendium-landing-page' && pageType === 'compendium-landing-page') {
         contentUrlTmp = parentUrl.split('/');
         contentUrlTmp.splice(-1, 1);
         contentUrl = contentUrlTmp.join('/');
@@ -37,12 +37,12 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler (title, uri, isInheriting) {
-    if (pageType === 'compendium') {
+    if (pageType === 'compendium-landing-page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
         '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
       );
-    } if ((pageType === 'compendium') && (!releaseDate)) {
+    } if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
       $('.edition').append(
         '<label for="releaseDate">Release date</label>' +
         '<input id="releaseDate" type="text" placeholder="day month year" />'
@@ -58,7 +58,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       releaseDateManual = $('#releaseDate').val()
       pageData = pageTypeDataT6(pageType);
       parent = $('#location').val().trim();
-      if (pageType === 'compendium') {
+      if (pageType === 'compendium-landing-page') {
         pageData.description.edition = $('#edition').val();
       }
       if (title) {
@@ -76,7 +76,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
-      if ((pageType === 'compendium') && (!releaseDate)) {
+      if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
       } else {
         pageData.description.releaseDate = releaseDate;
@@ -84,7 +84,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       if (isInheriting) {
         newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
       } else {
-        if ((pageType === 'compendium')) {
+        if ((pageType === 'compendium-landing-page')) {
           newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
         } else {
           newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
@@ -93,10 +93,10 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
-      if ((pageType === 'compendium') && (!pageData.description.edition)) {
+      if ((pageType === 'compendium-landing-page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
         return true;
-      } if ((pageType === 'compendium') && (!pageData.description.releaseDate)) {
+      } if ((pageType === 'compendium-landing-page') && (!pageData.description.releaseDate)) {
         alert('Release date can not be empty');
         return true;
       } if (pageTitle.length < 4) {
@@ -129,7 +129,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
 
   function pageTypeDataT6(pageType) {
 
-    if (pageType === "compendium") {
+    if (pageType === "compendium-landing-page") {
       return {
         "description": {
           "releaseDate": "",

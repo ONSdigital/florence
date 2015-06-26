@@ -76,7 +76,9 @@ function timeseriesEditor(collectionId, data) {
   });
   $("#keywords").on('change', function () {
     $(this).textareaAutoSize();
-    data.description.keywords.push($(this).val());
+    var stringToArray = $(this).val();
+    var resultArray = stringToArray.split(', ')
+    data.description.keywords = resultArray;
   });
   $("#metaDescription").on('click keyup', function () {
     $(this).textareaAutoSize();
