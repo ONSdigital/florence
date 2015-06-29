@@ -1,4 +1,4 @@
-function datasetEditor(collectionId, data) {
+function compendiumDatasetEditor(collectionId, data) {
 
   var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
   var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
