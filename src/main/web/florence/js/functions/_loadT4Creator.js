@@ -79,8 +79,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
 
       if ((pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') && (!releaseDate)) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else if (pageType === 'methodology') {           // does not have release date
-        pageData.description.releaseDate = null;
       } else {
         pageData.description.releaseDate = releaseDate;
       }
@@ -190,28 +188,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "externalLinks": [],
         "charts": [],
         "correction": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
-      };
-    }
-
-    else if (pageType === "methodology") {
-      return {
-        "description": {
-          "contact": {
-            "name": "",
-            "email": "",
-            "telephone": ""
-          },
-          "summary": "",
-          "keywords": [],
-          "metaDescription": "",
-          "title": "",
-//          "releaseDate": "",
-        },
-        "sections": [],
-        "accordion": [],
         type: pageType,
         "uri": "",
         "breadcrumb": [],

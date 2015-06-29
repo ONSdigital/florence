@@ -1,26 +1,21 @@
 function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageName, uriSection, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+  var parent, pageName, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (pageType === 'methodology_landing_page' && checkData.type === 'methodology_landing_page' ||
-            pageType === 'about_us_landing_page' && checkData.type === 'about_us_landing_page') {
-        $('.btn-page-create').show();
+      if (pageType === 'static_landing_page' && checkData.type === 'home_page' || pageType.match(/static_.+/)) {
         $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
-          "index": 0,
-          "type": "home",
-          "name": checkData.name,
-          "fileName": checkData.fileName,
-          "breadcrumb": []
+          "uri": checkData.uri
         };
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
+      return true;
       } else {
         alert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
@@ -38,10 +33,9 @@ function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
       parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
       pageData.name = pageName;
-      uriSection = pageType;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
-      newUri = makeUrl(parent, uriSection, pageNameTrimmed);
+      newUri = makeUrl(parent, pageNameTrimmed);
       pageData.uri = '/' + newUri;
       if (pageData.releaseDate) {
         date = new Date(releaseDate);
@@ -77,7 +71,7 @@ function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
 
 function pageTypeDataT7(pageType) {
 
-  if (pageType === "about_us") {
+  if (pageType === "static_page") {
     return {
       "description": {
         "summary": "",
@@ -92,7 +86,44 @@ function pageTypeDataT7(pageType) {
     };
   }
 
-  else if (pageType === "qmi") {
+  else if (pageType === "static_article") {
+    return {
+      "description": {
+        "contact": {
+          "name": "",
+          "email": "",
+          "telephone": ""
+        },
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
+        "title": "",
+//        "releaseDate": "",
+      },
+      "sections": [],
+      "accordion": [],
+      type: pageType,
+      "uri": "",
+      "breadcrumb": [],
+    };
+  }
+
+  else if (pageType === "static_landing_page") {
+    return {
+      "description": {
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
+        "name": "",
+      },
+      "content": [],
+      type: pageType,
+      "uri": "",
+      "breadcrumb": "",
+    };
+  }
+
+  else if (pageType === "static_qmi") {
       return {
         "contact": {
           "name": "",
@@ -117,7 +148,7 @@ function pageTypeDataT7(pageType) {
       };
     }
 
-  else if (pageType === "foi") {
+  else if (pageType === "static_foi") {
     return {
       "download": [],
       "content": [],
@@ -132,7 +163,7 @@ function pageTypeDataT7(pageType) {
     };
   }
 
-  else if (pageType === "adhoc") {
+  else if (pageType === "static_adhoc") {
     return {
       "download": [],
       "content": [],

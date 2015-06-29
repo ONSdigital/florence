@@ -75,11 +75,46 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     compendiumDatasetEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'methodology') {
+  else if (pageData.type === 'static_landing_page') {
+    var html = templates.workEditT7Landing(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    staticLandingPageEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_article') {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
     accordion();
     methodologyEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_page') {
+    var html = templates.workEditT7(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    staticPageEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_qmi') {
+    var html = templates.workEditT7(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    qmiEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_foi') {
+    var html = templates.workEditT7(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    foiEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_adhoc') {
+    var html = templates.workEditT7(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    adHocEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'dataset') {
@@ -89,33 +124,6 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     datasetEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'about_us') {
-    var html = templates.workEditT7(templateData);
-    $('.workspace-menu').html(html);
-    accordion();
-    staticEditor(collectionId, pageData);
-  }
-
-  else if (pageData.type === 'qmi') {
-    var html = templates.workEditT7(templateData);
-    $('.workspace-menu').html(html);
-    accordion();
-    qmiEditor(collectionId, pageData);
-  }
-
-  else if (pageData.type === 'foi') {
-    var html = templates.workEditT7(templateData);
-    $('.workspace-menu').html(html);
-    accordion();
-    foiEditor(collectionId, pageData);
-  }
-
-  else if (pageData.type === 'adhoc') {
-    var html = templates.workEditT7(templateData);
-    $('.workspace-menu').html(html);
-    accordion();
-    adHocEditor(collectionId, pageData);
-  }
 
 
   else {

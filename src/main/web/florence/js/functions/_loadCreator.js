@@ -1,7 +1,6 @@
 function loadCreator (collectionId) {
   var pageType, releaseDate;
 
-  $('#location').hide();
   getCollection(collectionId,
     success = function (response) {
       if (!response.publishDate) {
@@ -21,10 +20,10 @@ function loadCreator (collectionId) {
 
     if (pageType === 'compendium-landing-page') {
       loadT6Creator(collectionId, releaseDate, pageType, parentUrl);
-    } else if (pageType === 'about_us' || pageType === 'qmi' || pageType === 'foi' || pageType === 'adhoc') {
+    } else if (pageType.match(/static_.+/)) {
       loadT7Creator(collectionId, releaseDate, pageType, parentUrl);
     }
-    else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset' || pageType === 'methodology') {
+    else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') {
       loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
     }
   });
