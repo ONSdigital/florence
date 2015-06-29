@@ -1,6 +1,6 @@
 function createCollection() {
 
-  var publishDate, publishTime, collectionName, collectionType;
+  var publishDate, publishTime, collectionName, collectionDate, collectionType;
   collectionName = $('#collectionname').val();
   collectionType = $('form input[type=radio]:checked').val();
 
@@ -8,10 +8,9 @@ function createCollection() {
     publishDate  = $('#date').val();
     publishTime  = $('#time').val();
     var toIsoDate = $('#date').datepicker("getDate");
-    var collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + parseInt(publishTime)).toISOString();
-    publishDate = new Date(collectionDate);
+    collectionDate = createDateAsUTC(parseInt(new Date(toIsoDate).getTime()) + parseInt(publishTime)).toISOString();
   } else {
-    publishDate = null;
+    collectionDate  = null;
   };
 
 
