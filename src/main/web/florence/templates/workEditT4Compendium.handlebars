@@ -5,14 +5,12 @@
       <div class="edit-section__head">
         <h1>Metadata</h1>
         <p id="metadata-a">Title | Contact | Abstract | Keywords</p>
-        <p id="metadata-b">Title | Next release | Contact | Summary | NS status | Keywords</p>
-        <p id="metadata-m">Title | Contact | Summary | Keywords</p>
       </div>
       <div class="edit-section__content">
         <div id="metadata-list">
           <div>
             <label for="title">Title
-            <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
+              <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
             </label>
           </div>
           <div class="edition">
@@ -23,22 +21,21 @@
           <div class="release-date">
             <label for="releaseDate">Release date
               <input id="releaseDate" type="text" placeholder="Day month year" value="{{this.description.releaseDate}}"/>
-
             </label>
           </div>
           <div class="next-p">
             <label for="nextRelease">Next release
-            <textarea class="auto-size" type="text" id="nextRelease">{{this.description.nextRelease}}</textarea>
+              <textarea class="auto-size" type="text" id="nextRelease">{{this.description.nextRelease}}</textarea>
             </label>
           </div>
           <div>
             <label for="contactName">Contact name
-            <textarea class="auto-size" type="text" id="contactName">{{this.description.contact.name}}</textarea>
+              <textarea class="auto-size" type="text" id="contactName">{{this.description.contact.name}}</textarea>
             </label>
           </div>
           <div>
             <label for="contactEmail">Contact email
-            <textarea class="auto-size" type="text" id="contactEmail">{{this.description.contact.email}}</textarea>
+              <textarea class="auto-size" type="text" id="contactEmail">{{this.description.contact.email}}</textarea>
             </label>
           </div>
           <div>
@@ -46,38 +43,18 @@
               <textarea class="auto-size" type="text" id="contactTelephone">{{this.description.contact.telephone}}</textarea>
             </label>
           </div>
-          <div id="summary-p">
-            <label for="summary">Summary
-            <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
-            </label>
-          </div>
           <div id="abstract-p">
             <label for="abstract">Abstract
-            <textarea class="auto-size" type="text" id="abstract">{{this.description.abstract}}</textarea>
+              <textarea class="auto-size" type="text" id="abstract">{{this.description.abstract}}</textarea>
             </label>
           </div>
           <div id="natStat">
             <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
-          <div id="headline1-p">
-            <label for="headline1">Headline 1
-            <textarea class="auto-size" type="text" id="headline1">{{this.description.headline1}}</textarea>
-            </label>
-          </div>
-          <div id="headline2-p">
-            <label for="headline2">Headline 2
-            <textarea class="auto-size" type="text" id="headline2">{{this.description.headline2}}</textarea>
-            </label>
-          </div>
-          <div id="headline3-p">
-            <label for="headline3">Headline 3
-            <textarea class="auto-size" type="text" id="headline3">{{this.description.headline3}}</textarea>
-            </label>
-          </div>
           <div>
             <label for="keywords">Keywords
-            <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
+              <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
             </label>
             <ul id="keywordsTag"></ul>
           </div>
@@ -134,27 +111,6 @@
       </div>
     </div>
 
-    <div class="edit-section" id="relBulletin">
-      <div class="edit-section__head">
-        <h1>Related bulletins</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-related" class="edit-section__sortable">
-          {{#each this.relatedBulletins}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="bulletin-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="bulletin-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addBulletin">Add bulletin</button>
-        </div>
-      </div>
-    </div>
-
     <div class="edit-section" id="relArticle">
       <div class="edit-section__head">
         <h1>Related articles</h1>
@@ -172,27 +128,6 @@
         </div>
         <div class="text-center">
           <button class="btn-add-section" id="addArticle">Add article</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section" id="relDataset">
-      <div class="edit-section__head">
-        <h1>Related datasets</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-related" class="edit-section__sortable">
-          {{#each this.relatedDatasets}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addDataset">Add dataset</button>
         </div>
       </div>
     </div>
@@ -290,7 +225,7 @@
   </div>
 
   <nav class="edit-nav">
-      {{> editNav}}
+    {{> editNavCompendium}}
   </nav>
 
 </section>

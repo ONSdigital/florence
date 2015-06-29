@@ -1,4 +1,4 @@
-function articleEditor(collectionId, data) {
+function compendiumArticleEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
