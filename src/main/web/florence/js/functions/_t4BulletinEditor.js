@@ -15,16 +15,6 @@ function bulletinEditor(collectionId, data) {
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
 
-
-  //console.log(data.sections);
-
-  $("#relArticle").remove();
-  $("#relDataset").remove();
-  $("#download").remove();
-  $("#metadata-a").remove();
-  $("#metadata-m").remove();
-  $("#abstract-p").remove();
-
   // Metadata load, edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
@@ -38,14 +28,16 @@ function bulletinEditor(collectionId, data) {
     if (!data.description.releaseDate){
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       $('#releaseDate').on('change', function () {
-        data.description.releaseDate = createDateAsUTC($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
       dateTmp = $('#releaseDate').val();
       a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(a);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      data.description.releaseDate = createDateAsUTC($('#releaseDate').datepicker('getDate'));
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      });
     }
   } else {
       $('.release-date').hide();

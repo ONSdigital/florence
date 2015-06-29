@@ -13,24 +13,6 @@ function methodologyEditor(collectionId, data) {
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
 
-
-  //console.log(data.sections);
-
-  $("#relArticle").remove();
-  $("#relBulletin").remove();
-  $("#relDataset").remove();
-  $("#extLink").remove();
-  $("#download").remove();
-  $(".edition").hide();
-  $("#metadata-a").remove();
-  $("#metadata-b").remove();
-  $(".next-p").remove();
-  $("#headline1-p").remove();
-  $("#headline2-p").remove();
-  $("#headline3-p").remove();
-  $("#abstract-p").remove();
-  $("#natStat").remove();
-
   // Metadata load, edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();

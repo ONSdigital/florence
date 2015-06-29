@@ -22,7 +22,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   }
 
   else if (pageData.type === 'bulletin') {
-    var html = templates.workEditT4(templateData);
+    var html = templates.workEditT4Bulletin(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
       loadChartsList(pageData, collectionId);
@@ -35,7 +35,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   }
 
   else if (pageData.type === 'article') {
-    var html = templates.workEditT4(templateData);
+    var html = templates.workEditT4Article(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
       loadChartsList(pageData, collectionId);
@@ -61,8 +61,22 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     compendiumEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'compendium_article') {
+    var html = templates.workEditT4Compendium(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    compendiumArticleEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'compendium_dataset') {
+    var html = templates.workEditT8Compendium(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    compendiumDatasetEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'methodology') {
-    var html = templates.workEditT4(templateData);
+    var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
     accordion();
     methodologyEditor(collectionId, pageData);
