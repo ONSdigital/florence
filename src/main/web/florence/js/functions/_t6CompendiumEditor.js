@@ -28,14 +28,16 @@ function compendiumEditor(collectionId, data) {
     if (!data.description.releaseDate){
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       $('#releaseDate').on('change', function () {
-        data.description.releaseDate = createDateAsUTC($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
       dateTmp = $('#releaseDate').val();
       a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(a);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      data.description.releaseDate = createDateAsUTC($('#releaseDate').datepicker('getDate'));
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      });
     }
   } else {
       $('.release-date').hide();
@@ -144,7 +146,7 @@ function compendiumEditor(collectionId, data) {
 
   //Add new chapter
   $("#addChapter").one('click', function () {
-    // append title and on edit create url (parent/chapter)
+    // append title and on edit create url (parent/chapter) and data.json
     $('#sortable-chapters').append(
             '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
             '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
@@ -154,7 +156,63 @@ function compendiumEditor(collectionId, data) {
             '  <div id="response"></div>' +
             '  <ul id="list"></ul>' +
             '</div>');
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+
+    var inheritedBreadcrumb = data.breadcrumb;
+    var parentBreadcrumb = {
+      "uri": data.uri
+    };
+    inheritedBreadcrumb.push(parentBreadcrumb);
+    var breadcrumb = inheritedBreadcrumb;
+
+    pageData =  {
+            "description": {
+              "edition": data.description.edition,
+              "nextRelease": data.description.nextRelease,
+              "contact": {
+                "name": data.description.contact.name,
+                "email": data.description.contact.email,
+                "telephone": data.description.contact.telephone
+              },
+              "abstract": "",
+              "authors": [],
+              "keywords": [],
+              "metaDescription": "",
+              "nationalStatistic": false,
+              "title": "",
+              "releaseDate": data.description.releaseDate,
+            },
+            "sections": [],
+            "accordion": [],
+            "relatedDocuments": [],
+            "relatedData": [],
+            "externalLinks": [],
+            "charts": [],
+            "correction": [],
+            type: pageType,
+            "uri": newUri,
+            "breadcrumb": breadcrumb,
+          };
+
+    postContent(collectionId, newUri, JSON.stringify(pageData),
+      success = function (message) {
+        console.log("Updating completed " + message);
+        viewWorkspace(newUri, collectionId, 'edit');
+        refreshPreview(newUri);
+      },
+      error = function (response) {
+        if (response.status === 400) {
+          alert("Cannot edit this file. It is already part of another collection.");
+        }
+        else if (response.status === 401) {
+          alert("You are not authorised to update content.");
+        }
+        else {
+          handleApiError(response);
+        }
+      }
+    );
+
+
     // redirect to new article that inherits description
     // on save/cancel come back here
   });

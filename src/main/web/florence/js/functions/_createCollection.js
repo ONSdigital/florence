@@ -8,7 +8,7 @@ function createCollection() {
     publishDate  = $('#date').val();
     publishTime  = $('#time').val();
     var toIsoDate = $('#date').datepicker("getDate");
-    collectionDate = createDateAsUTC(parseInt(new Date(toIsoDate).getTime()) + parseInt(publishTime)).toISOString();
+    collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + parseInt(publishTime)).toISOString();
   } else {
     collectionDate  = null;
   };
