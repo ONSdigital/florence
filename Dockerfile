@@ -1,4 +1,4 @@
-from onsdigital/java-node-component
+from carboni.io/java-node-component
 
 # Consul
 
