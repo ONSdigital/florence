@@ -62,7 +62,7 @@ $('#upload-table-form').submit(function(event) {
 });
 
   function renderTable(path) {
-    var uri = "/" + path + "/table";
+    var uri = path + "/table";
     var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + uri + '"></iframe>';
     console.log(iframeMarkup);
     $('#table').html(iframeMarkup);
