@@ -28,14 +28,16 @@ function compendiumEditor(collectionId, data) {
     if (!data.description.releaseDate){
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       $('#releaseDate').on('change', function () {
-        data.description.releaseDate = createDateAsUTC($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
       dateTmp = $('#releaseDate').val();
       a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(a);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      data.description.releaseDate = createDateAsUTC($('#releaseDate').datepicker('getDate'));
+      $('#releaseDate').on('change', function () {
+        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      });
     }
   } else {
       $('.release-date').hide();
@@ -144,7 +146,7 @@ function compendiumEditor(collectionId, data) {
 
   //Add new chapter
   $("#addChapter").one('click', function () {
-    // append title and on edit create url (parent/chapter)
+    // append title and on edit create url (parent/chapter) and data.json
     $('#sortable-chapters').append(
             '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
             '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
@@ -154,9 +156,9 @@ function compendiumEditor(collectionId, data) {
             '  <div id="response"></div>' +
             '  <ul id="list"></ul>' +
             '</div>');
+    //save the uri in the data and redirect to the creator
     updateContent(collectionId, getPathName(), JSON.stringify(data));
-    // redirect to new article that inherits description
-    // on save/cancel come back here
+    loadT6Creator (collectionId, data.description.releaseDate, 'compendium_article', parentUrl)
   });
 
   function sortableSections() {

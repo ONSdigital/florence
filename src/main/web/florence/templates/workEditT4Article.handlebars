@@ -4,7 +4,7 @@
     <div class="edit-section">
       <div class="edit-section__head">
         <h1>Metadata</h1>
-        <p id="metadata-b">Title | Next release | Contact | Summary | NS status | Keywords</p>
+        <p id="metadata-a">Title | Contact | Abstract | Keywords</p>
       </div>
       <div class="edit-section__content">
         <div id="metadata-list">
@@ -43,7 +43,6 @@
               <textarea class="auto-size" type="text" id="contactTelephone">{{this.description.contact.telephone}}</textarea>
             </label>
           </div>
-          </div>
           <div id="abstract-p">
             <label for="abstract">Abstract
               <textarea class="auto-size" type="text" id="abstract">{{this.description.abstract}}</textarea>
@@ -68,68 +67,138 @@
       </div>
     </div>
 
-    <div class="edit-section" id="chapter">
+    <div class="edit-section" id="content">
       <div class="edit-section__head">
-        <h1>Chapters</h1>
-        <p>Title</p>
+        <h1>Content</h1>
+        <p>Main sections | Title | Body copy</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-chapters" class="edit-section__sortable">
-          {{#each this.chapters}}
+        <div id="sortable-sections" class="edit-section__sortable">
+          {{#each this.sections}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea class="auto-size" id="chapter-title_{{@index}}" data-url="{{uri}}" placeholder="Type title here and click edit to add content">{{description.title}}</textarea>
-              <button class="btn-markdown-edit" id="chapter-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="chapter-delete_{{@index}}">Delete</button>
+              <textarea class="auto-size" id="section-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="section-markdown_{{@index}}">{{markdown}}</textarea>
+              <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
+              <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-chapter" id="addChapter">Add chapter</button>
+          <button class="btn-add-section" id="addSection">Add section</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relDataset">
+    <div class="edit-section" id="collapsible">
       <div class="edit-section__head">
-        <h1>Compendium datasets</h1>
-        <p>Title</p>
+        <h1>Collapsible sections</h1>
+        <p>Background notes | References | Footnotes</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-dataset" class="edit-section__sortable">
-          {{#each this.compendiumData}}
+        <div id="sortable-tabs" class="edit-section__sortable">
+          {{#each this.accordion}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea class="auto-size" id="dataset-uri_{{@index}}" data-url="{{uri}}" placeholder="Type title here and click edit to add content">{{description.title}}</textarea>
-              <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
+              <textarea class="auto-size" id="tab-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="tab-markdown_{{@index}}">{{markdown}}</textarea>
+              <button class="btn-markdown-edit" id="tab-edit_{{@index}}">Edit</button>
+              <button class="btn-page-delete" id="tab-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addDataset">Add dataset</button>
+          <button class="btn-add-section" id="addTab">Add collapsible section</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relMethodology">
+    <div class="edit-section" id="relArticle">
       <div class="edit-section__head">
-        <h1>Related methodology</h1>
+        <h1>Related articles</h1>
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-methodology" class="edit-section__sortable">
-          {{#each this.relatedMethodology}}
+        <div id="sortable-related" class="edit-section__sortable">
+          {{#each this.relatedArticles}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               {{description.title}}
-              <textarea id="methodology-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="methodology-delete_{{@index}}">Delete</button>
+              <textarea id="article-uri_{{@index}}">{{uri}}</textarea>
+              <button class="btn-page-delete" id="article-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-methodology" id="addMethodology">Add methodology</button>
+          <button class="btn-add-section" id="addArticle">Add article</button>
         </div>
       </div>
     </div>
+
+    <div class="edit-section" id="extLink">
+      <div class="edit-section__head">
+        <h1>External links</h1>
+        <p>Title | Link</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-external" class="edit-section__sortable">
+          {{#each this.externalLinks}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="link-title_{{@index}}" placeholder="Title">{{linkText}}</textarea>
+              <textarea id="link-url_{{@index}}" placeholder="Paste link here and save">{{url}}</textarea>
+              <button class="btn-page-delete" id="link-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addLink">Add external link</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="relData">
+      <div class="edit-section__head">
+        <h1>Related data</h1>
+        <p>Title | Link</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-related-data" class="edit-section__sortable">
+          {{#each this.relatedData}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
+              <textarea id="data-uri_{{@index}}">{{uri}}</textarea>
+              <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addData">Add related data</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section" id="download">
+      <div class="edit-section__head">
+        <h1>Upload files</h1>
+        <p>Title | Link</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-download" class="edit-section__sortable">
+          {{#each this.downloads}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="download-filename_{{@index}}">{{xls}}</textarea>
+              <div id="download-filename_show_{{@index}}">{{file}}</div>
+              <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-download" id="addFile">Add file</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="charts"></div>
+
+    <div id="tables"></div>
 
     <div class="edit-section">
       <div class="edit-section__head">
