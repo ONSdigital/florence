@@ -79,7 +79,7 @@ function pageTypeDataT7(pageType) {
         "metaDescription": "",
         "name": "",
       },
-      "content": [],
+      "markdown": [],
       type: pageType,
       "uri": "",
       "breadcrumb": "",
@@ -116,7 +116,7 @@ function pageTypeDataT7(pageType) {
         "metaDescription": "",
         "name": "",
       },
-      "content": [],
+      "sections": [],
       type: pageType,
       "uri": "",
       "breadcrumb": "",
@@ -136,7 +136,7 @@ function pageTypeDataT7(pageType) {
         "geoCoverage": "",
         "sampleSize": "",
         "lastRevised": "",
-        "content": [],
+        "markdown": [],
         "keywords": [],
         "metaDescription": "",
         "name": "",
@@ -151,7 +151,7 @@ function pageTypeDataT7(pageType) {
   else if (pageType === "static_foi") {
     return {
       "download": [],
-      "content": [],
+      "markdown": [],
       "keywords": [],
       "metaDescription": "",
       "name": "",
@@ -166,7 +166,7 @@ function pageTypeDataT7(pageType) {
   else if (pageType === "static_adhoc") {
     return {
       "download": [],
-      "content": [],
+      "markdown": [],
       "keywords": [],
       "metaDescription": "",
       "name": "",

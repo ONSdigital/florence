@@ -91,7 +91,6 @@ function staticPageEditor(collectionId, data) {
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
   });

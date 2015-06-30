@@ -66,13 +66,13 @@ function foiEditor(collectionId, data) {
 
  // Edit content
   // Load and edition
-  $(data.content).each(function(index, note) {
+  $(data.markdown).each(function(index, note) {
 
     $("#content-edit_"+index).click(function() {
       var editedSectionValue = $("#content-markdown_" + index).val();
 
       var saveContent = function(updatedContent) {
-        data.content[index].markdown = updatedContent;
+        data.markdown[index].markdown = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -82,14 +82,14 @@ function foiEditor(collectionId, data) {
     // Delete
     $("#content-delete_"+index).click(function() {
       $("#"+index).remove();
-      data.content.splice(index, 1);
+      data.markdown.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new content
   $("#addContent").one('click', function () {
-    data.content.push({data:""});
+    data.markdown.push({data:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
@@ -258,7 +258,7 @@ function foiEditor(collectionId, data) {
       var markdown = $('#content-markdown_' + nameS).val();
     newSections[indexS] = {markdown: markdown};
     });
-    data.content = newSections;
+    data.markdown = newSections;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-download").sortable('toArray');
     $(orderFile).each(function(index, name){
