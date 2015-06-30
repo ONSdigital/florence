@@ -1,12 +1,15 @@
 function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
   var parent, pageName, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+  if (parentUrl === '/') {
+    parentUrl = '';
+  }
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (pageType === 'static_landing_page' && checkData.type === 'home_page' || pageType.match(/static_.+/)) {
+      if ((pageType === 'static_landing_page' && checkData.type === 'home_page') || (pageType.match(/static_.+/) && checkData.match(/static_.+/))) {
         $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
