@@ -209,7 +209,7 @@ function datasetEditor(collectionId, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.downloads.push({title:'', xls: uriUpload});
+                  data.downloads.push({title:'', file: uriUpload});
                   updateContent(collectionId, getPathName(), JSON.stringify(data));
                 }
               });
@@ -236,7 +236,7 @@ function datasetEditor(collectionId, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.downloads.push({title:'', xls: uriUpload});
+                  data.downloads.push({title:'', file: uriUpload});
                   updateContent(collectionId, getPathName(), JSON.stringify(data));
                 }
               });
@@ -554,7 +554,7 @@ function datasetEditor(collectionId, data) {
     $(orderFile).each(function(indexF, nameF){
       var title = $('#download-title_'+nameF).val();
       var file = $('#download-filename_' + nameF).val();
-      newFiles[indexF] = {title: title, xls: file};
+      newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
     //console.log(data.download);

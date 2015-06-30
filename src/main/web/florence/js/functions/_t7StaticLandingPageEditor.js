@@ -1,4 +1,4 @@
-function staticPageEditor(collectionId, data) {
+function staticLandingPageEditor(collectionId, data) {
 
   var newSections = [];
   var setActiveTab, getActiveTab;
@@ -55,7 +55,7 @@ function staticPageEditor(collectionId, data) {
     });
 
     // Delete
-    $("#content-delete_"+index).click(function() {
+    $("#section-delete_"+index).click(function() {
 //      Not to be used at the moment (deletes files and sections)
 //      get the path
 //      deleteContent(collectionId, path, function() {
@@ -70,7 +70,7 @@ function staticPageEditor(collectionId, data) {
   });
 
   //Add new content
-  $("#addContent").one('click', function () {
+  $("#addSection").one('click', function () {
     data.sections.push({uri:"", summary:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
@@ -106,7 +106,7 @@ function staticPageEditor(collectionId, data) {
        var orderSection = $("#sortable-sections").sortable('toArray');
        $(orderSection).each(function (indexS, nameS) {
          var summary = data.sections[parseInt(nameS)].summary;
-         var uri = $('#section-title_' + nameS).val();
+         var uri = $('#section-uri_' + nameS).val();
          newSections[indexS] = {uri: uri, summary: summary};
        });
        data.sections = newSections;
