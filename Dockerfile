@@ -21,4 +21,4 @@ RUN mvn install -DskipTests
 
 RUN mv /usr/entrypoint/container.sh /usr/src/
 ENV PACKAGE_PREFIX com.github.onsdigital.florence.api
-RUN echo "java -Drestolino.files="target/web" -Drestolino.packageprefix=$PACKAGE_PREFIX -jar target/*-jar-with-dependencies.jar" >> container.sh
+RUN echo "java -Xmx2048m -Drestolino.files="target/web" -Drestolino.packageprefix=$PACKAGE_PREFIX -jar target/*-jar-with-dependencies.jar" >> container.sh
