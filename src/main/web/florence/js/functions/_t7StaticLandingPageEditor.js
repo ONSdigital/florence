@@ -56,15 +56,15 @@ function staticPageEditor(collectionId, data) {
 
     // Delete
     $("#content-delete_"+index).click(function() {
-      $("#"+index).remove();
-//      delete the content on the page that is linked?
-//      get the path before splicing
+//      Not to be used at the moment (deletes files and sections)
+//      get the path
 //      deleteContent(collectionId, path, function() {
 //        refreshPreview(path);
 //        loadPageDataIntoEditor(path, collectionName);
 //      }, error);
 //      console.log('File deleted');
-      data.content.splice(index, 1);
+      $("#"+index).remove();
+      data.sections.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
