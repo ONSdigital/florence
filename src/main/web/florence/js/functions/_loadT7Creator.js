@@ -1,12 +1,15 @@
-function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
+function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   var parent, pageName, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+  if (parentUrl === '/') {
+    parentUrl = '';
+  }
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
-    success: function (checkData) {
-      if (pageType === 'static_landing_page' && checkData.type === 'home_page' || pageType.match(/static_.+/)) {
+    success: function(checkData) {
+      if ((pageType === 'static_landing_page' && checkData.type === 'home_page') || (pageType.match(/static_.+/) && checkData.type.match(/static_.+/))) {
         $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
@@ -14,25 +17,25 @@ function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
         };
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
-        submitFormHandler ();
-      return true;
+        submitFormHandler();
+        return true;
       } else {
         alert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
       }
     },
-    error: function () {
+    error: function() {
       console.log('No page data returned');
     }
   });
 
-  function submitFormHandler () {
-    $('form').submit(function (e) {
+  function submitFormHandler() {
+    $('form').submit(function(e) {
       e.preventDefault();
       pageData = pageTypeDataT7(pageType);
       parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
-      pageData.name = pageName;
+      pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
       newUri = makeUrl(parent, pageNameTrimmed);
@@ -46,20 +49,18 @@ function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 4) {
         alert("This is not a valid file name");
       } else {
-        postContent(collectionName, newUri, JSON.stringify(pageData),
-          success = function (message) {
+        postContent(collectionId, newUri, JSON.stringify(pageData),
+          success = function(message) {
             console.log("Updating completed " + message);
-            viewWorkspace(newUri, collectionName, 'edit');
+            viewWorkspace(newUri, collectionId, 'edit');
             refreshPreview(newUri);
           },
-          error = function (response) {
+          error = function(response) {
             if (response.status === 400) {
               alert("Cannot edit this file. It is already part of another collection.");
-            }
-            else if (response.status === 401) {
+            } else if (response.status === 401) {
               alert("You are not authorised to update content.");
-            }
-            else {
+            } else {
               handleApiError(response);
             }
           }
@@ -77,16 +78,15 @@ function pageTypeDataT7(pageType) {
         "summary": "",
         "keywords": [],
         "metaDescription": "",
-        "name": "",
+        "title": "",
       },
-      "content": [],
+      "markdown": [],
       type: pageType,
       "uri": "",
-      "breadcrumb": "",
+      "breadcrumb": [],
+      "links" : []
     };
-  }
-
-  else if (pageType === "static_article") {
+  } else if (pageType === "static_article") {
     return {
       "description": {
         "contact": {
@@ -98,33 +98,34 @@ function pageTypeDataT7(pageType) {
         "keywords": [],
         "metaDescription": "",
         "title": "",
-//        "releaseDate": "",
+        //        "releaseDate": "",
       },
       "sections": [],
       "accordion": [],
       type: pageType,
       "uri": "",
       "breadcrumb": [],
+      "downloads":[],
+      "links" : []
     };
-  }
-
-  else if (pageType === "static_landing_page") {
+  } else if (pageType === "static_landing_page") {
     return {
       "description": {
         "summary": "",
         "keywords": [],
         "metaDescription": "",
-        "name": "",
+        "title": "",
       },
-      "content": [],
+      "sections": [],
       type: pageType,
       "uri": "",
-      "breadcrumb": "",
-    };
-  }
+      "breadcrumb": [],
+      "links" : []
 
-  else if (pageType === "static_qmi") {
-      return {
+    };
+  } else if (pageType === "static_qmi") {
+    return {
+      "description": {
         "contact": {
           "name": "",
           "email": "",
@@ -133,55 +134,55 @@ function pageTypeDataT7(pageType) {
         "surveyName": "",
         "frequency": "",
         "compilation": "",
-        "geoCoverage": "",
-        "sampleSize": "",
-        "lastRevised": "",
-        "content": [],
+        "geographicCoverage": "",
+        "sampleSize": null,
+        "lastRevised": null,
         "keywords": [],
         "metaDescription": "",
-        "name": "",
-        "download": [],
-        type: pageType,
-        "uri": "",
-        "fileName": "",
-        "breadcrumb": "",
-      };
-    }
-
-  else if (pageType === "static_foi") {
-    return {
-      "download": [],
-      "content": [],
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
+        "title": ""
+      },
+      "markdown": [],
+      "downloads": [],
       type: pageType,
       "uri": "",
       "fileName": "",
-      "breadcrumb": "",
+      "breadcrumb": [],
+      "links" : []
     };
-  }
-
-  else if (pageType === "static_adhoc") {
+  } else if (pageType === "static_foi") {
     return {
-      "download": [],
-      "content": [],
-      "keywords": [],
-      "metaDescription": "",
-      "name": "",
-      "releaseDate": "",
-      "reference": "",
+      "description": {
+        "keywords": [],
+        "metaDescription": "",
+        "title": "",
+        "releaseDate": null
+      },
+      "downloads": [],
+      "markdown": [],
       type: pageType,
       "uri": "",
       "fileName": "",
-      "breadcrumb": "",
+      "breadcrumb": [],
+      "links" : []
     };
-  }
-
-  else {
+  } else if (pageType === "static_adhoc") {
+    return {
+      "description": {
+        "keywords": [],
+        "metaDescription": "",
+        "title": "",
+        "releaseDate": null,
+        "reference": null,
+      },
+      "downloads": [],
+      "markdown": [],
+      type: pageType,
+      "uri": "",
+      "fileName": "",
+      "breadcrumb": [],
+      "links" : []
+    };
+  } else {
     alert('unsupported page type');
   }
 }
-
-

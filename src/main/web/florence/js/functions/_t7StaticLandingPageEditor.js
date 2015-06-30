@@ -1,4 +1,4 @@
-function staticPageEditor(collectionId, data) {
+function staticLandingPageEditor(collectionId, data) {
 
   var newSections = [];
   var setActiveTab, getActiveTab;
@@ -42,7 +42,7 @@ function staticPageEditor(collectionId, data) {
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = {
         "title": $('#section-uri_' + index).val(),
-        "markdown": $("#section-summary_" + index).val()
+        "markdown": $("#section-markdown_" + index).val()
       };
 
        var saveContent = function(updatedContent) {
@@ -55,22 +55,22 @@ function staticPageEditor(collectionId, data) {
     });
 
     // Delete
-    $("#content-delete_"+index).click(function() {
-      $("#"+index).remove();
-//      delete the content on the page that is linked?
-//      get the path before splicing
+    $("#section-delete_"+index).click(function() {
+//      Not to be used at the moment (deletes files and sections)
+//      get the path
 //      deleteContent(collectionId, path, function() {
 //        refreshPreview(path);
 //        loadPageDataIntoEditor(path, collectionName);
 //      }, error);
 //      console.log('File deleted');
-      data.content.splice(index, 1);
+      $("#"+index).remove();
+      data.sections.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new content
-  $("#addContent").one('click', function () {
+  $("#addSection").one('click', function () {
     data.sections.push({uri:"", summary:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
@@ -79,6 +79,8 @@ function staticPageEditor(collectionId, data) {
     $("#sortable-sections").sortable();
   }
   sortableContent();
+
+
 
  // Save
   var editNav = $('.edit-nav');
@@ -91,7 +93,6 @@ function staticPageEditor(collectionId, data) {
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
   });
@@ -107,7 +108,7 @@ function staticPageEditor(collectionId, data) {
        var orderSection = $("#sortable-sections").sortable('toArray');
        $(orderSection).each(function (indexS, nameS) {
          var summary = data.sections[parseInt(nameS)].summary;
-         var uri = $('#section-title_' + nameS).val();
+         var uri = $('#section-uri_' + nameS).val();
          newSections[indexS] = {uri: uri, summary: summary};
        });
        data.sections = newSections;

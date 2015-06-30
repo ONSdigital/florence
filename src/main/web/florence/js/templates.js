@@ -172,6 +172,9 @@ templates['editNav'] = template({"1":function(depth0,helpers,partials,data) {
   return "<!--<button class=\"btn-edit-cancel\">Cancel</button>-->\n<button class=\"btn-edit-save\">Save</button>\n"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPageComplete : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "");
 },"useData":true});
+templates['editNavCompendium'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<!--<button class=\"btn-edit-cancel\">Cancel</button>-->\n<button class=\"btn-edit-save\">Save</button>\n<button class=\"btn-edit-save-and-submit-for-approval\" >Save and exit</button>\n";
+},"useData":true});
 templates['florence'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class=\"wrapper\">\n  <nav class=\"admin-nav\">\n  </nav>\n  <div class=\"section\">\n  </div>\n</div>";
 },"useData":true});
@@ -307,7 +310,7 @@ templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
     + "          </li>\n    </ul>\n  </nav>\n</section>";
 },"usePartial":true,"useData":true});
 templates['workCreate'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<section class=\"panel workspace-create\">\n  <h1>New page details</h1>\n  <form>\n    <label for=\"pagetype\" class=\"hidden\">Page type</label>\n    <select id=\"pagetype\" class=\"selectbg\" required>\n      <option value=\"\" name=\"\">Select your option</option>\n      <option value=\"bulletin\" name=\"bulletin\">Bulletin</option>\n      <option value=\"article\" name=\"article\">Article</option>\n      <option value=\"dataset\" name=\"dataset\">Dataset</option>\n      <option value=\"compendium-landing-page\" name=\"compendium\">Compendium</option>\n      <option value=\"methodology\" name=\"methodology\">Methodology</option>\n      <option value=\"about_us\" name=\"about_us\">Generic page</option>\n      <option value=\"qmi\" name=\"qmi\">QMI</option>\n      <option value=\"foi\" name=\"foi\">FOI</option>\n      <option value=\"adhoc\" name=\"adhoc\">Ad hoc</option>\n    </select>\n    <input id=\"location\" type=\"text\" />\n    <div class=\"edition\"></div>\n    <label for=\"pagename\" class=\"hidden\">Page name</label>\n    <input id=\"pagename\" class=\"full\" type=\"text\" placeholder=\"Page name\" />\n    <button class=\"btn-page-create\">Create page</button>\n  </form>\n</section>\n";
+    return "<section class=\"panel workspace-create\">\n  <h1>New page details</h1>\n  <form>\n    <label for=\"pagetype\" class=\"hidden\">Page type</label>\n    <select id=\"pagetype\" class=\"selectbg\" required>\n      <option value=\"\" name=\"\">Select your option</option>\n      <option value=\"bulletin\" name=\"bulletin\">Bulletin</option>\n      <option value=\"article\" name=\"article\">Article</option>\n      <option value=\"dataset\" name=\"dataset\">Dataset</option>\n      <option value=\"compendium-landing-page\" name=\"compendium\">Compendium</option>\n      <option value=\"static_landing_page\" name=\"static_landing_page\">Static landing page</option>\n      <option value=\"static_page\" name=\"static_page\">Generic static page</option>\n      <option value=\"static_article\" name=\"static_article\">Static article</option>\n      <option value=\"static_qmi\" name=\"qmi\">QMI</option>\n      <option value=\"static_foi\" name=\"foi\">FOI</option>\n      <option value=\"static_adhoc\" name=\"adhoc\">Ad hoc</option>\n    </select>\n    <input id=\"location\" type=\"text\" style=\"display: none;\"/>\n    <div class=\"edition\"></div>\n    <label for=\"pagename\" class=\"hidden\">Page name</label>\n    <input id=\"pagename\" class=\"full\" type=\"text\" placeholder=\"Page name\" />\n    <button class=\"btn-page-create\">Create page</button>\n  </form>\n</section>\n";
 },"useData":true});
 templates['workEditCharts'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
@@ -345,9 +348,9 @@ templates['workEditT1'] = template({"1":function(depth0,helpers,partials,data) {
 
   return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p>Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"keywords\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"sections\">\n      <div class=\"edit-section__head\">\n        <h1>Statistical highlights</h1>\n        <p></p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
@@ -362,9 +365,9 @@ templates['workEditT2'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
@@ -425,9 +428,9 @@ templates['workEditT3'] = template({"1":function(depth0,helpers,partials,data) {
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"timeseries\">\n      <div class=\"edit-section__head\">\n        <h1>Time series related to "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
@@ -449,7 +452,168 @@ templates['workEditT3'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
-templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
+templates['workEditT4Article'] = template({"1":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea class=\"auto-size\" id=\"section-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and click edit to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"section-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"section-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"section-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"3":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea class=\"auto-size\" id=\"tab-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and click edit to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"tab-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"tab-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"tab-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"article-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"article-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"7":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"link-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Title\">"
+    + alias3(((helper = (helper = helpers.linkText || (depth0 != null ? depth0.linkText : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"linkText","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea id=\"link-url_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Paste link here and save\">"
+    + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"link-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"9":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"data-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"data-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"11":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"download-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and save to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"download-filename_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.xls || (depth0 != null ? depth0.xls : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"xls","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <div id=\"download-filename_show_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + "</div>\n              <button class=\"btn-page-delete\" id=\"file-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"13":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "          <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n            <p>Text: <textarea class=\"auto-size\" type=\"text\" id=\"correction_text_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" cols=\"65\" style=\"box-sizing: border-box; min-height: 31px;\">"
+    + alias3(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"text","hash":{},"data":data}) : helper)))
+    + "</textarea></p>\n            <p>Date: <input class=\"auto-size\" type=\"date\" id=\"correction_date_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\""
+    + alias3(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"date","hash":{},"data":data}) : helper)))
+    + "\"/></p>\n            <p>Type: <input type=\"radio\" name=\"correctionType"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\"minor\"/><label> Minor</label>\n              <input type=\"radio\" name=\"correctionType"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\"major\"/><label> Major</label>\n            </p>\n            <button class=\"btn-page-delete\" id=\"correction-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n          </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-a\">Title | Contact | Abstract | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n              <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"edition\">\n            <label for=\"edition\">Edition\n              <textarea class=\"auto-size\" type=\"text\" id=\"edition\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
+    + "\"/>\n            </label>\n          </div>\n          <div class=\"next-p\">\n            <label for=\"nextRelease\">Next release\n              <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nextRelease : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactName\">Contact name\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactName\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.name : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactEmail\">Contact email\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactEmail\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"abstract-p\">\n            <label for=\"abstract\">Abstract\n              <textarea class=\"auto-size\" type=\"text\" id=\"abstract\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1['abstract'] : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Content</h1>\n        <p>Main sections | Title | Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addSection\">Add section</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"collapsible\">\n      <div class=\"edit-section__head\">\n        <h1>Collapsible sections</h1>\n        <p>Background notes | References | Footnotes</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-tabs\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.accordion : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addTab\">Add collapsible section</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relArticle\">\n      <div class=\"edit-section__head\">\n        <h1>Related articles</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedArticles : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addArticle\">Add article</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"extLink\">\n      <div class=\"edit-section__head\">\n        <h1>External links</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-external\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.externalLinks : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addLink\">Add external link</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relData\">\n      <div class=\"edit-section__head\">\n        <h1>Related data</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related-data\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedData : depth0),{"name":"each","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addData\">Add related data</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.downloads : depth0),{"name":"each","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Correction</h1>\n        <p>Date | Notice | Severity</p>\n      </div>\n      <div class=\"edit-section__content edit-section__content--correction\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"each","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addCorrection\">Add correction</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "  </nav>\n\n</section>";
+},"usePartial":true,"useData":true});
+templates['workEditT4Bulletin'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "            <div id=\""
@@ -500,34 +664,6 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n            </div>\n";
 },"7":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
-
-  return "            <div id=\""
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              "
-    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + "\n              <textarea id=\"article-uri_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"article-delete_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">Delete</button>\n            </div>\n";
-},"9":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
-
-  return "            <div id=\""
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              "
-    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + "\n              <textarea id=\"dataset-uri_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"dataset-delete_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">Delete</button>\n            </div>\n";
-},"11":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "            <div id=\""
@@ -543,7 +679,7 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
     + "</textarea>\n              <button class=\"btn-page-delete\" id=\"link-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n            </div>\n";
-},"13":function(depth0,helpers,partials,data) {
+},"9":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "            <div id=\""
@@ -557,27 +693,7 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
     + "</textarea>\n              <button class=\"btn-page-delete\" id=\"data-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n            </div>\n";
-},"15":function(depth0,helpers,partials,data) {
-    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
-
-  return "            <div id=\""
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"download-title_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" placeholder=\"Type title here and save to add content\">"
-    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</textarea>\n              <textarea style=\"display: none;\" id=\"download-filename_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.xls || (depth0 != null ? depth0.xls : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"xls","hash":{},"data":data}) : helper)))
-    + "</textarea>\n              <div id=\"download-filename_show_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
-    + "</div>\n              <button class=\"btn-page-delete\" id=\"file-delete_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">Delete</button>\n            </div>\n";
-},"17":function(depth0,helpers,partials,data) {
+},"11":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "          <div id=\""
@@ -600,13 +716,13 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-a\">Title | Contact | Abstract | Keywords</p>\n        <p id=\"metadata-b\">Title | Next release | Contact | Summary | NS status | Keywords</p>\n        <p id=\"metadata-m\">Title | Contact | Summary | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n            <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-b\">Title | Next release | Contact | Summary | NS status | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n            <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div class=\"edition\">\n            <label for=\"edition\">Edition\n              <textarea class=\"auto-size\" type=\"text\" id=\"edition\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
-    + "\"/>\n            </label>\n          </div>\n          <div class=\"next-p\">\n            <label for=\"nextRelease\">Next release\n            <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\">"
+    + "\"/>\n\n            </label>\n          </div>\n          <div class=\"next-p\">\n            <label for=\"nextRelease\">Next release\n            <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nextRelease : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactName\">Contact name\n            <textarea class=\"auto-size\" type=\"text\" id=\"contactName\">"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.name : stack1), depth0))
@@ -616,17 +732,15 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n            <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"abstract-p\">\n            <label for=\"abstract\">Abstract\n            <textarea class=\"auto-size\" type=\"text\" id=\"abstract\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1['abstract'] : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div id=\"headline1-p\">\n            <label for=\"headline1\">Headline 1\n            <textarea class=\"auto-size\" type=\"text\" id=\"headline1\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.headline1 : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div id=\"headline2-p\">\n            <label for=\"headline2\">Headline 2\n            <textarea class=\"auto-size\" type=\"text\" id=\"headline2\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.headline2 : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div id=\"headline3-p\">\n            <label for=\"headline3\">Headline 3\n            <textarea class=\"auto-size\" type=\"text\" id=\"headline3\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.headline3 : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n            <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n            <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Content</h1>\n        <p>Main sections | Title | Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
@@ -634,20 +748,272 @@ templates['workEditT4'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.accordion : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addTab\">Add collapsible section</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relBulletin\">\n      <div class=\"edit-section__head\">\n        <h1>Related bulletins</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedBulletins : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addBulletin\">Add bulletin</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relArticle\">\n      <div class=\"edit-section__head\">\n        <h1>Related articles</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related\" class=\"edit-section__sortable\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedArticles : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addArticle\">Add article</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relDataset\">\n      <div class=\"edit-section__head\">\n        <h1>Related datasets</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related\" class=\"edit-section__sortable\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedDatasets : depth0),{"name":"each","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addDataset\">Add dataset</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"extLink\">\n      <div class=\"edit-section__head\">\n        <h1>External links</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-external\" class=\"edit-section__sortable\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.externalLinks : depth0),{"name":"each","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addBulletin\">Add bulletin</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"extLink\">\n      <div class=\"edit-section__head\">\n        <h1>External links</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-external\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.externalLinks : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addLink\">Add external link</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relData\">\n      <div class=\"edit-section__head\">\n        <h1>Related data</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related-data\" class=\"edit-section__sortable\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedData : depth0),{"name":"each","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addData\">Add related data</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.downloads : depth0),{"name":"each","hash":{},"fn":this.program(15, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Correction</h1>\n        <p>Date | Notice | Severity</p>\n      </div>\n      <div class=\"edit-section__content edit-section__content--correction\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"each","hash":{},"fn":this.program(17, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedData : depth0),{"name":"each","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addData\">Add related data</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Correction</h1>\n        <p>Date | Notice | Severity</p>\n      </div>\n      <div class=\"edit-section__content edit-section__content--correction\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"each","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addCorrection\">Add correction</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"      ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "  </nav>\n\n</section>";
+},"usePartial":true,"useData":true});
+templates['workEditT4Compendium'] = template({"1":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea class=\"auto-size\" id=\"section-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and click edit to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"section-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"section-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"section-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"3":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea class=\"auto-size\" id=\"tab-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and click edit to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"tab-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"tab-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"tab-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"article-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"article-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"7":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"link-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Title\">"
+    + alias3(((helper = (helper = helpers.linkText || (depth0 != null ? depth0.linkText : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"linkText","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea id=\"link-url_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Paste link here and save\">"
+    + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"url","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"link-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"9":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"data-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"data-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"11":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"download-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and save to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"download-filename_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.xls || (depth0 != null ? depth0.xls : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"xls","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <div id=\"download-filename_show_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + "</div>\n              <button class=\"btn-page-delete\" id=\"file-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"13":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "          <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n            <p>Text: <textarea class=\"auto-size\" type=\"text\" id=\"correction_text_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" cols=\"65\" style=\"box-sizing: border-box; min-height: 31px;\">"
+    + alias3(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"text","hash":{},"data":data}) : helper)))
+    + "</textarea></p>\n            <p>Date: <input class=\"auto-size\" type=\"date\" id=\"correction_date_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\""
+    + alias3(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"date","hash":{},"data":data}) : helper)))
+    + "\"/></p>\n            <p>Type: <input type=\"radio\" name=\"correctionType"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\"minor\"/><label> Minor</label>\n              <input type=\"radio\" name=\"correctionType"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\"major\"/><label> Major</label>\n            </p>\n            <button class=\"btn-page-delete\" id=\"correction-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n          </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-a\">Title | Contact | Abstract | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n              <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"edition\">\n            <label for=\"edition\">Edition\n              <textarea class=\"auto-size\" type=\"text\" id=\"edition\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
+    + "\"/>\n            </label>\n          </div>\n          <div class=\"next-p\">\n            <label for=\"nextRelease\">Next release\n              <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nextRelease : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactName\">Contact name\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactName\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.name : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactEmail\">Contact email\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactEmail\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"abstract-p\">\n            <label for=\"abstract\">Abstract\n              <textarea class=\"auto-size\" type=\"text\" id=\"abstract\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1['abstract'] : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Content</h1>\n        <p>Main sections | Title | Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addSection\">Add section</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"collapsible\">\n      <div class=\"edit-section__head\">\n        <h1>Collapsible sections</h1>\n        <p>Background notes | References | Footnotes</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-tabs\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.accordion : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addTab\">Add collapsible section</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relArticle\">\n      <div class=\"edit-section__head\">\n        <h1>Related articles</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedArticles : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addArticle\">Add article</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"extLink\">\n      <div class=\"edit-section__head\">\n        <h1>External links</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-external\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.externalLinks : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addLink\">Add external link</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relData\">\n      <div class=\"edit-section__head\">\n        <h1>Related data</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related-data\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedData : depth0),{"name":"each","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addData\">Add related data</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.downloads : depth0),{"name":"each","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Correction</h1>\n        <p>Date | Notice | Severity</p>\n      </div>\n      <div class=\"edit-section__content edit-section__content--correction\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"each","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addCorrection\">Add correction</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + ((stack1 = this.invokePartial(partials.editNavCompendium,depth0,{"name":"editNavCompendium","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "  </nav>\n\n</section>";
+},"usePartial":true,"useData":true});
+templates['workEditT4Methodology'] = template({"1":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea class=\"auto-size\" id=\"section-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and click edit to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"section-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"section-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"section-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"3":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"bulletin-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"bulletin-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"data-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"data-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"7":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"download-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and save to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"download-filename_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.xls || (depth0 != null ? depth0.xls : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"xls","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <div id=\"download-filename_show_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + "</div>\n              <button class=\"btn-page-delete\" id=\"file-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-m\">Title | Contact | Summary | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n              <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
+    + "\"/>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactName\">Contact name\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactName\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.name : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactEmail\">Contact email\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactEmail\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Content</h1>\n        <p>Main sections | Title | Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addSection\">Add section</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relBulletin\">\n      <div class=\"edit-section__head\">\n        <h1>Related bulletins</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedBulletins : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addBulletin\">Add bulletin</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relData\">\n      <div class=\"edit-section__head\">\n        <h1>Related data</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related-data\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedData : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addData\">Add related data</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.downloads : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
 templates['workEditT5'] = template({"1":function(depth0,helpers,partials,data) {
@@ -781,19 +1147,19 @@ templates['workEditT5'] = template({"1":function(depth0,helpers,partials,data) {
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"number\">\n            <label for=\"number\">Number\n              <textarea class=\"auto-size\" type=\"text\" id=\"number\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"number\">Number\n              <textarea class=\"auto-size\" type=\"text\" id=\"number\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.number : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"keyNote\">\n            <label for=\"keyNote\">Key note\n              <textarea class=\"auto-size\" type=\"text\" id=\"keyNote\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keyNote\">Key note\n              <textarea class=\"auto-size\" type=\"text\" id=\"keyNote\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keyNote : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <!--<div id=\"migrated\">-->\n            <!--<label for=\"migrated\">Migrated </label>-->\n            <!--<input type=\"checkbox\" name=\"migrated\" value=\"false\" />-->\n          <!--</div>-->\n          <div id=\"unit\">\n            <label for=\"unit\">Unit\n              <textarea class=\"auto-size\" type=\"text\" id=\"unit\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <!--<div id=\"migrated\">-->\n            <!--<label for=\"migrated\">Migrated </label>-->\n            <!--<input type=\"checkbox\" name=\"migrated\" value=\"false\" />-->\n          <!--</div>-->\n          <div>\n            <label for=\"unit\">Unit\n              <textarea class=\"auto-size\" type=\"text\" id=\"unit\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.unit : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"preUnit\">\n            <label for=\"preUnit\">Pre unit\n              <textarea class=\"auto-size\" type=\"text\" id=\"preUnit\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"preUnit\">Pre unit\n              <textarea class=\"auto-size\" type=\"text\" id=\"preUnit\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.preUnit : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"source\">\n            <label for=\"source\">Source\n              <textarea class=\"auto-size\" type=\"text\" id=\"source\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"source\">Source\n              <textarea class=\"auto-size\" type=\"text\" id=\"source\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.source : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Section</h1>\n        <p>Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.section : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
@@ -814,16 +1180,18 @@ templates['workEditT5'] = template({"1":function(depth0,helpers,partials,data) {
     + "  </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
 templates['workEditT6'] = template({"1":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression, alias4=this.lambda;
 
   return "            <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              <textarea class=\"auto-size\" id=\"chapter-title_"
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(alias4(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea class=\"auto-size\" id=\"chapter-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" data-url=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\" placeholder=\"Type title here and click edit to add content\">"
-    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + alias3(alias4(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
     + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"chapter-edit_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"chapter-delete_"
@@ -896,9 +1264,9 @@ templates['workEditT6'] = template({"1":function(depth0,helpers,partials,data) {
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          </div>\n          <div id=\"abstract-p\">\n            <label for=\"abstract\">Abstract\n              <textarea class=\"auto-size\" type=\"text\" id=\"abstract\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1['abstract'] : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"chapter\">\n      <div class=\"edit-section__head\">\n        <h1>Chapters</h1>\n        <p>Title</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-chapters\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.chapters : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
@@ -920,7 +1288,7 @@ templates['workEditT7'] = template({"1":function(depth0,helpers,partials,data) {
     + "\" class=\"edit-section__sortable-item\">\n              <textarea class=\"auto-size\" id=\"content-markdown_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" placeholder=\"Click edit to add content\">"
-    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + alias3(this.lambda(depth0, depth0))
     + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"content-edit_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"content-delete_"
@@ -938,11 +1306,11 @@ templates['workEditT7'] = template({"1":function(depth0,helpers,partials,data) {
     + "</textarea>\n              <textarea style=\"display: none;\" id=\"download-filename_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
-    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "</textarea>\n              <div id=\"download-filename_show_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
-    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "</div>\n              <button class=\"btn-page-delete\" id=\"file-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n            </div>\n";
@@ -971,19 +1339,56 @@ templates['workEditT7'] = template({"1":function(depth0,helpers,partials,data) {
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.sampleSize : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div id=\"lastRevised-p\">\n            <label for=\"lastRevised\">Last revised\n              <textarea class=\"auto-size\" type=\"text\" id=\"lastRevised\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.lastRevised : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"releaseDate-p\">\n            <label for=\"releaseDate\">Release date\n              <textarea class=\"auto-size\" type=\"text\" id=\"releaseDate\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"reference-p\">\n            <label for=\"reference\">Reference\n              <textarea class=\"auto-size\" type=\"text\" id=\"reference\">"
+    + "\"/>\n            </label>\n          </div>\n          <div id=\"reference-p\">\n            <label for=\"reference\">Reference\n              <textarea class=\"auto-size\" type=\"text\" id=\"reference\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.reference : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Content</h1>\n        <p>Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-content\" class=\"edit-section__sortable\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.content : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.markdown : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addContent\">Add content</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.download : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.downloads : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"charts\"></div>\n\n    <div id=\"tables\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "  </nav>\n\n</section>";
+},"usePartial":true,"useData":true});
+templates['workEditT7Landing'] = template({"1":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea class=\"auto-size\" id=\"section-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type link here and click edit to add content\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"section-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.summary || (depth0 != null ? depth0.summary : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"summary","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"section-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"section-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p>Title | Summary | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n              <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"content\">\n      <div class=\"edit-section__head\">\n        <h1>Sections</h1>\n        <p> Title | summary</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-sections\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.sections : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addSection\">Add section</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
@@ -1106,9 +1511,9 @@ templates['workEditT8'] = template({"1":function(depth0,helpers,partials,data) {
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div id=\"migrated\">\n            <label for=\"migrated\">Migrated </label>\n            <input type=\"checkbox\" name=\"migrated\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <textarea class=\"auto-size\" type=\"text\" id=\"keywords\">"
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div id=\"migrated\">\n            <label for=\"migrated\">Migrated </label>\n            <input type=\"checkbox\" name=\"migrated\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"note\">\n      <div class=\"edit-section__head\">\n        <h1>Note</h1>\n        <p>Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-notes\" class=\"edit-section__sortable\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.section : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
@@ -1124,6 +1529,145 @@ templates['workEditT8'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"each","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addCorrection\">Add correction</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "  </nav>\n\n</section>";
+},"usePartial":true,"useData":true});
+templates['workEditT8Compendium'] = template({"1":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <!--<textarea class=\"auto-size\" id=\"note-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type or click edit to add content\">"
+    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + "</textarea>-->\n              <textarea class=\"auto-size\" id=\"note-markdown_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type or click edit to add content\">"
+    + alias3(this.lambda(depth0, depth0))
+    + "</textarea>\n              <button class=\"btn-markdown-edit\" id=\"note-edit_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Edit</button>\n              <button class=\"btn-page-delete\" id=\"note-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"3":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"dataset-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"dataset-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"used-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"used-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"7":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              "
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n              <textarea id=\"methodology-uri_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <button class=\"btn-page-delete\" id=\"methodology-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"9":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "            <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n              <textarea id=\"download-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and save to add content\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <textarea style=\"display: none;\" id=\"download-filename_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.xls || (depth0 != null ? depth0.xls : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"xls","hash":{},"data":data}) : helper)))
+    + "</textarea>\n              <div id=\"download-filename_show_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + "</div>\n              <button class=\"btn-page-delete\" id=\"file-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n            </div>\n";
+},"11":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "          <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n            <p>Text: <textarea class=\"auto-size\" type=\"text\" id=\"correction_text_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" cols=\"65\" style=\"box-sizing: border-box; min-height: 31px;\">"
+    + alias3(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"text","hash":{},"data":data}) : helper)))
+    + "</textarea></p>\n            <p>Date: <input class=\"auto-size\" type=\"date\" id=\"correction_date_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\""
+    + alias3(((helper = (helper = helpers.date || (depth0 != null ? depth0.date : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"date","hash":{},"data":data}) : helper)))
+    + "\"/></p>\n            <p>Type: <input type=\"radio\" name=\"correctionType"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\"minor\"/><label> Minor</label>\n              <input type=\"radio\" name=\"correctionType"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" value=\"major\"/><label> Major</label>\n            </p>\n            <button class=\"btn-page-delete\" id=\"correction-delete_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">Delete</button>\n          </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-d\">Title | Next release | Contact | Summary | NS status | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n              <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"edition\">\n            <label for=\"edition\">Edition\n              <textarea class=\"auto-size\" type=\"text\" id=\"edition\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
+    + "\"/>\n            </label>\n          </div>\n          <div class=\"next-p\">\n            <label for=\"nextRelease\">Next release\n              <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nextRelease : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactName\">Contact name\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactName\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.name : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactEmail\">Contact email\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactEmail\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat\">National statistic </label>\n            <input type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div id=\"migrated\">\n            <label for=\"migrated\">Migrated </label>\n            <input type=\"checkbox\" name=\"migrated\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
+    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"note\">\n      <div class=\"edit-section__head\">\n        <h1>Note</h1>\n        <p>Body copy</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-notes\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.section : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addNote\">Add note</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relDataset\">\n      <div class=\"edit-section__head\">\n        <h1>Related datasets</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-related\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedDatasets : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addDataset\">Add dataset</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"used\">\n      <div class=\"edit-section__head\">\n        <h1>Related documents</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-used\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.usedIn : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-used\" id=\"addUsed\">Add article or bulletin</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"relMethodology\">\n      <div class=\"edit-section__head\">\n        <h1>Related methodology</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-methodology\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.relatedMethodology : depth0),{"name":"each","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-methodology\" id=\"addMethodology\">Add methodology</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\" id=\"download\">\n      <div class=\"edit-section__head\">\n        <h1>Upload files</h1>\n        <p>Title | Link</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-download\" class=\"edit-section__sortable\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.downloads : depth0),{"name":"each","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n        <div class=\"text-center\">\n          <button class=\"btn-add-download\" id=\"addFile\">Add file</button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Correction</h1>\n        <p>Date | Notice | Severity</p>\n      </div>\n      <div class=\"edit-section__content edit-section__content--correction\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"each","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        <div class=\"text-center\">\n          <button class=\"btn-add-section\" id=\"addCorrection\">Add correction</button>\n        </div>\n      </div>\n    </div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + ((stack1 = this.invokePartial(partials.editNavCompendium,depth0,{"name":"editNavCompendium","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
 templates['workEditTables'] = template({"1":function(depth0,helpers,partials,data) {
