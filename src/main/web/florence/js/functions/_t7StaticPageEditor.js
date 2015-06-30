@@ -57,7 +57,7 @@ function staticPageEditor(collectionId, data) {
       var editedSectionValue = $("#content-markdown_" + index).val();
 
       var saveContent = function(updatedContent) {
-        data.markdown[index].markdown = updatedContent;
+        data.markdown[index] = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -74,7 +74,7 @@ function staticPageEditor(collectionId, data) {
 
   //Add new content
   $("#addContent").one('click', function () {
-    data.markdown.push({data:""});
+    data.markdown.push("");
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
