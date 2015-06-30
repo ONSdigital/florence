@@ -49,7 +49,7 @@ function loadT7Creator (collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 4) {
         alert("This is not a valid file name");
       } else {
-        postContent(collectionName, newUri, JSON.stringify(pageData),
+        postContent(collectionId, newUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
             viewWorkspace(newUri, collectionName, 'edit');
