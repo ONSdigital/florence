@@ -94,9 +94,9 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-content" class="edit-section__sortable">
-          {{#each this.content}}
+          {{#each this.markdown}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea class="auto-size" id="content-markdown_{{@index}}" placeholder="Click edit to add content">{{markdown}}</textarea>
+              <textarea class="auto-size" id="content-markdown_{{@index}}" placeholder="Click edit to add content">{{this}}</textarea>
               <button class="btn-markdown-edit" id="content-edit_{{@index}}">Edit</button>
               <button class="btn-page-delete" id="content-delete_{{@index}}">Delete</button>
             </div>
@@ -115,11 +115,11 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-download" class="edit-section__sortable">
-          {{#each this.download}}
+          {{#each this.downloads}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="download-filename_{{@index}}">{{file}}</textarea>
-              <div id="download-filename_show_{{@index}}">{{file}}</div>
+              <textarea style="display: none;" id="download-filename_{{@index}}">{{uri}}</textarea>
+              <div id="download-filename_show_{{@index}}">{{uri}}</div>
               <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}

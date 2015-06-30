@@ -81,13 +81,13 @@ function qmiEditor(collectionId, data) {
 
  // Edit content
   // Load and edition
-  $(data.content).each(function(index, note) {
+  $(data.markdown).each(function(index, note) {
 
     $("#content-edit_"+index).click(function() {
       var editedSectionValue = $("#content-markdown_" + index).val();
 
       var saveContent = function(updatedContent) {
-        data.content[index].markdown = updatedContent;
+        data.markdown[index] = updatedContent;
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       };
 
@@ -97,14 +97,14 @@ function qmiEditor(collectionId, data) {
     // Delete
     $("#content-delete_"+index).click(function() {
       $("#"+index).remove();
-      data.content.splice(index, 1);
+      data.markdown.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new content
   $("#addContent").one('click', function () {
-    data.content.push({data:""});
+    data.markdown.push("");
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
@@ -116,14 +116,14 @@ function qmiEditor(collectionId, data) {
 
  // Edit download
   // Load and edition
-  $(data.download).each(function (index) {
+  $(data.downloads).each(function (index) {
     lastIndexFile = index + 1;
 
     // Delete
     $("#file-delete_"+index).click(function() {
       $("#"+index).remove();
       $.ajax({
-        url: "/zebedee/content/" + collectionId + "?uri=" + data.download[index].file,
+        url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].uri,
         type: "DELETE",
         success: function (res) {
           console.log(res);
@@ -132,7 +132,7 @@ function qmiEditor(collectionId, data) {
           console.log(res);
         }
       });
-      data.download.splice(index, 1);
+      data.downloads.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
@@ -171,8 +171,8 @@ function qmiEditor(collectionId, data) {
           var file = this.files[0];
           uriUpload = getPathName() + "/" + file.name;
 
-          if (data.download.length > 0) {
-            $(data.download).each(function (i, filesUploaded) {
+          if (data.downloads.length > 0) {
+            $(data.downloads).each(function (i, filesUploaded) {
               if (filesUploaded.file == uriUpload) {
                 alert('This file already exists');
                 $('#' + lastIndexFile).remove();
@@ -201,7 +201,7 @@ function qmiEditor(collectionId, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.download.push({title:'', file: uriUpload});
+                  data.downloads.push({title:'', uri: uriUpload});
                   updateContent(collectionId, getPathName(), JSON.stringify(data));
                 }
               });
@@ -228,7 +228,7 @@ function qmiEditor(collectionId, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.download.push({title:'', file: uriUpload});
+                  data.downloads.push({title:'', uri: uriUpload});
                   updateContent(collectionId, getPathName(), JSON.stringify(data));
                 }
               });
@@ -271,16 +271,16 @@ function qmiEditor(collectionId, data) {
       var orderSection = $("#sortable-content").sortable('toArray');
       $(orderSection).each(function (indexS, nameS) {
         var markdown = $('#content-markdown_' + nameS).val();
-      newSections[indexS] = {markdown: markdown};
+      newSections[indexS] = markdown;
       });
-      data.content = newSections;
+      data.markdown = newSections;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-download").sortable('toArray');
     $(orderFile).each(function(index, name){
       var title = $('#download-title_'+name).val();
       var file = $('#download-filename_' + name).val();
-      newFiles[index] = {title: title, file: file};
+      newFiles[index] = {title: title, uri: file};
     });
-    data.download = newFiles;
+    data.downloads = newFiles;
   }
 }
