@@ -42,7 +42,7 @@ function staticLandingPageEditor(collectionId, data) {
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = {
         "title": $('#section-uri_' + index).val(),
-        "markdown": $("#section-summary_" + index).val()
+        "markdown": $("#section-markdown_" + index).val()
       };
 
        var saveContent = function(updatedContent) {
@@ -79,6 +79,8 @@ function staticLandingPageEditor(collectionId, data) {
     $("#sortable-sections").sortable();
   }
   sortableContent();
+
+
 
  // Save
   var editNav = $('.edit-nav');

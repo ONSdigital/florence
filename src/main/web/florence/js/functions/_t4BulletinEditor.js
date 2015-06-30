@@ -334,20 +334,20 @@ function bulletinEditor(collectionId, data) {
 
   // Edit external
   // Load and edition
-  $(data.externalLinks).each(function(iLink){
+  $(data.links).each(function(iLink){
     // No edit functionality.
 
     // Delete
     $("#link-delete_"+iLink).click(function() {
       $("#"+iLink).remove();
-      data.externalLinks.splice(iLink, 1);
+      data.links.splice(iLink, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new external
   $("#addLink").click(function () {
-    data.externalLinks.push({url:"", linkText:""});
+    data.links.push({url:"", title:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
@@ -407,9 +407,9 @@ function bulletinEditor(collectionId, data) {
     $(orderLink).each(function(indexL, nameL){
       var displayText = $('#link-title_'+nameL).val();
       var link = $('#link-url_'+nameL).val();
-      newLinks[indexL] = {url: link, linkText: displayText};
+      newLinks[indexL] = {url: link, title: displayText};
     });
-    data.externalLinks = newLinks;
+    data.links = newLinks;
 //    console.log(data);
   }
 }
