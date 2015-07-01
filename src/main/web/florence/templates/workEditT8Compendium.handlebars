@@ -130,7 +130,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-used" id="addUsed">Add article or bulletin</button>
+          <button class="btn-add-section" id="addUsed">Add article or bulletin</button>
         </div>
       </div>
     </div>
@@ -151,29 +151,29 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-methodology" id="addMethodology">Add methodology</button>
+          <button class="btn-add-section" id="addMethodology">Add methodology</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="download">
+    <div class="edit-section" id="file">
       <div class="edit-section__head">
         <h1>Upload files</h1>
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-download" class="edit-section__sortable">
+        <div id="sortable-file" class="edit-section__sortable">
           {{#each this.downloads}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="download-filename_{{@index}}">{{xls}}</textarea>
-              <div id="download-filename_show_{{@index}}">{{file}}</div>
+              <textarea id="file-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="file-filename_{{@index}}">{{xls}}</textarea>
+              <div id="file-filename_show_{{@index}}">{{file}}</div>
               <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-download" id="addFile">Add file</button>
+          <button class="btn-add-section" id="addFile">Add file</button>
         </div>
       </div>
     </div>

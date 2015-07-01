@@ -143,7 +143,7 @@ function datasetEditor(collectionId, data) {
 
   //Add new download
   $("#addFile").one('click', function () {
-    $('#sortable-download').append(
+    $('#sortable-file').append(
         '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files">' +
