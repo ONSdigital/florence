@@ -147,7 +147,7 @@ function compendiumDatasetEditor(collectionId, data) {
 
   //Add new download
   $("#addFile").one('click', function () {
-    $('#sortable-download').append(
+    $('#sortable-file').append(
         '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files">' +
@@ -550,10 +550,10 @@ function compendiumDatasetEditor(collectionId, data) {
 
   function saveData() {
     // Files are uploaded. Save metadata
-    var orderFile = $("#sortable-download").sortable('toArray');
+    var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
-      var title = $('#download-title_'+nameF).val();
-      var file = $('#download-filename_' + nameF).val();
+      var title = $('#file-title_'+nameF).val();
+      var file = $('#file-filename_' + nameF).val();
       newFiles[indexF] = {title: title, xls: file};
     });
     data.downloads = newFiles;
