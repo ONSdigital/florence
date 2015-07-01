@@ -43,13 +43,18 @@
               <textarea class="auto-size" type="text" id="contactTelephone">{{this.description.contact.telephone}}</textarea>
             </label>
           </div>
+          <div>
+            <label for="datasetId">Dataset ID
+              <textarea class="auto-size" type="text" id="datasetId">{{this.description.datasetId}}</textarea>
+            </label>
+          </div>
           <div id="natStat">
             <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
           <!--<div id="migrated">-->
-            <!--<label for="migrated">Migrated </label>-->
-            <!--<input type="checkbox" name="migrated" value="false" />-->
+          <!--<label for="migrated">Migrated </label>-->
+          <!--<input type="checkbox" name="migrated" value="false" />-->
           <!--</div>-->
           <div>
             <label for="keywords">Keywords
@@ -62,49 +67,6 @@
               <textarea class="auto-size" type="text" id="metaDescription">{{this.description.metaDescription}}</textarea>
             </label>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section" id="note">
-      <div class="edit-section__head">
-        <h1>Note</h1>
-        <p>Body copy</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-notes" class="edit-section__sortable">
-          {{#each this.section}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <!--<textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
-              <textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
-              <button class="btn-markdown-edit" id="note-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="note-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addNote">Add note</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section" id="relDataset">
-      <div class="edit-section__head">
-        <h1>Related datasets</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-related" class="edit-section__sortable">
-          {{#each this.relatedDatasets}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addDataset">Add dataset</button>
         </div>
       </div>
     </div>
@@ -151,18 +113,20 @@
       </div>
     </div>
 
-    <div class="edit-section" id="download">
+    <div class="edit-section" id="file">
       <div class="edit-section__head">
         <h1>Upload files</h1>
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-download" class="edit-section__sortable">
+        <div id="sortable-file" class="edit-section__sortable">
           {{#each this.downloads}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="download-filename_{{@index}}">{{file}}</textarea>
-              <div id="download-filename_show_{{@index}}">{{file}}</div>
+              <textarea id="file-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
+              <textarea id="file-summary_{{@index}}">{{summary}}</textarea>
+              <textarea style="display: none;" id="file-filename_{{@index}}">{{file}}</textarea>
+              <div id="file-filename_show_{{@index}}">{{file}}</div>
+              <button class="btn-markdown-edit" id="file-edit_{{@index}}">Edit</button>
               <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
