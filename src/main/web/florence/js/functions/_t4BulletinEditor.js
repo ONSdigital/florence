@@ -332,10 +332,24 @@ function bulletinEditor(collectionId, data) {
   }
   sortableRelatedData();
 
-  // Edit external
+  // Edit links
   // Load and edition
   $(data.links).each(function(iLink){
-    // No edit functionality.
+
+    $("#link-edit_"+iLink).click(function() {
+      var editedSectionValue = {
+        "title": $('#link-uri_' + iLink).val(),
+        "markdown": $("#link-markdown_" + iLink).val()
+      };
+
+       var saveContent = function(updatedContent) {
+         data.links[iLink].title = updatedContent;
+         data.links[iLink].uri = $('#link-uri_' + iLink).val();
+         updateContent(collectionId, getPathName(), JSON.stringify(data));
+       };
+
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
 
     // Delete
     $("#link-delete_"+iLink).click(function() {
@@ -347,12 +361,12 @@ function bulletinEditor(collectionId, data) {
 
   //Add new external
   $("#addLink").click(function () {
-    data.links.push({url:"", title:""});
+    data.links.push({uri:"", title:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
   function sortableLinks() {
-    $("#sortable-external").sortable();
+    $("#sortable-links").sortable();
   }
   sortableLinks();
 
@@ -403,14 +417,13 @@ function bulletinEditor(collectionId, data) {
     });
     data.relatedBulletins = newRelated;
     // External links
-    var orderLink = $("#sortable-external").sortable('toArray');
+    var orderLink = $("#sortable-links").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link-title_'+nameL).val();
-      var link = $('#link-url_'+nameL).val();
-      newLinks[indexL] = {url: link, title: displayText};
+      var displayText = $('#link-markdown_'+nameL).val();
+      var link = $('#link-uri_'+nameL).val();
+      newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
-//    console.log(data);
   }
 }
 
