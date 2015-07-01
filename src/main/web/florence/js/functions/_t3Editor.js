@@ -348,7 +348,7 @@ function t3Editor(collectionId, data) {
       var uri = data.relatedArticles[parseInt(titleA)].uri;
       newArticles[indexA] = {uri: uri};
     });
-    data.articles = newArticles;
+    data.relatedArticles = newArticles;
     // Datasets
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {

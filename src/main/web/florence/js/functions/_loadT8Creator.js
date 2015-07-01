@@ -134,6 +134,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
           "nationalStatistic": false,
           "title": "",
         },
+        "migrated": true,
         "downloads": [],
         "correction": [],
         "relatedDocuments": [],
