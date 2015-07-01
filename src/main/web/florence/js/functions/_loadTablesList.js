@@ -11,7 +11,7 @@ function loadTablesList(data, collectionId) {
     $("#table-edit_" + table.filename).click(function () {
       getPageData(collectionId, tableJson,
         onSuccess = function (tableData) {
-          loadTableBuilder(tableData, function () {
+          loadTableBuilder(data, function () {
             refreshPreview();
           }, tableData);
         })
