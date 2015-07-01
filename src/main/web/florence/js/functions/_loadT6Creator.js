@@ -6,7 +6,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.type === 'product_page') {
+      if (checkData.type === 'product_page' && pageType === 'compendium_landing_page') {
         $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
@@ -28,7 +28,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         return true;
       } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_article') {
 
-      } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_dataset') {
+      } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data') {
 
       } else {
         alert("This is not a valid place to create this page.");
@@ -148,7 +148,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
           "keywords": [],
           "metaDescription": "",
           "nationalStatistic": false,
-          "title": "",
+          "title": ""
         },
         "datasets": [],
         "chapters": [],
@@ -156,7 +156,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedMethodology": [],
         type: pageType,
         "uri": "",
-        "breadcrumb": [],
+        "breadcrumb": []
       };
     }
 
@@ -174,9 +174,9 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
           "authors": [],
           "keywords": [],
           "metaDescription": "",
-          "nationalStatistic": false,
+          "nationalStatistic": checkData.nationalStatistic,
           "title": "",
-          "releaseDate": checkData.description.releaseDate,
+          "releaseDate": checkData.description.releaseDate
         },
         "sections": [],
         "accordion": [],
@@ -187,37 +187,36 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         "correction": [],
         type: pageType,
         "uri": newUri,
-        "breadcrumb": breadcrumb,
+        "parentUri": checkData.uri,
+        "breadcrumb": []
       };
     }
 
-    else if (pageType === 'compendium_dataset') {
+    else if (pageType === 'compendium_data') {
       return {
         "description": {
-          "releaseDate": "",
-          "nextRelease": "",
+          "releaseDate": checkData.description.releaseDate,
+          "nextRelease": checkData.description.nextRelease,
           "contact": {
-            "name": "",
-            "email": "",
-            "telephone": ""
+            "name": checkData.description.contact.name,
+            "email": checkData.description.contact.email,
+            "telephone": checkData.description.contact.telephone
           },
           "summary": "",
-          "datasetID":"",
+          "datasetId":"",
           "keywords": [],
           "metaDescription": "",
-          "nationalStatistic": false,
-          "migrated": false,
-          "title": "",
+          "nationalStatistic": checkData.nationalStatistic,
+          "title": ""
         },
         "downloads": [],
-        "section": {},
         "correction": [],
-        "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
         type: pageType,
         "uri": "",
-        "breadcrumb": [],
+        "parentUri": checkData.uri,
+        "breadcrumb": []
       };
     }
 

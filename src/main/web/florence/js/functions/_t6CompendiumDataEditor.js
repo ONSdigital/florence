@@ -1,4 +1,4 @@
-function compendiumDatasetEditor(collectionId, data) {
+function compendiumDataEditor(collectionId, data) {
 
   var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
   var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
@@ -14,10 +14,6 @@ function compendiumDatasetEditor(collectionId, data) {
 
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
-
-  $("#content").remove();
-  $(".edition").hide();
-
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -68,6 +64,10 @@ function compendiumDatasetEditor(collectionId, data) {
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
+  });
+  $("#datasetId").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.datasetId = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         availableTags: data.description.keywords,
@@ -124,14 +124,14 @@ function compendiumDatasetEditor(collectionId, data) {
 
   // Edit download
   // Load and edition
-  $(data.download).each(function (index) {
+  $(data.downloads).each(function (index, file) {
     lastIndexFile = index + 1;
 
     // Delete
     $("#file-delete_"+index).click(function() {
       $("#"+index).remove();
       $.ajax({
-        url: "/zebedee/content/" + collectionId + "?uri=" + data.download[index].file,
+        url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].file,
         type: "DELETE",
         success: function (res) {
           console.log(res);
@@ -140,10 +140,25 @@ function compendiumDatasetEditor(collectionId, data) {
           console.log(res);
         }
       });
-      data.download.splice(index, 1);
+      data.downloads.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
+
+    $("#file-edit_"+index).click(function() {
+      var editedSectionValue = {
+        "title": $('#file-title_' + index).val(),
+        "markdown": $("#file-summary_" + index).val()
+      };
+
+       var saveContent = function(updatedContent) {
+         data.downloads[index].fileDescription = updatedContent;
+         data.downloads[index].title = $('#file-title_' + index).val();
+         updateContent(collectionId, getPathName(), JSON.stringify(data));
+       };
+       loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
   });
+
 
   //Add new download
   $("#addFile").one('click', function () {
@@ -209,7 +224,7 @@ function compendiumDatasetEditor(collectionId, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.downloads.push({title:'', xls: uriUpload});
+                  data.downloads.push({title:'', file: uriUpload});
                   updateContent(collectionId, getPathName(), JSON.stringify(data));
                 }
               });
@@ -236,7 +251,7 @@ function compendiumDatasetEditor(collectionId, data) {
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.downloads.push({title:'', xls: uriUpload});
+                  data.downloads.push({title:'', file: uriUpload});
                   updateContent(collectionId, getPathName(), JSON.stringify(data));
                 }
               });
@@ -248,133 +263,9 @@ function compendiumDatasetEditor(collectionId, data) {
   });
 
   function sortableFiles() {
-    $("#sortable-download").sortable();
+    $("#sortable-file").sortable();
   }
   sortableFiles();
-
-  // Edit notes
-  // Load and edition
-  $(data.section).each(function(index, note) {
-
-    $("#note-edit_"+index).click(function() {
-      var editedSectionValue = $("#note-markdown_" + index).val();
-
-      var saveContent = function(updatedContent) {
-//        data.section[index].markdown = updatedContent;
-        data.section.markdown = updatedContent;
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-//    $("#note-delete_"+index).click(function() {
-//      $("#"+index).remove();
-//      data.section.splice(index, 1);
-//      updateContent(collectionId, getPathName(), JSON.stringify(data));
-//    });
-    $("#note-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.section = {};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new note
-//  $("#addNote").one('click', function () {
-//    data.section.push({markdown:""});
-//    updateContent(collectionId, getPathName(), JSON.stringify(data));
-//  });
-
-  if (!data.section) {
-    $("#addNote").one('click', function () {
-      data.section = {markdown:""};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  } else {
-    $("#addNote").one('click', function () {
-      alert('At the moment you can have one section here.')
-    });
-  }
-
-//  function sortableNotes() {
-//    $("#sortable-notes").sortable();
-//  }
-//  sortableNotes();
-
-  // Related datasets
-  // Load
-  if (!data.relatedDatasets) {
-    lastIndexRelated = 0;
-  } else {
-    $(data.relatedDatasets).each(function (iDataset) {
-      lastIndexRelated = iDataset + 1;
-
-      // Delete
-      $("#dataset-delete_" + iDataset).click(function () {
-        $("#" + iDataset).remove();
-        data.relatedDatasets.splice(iDataset, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-
-  //Add new related
-  $("#addDataset").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
-
-    $('#sortable-related').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="dataset-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="dataset-cancel_' + lastIndexRelated + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#dataset-get_" + lastIndexRelated).one('click', function () {
-      pastedUrl = $('#dataset-uri_'+lastIndexRelated).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var datasetUrlData = myUrl.pathname + "/data";
-      } else {
-        var datasetUrl = $('#iframe')[0].contentWindow.document.location.pathname;
-        var datasetUrlData = datasetUrl + "/data";
-      }
-      pastedUrl = null;
-
-      $.ajax({
-        url: datasetUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedData) {
-          if (relatedData.type === 'dataset') {
-            if (!data.relatedDatasets) {
-              data.relatedDatasets = [];
-            }
-            data.relatedDatasets.push({uri: relatedData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not a dataset");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#dataset-cancel_" + lastIndexRelated).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelated() {
-    $("#sortable-related").sortable();
-  }
-  sortableRelated();
 
   // Related documents (articles or bulletins where dataset is used in)
   // Load
@@ -553,26 +444,11 @@ function compendiumDatasetEditor(collectionId, data) {
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
       var title = $('#file-title_'+nameF).val();
+      var fileDescription = $("#file-summary_"+nameF).val();
       var file = $('#file-filename_' + nameF).val();
-      newFiles[indexF] = {title: title, xls: file};
+      newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
     });
     data.downloads = newFiles;
-    //console.log(data.download);
-    // Notes
-//    var orderNote = $("#sortable-notes").sortable('toArray');
-//    $(orderNote).each(function (indexT, nameT) {
-//      var markdown = $('#note-markdown_' + nameT).val();
-//      newNotes[indexT] = {markdown: markdown};
-//    });
-//    data.section = newNotes;
-    data.section = {markdown: $('#note-markdown_0').val()};
-    // Related datasets
-    var orderDataset = $("#sortable-related").sortable('toArray');
-    $(orderDataset).each(function (indexD, nameD) {
-      var uri = $('#dataset-uri_' + nameD).val();
-      newRelated[indexD]= {uri: uri};
-    });
-    data.relatedDatasets = newRelated;
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){

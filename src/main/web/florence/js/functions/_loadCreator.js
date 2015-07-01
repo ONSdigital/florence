@@ -22,7 +22,7 @@ function loadCreator (collectionId) {
       loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
     }
 
-    else if (pageType === 'compendium-landing-page') {
+    else if (pageType.match(/compendium_.+/)) {
       loadT6Creator(collectionId, releaseDate, pageType, parentUrl);
     }
 
