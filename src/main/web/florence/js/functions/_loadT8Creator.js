@@ -1,5 +1,5 @@
-function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
+  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -16,16 +16,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
         return true;
-      } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
-        contentUrlTmp = parentUrl.split('/');
-        contentUrlTmp.splice(-1, 1);
-        contentUrl = contentUrlTmp.join('/');
-        $('#location').val(contentUrl);
-        breadcrumb = checkData.breadcrumb;
-        pageTitle = checkData.description.title;
-        isInheriting = true;
-        submitFormHandler (pageTitle, contentUrl, isInheriting);
-        return true;
       } else {
         alert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
@@ -36,62 +26,35 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
   });
 
-  function submitFormHandler (title, uri, isInheriting) {
+  function submitFormHandler () {
 
-    $('.edition').append(
-      '<label for="edition">Edition</label>' +
-      '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
-    );
     if (!releaseDate) {
       $('.edition').append(
-        '<br>' +
         '<label for="releaseDate">Release date</label>' +
         '<input id="releaseDate" type="text" placeholder="day month year" />'
       );
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     }
-    if (title) {
-      pageTitle = title;
-      $('#pagename').val(title);
-    }
 
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val()
-      pageData = pageTypeDataT4(pageType);
+      pageData = pageTypeDataT8(pageType);
       parent = $('#location').val().trim();
-      pageData.description.edition = $('#edition').val();
-      if (title) {
-        //do nothing;
-      } else {
-        pageTitle = $('#pagename').val();
-      }
+      pageTitle = $('#pagename').val();
       pageData.description.title = pageTitle;
-      uriSection = pageType + "s";
+      uriSection = "datasets";
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-      if (releaseDateManual) {                                                          //Manual collections
-        date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
-        releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
-      } else {
-        releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
-      }
 
       if (!releaseDate) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      if (isInheriting) {
-        newUri = makeUrl(parent, releaseUri);
-      } else {
-        newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
-      }
+      newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
       pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
 
-      if (!pageData.description.edition) {
-        alert('Edition can not be empty');
-        return true;
-      } if (!pageData.description.releaseDate) {
+      if (!pageData.description.releaseDate) {
         alert('Release date can not be empty');
         return true;
       } if (pageTitle.length < 4) {
@@ -122,66 +85,59 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     });
   }
 
-  function pageTypeDataT4(pageType) {
+  function pageTypeDataT8(pageType) {
 
-    if (pageType === "bulletin") {
+    if (pageType === "dataset") {
       return {
         "description": {
-          "headline1": "",
-          "headline2": "",
-          "headline3": "",
-          "nationalStatistic": false,
+          "releaseDate": "",
+          "nextRelease": "",
           "contact": {
             "name": "",
             "email": "",
             "telephone": ""
           },
-          "title": "",
           "summary": "",
+          "datasetId":"",
           "keywords": [],
-          "edition": "",
-          "releaseDate": "",
-          "nextRelease": "",
           "metaDescription": "",
+          "nationalStatistic": false,
+          "migrated": false,
+          "title": "",
         },
-        "sections": [],
-        "accordion": [],
-        "relatedBulletins": [],
-        "relatedData": [],
-        "links": [],
-        "charts": [],
+        "downloads": [],
+        "section": {},
         "correction": [],
+        "relatedDatasets": [],
+        "relatedDocuments": [],
+        "relatedMethodology": [],
         type: pageType,
         "uri": "",
         "breadcrumb": [],
       };
     }
 
-    else if (pageType === "article") {
+    else if (pageType === "reference_tables") {
       return {
         "description": {
-          "edition": "",
+          "releaseDate": "",
           "nextRelease": "",
           "contact": {
             "name": "",
             "email": "",
             "telephone": ""
           },
-          "abstract": "",
-          "authors": [],
+          "summary": "",
+          "datasetId":"",
           "keywords": [],
           "metaDescription": "",
           "nationalStatistic": false,
           "title": "",
-          "releaseDate": "",
         },
-        "sections": [],
-        "accordion": [],
-        "relatedArticles": [],
-        "relatedData": [],
-        "links": [],
-        "charts": [],
+        "downloads": [],
         "correction": [],
+        "relatedDocuments": [],
+        "relatedMethodology": [],
         type: pageType,
         "uri": "",
         "breadcrumb": [],
