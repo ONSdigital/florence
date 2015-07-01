@@ -127,7 +127,7 @@ function datasetEditor(collectionId, data) {
     $("#file-delete_"+index).click(function() {
       $("#"+index).remove();
       $.ajax({
-        url: "/zebedee/content/" + collectionId + "?uri=" + data.download[index].file,
+        url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].file,
         type: "DELETE",
         success: function (res) {
           console.log(res);
