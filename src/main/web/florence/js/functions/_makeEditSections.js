@@ -68,11 +68,11 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     compendiumArticleEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'compendium_dataset') {
-    var html = templates.workEditT8Compendium(templateData);
+  else if (pageData.type === 'compendium_data') {
+    var html = templates.workEditT8ReferenceTable(templateData);
     $('.workspace-menu').html(html);
     accordion();
-    compendiumDatasetEditor(collectionId, pageData);
+    compendiumDataEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'static_landing_page') {
