@@ -124,14 +124,14 @@ function referenceTableEditor(collectionId, data) {
 
   // Edit download
   // Load and edition
-  $(data.downloads).each(function (index) {
+  $(data.downloads).each(function (index, file) {
     lastIndexFile = index + 1;
 
     // Delete
     $("#file-delete_"+index).click(function() {
       $("#"+index).remove();
       $.ajax({
-        url: "/zebedee/content/" + collectionId + "?uri=" + data.download[index].file,
+        url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].file,
         type: "DELETE",
         success: function (res) {
           console.log(res);
@@ -143,20 +143,22 @@ function referenceTableEditor(collectionId, data) {
       data.downloads.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
+
+    $("#file-edit_"+index).click(function() {
+      var editedSectionValue = {
+        "title": $('#file-title_' + index).val(),
+        "markdown": $("#file-summary_" + index).val()
+      };
+
+       var saveContent = function(updatedContent) {
+         data.downloads[index].fileDescription = updatedContent;
+         data.downloads[index].title = $('#file-title_' + index).val();
+         updateContent(collectionId, getPathName(), JSON.stringify(data));
+       };
+       loadMarkdownEditor(editedSectionValue, saveContent, data);
+    });
   });
 
-  $("#file-edit_"+index).click(function() {
-    var editedSectionValue = {
-      "title": $('#file-title_' + index).val(),
-      "markdown": $("#file-summary_" + index).val()
-    };
-
-     var saveContent = function(updatedContent) {
-       data.downloads[index].summary = updatedContent;
-       data.downloads[index].title = $('#file-title_' + index).val();
-       updateContent(collectionId, getPathName(), JSON.stringify(data));
-     };
-  });
 
   //Add new download
   $("#addFile").one('click', function () {
@@ -442,8 +444,9 @@ function referenceTableEditor(collectionId, data) {
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
       var title = $('#file-title_'+nameF).val();
+      var fileDescription = $("#file-summary_"+nameF).val();
       var file = $('#file-filename_' + nameF).val();
-      newFiles[indexF] = {title: title, file: file};
+      newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
     });
     data.downloads = newFiles;
     // Used in links

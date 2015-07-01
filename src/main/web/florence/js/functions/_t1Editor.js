@@ -92,7 +92,7 @@ function t1Editor(collectionId, data) {
       });
 
       $("#section-cancel_" + index).show().one('click', function () {
-        createWorkspace(pageUrl, collectionId, 'edit');
+        createWorkspace('', collectionId, 'edit');
       });
     });
   });
@@ -132,7 +132,7 @@ function t1Editor(collectionId, data) {
     // sections
     var orderSections = $("#sortable-sections").sortable('toArray');
     $(orderSections).each(function(indexS, nameS){
-      var uri = data.sections[parseInt(nameS)].statistics.data.uri;
+      var uri = data.sections[parseInt(nameS)].statistics.uri;
       var link = data.sections[parseInt(nameS)].theme.uri;
       newSections[parseInt(indexS)] = {theme: {uri: link},
                                        statistics: {uri: uri}
