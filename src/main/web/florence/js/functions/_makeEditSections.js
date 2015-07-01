@@ -124,7 +124,12 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     datasetEditor(collectionId, pageData);
   }
 
-
+  else if (pageData.type === 'reference_tables') {
+    var html = templates.workEditT8ReferenceTable(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    referenceTableEditor(collectionId, pageData);
+  }
 
   else {
 

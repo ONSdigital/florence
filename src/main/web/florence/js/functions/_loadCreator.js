@@ -18,13 +18,20 @@ function loadCreator (collectionId) {
     pageType = $(this).val();
     var parentUrl = localStorage.getItem("pageurl");
 
-    if (pageType === 'compendium-landing-page') {
+    if (pageType === 'bulletin' || pageType === 'article') {
+      loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
+    }
+
+    else if (pageType === 'compendium-landing-page') {
       loadT6Creator(collectionId, releaseDate, pageType, parentUrl);
-    } else if (pageType.match(/static_.+/)) {
+    }
+
+    else if (pageType.match(/static_.+/)) {
       loadT7Creator(collectionId, releaseDate, pageType, parentUrl);
     }
-    else if (pageType === 'bulletin' || pageType === 'article' || pageType === 'dataset') {
-      loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
+
+    else if (pageType === 'reference_tables' || pageType === 'dataset') {
+      loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
     }
   });
 }

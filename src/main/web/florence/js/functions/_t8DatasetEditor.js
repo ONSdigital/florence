@@ -15,10 +15,6 @@ function datasetEditor(collectionId, data) {
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
 
-  $("#content").remove();
-  $(".edition").hide();
-
-
   // Metadata edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
@@ -124,14 +120,14 @@ function datasetEditor(collectionId, data) {
 
   // Edit download
   // Load and edition
-  $(data.download).each(function (index) {
+  $(data.downloads).each(function (index) {
     lastIndexFile = index + 1;
 
     // Delete
     $("#file-delete_"+index).click(function() {
       $("#"+index).remove();
       $.ajax({
-        url: "/zebedee/content/" + collectionId + "?uri=" + data.download[index].file,
+        url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].file,
         type: "DELETE",
         success: function (res) {
           console.log(res);
@@ -140,14 +136,14 @@ function datasetEditor(collectionId, data) {
           console.log(res);
         }
       });
-      data.download.splice(index, 1);
+      data.downloads.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   });
 
   //Add new download
   $("#addFile").one('click', function () {
-    $('#sortable-download').append(
+    $('#sortable-file').append(
         '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
         '    <p><input type="file" name="files" id="files">' +
@@ -248,7 +244,7 @@ function datasetEditor(collectionId, data) {
   });
 
   function sortableFiles() {
-    $("#sortable-download").sortable();
+    $("#sortable-file").sortable();
   }
   sortableFiles();
 
@@ -465,7 +461,6 @@ function datasetEditor(collectionId, data) {
       });
     });
   }
-
   //Add related methodology
   $("#addMethodology").one('click', function () {
     var pageUrl = localStorage.getItem('pageurl');
@@ -550,10 +545,10 @@ function datasetEditor(collectionId, data) {
 
   function saveData() {
     // Files are uploaded. Save metadata
-    var orderFile = $("#sortable-download").sortable('toArray');
+    var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
-      var title = $('#download-title_'+nameF).val();
-      var file = $('#download-filename_' + nameF).val();
+      var title = $('#file-title_'+nameF).val();
+      var file = $('#file-filename_' + nameF).val();
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
