@@ -117,6 +117,28 @@
       </div>
     </div>
 
+    <div class="edit-section" id="links">
+      <div class="edit-section__head">
+        <h1>Links</h1>
+        <p> Link | Title</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-links" class="edit-section__sortable">
+          {{#each this.links}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              <textarea class="auto-size" id="link-uri_{{@index}}" placeholder="Paste link here and click edit to add content">{{uri}}</textarea>
+              <textarea style="display: none;" id="link-markdown_{{@index}}">{{title}}</textarea>
+              <button class="btn-markdown-edit" id="link-edit_{{@index}}">Edit</button>
+              <button class="btn-page-delete" id="link-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="addLink">Add link</button>
+        </div>
+      </div>
+    </div>
+
     <div class="edit-section" id="download">
       <div class="edit-section__head">
         <h1>Upload files</h1>

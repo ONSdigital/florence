@@ -18,11 +18,6 @@
               <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
             </label>
           </div>
-          <div class="edition">
-            <label for="edition">Edition
-              <textarea class="auto-size" type="text" id="edition">{{this.description.edition}}</textarea>
-            </label>
-          </div>
           <div class="release-date">
             <label for="releaseDate">Release date
               <input id="releaseDate" type="text" placeholder="Day month year" value="{{this.description.releaseDate}}"/>
@@ -48,14 +43,19 @@
               <textarea class="auto-size" type="text" id="contactTelephone">{{this.description.contact.telephone}}</textarea>
             </label>
           </div>
+          <div>
+            <label for="datasetId">Dataset ID
+              <textarea class="auto-size" type="text" id="datasetId">{{this.description.datasetId}}</textarea>
+            </label>
+          </div>
           <div id="natStat">
             <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
-          <div id="migrated">
-            <label for="migrated">Migrated </label>
-            <input type="checkbox" name="migrated" value="false" />
-          </div>
+          <!--<div id="migrated">-->
+          <!--<label for="migrated">Migrated </label>-->
+          <!--<input type="checkbox" name="migrated" value="false" />-->
+          <!--</div>-->
           <div>
             <label for="keywords">Keywords
               <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
@@ -71,49 +71,6 @@
       </div>
     </div>
 
-    <div class="edit-section" id="note">
-      <div class="edit-section__head">
-        <h1>Note</h1>
-        <p>Body copy</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-notes" class="edit-section__sortable">
-          {{#each this.section}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <!--<textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
-              <textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
-              <button class="btn-markdown-edit" id="note-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="note-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addNote">Add note</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section" id="relDataset">
-      <div class="edit-section__head">
-        <h1>Related datasets</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-related" class="edit-section__sortable">
-          {{#each this.relatedDatasets}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addDataset">Add dataset</button>
-        </div>
-      </div>
-    </div>
-
     <div class="edit-section" id="used">
       <div class="edit-section__head">
         <h1>Related documents</h1>
@@ -121,7 +78,7 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-used" class="edit-section__sortable">
-          {{#each this.usedIn}}
+          {{#each this.relatedDocuments}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               {{description.title}}
               <textarea id="used-uri_{{@index}}">{{uri}}</textarea>
@@ -165,9 +122,11 @@
         <div id="sortable-file" class="edit-section__sortable">
           {{#each this.downloads}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="file-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="file-filename_{{@index}}">{{xls}}</textarea>
+              <textarea id="file-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="file-summary_{{@index}}">{{fileDescription}}</textarea>
+              <textarea style="display: none;" id="file-filename_{{@index}}">{{file}}</textarea>
               <div id="file-filename_show_{{@index}}">{{file}}</div>
+              <button class="btn-markdown-edit" id="file-edit_{{@index}}">Edit</button>
               <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
@@ -203,7 +162,7 @@
   </div>
 
   <nav class="edit-nav">
-    {{> editNavCompendium}}
+    {{> editNav}}
   </nav>
 
 </section>

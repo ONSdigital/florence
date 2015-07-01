@@ -228,14 +228,14 @@ function timeseriesEditor(collectionId, data) {
 
   // Related documents
   // Load
-  if (data.relatedDocuments.length === 0) {
+  if (!data.relatedDocuments) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedDocuments).each(function (iArticle, document) {
       lastIndexRelated = iArticle + 1;
 
       // Delete
-      $("" + iArticle).click(function () {
+      $("#document-delete_" + iArticle).click(function () {
         $("#" + iArticle).remove();
         data.relatedDocuments.splice(iArticle, 1);
         updateContent(collectionId, getPathName(), JSON.stringify(data));
@@ -409,6 +409,22 @@ function timeseriesEditor(collectionId, data) {
   }
   sortableRelatedDataset();
 
+  // Related methodology
+  // Load
+  if (!data.relatedMethodology) {
+    lastIndexRelatedMethodology = 0;
+  } else {
+    $(data.relatedMethodology).each(function (iMethodology, relatedMethodology) {
+      lastIndexRelatedMethodology = iMethodology + 1;
+
+      // Delete
+      $("#used-delete_" + iMethodology).click(function () {
+        $("#" + iMethodology).remove();
+        data.relatedMethodology.splice(iMethodology, 1);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      });
+    });
+  }
   //Add related methodology
   $("#addMethodology").one('click', function () {
     var pageUrl = localStorage.getItem('pageurl');
