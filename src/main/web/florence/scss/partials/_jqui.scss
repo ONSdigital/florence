@@ -1,0 +1,39 @@
+.ui-datepicker {
+
+	&-header {
+		background: $pickled-bluewood;
+		color: $white;
+		overflow: hidden;
+	}
+
+	&-prev {
+		float: left;
+		padding: 40px 0 0 0;
+		margin: 24px 0 0 20px;
+		height: 0;
+		overflow: hidden;
+		background: transparent url(../img/sprite.png) no-repeat 0px -560px;
+		background-size: 30px auto;
+		cursor: pointer;
+	}
+
+	&-next { 
+		float: right;
+		padding: 40px 0 0 0;
+		margin: 24px 20px 0 0;
+		height: 0;
+		overflow: hidden;
+		background: transparent url(../img/sprite.png) no-repeat 0px -608px;
+		background-size: 30px auto;
+		cursor: pointer;
+	}
+
+	&-title {
+		// font-size: 30px;
+		@extend .class-for-24px;
+		@extend .text-align-center;
+	}
+
+	&-calendar {}
+
+}
