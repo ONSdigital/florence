@@ -24,7 +24,7 @@ function completeContent(collectionName, path) {
     dataType: 'json',
     type: 'POST',
     success: function (message) {
-      console.log("Page is now marked as complete " + message);
+      //console.log("Page is now marked as complete " + message);
       //alert("This content has now been submitted for internal review.")
       viewCollections(collectionName);
     },
