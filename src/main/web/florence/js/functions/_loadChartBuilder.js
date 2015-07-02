@@ -447,7 +447,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       contentType: "image/png",
       processData: false,
       success: function (res) {
-        console.log('png uploaded!');
+        //console.log('png uploaded!');
       }
     });
   }
