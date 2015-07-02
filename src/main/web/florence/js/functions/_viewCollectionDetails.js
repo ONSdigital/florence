@@ -60,10 +60,15 @@ function viewCollectionDetails(collectionId) {
       var result = confirm("Are you sure you want to delete this page from the collection?");
       if (result === true) {
         var path = $(this).attr('data-path');
-        deleteContent(collectionId, path, function() { viewCollectionDetails(collectionId); }, error);
-        console.log('File deleted');
-      }
-    });
+        deleteContent(collectionId, path, function() {
+            viewCollectionDetails(collectionId);
+            alert('File deleted');
+          }, function(error) {
+            viewCollectionDetails(collectionId);
+            alert(error + ' File has not been deleted. Contact an administrator');
+          }
+        );
+      });
 
     $('.collection-selected .btn-edit-cancel').click(function () {
       $('.collection-selected').stop().animate({right: "-50%"}, 500);
