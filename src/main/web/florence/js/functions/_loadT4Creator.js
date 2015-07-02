@@ -88,7 +88,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
 
-      if (!pageData.description.edition) {
+      if (pageType === 'bulletin' && !pageData.description.edition) {
         alert('Edition can not be empty');
         return true;
       } if (!pageData.description.releaseDate) {
