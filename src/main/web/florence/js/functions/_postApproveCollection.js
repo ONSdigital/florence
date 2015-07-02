@@ -5,8 +5,8 @@ function postApproveCollection(collectionId) {
     crossDomain: true,
     type: 'POST',
     success: function (response) {
-      console.log(response);
-      console.log(collectionId + ' collection is now approved');
+      //console.log(response);
+      //console.log(collectionId + ' collection is now approved');
       $('.collection-selected').stop().animate({right: "-50%"}, 500);
       $('.collections-select-table tbody tr').removeClass('selected');
       // Wait until the animation ends
