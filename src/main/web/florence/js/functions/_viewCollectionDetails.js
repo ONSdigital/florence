@@ -56,9 +56,13 @@ function viewCollectionDetails(collectionId) {
       createWorkspace(path, collectionId, 'edit');
     });
     $('.btn-page-delete').click(function () {
-      var path = $(this).attr('data-path')
-      deleteContent(collectionId, path, function() { viewCollectionDetails(collectionId); }, error);
-      console.log('File deleted');
+
+      var result = confirm("Are you sure you want to delete this page from the collection?");
+      if (result === true) {
+        var path = $(this).attr('data-path');
+        deleteContent(collectionId, path, function() { viewCollectionDetails(collectionId); }, error);
+        console.log('File deleted');
+      }
     });
 
     $('.collection-selected .btn-edit-cancel').click(function () {
