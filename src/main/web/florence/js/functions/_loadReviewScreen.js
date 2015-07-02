@@ -42,7 +42,7 @@ function loadReviewScreen(collectionName) {
 
     $('.fl-review-list-holder').on('click', '.fl-review-page-list-item', function () {
       var path = $(this).attr('data-path');
-      console.log('Collection row clicked for id: ' + path);
+      //console.log('Collection row clicked for id: ' + path);
       if (path) {
         $('.fl-review-page-list-item').removeClass('fl-panel-review-page-item__selected');
         $(this).addClass('fl-panel-review-page-item__selected');

@@ -28,7 +28,7 @@ function loadTablesList(data, collectionId) {
             var fileToDelete = basePath + '/' + file.filename;
             deleteContent(collectionId, fileToDelete,
               onSuccess = function () {
-                console.log("deleted table file: " + fileToDelete)
+                //console.log("deleted table file: " + fileToDelete)
               });
           });
 

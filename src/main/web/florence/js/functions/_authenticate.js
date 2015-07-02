@@ -9,7 +9,7 @@ function authenticate(email,password) {
       password: password
     }),
     success: function (response) {
-      console.log(response);
+      //console.log(response);
       document.cookie="access_token="+response + ";path=/";
       localStorage.setItem("loggedInAs", email);
       Florence.refreshAdminMenu();

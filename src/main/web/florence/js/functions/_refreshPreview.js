@@ -6,7 +6,7 @@ function refreshPreview(url) {
     }
     url = Florence.tredegarBaseUrl + "/" + url;
     document.getElementById('iframe').contentWindow.location.href = url;
-    console.log(document.getElementById('iframe').contentWindow.location.href)
+    //console.log(document.getElementById('iframe').contentWindow.location.href)
   }
   else {
     var url = Florence.tredegarBaseUrl + "/" + localStorage.getItem("pageurl");

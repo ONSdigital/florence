@@ -22,7 +22,7 @@ function postReview(collectionName, path) {
     dataType: 'json',
     type: 'POST',
     success: function () {
-      console.log("File set to reviewed.");
+      //console.log("File set to reviewed.");
       //alert("The file is now awaiting approval.");
       viewCollections(collectionName);
     },
