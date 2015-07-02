@@ -4,6 +4,7 @@
 		background: $pickled-bluewood;
 		color: $white;
 		overflow: hidden;
+		color: $cadet-blue;
 	}
 
 	&-prev {
@@ -34,6 +35,62 @@
 		@extend .text-align-center;
 	}
 
-	&-calendar {}
+	&-calendar {
+
+		tr {
+
+			background: $tea !important;
+			// background: $ash !important;
+			font-weight: 600;
+			color: $olive-haze;
+
+			&:hover {
+				// background: $tea !important;
+			}
+		}
+
+		th {
+			background: $pickled-bluewood;
+			color: $cadet-blue;
+		}
+
+		td {
+			padding: 0;
+			text-align: center;
+			cursor: initial;
+			border-bottom: 1px solid $nappa;
+				border-right: 1px solid $nappa;
+
+			a {
+				display: block;
+				padding: 20px 21px;
+				background: $ash;
+				color: $kabul;
+				text-decoration: none;
+				// border-bottom: 1px solid $nappa;
+				// border-right: 1px solid $nappa;
+				box-sizing: border-box;
+
+				&:hover {
+					background: $nappa;
+					color: $ship-gray;
+					// border: 1px solid $ship-gray;
+				}
+			}
+
+			span {
+				display: block;
+				padding: 20px 21px;
+				cursor: not-allowed;
+				// border-bottom: 1px solid $nappa;
+				// border-right: 1px solid $nappa;
+				// border-left: 1px solid $nappa;
+
+				&:hover {
+					// background: $nappa;
+				}
+			}
+		}
+	}
 
 }
