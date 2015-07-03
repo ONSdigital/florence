@@ -39,6 +39,29 @@ function staticLandingPageEditor(collectionId, data) {
   // Load and edition
   $(data.sections).each(function(index) {
 
+    $('#section-uri_'+index).on('paste', function() {
+      setTimeout(function () {
+      var pastedUrl = $('#section-uri_'+index).val();
+      var myUrl = parseURL(pastedUrl);
+        $('#section-uri_'+index).val(myUrl.pathname);
+      }, 50);
+    });
+
+    if (!$('#section-uri_'+index).val()) {
+      $('<button class="btn-edit-save-and-submit-for-review" id="section-get_' + index + '">Get</button>').insertAfter('#section-uri_'+index);
+    }
+    $('#section-get_'+index).click(function() {
+      var pageUrl = localStorage.getItem('pageurl');
+      var iframeEvent = document.getElementById('iframe').contentWindow;
+      iframeEvent.removeEventListener('click', Florence.Handler, true);
+      createWorkspace(pageUrl, collectionId, '', true);
+      $('#section-get_'+index).html('Paste').off();
+      $('#section-get_'+index).one('click', function() {
+        data.sections[index].uri = getPathNameTrimLast();
+        saveRelated(collectionId, pageUrl, data);
+      });
+    });
+
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = {
         "title": $('#section-uri_' + index).val(),

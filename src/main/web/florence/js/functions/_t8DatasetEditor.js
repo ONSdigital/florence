@@ -336,7 +336,7 @@ function datasetEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var datasetUrlData = myUrl.pathname + "/data";
       } else {
-        var datasetUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var datasetUrl = getPathNameTrimLast();
         var datasetUrlData = datasetUrl + "/data";
       }
       pastedUrl = null;
@@ -409,7 +409,7 @@ function datasetEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var usedInUrlData = myUrl.pathname + "/data";
       } else {
-        var usedInUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var usedInUrl = getPathNameTrimLast();
         var usedInUrlData = usedInUrl + "/data";
       }
       pastedUrl = null;
@@ -481,7 +481,7 @@ function datasetEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";
       } else {
-        var relatedMethodologyUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var relatedMethodologyUrl = getPathNameTrimLast();
         var relatedMethodologyUrlData = relatedMethodologyUrl + "/data";
       }
       pastedUrl = null;
