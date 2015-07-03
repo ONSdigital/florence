@@ -49,9 +49,14 @@ function t1Editor(collectionId, data) {
       $("#section-cancel_" + index).hide();
 
       $("#section-get_" + index).one('click', function () {
-
-        var sectionUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var pastedUrl = $('#uri_'+index).val();
+        if (pastedUrl) {
+          var myUrl = parseURL(pastedUrl);
+          var sectionUrlData = myUrl.pathname + "/data";
+        } else {
+        var sectionUrl = getPathNameTrimLast();
         var sectionUrlData = sectionUrl + "/data";
+        }
 
         $.ajax({
           url: sectionUrlData,

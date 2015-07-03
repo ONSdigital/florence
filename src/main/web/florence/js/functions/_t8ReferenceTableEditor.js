@@ -304,7 +304,7 @@ function referenceTableEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var usedInUrlData = myUrl.pathname + "/data";
       } else {
-        var usedInUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var usedInUrl = getPathNameTrimLast();
         var usedInUrlData = usedInUrl + "/data";
       }
       pastedUrl = null;
@@ -377,7 +377,7 @@ function referenceTableEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";
       } else {
-        var relatedMethodologyUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var relatedMethodologyUrl = getPathNameTrimLast();
         var relatedMethodologyUrlData = relatedMethodologyUrl + "/data";
       }
       pastedUrl = null;

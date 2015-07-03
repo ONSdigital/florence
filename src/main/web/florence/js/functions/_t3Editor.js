@@ -70,7 +70,7 @@ function t3Editor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var timeseriesUrlData = myUrl.pathname + "/data";
       } else {
-        var timeseriesUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var timeseriesUrl = getPathNameTrimLast();
         var timeseriesUrlData = timeseriesUrl + "/data";
       }
 
@@ -137,7 +137,7 @@ function t3Editor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var bulletinsUrlData = myUrl.pathname + "/data";
       } else {
-        var bulletinsUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var bulletinsUrl = getPathNameTrimLast();
         var bulletinsUrlData = bulletinsUrl + "/data";
       }
 
@@ -203,7 +203,7 @@ function t3Editor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var articlesUrlData = myUrl.pathname + "/data";
       } else {
-        var articlesUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var articlesUrl = getPathNameTrimLast();
         var articlesUrlData = articlesUrl + "/data";
       }
 
@@ -269,7 +269,7 @@ function t3Editor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var datasetsUrlData = myUrl.pathname + "/data";
       } else {
-        var datasetsUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var datasetsUrl = getPathNameTrimLast();
         var datasetsUrlData = datasetsUrl + "/data";
       }
 
