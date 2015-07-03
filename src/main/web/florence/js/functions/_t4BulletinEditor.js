@@ -242,7 +242,7 @@ function bulletinEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var bulletinUrlData = myUrl.pathname + "/data";
       } else {
-        var bulletinUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var bulletinUrl = getPathNameTrimLast();
         var bulletinUrlData = bulletinUrl + "/data";
       }
 
@@ -297,7 +297,7 @@ function bulletinEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var dataUrlData = myUrl.pathname + "/data";
       } else {
-        var dataUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var dataUrl = getPathNameTrimLast();
         var dataUrlData = dataUrl + "/data";
       }
 

@@ -72,7 +72,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageTitle = $('#pagename').val();
       }
       pageData.description.title = pageTitle;
-      uriSection = pageType + "s";
+      uriSection = "compendium";
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       if (releaseDateManual) {                                                          //Manual collections
         date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
@@ -81,18 +81,22 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
-      if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
+      if (!releaseDate) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      if (isInheriting) {
-        newUri = makeUrl(parent, pageTitleTrimmed, releaseUri);
-      } else {
+      if (isInheriting && pageType === 'compendium-landing-page') {
+        newUri = makeUrl(parent, releaseUri);
+      }
+      if (isInheriting && pageType === 'compendium-landing-page') {
+              newUri = makeUrl(parent, releaseUri);
+            }
+      else {
         if ((pageType === 'compendium-landing-page')) {
           newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
         } else {
-          newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
+          alert('Oops! Something went the wrong way.');
         }
       }
       pageData.uri = '/' + newUri;
@@ -164,19 +168,19 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       return {
         "description": {
           "edition": checkData.description.edition,
-          "nextRelease": checkData.description.nextRelease,
+          "releaseDate": checkData.description.releaseDate || "",
+          "nextRelease": checkData.description.nextRelease || "",
           "contact": {
-            "name": checkData.description.contact.name,
-            "email": checkData.description.contact.email,
-            "telephone": checkData.description.contact.telephone
+            "name": checkData.description.contact.name || "",
+            "email": checkData.description.contact.email || "",
+            "telephone": checkData.description.contact.telephone || ""
           },
           "abstract": "",
           "authors": [],
           "keywords": [],
           "metaDescription": "",
           "nationalStatistic": checkData.nationalStatistic,
-          "title": "",
-          "releaseDate": checkData.description.releaseDate
+          "title": ""
         },
         "sections": [],
         "accordion": [],
@@ -195,12 +199,12 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
     else if (pageType === 'compendium_data') {
       return {
         "description": {
-          "releaseDate": checkData.description.releaseDate,
-          "nextRelease": checkData.description.nextRelease,
+          "releaseDate": checkData.description.releaseDate || "",
+          "nextRelease": checkData.description.nextRelease || "",
           "contact": {
-            "name": checkData.description.contact.name,
-            "email": checkData.description.contact.email,
-            "telephone": checkData.description.contact.telephone
+            "name": checkData.description.contact.name || "",
+            "email": checkData.description.contact.email || "",
+            "telephone": checkData.description.contact.telephone || ""
           },
           "summary": "",
           "datasetId":"",
@@ -214,7 +218,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDocuments": [],
         "relatedMethodology": [],
         type: pageType,
-        "uri": "",
+        "uri": newUri,
         "parentUri": checkData.uri,
         "breadcrumb": []
       };

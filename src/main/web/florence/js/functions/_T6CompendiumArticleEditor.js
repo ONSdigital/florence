@@ -229,7 +229,7 @@ function compendiumArticleEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var articleUrlData = myUrl.pathname + "/data";
       } else {
-        var articleUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var articleUrl = getPathNameTrimLast();
         var articleUrlData = articleUrl + "/data";
       }
 
@@ -284,7 +284,7 @@ function compendiumArticleEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var dataUrlData = myUrl.pathname + "/data";
       } else {
-        var dataUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var dataUrl = getPathNameTrimLast();
         var dataUrlData = dataUrl + "/data";
       }
 
