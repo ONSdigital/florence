@@ -1,5 +1,5 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -7,7 +7,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function (checkData) {
       if (checkData.type === 'product_page' && pageType === 'compendium_landing_page') {
-        $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
@@ -20,7 +19,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         contentUrlTmp = parentUrl.split('/');
         contentUrlTmp.splice(-1, 1);
         contentUrl = contentUrlTmp.join('/');
-        $('#location').val(contentUrl);
+        parentUrl = contentUrl;
         breadcrumb = checkData.breadcrumb;
         pageTitle = checkData.description.title;
         isInheriting = true;
@@ -46,7 +45,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         '<label for="edition">Edition</label>' +
         '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
       );
-    } if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
+    } if ((pageType === 'compendium_landing_page') && (!releaseDate)) {
       $('.edition').append(
         '<br>' +
         '<label for="releaseDate">Release date</label>' +
@@ -62,8 +61,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val()
       pageData = pageTypeDataT6(pageType);
-      parent = $('#location').val().trim();
-      if (pageType === 'compendium-landing-page') {
+      if (pageType === 'compendium_landing_page') {
         pageData.description.edition = $('#edition').val();
       }
       if (title) {
@@ -72,7 +70,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageTitle = $('#pagename').val();
       }
       pageData.description.title = pageTitle;
-      uriSection = "compendium";
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       if (releaseDateManual) {                                                          //Manual collections
         date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
@@ -86,14 +83,18 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      if (isInheriting && pageType === 'compendium-landing-page') {
-        newUri = makeUrl(parent, releaseUri);
+      if (isInheriting && pageType === 'compendium_landing_page') {
+        newUri = makeUrl(parentUrl, releaseUri);
       }
-      if (isInheriting && pageType === 'compendium-landing-page') {
-              newUri = makeUrl(parent, releaseUri);
-            }
+      if (isInheriting && pageType === 'compendium_article') {
+        newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      }
+      if (isInheriting && pageType === 'compendium_data') {
+        newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      }
       else {
-        if ((pageType === 'compendium-landing-page')) {
+        if ((pageType === 'compendium_landing_page')) {
+          uriSection = "compendium";
           newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
         } else {
           alert('Oops! Something went the wrong way.');
