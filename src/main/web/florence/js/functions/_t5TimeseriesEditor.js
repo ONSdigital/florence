@@ -263,7 +263,7 @@ function timeseriesEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var documentUrlData = myUrl.pathname + "/data";
       } else {
-        var documentUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var documentUrl = getPathNameTrimLast();
         var documentUrlData = documentUrl + "/data";
       }
 
@@ -318,7 +318,7 @@ function timeseriesEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var timeseriesUrlData = myUrl.pathname + "/data";
       } else {
-        var timeseriesUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var timeseriesUrl = getPathNameTrimLast();
         var timeseriesUrlData = timeseriesUrl + "/data";
       }
 
@@ -373,7 +373,7 @@ function timeseriesEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var datasetUrlData = myUrl.pathname + "/data";
       } else {
-        var datasetUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var datasetUrl = getPathNameTrimLast();
         var datasetUrlData = datasetUrl + "/data";
       }
       pastedUrl = null;
@@ -445,7 +445,7 @@ function timeseriesEditor(collectionId, data) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";
       } else {
-        var relatedMethodologyUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var relatedMethodologyUrl = getPathNameTrimLast();
         var relatedMethodologyUrlData = relatedMethodologyUrl + "/data";
       }
       pastedUrl = null;

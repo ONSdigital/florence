@@ -57,7 +57,7 @@ function staticLandingPageEditor(collectionId, data) {
       createWorkspace(pageUrl, collectionId, '', true);
       $('#section-get_'+index).html('Paste').off();
       $('#section-get_'+index).one('click', function() {
-        data.sections[index].uri = $('#iframe')[0].contentWindow.document.location.pathname;
+        data.sections[index].uri = getPathNameTrimLast();
         saveRelated(collectionId, pageUrl, data);
       });
     });

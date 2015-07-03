@@ -54,7 +54,7 @@ function t1Editor(collectionId, data) {
           var myUrl = parseURL(pastedUrl);
           var sectionUrlData = myUrl.pathname + "/data";
         } else {
-        var sectionUrl = $('#iframe')[0].contentWindow.document.location.pathname;
+        var sectionUrl = getPathNameTrimLast();
         var sectionUrlData = sectionUrl + "/data";
         }
 
