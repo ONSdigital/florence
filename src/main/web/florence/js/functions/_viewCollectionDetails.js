@@ -68,7 +68,8 @@ function viewCollectionDetails(collectionId) {
             alert(error + ' File has not been deleted. Contact an administrator');
           }
         );
-      });
+      }
+    });
 
     $('.collection-selected .btn-edit-cancel').click(function () {
       $('.collection-selected').stop().animate({right: "-50%"}, 500);
