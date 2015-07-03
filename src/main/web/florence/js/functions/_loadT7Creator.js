@@ -1,5 +1,5 @@
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageName, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
+  var pageName, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
   if (parentUrl === '/') {
     parentUrl = '';
   }
@@ -10,7 +10,6 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function(checkData) {
       if ((pageType === 'static_landing_page' && checkData.type === 'home_page') || (pageType.match(/static_.+/) && checkData.type.match(/static_.+/))) {
-        $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
@@ -33,12 +32,11 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     $('form').submit(function(e) {
       e.preventDefault();
       pageData = pageTypeDataT7(pageType);
-      parent = $('#location').val().trim();
       pageName = $('#pagename').val().trim();
       pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
-      newUri = makeUrl(parent, pageNameTrimmed);
+      newUri = makeUrl(parentUrl, pageNameTrimmed);
       pageData.uri = '/' + newUri;
       if (pageData.releaseDate) {
         date = new Date(releaseDate);

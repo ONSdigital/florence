@@ -1,5 +1,5 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -7,7 +7,6 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function (checkData) {
       if (checkData.type === 'product_page') {
-        $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
@@ -39,7 +38,6 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val()
       pageData = pageTypeDataT8(pageType);
-      parent = $('#location').val().trim();
       pageTitle = $('#pagename').val();
       pageData.description.title = pageTitle;
       uriSection = "datasets";
@@ -50,7 +48,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      newUri = makeUrl(parent, uriSection, pageTitleTrimmed);
+      newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
       pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
 
