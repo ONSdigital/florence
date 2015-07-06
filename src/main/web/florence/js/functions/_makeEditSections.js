@@ -61,7 +61,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     compendiumEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'compendium_article') {
+  else if (pageData.type === 'compendium_chapter') {
     var html = templates.workEditT4Compendium(templateData);
     $('.workspace-menu').html(html);
     accordion();
@@ -83,6 +83,13 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   }
 
   else if (pageData.type === 'static_article') {
+    var html = templates.workEditT4Methodology(templateData);
+    $('.workspace-menu').html(html);
+    accordion();
+    methodologyEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_methodology') {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
     accordion();

@@ -84,7 +84,7 @@ function pageTypeDataT7(pageType) {
       "breadcrumb": [],
       "links" : []
     };
-  } else if (pageType === "static_article") {
+  } else if ((pageType === "static_article") || (pageType === "static_methodology")) {
     return {
       "description": {
         "contact": {
