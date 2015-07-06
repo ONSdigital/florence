@@ -1,4 +1,4 @@
-function compendiumArticleEditor(collectionId, data) {
+function compendiumChapterEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
@@ -31,8 +31,8 @@ function compendiumArticleEditor(collectionId, data) {
       });
     } else {
       dateTmp = $('#releaseDate').val();
-      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(a);
+      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(dateTmpFormatted);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       $('#releaseDate').on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();

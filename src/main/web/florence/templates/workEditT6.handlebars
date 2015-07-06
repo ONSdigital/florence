@@ -45,8 +45,8 @@
           </div>
           </div>
           <div id="abstract-p">
-            <label for="abstract">Abstract
-              <textarea class="auto-size" type="text" id="abstract">{{this.description.abstract}}</textarea>
+            <label for="abstract">Summary
+              <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
             </label>
           </div>
           <div id="natStat">
@@ -77,15 +77,15 @@
         <div id="sortable-chapters" class="edit-section__sortable">
           {{#each this.chapters}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea class="auto-size" id="chapter-title_{{@index}}" data-url="{{uri}}" placeholder="Type title here and click edit to add content">{{description.title}}</textarea>
-              <button class="btn-markdown-edit" id="chapter-edit_{{@index}}">Edit</button>
+              <p id="chapter-title_{{@index}}">{{description.title}}</p>
+              <button class="btn-markdown-edit" id="chapter-edit_{{@index}}" data-url="{{uri}}">Edit</button>
               <button class="btn-page-delete" id="chapter-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-chapter" id="addChapter">Add chapter</button>
+          <button class="btn-add-section" id="addChapter">Add chapter</button>
+          <!--<button class="btn-add-section" id="addLink">Add link</button>-->
         </div>
       </div>
     </div>

@@ -54,7 +54,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     timeseriesEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'compendium') {
+  else if (pageData.type === 'compendium_landing_page') {
     var html = templates.workEditT6(templateData);
     $('.workspace-menu').html(html);
     accordion();
@@ -65,7 +65,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     var html = templates.workEditT4Compendium(templateData);
     $('.workspace-menu').html(html);
     accordion();
-    compendiumArticleEditor(collectionId, pageData);
+    compendiumChapterEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'compendium_data') {

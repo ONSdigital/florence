@@ -4,6 +4,7 @@ function compendiumEditor(collectionId, data) {
   var newChapters = [], newDatasets = [];
   var lastIndexChapter, lastIndexDataset, lastIndexRelatedMethodology = 0;
   var setActiveTab, getActiveTab;
+  var pageUrl = localStorage.getItem('pageurl');
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -32,8 +33,8 @@ function compendiumEditor(collectionId, data) {
       });
     } else {
       dateTmp = $('#releaseDate').val();
-      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(a);
+      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(dateTmpFormatted);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       $('#releaseDate').on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -61,9 +62,13 @@ function compendiumEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#abstract").on('input', function () {
+  $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
+  });
+  $("#headline").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.headline = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         availableTags: data.description.keywords,
@@ -118,22 +123,13 @@ function compendiumEditor(collectionId, data) {
   });
 
   // Edit chapters
-  // Load and edition
+  // Load chapter to edit
   $(data.sections).each(function(index, section) {
-
+    lastIndexChapter = index + 1;
     $("#section-edit_"+index).click(function() {
-      var editedSectionValue = {
-        "title": $('#section-title_' + index).val(),
-        "markdown": $("#section-markdown_" + index).val()
-      };
-
-      var saveContent = function(updatedContent) {
-        data.sections[index].markdown = updatedContent;
-        data.sections[index].title = $('#section-title_' + index).val();
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
+      //open document
+      var selectedChapter = $('data-url').val();
+      viewWorkspace(collectionId, selectedChapter, 'edit');
     });
 
     // Delete
@@ -141,24 +137,30 @@ function compendiumEditor(collectionId, data) {
       $("#"+index).remove();
       data.sections.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
+      //delete related document
     });
   });
 
   //Add new chapter
   $("#addChapter").one('click', function () {
-    // append title and on edit create url (parent/chapter) and data.json
+    var pageTitle;
     $('#sortable-chapters').append(
-            '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
-            '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
-            '    <p><input type="file" name="files" id="files">' +
-            '    <p>' +
-            '  </form>' +
-            '  <div id="response"></div>' +
-            '  <ul id="list"></ul>' +
-            '</div>');
-    //save the uri in the data and redirect to the creator
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-    loadT6Creator (collectionId, data.description.releaseDate, 'compendium_article', parentUrl)
+      '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
+      '<textarea class="auto-size" id="new-chapter-title" placeholder="Type title here and click add"></textarea>' +
+      '<button class="btn-markdown-edit" id="chapter-add">Start editing chapter</button>' +
+      '</div>');
+    $('#new-chapter-title').on('input', function () {
+        $(this).textareaAutoSize();
+        pageTitle = $(this).val();
+      });
+    $('#chapter-add').on('click', function () {
+      if (pageTitle.length < 4) {
+        alert("This is not a valid file title");
+        return true;
+      } else {
+        loadT6Creator (collectionId, data.description.releaseDate, 'compendium_chapter', pageUrl, pageTitle)
+      }
+    });
   });
 
   function sortableSections() {
@@ -206,7 +208,6 @@ function compendiumEditor(collectionId, data) {
 
   //Add related methodology
   $("#addMethodology").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
     createWorkspace(pageUrl, collectionId, '', true);

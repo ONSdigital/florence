@@ -1,19 +1,30 @@
-function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
+function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
-  var parentUrlData = parentUrl + "/data";
+  if (parentUrl.charAt(0) !== '/') {
+    var parentUrlData = "/" + parentUrl + "/data";
+  } else {
+    var parentUrlData = parentUrl + "/data";
+  }
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.type === 'product_page' && pageType === 'compendium_landing_page') {
+      if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page') ||
+          (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
+          (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
         };
         inheritedBreadcrumb.push(parentBreadcrumb);
         breadcrumb = inheritedBreadcrumb;
-        submitFormHandler ();
+        pageData = pageTypeDataT6(pageType, checkData);
+        if (pageTitle) {
+          submit (pageTitle);
+        } else {
+          submitFormHandler ();
+        }
         return true;
       } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_landing_page') {
         contentUrlTmp = parentUrl.split('/');
@@ -25,10 +36,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         isInheriting = true;
         submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
-      } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_article') {
-
-      } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data') {
-
       } else {
         alert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
@@ -40,7 +47,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler (title, uri, isInheriting) {
-    if (pageType === 'compendium-landing-page') {
+    if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
         '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
@@ -60,7 +67,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
 
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val()
-      pageData = pageTypeDataT6(pageType);
       if (pageType === 'compendium_landing_page') {
         pageData.description.edition = $('#edition').val();
       }
@@ -69,6 +75,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageTitle = $('#pagename').val();
       }
+      // TO CHECK
       pageData.description.title = pageTitle;
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       if (releaseDateManual) {                                                          //Manual collections
@@ -86,20 +93,20 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       if (isInheriting && pageType === 'compendium_landing_page') {
         newUri = makeUrl(parentUrl, releaseUri);
       }
-      if (isInheriting && pageType === 'compendium_article') {
+      if (pageType === 'compendium_chapter') {
         newUri = makeUrl(parentUrl, pageTitleTrimmed);
       }
-      if (isInheriting && pageType === 'compendium_data') {
+      if (pageType === 'compendium_data') {
         newUri = makeUrl(parentUrl, pageTitleTrimmed);
       }
-      else {
-        if ((pageType === 'compendium_landing_page')) {
-          uriSection = "compendium";
-          newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
-        } else {
-          alert('Oops! Something went the wrong way.');
-        }
+      if ((pageType === 'compendium_landing_page')) {
+        uriSection = "compendium";
+        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
+      } else {
+        alert('Oops! Something went the wrong way.');
+        loadCreateScreen(collectionId);
       }
+
       pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
 
@@ -137,7 +144,42 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
     });
   }
 
-  function pageTypeDataT6(pageType) {
+function submit (title) {
+
+    pageData.description.title = pageTitle;
+    pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+
+    if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
+      newUri = makeUrl(parentUrl, pageTitleTrimmed);
+    }
+    else {
+      alert('Oops! Something went the wrong way.');
+      loadCreateScreen(collectionId);
+    }
+
+    pageData.uri = '/' + newUri;
+
+    postContent(collectionId, newUri, JSON.stringify(pageData),
+      success = function (message) {
+        console.log("Updating completed " + message);
+        viewWorkspace(newUri, collectionId, 'edit');
+        refreshPreview(newUri);
+      },
+      error = function (response) {
+        if (response.status === 400) {
+          alert("Cannot edit this file. It is already part of another collection.");
+        }
+        else if (response.status === 401) {
+          alert("You are not authorised to update content.");
+        }
+        else {
+          handleApiError(response);
+        }
+      }
+    );
+  }
+
+  function pageTypeDataT6(pageType, checkData) {
 
     if (pageType === "compendium_landing_page") {
       return {
@@ -153,7 +195,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
           "keywords": [],
           "metaDescription": "",
           "nationalStatistic": false,
-          "title": ""
+          "title": "",
+          "edition": ""
         },
         "datasets": [],
         "chapters": [],
@@ -165,10 +208,9 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
       };
     }
 
-    else if (pageType === 'compendium_article') {
+    else if (pageType === 'compendium_chapter') {
       return {
         "description": {
-          "edition": checkData.description.edition,
           "releaseDate": checkData.description.releaseDate || "",
           "nextRelease": checkData.description.nextRelease || "",
           "contact": {
@@ -180,8 +222,9 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
           "authors": [],
           "keywords": [],
           "metaDescription": "",
-          "nationalStatistic": checkData.nationalStatistic,
-          "title": ""
+          "nationalStatistic": checkData.description.nationalStatistic,
+          "title": "",
+          "headline": "",
         },
         "sections": [],
         "accordion": [],
@@ -189,10 +232,11 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedData": [],
         "externalLinks": [],
         "charts": [],
+        "tables": [],
         "correction": [],
         type: pageType,
         "uri": newUri,
-        "parentUri": checkData.uri,
+        "parent": {uri: checkData.uri},
         "breadcrumb": []
       };
     }
@@ -211,7 +255,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
           "datasetId":"",
           "keywords": [],
           "metaDescription": "",
-          "nationalStatistic": checkData.nationalStatistic,
+          "nationalStatistic": checkData.description.nationalStatistic,
           "title": ""
         },
         "downloads": [],
@@ -220,7 +264,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedMethodology": [],
         type: pageType,
         "uri": newUri,
-        "parentUri": checkData.uri,
+        "parent": {uri: checkData.uri},
         "breadcrumb": []
       };
     }
