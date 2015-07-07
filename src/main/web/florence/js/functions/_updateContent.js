@@ -1,10 +1,10 @@
-function updateContent(collectionName, path, content) {
-  postContent(collectionName, path, content,
+function updateContent(collectionId, path, content) {
+  postContent(collectionId, path, content,
     success = function (response) {
       //console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
       refreshPreview(path);
-      loadPageDataIntoEditor(path, collectionName);
+      loadPageDataIntoEditor(path, collectionId);
     },
     error = function (response) {
       if (response.status === 400) {

@@ -1,5 +1,5 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, parentData;
   if (parentUrl.charAt(0) !== '/') {
     var parentUrlData = "/" + parentUrl + "/data";
   } else {
@@ -10,6 +10,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
+      parentData = checkData;
       if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
@@ -21,7 +22,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         breadcrumb = inheritedBreadcrumb;
         pageData = pageTypeDataT6(pageType, checkData);
         if (pageTitle) {
-          submit (pageTitle);
+          submitNoForm (pageTitle);
         } else {
           submitFormHandler ();
         }
@@ -144,7 +145,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     });
   }
 
-function submit (title) {
+function submitNoFormNoForm (title) {
 
     pageData.description.title = pageTitle;
     pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -162,6 +163,7 @@ function submit (title) {
     postContent(collectionId, newUri, JSON.stringify(pageData),
       success = function (message) {
         console.log("Updating completed " + message);
+        updateParentLink (newUri);
         viewWorkspace(newUri, collectionId, 'edit');
         refreshPreview(newUri);
       },
@@ -274,5 +276,29 @@ function submit (title) {
     }
   }
 
+  function updateParentLink (newUri) {
+    if (pageType === "compendium_chapter") {
+      parentData.chapters.push({uri: newUri})
+    }
+    if (pageType === 'compendium_data') {
+      parentData.datasets.push({uri: newUri})
+    }
+    postContent(collectionId, parentUrl, JSON.stringify(parentData),
+      success = function (message) {
+        console.log("Parent link updating completed " + message);
+      },
+      error = function (response) {
+        if (response.status === 400) {
+          alert("Cannot edit this file. It is already part of another collection.");
+        }
+        else if (response.status === 401) {
+          alert("You are not authorised to update content.");
+        }
+        else {
+          handleApiError(response);
+        }
+      }
+    );
+  }
 }
 

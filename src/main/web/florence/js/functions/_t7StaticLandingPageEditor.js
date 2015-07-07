@@ -83,7 +83,7 @@ function staticLandingPageEditor(collectionId, data) {
 //      get the path
 //      deleteContent(collectionId, path, function() {
 //        refreshPreview(path);
-//        loadPageDataIntoEditor(path, collectionName);
+//        loadPageDataIntoEditor(path, collectionId);
 //      }, error);
 //      console.log('File deleted');
       $("#"+index).remove();

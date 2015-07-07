@@ -2,6 +2,7 @@ function compendiumChapterEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
+  var parentUrl = data.parent;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -62,7 +63,7 @@ function compendiumChapterEditor(collectionId, data) {
   });
   $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.summary = $(this).val();
+    data.description.abstract = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         availableTags: data.description.keywords,
@@ -195,7 +196,7 @@ function compendiumChapterEditor(collectionId, data) {
 
   // Related article
   // Load
-  if (data.relatedArticles.length === 0) {
+  if (!data.relatedArticles) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedArticles).each(function (iArticle, article) {
@@ -350,6 +351,12 @@ function compendiumChapterEditor(collectionId, data) {
   editNav.on('click', '.btn-edit-save', function () {
     save();
     updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  editNav.on('click', '#save-and-exit', function () {
+    save();
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    createWorkspace(parentUrl, collectionId, 'edit')
   });
 
   // completed to review

@@ -207,7 +207,7 @@ function bulletinEditor(collectionId, data) {
 
   // Related bulletin
   // Load
-  if (data.relatedBulletins.length === 0) {
+  if (!data.relatedBulletins) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedBulletins).each(function (iBulletin) {
