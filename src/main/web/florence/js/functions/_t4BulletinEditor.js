@@ -32,8 +32,8 @@ function bulletinEditor(collectionId, data) {
       });
     } else {
       dateTmp = $('#releaseDate').val();
-      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(a);
+      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(dateTmpFormatted);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       $('#releaseDate').on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -207,7 +207,7 @@ function bulletinEditor(collectionId, data) {
 
   // Related bulletin
   // Load
-  if (data.relatedBulletins.length === 0) {
+  if (!data.relatedBulletins) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedBulletins).each(function (iBulletin) {

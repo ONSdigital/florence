@@ -1,5 +1,5 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var parent, pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -7,7 +7,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function (checkData) {
       if (checkData.type === 'product_page') {
-        $('#location').val(parentUrl);
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
@@ -20,7 +19,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         contentUrlTmp = parentUrl.split('/');
         contentUrlTmp.splice(-1, 1);
         contentUrl = contentUrlTmp.join('/');
-        $('#location').val(contentUrl);
+        parentUrl = contentUrl;
         breadcrumb = checkData.breadcrumb;
         pageTitle = checkData.description.title;
         isInheriting = true;
@@ -58,7 +57,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val()
       pageData = pageTypeDataT4(pageType);
-      parent = $('#location').val().trim();
       pageData.description.edition = $('#edition').val();
       if (title) {
         //do nothing;
@@ -81,9 +79,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = releaseDate;
       }
       if (isInheriting) {
-        newUri = makeUrl(parent, releaseUri);
+        newUri = makeUrl(parentUrl, releaseUri);
       } else {
-        newUri = makeUrl(parent, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
       pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
@@ -150,6 +148,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedData": [],
         "links": [],
         "charts": [],
+        "tables": [],
         "correction": [],
         type: pageType,
         "uri": "",
@@ -181,6 +180,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedData": [],
         "links": [],
         "charts": [],
+        "tables": [],
         "correction": [],
         type: pageType,
         "uri": "",
