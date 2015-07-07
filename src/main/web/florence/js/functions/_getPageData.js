@@ -1,6 +1,6 @@
-function getPageData(collectionName, path, success, error) {
+function getPageData(collectionId, path, success, error) {
   return $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + path,
+    url: "/zebedee/content/" + collectionId + "?uri=" + path,
     dataType: 'json',
     type: 'GET',
     success: function (response) {

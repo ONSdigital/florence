@@ -1,9 +1,9 @@
-function loadReviewScreen(collectionName) {
+function loadReviewScreen(collectionId) {
 
   var editButton = $('.fl-review-page-edit-button'),
     reviewButton = $('.fl-review-page-review-button');
 
-  getCollection(collectionName,
+  getCollection(collectionId,
     success = function (response) {
       populateAwaitingReviewList(response);
     },
@@ -19,7 +19,7 @@ function loadReviewScreen(collectionName) {
     data.completeUris = data.completeUris.filter(function(uri) { return PathUtils.isJsonFile(uri) });
 
     $.each(data.completeUris, function (i, uri) {
-      pageDataRequests.push(getPageData(collectionName, uri,
+      pageDataRequests.push(getPageData(collectionId, uri,
         success = function (response) {
           var path = uri.replace('/data.json', '');
           path = path.length === 0 ? '/' : path;
@@ -51,7 +51,7 @@ function loadReviewScreen(collectionName) {
     });
 
     editButton.click(function () {
-      loadPageDataIntoEditor(collectionName, true);
+      loadPageDataIntoEditor(collectionId, true);
       $('.fl-main-menu__item--review .fl-main-menu__link').removeClass('fl-main-menu__link--active');
       $('.fl-main-menu__item--edit .fl-main-menu__link').addClass('fl-main-menu__link--active');
     });
@@ -63,7 +63,7 @@ function loadReviewScreen(collectionName) {
         path = '';
       }
       listItem.hide();
-      postReview(collectionName, path);
+      postReview(collectionId, path);
     });
   }
 
@@ -129,8 +129,8 @@ function updateReviewScreenWithCollection(collection) {
   }
 }
 
-function updateReviewScreen(collectionName) {
-  getCollection(collectionName,
+function updateReviewScreen(collectionId) {
+  getCollection(collectionId,
     success = function (response) {
       updateReviewScreenWithCollection(response);
     },

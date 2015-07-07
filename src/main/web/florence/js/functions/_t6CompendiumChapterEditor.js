@@ -1,7 +1,8 @@
-function compendiumArticleEditor(collectionId, data) {
+function compendiumChapterEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
+  var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -31,8 +32,8 @@ function compendiumArticleEditor(collectionId, data) {
       });
     } else {
       dateTmp = $('#releaseDate').val();
-      a = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(a);
+      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(dateTmpFormatted);
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
       $('#releaseDate').on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -62,7 +63,7 @@ function compendiumArticleEditor(collectionId, data) {
   });
   $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.summary = $(this).val();
+    data.description.abstract = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         availableTags: data.description.keywords,
@@ -195,7 +196,7 @@ function compendiumArticleEditor(collectionId, data) {
 
   // Related article
   // Load
-  if (data.relatedArticles.length === 0) {
+  if (!data.relatedArticles) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedArticles).each(function (iArticle, article) {
@@ -350,6 +351,15 @@ function compendiumArticleEditor(collectionId, data) {
   editNav.on('click', '.btn-edit-save', function () {
     save();
     updateContent(collectionId, getPathName(), JSON.stringify(data));
+  });
+
+  editNav.on('click', '#save-and-exit', function () {
+    save();
+    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    setTimeout(function () {
+      refreshPreview(parentUrl)
+      viewWorkspace(parentUrl, collectionId, 'edit')
+    }, 500);
   });
 
   // completed to review

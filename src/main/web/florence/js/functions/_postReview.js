@@ -1,8 +1,8 @@
-function saveAndReviewContent(collectionName, path, content) {
-  postContent(collectionName, path, content,
+function saveAndReviewContent(collectionId, path, content) {
+  postContent(collectionId, path, content,
     success = function (response) {
       Florence.Editor.isDirty = false;
-      postReview(collectionName, path);
+      postReview(collectionId, path);
     },
     error = function (response) {
       if (response.status === 400) {
@@ -14,17 +14,17 @@ function saveAndReviewContent(collectionName, path, content) {
     });
 }
 
-function postReview(collectionName, path) {
+function postReview(collectionId, path) {
 
   // Open the file for editing
   $.ajax({
-    url: "/zebedee/review/" + collectionName + "?uri=" + path + "/data.json",
+    url: "/zebedee/review/" + collectionId + "?uri=" + path + "/data.json",
     dataType: 'json',
     type: 'POST',
     success: function () {
       //console.log("File set to reviewed.");
       //alert("The file is now awaiting approval.");
-      viewCollections(collectionName);
+      viewCollections(collectionId);
     },
     error: function () {
       console.log('Error');
