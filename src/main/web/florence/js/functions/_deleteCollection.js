@@ -1,6 +1,6 @@
-function deleteCollection(collectionName, success, error) {
+function deleteCollection(collectionId, success, error) {
   $.ajax({
-    url: "/zebedee/collection/" + collectionName,
+    url: "/zebedee/collection/" + collectionId,
     type: 'DELETE',
     success: function (response) {
       if (success)

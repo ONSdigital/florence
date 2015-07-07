@@ -124,18 +124,20 @@ function compendiumEditor(collectionId, data) {
 
   // Edit chapters
   // Load chapter to edit
-  $(data.sections).each(function(index, section) {
+  $(data.chapters).each(function(index, section) {
     lastIndexChapter = index + 1;
-    $("#section-edit_"+index).click(function() {
+
+    $("#chapter-edit_"+index).click(function() {
       //open document
-      var selectedChapter = $('data-url').val();
-      viewWorkspace(collectionId, selectedChapter, 'edit');
+      var selectedChapter = $(this.previousElementSibling).attr('data-url');
+      refreshPreview(selectedChapter);
+      viewWorkspace(selectedChapter, collectionId, 'edit');
     });
 
     // Delete
-    $("#section-delete_"+index).click(function() {
+    $("#chapter-delete_"+index).click(function() {
       $("#"+index).remove();
-      data.sections.splice(index, 1);
+      data.chapters.splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
       //delete related document
     });
@@ -164,7 +166,7 @@ function compendiumEditor(collectionId, data) {
   });
 
   function sortableSections() {
-    $("#sortable-sections").sortable();
+    $("#sortable-chapters").sortable();
   }
   sortableSections();
 
@@ -284,15 +286,13 @@ function compendiumEditor(collectionId, data) {
     });
 
   function save() {
-    // Sections
-    var orderSection = $("#sortable-sections").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-//      var markdown = $('#section-markdown_' + nameS).val();
-      var markdown = data.sections[parseInt(nameS)].markdown;
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
+    // Chapters
+    var orderChapter = $("#sortable-chapters").sortable('toArray');
+    $(orderChapter).each(function (indexC, nameC) {
+      var uri = data.chapters[parseInt(nameC)].uri;
+      newChapters[indexC] = {uri: uri};
     });
-    data.sections = newSections;
+    data.chapters = newChapters;
     // Tabs
     var orderTab = $("#sortable-tabs").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {

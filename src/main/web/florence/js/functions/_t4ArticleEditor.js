@@ -195,7 +195,7 @@ function articleEditor(collectionId, data) {
 
   // Related article
   // Load
-  if (data.relatedArticles.length === 0) {
+  if (!data.relatedArticles) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedArticles).each(function (iArticle, article) {
