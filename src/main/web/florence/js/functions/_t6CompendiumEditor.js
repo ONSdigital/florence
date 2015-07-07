@@ -1,7 +1,7 @@
 function compendiumEditor(collectionId, data) {
 
 //  var index = data.release;
-  var newChapters = [], newDatasets = [];
+  var newChapters = [], newDatasets = [], newRelatedMethodology = [];
   var lastIndexChapter, lastIndexDataset, lastIndexRelatedMethodology = 0;
   var setActiveTab, getActiveTab;
   var pageUrl = localStorage.getItem('pageurl');
@@ -129,17 +129,41 @@ function compendiumEditor(collectionId, data) {
 
     $("#chapter-edit_"+index).click(function() {
       //open document
-      var selectedChapter = $(this.previousElementSibling).attr('data-url');
+      var selectedChapter = $("#chapter-title_"+index).attr('data-url');
       refreshPreview(selectedChapter);
       viewWorkspace(selectedChapter, collectionId, 'edit');
     });
 
     // Delete
     $("#chapter-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.chapters.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-      //delete related document
+      var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
+      if (result === true) {
+        var selectedChapter = $("#chapter-title_"+index).attr('data-url');
+        var path = getPathName();
+        $("#"+index).remove();
+        data.chapters.splice(index, 1);
+        postContent(collectionId, path, JSON.stringify(data),
+          success = function (response) {
+            //console.log("Updating completed " + response);
+            Florence.Editor.isDirty = false;
+            deleteContent(collectionId, selectedChapter, function() {
+              refreshPreview(path);
+              loadPageDataIntoEditor(path, collectionId);
+            }, error);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+              alert("You are not authorised to update content.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      }
     });
   });
 
@@ -293,14 +317,7 @@ function compendiumEditor(collectionId, data) {
       newChapters[indexC] = {uri: uri};
     });
     data.chapters = newChapters;
-    // Tabs
-    var orderTab = $("#sortable-tabs").sortable('toArray');
-    $(orderTab).each(function (indexT, nameT) {
-      var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab-title_' + nameT).val();
-      newTabs[indexT] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
+    // Dataset
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){

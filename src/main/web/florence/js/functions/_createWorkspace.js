@@ -11,10 +11,10 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
   } else {
     var currentPath = '';
     if (path) {
-      if (path.charAt(0) === '/') {
-        path = path.slice(1);
-      }
       currentPath = path;
+    }
+    if (currentPath.charAt(0) === '/') {
+      currentPath = currentPath.slice(1);
     }
 
     localStorage.removeItem("pageurl");

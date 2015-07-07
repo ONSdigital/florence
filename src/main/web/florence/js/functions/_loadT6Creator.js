@@ -1,5 +1,5 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, parentData;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
   if (parentUrl.charAt(0) !== '/') {
     var parentUrlData = "/" + parentUrl + "/data";
   } else {
@@ -10,7 +10,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      parentData = checkData;
+      parentData = $.extend(true, {}, checkData);
       if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
@@ -76,7 +76,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       } else {
         pageTitle = $('#pagename').val();
       }
-      // TO CHECK
+
       pageData.description.title = pageTitle;
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       if (releaseDateManual) {                                                          //Manual collections
@@ -86,24 +86,23 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
-      if (!releaseDate) {
+      if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else {
+      } else if (pageType === 'compendium-landing-page') {
         pageData.description.releaseDate = releaseDate;
       }
+
       if (isInheriting && pageType === 'compendium_landing_page') {
         newUri = makeUrl(parentUrl, releaseUri);
       }
-      if (pageType === 'compendium_chapter') {
-        newUri = makeUrl(parentUrl, pageTitleTrimmed);
-      }
-      if (pageType === 'compendium_data') {
-        newUri = makeUrl(parentUrl, pageTitleTrimmed);
-      }
-      if ((pageType === 'compendium_landing_page')) {
+      if (pageType === 'compendium_landing_page') {
         uriSection = "compendium";
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
-      } else {
+      }
+      if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
+        newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      }
+      else {
         alert('Oops! Something went the wrong way.');
         loadCreateScreen(collectionId);
       }
@@ -125,8 +124,12 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         postContent(collectionId, newUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
-            viewWorkspace(newUri, collectionId, 'edit');
-            refreshPreview(newUri);
+            if (pageType === 'compendium-landing-page') {
+              viewWorkspace(newUri, collectionId, 'edit');
+              refreshPreview(newUri);
+            } else {
+              updateParentLink ('/' + newUri);
+            }
           },
           error = function (response) {
             if (response.status === 400) {
@@ -145,7 +148,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     });
   }
 
-function submitNoFormNoForm (title) {
+function submitNoForm (title) {
 
     pageData.description.title = pageTitle;
     pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -159,13 +162,12 @@ function submitNoFormNoForm (title) {
     }
 
     pageData.uri = '/' + newUri;
+    pageData.breadcrumb = breadcrumb;
 
     postContent(collectionId, newUri, JSON.stringify(pageData),
       success = function (message) {
         console.log("Updating completed " + message);
-        updateParentLink (newUri);
-        viewWorkspace(newUri, collectionId, 'edit');
-        refreshPreview(newUri);
+        updateParentLink ('/' + newUri);
       },
       error = function (response) {
         if (response.status === 400) {
@@ -276,15 +278,17 @@ function submitNoFormNoForm (title) {
     }
   }
 
-  function updateParentLink (newUri) {
+  function updateParentLink (childUri) {
     if (pageType === "compendium_chapter") {
-      parentData.chapters.push({uri: newUri})
+      parentData.chapters.push({uri: childUri})
     }
     if (pageType === 'compendium_data') {
-      parentData.datasets.push({uri: newUri})
+      parentData.datasets.push({uri: childUri})
     }
     postContent(collectionId, parentUrl, JSON.stringify(parentData),
       success = function (message) {
+        viewWorkspace(childUri, collectionId, 'edit');
+        refreshPreview(childUri);
         console.log("Parent link updating completed " + message);
       },
       error = function (response) {

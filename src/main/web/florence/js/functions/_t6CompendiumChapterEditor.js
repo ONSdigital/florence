@@ -2,7 +2,7 @@ function compendiumChapterEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
   var lastIndexRelated;
-  var parentUrl = data.parent;
+  var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -356,7 +356,10 @@ function compendiumChapterEditor(collectionId, data) {
   editNav.on('click', '#save-and-exit', function () {
     save();
     updateContent(collectionId, getPathName(), JSON.stringify(data));
-    createWorkspace(parentUrl, collectionId, 'edit')
+    setTimeout(function () {
+      refreshPreview(parentUrl)
+      viewWorkspace(parentUrl, collectionId, 'edit')
+    }, 500);
   });
 
   // completed to review
