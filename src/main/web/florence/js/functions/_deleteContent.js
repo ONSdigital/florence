@@ -1,7 +1,7 @@
-function deleteContent(collectionName, path, success, error) {
+function deleteContent(collectionId, path, success, error) {
   // send ajax call
   $.ajax({
-    url: "/zebedee/content/" + collectionName + "?uri=" + path,
+    url: "/zebedee/content/" + collectionId + "?uri=" + path,
     type: 'DELETE',
     success: function (response) {
       if (success)

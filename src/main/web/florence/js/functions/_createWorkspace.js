@@ -1,4 +1,4 @@
-function createWorkspace(path, collectionName, menu, stopEventListener) {
+function createWorkspace(path, collectionId, menu, stopEventListener) {
 
   if(stopEventListener) {
     document.getElementById('iframe').onload = function () {
@@ -11,10 +11,10 @@ function createWorkspace(path, collectionName, menu, stopEventListener) {
   } else {
     var currentPath = '';
     if (path) {
-      if (path.charAt(0) === '/') {
-        path = path.slice(1);
-      }
       currentPath = path;
+    }
+    if (currentPath.charAt(0) === '/') {
+      currentPath = currentPath.slice(1);
     }
 
     localStorage.removeItem("pageurl");
@@ -48,13 +48,13 @@ function createWorkspace(path, collectionName, menu, stopEventListener) {
       menuItem.addClass('selected');
 
       if (menuItem.is('#browse')) {
-        loadBrowseScreen(collectionName, 'click');
+        loadBrowseScreen(collectionId, 'click');
       } else if (menuItem.is('#create')) {
-        loadCreateScreen(collectionName);
+        loadCreateScreen(collectionId);
       } else if (menuItem.is('#edit')) {
         loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
       } else {
-        loadBrowseScreen(collectionName);
+        loadBrowseScreen(collectionId);
       }
     }
 
@@ -76,7 +76,7 @@ function createWorkspace(path, collectionName, menu, stopEventListener) {
         iframeEvent.addEventListener('click', Florence.Handler, true);
     }
 
-    viewWorkspace(path, collectionName, menu);
+    viewWorkspace(path, collectionId, menu);
 
   }
 };

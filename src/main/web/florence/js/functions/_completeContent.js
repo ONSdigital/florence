@@ -1,8 +1,8 @@
-function saveAndCompleteContent(collectionName, path, content) {
-  postContent(collectionName, path, content,
+function saveAndCompleteContent(collectionId, path, content) {
+  postContent(collectionId, path, content,
     success = function (response) {
       Florence.Editor.isDirty = false;
-      completeContent(collectionName, path);
+      completeContent(collectionId, path);
     },
     error = function (response) {
       if (response.status === 400) {
@@ -17,16 +17,16 @@ function saveAndCompleteContent(collectionName, path, content) {
     });
 }
 
-function completeContent(collectionName, path) {
+function completeContent(collectionId, path) {
   // Update content
   $.ajax({
-    url: "/zebedee/complete/" + collectionName + "?uri=" + path + "/data.json",
+    url: "/zebedee/complete/" + collectionId + "?uri=" + path + "/data.json",
     dataType: 'json',
     type: 'POST',
     success: function (message) {
       //console.log("Page is now marked as complete " + message);
       //alert("This content has now been submitted for internal review.")
-      viewCollections(collectionName);
+      viewCollections(collectionId);
     },
     error: function (response) {
       handleApiError(response);
