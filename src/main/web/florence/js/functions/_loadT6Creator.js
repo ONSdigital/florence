@@ -86,20 +86,21 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
-      if ((pageType === 'compendium-landing-page') && (!releaseDate)) {
+      if (pageType === 'compendium_landing_page' && releaseDate == null) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else if (pageType === 'compendium-landing-page') {
+      }
+      else if (pageType === 'compendium-landing-page' && releaseDate) {
         pageData.description.releaseDate = releaseDate;
       }
 
       if (isInheriting && pageType === 'compendium_landing_page') {
         newUri = makeUrl(parentUrl, releaseUri);
       }
-      if (pageType === 'compendium_landing_page') {
+      else if (pageType === 'compendium_landing_page') {
         uriSection = "compendium";
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
-      if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
+      else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
         newUri = makeUrl(parentUrl, pageTitleTrimmed);
       }
       else {
