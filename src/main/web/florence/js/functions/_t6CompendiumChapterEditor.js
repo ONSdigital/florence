@@ -1,7 +1,7 @@
 function compendiumChapterEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
-  var lastIndexRelated;
+  var lastIndexArticle, lastIndexData;
   var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
@@ -196,11 +196,11 @@ function compendiumChapterEditor(collectionId, data) {
 
   // Related article
   // Load
-  if (!data.relatedArticles) {
-    lastIndexRelated = 0;
+  if (!data.relatedArticles || data.relatedArticles.length === 0) {
+    lastIndexArticle = 0;
   } else {
     $(data.relatedArticles).each(function (iArticle, article) {
-      lastIndexRelated = iArticle + 1;
+      lastIndexArticle = iArticle + 1;
 
       // Delete
       $("#article-delete_" + iArticle).click(function () {
@@ -218,14 +218,14 @@ function compendiumChapterEditor(collectionId, data) {
         iframeEvent.removeEventListener('click', Florence.Handler, true);
 
     $('#sortable-related').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="article-uri_' + lastIndexRelated + '" placeholder="Go to the related article and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="article-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="article-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '<div id="' + lastIndexArticle + '" class="edit-section__sortable-item">' +
+        '  <textarea id="article-uri_' + lastIndexArticle + '" placeholder="Go to the related article and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="article-get_' + lastIndexArticle + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="article-cancel_' + lastIndexArticle + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $("#article-get_" + lastIndexRelated).one('click', function () {
-      var pastedUrl = $('#article-uri_'+lastIndexRelated).val();
+    $("#article-get_" + lastIndexArticle).one('click', function () {
+      var pastedUrl = $('#article-uri_'+lastIndexArticle).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var articleUrlData = myUrl.pathname + "/data";
@@ -255,7 +255,7 @@ function compendiumChapterEditor(collectionId, data) {
       });
     });
 
-    $("#article-cancel_" + lastIndexRelated).one('click', function () {
+    $("#article-cancel_" + lastIndexArticle).one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
@@ -265,6 +265,23 @@ function compendiumChapterEditor(collectionId, data) {
   }
   sortableRelated();
 
+  // Related Dataset
+  // Load
+  if (!data.relatedData || data.relatedData.length === 0) {
+    lastIndexData = 0;
+  } else {
+    $(data.relatedData).each(function (iData, data) {
+      lastIndexArticle = iData + 1;
+
+      // Delete
+      $("#data-delete_" + iData).click(function () {
+        $("#" + iData).remove();
+        data.relatedData.splice(iData, 1);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      });
+    });
+  }
+
   //Add new related data
   $("#addData").one('click', function () {
     var pageUrl = localStorage.getItem('pageurl');
@@ -273,14 +290,14 @@ function compendiumChapterEditor(collectionId, data) {
     createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-related-data').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="data-uri_' + lastIndexRelated + '" placeholder="Go to the related data and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="data-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '<div id="' + lastIndexData + '" class="edit-section__sortable-item">' +
+        '  <textarea id="data-uri_' + lastIndexData + '" placeholder="Go to the related data and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="data-get_' + lastIndexData + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexData + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $("#data-get_" + lastIndexRelated).one('click', function () {
-      var pastedUrl = $('#data-uri_'+lastIndexRelated).val();
+    $("#data-get_" + lastIndexData).one('click', function () {
+      var pastedUrl = $('#data-uri_'+lastIndexData).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var dataUrlData = myUrl.pathname + "/data";
@@ -310,7 +327,7 @@ function compendiumChapterEditor(collectionId, data) {
       });
     });
 
-    $("#data-cancel_" + lastIndexRelated).one('click', function () {
+    $("#data-cancel_" + lastIndexData).one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
@@ -340,7 +357,7 @@ function compendiumChapterEditor(collectionId, data) {
   });
 
   function sortableLinks() {
-    $("#sortable-external").sortable();
+    $("#sortable-links").sortable();
   }
   sortableLinks();
 
@@ -401,14 +418,13 @@ function compendiumChapterEditor(collectionId, data) {
     });
     data.relatedArticles = newRelated;
     // External links
-    var orderLink = $("#sortable-external").sortable('toArray');
+    var orderLink = $("#sortable-links").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link-title_'+nameL).val();
-      var link = $('#link-url_'+nameL).val();
-      newLinks[indexL] = {url: link, linkText: displayText};
+      var displayText = $('#link-markdown_'+nameL).val();
+      var link = $('#link-uri_'+nameL).val();
+      newLinks[indexL] = {uri: link, title: displayText};
     });
-    data.externalLinks = newLinks;
-//    console.log(data);
+    data.links = newLinks;
   }
 }
 

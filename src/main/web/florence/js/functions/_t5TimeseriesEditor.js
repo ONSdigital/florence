@@ -1,7 +1,7 @@
 function timeseriesEditor(collectionId, data) {
 
   var newSections = [], newNotes = [], newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
-  var lastIndexRelated;
+  var lastIndexDocument, lastIndexTimeseries, lastIndexDataset, lastIndexRelatedMethodology;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -228,16 +228,16 @@ function timeseriesEditor(collectionId, data) {
 
   // Related documents
   // Load
-  if (!data.relatedDocuments) {
-    lastIndexRelated = 0;
+  if (!data.relatedDocuments || data.relatedDocuments.length === 0) {
+    lastIndexDocument = 0;
   } else {
-    $(data.relatedDocuments).each(function (iArticle, document) {
-      lastIndexRelated = iArticle + 1;
+    $(data.relatedDocuments).each(function (iDoc, document) {
+      lastIndexDocument = iDoc + 1;
 
       // Delete
-      $("#document-delete_" + iArticle).click(function () {
-        $("#" + iArticle).remove();
-        data.relatedDocuments.splice(iArticle, 1);
+      $("#document-delete_" + iDoc).click(function () {
+        $("#" + iDoc).remove();
+        data.relatedDocuments.splice(iDoc, 1);
         updateContent(collectionId, getPathName(), JSON.stringify(data));
       });
     });
@@ -251,14 +251,14 @@ function timeseriesEditor(collectionId, data) {
     createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-document').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="document-uri_' + lastIndexRelated + '" placeholder="Go to the related document and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="document-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="document-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '<div id="' + lastIndexDocument + '" class="edit-section__sortable-item">' +
+        '  <textarea id="document-uri_' + lastIndexDocument + '" placeholder="Go to the related document and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="document-get_' + lastIndexDocument + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="document-cancel_' + lastIndexDocument + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $("#document-get_" + lastIndexRelated).one('click', function () {
-      var pastedUrl = $('#document-uri_'+lastIndexRelated).val();
+    $("#document-get_" + lastIndexDocument).one('click', function () {
+      var pastedUrl = $('#document-uri_'+lastIndexDocument).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var documentUrlData = myUrl.pathname + "/data";
@@ -288,7 +288,7 @@ function timeseriesEditor(collectionId, data) {
       });
     });
 
-    $("#document-cancel_" + lastIndexRelated).one('click', function () {
+    $("#document-cancel_" + lastIndexDocument).one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
@@ -298,6 +298,23 @@ function timeseriesEditor(collectionId, data) {
   }
   sortableDocument();
 
+  // Related timeseries
+  // Load
+  if (!data.relatedData || data.relatedData.length === 0) {
+    lastIndexData = 0;
+  } else {
+    $(data.relatedData).each(function (iData, data) {
+      lastIndexArticle = iData + 1;
+
+      // Delete
+      $("#timeseries-delete_" + iData).click(function () {
+        $("#" + iData).remove();
+        data.relatedData.splice(iData, 1);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      });
+    });
+  }
+
   //Add new related timeseries
   $("#addTimeseries").one('click', function () {
     var pageUrl = localStorage.getItem('pageurl');
@@ -306,14 +323,14 @@ function timeseriesEditor(collectionId, data) {
     createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-timeseries').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="timeseries-uri_' + lastIndexRelated + '" placeholder="Go to the related timeseries and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="timeseries-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="timeseries-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '<div id="' + lastIndexTimeseries + '" class="edit-section__sortable-item">' +
+        '  <textarea id="timeseries-uri_' + lastIndexTimeseries + '" placeholder="Go to the related timeseries and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="timeseries-get_' + lastIndexTimeseries + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="timeseries-cancel_' + lastIndexTimeseries + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $("#timeseries-get_" + lastIndexRelated).one('click', function () {
-      var pastedUrl = $('#timeseries-uri_'+lastIndexRelated).val();
+    $("#timeseries-get_" + lastIndexTimeseries).one('click', function () {
+      var pastedUrl = $('#timeseries-uri_'+lastIndexTimeseries).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var timeseriesUrlData = myUrl.pathname + "/data";
@@ -343,7 +360,7 @@ function timeseriesEditor(collectionId, data) {
       });
     });
 
-    $("#timeseries-cancel_" + lastIndexRelated).one('click', function () {
+    $("#timeseries-cancel_" + lastIndexTimeseries).one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
@@ -361,14 +378,14 @@ function timeseriesEditor(collectionId, data) {
     createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-dataset').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="dataset-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="dataset-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '<div id="' + lastIndexDataset + '" class="edit-section__sortable-item">' +
+        '  <textarea id="dataset-uri_' + lastIndexDataset + '" placeholder="Go to the related dataset and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="dataset-get_' + lastIndexDataset + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="dataset-cancel_' + lastIndexDataset + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $("#dataset-get_" + lastIndexRelated).one('click', function () {
-      pastedUrl = $('#dataset-uri_'+lastIndexRelated).val();
+    $("#dataset-get_" + lastIndexDataset).one('click', function () {
+      pastedUrl = $('#dataset-uri_'+lastIndexDataset).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var datasetUrlData = myUrl.pathname + "/data";
@@ -399,7 +416,7 @@ function timeseriesEditor(collectionId, data) {
       });
     });
 
-    $("#dataset-cancel_" + lastIndexRelated).show().one('click', function () {
+    $("#dataset-cancel_" + lastIndexDataset).show().one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
@@ -411,14 +428,14 @@ function timeseriesEditor(collectionId, data) {
 
   // Related methodology
   // Load
-  if (!data.relatedMethodology) {
+  if (!data.relatedMethodology || data.relatedMethodology.length === 0) {
     lastIndexRelatedMethodology = 0;
   } else {
     $(data.relatedMethodology).each(function (iMethodology, relatedMethodology) {
       lastIndexRelatedMethodology = iMethodology + 1;
 
       // Delete
-      $("#used-delete_" + iMethodology).click(function () {
+      $("#methodology-delete_" + iMethodology).click(function () {
         $("#" + iMethodology).remove();
         data.relatedMethodology.splice(iMethodology, 1);
         updateContent(collectionId, getPathName(), JSON.stringify(data));
@@ -440,7 +457,7 @@ function timeseriesEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
-      pastedUrl = $('#methodology-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#methodology-uri_'+lastIndexRelatedMethodology).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";
