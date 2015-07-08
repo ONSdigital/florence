@@ -374,7 +374,7 @@ function datasetEditor(collectionId, data) {
 
   // Related documents (articles or bulletins where dataset is used in)
   // Load
-  if (!data.relatedDocuments) {
+  if (!data.relatedDocuments || data.relatedDocuments.length === 0) {
     lastIndexUsedIn = 0;
   } else {
     $(data.relatedDocuments).each(function (iUsed, relatedDocuments) {
@@ -404,7 +404,7 @@ function datasetEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#used-get_" + lastIndexUsedIn).one('click', function () {
-      pastedUrl = $('#used-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#used-uri_'+lastIndexUsedIn).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var usedInUrlData = myUrl.pathname + "/data";
