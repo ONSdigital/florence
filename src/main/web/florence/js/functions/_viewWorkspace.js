@@ -4,9 +4,9 @@ function viewWorkspace(path, collectionId, menu) {
   if (path) {
     currentPath = path;
   }
-  if (currentPath.charAt(0) === '/') {
-      currentPath = currentPath.slice(1);
-    }
+//  if (currentPath.charAt(0) === '/') {
+//    currentPath = currentPath.slice(1);
+//  }
 
   localStorage.removeItem("pageurl");
   localStorage.setItem("pageurl", currentPath);
