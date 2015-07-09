@@ -223,7 +223,7 @@ function submitNoForm (title) {
             "email": checkData.description.contact.email || "",
             "telephone": checkData.description.contact.telephone || ""
           },
-          "abstract": "",
+          "_abstract": "",
           "authors": [],
           "keywords": [],
           "metaDescription": "",
