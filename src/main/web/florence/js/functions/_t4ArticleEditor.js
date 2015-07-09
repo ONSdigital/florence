@@ -264,77 +264,79 @@ function articleEditor(collectionId, data) {
   }
   sortableRelated();
 
-  // Related Dataset
-  // Load
-  if (!data.relatedData || data.relatedData.length === 0) {
-    lastIndexData = 0;
-  } else {
-    $(data.relatedData).each(function (iData, data) {
-      lastIndexData = iData + 1;
+  editRelated (relatedArticles, article);
 
-      // Delete
-      $("#data-delete_" + iData).click(function () {
-        $("#" + iData).remove();
-        data.relatedData.splice(iData, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-
-  //Add new related data
-  $("#addData").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
-
-    $('#sortable-related-data').append(
-        '<div id="' + lastIndexData + '" class="edit-section__sortable-item">' +
-        '  <textarea id="data-uri_' + lastIndexData + '" placeholder="Go to the related data and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="data-get_' + lastIndexData + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexData + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#data-get_" + lastIndexData).one('click', function () {
-      var pastedUrl = $('#data-uri_'+lastIndexData).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var dataUrlData = myUrl.pathname + "/data";
-      } else {
-        var dataUrl = getPathNameTrimLast();
-        var dataUrlData = dataUrl + "/data";
-      }
-
-      $.ajax({
-        url: dataUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedData) {
-          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
-            if (!data.relatedData) {
-              data.relatedData = [];
-            }
-            data.relatedData.push({uri: relatedData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not a data document");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#data-cancel_" + lastIndexData).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelatedData() {
-    $("#sortable-related-data").sortable();
-  }
-  sortableRelatedData();
+//  // Related Dataset
+//  // Load
+//  if (!data.relatedData || data.relatedData.length === 0) {
+//    lastIndexData = 0;
+//  } else {
+//    $(data.relatedData).each(function (iData, data) {
+//      lastIndexData = iData + 1;
+//
+//      // Delete
+//      $("#data-delete_" + iData).click(function () {
+//        $("#" + iData).remove();
+//        data.relatedData.splice(iData, 1);
+//        updateContent(collectionId, getPathName(), JSON.stringify(data));
+//      });
+//    });
+//  }
+//
+//  //Add new related data
+//  $("#addData").one('click', function () {
+//    var pageUrl = localStorage.getItem('pageurl');
+//    var iframeEvent = document.getElementById('iframe').contentWindow;
+//        iframeEvent.removeEventListener('click', Florence.Handler, true);
+//    createWorkspace(pageUrl, collectionId, '', true);
+//
+//    $('#sortable-related-data').append(
+//        '<div id="' + lastIndexData + '" class="edit-section__sortable-item">' +
+//        '  <textarea id="data-uri_' + lastIndexData + '" placeholder="Go to the related data and click Get"></textarea>' +
+//        '  <button class="btn-page-get" id="data-get_' + lastIndexData + '">Get</button>' +
+//        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexData + '">Cancel</button>' +
+//        '</div>').trigger('create');
+//
+//    $("#data-get_" + lastIndexData).one('click', function () {
+//      var pastedUrl = $('#data-uri_'+lastIndexData).val();
+//      if (pastedUrl) {
+//        var myUrl = parseURL(pastedUrl);
+//        var dataUrlData = myUrl.pathname + "/data";
+//      } else {
+//        var dataUrl = getPathNameTrimLast();
+//        var dataUrlData = dataUrl + "/data";
+//      }
+//
+//      $.ajax({
+//        url: dataUrlData,
+//        dataType: 'json',
+//        crossDomain: true,
+//        success: function (relatedData) {
+//          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
+//            if (!data.relatedData) {
+//              data.relatedData = [];
+//            }
+//            data.relatedData.push({uri: relatedData.uri});
+//            saveRelated(collectionId, pageUrl, data);
+//          } else {
+//            alert("This is not a data document");
+//          }
+//        },
+//        error: function () {
+//          console.log('No page data returned');
+//        }
+//      });
+//    });
+//
+//    $("#data-cancel_" + lastIndexData).one('click', function () {
+//      createWorkspace(pageUrl, collectionId, 'edit');
+//    });
+//  });
+//
+//  function sortableRelatedData() {
+//    $("#sortable-related-data").sortable();
+//  }
+//  sortableRelatedData();
 
   // Edit external
   // Load and edition
