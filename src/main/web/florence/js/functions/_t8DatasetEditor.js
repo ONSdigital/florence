@@ -150,7 +150,7 @@ function datasetEditor(collectionId, data) {
 //    updateContent(collectionId, getPathName(), JSON.stringify(data));
 //  });
 
-  if (!data.section || data.section.length === 0) {
+  if (!data.section || $.isEmptyObject(data.section)) {
     $("#add-note").one('click', function () {
       data.section = {markdown:""};
       updateContent(collectionId, getPathName(), JSON.stringify(data));
