@@ -127,7 +127,7 @@
       </div>
     </div>
 
-    <div class="edit-section" id="relBulletin">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Related bulletins</h1>
         <p>Title | Link</p>
@@ -143,12 +143,33 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addBulletin">Add bulletin</button>
+          <button class="btn-add-section" id="add-bulletin">Add bulletin</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="links">
+    <div class="edit-section">
+      <div class="edit-section__head">
+        <h1>Related data</h1>
+        <p>Title | Link</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-data" class="edit-section__sortable">
+          {{#each this.relatedData}}
+            <div id="{{@index}}" class="edit-section__sortable-item">
+              {{description.title}}
+              <textarea id="data-uri_{{@index}}">{{uri}}</textarea>
+              <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
+            </div>
+          {{/each}}
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="add-data">Add related data</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Links</h1>
         <p> Link | Title</p>
@@ -166,27 +187,6 @@
         </div>
         <div class="text-center">
           <button class="btn-add-section" id="addLink">Add link</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section" id="relData">
-      <div class="edit-section__head">
-        <h1>Related data</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-related-data" class="edit-section__sortable">
-          {{#each this.relatedData}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="data-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="addData">Add related data</button>
         </div>
       </div>
     </div>

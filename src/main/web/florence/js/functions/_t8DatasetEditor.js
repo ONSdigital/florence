@@ -146,7 +146,7 @@ function datasetEditor(collectionId, data) {
   }
 
   //Add new download
-  $("#addFile").one('click', function () {
+  $("#add-file").one('click', function () {
     $('#sortable-file').append(
         '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
@@ -303,223 +303,11 @@ function datasetEditor(collectionId, data) {
 //  }
 //  sortableNotes();
 
-  // Related datasets
-  // Load
-  if (!data.relatedDatasets || data.relatedDatasets.length === 0) {
-    lastIndexRelated = 0;
-  } else {
-    $(data.relatedDatasets).each(function (iDataset) {
-      lastIndexRelated = iDataset + 1;
+  editRelated (collectionId, data, 'relatedDatasets', 'dataset');
 
-      // Delete
-      $("#dataset-delete_" + iDataset).click(function () {
-        $("#" + iDataset).remove();
-        data.relatedDatasets.splice(iDataset, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
+  editRelated (collectionId, data, 'relatedDocuments', 'used');
 
-  //Add new related
-  $("#addDataset").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
-
-    $('#sortable-related').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="dataset-uri_' + lastIndexRelated + '" placeholder="Go to the related dataset and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="dataset-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="dataset-cancel_' + lastIndexRelated + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#dataset-get_" + lastIndexRelated).one('click', function () {
-      pastedUrl = $('#dataset-uri_'+lastIndexRelated).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var datasetUrlData = myUrl.pathname + "/data";
-      } else {
-        var datasetUrl = getPathNameTrimLast();
-        var datasetUrlData = datasetUrl + "/data";
-      }
-      pastedUrl = null;
-
-      $.ajax({
-        url: datasetUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedData) {
-          if (relatedData.type === 'dataset') {
-            if (!data.relatedDatasets) {
-              data.relatedDatasets = [];
-            }
-            data.relatedDatasets.push({uri: relatedData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not a dataset");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#dataset-cancel_" + lastIndexRelated).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelated() {
-    $("#sortable-related").sortable();
-  }
-  sortableRelated();
-
-  // Related documents (articles or bulletins where dataset is used in)
-  // Load
-  if (!data.relatedDocuments || data.relatedDocuments.length === 0) {
-    lastIndexUsedIn = 0;
-  } else {
-    $(data.relatedDocuments).each(function (iUsed, relatedDocuments) {
-      lastIndexUsedIn = iUsed + 1;
-
-      // Delete
-      $("#used-delete_" + iUsed).click(function () {
-        $("#" + iUsed).remove();
-        data.relatedDocuments.splice(iUsed, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-
-  //Add new articles or bulletins where dataset is used in
-  $("#addUsed").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
-
-    $('#sortable-used').append(
-        '<div id="' + lastIndexUsedIn + '" class="edit-section__sortable-item">' +
-        '  <textarea id="used-uri_' + lastIndexUsedIn + '" placeholder="Go to the related document and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="used-get_' + lastIndexUsedIn + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="used-cancel_' + lastIndexUsedIn + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#used-get_" + lastIndexUsedIn).one('click', function () {
-      pastedUrl = $('#used-uri_'+lastIndexUsedIn).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var usedInUrlData = myUrl.pathname + "/data";
-      } else {
-        var usedInUrl = getPathNameTrimLast();
-        var usedInUrlData = usedInUrl + "/data";
-      }
-      pastedUrl = null;
-
-      $.ajax({
-        url: usedInUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (usedInData) {
-          if (usedInData.type === 'bulletin' || usedInData.type === 'article') {
-            if (!data.relatedDocuments) {
-              data.relatedDocuments = [];
-            }
-            data.relatedDocuments.push({uri: usedInData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not an article or a bulletin");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#used-cancel_" + lastIndexUsedIn).one('click', function () {
-     createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableUsedIn() {
-    $("#sortable-used").sortable();
-  }
-  sortableUsedIn();
-
-  // Related methodology
-  // Load
-  if (!data.relatedMethodology) {
-    lastIndexRelatedMethodology = 0;
-  } else {
-    $(data.relatedMethodology).each(function (iMethodology, relatedMethodology) {
-      lastIndexRelatedMethodology = iMethodology + 1;
-
-      // Delete
-      $("#methodology-delete_" + iMethodology).click(function () {
-        $("#" + iMethodology).remove();
-        data.relatedMethodology.splice(iMethodology, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-  //Add related methodology
-  $("#addMethodology").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
-
-    $('#sortable-methodology').append(
-        '<div id="' + lastIndexRelatedMethodology + '" class="edit-section__sortable-item">' +
-        '  <textarea id="methodology-uri_' + lastIndexRelatedMethodology + '" placeholder="Go to the related document and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="methodology-get_' + lastIndexRelatedMethodology + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="methodology-cancel_' + lastIndexRelatedMethodology + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
-      pastedUrl = $('#methodology-uri_'+lastIndexRelatedMethodology).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var relatedMethodologyUrlData = myUrl.pathname + "/data";
-      } else {
-        var relatedMethodologyUrl = getPathNameTrimLast();
-        var relatedMethodologyUrlData = relatedMethodologyUrl + "/data";
-      }
-      pastedUrl = null;
-
-      $.ajax({
-        url: relatedMethodologyUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedMethodologyData) {
-          if (relatedMethodologyData.type === 'methodology') {
-            if (!data.relatedMethodology) {
-              data.relatedMethodology = [];
-            }
-            data.relatedMethodology.push({uri: relatedMethodologyData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not a methodology");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#methodology-cancel_" + lastIndexRelatedMethodology).one('click', function () {
-     createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelatedMethodology() {
-    $("#sortable-methodology").sortable();
-  }
-  sortableRelatedMethodology();
+  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
 
   // Save
   var editNav = $('.edit-nav');
@@ -566,7 +354,7 @@ function datasetEditor(collectionId, data) {
 //    data.section = newNotes;
     data.section = {markdown: $('#note-markdown_0').val()};
     // Related datasets
-    var orderDataset = $("#sortable-related").sortable('toArray');
+    var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = $('#dataset-uri_' + nameD).val();
       newRelated[indexD]= {uri: uri};

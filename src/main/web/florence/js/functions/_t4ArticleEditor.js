@@ -193,150 +193,10 @@ function articleEditor(collectionId, data) {
   }
   sortableTabs();
 
-  // Related article
-  // Load
-  if (!data.relatedArticles || data.relatedArticles.length === 0) {
-    lastIndexArticle = 0;
-  } else {
-    $(data.relatedArticles).each(function (iArticle, article) {
-      lastIndexArticle = iArticle + 1;
+  editRelated (collectionId, data, 'relatedArticles', 'article');
 
-      // Delete
-      $("#article-delete_" + iArticle).click(function () {
-        $("#" + iArticle).remove();
-        data.relatedArticles.splice(iArticle, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
+  editRelated (collectionId, data, 'relatedData', 'data');
 
-  //Add new related articles
-  $("#addArticle").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-
-    $('#sortable-article').append(
-        '<div id="' + lastIndexArticle + '" class="edit-section__sortable-item">' +
-        '  <textarea id="article-uri_' + lastIndexArticle + '" placeholder="Go to the related article and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="article-get_' + lastIndexArticle + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="article-cancel_' + lastIndexArticle + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#article-get_" + lastIndexArticle).one('click', function () {
-      var pastedUrl = $('#article-uri_'+lastIndexArticle).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var articleUrlData = myUrl.pathname + "/data";
-      } else {
-        var articleUrl = getPathNameTrimLast();
-        var articleUrlData = articleUrl + "/data";
-      }
-
-      $.ajax({
-        url: articleUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedData) {
-          if (relatedData.type === 'article') {
-            if (!data.relatedArticles) {
-              data.relatedArticles = [];
-            }
-            data.relatedArticles.push({uri: relatedData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not an article");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#article-cancel_" + lastIndexArticle).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelated() {
-    $("#sortable-article").sortable();
-  }
-  sortableRelated();
-
-  editRelated (relatedArticles, article);
-
-//  // Related Dataset
-//  // Load
-//  if (!data.relatedData || data.relatedData.length === 0) {
-//    lastIndexData = 0;
-//  } else {
-//    $(data.relatedData).each(function (iData, data) {
-//      lastIndexData = iData + 1;
-//
-//      // Delete
-//      $("#data-delete_" + iData).click(function () {
-//        $("#" + iData).remove();
-//        data.relatedData.splice(iData, 1);
-//        updateContent(collectionId, getPathName(), JSON.stringify(data));
-//      });
-//    });
-//  }
-//
-//  //Add new related data
-//  $("#addData").one('click', function () {
-//    var pageUrl = localStorage.getItem('pageurl');
-//    var iframeEvent = document.getElementById('iframe').contentWindow;
-//        iframeEvent.removeEventListener('click', Florence.Handler, true);
-//    createWorkspace(pageUrl, collectionId, '', true);
-//
-//    $('#sortable-related-data').append(
-//        '<div id="' + lastIndexData + '" class="edit-section__sortable-item">' +
-//        '  <textarea id="data-uri_' + lastIndexData + '" placeholder="Go to the related data and click Get"></textarea>' +
-//        '  <button class="btn-page-get" id="data-get_' + lastIndexData + '">Get</button>' +
-//        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexData + '">Cancel</button>' +
-//        '</div>').trigger('create');
-//
-//    $("#data-get_" + lastIndexData).one('click', function () {
-//      var pastedUrl = $('#data-uri_'+lastIndexData).val();
-//      if (pastedUrl) {
-//        var myUrl = parseURL(pastedUrl);
-//        var dataUrlData = myUrl.pathname + "/data";
-//      } else {
-//        var dataUrl = getPathNameTrimLast();
-//        var dataUrlData = dataUrl + "/data";
-//      }
-//
-//      $.ajax({
-//        url: dataUrlData,
-//        dataType: 'json',
-//        crossDomain: true,
-//        success: function (relatedData) {
-//          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
-//            if (!data.relatedData) {
-//              data.relatedData = [];
-//            }
-//            data.relatedData.push({uri: relatedData.uri});
-//            saveRelated(collectionId, pageUrl, data);
-//          } else {
-//            alert("This is not a data document");
-//          }
-//        },
-//        error: function () {
-//          console.log('No page data returned');
-//        }
-//      });
-//    });
-//
-//    $("#data-cancel_" + lastIndexData).one('click', function () {
-//      createWorkspace(pageUrl, collectionId, 'edit');
-//    });
-//  });
-//
-//  function sortableRelatedData() {
-//    $("#sortable-related-data").sortable();
-//  }
-//  sortableRelatedData();
 
   // Edit external
   // Load and edition
@@ -422,9 +282,9 @@ function articleEditor(collectionId, data) {
       var uri = $('#article-uri_' + nameA).val();
       newArticle[indexA]= {uri: uri};
     });
-    data.relatedArticles = newRelated;
+    data.relatedArticles = newArticle;
     // Related data
-    var orderData = $("#sortable-related-data").sortable('toArray');
+    var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = $('#data-uri_' + nameD).val();
       newRelated[indexD] = {uri: uri};
