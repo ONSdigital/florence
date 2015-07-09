@@ -269,7 +269,7 @@ function referenceTableEditor(collectionId, data) {
 
   // Related documents (articles or bulletins where dataset is used in)
   // Load
-  if (!data.relatedDocuments) {
+  if (!data.relatedDocuments || data.relatedDocuments.length === 0) {
     lastIndexUsedIn = 0;
   } else {
     $(data.relatedDocuments).each(function (iUsed, relatedDocuments) {
@@ -299,7 +299,7 @@ function referenceTableEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#used-get_" + lastIndexUsedIn).one('click', function () {
-      pastedUrl = $('#used-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#used-uri_'+lastIndexUsedIn).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var usedInUrlData = myUrl.pathname + "/data";
@@ -342,14 +342,14 @@ function referenceTableEditor(collectionId, data) {
 
   // Related methodology
   // Load
-  if (!data.relatedMethodology) {
+  if (!data.relatedMethodology || data.relatedMethodology.length === 0) {
     lastIndexRelatedMethodology = 0;
   } else {
     $(data.relatedMethodology).each(function (iMethodology, relatedMethodology) {
       lastIndexRelatedMethodology = iMethodology + 1;
 
       // Delete
-      $("#used-delete_" + iMethodology).click(function () {
+      $("#methodology-delete_" + iMethodology).click(function () {
         $("#" + iMethodology).remove();
         data.relatedMethodology.splice(iMethodology, 1);
         updateContent(collectionId, getPathName(), JSON.stringify(data));
@@ -372,7 +372,7 @@ function referenceTableEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
-      pastedUrl = $('#methodology-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#methodology-uri_'+lastIndexRelatedMethodology).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";
