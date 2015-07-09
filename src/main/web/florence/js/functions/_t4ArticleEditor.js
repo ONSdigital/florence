@@ -62,7 +62,7 @@ function articleEditor(collectionId, data) {
   });
   $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.summary = $(this).val();
+    data.description._abstract = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         availableTags: data.description.keywords,

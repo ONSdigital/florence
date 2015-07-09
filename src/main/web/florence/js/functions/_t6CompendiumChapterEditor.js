@@ -63,7 +63,7 @@ function compendiumChapterEditor(collectionId, data) {
   });
   $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.abstract = $(this).val();
+    data.description._abstract = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         availableTags: data.description.keywords,

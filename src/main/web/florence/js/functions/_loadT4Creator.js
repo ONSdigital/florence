@@ -166,7 +166,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
             "email": "",
             "telephone": ""
           },
-          "abstract": "",
+          "_abstract": "",
           "authors": [],
           "keywords": [],
           "metaDescription": "",
