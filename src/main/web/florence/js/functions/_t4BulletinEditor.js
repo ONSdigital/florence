@@ -1,8 +1,8 @@
 function bulletinEditor(collectionId, data) {
 
 //  var index = data.release;
-  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
-  var lastIndexRelated;
+  var newSections = [], newTabs = [], newBulletin = [], newRelated = [], newLinks = [];
+  var lastIndexBulletin, lastIndexData;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -207,11 +207,11 @@ function bulletinEditor(collectionId, data) {
 
   // Related bulletin
   // Load
-  if (!data.relatedBulletins) {
-    lastIndexRelated = 0;
+  if (!data.relatedBulletins || data.relatedBulletins.length === 0) {
+    lastIndexBulletin = 0;
   } else {
-    $(data.relatedBulletins).each(function (iBulletin) {
-      lastIndexRelated = iBulletin + 1;
+    $(data.relatedBulletins).each(function (iBulletin, bulletin) {
+      lastIndexBulletin = iBulletin + 1;
 
       // Delete
       $("#bulletin-delete_"+iBulletin).click(function () {
@@ -229,15 +229,15 @@ function bulletinEditor(collectionId, data) {
         iframeEvent.removeEventListener('click', Florence.Handler, true);
     createWorkspace(pageUrl, collectionId, '', true);
 
-    $('#sortable-related').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="bulletin-uri_' + lastIndexRelated + '" placeholder="Go to the related bulletin and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="bulletin-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="bulletin-cancel_' + lastIndexRelated + '">Cancel</button>' +
+    $('#sortable-bulletin').append(
+        '<div id="' + lastIndexBulletin + '" class="edit-section__sortable-item">' +
+        '  <textarea id="bulletin-uri_' + lastIndexBulletin + '" placeholder="Go to the related bulletin and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="bulletin-get_' + lastIndexBulletin + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="bulletin-cancel_' + lastIndexBulletin + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $("#bulletin-get_" + lastIndexRelated).one('click', function () {
-      var pastedUrl = $('#bulletin-uri_'+lastIndexRelated).val();
+    $("#bulletin-get_" + lastIndexBulletin).one('click', function () {
+      var pastedUrl = $('#bulletin-uri_'+lastIndexBulletin).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var bulletinUrlData = myUrl.pathname + "/data";
@@ -267,15 +267,32 @@ function bulletinEditor(collectionId, data) {
       });
     });
 
-    $("#bulletin-cancel_" + lastIndexRelated).one('click', function () {
+    $("#bulletin-cancel_" + lastIndexBulletin).one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
 
   function sortableRelated() {
-    $("#sortable-related").sortable();
+    $("#sortable-bulletin").sortable();
   }
   sortableRelated();
+
+  // Related Dataset
+  // Load
+  if (!data.relatedData || data.relatedData.length === 0) {
+    lastIndexData = 0;
+  } else {
+    $(data.relatedData).each(function (iData, data) {
+      lastIndexData = iData + 1;
+
+      // Delete
+      $("#data-delete_" + iData).click(function () {
+        $("#" + iData).remove();
+        data.relatedData.splice(iData, 1);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      });
+    });
+  }
 
   //Add new related data
   $("#addData").one('click', function () {
@@ -285,14 +302,14 @@ function bulletinEditor(collectionId, data) {
     createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-related-data').append(
-        '<div id="' + lastIndexRelated + '" class="edit-section__sortable-item">' +
-        '  <textarea id="data-uri_' + lastIndexRelated + '" placeholder="Go to the related data and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="data-get_' + lastIndexRelated + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexRelated + '">Cancel</button>' +
+        '<div id="' + lastIndexData + '" class="edit-section__sortable-item">' +
+        '  <textarea id="data-uri_' + lastIndexData + '" placeholder="Go to the related data and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="data-get_' + lastIndexData + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexData + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $("#data-get_" + lastIndexRelated).one('click', function () {
-      var pastedUrl = $('#data-uri_'+lastIndexRelated).val();
+    $("#data-get_" + lastIndexData).one('click', function () {
+      var pastedUrl = $('#data-uri_'+lastIndexData).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var dataUrlData = myUrl.pathname + "/data";
@@ -306,7 +323,7 @@ function bulletinEditor(collectionId, data) {
         dataType: 'json',
         crossDomain: true,
         success: function (relatedData) {
-          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
+          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset' || relatedData.type === 'reference_tables') {
             if (!data.relatedData) {
               data.relatedData = [];
             }
@@ -322,7 +339,7 @@ function bulletinEditor(collectionId, data) {
       });
     });
 
-    $("#data-cancel_" + lastIndexRelated).one('click', function () {
+    $("#data-cancel_" + lastIndexData).one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
@@ -410,12 +427,19 @@ function bulletinEditor(collectionId, data) {
     });
     data.accordion = newTabs;
     // Related bulletins
-    var orderBulletin = $("#sortable-related").sortable('toArray');
+    var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = $('#bulletin-uri_' + nameB).val();
-      newRelated[indexB] = {uri: uri};
+      newBulletin[indexB] = {uri: uri};
     });
     data.relatedBulletins = newRelated;
+    // Related data
+    var orderData = $("#sortable-related-data").sortable('toArray');
+    $(orderData).each(function (indexD, nameD) {
+      var uri = $('#data-uri_' + nameD).val();
+      newRelated[indexD] = {uri: uri};
+    });
+    data.relatedData = newRelated;
     // External links
     var orderLink = $("#sortable-links").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
