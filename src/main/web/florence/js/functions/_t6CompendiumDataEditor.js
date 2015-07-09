@@ -299,7 +299,7 @@ function compendiumDataEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#used-get_" + lastIndexUsedIn).one('click', function () {
-      pastedUrl = $('#used-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#used-uri_'+lastIndexUsedIn).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var usedInUrlData = myUrl.pathname + "/data";
@@ -372,7 +372,7 @@ function compendiumDataEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
-      pastedUrl = $('#methodology-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#methodology-uri_'+lastIndexRelatedMethodology).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";

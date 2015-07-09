@@ -1,7 +1,7 @@
 function datasetEditor(collectionId, data) {
 
   var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
-  var lastIndexRelated, lastIndexUsedIn, lastIndexFile = 0;
+  var lastIndexRelated, lastIndexUsedIn, lastIndexFile;
   var uriUpload;
   var setActiveTab, getActiveTab;
 
@@ -120,26 +120,30 @@ function datasetEditor(collectionId, data) {
 
   // Edit download
   // Load and edition
-  $(data.downloads).each(function (index) {
-    lastIndexFile = index + 1;
+  if (!data.relatedData || data.relatedData.length === 0) {
+    lastIndexFile = 0;
+  } else {
+    $(data.downloads).each(function (index) {
+      lastIndexFile = index + 1;
 
-    // Delete
-    $("#file-delete_"+index).click(function() {
-      $("#"+index).remove();
-      $.ajax({
-        url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].file,
-        type: "DELETE",
-        success: function (res) {
-          console.log(res);
-        },
-        error: function (res) {
-          console.log(res);
-        }
+      // Delete
+      $("#file-delete_"+index).click(function() {
+        $("#"+index).remove();
+        $.ajax({
+          url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].file,
+          type: "DELETE",
+          success: function (res) {
+            console.log(res);
+          },
+          error: function (res) {
+            console.log(res);
+          }
+        });
+        data.downloads.splice(index, 1);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
       });
-      data.downloads.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
-  });
+  }
 
   //Add new download
   $("#addFile").one('click', function () {
@@ -301,7 +305,7 @@ function datasetEditor(collectionId, data) {
 
   // Related datasets
   // Load
-  if (!data.relatedDatasets) {
+  if (!data.relatedDatasets || data.relatedDatasets.length === 0) {
     lastIndexRelated = 0;
   } else {
     $(data.relatedDatasets).each(function (iDataset) {
@@ -374,7 +378,7 @@ function datasetEditor(collectionId, data) {
 
   // Related documents (articles or bulletins where dataset is used in)
   // Load
-  if (!data.relatedDocuments) {
+  if (!data.relatedDocuments || data.relatedDocuments.length === 0) {
     lastIndexUsedIn = 0;
   } else {
     $(data.relatedDocuments).each(function (iUsed, relatedDocuments) {
@@ -404,7 +408,7 @@ function datasetEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#used-get_" + lastIndexUsedIn).one('click', function () {
-      pastedUrl = $('#used-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#used-uri_'+lastIndexUsedIn).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var usedInUrlData = myUrl.pathname + "/data";
@@ -454,7 +458,7 @@ function datasetEditor(collectionId, data) {
       lastIndexRelatedMethodology = iMethodology + 1;
 
       // Delete
-      $("#used-delete_" + iMethodology).click(function () {
+      $("#methodology-delete_" + iMethodology).click(function () {
         $("#" + iMethodology).remove();
         data.relatedMethodology.splice(iMethodology, 1);
         updateContent(collectionId, getPathName(), JSON.stringify(data));
@@ -476,7 +480,7 @@ function datasetEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
-      pastedUrl = $('#methodology-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#methodology-uri_'+lastIndexRelatedMethodology).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";

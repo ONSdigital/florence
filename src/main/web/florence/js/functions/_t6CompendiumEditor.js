@@ -232,6 +232,22 @@ function compendiumEditor(collectionId, data) {
   }
   sortableTabs();
 
+  // Related methodology
+  // Load
+  if (!data.relatedMethodology || data.relatedMethodology.length === 0) {
+    lastIndexRelatedMethodology = 0;
+  } else {
+    $(data.relatedMethodology).each(function (iMethodology, relatedMethodology) {
+      lastIndexRelatedMethodology = iMethodology + 1;
+
+      // Delete
+      $("#methodology-delete_" + iMethodology).click(function () {
+        $("#" + iMethodology).remove();
+        data.relatedMethodology.splice(iMethodology, 1);
+        updateContent(collectionId, getPathName(), JSON.stringify(data));
+      });
+    });
+  }
   //Add related methodology
   $("#addMethodology").one('click', function () {
     var iframeEvent = document.getElementById('iframe').contentWindow;
@@ -246,7 +262,7 @@ function compendiumEditor(collectionId, data) {
         '</div>').trigger('create');
 
     $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
-      pastedUrl = $('#methodology-uri_'+lastIndexRelated).val();
+      pastedUrl = $('#methodology-uri_'+lastIndexRelatedMethodology).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var relatedMethodologyUrlData = myUrl.pathname + "/data";
