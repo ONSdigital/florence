@@ -1,7 +1,6 @@
 function timeseriesEditor(collectionId, data) {
 
   var newSections = [], newNotes = [], newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
-  var lastIndexDocument, lastIndexTimeseries, lastIndexDataset, lastIndexRelatedMethodology;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -167,13 +166,13 @@ function timeseriesEditor(collectionId, data) {
 //    data.section.push({markdown:""});
 //    updateContent(collectionId, getPathName(), JSON.stringify(data));
 //  });
-  if (!data.section) {
-    $("#addSection").one('click', function () {
+  if (!data.section || data.section === 0) {
+    $("#add-section").one('click', function () {
       data.section = {markdown:""};
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   } else {
-    $("#addSection").one('click', function () {
+    $("#add-section").one('click', function () {
       alert('At the moment you can have one section here.')
     });
   }
@@ -184,47 +183,7 @@ function timeseriesEditor(collectionId, data) {
 //  }
 //  sortableSections();
 
-  // Edit notes
-  // Load and edition
-  $(data.notes).each(function(index, note) {
-
-    $("#note-edit_"+index).click(function() {
-      var editedSectionValue = $("#note-markdown_" + index).val();
-
-//      var saveContent = function(updatedContent) {              //notes[].markdown (not implemented yet)
-//        data.notes[index].markdown = updatedContent;
-//        updateContent(collectionId, getPathName(), JSON.stringify(data));
-//      };
-      var saveContent = function(updatedContent) {
-        data.notes[index] = updatedContent;
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#note-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.notes.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new note
-//  $("#addNote").one('click', function () {
-//    data.notes.push({markdown:""});
-//    updateContent(collectionId, getPathName(), JSON.stringify(data));
-//  });
-  $("#addNote").one('click', function () {
-    data.notes.push("");
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableNotes() {
-    $("#sortable-notes").sortable();
-  }
-  sortableNotes();
+  editMarkdownWithNoTitle (collectionId, data, 'notes', 'note');
 
   editRelated (collectionId, data, 'relatedDocuments', 'document');
 
@@ -267,11 +226,7 @@ function timeseriesEditor(collectionId, data) {
 //    data.section = newSections;
     data.section = {markdown: $('#section-markdown_0').val()};
     // Notes
-    var orderNote = $("#sortable-notes").sortable('toArray');
-//    $(orderNote).each(function (indexN, nameN) {
-//      var markdown = $('#note-markdown_' + nameN).val();
-//      newNotes[indexN] = {markdown: markdown};
-//    });
+    var orderNote = $("#sortable-note").sortable('toArray');
     $(orderNote).each(function (indexN, nameN) {
       var markdown = $('#note-markdown_' + nameN).val();
       newNotes[indexN] = markdown;

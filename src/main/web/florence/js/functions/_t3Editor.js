@@ -1,7 +1,6 @@
 function t3Editor(collectionId, data) {
 
   var newTimeseries = [], newBulletins = [], newArticles = [], newDatasets = [];
-  var lastIndexTimeseries, lastIndexBulletins, lastIndexArticles, lastIndexDatasets;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {

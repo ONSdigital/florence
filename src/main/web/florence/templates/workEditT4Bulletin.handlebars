@@ -89,7 +89,7 @@
         <p>Main sections | Title | Body copy</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-sections" class="edit-section__sortable">
+        <div id="sortable-section" class="edit-section__sortable">
           {{#each this.sections}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea class="auto-size" id="section-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
@@ -100,7 +100,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addSection">Add section</button>
+          <button class="btn-add-section" id="add-section">Add section</button>
         </div>
       </div>
     </div>
@@ -111,7 +111,7 @@
         <p>Background notes | References | Footnotes</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-tabs" class="edit-section__sortable">
+        <div id="sortable-tab" class="edit-section__sortable">
           {{#each this.accordion}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea class="auto-size" id="tab-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
@@ -122,7 +122,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addTab">Add collapsible section</button>
+          <button class="btn-add-section" id="add-tab">Add collapsible section</button>
         </div>
       </div>
     </div>
@@ -175,7 +175,7 @@
         <p> Link | Title</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-links" class="edit-section__sortable">
+        <div id="sortable-link" class="edit-section__sortable">
           {{#each this.links}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea class="auto-size" id="link-uri_{{@index}}" placeholder="Paste link here and click edit to add content">{{uri}}</textarea>
@@ -186,7 +186,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addLink">Add link</button>
+          <button class="btn-add-section" id="add-link">Add link</button>
         </div>
       </div>
     </div>
