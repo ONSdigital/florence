@@ -166,7 +166,7 @@ function timeseriesEditor(collectionId, data) {
 //    data.section.push({markdown:""});
 //    updateContent(collectionId, getPathName(), JSON.stringify(data));
 //  });
-  if (!data.section || data.section === 0) {
+  if (!data.section || $.isEmptyObject(data.section)) {
     $("#add-section").one('click', function () {
       data.section = {markdown:""};
       updateContent(collectionId, getPathName(), JSON.stringify(data));
