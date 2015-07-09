@@ -74,7 +74,7 @@
         <p>Title</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-chapters" class="edit-section__sortable">
+        <div id="sortable-chapter" class="edit-section__sortable">
           {{#each this.chapters}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <p id="chapter-title_{{@index}}" data-url="{{uri}}">{{description.title}}</p>
@@ -84,29 +84,28 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addChapter">Add chapter</button>
-          <!--<button class="btn-add-section" id="addLink">Add link</button>-->
+          <button class="btn-add-section" id="add-chapter">Add chapter</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relDataset">
+    <div class="edit-section" id="relData">
       <div class="edit-section__head">
         <h1>Compendium data</h1>
         <p>Title</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-dataset" class="edit-section__sortable">
+        <div id="sortable-data" class="edit-section__sortable">
           {{#each this.datasets}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="dataset-title_{{@index}}">{{description.title}}</p>
-              <button class="btn-markdown-edit" id="dataset-edit_{{@index}}" data-url="{{uri}}">Edit</button>
-              <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
+              <p id="data-title_{{@index}}">{{description.title}}</p>
+              <button class="btn-markdown-edit" id="data-edit_{{@index}}" data-url="{{uri}}">Edit</button>
+              <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addDataset">Add data</button>
+          <button class="btn-add-section" id="add-data">Add data</button>
         </div>
       </div>
     </div>
@@ -127,7 +126,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addMethodology">Add methodology</button>
+          <button class="btn-add-section" id="add-methodology">Add methodology</button>
         </div>
       </div>
     </div>

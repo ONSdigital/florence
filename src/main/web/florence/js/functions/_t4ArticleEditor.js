@@ -1,7 +1,6 @@
 function articleEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newArticle = [], newRelated = [], newLinks = [];
-  var lastIndexArticle, lastIndexData;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -117,123 +116,16 @@ function articleEditor(collectionId, data) {
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
-  // Edit sections
-  // Load and edition
-  $(data.sections).each(function(index, section){
+  editMarkdown (collectionId, data, 'sections', 'section');
 
-    $("#section-edit_"+index).click(function() {
-      var editedSectionValue = {
-        "title": $('#section-title_' + index).val(),
-        "markdown": $("#section-markdown_" + index).val()
-      };
-
-      var saveContent = function(updatedContent) {
-        data.sections[index].markdown = updatedContent;
-        data.sections[index].title = $('#section-title_' + index).val();
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#section-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.sections.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new sections
-  $("#addSection").one('click', function () {
-    data.sections.push({title:"", markdown:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableSections() {
-    $("#sortable-sections").sortable();
-  }
-  sortableSections();
-
-  // Edit accordion
-  // Load and edition
-  $(data.accordion).each(function(index, tab) {
-
-    $("#tab-edit_"+index).click(function() {
-      var editedSectionValue = {
-        "title": $('#tab-title_' + index).val(),
-        "markdown": $("#tab-markdown_" + index).val()
-      };
-
-      var saveContent = function(updatedContent) {
-        data.accordion[index].markdown = updatedContent;
-        data.accordion[index].title = $('#tab-title_' + index).val();
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#tab-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.accordion.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new tab
-  $("#addTab").one('click', function () {
-    data.accordion.push({title:"", markdown:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableTabs() {
-    $("#sortable-tabs").sortable();
-  }
-  sortableTabs();
+  editMarkdown (collectionId, data, 'accordion', 'tab');
 
   editRelated (collectionId, data, 'relatedArticles', 'article');
 
   editRelated (collectionId, data, 'relatedData', 'data');
 
+  editLink (collectionId, data, 'links', 'link');
 
-  // Edit external
-  // Load and edition
-  $(data.externalLinks).each(function(iLink){
-    $("#link-edit_"+iLink).click(function() {
-      var editedSectionValue = {
-        "title": $('#link-uri_' + iLink).val(),
-        "markdown": $("#link-markdown_" + iLink).val()
-      };
-
-       var saveContent = function(updatedContent) {
-         data.links[iLink].title = updatedContent;
-         data.links[iLink].uri = $('#link-uri_' + iLink).val();
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
-       };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#link-delete_"+iLink).click(function() {
-      $("#"+iLink).remove();
-      data.externalLinks.splice(iLink, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new external
-  $("#addLink").click(function () {
-    data.externalLinks.push({url:"", linkText:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableLinks() {
-    $("#sortable-links").sortable();
-  }
-  sortableLinks();
 
   // Save
   var editNav = $('.edit-nav');
@@ -260,7 +152,7 @@ function articleEditor(collectionId, data) {
 
   function save() {
     // Sections
-    var orderSection = $("#sortable-sections").sortable('toArray');
+    var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
 //      var markdown = $('#section-markdown_' + nameS).val();
       var markdown = data.sections[parseInt(nameS)].markdown;
@@ -269,7 +161,7 @@ function articleEditor(collectionId, data) {
     });
     data.sections = newSections;
     // Tabs
-    var orderTab = $("#sortable-tabs").sortable('toArray');
+    var orderTab = $("#sortable-tab").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
       var title = $('#tab-title_' + nameT).val();
@@ -291,7 +183,7 @@ function articleEditor(collectionId, data) {
     });
     data.relatedData = newRelated;
     // External links
-    var orderLink = $("#sortable-links").sortable('toArray');
+    var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
       var displayText = $('#link-markdown_'+nameL).val();
       var link = $('#link-uri_'+nameL).val();

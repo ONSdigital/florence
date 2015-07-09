@@ -1,8 +1,6 @@
 function datasetEditor(collectionId, data) {
 
   var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
-  var lastIndexRelated, lastIndexUsedIn, lastIndexFile;
-  var uriUpload;
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -117,141 +115,6 @@ function datasetEditor(collectionId, data) {
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
-
-  // Edit download
-  // Load and edition
-  if (!data.relatedData || data.relatedData.length === 0) {
-    lastIndexFile = 0;
-  } else {
-    $(data.downloads).each(function (index) {
-      lastIndexFile = index + 1;
-
-      // Delete
-      $("#file-delete_"+index).click(function() {
-        $("#"+index).remove();
-        $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data.downloads[index].file,
-          type: "DELETE",
-          success: function (res) {
-            console.log(res);
-          },
-          error: function (res) {
-            console.log(res);
-          }
-        });
-        data.downloads.splice(index, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-
-  //Add new download
-  $("#add-file").one('click', function () {
-    $('#sortable-file').append(
-        '<div id="' + lastIndexFile + '" class="edit-section__sortable-item">' +
-        '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
-        '    <p><input type="file" name="files" id="files">' +
-        '    <p>' +
-        '  </form>' +
-        '  <div id="response"></div>' +
-        '  <ul id="list"></ul>' +
-        '</div>');
-
-    (function () {
-      var input = document.getElementById("files"), formdata = false;
-
-      if (window.FormData) {
-        formdata = new FormData();
-      }
-      function showUploadedItem (source) {
-        var list = document.getElementById("list"),
-            li   = document.createElement("li"),
-            para = document.createElement("p"),
-            text = document.createTextNode(source);
-        para.appendChild(text);
-        li.appendChild(para);
-        list.appendChild(li);
-      }
-      if (input.addEventListener) {
-        input.addEventListener("change", function (evt) {
-          document.getElementById("response").innerHTML = "Uploading . . .";
-
-          var file = this.files[0];
-          uriUpload = getPathName() + "/" + file.name;
-
-          if (data.downloads.length > 0) {
-            $(data.downloads).each(function (i, filesUploaded) {
-              if (filesUploaded.file == uriUpload) {
-                alert('This file already exists');
-                $('#' + lastIndexFile).remove();
-                datasetEditor(collectionId, data);
-                return;
-              }
-            });
-            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
-              showUploadedItem(file.name);
-              if (formdata) {
-                formdata.append("name", file);
-              }
-            } else {
-              alert('This file type is not supported');
-              $('#' + lastIndexFile).remove();
-              datasetEditor(collectionId, data);
-              return;
-            }
-
-            if (formdata) {
-              $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + uriUpload,
-                type: "POST",
-                data: formdata,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                  document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.downloads.push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
-                }
-              });
-            }
-          } else {
-            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
-              showUploadedItem(file.name);
-              if (formdata) {
-                formdata.append("name", file);
-              }
-            } else {
-              alert('This file type is not supported');
-              $('#' + lastIndexFile).remove();
-              datasetEditor(collectionId, data);
-              return;
-            }
-
-            if (formdata) {
-              $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + uriUpload,
-                type: "POST",
-                data: formdata,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                  document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data.downloads.push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
-                }
-              });
-            }
-          }
-        }, false);
-      }
-    })();
-  });
-
-  function sortableFiles() {
-    $("#sortable-file").sortable();
-  }
-  sortableFiles();
-
   // Edit notes
   // Load and edition
   $(data.section).each(function(index, note) {
@@ -282,24 +145,24 @@ function datasetEditor(collectionId, data) {
   });
 
   //Add new note
-//  $("#addNote").one('click', function () {
+//  $("#add-note").one('click', function () {
 //    data.section.push({markdown:""});
 //    updateContent(collectionId, getPathName(), JSON.stringify(data));
 //  });
 
-  if (!data.section) {
-    $("#addNote").one('click', function () {
+  if (!data.section || data.section.length === 0) {
+    $("#add-note").one('click', function () {
       data.section = {markdown:""};
       updateContent(collectionId, getPathName(), JSON.stringify(data));
     });
   } else {
-    $("#addNote").one('click', function () {
+    $("#add-note").one('click', function () {
       alert('At the moment you can have one section here.')
     });
   }
 
 //  function sortableNotes() {
-//    $("#sortable-notes").sortable();
+//    $("#sortable-note").sortable();
 //  }
 //  sortableNotes();
 
@@ -308,6 +171,8 @@ function datasetEditor(collectionId, data) {
   editRelated (collectionId, data, 'relatedDocuments', 'used');
 
   editRelated (collectionId, data, 'relatedMethodology', 'methodology');
+
+  addFile (collectionId, data, 'downloads', 'file');
 
   // Save
   var editNav = $('.edit-nav');
@@ -346,7 +211,7 @@ function datasetEditor(collectionId, data) {
     data.downloads = newFiles;
     //console.log(data.download);
     // Notes
-//    var orderNote = $("#sortable-notes").sortable('toArray');
+//    var orderNote = $("#sortable-note").sortable('toArray');
 //    $(orderNote).each(function (indexT, nameT) {
 //      var markdown = $('#note-markdown_' + nameT).val();
 //      newNotes[indexT] = {markdown: markdown};
