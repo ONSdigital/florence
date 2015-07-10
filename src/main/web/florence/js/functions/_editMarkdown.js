@@ -19,6 +19,8 @@ function editMarkdown (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
+      var position = $(".workspace-edit").scrollTop();
+      localStorage.setItem("pagePos", position + 300);
       $("#"+index).remove();
       data[field].splice(index, 1);
       updateContent(collectionId, getPathName(), JSON.stringify(data));
@@ -27,6 +29,8 @@ function editMarkdown (collectionId, data, field, idField) {
 
   //Add
   $('#add-' + idField).one('click', function () {
+    var position = $(".workspace-edit").scrollTop();
+    localStorage.setItem("pagePos", position + 300);
     data[field].push({markdown:"", title:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });

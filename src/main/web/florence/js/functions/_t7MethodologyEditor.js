@@ -12,6 +12,7 @@ function methodologyEditor(collectionId, data) {
 
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
+  getLastPosition ();
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {

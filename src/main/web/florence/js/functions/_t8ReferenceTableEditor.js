@@ -12,6 +12,7 @@ function referenceTableEditor(collectionId, data) {
 
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
+  getLastPosition ();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
