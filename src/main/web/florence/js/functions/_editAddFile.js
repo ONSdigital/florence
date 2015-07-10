@@ -9,6 +9,8 @@ function addFile (collectionId, data, field, idField) {
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
+        var position = $(".workspace-edit").scrollTop();
+        localStorage.setItem("pagePos", position + 200);
         $("#" + index).remove();
         $.ajax({
           url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
@@ -28,6 +30,8 @@ function addFile (collectionId, data, field, idField) {
 
   //Add
   $('#add-' + idField).one('click', function () {
+    var position = $(".workspace-edit").scrollTop();
+    localStorage.setItem("pagePos", position + 200);
     $('#sortable-' + idField).append(
         '<div id="' + lastIndex + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +

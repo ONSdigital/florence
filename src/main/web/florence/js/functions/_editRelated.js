@@ -8,6 +8,8 @@ function editRelated (collectionId, data, field, idField) {
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
+        var position = $(".workspace-edit").scrollTop();
+        localStorage.setItem("pagePos", position);
         $("#" + index).remove();
         data[field].splice(index, 1);
         updateContent(collectionId, getPathName(), JSON.stringify(data));
@@ -17,6 +19,8 @@ function editRelated (collectionId, data, field, idField) {
 
   //Add
   $('#add-' + idField).one('click', function () {
+    var position = $(".workspace-edit").scrollTop();
+    localStorage.setItem("pagePos", position);
     var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);

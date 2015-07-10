@@ -12,6 +12,7 @@ function qmiEditor(collectionId, data) {
 
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
+  getLastPosition ();
 
   $("#metadata-s").remove();
   $("#metadata-f").remove();
