@@ -115,56 +115,7 @@ function datasetEditor(collectionId, data) {
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
-  // Edit notes
-  // Load and edition
-  $(data.section).each(function(index, note) {
-
-    $("#note-edit_"+index).click(function() {
-      var editedSectionValue = $("#note-markdown_" + index).val();
-
-      var saveContent = function(updatedContent) {
-//        data.section[index].markdown = updatedContent;
-        data.section.markdown = updatedContent;
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-//    $("#note-delete_"+index).click(function() {
-//      $("#"+index).remove();
-//      data.section.splice(index, 1);
-//      updateContent(collectionId, getPathName(), JSON.stringify(data));
-//    });
-    $("#note-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.section = {};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new note
-//  $("#add-note").one('click', function () {
-//    data.section.push({markdown:""});
-//    updateContent(collectionId, getPathName(), JSON.stringify(data));
-//  });
-
-  if (!data.section || $.isEmptyObject(data.section)) {
-    $("#add-note").one('click', function () {
-      data.section = {markdown:""};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  } else {
-    $("#add-note").one('click', function () {
-      alert('At the moment you can have one section here.')
-    });
-  }
-
-//  function sortableNotes() {
-//    $("#sortable-note").sortable();
-//  }
-//  sortableNotes();
+  editMarkdownOneObject (collectionId, data, 'section', 'note');
 
   editRelated (collectionId, data, 'relatedDatasets', 'dataset');
 
