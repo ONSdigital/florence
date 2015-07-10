@@ -36,28 +36,13 @@ function t3Editor(collectionId, data) {
   });
 
   editRelated (collectionId, data, 'items', 'timeseries');
-  function sortableTabs() {
-    $("#sortable-timeseries").sortable();
-  }
-  sortableTabs();
 
   editRelated (collectionId, data, 'statsBulletins', 'bulletins');
-  function sortableTabs() {
-    $("#sortable-bulletins").sortable();
-  }
-  sortableTabs();
 
   editRelated (collectionId, data, 'relatedArticles', 'articles');
-  function sortableTabs() {
-    $("#sortable-articles").sortable();
-  }
-  sortableTabs();
 
   editRelated (collectionId, data, 'datasets', 'datasets');
-  function sortableTabs() {
-    $("#sortable-datasets").sortable();
-  }
-  sortableTabs();
+
 
   // Save
   var editNav = $('.edit-nav');

@@ -132,56 +132,7 @@ function timeseriesEditor(collectionId, data) {
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
-  // Edit sections
-  // Load and edition
-  $(data.section).each(function(index, section){
-
-    $("#section-edit_"+index).click(function() {
-      var editedSectionValue = $("#section-markdown_" + index).val();
-
-      var saveContent = function(updatedContent) {
-//        data.section[index].markdown = updatedContent;      //section[].markdown (not implemented yet)
-        data.section.markdown = updatedContent;
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-//    $("#section-delete_"+index).click(function() {
-//      $("#"+index).remove();
-//      data.section.splice(index, 1);
-//      updateContent(collectionId, getPathName(), JSON.stringify(data));
-//    });
-    $("#section-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.section = {};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new sections
-//  $("#addSection").one('click', function () {
-//    data.section.push({markdown:""});
-//    updateContent(collectionId, getPathName(), JSON.stringify(data));
-//  });
-  if (!data.section || $.isEmptyObject(data.section)) {
-    $("#add-section").one('click', function () {
-      data.section = {markdown:""};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  } else {
-    $("#add-section").one('click', function () {
-      alert('At the moment you can have one section here.')
-    });
-  }
-
-
-//  function sortableSections() {               //Only one at the moment
-//    $("#sortable-sections").sortable();
-//  }
-//  sortableSections();
+  editMarkdownOneObject (collectionId, data, 'section', 'section');
 
   editMarkdownWithNoTitle (collectionId, data, 'notes', 'note');
 

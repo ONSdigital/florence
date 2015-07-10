@@ -1,10 +1,10 @@
 function editRelated (collectionId, data, field, idField) {
   // Load
   if (!data[field] || data[field].length === 0) {
-    var lastIndex = 0;
+    editRelated['lastIndex' + field] = 0;
   } else {
     $(data[field]).each(function (index, value) {
-      var lastIndex = index + 1;
+      editRelated['lastIndex' + field] = index + 1;
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
@@ -23,14 +23,14 @@ function editRelated (collectionId, data, field, idField) {
     createWorkspace(pageUrl, collectionId, '', true);
 
     $('#sortable-' + idField).append(
-        '<div id="' + lastIndex + '" class="edit-section__sortable-item">' +
-        '  <textarea id="' + idField + '-uri_' + lastIndex + '" placeholder="Go to the related data and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="' + idField + '-get_' + lastIndex + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + lastIndex + '">Cancel</button>' +
+        '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
+        '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get"></textarea>' +
+        '  <button class="btn-page-get" id="' + idField + '-get_' + editRelated['lastIndex' + field] + '">Get</button>' +
+        '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
         '</div>').trigger('create');
 
-    $('#' + idField + '-get_' + lastIndex).one('click', function () {
-      var pastedUrl = $('#' + idField + '-uri_'+lastIndex).val();
+    $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
+      var pastedUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (pastedUrl) {
         var myUrl = parseURL(pastedUrl);
         var dataUrlData = myUrl.pathname + "/data";
@@ -44,7 +44,7 @@ function editRelated (collectionId, data, field, idField) {
         dataType: 'json',
         crossDomain: true,
         success: function (result) {
-          if (field === 'relatedBulletins' && result.type === 'bulletin') {
+          if ((field === 'relatedBulletins' || field === 'statsBulletins') && result.type === 'bulletin') {
             if (!data[field]) {
               data[field] = [];
             }
@@ -68,7 +68,15 @@ function editRelated (collectionId, data, field, idField) {
             saveRelated(collectionId, pageUrl, data);
           }
 
-          else if ((field === 'relatedDatasets') && (result.type === 'dataset' || result.type === 'reference_tables')) {
+          else if ((field === 'relatedDatasets' || field === 'datasets') && (result.type === 'dataset' || result.type === 'reference_tables')) {
+            if (!data[field]) {
+              data[field] = [];
+            }
+            data[field].push({uri: result.uri});
+            saveRelated(collectionId, pageUrl, data);
+          }
+
+          else if ((field === 'items') && (result.type === 'timeseries')) {
             if (!data[field]) {
               data[field] = [];
             }
@@ -103,7 +111,7 @@ function editRelated (collectionId, data, field, idField) {
       });
     });
 
-    $('#' + idField + '-cancel_' + lastIndex).one('click', function () {
+    $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
       createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
