@@ -49,99 +49,9 @@ function staticPageEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
- // Edit content
-  // Load and edition
-  $(data.markdown).each(function(index, note) {
+  editMarkdownWithNoTitle (collectionId, data, 'markdown', 'content');
 
-    $("#content-edit_"+index).click(function() {
-      var editedSectionValue = $("#content-markdown_" + index).val();
-
-      var saveContent = function(updatedContent) {
-        data.markdown[index] = updatedContent;
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#content-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.markdown.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new content
-  $("#addContent").one('click', function () {
-    data.markdown.push("");
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableContent() {
-    $("#sortable-content").sortable();
-  }
-  sortableContent();
-
-// Edit links
-  // Load and edition
-  $(data.links).each(function(iLink){
-
-    $("#link-edit_"+iLink).click(function() {
-      var editedSectionValue = {
-        "title": $('#link-uri_' + iLink).val(),
-        "markdown": $("#link-markdown_" + iLink).val()
-      };
-
-       var saveContent = function(updatedContent) {
-         data.links[iLink].title = updatedContent;
-         data.links[iLink].uri = $('#link-uri_' + iLink).val();
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
-       };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#link-delete_"+iLink).click(function() {
-      $("#"+iLink).remove();
-      data.links.splice(iLink, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new external
-  $("#addLink").click(function () {
-    data.links.push({uri:"", title:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableLinks() {
-    $("#sortable-links").sortable();
-  }
-  sortableLinks();
-
- // Save
-  var editNav = $('.edit-nav');
-  editNav.off(); // remove any existing event handlers.
-
-  editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  // completed to review
-  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  // reviewed to approve
-  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save()
-    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
-  });
+  editLink (collectionId, data, 'links', 'link');
 
   function save() {
     // Sections
@@ -152,7 +62,7 @@ function staticPageEditor(collectionId, data) {
     });
     data.markdown = newSections;
     // External links
-    var orderLink = $("#sortable-links").sortable('toArray');
+    var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
       var displayText = $('#link-markdown_'+nameL).val();
       var link = $('#link-uri_'+nameL).val();
