@@ -12,6 +12,7 @@ function foiEditor(collectionId, data) {
 
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
+  getLastPosition ();
 
   $("#metadata-s").remove();
   $("#metadata-q").remove();

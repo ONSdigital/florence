@@ -27,6 +27,8 @@ function editLink (collectionId, data, field, idField) {
 
   //Add
   $('#add-' + idField).click(function () {
+    var position = $(".workspace-edit").scrollTop();
+    localStorage.setItem("pagePos", position + 300);
     data[field].push({uri:"", title:""});
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
