@@ -53,6 +53,27 @@ function methodologyEditor(collectionId, data) {
 
   editMarkdown (collectionId, data, 'sections', 'section');
 
+  // Save
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
+
+  editNav.on('click', '.btn-edit-save', function () {
+    save();
+    updateContent(collectionId, data.uri, JSON.stringify(data));
+  });
+
+  // completed to review
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+    save();
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+  });
+
+  // reviewed to approve
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+    save()
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+  });
+
   function save() {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
@@ -62,7 +83,6 @@ function methodologyEditor(collectionId, data) {
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
-//    console.log(data);
   }
 }
 

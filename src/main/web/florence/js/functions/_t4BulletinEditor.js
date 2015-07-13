@@ -119,14 +119,14 @@ function bulletinEditor(collectionId, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   editMarkdown (collectionId, data, 'sections', 'section');
@@ -145,19 +145,19 @@ function bulletinEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       save();
-      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
       save()
-      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
@@ -182,14 +182,16 @@ function bulletinEditor(collectionId, data) {
     var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = $('#bulletin-uri_' + nameB).val();
-      newBulletin[indexB] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newBulletin[indexB] = {uri: uriChecked};
     });
     data.relatedBulletins = newBulletin;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = $('#data-uri_' + nameD).val();
-      newRelated[indexD] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newRelated[indexD] = {uri: uriChecked};
     });
     data.relatedData = newRelated;
     // External links

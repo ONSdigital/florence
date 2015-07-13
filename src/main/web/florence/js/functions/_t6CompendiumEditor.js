@@ -113,14 +113,14 @@ function compendiumEditor(collectionId, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // Edit chapters
@@ -140,7 +140,7 @@ function compendiumEditor(collectionId, data) {
       var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
       if (result === true) {
         var selectedChapter = $("#chapter-title_"+index).attr('data-url');
-        var path = getPathName();
+        var path = data.uri;
         $("#"+index).remove();
         data.chapters.splice(index, 1);
         postContent(collectionId, path, JSON.stringify(data),
@@ -207,20 +207,20 @@ function compendiumEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       //pageData = $('.fl-editor__headline').val();
       save();
-      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
       save()
-      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
@@ -236,7 +236,8 @@ function compendiumEditor(collectionId, data) {
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
-      newRelatedMethodology[parseInt(indexM)] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

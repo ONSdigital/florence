@@ -12,7 +12,7 @@ function editRelated (collectionId, data, field, idField) {
         localStorage.setItem("pagePos", position);
         $("#" + index).remove();
         data[field].splice(index, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
+        updateContent(collectionId, data.uri, JSON.stringify(data));
       });
     });
   }
@@ -33,13 +33,18 @@ function editRelated (collectionId, data, field, idField) {
         '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
         '</div>').trigger('create');
 
+    $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
+      createWorkspace(pageUrl, collectionId, 'edit');
+    });
+
     $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
       var pastedUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var dataUrlData = myUrl.pathname + "/data";
+        checkRelatedPath(pastedUrl);
+        var dataUrlData = pastedUrl + "/data";
       } else {
         var dataUrl = getPathNameTrimLast();
+        checkRelatedPath(dataUrl);
         var dataUrlData = dataUrl + "/data";
       }
 
@@ -53,7 +58,7 @@ function editRelated (collectionId, data, field, idField) {
               data[field] = [];
             }
             data[field].push({uri: result.uri});
-            saveRelated(collectionId, pageUrl, data);
+            saveRelated(collectionId, data.uri, data);
           }
 
           else if (field === 'relatedArticles' && result.type === 'article') {
@@ -61,7 +66,7 @@ function editRelated (collectionId, data, field, idField) {
               data[field] = [];
             }
             data[field].push({uri: result.uri});
-            saveRelated(collectionId, pageUrl, data);
+            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin')) {
@@ -69,7 +74,7 @@ function editRelated (collectionId, data, field, idField) {
               data[field] = [];
             }
             data[field].push({uri: result.uri});
-            saveRelated(collectionId, pageUrl, data);
+            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedDatasets' || field === 'datasets') && (result.type === 'dataset' || result.type === 'reference_tables')) {
@@ -77,7 +82,7 @@ function editRelated (collectionId, data, field, idField) {
               data[field] = [];
             }
             data[field].push({uri: result.uri});
-            saveRelated(collectionId, pageUrl, data);
+            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'items') && (result.type === 'timeseries')) {
@@ -85,7 +90,7 @@ function editRelated (collectionId, data, field, idField) {
               data[field] = [];
             }
             data[field].push({uri: result.uri});
-            saveRelated(collectionId, pageUrl, data);
+            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedData') && (result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
@@ -93,7 +98,7 @@ function editRelated (collectionId, data, field, idField) {
               data[field] = [];
             }
             data[field].push({uri: result.uri});
-            saveRelated(collectionId, pageUrl, data);
+            saveRelated(collectionId, data.uri, data);
           }
 
           else if (field === 'relatedMethodology' && result.type === 'static_methodology') {
@@ -101,7 +106,7 @@ function editRelated (collectionId, data, field, idField) {
               data[field] = [];
             }
             data[field].push({uri: result.uri});
-            saveRelated(collectionId, pageUrl, data);
+            saveRelated(collectionId, data.uri, data);
           }
 
           else {
@@ -113,10 +118,6 @@ function editRelated (collectionId, data, field, idField) {
           console.log('No page data returned');
         }
       });
-    });
-
-    $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
     });
   });
 

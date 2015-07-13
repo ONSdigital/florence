@@ -7,7 +7,7 @@ function editMarkdownOneObject (collectionId, data, field, idField) {
 
       var saveContent = function(updatedContent) {
         data[field].markdown = updatedContent;
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
+        updateContent(collectionId, data.uri, JSON.stringify(data));
       };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -17,7 +17,7 @@ function editMarkdownOneObject (collectionId, data, field, idField) {
     $('#' + idField + '-delete_' + index).click(function() {
       $("#"+index).remove();
       data[field] = {};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
@@ -25,7 +25,7 @@ function editMarkdownOneObject (collectionId, data, field, idField) {
   if (!data[field] || $.isEmptyObject(data[field])) {
     $('#add-' + idField).one('click', function () {
       data[field] = {markdown:""};
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   } else {
     $('#add-' + idField).one('click', function () {

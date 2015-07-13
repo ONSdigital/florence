@@ -23,7 +23,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
           }
         });
         data[field].splice(index, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
+        updateContent(collectionId, data.uri, JSON.stringify(data));
       });
 
       // Edit
@@ -36,7 +36,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
          var saveContent = function(updatedContent) {
            data[field][index].fileDescription = updatedContent;
            data[field][index].title = $('#' + idField + '-title_' + index).val();
-           updateContent(collectionId, getPathName(), JSON.stringify(data));
+           updateContent(collectionId, data.uri, JSON.stringify(data));
          };
          loadMarkdownEditor(editedSectionValue, saveContent, data);
       });
@@ -78,7 +78,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
           document.getElementById("response").innerHTML = "Uploading . . .";
 
           var file = this.files[0];
-          uriUpload = getPathName() + "/" + file.name;
+          uriUpload = data.uri + "/" + file.name;
 
           if (data[field].length > 0) {
             $(data[field]).each(function (i, filesUploaded) {
@@ -111,7 +111,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   data[field].push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
+                  updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
             }
@@ -138,7 +138,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   data[field].push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
+                  updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
             }

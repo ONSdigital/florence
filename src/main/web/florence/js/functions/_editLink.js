@@ -11,7 +11,7 @@ function editLink (collectionId, data, field, idField) {
        var saveContent = function(updatedContent) {
          data[field][index].title = updatedContent;                         //markdown
          data[field][index].uri = $('#' + idField +'-uri_' + index).val();
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
+         updateContent(collectionId, data.uri, JSON.stringify(data));
        };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -21,7 +21,7 @@ function editLink (collectionId, data, field, idField) {
     $('#' + idField + '-delete_'+index).click(function() {
       $("#"+index).remove();
       data[field].splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
@@ -30,7 +30,7 @@ function editLink (collectionId, data, field, idField) {
     var position = $(".workspace-edit").scrollTop();
     localStorage.setItem("pagePos", position + 300);
     data[field].push({uri:"", title:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   function sortable() {
