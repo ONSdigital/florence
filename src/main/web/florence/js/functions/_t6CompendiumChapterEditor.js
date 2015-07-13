@@ -1,7 +1,6 @@
 function compendiumChapterEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelated = [], newLinks = [];
-  var lastIndexArticle, lastIndexData;
   var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
@@ -14,6 +13,7 @@ function compendiumChapterEditor(collectionId, data) {
 
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
+  getLastPosition ();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -118,248 +118,14 @@ function compendiumChapterEditor(collectionId, data) {
     updateContent(collectionId, getPathName(), JSON.stringify(data));
   });
 
-  // Edit sections
-  // Load and edition
-  $(data.sections).each(function(index, section){
+  editMarkdown (collectionId, data, 'sections', 'section');
 
-    $("#section-edit_"+index).click(function() {
-      var editedSectionValue = {
-        "title": $('#section-title_' + index).val(),
-        "markdown": $("#section-markdown_" + index).val()
-      };
+  editMarkdown (collectionId, data, 'accordion', 'tab');
 
-      var saveContent = function(updatedContent) {
-        data.sections[index].markdown = updatedContent;
-        data.sections[index].title = $('#section-title_' + index).val();
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
+  editRelated (collectionId, data, 'relatedArticles', 'article');
 
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
+  editLink (collectionId, data, 'links', 'link');
 
-    // Delete
-    $("#section-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.sections.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new sections
-  $("#addSection").one('click', function () {
-    data.sections.push({title:"", markdown:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableSections() {
-    $("#sortable-sections").sortable();
-  }
-  sortableSections();
-
-  // Edit accordion
-  // Load and edition
-  $(data.accordion).each(function(index, tab) {
-
-    $("#tab-edit_"+index).click(function() {
-      var editedSectionValue = {
-        "title": $('#tab-title_' + index).val(),
-        "markdown": $("#tab-markdown_" + index).val()
-      };
-
-      var saveContent = function(updatedContent) {
-        data.accordion[index].markdown = updatedContent;
-        data.accordion[index].title = $('#tab-title_' + index).val();
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#tab-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.accordion.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new tab
-  $("#addTab").one('click', function () {
-    data.accordion.push({title:"", markdown:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableTabs() {
-    $("#sortable-tabs").sortable();
-  }
-  sortableTabs();
-
-  // Related article
-  // Load
-  if (!data.relatedArticles || data.relatedArticles.length === 0) {
-    lastIndexArticle = 0;
-  } else {
-    $(data.relatedArticles).each(function (iArticle, article) {
-      lastIndexArticle = iArticle + 1;
-
-      // Delete
-      $("#article-delete_" + iArticle).click(function () {
-        $("#" + iArticle).remove();
-        data.relatedArticles.splice(iArticle, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-
-  //Add new related articles
-  $("#addArticle").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-
-    $('#sortable-related').append(
-        '<div id="' + lastIndexArticle + '" class="edit-section__sortable-item">' +
-        '  <textarea id="article-uri_' + lastIndexArticle + '" placeholder="Go to the related article and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="article-get_' + lastIndexArticle + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="article-cancel_' + lastIndexArticle + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#article-get_" + lastIndexArticle).one('click', function () {
-      var pastedUrl = $('#article-uri_'+lastIndexArticle).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var articleUrlData = myUrl.pathname + "/data";
-      } else {
-        var articleUrl = getPathNameTrimLast();
-        var articleUrlData = articleUrl + "/data";
-      }
-
-      $.ajax({
-        url: articleUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedData) {
-          if (relatedData.type === 'article') {
-            if (!data.relatedArticles) {
-              data.relatedArticles = [];
-            }
-            data.relatedArticles.push({uri: relatedData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not an article");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#article-cancel_" + lastIndexArticle).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelated() {
-    $("#sortable-related").sortable();
-  }
-  sortableRelated();
-
-  // Related Dataset
-  // Load
-  if (!data.relatedData || data.relatedData.length === 0) {
-    lastIndexData = 0;
-  } else {
-    $(data.relatedData).each(function (iData, data) {
-      lastIndexArticle = iData + 1;
-
-      // Delete
-      $("#data-delete_" + iData).click(function () {
-        $("#" + iData).remove();
-        data.relatedData.splice(iData, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-
-  //Add new related data
-  $("#addData").one('click', function () {
-    var pageUrl = localStorage.getItem('pageurl');
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
-
-    $('#sortable-related-data').append(
-        '<div id="' + lastIndexData + '" class="edit-section__sortable-item">' +
-        '  <textarea id="data-uri_' + lastIndexData + '" placeholder="Go to the related data and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="data-get_' + lastIndexData + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="data-cancel_' + lastIndexData + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#data-get_" + lastIndexData).one('click', function () {
-      var pastedUrl = $('#data-uri_'+lastIndexData).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var dataUrlData = myUrl.pathname + "/data";
-      } else {
-        var dataUrl = getPathNameTrimLast();
-        var dataUrlData = dataUrl + "/data";
-      }
-
-      $.ajax({
-        url: dataUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedData) {
-          if (relatedData.type === 'timeseries' || relatedData.type === 'dataset') {                //TO BE CHANGED
-            if (!data.relatedData) {
-              data.relatedData = [];
-            }
-            data.relatedData.push({uri: relatedData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not a data document");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#data-cancel_" + lastIndexData).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelatedData() {
-    $("#sortable-related-data").sortable();
-  }
-  sortableRelatedData();
-
-  // Edit external
-  // Load and edition
-  $(data.externalLinks).each(function(iLink){
-    // No edit functionality.
-
-    // Delete
-    $("#link-delete_"+iLink).click(function() {
-      $("#"+iLink).remove();
-      data.externalLinks.splice(iLink, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new external
-  $("#addLink").click(function () {
-    data.externalLinks.push({url:"", linkText:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableLinks() {
-    $("#sortable-links").sortable();
-  }
-  sortableLinks();
 
   // Save
   var editNav = $('.edit-nav');
@@ -395,7 +161,7 @@ function compendiumChapterEditor(collectionId, data) {
 
   function save() {
     // Sections
-    var orderSection = $("#sortable-sections").sortable('toArray');
+    var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var markdown = $('#section-markdown_' + nameS).val();
       var title = $('#section-title_' + nameS).val();
@@ -403,7 +169,7 @@ function compendiumChapterEditor(collectionId, data) {
     });
     data.sections = newSections;
     // Tabs
-    var orderTab = $("#sortable-tabs").sortable('toArray');
+    var orderTab = $("#sortable-tab").sortable('toArray');
     $(orderTab).each(function (indexT, nameT) {
       var markdown = data.accordion[parseInt(nameT)].markdown;
       var title = $('#tab-title_' + nameT).val();
@@ -411,14 +177,14 @@ function compendiumChapterEditor(collectionId, data) {
     });
     data.accordion = newTabs;
     // Related articles
-    var orderArticle = $("#sortable-related").sortable('toArray');
+    var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = $('#article-uri_' + nameB).val();
       newRelated[indexB]= {uri: uri};
     });
     data.relatedArticles = newRelated;
     // External links
-    var orderLink = $("#sortable-links").sortable('toArray');
+    var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
       var displayText = $('#link-markdown_'+nameL).val();
       var link = $('#link-uri_'+nameL).val();

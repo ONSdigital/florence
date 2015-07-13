@@ -94,7 +94,7 @@
         <p>Body copy</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-sections" class="edit-section__sortable">
+        <div id="sortable-section" class="edit-section__sortable">
           {{#each this.section}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <!--<textarea id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
@@ -105,7 +105,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addSection">Add section</button>
+          <button class="btn-add-section" id="add-section">Add section</button>
         </div>
       </div>
     </div>
@@ -116,7 +116,7 @@
         <p>Body copy</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-notes" class="edit-section__sortable">
+        <div id="sortable-note" class="edit-section__sortable">
           {{#each this.notes}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <!--<textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
@@ -127,12 +127,12 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addNote">Add note</button>
+          <button class="btn-add-section" id="add-note">Add note</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relDocument">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Related bulletins and articles</h1>
         <p>Title | Link</p>
@@ -148,12 +148,12 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addDocument">Add bulletin or article</button>
+          <button class="btn-add-section" id="add-document">Add bulletin or article</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relTimeseries">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Related time series</h1>
         <p>Title | Link</p>
@@ -169,33 +169,33 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addTimeseries">Add time series</button>
+          <button class="btn-add-section" id="add-timeseries">Add time series</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relDataset">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Related datasets</h1>
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-dataset" class="edit-section__sortable">
+        <div id="sortable-data" class="edit-section__sortable">
           {{#each this.relatedDatasets}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               {{description.title}}
-              <textarea id="dataset-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="dataset-delete_{{@index}}">Delete</button>
+              <textarea id="data-uri_{{@index}}">{{uri}}</textarea>
+              <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addDataset">Add dataset</button>
+          <button class="btn-add-section" id="add-data">Add dataset</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relMethodology">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Related methodology</h1>
         <p>Title | Link</p>
@@ -211,7 +211,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-methodology" id="addMethodology">Add methodology</button>
+          <button class="btn-add-methodology" id="add-methodology">Add methodology</button>
         </div>
       </div>
     </div>
