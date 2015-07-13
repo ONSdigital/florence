@@ -23,7 +23,7 @@ function addFile (collectionId, data, field, idField) {
           }
         });
         data[field].splice(index, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
+        updateContent(collectionId, data.uri, JSON.stringify(data));
       });
     });
   }
@@ -62,7 +62,7 @@ function addFile (collectionId, data, field, idField) {
           document.getElementById("response").innerHTML = "Uploading . . .";
 
           var file = this.files[0];
-          uriUpload = getPathName() + "/" + file.name;
+          uriUpload = data.uri + "/" + file.name;
 
           if (data[field].length > 0) {
             $(data[field]).each(function (i, filesUploaded) {
@@ -95,7 +95,7 @@ function addFile (collectionId, data, field, idField) {
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   data[field].push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
+                  updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
             }
@@ -122,7 +122,7 @@ function addFile (collectionId, data, field, idField) {
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   data[field].push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
+                  updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
             }

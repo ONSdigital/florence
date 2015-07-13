@@ -89,7 +89,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       if (pageType === 'compendium_landing_page' && releaseDate == null) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
       }
-      else if (pageType === 'compendium-landing-page' && releaseDate) {
+      else if (pageType === 'compendium_landing_page' && releaseDate) {
         pageData.description.releaseDate = releaseDate;
       }
 
@@ -111,10 +111,10 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       pageData.uri = '/' + newUri;
       pageData.breadcrumb = breadcrumb;
 
-      if ((pageType === 'compendium-landing-page') && (!pageData.description.edition)) {
+      if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
         return true;
-      } if ((pageType === 'compendium-landing-page') && (!pageData.description.releaseDate)) {
+      } if ((pageType === 'compendium_landing_page') && (!pageData.description.releaseDate)) {
         alert('Release date can not be empty');
         return true;
       } if (pageTitle.length < 4) {
@@ -125,11 +125,14 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         postContent(collectionId, newUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
-            if (pageType === 'compendium-landing-page') {
+            if (pageData.type === 'compendium_landing_page') {
               viewWorkspace(newUri, collectionId, 'edit');
               refreshPreview(newUri);
-            } else {
+              return true;
+            }
+            else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
               updateParentLink ('/' + newUri);
+              return true;
             }
           },
           error = function (response) {
@@ -156,8 +159,7 @@ function submitNoForm (title) {
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
       newUri = makeUrl(parentUrl, pageTitleTrimmed);
-    }
-    else {
+    } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
@@ -283,8 +285,13 @@ function submitNoForm (title) {
     if (pageType === "compendium_chapter") {
       parentData.chapters.push({uri: childUri})
     }
-    if (pageType === 'compendium_data') {
+    else if (pageType === 'compendium_data') {
       parentData.datasets.push({uri: childUri})
+    }
+    else
+    {
+      alert('Oops! Something went the wrong way.');
+      loadCreateScreen(collectionId);
     }
     postContent(collectionId, parentUrl, JSON.stringify(parentData),
       success = function (message) {
