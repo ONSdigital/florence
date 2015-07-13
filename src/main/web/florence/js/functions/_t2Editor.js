@@ -39,18 +39,18 @@ function t2Editor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val();
-    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 }
 

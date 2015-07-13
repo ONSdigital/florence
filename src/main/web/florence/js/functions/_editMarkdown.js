@@ -11,7 +11,7 @@ function editMarkdown (collectionId, data, field, idField) {
        var saveContent = function(updatedContent) {
          data[field][index].markdown = updatedContent;
          data[field][index].title = $('#' + idField +'-title_' + index).val();
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
+         updateContent(collectionId, data.uri, JSON.stringify(data));
        };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -23,7 +23,7 @@ function editMarkdown (collectionId, data, field, idField) {
       localStorage.setItem("pagePos", position + 300);
       $("#"+index).remove();
       data[field].splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
@@ -32,7 +32,7 @@ function editMarkdown (collectionId, data, field, idField) {
     var position = $(".workspace-edit").scrollTop();
     localStorage.setItem("pagePos", position + 300);
     data[field].push({markdown:"", title:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   function sortable() {

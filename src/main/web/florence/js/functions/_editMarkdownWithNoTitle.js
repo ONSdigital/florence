@@ -8,7 +8,7 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
 
        var saveContent = function(updatedContent) {
          data[field][index].markdown = updatedContent;
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
+         updateContent(collectionId, data.uri, JSON.stringify(data));
        };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -18,14 +18,14 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
     $('#' + idField + '-delete_'+index).click(function() {
       $("#"+index).remove();
       data[field].splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   //Add
   $('#add-' + idField).one('click', function () {
     data[field].push("");
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   function sortable() {
