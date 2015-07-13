@@ -103,7 +103,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addContent">Add content</button>
+          <button class="btn-add-section" id="add-content">Add content</button>
         </div>
       </div>
     </div>
@@ -114,29 +114,29 @@
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-download" class="edit-section__sortable">
+        <div id="sortable-file" class="edit-section__sortable">
           {{#each this.downloads}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="download-filename_{{@index}}">{{uri}}</textarea>
-              <div id="download-filename_show_{{@index}}">{{uri}}</div>
+              <textarea id="file-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
+              <textarea style="display: none;" id="file-filename_{{@index}}">{{uri}}</textarea>
+              <div id="file-filename_show_{{@index}}">{{uri}}</div>
               <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-download" id="addFile">Add file</button>
+          <button class="btn-add-section" id="add-file">Add file</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="links">
+    <div class="edit-section" id="link">
       <div class="edit-section__head">
         <h1>Links</h1>
         <p> Link | Title</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-links" class="edit-section__sortable">
+        <div id="sortable-link" class="edit-section__sortable">
           {{#each this.links}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea class="auto-size" id="link-uri_{{@index}}" placeholder="Paste link here and click edit to add content">{{uri}}</textarea>
@@ -147,7 +147,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addLink">Add link</button>
+          <button class="btn-add-section" id="add-link">Add link</button>
         </div>
       </div>
     </div>

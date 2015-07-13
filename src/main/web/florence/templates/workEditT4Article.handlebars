@@ -45,7 +45,7 @@
           </div>
           <div id="abstract-p">
             <label for="abstract">Abstract
-              <textarea class="auto-size" type="text" id="abstract">{{this.description.abstract}}</textarea>
+              <textarea class="auto-size" type="text" id="abstract">{{this.description._abstract}}</textarea>
             </label>
           </div>
           <div id="natStat">
@@ -73,7 +73,7 @@
         <p>Main sections | Title | Body copy</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-sections" class="edit-section__sortable">
+        <div id="sortable-section" class="edit-section__sortable">
           {{#each this.sections}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea class="auto-size" id="section-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
@@ -84,7 +84,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addSection">Add section</button>
+          <button class="btn-add-section" id="add-section">Add section</button>
         </div>
       </div>
     </div>
@@ -95,7 +95,7 @@
         <p>Background notes | References | Footnotes</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-tabs" class="edit-section__sortable">
+        <div id="sortable-tab" class="edit-section__sortable">
           {{#each this.accordion}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea class="auto-size" id="tab-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
@@ -106,12 +106,12 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addTab">Add collapsible section</button>
+          <button class="btn-add-section" id="add-tab">Add collapsible section</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relArticle">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Related articles</h1>
         <p>Title | Link</p>
@@ -127,18 +127,18 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addArticle">Add article</button>
+          <button class="btn-add-section" id="add-article">Add article</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="links">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Links</h1>
         <p> Link | Title</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-links" class="edit-section__sortable">
+        <div id="sortable-link" class="edit-section__sortable">
           {{#each this.links}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               <textarea class="auto-size" id="link-uri_{{@index}}" placeholder="Paste link here and click edit to add content">{{uri}}</textarea>
@@ -149,18 +149,18 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addLink">Add link</button>
+          <button class="btn-add-section" id="add-link">Add link</button>
         </div>
       </div>
     </div>
 
-    <div class="edit-section" id="relData">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Related data</h1>
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-related-data" class="edit-section__sortable">
+        <div id="sortable-data" class="edit-section__sortable">
           {{#each this.relatedData}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               {{description.title}}
@@ -170,29 +170,7 @@
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="addData">Add related data</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="edit-section" id="download">
-      <div class="edit-section__head">
-        <h1>Upload files</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-download" class="edit-section__sortable">
-          {{#each this.downloads}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="download-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="download-filename_{{@index}}">{{xls}}</textarea>
-              <div id="download-filename_show_{{@index}}">{{file}}</div>
-              <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-download" id="addFile">Add file</button>
+          <button class="btn-add-section" id="add-data">Add related data</button>
         </div>
       </div>
     </div>

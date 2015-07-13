@@ -2,7 +2,7 @@ function compendiumEditor(collectionId, data) {
 
 //  var index = data.release;
   var newChapters = [], newDatasets = [], newRelatedMethodology = [];
-  var lastIndexChapter, lastIndexDataset, lastIndexRelatedMethodology = 0;
+  var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
   var pageUrl = localStorage.getItem('pageurl');
 
@@ -15,6 +15,7 @@ function compendiumEditor(collectionId, data) {
 
   getActiveTab = localStorage.getItem('activeTab');
   accordion(getActiveTab);
+  getLastPosition ();
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {
@@ -168,9 +169,9 @@ function compendiumEditor(collectionId, data) {
   });
 
   //Add new chapter
-  $("#addChapter").one('click', function () {
+  $("#add-chapter").one('click', function () {
     var pageTitle;
-    $('#sortable-chapters').append(
+    $('#sortable-chapter').append(
       '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
       '<textarea class="auto-size" id="new-chapter-title" placeholder="Type title here and click add"></textarea>' +
       '<button class="btn-markdown-edit" id="chapter-add">Start editing chapter</button>' +
@@ -190,118 +191,15 @@ function compendiumEditor(collectionId, data) {
   });
 
   function sortableSections() {
-    $("#sortable-chapters").sortable();
+    $("#sortable-chapter").sortable();
   }
   sortableSections();
 
-  // Edit accordion
-  // Load and edition
-  $(data.accordion).each(function(index, tab) {
+  //
+  //ADD DATA
+  //
 
-    $("#tab-edit_"+index).click(function() {
-      var editedSectionValue = {
-        "title": $('#tab-title_' + index).val(),
-        "markdown": $("#tab-markdown_" + index).val()
-      };
-
-      var saveContent = function(updatedContent) {
-        data.accordion[index].markdown = updatedContent;
-        data.accordion[index].title = $('#tab-title_' + index).val();
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#tab-delete_"+index).click(function() {
-      $("#"+index).remove();
-      data.accordion.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
-    });
-  });
-
-  //Add new tab
-  $("#addTab").one('click', function () {
-    data.accordion.push({title:"", markdown:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  });
-
-  function sortableTabs() {
-    $("#sortable-tabs").sortable();
-  }
-  sortableTabs();
-
-  // Related methodology
-  // Load
-  if (!data.relatedMethodology || data.relatedMethodology.length === 0) {
-    lastIndexRelatedMethodology = 0;
-  } else {
-    $(data.relatedMethodology).each(function (iMethodology, relatedMethodology) {
-      lastIndexRelatedMethodology = iMethodology + 1;
-
-      // Delete
-      $("#methodology-delete_" + iMethodology).click(function () {
-        $("#" + iMethodology).remove();
-        data.relatedMethodology.splice(iMethodology, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
-      });
-    });
-  }
-  //Add related methodology
-  $("#addMethodology").one('click', function () {
-    var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
-
-    $('#sortable-methodology').append(
-        '<div id="' + lastIndexRelatedMethodology + '" class="edit-section__sortable-item">' +
-        '  <textarea id="methodology-uri_' + lastIndexRelatedMethodology + '" placeholder="Go to the related document and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="methodology-get_' + lastIndexRelatedMethodology + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="methodology-cancel_' + lastIndexRelatedMethodology + '">Cancel</button>' +
-        '</div>').trigger('create');
-
-    $("#methodology-get_" + lastIndexRelatedMethodology).one('click', function () {
-      pastedUrl = $('#methodology-uri_'+lastIndexRelatedMethodology).val();
-      if (pastedUrl) {
-        var myUrl = parseURL(pastedUrl);
-        var relatedMethodologyUrlData = myUrl.pathname + "/data";
-      } else {
-        var relatedMethodologyUrl = $('#iframe')[0].contentWindow.document.location.pathname;
-        var relatedMethodologyUrlData = relatedMethodologyUrl + "/data";
-      }
-      pastedUrl = null;
-
-      $.ajax({
-        url: relatedMethodologyUrlData,
-        dataType: 'json',
-        crossDomain: true,
-        success: function (relatedMethodologyData) {
-          if (relatedMethodologyData.type === 'methodology') {
-            if (!data.relatedMethodology) {
-              data.relatedMethodology = [];
-            }
-            data.relatedMethodology.push({uri: relatedMethodologyData.uri});
-            saveRelated(collectionId, pageUrl, data);
-          } else {
-            alert("This is not a methodology");
-          }
-        },
-        error: function () {
-          console.log('No page data returned');
-        }
-      });
-    });
-
-    $("#methodology-cancel_" + lastIndexRelatedMethodology).one('click', function () {
-     createWorkspace(pageUrl, collectionId, 'edit');
-    });
-  });
-
-  function sortableRelatedMethodology() {
-    $("#sortable-methodology").sortable();
-  }
-  sortableRelatedMethodology();
+  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
 
   // Save
   var editNav = $('.edit-nav');
@@ -327,13 +225,13 @@ function compendiumEditor(collectionId, data) {
 
   function save() {
     // Chapters
-    var orderChapter = $("#sortable-chapters").sortable('toArray');
+    var orderChapter = $("#sortable-chapter").sortable('toArray');
     $(orderChapter).each(function (indexC, nameC) {
       var uri = data.chapters[parseInt(nameC)].uri;
       newChapters[indexC] = {uri: uri};
     });
     data.chapters = newChapters;
-    // Dataset
+    // Data
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
