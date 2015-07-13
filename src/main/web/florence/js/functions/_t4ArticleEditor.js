@@ -107,14 +107,14 @@ function articleEditor(collectionId, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   editMarkdown (collectionId, data, 'sections', 'section');
@@ -134,20 +134,20 @@ function articleEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val();
     save();
-    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     save()
-    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
 
@@ -173,14 +173,16 @@ function articleEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = $('#article-uri_' + nameA).val();
-      newArticle[indexA]= {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newArticle[indexA]= {uri: uriChecked};
     });
     data.relatedArticles = newArticle;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = $('#data-uri_' + nameD).val();
-      newRelated[indexD] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newRelated[indexD] = {uri: uriChecked};
     });
     data.relatedData = newRelated;
     // External links

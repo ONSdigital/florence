@@ -112,14 +112,14 @@ function compendiumDataEditor(collectionId, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
 
@@ -142,7 +142,7 @@ function compendiumDataEditor(collectionId, data) {
         }
       });
       data.downloads.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     $("#file-edit_"+index).click(function() {
@@ -154,7 +154,7 @@ function compendiumDataEditor(collectionId, data) {
        var saveContent = function(updatedContent) {
          data.downloads[index].fileDescription = updatedContent;
          data.downloads[index].title = $('#file-title_' + index).val();
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
+         updateContent(collectionId, data.uri, JSON.stringify(data));
        };
        loadMarkdownEditor(editedSectionValue, saveContent, data);
     });
@@ -193,7 +193,7 @@ function compendiumDataEditor(collectionId, data) {
           document.getElementById("response").innerHTML = "Uploading . . .";
 
           var file = this.files[0];
-          uriUpload = getPathName() + "/" + file.name;
+          uriUpload = data.uri + "/" + file.name;
 
           if (data.downloads.length > 0) {
             $(data.downloads).each(function (i, filesUploaded) {
@@ -226,7 +226,7 @@ function compendiumDataEditor(collectionId, data) {
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   data.downloads.push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
+                  updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
             }
@@ -253,7 +253,7 @@ function compendiumDataEditor(collectionId, data) {
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
                   data.downloads.push({title:'', file: uriUpload});
-                  updateContent(collectionId, getPathName(), JSON.stringify(data));
+                  updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
             }
@@ -280,7 +280,7 @@ function compendiumDataEditor(collectionId, data) {
       $("#used-delete_" + iUsed).click(function () {
         $("#" + iUsed).remove();
         data.relatedDocuments.splice(iUsed, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
+        updateContent(collectionId, data.uri, JSON.stringify(data));
       });
     });
   }
@@ -353,7 +353,7 @@ function compendiumDataEditor(collectionId, data) {
       $("#used-delete_" + iMethodology).click(function () {
         $("#" + iMethodology).remove();
         data.relatedMethodology.splice(iMethodology, 1);
-        updateContent(collectionId, getPathName(), JSON.stringify(data));
+        updateContent(collectionId, data.uri, JSON.stringify(data));
       });
     });
   }
@@ -426,18 +426,18 @@ function compendiumDataEditor(collectionId, data) {
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       //pageData = $('.fl-editor__headline').val();
       saveData();
-      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
       saveData()
-      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
     saveData();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   }
 
   function saveData() {

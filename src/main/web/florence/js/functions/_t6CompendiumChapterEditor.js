@@ -108,14 +108,14 @@ function compendiumChapterEditor(collectionId, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   editMarkdown (collectionId, data, 'sections', 'section');
@@ -133,12 +133,12 @@ function compendiumChapterEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   editNav.on('click', '#save-and-exit', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
     setTimeout(function () {
       refreshPreview(parentUrl)
       viewWorkspace(parentUrl, collectionId, 'edit')
@@ -149,13 +149,13 @@ function compendiumChapterEditor(collectionId, data) {
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val();
     save();
-    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     save()
-    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
 
@@ -180,7 +180,8 @@ function compendiumChapterEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = $('#article-uri_' + nameB).val();
-      newRelated[indexB]= {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newRelated[indexB]= {uri: uriChecked};
     });
     data.relatedArticles = newRelated;
     // External links
