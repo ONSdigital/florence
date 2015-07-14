@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <div class="edit-section" id="chapter">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Chapters</h1>
         <p>Title</p>
@@ -89,7 +89,7 @@
       </div>
     </div>
 
-    <div class="edit-section" id="relData">
+    <div class="edit-section">
       <div class="edit-section__head">
         <h1>Compendium data</h1>
         <p>Title</p>
@@ -98,8 +98,8 @@
         <div id="sortable-data" class="edit-section__sortable">
           {{#each this.datasets}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="data-title_{{@index}}">{{description.title}}</p>
-              <button class="btn-markdown-edit" id="data-edit_{{@index}}" data-url="{{uri}}">Edit</button>
+              <p id="data-title_{{@index}}" data-url="{{uri}}">{{description.title}}</p>
+              <button class="btn-markdown-edit" id="data-edit_{{@index}}">Edit</button>
               <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}

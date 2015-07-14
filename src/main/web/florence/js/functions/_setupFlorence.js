@@ -77,6 +77,10 @@ function setupFlorence() {
 
     if (menuItem.hasClass("nav--admin__item--collections")) {
       viewController('collections');
+    } else if (menuItem.hasClass("nav--admin__item--collection")) {
+      var thisCollection = CookieUtils.getCookieValue("collection");
+      viewCollections(thisCollection);
+      $(".nav--admin__item--collections").addClass('selected');
     } else if (menuItem.hasClass("nav--admin__item--users")) {
       viewController('users-and-access');
     } else if (menuItem.hasClass("nav--admin__item--publish")) {

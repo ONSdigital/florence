@@ -28,12 +28,18 @@ function viewCollections(collectionId) {
     var collectionsHtml = templates.collectionList(response);
     $('.section').html(collectionsHtml);
 
-    $('.collections-select-table tbody tr').click(function () {
-      $('.collections-select-table tbody tr').removeClass('selected');
-      $(this).addClass('selected');
-      var collectionId = $(this).attr('data-id');
+    if(collectionId) {
+      $('.collections-select-table tr[data-id="' + collectionId + '"]')
+        .addClass('selected');
       viewCollectionDetails(collectionId);
-    });
+    } else {
+      $('.collections-select-table tbody tr').click(function () {
+        $('.collections-select-table tbody tr').removeClass('selected');
+        $(this).addClass('selected');
+        var collectionId = $(this).attr('data-id');
+        viewCollectionDetails(collectionId);
+      });
+    }
 
     $('form input[type=radio]').click(function () {
       if ($('form input[type=radio]:checked').val() === 'manual') {
@@ -67,11 +73,5 @@ function viewCollections(collectionId) {
       e.preventDefault();
       createCollection();
     });
-
-    if(collectionId) {
-      $('.collections-select-table tr[data-id="' + collectionId + '"]')
-        .addClass('selected');
-      viewCollectionDetails(collectionId);
-    }
   }
 }

@@ -1,5 +1,7 @@
 function createWorkspace(path, collectionId, menu, stopEventListener) {
 
+  $("#working-on").on('click', function () {}); // add event listener to mainNav
+
   if(stopEventListener) {
     document.getElementById('iframe').onload = function () {
       var browserLocation = document.getElementById('iframe').contentWindow.location.href;
@@ -13,9 +15,6 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     if (path) {
       currentPath = path;
     }
-//    if (currentPath.charAt(0) === '/') {
-//      currentPath = currentPath.slice(1);
-//    }
 
     localStorage.removeItem("pageurl");
     localStorage.setItem("pageurl", currentPath);
