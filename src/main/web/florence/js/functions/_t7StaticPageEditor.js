@@ -37,7 +37,6 @@ function staticPageEditor(collectionId, data) {
     data.description.summary = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });

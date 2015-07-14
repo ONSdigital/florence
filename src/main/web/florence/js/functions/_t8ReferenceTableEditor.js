@@ -25,16 +25,13 @@ function referenceTableEditor(collectionId, data) {
   });
   if (!Florence.collection.date) {
     if (!data.description.releaseDate){
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
       dateTmp = $('#releaseDate').val();
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(dateTmpFormatted);
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
@@ -60,16 +57,11 @@ function referenceTableEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#summary").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.summary = $(this).val();
-  });
   $("#datasetId").on('input', function () {
     $(this).textareaAutoSize();
     data.description.datasetId = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -124,7 +116,7 @@ function referenceTableEditor(collectionId, data) {
 
   editRelated (collectionId, data, 'relatedMethodology', 'methodology');
 
-  addFileWithDetails (collectionId, data, 'downloads', 'file')
+  addFileWithDetails (collectionId, data, 'downloads', 'file');
 
   // Save
   var editNav = $('.edit-nav');
@@ -143,7 +135,7 @@ function referenceTableEditor(collectionId, data) {
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      saveData()
+      saveData();
       saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
