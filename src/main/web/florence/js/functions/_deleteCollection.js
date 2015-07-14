@@ -3,12 +3,14 @@ function deleteCollection(collectionId, success, error) {
     url: "/zebedee/collection/" + collectionId,
     type: 'DELETE',
     success: function (response) {
-      if (success)
         success(response);
     },
     error: function (response) {
-      if (error)
+      if (error) {
         error(response);
+      } else {
+        handleApiError(response);
+      }
     }
   });
 }
