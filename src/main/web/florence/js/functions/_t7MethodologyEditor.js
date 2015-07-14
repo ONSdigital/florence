@@ -39,7 +39,6 @@ function methodologyEditor(collectionId, data) {
     data.description.summary = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -70,7 +69,7 @@ function methodologyEditor(collectionId, data) {
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save()
+    save();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
