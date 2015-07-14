@@ -28,6 +28,7 @@ function editMarkdownOneObject (collectionId, data, field, idField) {
       updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   } else {
+    $('#add-' + idField).hide();
     $('#add-' + idField).one('click', function () {
       alert('At the moment you can have one section here.')
     });

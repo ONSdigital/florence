@@ -69,7 +69,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   }
 
   else if (pageData.type === 'compendium_data') {
-    var html = templates.workEditT8ReferenceTable(templateData);
+    var html = templates.workEditT8Compendium(templateData);
     $('.workspace-menu').html(html);
     accordion();
     compendiumDataEditor(collectionId, pageData);
