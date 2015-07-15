@@ -3,7 +3,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
   if (parentUrl.charAt(0) !== '/') {
     var parentUrlData = "/" + parentUrl + "/data";
   } else {
-    var parentUrlData = parentUrl + "/data";
+    parentUrlData = parentUrl + "/data";
   }
   $.ajax({
     url: parentUrlData,
@@ -107,8 +107,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         alert('Oops! Something went the wrong way.');
         loadCreateScreen(collectionId);
       }
-
-      pageData.uri = '/' + newUri;
+      newUri = '/' + newUri;
+      pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
@@ -131,7 +131,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
               return true;
             }
             else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-              updateParentLink ('/' + newUri);
+              updateParentLink (newUri);
               return true;
             }
           },

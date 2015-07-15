@@ -83,7 +83,8 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
-      pageData.uri = '/' + newUri;
+      newUri = '/' + newUri;
+      pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
       if (pageType === 'bulletin' && !pageData.description.edition) {
