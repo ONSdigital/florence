@@ -19,28 +19,6 @@ function timeseriesEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-//  $("#edition").on('input', function () {
-//    $(this).textareaAutoSize();
-//    data.description.edition = $(this).val();
-//  });
-//  if (!Florence.collection.date) {
-//    if (!data.description.releaseDate){
-//      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//      $('#releaseDate').on('change', function () {
-//        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-//      });
-//    } else {
-//      dateTmp = $('#releaseDate').val();
-//      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-//      $('#releaseDate').val(dateTmpFormatted);
-//      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//      $('#releaseDate').on('change', function () {
-//        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-//      });
-//    }
-//  } else {
-//      $('.release-date').hide();
-//  }
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
@@ -81,7 +59,6 @@ function timeseriesEditor(collectionId, data) {
     data.description.source = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -163,19 +140,13 @@ function timeseriesEditor(collectionId, data) {
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save()
+    save();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
 
   function save() {
     // Sections
-//    var orderSection = $("#sortable-sections").sortable('toArray');
-//    $(orderSection).each(function (indexS, nameS) {
-//      var markdown = $('#section-markdown_' + nameS).val();
-//      newSections[indexS] = {markdown: markdown};
-//    });
-//    data.section = newSections;
     data.section = {markdown: $('#section-markdown_0').val()};
     // Notes
     var orderNote = $("#sortable-note").sortable('toArray');

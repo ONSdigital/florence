@@ -1,7 +1,7 @@
 function datasetEditor(collectionId, data) {
 
-  var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
-  var setActiveTab, getActiveTab;
+  var newFiles = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
+  var setActiveTab, getActiveTab, uriChecked;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -26,16 +26,13 @@ function datasetEditor(collectionId, data) {
   });
   if (!Florence.collection.date) {
     if (!data.description.releaseDate){
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
       dateTmp = $('#releaseDate').val();
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(dateTmpFormatted);
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
@@ -61,12 +58,7 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#summary").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.summary = $(this).val();
-  });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -144,7 +136,7 @@ function datasetEditor(collectionId, data) {
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      saveData()
+      saveData();
       saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
@@ -162,14 +154,7 @@ function datasetEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
-    //console.log(data.download);
     // Notes
-//    var orderNote = $("#sortable-note").sortable('toArray');
-//    $(orderNote).each(function (indexT, nameT) {
-//      var markdown = $('#note-markdown_' + nameT).val();
-//      newNotes[indexT] = {markdown: markdown};
-//    });
-//    data.section = newNotes;
     data.section = {markdown: $('#note-markdown_0').val()};
     // Related datasets
     var orderDataset = $("#sortable-dataset").sortable('toArray');
