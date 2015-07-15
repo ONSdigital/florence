@@ -14,6 +14,9 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     var currentPath = '';
     if (path) {
       currentPath = path;
+      if (currentPath.charAt(0) !== '/') {
+        currentPath = "/" + currentPath;
+      }
     }
 
     localStorage.removeItem("pageurl");
@@ -21,7 +24,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
 
     Florence.refreshAdminMenu();
 
-    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + '/' + path);
+    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + path);
      $('.section').html(workSpace);
 
     //click handlers

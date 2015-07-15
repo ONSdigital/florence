@@ -1,7 +1,7 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
-  if (path.charAt(0) === '/') {
-    path = path.slice(1);
+  if (path.charAt(0) !== '/') {
+    path = '/' + path;
   }
 
   var pageUrlData = path + "/data.json";
