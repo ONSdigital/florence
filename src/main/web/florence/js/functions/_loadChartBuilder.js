@@ -70,7 +70,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       processData: false,
       contentType: false,
       success: function (res) {
-        //generatePng('#chart', '#hiddenCanvas');
+        generatePng('#chart', '#hiddenCanvas');
         //renderDownloadChart();
         //generatePng('#hiddenSvgForDownload', '#hiddenCanvasForDownload', '-download');
 
@@ -130,7 +130,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
 
-    renderChartObject('#hiddenSvgForDownload', chart, chartHeight, chartWidth);
+    renderChartObject('hiddenSvgForDownload', chart, chartHeight, chartWidth);
     renderSvgAnnotations('#hiddenSvgForDownload', chart, chartHeight, chartWidth)
   }
 
