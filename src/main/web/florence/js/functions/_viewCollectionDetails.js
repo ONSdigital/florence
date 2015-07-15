@@ -73,8 +73,8 @@ function viewCollectionDetails(collectionId) {
 
     $('.btn-page-edit').click(function () {
       var path = $(this).attr('data-path');
-      if (path.charAt(0) === '/') {
-        path = path.slice(1);
+      if (path.charAt(0) !== '/') {
+        path = '/' + path;
       }
       createWorkspace(path, collectionId, 'edit');
     });

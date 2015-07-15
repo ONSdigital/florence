@@ -37,7 +37,8 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
       newUri = makeUrl(parentUrl, pageNameTrimmed);
-      pageData.uri = '/' + newUri;
+      newUri = '/' + newUri;
+      pageData.uri = newUri;
       if (pageData.releaseDate) {
         date = new Date(releaseDate);
         pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
