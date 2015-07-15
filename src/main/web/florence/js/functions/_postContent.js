@@ -1,4 +1,7 @@
 function postContent(collectionId, path, content, success, error) {
+  if (path.charAt(0) !== '/') {
+    path = '/' + path;
+  }
   $.ajax({
     url: "/zebedee/content/" + collectionId + "?uri=" + path + "/data.json",
     dataType: 'json',
