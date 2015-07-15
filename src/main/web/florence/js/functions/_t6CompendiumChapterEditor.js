@@ -66,7 +66,6 @@ function compendiumChapterEditor(collectionId, data) {
     data.description._abstract = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -149,7 +148,7 @@ function compendiumChapterEditor(collectionId, data) {
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save()
+    save();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
@@ -175,7 +174,7 @@ function compendiumChapterEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = $('#article-uri_' + nameB).val();
-      uriChecked = checkRelatedPath(uri);
+      var uriChecked = checkRelatedPath(uri);
       newRelated[indexB]= {uri: uriChecked};
     });
     data.relatedArticles = newRelated;
