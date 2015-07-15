@@ -20,9 +20,9 @@ function compendiumChapterEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  $("#edition").on('input', function () {
+  $("#headline").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.edition = $(this).val();
+    data.description.headline = $(this).val();
   });
   if (!Florence.collection.date) {
     if (!data.description.releaseDate){
@@ -121,7 +121,7 @@ function compendiumChapterEditor(collectionId, data) {
 
   editMarkdown (collectionId, data, 'accordion', 'tab');
 
-  editRelated (collectionId, data, 'relatedArticles', 'article');
+  editRelated (collectionId, data, 'relatedDocuments', 'document');
 
   editLink (collectionId, data, 'links', 'link');
 
@@ -170,10 +170,10 @@ function compendiumChapterEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-    // Related articles
-    var orderArticle = $("#sortable-article").sortable('toArray');
+    // Related documents
+    var orderArticle = $("#sortable-document").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
-      var uri = $('#article-uri_' + nameB).val();
+      var uri = $('#document-uri_' + nameB).val();
       var uriChecked = checkRelatedPath(uri);
       newRelated[indexB]= {uri: uriChecked};
     });

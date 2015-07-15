@@ -94,7 +94,7 @@ function setupFlorence() {
     }
   }
 
-  var interval = setTimeout(ping, 60000);
-  ping();
+  //var interval = setTimeout(ping, 60000);
+  //ping();
 }
 

@@ -73,17 +73,17 @@
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-used" class="edit-section__sortable">
+        <div id="sortable-document" class="edit-section__sortable">
           {{#each this.relatedDocuments}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               {{description.title}}
-              <textarea id="used-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="used-delete_{{@index}}">Delete</button>
+              <textarea id="document-uri_{{@index}}">{{uri}}</textarea>
+              <button class="btn-page-delete" id="document-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="add-used">Add article or bulletin</button>
+          <button class="btn-add-section" id="add-document">Add article or bulletin</button>
         </div>
       </div>
     </div>

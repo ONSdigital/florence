@@ -113,7 +113,7 @@ function compendiumDataEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editRelated (collectionId, data, 'relatedDocuments', 'used');
+  editRelated (collectionId, data, 'relatedDocuments', 'document');
 
   editRelated (collectionId, data, 'relatedMethodology', 'methodology');
 
@@ -156,12 +156,12 @@ function compendiumDataEditor(collectionId, data) {
       newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
     });
     data.downloads = newFiles;
-    // Used in links
-    var orderUsedIn = $("#sortable-used").sortable('toArray');
+    // Related documents
+    var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#used-uri_'+nameU).val();
+      var uri = $('#document-uri_'+nameU).val();
       uriChecked = checkRelatedPath(uri);
-      newUsedIn[parseInt(indexU)] = {uri: uriChecked};
+      newUsedIn[indexU] = {uri: uriChecked};
     });
     data.relatedDocuments = newUsedIn;
     // Related methodology
@@ -169,7 +169,7 @@ function compendiumDataEditor(collectionId, data) {
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
       uriChecked = checkRelatedPath(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
+      newRelatedMethodology[indexM] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;
   }
