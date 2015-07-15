@@ -36,11 +36,11 @@ function setupFlorence() {
 
   // load main florence template
   var florence = templates.florence;
+
   $('body').append(florence);
-
   Florence.refreshAdminMenu();
-  var adminMenu = $('.admin-nav');
 
+  var adminMenu = $('.admin-nav');
   // dirty checks on admin menu
   adminMenu.on('click', '.nav--admin__item', function () {
     if (Florence.Editor.isDirty) {
@@ -57,26 +57,31 @@ function setupFlorence() {
     }
   });
 
+
   window.onbeforeunload = function () {
     if (Florence.Editor.isDirty) {
       return 'You have unsaved changes.';
     }
   };
-
   viewController();
 
-  function processMenuClick(clicked) {
 
+  function processMenuClick(clicked) {
     Florence.collection = {};
+
     $('.nav--admin__item--collection').hide();
     $('.nav--admin__item').removeClass('selected');
-
     var menuItem = $(clicked);
 
     menuItem.addClass('selected');
 
+
     if (menuItem.hasClass("nav--admin__item--collections")) {
       viewController('collections');
+    } else if (menuItem.hasClass("nav--admin__item--collection")) {
+      var thisCollection = CookieUtils.getCookieValue("collection");
+      viewCollections(thisCollection);
+      $(".nav--admin__item--collections").addClass('selected');
     } else if (menuItem.hasClass("nav--admin__item--users")) {
       viewController('users-and-access');
     } else if (menuItem.hasClass("nav--admin__item--publish")) {
@@ -88,5 +93,8 @@ function setupFlorence() {
       viewController();
     }
   }
+
+  var interval = setTimeout(ping, 60000);
+  ping();
 }
 

@@ -19,28 +19,6 @@ function timeseriesEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-//  $("#edition").on('input', function () {
-//    $(this).textareaAutoSize();
-//    data.description.edition = $(this).val();
-//  });
-//  if (!Florence.collection.date) {
-//    if (!data.description.releaseDate){
-//      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//      $('#releaseDate').on('change', function () {
-//        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-//      });
-//    } else {
-//      dateTmp = $('#releaseDate').val();
-//      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-//      $('#releaseDate').val(dateTmpFormatted);
-//      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-//      $('#releaseDate').on('change', function () {
-//        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-//      });
-//    }
-//  } else {
-//      $('.release-date').hide();
-//  }
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
@@ -81,7 +59,6 @@ function timeseriesEditor(collectionId, data) {
     data.description.source = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -123,14 +100,14 @@ function timeseriesEditor(collectionId, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   editMarkdownOneObject (collectionId, data, 'section', 'section');
@@ -151,31 +128,25 @@ function timeseriesEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val();
     save();
-    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save()
-    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+    save();
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
 
   function save() {
     // Sections
-//    var orderSection = $("#sortable-sections").sortable('toArray');
-//    $(orderSection).each(function (indexS, nameS) {
-//      var markdown = $('#section-markdown_' + nameS).val();
-//      newSections[indexS] = {markdown: markdown};
-//    });
-//    data.section = newSections;
     data.section = {markdown: $('#section-markdown_0').val()};
     // Notes
     var orderNote = $("#sortable-note").sortable('toArray');
@@ -188,28 +159,32 @@ function timeseriesEditor(collectionId, data) {
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
       var uri = $('#document-uri_' + nameD).val();
-      newDocument[indexD]= {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newDocument[indexD]= {uri: uriChecked};
     });
     data.relatedDocuments = newDocument;
     // Related timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, nameT) {
       var uri = $('#timeseries-uri_' + nameT).val();
-      newTimeseries[indexT]= {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newTimeseries[indexT]= {uri: uriChecked};
     });
     data.relatedData = newTimeseries;
     // Related datasets
     var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = $('#dataset-uri_' + nameD).val();
-      newRelated[indexD]= {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newRelated[indexD]= {uri: uriChecked};
     });
     data.relatedDatasets = newRelated;
     // Related methodology
     var orderUsedIn = $("#sortable-methodology").sortable('toArray');
     $(orderUsedIn).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
-      newRelatedMethodology[parseInt(indexM)] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

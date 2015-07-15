@@ -19,7 +19,6 @@ function t1Editor(collectionId, data) {
     data.description.summary = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -51,10 +50,12 @@ function t1Editor(collectionId, data) {
       $("#section-get_" + index).one('click', function () {
         var pastedUrl = $('#uri_'+index).val();
         if (pastedUrl) {
+          checkRelatedPath(pastedUrl);
           var myUrl = parseURL(pastedUrl);
           var sectionUrlData = myUrl.pathname + "/data";
         } else {
         var sectionUrl = getPathNameTrimLast();
+        checkRelatedPath(sectionUrl);
         var sectionUrlData = sectionUrl + "/data";
         }
 
@@ -113,27 +114,23 @@ function t1Editor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
+    updateContent(collectionId, '', JSON.stringify(data));
   });
 
   // completed to review
-    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-      //pageData = $('.fl-editor__headline').val();
-      saveData();
-      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
-    });
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+    //pageData = $('.fl-editor__headline').val();
+    save();
+    saveAndCompleteContent(collectionId, '', JSON.stringify(data));
+  });
 
-    // reviewed to approve
-    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      saveData()
-      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
-    });
+  // reviewed to approve
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+    save();
+    saveAndReviewContent(collectionId, '', JSON.stringify(data));
+  });
 
   function save() {
-    saveData();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
-  }
-
-  function saveData() {
     // sections
     var orderSections = $("#sortable-sections").sortable('toArray');
     $(orderSections).each(function(indexS, nameS){

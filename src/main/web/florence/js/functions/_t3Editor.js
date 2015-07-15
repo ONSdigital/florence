@@ -24,7 +24,6 @@ function t3Editor(collectionId, data) {
     data.description.summary = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -51,20 +50,20 @@ function t3Editor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       //pageData = $('.fl-editor__headline').val();
       save();
-      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      save()
-      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+      save();
+      saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
@@ -72,28 +71,32 @@ function t3Editor(collectionId, data) {
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {
       var uri = data.items[parseInt(titleT)].uri;
-      newTimeseries[indexT] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newTimeseries[indexT] = {uri: uriChecked};
     });
     data.items = newTimeseries;
     // Bulletins
     var orderBulletins = $("#sortable-bulletins").sortable('toArray');
     $(orderBulletins).each(function (indexB, titleB) {
       var uri = data.statsBulletins[parseInt(titleB)].uri;
-      newBulletins[indexB] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newBulletins[indexB] = {uri: uriChecked};
     });
     data.statsBulletins = newBulletins;
     // Articles
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
       var uri = data.relatedArticles[parseInt(titleA)].uri;
-      newArticles[indexA] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newArticles[indexA] = {uri: uriChecked};
     });
     data.relatedArticles = newArticles;
     // Datasets
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {
       var uri = data.datasets[parseInt(titleD)].uri;
-      newDatasets[indexD] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newDatasets[indexD] = {uri: uriChecked};
     });
     data.datasets = newDatasets;
   }
