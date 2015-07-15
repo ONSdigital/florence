@@ -23,7 +23,6 @@ function staticLandingPageEditor(collectionId, data) {
     data.description.summary = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -42,8 +41,8 @@ function staticLandingPageEditor(collectionId, data) {
     $('#section-uri_'+index).on('paste', function() {
       setTimeout(function () {
       var pastedUrl = $('#section-uri_'+index).val();
-      var myUrl = parseURL(pastedUrl);
-        $('#section-uri_'+index).val(myUrl.pathname);
+        checkRelatedPath(pastedUrl);
+        $('#section-uri_'+index).val(pastedUrl);
       }, 50);
     });
 
@@ -51,14 +50,14 @@ function staticLandingPageEditor(collectionId, data) {
       $('<button class="btn-edit-save-and-submit-for-review" id="section-get_' + index + '">Get</button>').insertAfter('#section-uri_'+index);
     }
     $('#section-get_'+index).click(function() {
-      var pageUrl = localStorage.getItem('pageurl');
       var iframeEvent = document.getElementById('iframe').contentWindow;
       iframeEvent.removeEventListener('click', Florence.Handler, true);
-      createWorkspace(pageUrl, collectionId, '', true);
-      $('#section-get_'+index).html('Paste').off();
-      $('#section-get_'+index).one('click', function() {
-        data.sections[index].uri = getPathNameTrimLast();
-        saveRelated(collectionId, pageUrl, data);
+      createWorkspace(data.uri, collectionId, '', true);
+      $('#section-get_'+index).html('Paste').off().one('click', function() {
+        uriChecked = getPathNameTrimLast();
+        checkRelatedPath(uriChecked);
+        data.sections[index].uri = uriChecked;
+        saveRelated(collectionId, data.uri, data);
       });
     });
 
@@ -71,7 +70,7 @@ function staticLandingPageEditor(collectionId, data) {
        var saveContent = function(updatedContent) {
          data.sections[index].summary = updatedContent;
          data.sections[index].uri = $('#section-uri_' + index).val();
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
+         updateContent(collectionId, data.uri, JSON.stringify(data));
        };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -79,23 +78,16 @@ function staticLandingPageEditor(collectionId, data) {
 
     // Delete
     $("#section-delete_"+index).click(function() {
-//      Not to be used at the moment (deletes files and sections)
-//      get the path
-//      deleteContent(collectionId, path, function() {
-//        refreshPreview(path);
-//        loadPageDataIntoEditor(path, collectionId);
-//      }, error);
-//      console.log('File deleted');
       $("#"+index).remove();
       data.sections.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   //Add new content
   $("#addSection").one('click', function () {
     data.sections.push({uri:"", summary:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   function sortableContent() {
@@ -116,7 +108,7 @@ function staticLandingPageEditor(collectionId, data) {
        var saveContent = function(updatedContent) {
          data.links[iLink].title = updatedContent;
          data.links[iLink].uri = $('#link-uri_' + iLink).val();
-         updateContent(collectionId, getPathName(), JSON.stringify(data));
+         updateContent(collectionId, data.uri, JSON.stringify(data));
        };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -126,14 +118,14 @@ function staticLandingPageEditor(collectionId, data) {
     $("#link-delete_"+iLink).click(function() {
       $("#"+iLink).remove();
       data.links.splice(iLink, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   //Add new external
   $("#addLink").click(function () {
     data.links.push({uri:"", title:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   function sortableLinks() {
@@ -147,19 +139,19 @@ function staticLandingPageEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     save();
-    saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save()
-    saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+    save();
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   function save() {
@@ -168,7 +160,8 @@ function staticLandingPageEditor(collectionId, data) {
     $(orderSection).each(function (indexS, nameS) {
       var summary = data.sections[parseInt(nameS)].summary;
       var uri = $('#section-uri_' + nameS).val();
-      newSections[indexS] = {uri: uri, summary: summary};
+      uriChecked = checkRelatedPath(uri);
+      newSections[indexS] = {uri: uriChecked, summary: summary};
     });
     data.sections = newSections;
     // External links

@@ -25,16 +25,13 @@ function referenceTableEditor(collectionId, data) {
   });
   if (!Florence.collection.date) {
     if (!data.description.releaseDate){
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
       dateTmp = $('#releaseDate').val();
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(dateTmpFormatted);
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
@@ -60,16 +57,11 @@ function referenceTableEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
-  $("#summary").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.summary = $(this).val();
-  });
   $("#datasetId").on('input', function () {
     $(this).textareaAutoSize();
     data.description.datasetId = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        availableTags: data.description.keywords,
                         singleField: true,
                         singleFieldNode: $('#keywords')
   });
@@ -110,21 +102,21 @@ function referenceTableEditor(collectionId, data) {
     $("#correction-delete_" + index).click(function () {
       $("#" + index).remove();
       data.correction.splice(index, 1);
-      updateContent(collectionId, getPathName(), JSON.stringify(data));
+      updateContent(collectionId, data.uri, JSON.stringify(data));
     });
   });
 
   // New correction
   $("#addCorrection").one('click', function () {
     data.correction.push({text:"", date:""});
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   editRelated (collectionId, data, 'relatedDocuments', 'used');
 
   editRelated (collectionId, data, 'relatedMethodology', 'methodology');
 
-  addFileWithDetails (collectionId, data, 'downloads', 'file')
+  addFileWithDetails (collectionId, data, 'downloads', 'file');
 
   // Save
   var editNav = $('.edit-nav');
@@ -138,18 +130,18 @@ function referenceTableEditor(collectionId, data) {
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       //pageData = $('.fl-editor__headline').val();
       saveData();
-      saveAndCompleteContent(collectionId, getPathName(), JSON.stringify(data));
+      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      saveData()
-      saveAndReviewContent(collectionId, getPathName(), JSON.stringify(data));
+      saveData();
+      saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
     saveData();
-    updateContent(collectionId, getPathName(), JSON.stringify(data));
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   }
 
   function saveData() {
@@ -166,14 +158,16 @@ function referenceTableEditor(collectionId, data) {
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#used-uri_'+nameU).val();
-      newUsedIn[parseInt(indexU)] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newUsedIn[parseInt(indexU)] = {uri: uriChecked};
     });
     data.relatedDocuments = newUsedIn;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
-      newRelatedMethodology[parseInt(indexM)] = {uri: uri};
+      uriChecked = checkRelatedPath(uri);
+      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

@@ -26,6 +26,29 @@ function viewCollectionDetails(collectionId) {
     var collectionHtml = window.templates.collectionDetails(collection);
     $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
 
+    var deleteButton = $('#collection-delete');
+    if (collection.inProgress.length === 0
+      && collection.complete.length === 0
+      && collection.reviewed.length === 0) {
+        deleteButton.show().click(function () {
+          var result = confirm("Are you sure you want to delete this collection?");
+          if (result === true) {
+            deleteCollection(collectionId,
+            function () {
+            alert('Collection deleted');
+            viewCollections();
+            },
+            function (error) {
+              viewCollectionDetails(collectionId);
+              alert(error + ' File has not been deleted. Contact an administrator');
+            })
+          } else {}
+        });
+      }
+      else {
+        deleteButton.hide();
+      }
+
     var approve = $('.btn-collection-approve');
     if (collection.inProgress.length === 0
       && collection.complete.length === 0
@@ -55,8 +78,7 @@ function viewCollectionDetails(collectionId) {
       }
       createWorkspace(path, collectionId, 'edit');
     });
-    $('.btn-page-delete').click(function () {
-
+    $('#page-delete').click(function () {
       var result = confirm("Are you sure you want to delete this page from the collection?");
       if (result === true) {
         var path = $(this).attr('data-path');
