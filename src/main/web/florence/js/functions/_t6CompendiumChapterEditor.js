@@ -174,7 +174,7 @@ function compendiumChapterEditor(collectionId, data) {
     var orderArticle = $("#sortable-document").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = $('#document-uri_' + nameB).val();
-      var uriChecked = checkRelatedPath(uri);
+      var uriChecked = checkPathParsed(uri);
       newRelated[indexB]= {uri: uriChecked};
     });
     data.relatedArticles = newRelated;

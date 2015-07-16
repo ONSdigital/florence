@@ -159,7 +159,7 @@ function timeseriesEditor(collectionId, data) {
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
       var uri = $('#document-uri_' + nameD).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newDocument[indexD]= {uri: uriChecked};
     });
     data.relatedDocuments = newDocument;
@@ -167,7 +167,7 @@ function timeseriesEditor(collectionId, data) {
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, nameT) {
       var uri = $('#timeseries-uri_' + nameT).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newTimeseries[indexT]= {uri: uriChecked};
     });
     data.relatedData = newTimeseries;
@@ -175,7 +175,7 @@ function timeseriesEditor(collectionId, data) {
     var orderDataset = $("#sortable-related").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = $('#dataset-uri_' + nameD).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newRelated[indexD]= {uri: uriChecked};
     });
     data.relatedDatasets = newRelated;
@@ -183,7 +183,7 @@ function timeseriesEditor(collectionId, data) {
     var orderUsedIn = $("#sortable-methodology").sortable('toArray');
     $(orderUsedIn).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;

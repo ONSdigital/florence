@@ -40,11 +40,11 @@ function editRelated (collectionId, data, field, idField) {
     $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
       var pastedUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (pastedUrl) {
-        checkRelatedPath(pastedUrl);
+        checkPathParsed(pastedUrl);
         var dataUrlData = pastedUrl + "/data";
       } else {
         var dataUrl = getPathNameTrimLast();
-        checkRelatedPath(dataUrl);
+        checkPathParsed(dataUrl);
         var dataUrlData = dataUrl + "/data";
       }
 

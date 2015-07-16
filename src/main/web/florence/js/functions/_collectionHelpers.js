@@ -1,9 +1,7 @@
 function getLastEditedEvent(collection, page) {
 
   var uri = page;
-  if (uri.charAt(0) !== '/') {
-    uri = "/" + uri;
-  }
+  checkPathSlashes(uri);
 
   var pageEvents = collection.eventsByUri[uri];
 
@@ -23,9 +21,7 @@ function getLastEditedEvent(collection, page) {
 function getLastCompletedEvent(collection, page) {
 
   var uri = page;
-  if (uri.charAt(0) !== '/') {
-    uri = "/" + uri;
-  }
+  checkPathSlashes(uri);
 
    var lastCompletedEvent;
 

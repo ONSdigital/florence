@@ -160,7 +160,7 @@ function compendiumDataEditor(collectionId, data) {
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#document-uri_'+nameU).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newUsedIn[indexU] = {uri: uriChecked};
     });
     data.relatedDocuments = newUsedIn;
@@ -168,7 +168,7 @@ function compendiumDataEditor(collectionId, data) {
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newRelatedMethodology[indexM] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;
