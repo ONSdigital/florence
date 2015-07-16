@@ -1,5 +1,11 @@
 function getLastEditedEvent(collection, page) {
-  var pageEvents = collection.eventsByUri[page];
+
+  var uri = page;
+  if (uri.charAt(0) !== '/') {
+    uri = "/" + uri;
+  }
+
+  var pageEvents = collection.eventsByUri[uri];
 
   var lastEditedEvent = _.chain(pageEvents)
     .filter(function (event) {
@@ -15,10 +21,16 @@ function getLastEditedEvent(collection, page) {
 }
 
 function getLastCompletedEvent(collection, page) {
+
+  var uri = page;
+  if (uri.charAt(0) !== '/') {
+    uri = "/" + uri;
+  }
+
    var lastCompletedEvent;
 
   if (collection.eventsByUri) {
-    var pageEvents = collection.eventsByUri[page];
+    var pageEvents = collection.eventsByUri[uri];
     if (pageEvents) {
       lastCompletedEvent = _.chain(pageEvents)
         .filter(function (event) {
@@ -31,6 +43,7 @@ function getLastCompletedEvent(collection, page) {
         .value();
     }
   }
+  console.log(lastCompletedEvent);
   return lastCompletedEvent;
 }
 

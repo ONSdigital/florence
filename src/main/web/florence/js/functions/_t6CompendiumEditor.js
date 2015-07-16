@@ -1,7 +1,7 @@
 function compendiumEditor(collectionId, data) {
 
 //  var index = data.release;
-  var newChapters = [], newDatasets = [], newRelatedMethodology = [];
+  var newChapters = [], newRelatedMethodology = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
   var pageUrl = localStorage.getItem('pageurl');
@@ -291,12 +291,19 @@ function compendiumEditor(collectionId, data) {
     });
 
   function save() {
+    // Chapters
+    var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
+    $(orderRelatedChapter).each(function(indexC, nameC){
+      var uri = data.chapters[parseInt(nameC)].uri;
+      newChapters[indexC] = {uri: uri};
+    });
+    data.chapters = newChapters;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
       uriChecked = checkRelatedPath(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
+      newRelatedMethodology[indexM] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

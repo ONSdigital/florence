@@ -14,8 +14,8 @@
             </label>
           </div>
           <div class="edition">
-            <label for="edition">Edition
-              <textarea class="auto-size" type="text" id="edition">{{this.description.edition}}</textarea>
+            <label for="edition">Headline
+              <textarea class="auto-size" type="text" id="headline">{{this.description.headline}}</textarea>
             </label>
           </div>
           <div class="release-date">
@@ -113,21 +113,21 @@
 
     <div class="edit-section">
       <div class="edit-section__head">
-        <h1>Related articles</h1>
+        <h1>Related documents</h1>
         <p>Title | Link</p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-article" class="edit-section__sortable">
-          {{#each this.relatedArticles}}
+        <div id="sortable-document" class="edit-section__sortable">
+          {{#each this.relatedDocuments}}
             <div id="{{@index}}" class="edit-section__sortable-item">
               {{description.title}}
-              <textarea id="article-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="article-delete_{{@index}}">Delete</button>
+              <textarea id="document-uri_{{@index}}">{{uri}}</textarea>
+              <button class="btn-page-delete" id="document-delete_{{@index}}">Delete</button>
             </div>
           {{/each}}
         </div>
         <div class="text-center">
-          <button class="btn-add-section" id="add-article">Add article</button>
+          <button class="btn-add-section" id="add-document">Add document</button>
         </div>
       </div>
     </div>

@@ -49,7 +49,8 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = releaseDate;
       }
       newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
-      pageData.uri = '/' + newUri;
+      newUri = '/' + newUri;
+      pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
       if (!pageData.description.releaseDate) {
