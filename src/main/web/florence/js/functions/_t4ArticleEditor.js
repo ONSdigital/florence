@@ -169,7 +169,7 @@ function articleEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = $('#article-uri_' + nameA).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newArticle[indexA]= {uri: uriChecked};
     });
     data.relatedArticles = newArticle;
@@ -177,7 +177,7 @@ function articleEditor(collectionId, data) {
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = $('#data-uri_' + nameD).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newRelated[indexD] = {uri: uriChecked};
     });
     data.relatedData = newRelated;

@@ -158,7 +158,7 @@ function referenceTableEditor(collectionId, data) {
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = $('#used-uri_'+nameU).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newUsedIn[parseInt(indexU)] = {uri: uriChecked};
     });
     data.relatedDocuments = newUsedIn;
@@ -166,7 +166,7 @@ function referenceTableEditor(collectionId, data) {
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;

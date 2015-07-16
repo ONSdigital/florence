@@ -1,4 +1,5 @@
 function getPageData(collectionId, path, success, error) {
+  checkPathSlashes(path);
   return $.ajax({
     url: "/zebedee/content/" + collectionId + "?uri=" + path,
     dataType: 'json',

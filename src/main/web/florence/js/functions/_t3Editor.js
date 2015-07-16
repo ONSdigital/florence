@@ -71,7 +71,7 @@ function t3Editor(collectionId, data) {
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {
       var uri = data.items[parseInt(titleT)].uri;
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newTimeseries[indexT] = {uri: uriChecked};
     });
     data.items = newTimeseries;
@@ -79,7 +79,7 @@ function t3Editor(collectionId, data) {
     var orderBulletins = $("#sortable-bulletins").sortable('toArray');
     $(orderBulletins).each(function (indexB, titleB) {
       var uri = data.statsBulletins[parseInt(titleB)].uri;
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newBulletins[indexB] = {uri: uriChecked};
     });
     data.statsBulletins = newBulletins;
@@ -87,7 +87,7 @@ function t3Editor(collectionId, data) {
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
       var uri = data.relatedArticles[parseInt(titleA)].uri;
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newArticles[indexA] = {uri: uriChecked};
     });
     data.relatedArticles = newArticles;
@@ -95,7 +95,7 @@ function t3Editor(collectionId, data) {
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {
       var uri = data.datasets[parseInt(titleD)].uri;
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newDatasets[indexD] = {uri: uriChecked};
     });
     data.datasets = newDatasets;

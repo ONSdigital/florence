@@ -1,4 +1,5 @@
 function deleteContent(collectionId, path, success, error) {
+  checkPathSlashes(path);
   // send ajax call
   $.ajax({
     url: "/zebedee/content/" + collectionId + "?uri=" + path,
