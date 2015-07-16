@@ -4,8 +4,9 @@ function updateContent(collectionId, path, content, redirectToPath) {
       //console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
       if (redirectToPath) {
-        refreshPreview(redirectToPath)
-        viewWorkspace(redirectToPath, collectionId, 'edit')
+        refreshPreview(redirectToPath);
+        viewWorkspace(redirectToPath, collectionId, 'edit');
+        return true;
       } else {
         refreshPreview(path);
         loadPageDataIntoEditor(path, collectionId);
