@@ -178,7 +178,7 @@ function bulletinEditor(collectionId, data) {
     var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = $('#bulletin-uri_' + nameB).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newBulletin[indexB] = {uri: uriChecked};
     });
     data.relatedBulletins = newBulletin;
@@ -186,7 +186,7 @@ function bulletinEditor(collectionId, data) {
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = $('#data-uri_' + nameD).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newRelated[indexD] = {uri: uriChecked};
     });
     data.relatedData = newRelated;

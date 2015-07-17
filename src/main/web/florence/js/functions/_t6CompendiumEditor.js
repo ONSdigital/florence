@@ -302,7 +302,7 @@ function compendiumEditor(collectionId, data) {
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newRelatedMethodology[indexM] = {uri: uriChecked};
     });
     data.relatedMethodology = newRelatedMethodology;

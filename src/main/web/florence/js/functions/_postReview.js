@@ -15,9 +15,7 @@ function saveAndReviewContent(collectionId, path, content) {
 }
 
 function postReview(collectionId, path) {
-  if (path.charAt(0) !== '/') {
-    path = '/' + path;
-  }
+  checkPathSlashes(path);
   // Open the file for editing
   $.ajax({
     url: "/zebedee/review/" + collectionId + "?uri=" + path + "/data.json",
