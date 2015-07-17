@@ -1,10 +1,7 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
-  if (parentUrl.charAt(0) !== '/') {
-    var parentUrlData = "/" + parentUrl + "/data";
-  } else {
-    parentUrlData = parentUrl + "/data";
-  }
+  checkPathSlashes(parentUrl);
+  parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',

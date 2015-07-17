@@ -4,9 +4,7 @@ function viewWorkspace(path, collectionId, menu) {
   if (path) {
     currentPath = path;
   }
-  if (currentPath.charAt(0) !== '/') {
-    currentPath = '/' + currentPath;
-  }
+  checkPathSlashes(currentPath);
 
   localStorage.removeItem("pageurl");
   localStorage.setItem("pageurl", currentPath);
@@ -26,7 +24,5 @@ function viewWorkspace(path, collectionId, menu) {
     $("#edit").addClass('selected');
     loadPageDataIntoEditor(path, collectionId);
   }
-
-
 }
 

@@ -41,7 +41,7 @@ function staticLandingPageEditor(collectionId, data) {
     $('#section-uri_'+index).on('paste', function() {
       setTimeout(function () {
       var pastedUrl = $('#section-uri_'+index).val();
-        checkRelatedPath(pastedUrl);
+        checkPathParsed(pastedUrl);
         $('#section-uri_'+index).val(pastedUrl);
       }, 50);
     });
@@ -55,7 +55,7 @@ function staticLandingPageEditor(collectionId, data) {
       createWorkspace(data.uri, collectionId, '', true);
       $('#section-get_'+index).html('Paste').off().one('click', function() {
         uriChecked = getPathNameTrimLast();
-        checkRelatedPath(uriChecked);
+        checkPathParsed(uriChecked);
         data.sections[index].uri = uriChecked;
         saveRelated(collectionId, data.uri, data);
       });
@@ -160,7 +160,7 @@ function staticLandingPageEditor(collectionId, data) {
     $(orderSection).each(function (indexS, nameS) {
       var summary = data.sections[parseInt(nameS)].summary;
       var uri = $('#section-uri_' + nameS).val();
-      uriChecked = checkRelatedPath(uri);
+      uriChecked = checkPathParsed(uri);
       newSections[indexS] = {uri: uriChecked, summary: summary};
     });
     data.sections = newSections;
