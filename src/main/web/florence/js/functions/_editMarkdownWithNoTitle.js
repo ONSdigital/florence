@@ -1,4 +1,8 @@
 function editMarkdownWithNoTitle (collectionId, data, field, idField) {
+  var list = data[field];
+  var dataTemplate = {list: list, idField: idField};
+  var html = templates.editorContentNoTitle(dataTemplate);
+  $('#'+ idField).replaceWith(html);
   // Load
   $(data[field]).each(function(index){
 
@@ -7,8 +11,8 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
       ;
 
        var saveContent = function(updatedContent) {
-         data[field][index].markdown = updatedContent;
-         updateContent(collectionId, data.uri, JSON.stringify(data));
+         data[field][index] = updatedContent;
+         saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
        };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -18,19 +22,39 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
     $('#' + idField + '-delete_'+index).click(function() {
       $("#"+index).remove();
       data[field].splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
+      saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
     });
   });
 
   //Add
   $('#add-' + idField).one('click', function () {
     data[field].push("");
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
   });
 
   function sortable() {
     $('#sortable-' + idField).sortable();
   }
   sortable();
+}
+
+function saveMarkdownNoTitle (collectionId, path, data, field, idField) {
+    postContent(collectionId, path, JSON.stringify(data),
+        success = function () {
+            Florence.Editor.isDirty = false;
+            editMarkdownWithNoTitle(collectionId, data, field, idField);
+        },
+        error = function (response) {
+            if (response.status === 400) {
+                alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+                alert("You are not authorised to update content.");
+            }
+            else {
+                handleApiError(response);
+            }
+        }
+    );
 }
 

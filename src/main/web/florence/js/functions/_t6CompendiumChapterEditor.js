@@ -26,16 +26,13 @@ function compendiumChapterEditor(collectionId, data) {
   });
   if (!Florence.collection.date) {
     if (!data.description.releaseDate){
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
       dateTmp = $('#releaseDate').val();
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(dateTmpFormatted);
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-      $('#releaseDate').on('change', function () {
+      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
@@ -117,15 +114,6 @@ function compendiumChapterEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editMarkdown (collectionId, data, 'sections', 'section');
-
-  editMarkdown (collectionId, data, 'accordion', 'tab');
-
-  editRelated (collectionId, data, 'relatedDocuments', 'document');
-
-  editLink (collectionId, data, 'links', 'link');
-
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -157,7 +145,7 @@ function compendiumChapterEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-      var markdown = $('#section-markdown_' + nameS).val();
+      var markdown = data.sections[parseInt(nameS)].markdown;
       var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });
@@ -173,11 +161,10 @@ function compendiumChapterEditor(collectionId, data) {
     // Related documents
     var orderArticle = $("#sortable-document").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
-      var uri = $('#document-uri_' + nameB).val();
-      var uriChecked = checkPathParsed(uri);
-      newRelated[indexB]= {uri: uriChecked};
+      var uri = data.relatedDocuments[parseInt(nameB)].uri;
+      newRelated[indexB]= {uri: uri};
     });
-    data.relatedArticles = newRelated;
+    data.relatedDocuments = newRelated;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){

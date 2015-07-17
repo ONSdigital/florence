@@ -5,13 +5,11 @@ function addFile (collectionId, data, field, idField) {
     var lastIndex = 0;
   } else {
     $(data[field]).each(function (index) {
-      var lastIndex = index + 1;
-
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
         var position = $(".workspace-edit").scrollTop();
         localStorage.setItem("pagePos", position + 200);
-        $("#" + index).remove();
+        $(this).parent().remove();
         $.ajax({
           url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
           type: "DELETE",
@@ -63,6 +61,7 @@ function addFile (collectionId, data, field, idField) {
 
           var file = this.files[0];
           uriUpload = data.uri + "/" + file.name;
+          checkPathSlashes(uriUpload);
 
           if (data[field].length > 0) {
             $(data[field]).each(function (i, filesUploaded) {

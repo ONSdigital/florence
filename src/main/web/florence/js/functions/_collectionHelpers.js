@@ -39,7 +39,6 @@ function getLastCompletedEvent(collection, page) {
         .value();
     }
   }
-  console.log(lastCompletedEvent);
   return lastCompletedEvent;
 }
 

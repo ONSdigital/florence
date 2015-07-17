@@ -7,9 +7,12 @@ function publish(collectionId) {
     crossDomain: true,
     type: 'POST',
     success: function () {
-      //console.log("File published");
-//      document.cookie = 'collection=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       alert("Published!");
+      $('.publish-selected').animate({right: "-50%"}, 500);
+      // Wait until the animation ends
+      setTimeout(function () {
+        viewController('publish');
+      }, 500);
     },
     error: function (response) {
       handleApiError(response);

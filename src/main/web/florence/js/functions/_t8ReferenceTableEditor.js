@@ -112,12 +112,6 @@ function referenceTableEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editRelated (collectionId, data, 'relatedDocuments', 'used');
-
-  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
-
-  addFileWithDetails (collectionId, data, 'downloads', 'file');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -157,17 +151,15 @@ function referenceTableEditor(collectionId, data) {
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#used-uri_'+nameU).val();
-      uriChecked = checkPathParsed(uri);
-      newUsedIn[parseInt(indexU)] = {uri: uriChecked};
+      var uri = data.relatedDocuments[parseInt(nameU)].uri;
+      newUsedIn[indexU] = {uri: uri};
     });
     data.relatedDocuments = newUsedIn;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
-      var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkPathParsed(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

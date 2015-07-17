@@ -266,8 +266,6 @@ function compendiumEditor(collectionId, data) {
     });
   }
 
-  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -301,9 +299,8 @@ function compendiumEditor(collectionId, data) {
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
-      var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkPathParsed(uri);
-      newRelatedMethodology[indexM] = {uri: uriChecked};
+      var uri = data.relatedBulletins[parseInt(nameM)].uri;
+      newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

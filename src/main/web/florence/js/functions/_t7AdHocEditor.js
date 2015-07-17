@@ -63,10 +63,6 @@ function adHocEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  editMarkdownWithNoTitle (collectionId, data, 'markdown', 'content');
-
-  addFile (collectionId, data, 'downloads', 'file');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -94,7 +90,7 @@ function adHocEditor(collectionId, data) {
       var orderSection = $("#sortable-content").sortable('toArray');
       $(orderSection).each(function (indexS, nameS) {
         var markdown = $('#content-markdown_' + nameS).val();
-      newSections[indexS] = markdown;
+        newSections[indexS] = markdown;
       });
       data.markdown = newSections;
     // Files are uploaded. Save metadata

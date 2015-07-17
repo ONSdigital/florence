@@ -13,17 +13,6 @@
               <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
             </label>
           </div>
-          <!--<div class="edition">-->
-            <!--<label for="edition">Edition-->
-              <!--<textarea class="auto-size" type="text" id="edition">{{this.description.edition}}</textarea>-->
-            <!--</label>-->
-          <!--</div>-->
-          <!--<div class="release-date">-->
-            <!--<label for="releaseDate">Release date-->
-              <!--<input id="releaseDate" type="text" placeholder="Day month year" value="{{this.description.releaseDate}}"/>-->
-              <!--&lt;!&ndash;<textarea class="auto-size" type="text" id="releaseDate">{{this.description.releaseDate}}</textarea>&ndash;&gt;-->
-            <!--</label>-->
-          <!--</div>-->
           <div class="next-p">
             <label for="nextRelease">Next release
               <textarea class="auto-size" type="text" id="nextRelease">{{this.description.nextRelease}}</textarea>
@@ -88,155 +77,19 @@
       </div>
     </div>
 
-    <div class="edit-section" id="content">
-      <div class="edit-section__head">
-        <h1>Section</h1>
-        <p>Body copy</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-section" class="edit-section__sortable">
-          {{#each this.section}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <!--<textarea id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
-              <textarea id="section-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
-              <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="section-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-section">Add section</button>
-        </div>
-      </div>
-    </div>
+    <div id="section"></div>
 
-    <div class="edit-section" id="note">
-      <div class="edit-section__head">
-        <h1>Notes</h1>
-        <p>Body copy</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-note" class="edit-section__sortable">
-          {{#each this.notes}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <!--<textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{markdown}}</textarea>-->
-              <textarea class="auto-size" id="note-markdown_{{@index}}" placeholder="Type or click edit to add content">{{this}}</textarea>
-              <button class="btn-markdown-edit" id="note-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="note-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-note">Add note</button>
-        </div>
-      </div>
-    </div>
+    <div id="note"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Related bulletins and articles</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-document" class="edit-section__sortable">
-          {{#each this.relatedDocuments}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="document-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="document-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-document">Add bulletin or article</button>
-        </div>
-      </div>
-    </div>
+    <div id="document"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Related time series</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-timeseries" class="edit-section__sortable">
-          {{#each this.relatedData}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="timeseries-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-timeseries">Add time series</button>
-        </div>
-      </div>
-    </div>
+    <div id="timeseries"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Related datasets</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-data" class="edit-section__sortable">
-          {{#each this.relatedDatasets}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="data-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-data">Add dataset</button>
-        </div>
-      </div>
-    </div>
+    <div id="dataset"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Related methodology</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-methodology" class="edit-section__sortable">
-          {{#each this.relatedMethodology}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="methodology-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="methodology-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-methodology" id="add-methodology">Add methodology</button>
-        </div>
-      </div>
-    </div>
+    <div id="methodology"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Correction</h1>
-        <p>Date | Notice | Severity</p>
-      </div>
-      <div class="edit-section__content edit-section__content--correction">
-        {{#each this.correction}}
-          <div id="{{@index}}" class="edit-section__sortable-item">
-            <p>Text: <textarea class="auto-size" type="text" id="correction_text_{{@index}}" cols="65" style="box-sizing: border-box; min-height: 31px;">{{text}}</textarea></p>
-            <p>Date: <input class="auto-size" type="date" id="correction_date_{{@index}}" value="{{date}}"/></p>
-            <p>Type: <input type="radio" name="correctionType{{@index}}" value="minor"/><label> Minor</label>
-              <input type="radio" name="correctionType{{@index}}" value="major"/><label> Major</label>
-            </p>
-            <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
-          </div>
-        {{/each}}
-        <div class="text-center">
-          <button class="btn-add-section" id="addCorrection">Add correction</button>
-        </div>
-      </div>
-    </div>
+    <div id="correction"></div>
 
   </div>
 

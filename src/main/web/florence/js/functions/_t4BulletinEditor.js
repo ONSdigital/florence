@@ -125,16 +125,6 @@ function bulletinEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editMarkdown (collectionId, data, 'sections', 'section');
-
-  editMarkdown (collectionId, data, 'accordion', 'tab');
-
-  editRelated (collectionId, data, 'relatedBulletins', 'bulletin');
-
-  editRelated (collectionId, data, 'relatedData', 'data');
-
-  editLink (collectionId, data, 'links', 'link');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -160,7 +150,6 @@ function bulletinEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-//      var markdown = $('#section-markdown_' + nameS).val();
       var markdown = data.sections[parseInt(nameS)].markdown;
       var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
@@ -177,17 +166,15 @@ function bulletinEditor(collectionId, data) {
     // Related bulletins
     var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
-      var uri = $('#bulletin-uri_' + nameB).val();
-      uriChecked = checkPathParsed(uri);
-      newBulletin[indexB] = {uri: uriChecked};
+      var uri = data.relatedBulletins[parseInt(nameB)].uri;
+      newBulletin[indexB] = {uri: uri};
     });
     data.relatedBulletins = newBulletin;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
-      var uri = $('#data-uri_' + nameD).val();
-      uriChecked = checkPathParsed(uri);
-      newRelated[indexD] = {uri: uriChecked};
+      var uri = data.relatedData[parseInt(nameD)].uri;
+      newRelated[indexD] = {uri: uri};
     });
     data.relatedData = newRelated;
     // External links

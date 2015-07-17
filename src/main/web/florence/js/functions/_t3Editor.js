@@ -35,15 +35,6 @@ function t3Editor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  editRelated (collectionId, data, 'items', 'timeseries');
-
-  editRelated (collectionId, data, 'statsBulletins', 'bulletins');
-
-  editRelated (collectionId, data, 'relatedArticles', 'articles');
-
-  editRelated (collectionId, data, 'datasets', 'datasets');
-
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -71,32 +62,28 @@ function t3Editor(collectionId, data) {
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {
       var uri = data.items[parseInt(titleT)].uri;
-      uriChecked = checkPathParsed(uri);
-      newTimeseries[indexT] = {uri: uriChecked};
+      newTimeseries[indexT] = {uri: uri};
     });
     data.items = newTimeseries;
     // Bulletins
     var orderBulletins = $("#sortable-bulletins").sortable('toArray');
     $(orderBulletins).each(function (indexB, titleB) {
       var uri = data.statsBulletins[parseInt(titleB)].uri;
-      uriChecked = checkPathParsed(uri);
-      newBulletins[indexB] = {uri: uriChecked};
+      newBulletins[indexB] = {uri: uri};
     });
     data.statsBulletins = newBulletins;
     // Articles
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
       var uri = data.relatedArticles[parseInt(titleA)].uri;
-      uriChecked = checkPathParsed(uri);
-      newArticles[indexA] = {uri: uriChecked};
+      newArticles[indexA] = {uri: uri};
     });
     data.relatedArticles = newArticles;
     // Datasets
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {
       var uri = data.datasets[parseInt(titleD)].uri;
-      uriChecked = checkPathParsed(uri);
-      newDatasets[indexD] = {uri: uriChecked};
+      newDatasets[indexD] = {uri: uri};
     });
     data.datasets = newDatasets;
   }
