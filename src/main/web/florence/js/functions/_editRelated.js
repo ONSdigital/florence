@@ -1,4 +1,9 @@
-function editRelated (collectionId, data, field, idField) {
+function editRelated (collectionId, data, templateData, field, idField) {
+  console.log(data);
+    var list = templateData[field];
+  var dataTemplate = {list: list, idField: idField};
+  var html = templates.editorRelated(dataTemplate);
+  $('#'+ idField).replaceWith(html);
   // Load
   if (!data[field] || data[field].length === 0) {
     editRelated['lastIndex' + field] = 0;
@@ -10,9 +15,26 @@ function editRelated (collectionId, data, field, idField) {
       $('#' + idField + '-delete_' + index).click(function () {
         var position = $(".workspace-edit").scrollTop();
         localStorage.setItem("pagePos", position);
-        $("#" + index).remove();
+        $(this).parent().remove();
         data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+          postContent(collectionId, data.uri, JSON.stringify(data),
+            success = function (response) {
+              Florence.Editor.isDirty = false;
+              refreshPreview(data.uri);
+              editRelated (collectionId, data, field, idField);
+            },
+            error = function (response) {
+              if (response.status === 400) {
+                alert("Cannot edit this file. It is already part of another collection.");
+              }
+              else if (response.status === 401) {
+                alert("You are not authorised to update content.");
+              }
+              else {
+                handleApiError(response);
+              }
+            }
+          );
       });
     });
   }
@@ -57,61 +79,51 @@ function editRelated (collectionId, data, field, idField) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if (field === 'relatedArticles' && result.type === 'article') {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedDatasets' || field === 'datasets') && (result.type === 'dataset' || result.type === 'reference_tables')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'items') && (result.type === 'timeseries')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedData') && (result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if (field === 'relatedMethodology' && result.type === 'static_methodology') {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else {
             alert("This is not a valid document");
+            return;
           }
+
+          data[field].push({uri: result.uri});
+          saveRelated(collectionId, data.uri, data, field, idField);
 
         },
         error: function () {

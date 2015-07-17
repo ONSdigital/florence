@@ -50,8 +50,6 @@ function methodologyEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  editMarkdown (collectionId, data, 'sections', 'section');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -77,7 +75,7 @@ function methodologyEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#section-markdown_' + nameS).val();
+        var markdown = data.sections[parseInt(nameS)].markdown;
         var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });

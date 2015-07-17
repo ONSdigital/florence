@@ -1,37 +1,58 @@
-function editMarkdownOneObject (collectionId, data, field, idField) {
+function editMarkdownOneObject (collectionId, data, field) {
+    var list = data[field];
+    var dataTemplate = {list: list, idField: idField};
+    var html = templates.editorContentOne(dataTemplate);
+    $('#one').replaceWith(html);
   // Load
-  $(data[field]).each(function(index, section){
-
-    $('#' + idField + '-edit_'+index).click(function() {
-      var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
-
+    $('#one-edit').click(function() {
+      var editedSectionValue = $('#one-markdown').val();
       var saveContent = function(updatedContent) {
         data[field].markdown = updatedContent;
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        saveMarkdownOne (collectionId, data.uri, data, field);
       };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
     });
 
     // Delete
-    $('#' + idField + '-delete_' + index).click(function() {
-      $("#"+index).remove();
+    $('#one-delete').click(function() {
+      $(this).parent().remove();
       data[field] = {};
-      updateContent(collectionId, data.uri, JSON.stringify(data));
+      saveMarkdownOne (collectionId, data.uri, data, field);
     });
-  });
+
 
   //Add
   if (!data[field] || $.isEmptyObject(data[field])) {
-    $('#add-' + idField).one('click', function () {
+    $('#add-one').one('click', function () {
       data[field] = {markdown:""};
-      updateContent(collectionId, data.uri, JSON.stringify(data));
+      saveMarkdownOne (collectionId, data.uri, data, field);
     });
   } else {
-    $('#add-' + idField).hide();
-    $('#add-' + idField).one('click', function () {
+    $('#add-one').hide();
+    $('#add-one').one('click', function () {
       alert('At the moment you can have one section here.')
     });
   }
+}
+
+function saveMarkdownOne (collectionId, path, data, field) {
+    postContent(collectionId, path, JSON.stringify(data),
+        success = function () {
+            Florence.Editor.isDirty = false;
+            editMarkdownOneObject (collectionId, data, field);
+        },
+        error = function (response) {
+            if (response.status === 400) {
+                alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+                alert("You are not authorised to update content.");
+            }
+            else {
+                handleApiError(response);
+            }
+        }
+    );
 }
 

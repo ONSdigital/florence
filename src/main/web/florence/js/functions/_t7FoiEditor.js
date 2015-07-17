@@ -59,11 +59,6 @@ function foiEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  editMarkdownWithNoTitle (collectionId, data, 'markdown', 'content');
-
-  addFile (collectionId, data, 'downloads', 'file');
-
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.

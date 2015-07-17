@@ -17,7 +17,6 @@ function staticPageEditor(collectionId, data) {
   $("#metadata-ad").remove();
   $("#contact-p").remove();
   $("#survey-p").remove();
-  $("#metadata-b").remove();
   $("#frequency-p").remove();
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
@@ -25,7 +24,6 @@ function staticPageEditor(collectionId, data) {
   $("#lastRevised-p").remove();
   $(".release-date").remove();
   $("#reference-p").remove();
-  $("#download").remove();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -48,9 +46,26 @@ function staticPageEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  editMarkdownWithNoTitle (collectionId, data, 'markdown', 'content');
+  // Save
+  var editNav = $('.edit-nav');
+  editNav.off(); // remove any existing event handlers.
 
-  editLink (collectionId, data, 'links', 'link');
+  editNav.on('click', '.btn-edit-save', function () {
+    save();
+    updateContent(collectionId, data.uri, JSON.stringify(data));
+  });
+
+  // completed to review
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+    save();
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+  });
+
+  // reviewed to approve
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+    save();
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+  });
 
   function save() {
     // Sections

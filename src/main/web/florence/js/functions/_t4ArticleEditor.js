@@ -113,17 +113,6 @@ function articleEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editMarkdown (collectionId, data, 'sections', 'section');
-
-  editMarkdown (collectionId, data, 'accordion', 'tab');
-
-  editRelated (collectionId, data, 'relatedArticles', 'article');
-
-  editRelated (collectionId, data, 'relatedData', 'data');
-
-  editLink (collectionId, data, 'links', 'link');
-
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -151,7 +140,6 @@ function articleEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-//      var markdown = $('#section-markdown_' + nameS).val();
       var markdown = data.sections[parseInt(nameS)].markdown;
       var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
@@ -168,17 +156,15 @@ function articleEditor(collectionId, data) {
     // Related articles
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
-      var uri = $('#article-uri_' + nameA).val();
-      uriChecked = checkPathParsed(uri);
-      newArticle[indexA]= {uri: uriChecked};
+      var uri = data.relatedArticles[parseInt(nameA)].uri;
+      newArticle[indexA]= {uri: uri};
     });
     data.relatedArticles = newArticle;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
-      var uri = $('#data-uri_' + nameD).val();
-      uriChecked = checkPathParsed(uri);
-      newRelated[indexD] = {uri: uriChecked};
+      var uri = data.relatedData[parseInt(nameD)].uri;
+      newRelated[indexD] = {uri: uri};
     });
     data.relatedData = newRelated;
     // External links
