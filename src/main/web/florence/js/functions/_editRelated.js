@@ -24,10 +24,12 @@ function editRelated (collectionId, data, templateData, field, idField) {
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position);
-        $(this).parent().remove();
-        data[field].splice(index, 1);
+        var result = confirm("Are you sure you want to delete this link?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position);
+          $(this).parent().remove();
+          data[field].splice(index, 1);
           postContent(collectionId, data.uri, JSON.stringify(data),
             success = function (response) {
               Florence.Editor.isDirty = false;
@@ -46,6 +48,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
               }
             }
           );
+        }
       });
     });
   }

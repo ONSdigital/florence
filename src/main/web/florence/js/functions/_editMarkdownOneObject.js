@@ -15,9 +15,12 @@ function editMarkdownOneObject (collectionId, data, field) {
 
     // Delete
     $('#one-delete').click(function() {
-      $(this).parent().remove();
-      data[field] = {};
-      saveMarkdownOne (collectionId, data.uri, data, field);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        $(this).parent().remove();
+        data[field] = {};
+        saveMarkdownOne(collectionId, data.uri, data, field);
+      }
     });
 }
 

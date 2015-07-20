@@ -41,9 +41,12 @@ function t3Editor(collectionId, data) {
         lastIndexTimeseries = index + 1;
         // Delete
         $("#timeseries-delete_"+index).click(function() {
-            $("#"+index).remove();
+          var result = confirm("Are you sure you want to delete?");
+          if (result === true) {
+            $("#" + index).remove();
             data.items.splice(index, 1);
             updateContent(collectionId, data.uri, JSON.stringify(data));
+          }
         });
     });
 

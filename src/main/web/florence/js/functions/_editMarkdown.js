@@ -24,12 +24,15 @@ function editMarkdown (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      var position = $(".workspace-edit").scrollTop();
-      localStorage.setItem("pagePos", position + 300);
-      $(this).parent().remove();
-      data[field].splice(index, 1);
-      saveMarkdown(collectionId, data.uri, data, field, idField);
-      refreshPreview(data.uri);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        var position = $(".workspace-edit").scrollTop();
+        localStorage.setItem("pagePos", position + 300);
+        $(this).parent().remove();
+        data[field].splice(index, 1);
+        saveMarkdown(collectionId, data.uri, data, field, idField);
+        refreshPreview(data.uri);
+      }
     });
   });
 
