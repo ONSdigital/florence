@@ -1,6 +1,18 @@
 function editRelated (collectionId, data, templateData, field, idField) {
   var list = templateData[field];
-  var dataTemplate = {list: list, idField: idField};
+  if (idField === 'article') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'articles'};
+  } else if (idField === 'bulletin') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'bulletins'};
+  } else if (idField === 'dataset') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
+  } else if (idField === 'document') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'documents'};
+  } else if (idField === 'methodology') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
+  } else {
+    var dataTemplate = {list: list, idField: idField};
+  }
   var html = templates.editorRelated(dataTemplate);
   $('#'+ idField).replaceWith(html);
   // Load
@@ -42,10 +54,9 @@ function editRelated (collectionId, data, templateData, field, idField) {
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     localStorage.setItem("pagePos", position);
-    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
+    createWorkspace(data.uri, collectionId, '', true);
 
     $('#sortable-' + idField).append(
         '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
@@ -55,7 +66,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
         '</div>').trigger('create');
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
+      createWorkspace(data.uri, collectionId, 'edit');
     });
 
     $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {

@@ -63,10 +63,11 @@ function articleEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -157,7 +158,7 @@ function articleEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = data.relatedArticles[parseInt(nameA)].uri;
-      checkPathSlashes (uri)
+      checkPathSlashes (uri);
       newArticle[indexA]= {uri: uri};
     });
     data.relatedArticles = newArticle;
@@ -165,7 +166,7 @@ function articleEditor(collectionId, data) {
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
-      checkPathSlashes (uri)
+      checkPathSlashes (uri);
       newRelated[indexD] = {uri: uri};
     });
     data.relatedData = newRelated;
