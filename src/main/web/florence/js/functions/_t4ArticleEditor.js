@@ -157,6 +157,7 @@ function articleEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = data.relatedArticles[parseInt(nameA)].uri;
+      checkPathSlashes (uri)
       newArticle[indexA]= {uri: uri};
     });
     data.relatedArticles = newArticle;
@@ -164,6 +165,7 @@ function articleEditor(collectionId, data) {
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
+      checkPathSlashes (uri)
       newRelated[indexD] = {uri: uri};
     });
     data.relatedData = newRelated;

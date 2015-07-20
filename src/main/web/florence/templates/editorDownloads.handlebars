@@ -5,11 +5,11 @@
     </div>
     <div class="edit-section__content">
         <div id="sortable-file" class="edit-section__sortable">
-            {{#each this.downloads}}
+            {{#each list}}
                 <div id="{{@index}}" class="edit-section__sortable-item">
-                    <textarea id="file-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-                    <textarea style="display: none;" id="file-filename_{{@index}}">{{uri}}</textarea>
-                    <div id="file-filename_show_{{@index}}">{{uri}}</div>
+                    <textarea id="file-title_{{@index}}" placeholder="Type title here and save to add
+                    content">{{title}}</textarea>
+                    <p id="file-filename_show_{{@index}}">{{file}}</p>
                     <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
                 </div>
             {{/each}}

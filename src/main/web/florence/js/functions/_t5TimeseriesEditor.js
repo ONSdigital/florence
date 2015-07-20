@@ -147,6 +147,7 @@ function timeseriesEditor(collectionId, data) {
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
       var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      checkPathSlashes (uri);
       newDocument[indexD]= {uri: uri};
     });
     data.relatedDocuments = newDocument;
@@ -154,6 +155,7 @@ function timeseriesEditor(collectionId, data) {
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, nameT) {
       var uri = data.relatedData[parseInt(nameT)].uri;
+      checkPathSlashes (uri);
       newTimeseries[indexT]= {uri: uri};
     });
     data.relatedData = newTimeseries;
@@ -161,6 +163,7 @@ function timeseriesEditor(collectionId, data) {
     var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = data.relatedDatasets[parseInt(nameD)].uri;
+      checkPathSlashes (uri);
       newRelated[indexD]= {uri: uri};
     });
     data.relatedDatasets = newRelated;
@@ -168,6 +171,7 @@ function timeseriesEditor(collectionId, data) {
     var orderUsedIn = $("#sortable-methodology").sortable('toArray');
     $(orderUsedIn).each(function(indexM, nameM){
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
       newRelatedMethodology[parseInt(indexM)] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;

@@ -1,6 +1,5 @@
 function editRelated (collectionId, data, templateData, field, idField) {
-  console.log(data);
-    var list = templateData[field];
+  var list = templateData[field];
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorRelated(dataTemplate);
   $('#'+ idField).replaceWith(html);

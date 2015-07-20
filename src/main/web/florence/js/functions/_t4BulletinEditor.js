@@ -167,6 +167,7 @@ function bulletinEditor(collectionId, data) {
     var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = data.relatedBulletins[parseInt(nameB)].uri;
+      checkPathSlashes (uri)
       newBulletin[indexB] = {uri: uri};
     });
     data.relatedBulletins = newBulletin;
@@ -174,6 +175,7 @@ function bulletinEditor(collectionId, data) {
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
+      checkPathSlashes (uri)
       newRelated[indexD] = {uri: uri};
     });
     data.relatedData = newRelated;

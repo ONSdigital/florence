@@ -62,6 +62,7 @@ function t3Editor(collectionId, data) {
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {
       var uri = data.items[parseInt(titleT)].uri;
+      checkPathSlashes(uri)
       newTimeseries[indexT] = {uri: uri};
     });
     data.items = newTimeseries;
@@ -69,6 +70,7 @@ function t3Editor(collectionId, data) {
     var orderBulletins = $("#sortable-bulletins").sortable('toArray');
     $(orderBulletins).each(function (indexB, titleB) {
       var uri = data.statsBulletins[parseInt(titleB)].uri;
+      checkPathSlashes (uri)
       newBulletins[indexB] = {uri: uri};
     });
     data.statsBulletins = newBulletins;
@@ -76,6 +78,7 @@ function t3Editor(collectionId, data) {
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
       var uri = data.relatedArticles[parseInt(titleA)].uri;
+      checkPathSlashes (uri)
       newArticles[indexA] = {uri: uri};
     });
     data.relatedArticles = newArticles;
@@ -83,6 +86,7 @@ function t3Editor(collectionId, data) {
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {
       var uri = data.datasets[parseInt(titleD)].uri;
+      checkPathSlashes (uri)
       newDatasets[indexD] = {uri: uri};
     });
     data.datasets = newDatasets;

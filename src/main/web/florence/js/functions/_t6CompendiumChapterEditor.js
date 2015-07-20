@@ -162,6 +162,7 @@ function compendiumChapterEditor(collectionId, data) {
     var orderArticle = $("#sortable-document").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = data.relatedDocuments[parseInt(nameB)].uri;
+      checkPathSlashes (uri);
       newRelated[indexB]= {uri: uri};
     });
     data.relatedDocuments = newRelated;
