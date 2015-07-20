@@ -76,10 +76,11 @@ function bulletinEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -167,7 +168,7 @@ function bulletinEditor(collectionId, data) {
     var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = data.relatedBulletins[parseInt(nameB)].uri;
-      checkPathSlashes (uri)
+      checkPathSlashes (uri);
       newBulletin[indexB] = {uri: uri};
     });
     data.relatedBulletins = newBulletin;
@@ -175,7 +176,7 @@ function bulletinEditor(collectionId, data) {
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
-      checkPathSlashes (uri)
+      checkPathSlashes (uri);
       newRelated[indexD] = {uri: uri};
     });
     data.relatedData = newRelated;

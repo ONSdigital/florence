@@ -1,9 +1,6 @@
 <div class="edit-section" id="{{idField}}">
     <div class="edit-section__head">
-        <h1>{{#ifCond idField '==' 'data'}}Related {{idField}}
-        {{else}}{{#ifCond idField '==' 'timeseries'}}Related {{idField}}
-        {{else}}Related {{idField}}s{{/ifCond}}
-        {{/ifCond}}</h1>
+        <h1>Related {{#if idPlural}}{{idPlural}}{{else}}{{idField}}{{/if}}</h1>
         <p>Title | Link</p>
     </div>
     <div class="edit-section__content">

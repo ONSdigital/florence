@@ -17,7 +17,6 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'product_page') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
-    editRelated (collectionId, pageData, templateData, 'items', 'timeseries');
     editRelated (collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'articles');
     editRelated (collectionId, pageData, templateData, 'datasets', 'datasets');
