@@ -20,9 +20,12 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      $("#"+index).remove();
-      data[field].splice(index, 1);
-      saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        $("#" + index).remove();
+        data[field].splice(index, 1);
+        saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+      }
     });
   });
 
