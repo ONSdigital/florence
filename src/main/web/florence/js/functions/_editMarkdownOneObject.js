@@ -1,7 +1,6 @@
 function editMarkdownOneObject (collectionId, data, field) {
     var list = data[field];
-    var dataTemplate = {list: list, idField: idField};
-    var html = templates.editorContentOne(dataTemplate);
+    var html = templates.editorContentOne(list);
     $('#one').replaceWith(html);
   // Load
     $('#one-edit').click(function() {
@@ -20,20 +19,6 @@ function editMarkdownOneObject (collectionId, data, field) {
       data[field] = {};
       saveMarkdownOne (collectionId, data.uri, data, field);
     });
-
-
-  //Add
-  if (!data[field] || $.isEmptyObject(data[field])) {
-    $('#add-one').one('click', function () {
-      data[field] = {markdown:""};
-      saveMarkdownOne (collectionId, data.uri, data, field);
-    });
-  } else {
-    $('#add-one').hide();
-    $('#add-one').one('click', function () {
-      alert('At the moment you can have one section here.')
-    });
-  }
 }
 
 function saveMarkdownOne (collectionId, path, data, field) {

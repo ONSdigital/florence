@@ -1,4 +1,8 @@
 function addFileWithDetails (collectionId, data, field, idField) {
+  var list = data[field];
+  var dataTemplate = {list: list, idField: idField};
+  var html = templates.editorDownloadsWithSummary(dataTemplate);
+  $('#'+ idField).replaceWith(html);
   var uriUpload;
   // Edit
   if (!data[field] || data[field].length === 0) {

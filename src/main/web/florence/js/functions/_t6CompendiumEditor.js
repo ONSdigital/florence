@@ -293,6 +293,7 @@ function compendiumEditor(collectionId, data) {
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function(indexC, nameC){
       var uri = data.chapters[parseInt(nameC)].uri;
+      checkPathSlashes (uri);
       newChapters[indexC] = {uri: uri};
     });
     data.chapters = newChapters;
@@ -300,6 +301,7 @@ function compendiumEditor(collectionId, data) {
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedBulletins[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
       newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;

@@ -140,7 +140,7 @@ function datasetEditor(collectionId, data) {
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
       var title = $('#file-title_'+nameF).val();
-      var file = $('#file-filename_' + nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
@@ -150,6 +150,7 @@ function datasetEditor(collectionId, data) {
     var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = data.relatedDatasets[parseInt(nameD)].uri;
+      checkPathSlashes (uri);
       newRelated[indexD]= {uri: uri};
     });
     data.relatedDatasets = newRelated;
@@ -157,6 +158,7 @@ function datasetEditor(collectionId, data) {
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
+      checkPathSlashes (uri);
       newUsedIn[indexU] = {uri: uri};
     });
     data.relatedDocuments = newUsedIn;
@@ -164,6 +166,7 @@ function datasetEditor(collectionId, data) {
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
       newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
