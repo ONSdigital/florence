@@ -32,6 +32,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         breadcrumb = checkData.breadcrumb;
         pageTitle = checkData.description.title;
         isInheriting = true;
+        pageData = pageTypeDataT6(pageType, checkData);
         submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
       } else {
@@ -64,7 +65,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
 
     $('form').submit(function (e) {
-      releaseDateManual = $('#releaseDate').val()
+      releaseDateManual = $('#releaseDate').val();
       if (pageType === 'compendium_landing_page') {
         pageData.description.edition = $('#edition').val();
       }
