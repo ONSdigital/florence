@@ -53,19 +53,16 @@ function adHocEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
-
-  editMarkdownWithNoTitle (collectionId, data, 'markdown', 'content');
-
-  addFile (collectionId, data, 'downloads', 'file');
 
   // Save
   var editNav = $('.edit-nav');
@@ -94,7 +91,7 @@ function adHocEditor(collectionId, data) {
       var orderSection = $("#sortable-content").sortable('toArray');
       $(orderSection).each(function (indexS, nameS) {
         var markdown = $('#content-markdown_' + nameS).val();
-      newSections[indexS] = markdown;
+        newSections[indexS] = markdown;
       });
       data.markdown = newSections;
     // Files are uploaded. Save metadata

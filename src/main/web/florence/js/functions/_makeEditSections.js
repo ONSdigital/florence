@@ -17,6 +17,9 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'product_page') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
+    editRelated (collectionId, pageData, templateData, 'relatedArticles', 'articles');
+    editRelated (collectionId, pageData, templateData, 'datasets', 'datasets');
     accordion();
     t3Editor(collectionId, pageData);
   }
@@ -30,6 +33,11 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
     }
+    editMarkdown (collectionId, pageData, 'sections', 'section');
+    editMarkdown (collectionId, pageData, 'accordion', 'tab');
+    editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
+    editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
+    editLink (collectionId, pageData, 'links', 'link');
     accordion();
     bulletinEditor(collectionId, pageData);
   }
@@ -43,6 +51,11 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
     }
+    editMarkdown (collectionId, pageData, 'sections', 'section');
+    editMarkdown (collectionId, pageData, 'accordion', 'tab');
+    editRelated (collectionId, pageData, templateData, 'relatedArticles', 'article');
+    editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
+    editLink (collectionId, pageData, 'links', 'link');
     accordion();
     articleEditor(collectionId, pageData);
   }
@@ -50,6 +63,12 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'timeseries') {
     var html = templates.workEditT5(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownOneObject (collectionId, pageData, 'section', 'section');
+    editMarkdownWithNoTitle (collectionId, pageData, 'notes', 'note');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedData', 'timeseries');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     accordion();
     timeseriesEditor(collectionId, pageData);
   }
@@ -57,6 +76,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'compendium_landing_page') {
     var html = templates.workEditT6(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     accordion();
     compendiumEditor(collectionId, pageData);
   }
@@ -64,6 +84,16 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'compendium_chapter') {
     var html = templates.workEditT4Compendium(templateData);
     $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
+    editMarkdown (collectionId, pageData, 'sections', 'section');
+    editMarkdown (collectionId, pageData, 'accordion', 'tab');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editLink (collectionId, pageData, 'links', 'link');
     accordion();
     compendiumChapterEditor(collectionId, pageData);
   }
@@ -71,6 +101,9 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'compendium_data') {
     var html = templates.workEditT8Compendium(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     accordion();
     compendiumDataEditor(collectionId, pageData);
   }
@@ -85,13 +118,8 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'static_article') {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
-    accordion();
-    methodologyEditor(collectionId, pageData);
-  }
-
-  else if (pageData.type === 'static_methodology') {
-    var html = templates.workEditT4Methodology(templateData);
-    $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    editLink (collectionId, pageData, 'links', 'link');
     accordion();
     methodologyEditor(collectionId, pageData);
   }
@@ -99,6 +127,8 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'static_page') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    editLink (collectionId, pageData, 'links', 'link');
     accordion();
     staticPageEditor(collectionId, pageData);
   }
@@ -106,6 +136,8 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'static_qmi') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     qmiEditor(collectionId, pageData);
   }
@@ -113,6 +145,8 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'static_foi') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     foiEditor(collectionId, pageData);
   }
@@ -120,13 +154,28 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'static_adhoc') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     adHocEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_methodology') {
+    var html = templates.workEditT4Methodology(templateData);
+    $('.workspace-menu').html(html);
+    editMarkdown (collectionId, pageData, 'sections', 'section');
+    accordion();
+    methodologyEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'dataset') {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownOneObject (collectionId, pageData, 'section');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     datasetEditor(collectionId, pageData);
   }
@@ -134,6 +183,9 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'reference_tables') {
     var html = templates.workEditT8ReferenceTable(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     accordion();
     referenceTableEditor(collectionId, pageData);
   }

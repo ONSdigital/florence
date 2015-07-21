@@ -60,10 +60,11 @@ function timeseriesEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -110,18 +111,6 @@ function timeseriesEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editMarkdownOneObject (collectionId, data, 'section', 'section');
-
-  editMarkdownWithNoTitle (collectionId, data, 'notes', 'note');
-
-  editRelated (collectionId, data, 'relatedDocuments', 'document');
-
-  editRelated (collectionId, data, 'relatedData', 'timeseries');
-
-  editRelated (collectionId, data, 'relatedDatasets', 'data');
-
-  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -158,33 +147,33 @@ function timeseriesEditor(collectionId, data) {
     // Related documents
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
-      var uri = $('#document-uri_' + nameD).val();
-      uriChecked = checkPathParsed(uri);
-      newDocument[indexD]= {uri: uriChecked};
+      var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      checkPathSlashes (uri);
+      newDocument[indexD]= {uri: uri};
     });
     data.relatedDocuments = newDocument;
     // Related timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, nameT) {
-      var uri = $('#timeseries-uri_' + nameT).val();
-      uriChecked = checkPathParsed(uri);
-      newTimeseries[indexT]= {uri: uriChecked};
+      var uri = data.relatedData[parseInt(nameT)].uri;
+      checkPathSlashes (uri);
+      newTimeseries[indexT]= {uri: uri};
     });
     data.relatedData = newTimeseries;
     // Related datasets
-    var orderDataset = $("#sortable-related").sortable('toArray');
+    var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
-      var uri = $('#dataset-uri_' + nameD).val();
-      uriChecked = checkPathParsed(uri);
-      newRelated[indexD]= {uri: uriChecked};
+      var uri = data.relatedDatasets[parseInt(nameD)].uri;
+      checkPathSlashes (uri);
+      newRelated[indexD]= {uri: uri};
     });
     data.relatedDatasets = newRelated;
     // Related methodology
     var orderUsedIn = $("#sortable-methodology").sortable('toArray');
     $(orderUsedIn).each(function(indexM, nameM){
-      var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkPathParsed(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
+      newRelatedMethodology[parseInt(indexM)] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

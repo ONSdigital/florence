@@ -4,7 +4,6 @@ function compendiumEditor(collectionId, data) {
   var newChapters = [], newRelatedMethodology = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
-  var pageUrl = localStorage.getItem('pageurl');
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -70,10 +69,11 @@ function compendiumEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -181,7 +181,7 @@ function compendiumEditor(collectionId, data) {
         alert("This is not a valid file title");
         return true;
       } else {
-        loadT6Creator (collectionId, data.description.releaseDate, 'compendium_chapter', pageUrl, chapterTitle)
+        loadT6Creator (collectionId, data.description.releaseDate, 'compendium_chapter', data.uri, chapterTitle)
       }
     });
   });
@@ -256,7 +256,7 @@ function compendiumEditor(collectionId, data) {
           alert("This is not a valid file title");
           return true;
         } else {
-          loadT6Creator (collectionId, data.description.releaseDate, 'compendium_data', pageUrl, tableTitle)
+          loadT6Creator (collectionId, data.description.releaseDate, 'compendium_data', data.uri, tableTitle)
         }
       });
     });
@@ -265,8 +265,6 @@ function compendiumEditor(collectionId, data) {
       alert('At the moment you can have one section here.')
     });
   }
-
-  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
 
   // Save
   var editNav = $('.edit-nav');
@@ -295,15 +293,16 @@ function compendiumEditor(collectionId, data) {
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function(indexC, nameC){
       var uri = data.chapters[parseInt(nameC)].uri;
+      checkPathSlashes (uri);
       newChapters[indexC] = {uri: uri};
     });
     data.chapters = newChapters;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
-      var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkPathParsed(uri);
-      newRelatedMethodology[indexM] = {uri: uriChecked};
+      var uri = data.relatedBulletins[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

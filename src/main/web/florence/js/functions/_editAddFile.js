@@ -1,29 +1,45 @@
 function addFile (collectionId, data, field, idField) {
+  var list = data[field];
+  var dataTemplate = {list: list, idField: idField};
+  var html = templates.editorDownloads(dataTemplate);
+  $('#'+ idField).replaceWith(html);
   var uriUpload;
   // Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
   } else {
     $(data[field]).each(function (index) {
-      var lastIndex = index + 1;
-
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position + 200);
-        $("#" + index).remove();
-        $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-          type: "DELETE",
-          success: function (res) {
-            console.log(res);
-          },
-          error: function (res) {
-            console.log(res);
-          }
-        });
-        data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        var result = confirm("Are you sure you want to delete this file?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position + 200);
+          $(this).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+            type: "DELETE",
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (res) {
+                console.log(res);
+            }
+          });
+          data[field].splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
+      });
+      // Edit
+      $('#' + idField + '-edit_' + index).click(function() {
+        var editedSectionValue = {
+          "markdown": $('#' + idField + '-title_' + index).val(),
+        };
+        var saveContent = function(updatedContent) {
+          data[field][index].markdown = updatedContent;
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        };
+        loadMarkdownEditor(editedSectionValue, saveContent, data);
       });
     });
   }
@@ -63,13 +79,14 @@ function addFile (collectionId, data, field, idField) {
 
           var file = this.files[0];
           uriUpload = data.uri + "/" + file.name;
+          checkPathSlashes(uriUpload);
 
           if (data[field].length > 0) {
             $(data[field]).each(function (i, filesUploaded) {
               if (filesUploaded.file == uriUpload) {
                 alert('This file already exists');
                 $('#' + lastIndex).remove();
-                datasetEditor(collectionId, data);
+                addFile(collectionId, data, field, idField);
                 return;
               }
             });
@@ -81,7 +98,7 @@ function addFile (collectionId, data, field, idField) {
             } else {
               alert('This file type is not supported');
               $('#' + lastIndex).remove();
-              datasetEditor(collectionId, data);
+              addFile(collectionId, data, field, idField);
               return;
             }
 
@@ -108,7 +125,7 @@ function addFile (collectionId, data, field, idField) {
             } else {
               alert('This file type is not supported');
               $('#' + lastIndex).remove();
-              datasetEditor(collectionId, data);
+              addFile(collectionId, data, field, idField);
               return;
             }
 

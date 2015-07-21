@@ -40,17 +40,16 @@ function methodologyEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
-
-  editMarkdown (collectionId, data, 'sections', 'section');
 
   // Save
   var editNav = $('.edit-nav');
@@ -77,7 +76,7 @@ function methodologyEditor(collectionId, data) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#section-markdown_' + nameS).val();
+        var markdown = data.sections[parseInt(nameS)].markdown;
         var title = $('#section-title_' + nameS).val();
       newSections[indexS] = {title: title, markdown: markdown};
     });

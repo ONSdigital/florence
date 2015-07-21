@@ -24,10 +24,11 @@ function staticLandingPageEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -85,53 +86,17 @@ function staticLandingPageEditor(collectionId, data) {
   });
 
   //Add new content
-  $("#addSection").one('click', function () {
+  $("#add-section").one('click', function () {
     data.sections.push({uri:"", summary:""});
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   function sortableContent() {
-    $("#sortable-sections").sortable();
+    $("#sortable-section").sortable();
   }
   sortableContent();
 
-// Edit links
-  // Load and edition
-  $(data.links).each(function(iLink){
-
-    $("#link-edit_"+iLink).click(function() {
-      var editedSectionValue = {
-        "title": $('#link-uri_' + iLink).val(),
-        "markdown": $("#link-markdown_" + iLink).val()
-      };
-
-       var saveContent = function(updatedContent) {
-         data.links[iLink].title = updatedContent;
-         data.links[iLink].uri = $('#link-uri_' + iLink).val();
-         updateContent(collectionId, data.uri, JSON.stringify(data));
-       };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $("#link-delete_"+iLink).click(function() {
-      $("#"+iLink).remove();
-      data.links.splice(iLink, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  //Add new external
-  $("#addLink").click(function () {
-    data.links.push({uri:"", title:""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  });
-
-  function sortableLinks() {
-    $("#sortable-links").sortable();
-  }
-  sortableLinks();
+  editLink(collectionId, data, 'links', 'link');
 
  // Save
   var editNav = $('.edit-nav');
@@ -156,7 +121,7 @@ function staticLandingPageEditor(collectionId, data) {
 
   function save() {
     // Sections
-    var orderSection = $("#sortable-sections").sortable('toArray');
+    var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var summary = data.sections[parseInt(nameS)].summary;
       var uri = $('#section-uri_' + nameS).val();
@@ -165,7 +130,7 @@ function staticLandingPageEditor(collectionId, data) {
     });
     data.sections = newSections;
     // External links
-    var orderLink = $("#sortable-links").sortable('toArray');
+    var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
       var displayText = $('#link-markdown_'+nameL).val();
       var link = $('#link-uri_'+nameL).val();

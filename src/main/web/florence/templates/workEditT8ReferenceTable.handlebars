@@ -71,93 +71,13 @@
       </div>
     </div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Related documents</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-used" class="edit-section__sortable">
-          {{#each this.relatedDocuments}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="used-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="used-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-used">Add article or bulletin</button>
-        </div>
-      </div>
-    </div>
+    <div id="document"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Related methodology</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-methodology" class="edit-section__sortable">
-          {{#each this.relatedMethodology}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              {{description.title}}
-              <textarea id="methodology-uri_{{@index}}">{{uri}}</textarea>
-              <button class="btn-page-delete" id="methodology-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-methodology">Add methodology</button>
-        </div>
-      </div>
-    </div>
+    <div id="file"></div>
 
-    <div class="edit-section" id="file">
-      <div class="edit-section__head">
-        <h1>Upload files</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-file" class="edit-section__sortable">
-          {{#each this.downloads}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="file-title_{{@index}}" placeholder="Type title here and click edit to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="file-summary_{{@index}}">{{fileDescription}}</textarea>
-              <textarea style="display: none;" id="file-filename_{{@index}}">{{file}}</textarea>
-              <div id="file-filename_show_{{@index}}">{{file}}</div>
-              <button class="btn-markdown-edit" id="file-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-file">Add file</button>
-        </div>
-      </div>
-    </div>
+    <div id="methodology"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Correction</h1>
-        <p>Date | Notice | Severity</p>
-      </div>
-      <div class="edit-section__content edit-section__content--correction">
-        {{#each this.correction}}
-          <div id="{{@index}}" class="edit-section__sortable-item">
-            <p>Text: <textarea class="auto-size" type="text" id="correction_text_{{@index}}" cols="65" style="box-sizing: border-box; min-height: 31px;">{{text}}</textarea></p>
-            <p>Date: <input class="auto-size" type="date" id="correction_date_{{@index}}" value="{{date}}"/></p>
-            <p>Type: <input type="radio" name="correctionType{{@index}}" value="minor"/><label> Minor</label>
-              <input type="radio" name="correctionType{{@index}}" value="major"/><label> Major</label>
-            </p>
-            <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
-          </div>
-        {{/each}}
-        <div class="text-center">
-          <button class="btn-add-section" id="addCorrection">Add correction</button>
-        </div>
-      </div>
-    </div>
+    <div id="correction"></div>
 
   </div>
 

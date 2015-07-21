@@ -87,70 +87,11 @@
       </div>
     </div>
 
-    <div class="edit-section" id="content">
-      <div class="edit-section__head">
-        <h1>Content</h1>
-        <p>Body copy</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-content" class="edit-section__sortable">
-          {{#each this.markdown}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea class="auto-size" id="content-markdown_{{@index}}" placeholder="Click edit to add content">{{this}}</textarea>
-              <button class="btn-markdown-edit" id="content-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="content-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-content">Add content</button>
-        </div>
-      </div>
-    </div>
+    <div id="content"></div>
 
-    <div class="edit-section" id="download">
-      <div class="edit-section__head">
-        <h1>Upload files</h1>
-        <p>Title | Link</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-file" class="edit-section__sortable">
-          {{#each this.downloads}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea id="file-title_{{@index}}" placeholder="Type title here and save to add content">{{title}}</textarea>
-              <textarea style="display: none;" id="file-filename_{{@index}}">{{uri}}</textarea>
-              <div id="file-filename_show_{{@index}}">{{uri}}</div>
-              <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-file">Add file</button>
-        </div>
-      </div>
-    </div>
+    <div id="file"></div>
 
-    <div class="edit-section" id="link">
-      <div class="edit-section__head">
-        <h1>Links</h1>
-        <p> Link | Title</p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-link" class="edit-section__sortable">
-          {{#each this.links}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <textarea class="auto-size" id="link-uri_{{@index}}" placeholder="Paste link here and click edit to add content">{{uri}}</textarea>
-              <textarea style="display: none;" id="link-markdown_{{@index}}">{{title}}</textarea>
-              <button class="btn-markdown-edit" id="link-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="link-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-link">Add link</button>
-        </div>
-      </div>
-    </div>
+    <div id="link"></div>
 
   </div>
 
