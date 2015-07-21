@@ -109,35 +109,8 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         alert("This is not a valid file title");
         return true;
       }
-       else {
-        // check if the page exists
-        getUri = newUri + '/data.json';
-        getPageData(collectionId, getUri,
-          success = function() {
-            alert('This page already exists');
-          },
-          // if the page does not exist, create it
-          error = function() {
-            postContent(collectionId, newUri, JSON.stringify(pageData),
-              success = function (message) {
-                console.log("Updating completed " + message);
-                viewWorkspace(newUri, collectionId, 'edit');
-                refreshPreview(newUri);
-              },
-              error = function (response) {
-                if (response.status === 400) {
-                  alert("Cannot edit this file. It is already part of another collection.");
-                }
-                else if (response.status === 401) {
-                  alert("You are not authorised to update content.");
-                }
-                else {
-                  handleApiError(response);
-                }
-              }
-            );
-          }
-        );
+      else {
+        checkSaveContent(collectionId, newUri, pageData);
       }
       e.preventDefault();
     });
