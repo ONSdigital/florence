@@ -33,7 +33,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         pageTitle = checkData.description.title;
         isInheriting = true;
         pageData = pageTypeDataT6(pageType, checkData);
-        submitFormHandler (pageTitle, contentUrl, isInheriting);
+        submitFormHandler (pageTitle, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -45,7 +45,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
   });
 
-  function submitFormHandler (title, uri, isInheriting) {
+  function submitFormHandler (title, isInheriting) {
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -69,9 +69,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       if (pageType === 'compendium_landing_page') {
         pageData.description.edition = $('#edition').val();
       }
-      if (title) {
-        //do nothing;
-      } else {
+      if (!title) {
         pageTitle = $('#pagename').val();
       }
 
@@ -161,8 +159,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
 
 function submitNoForm (title) {
 
-    pageData.description.title = pageTitle;
-    pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+    pageData.description.title = title;
+    pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
       newUri = makeUrl(parentUrl, pageTitleTrimmed);
