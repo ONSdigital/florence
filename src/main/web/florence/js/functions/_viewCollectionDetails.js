@@ -106,8 +106,9 @@ function viewCollectionDetails(collectionId) {
   }
 
   function ProcessPages(pages) {
+    _.sortBy(pages, 'uri');
     _.each(pages, function (page) {
-      page.uri = page.uri.replace('/data.json', '')
+      page.uri = page.uri.replace('/data.json', '');
       return page;
     });
   }
