@@ -119,30 +119,39 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         alert("This is not a valid file title");
         return true;
       }
-       else {
-        postContent(collectionId, newUri, JSON.stringify(pageData),
-          success = function (message) {
-            console.log("Updating completed " + message);
-            if (pageData.type === 'compendium_landing_page') {
-              viewWorkspace(newUri, collectionId, 'edit');
-              refreshPreview(newUri);
-              return true;
-            }
-            else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-              updateParentLink (newUri);
-              return true;
-            }
+      else {
+        getUri = newUri + '/data.json';
+        getPageData(collectionId, getUri,
+          success = function() {
+            alert('This page already exists');
           },
-          error = function (response) {
-            if (response.status === 400) {
-              alert("Cannot edit this file. It is already part of another collection.");
-            }
-            else if (response.status === 401) {
-              alert("You are not authorised to update content.");
-            }
-            else {
-              handleApiError(response);
-            }
+          // if the page does not exist, create it
+          error = function() {
+            postContent(collectionId, newUri, JSON.stringify(pageData),
+              success = function (message) {
+                console.log("Updating completed " + message);
+                if (pageData.type === 'compendium_landing_page') {
+                  viewWorkspace(newUri, collectionId, 'edit');
+                  refreshPreview(newUri);
+                  return true;
+                }
+                else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
+                  updateParentLink (newUri);
+                  return true;
+                }
+              },
+              error = function (response) {
+                if (response.status === 400) {
+                  alert("Cannot edit this file. It is already part of another collection.");
+                }
+                else if (response.status === 401) {
+                  alert("You are not authorised to update content.");
+                }
+                else {
+                  handleApiError(response);
+                }
+              }
+            )
           }
         );
       }
@@ -157,29 +166,40 @@ function submitNoForm (title) {
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
       newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      newUri = '/' + newUri;
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
 
-    pageData.uri = '/' + newUri;
+    pageData.uri = newUri;
     pageData.breadcrumb = breadcrumb;
 
-    postContent(collectionId, newUri, JSON.stringify(pageData),
-      success = function (message) {
-        console.log("Updating completed " + message);
-        updateParentLink ('/' + newUri);
+    // check if the page exists
+    getUri = newUri + '/data.json';
+    getPageData(collectionId, getUri,
+      success = function() {
+        alert('This page already exists');
       },
-      error = function (response) {
-        if (response.status === 400) {
-          alert("Cannot edit this file. It is already part of another collection.");
-        }
-        else if (response.status === 401) {
-          alert("You are not authorised to update content.");
-        }
-        else {
-          handleApiError(response);
-        }
+      // if the page does not exist, create it
+      error = function(){
+        postContent(collectionId, newUri, JSON.stringify(pageData),
+          success = function (message) {
+            console.log("Updating completed " + message);
+            updateParentLink (newUri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this file. It is already part of another collection.");
+            }
+            else if (response.status === 401) {
+              alert("You are not authorised to update content.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
       }
     );
   }
