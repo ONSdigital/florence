@@ -1,29 +1,34 @@
 function addFileWithDetails (collectionId, data, field, idField) {
+  var list = data[field];
+  var dataTemplate = {list: list, idField: idField};
+  var html = templates.editorDownloadsWithSummary(dataTemplate);
+  $('#'+ idField).replaceWith(html);
   var uriUpload;
   // Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
   } else {
     $(data[field]).each(function (index) {
-      var lastIndex = index + 1;
-
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position + 500);
-        $("#" + index).remove();
-        $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-          type: "DELETE",
-          success: function (res) {
-            console.log(res);
-          },
-          error: function (res) {
-            console.log(res);
-          }
-        });
-        data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        var result = confirm("Are you sure you want to delete this file?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position + 500);
+          $(this).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+            type: "DELETE",
+            success: function (res) {
+              console.log(res);
+            },
+            error: function (res) {
+              console.log(res);
+            }
+          });
+          data[field].splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
       });
 
       // Edit
@@ -79,6 +84,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
 
           var file = this.files[0];
           uriUpload = data.uri + "/" + file.name;
+          checkPathSlashes(uriUpload);
 
           if (data[field].length > 0) {
             $(data[field]).each(function (i, filesUploaded) {

@@ -1,6 +1,6 @@
 function referenceTableEditor(collectionId, data) {
 
-  var newFiles = [], newNotes = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
+  var newFiles = [], newUsedIn = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -63,10 +63,11 @@ function referenceTableEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -112,62 +113,52 @@ function referenceTableEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editRelated (collectionId, data, 'relatedDocuments', 'used');
-
-  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
-
-  addFileWithDetails (collectionId, data, 'downloads', 'file');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       //pageData = $('.fl-editor__headline').val();
-      saveData();
+      save();
       saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      saveData();
+      save();
       saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
-    saveData();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  }
-
-  function saveData() {
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
       var title = $('#file-title_'+nameF).val();
       var fileDescription = $("#file-summary_"+nameF).val();
-      var file = $('#file-filename_' + nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
       newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
     });
     data.downloads = newFiles;
     // Used in links
     var orderUsedIn = $("#sortable-used").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#used-uri_'+nameU).val();
-      uriChecked = checkPathParsed(uri);
-      newUsedIn[parseInt(indexU)] = {uri: uriChecked};
+      var uri = data.relatedDocuments[parseInt(nameU)].uri;
+      checkPathSlashes (uri);
+      newUsedIn[indexU] = {uri: uri};
     });
     data.relatedDocuments = newUsedIn;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
-      var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkPathParsed(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }
