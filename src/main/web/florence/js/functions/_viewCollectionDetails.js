@@ -73,9 +73,7 @@ function viewCollectionDetails(collectionId) {
 
     $('.btn-page-edit').click(function () {
       var path = $(this).attr('data-path');
-      if (path.charAt(0) !== '/') {
-        path = '/' + path;
-      }
+      checkPathSlashes(path);
       createWorkspace(path, collectionId, 'edit');
     });
     $('#page-delete').click(function () {

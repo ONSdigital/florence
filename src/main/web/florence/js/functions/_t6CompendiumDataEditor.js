@@ -1,6 +1,6 @@
 function compendiumDataEditor(collectionId, data) {
 
-  var newFiles = [], newUsedIn = [], newRelatedMethodology = [];
+  var newFiles = [], newRelated = [], newRelatedMethodology = [];
   var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
@@ -64,10 +64,11 @@ function compendiumDataEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -113,12 +114,6 @@ function compendiumDataEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editRelated (collectionId, data, 'relatedDocuments', 'document');
-
-  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
-
-  addFileWithDetails (collectionId, data, 'downloads', 'file');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -158,18 +153,18 @@ function compendiumDataEditor(collectionId, data) {
     data.downloads = newFiles;
     // Related documents
     var orderUsedIn = $("#sortable-document").sortable('toArray');
-    $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#document-uri_'+nameU).val();
-      uriChecked = checkRelatedPath(uri);
-      newUsedIn[indexU] = {uri: uriChecked};
+    $(orderUsedIn).each(function(indexD, nameD){
+      var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      checkPathSlashes (uri);
+      newRelated[indexD] = {uri: uri};
     });
-    data.relatedDocuments = newUsedIn;
+    data.relatedDocuments = newRelated;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
-      var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkRelatedPath(uri);
-      newRelatedMethodology[indexM] = {uri: uriChecked};
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

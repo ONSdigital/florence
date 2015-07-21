@@ -12,7 +12,7 @@ ADD . /usr/src
 RUN npm install --prefix ./src/main/web/florence  --unsafe-perm
 
 # Build jar-with-dependencies
-RUN mvn install -DskipTests
+RUN mvn clean install -DskipTests
 
 # Update the entry point script
 RUN mv /usr/entrypoint/container.sh /usr/src/

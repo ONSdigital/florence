@@ -1,12 +1,11 @@
 function updateContent(collectionId, path, content, redirectToPath) {
+  var redirect = redirectToPath;
   postContent(collectionId, path, content,
     success = function (response) {
-      //console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      if (redirectToPath) {
-        refreshPreview(redirectToPath);
-        viewWorkspace(redirectToPath, collectionId, 'edit');
-        return true;
+      if (redirect) {
+        createWorkspace(redirect, collectionId, 'edit');
+        return;
       } else {
         refreshPreview(path);
         loadPageDataIntoEditor(path, collectionId);
