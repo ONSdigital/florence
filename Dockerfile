@@ -4,13 +4,7 @@ from carboni.io/java-node-component
 WORKDIR /etc/consul.d
 RUN echo '{"service": {"name": "florence", "tags": ["blue"], "port": 8080, "check": {"script": "curl http://localhost:8080 >/dev/null 2>&1", "interval": "10s"}}}' > florence.json
 
-# Build web
-#RUN npm install --prefix ./src/main/web/florence  --unsafe-perm
-
-# Build jar-with-dependencies
-#RUN mvn install
-
-# Add the build artifact
+# Add the built artifact
 WORKDIR /usr/src
 ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
 
