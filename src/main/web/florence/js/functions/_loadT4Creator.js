@@ -1,5 +1,5 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -21,7 +21,13 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         contentUrl = contentUrlTmp.join('/');
         parentUrl = contentUrl;
         breadcrumb = checkData.breadcrumb;
+        natStat = checkData.description.nationalStatistic;
+        contactName = checkData.description.contact.name;
+        contactEmail = checkData.description.contact.email;
+        contactTel = checkData.description.contact.telephone;
         pageTitle = checkData.description.title;
+        keyWords = checkData.description.keywords;
+        metaDescr = checkData.description.metaDescription;
         isInheriting = true;
         submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
@@ -79,6 +85,12 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = releaseDate;
       }
       if (isInheriting) {
+        pageData.description.nationalStatistic = natStat;
+        pageData.description.contact.name = contactName;
+        pageData.description.contact.email = contactEmail;
+        pageData.description.contact.telephone = contactTel;
+        pageData.description.keywords = keyWords;
+        pageData.description.metaDescription = metaDescr;
         newUri = makeUrl(parentUrl, releaseUri);
       } else {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
