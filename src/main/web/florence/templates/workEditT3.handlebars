@@ -34,84 +34,30 @@
     </div>
 
     <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Time series related to {{this.description.title}}</h1>
-        <p></p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-timeseries" class="edit-section__sortable">
-          {{#each this.items}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="timeseries-title_{{@index}}">{{data.description.title}}</p>
-              <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
+        <div class="edit-section__head">
+            <h1>Related timeseries</h1>
+            <p></p>
+        </div>
+        <div class="edit-section__content">
+            <div id="sortable-timeseries" class="edit-section__sortable">
+                {{#each this.items}}
+                    <div id="{{@index}}" class="edit-section__sortable-item">
+                        <p id="timeseries-title_{{@index}}">{{data.description.title}}</p>
+                        <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
+                    </div>
+                {{/each}}
             </div>
-          {{/each}}
+            <div class="text-center">
+                <button class="btn-add-section" id="add-timeseries">Add timeseries</button>
+            </div>
         </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-timeseries">Add timeseries</button>
-        </div>
-      </div>
     </div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Bulletins related to {{this.description.title}}</h1>
-        <p></p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-bulletins" class="edit-section__sortable">
-          {{#each this.statsBulletins}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="bulletins-title_{{@index}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</p>
-              <button class="btn-page-delete" id="bulletins-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-bulletins">Add bulletins</button>
-        </div>
-      </div>
-    </div>
+    <div id="bulletins"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Articles related to {{this.description.title}}</h1>
-        <p></p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-articles" class="edit-section__sortable">
-          {{#each this.relatedArticles}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="articles-title_{{@index}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</p>
-              <button class="btn-page-delete" id="articles-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-articles">Add articles</button>
-        </div>
-      </div>
-    </div>
+    <div id="articles"></div>
 
-    <div class="edit-section">
-      <div class="edit-section__head">
-        <h1>Datasets related to {{this.description.title}}</h1>
-        <p></p>
-      </div>
-      <div class="edit-section__content">
-        <div id="sortable-datasets" class="edit-section__sortable">
-          {{#each this.datasets}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="datasets-title_{{@index}}">{{description.title}}</p>
-              <button class="btn-page-delete" id="datasets-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
-        </div>
-        <div class="text-center">
-          <button class="btn-add-section" id="add-datasets">Add datasets</button>
-        </div>
-      </div>
-    </div>
+    <div id="datasets"></div>
 
   </div>
 

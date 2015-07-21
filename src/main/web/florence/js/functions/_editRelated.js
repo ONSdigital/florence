@@ -1,4 +1,20 @@
-function editRelated (collectionId, data, field, idField) {
+function editRelated (collectionId, data, templateData, field, idField) {
+  var list = templateData[field];
+  if (idField === 'article') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'articles'};
+  } else if (idField === 'bulletin') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'bulletins'};
+  } else if (idField === 'dataset') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
+  } else if (idField === 'document') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'documents'};
+  } else if (idField === 'methodology') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
+  } else {
+    var dataTemplate = {list: list, idField: idField};
+  }
+  var html = templates.editorRelated(dataTemplate);
+  $('#'+ idField).replaceWith(html);
   // Load
   if (!data[field] || data[field].length === 0) {
     editRelated['lastIndex' + field] = 0;
@@ -8,11 +24,31 @@ function editRelated (collectionId, data, field, idField) {
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position);
-        $("#" + index).remove();
-        data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        var result = confirm("Are you sure you want to delete this link?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position);
+          $(this).parent().remove();
+          data[field].splice(index, 1);
+          postContent(collectionId, data.uri, JSON.stringify(data),
+            success = function (response) {
+              Florence.Editor.isDirty = false;
+              refreshPreview(data.uri);
+              editRelated (collectionId, data, field, idField);
+            },
+            error = function (response) {
+              if (response.status === 400) {
+                alert("Cannot edit this file. It is already part of another collection.");
+              }
+              else if (response.status === 401) {
+                alert("You are not authorised to update content.");
+              }
+              else {
+                handleApiError(response);
+              }
+            }
+          );
+        }
       });
     });
   }
@@ -21,10 +57,9 @@ function editRelated (collectionId, data, field, idField) {
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     localStorage.setItem("pagePos", position);
-    var pageUrl = localStorage.getItem('pageurl');
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
-    createWorkspace(pageUrl, collectionId, '', true);
+    createWorkspace(data.uri, collectionId, '', true);
 
     $('#sortable-' + idField).append(
         '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
@@ -34,17 +69,17 @@ function editRelated (collectionId, data, field, idField) {
         '</div>').trigger('create');
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
-      createWorkspace(pageUrl, collectionId, 'edit');
+      createWorkspace(data.uri, collectionId, 'edit');
     });
 
     $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
       var pastedUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (pastedUrl) {
-        checkRelatedPath(pastedUrl);
+        checkPathParsed(pastedUrl);
         var dataUrlData = pastedUrl + "/data";
       } else {
         var dataUrl = getPathNameTrimLast();
-        checkRelatedPath(dataUrl);
+        checkPathParsed(dataUrl);
         var dataUrlData = dataUrl + "/data";
       }
 
@@ -57,61 +92,51 @@ function editRelated (collectionId, data, field, idField) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if (field === 'relatedArticles' && result.type === 'article') {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedDatasets' || field === 'datasets') && (result.type === 'dataset' || result.type === 'reference_tables')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'items') && (result.type === 'timeseries')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if ((field === 'relatedData') && (result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else if (field === 'relatedMethodology' && result.type === 'static_methodology') {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data);
           }
 
           else {
             alert("This is not a valid document");
+            return;
           }
+
+          data[field].push({uri: result.uri});
+          saveRelated(collectionId, data.uri, data, field, idField);
 
         },
         error: function () {

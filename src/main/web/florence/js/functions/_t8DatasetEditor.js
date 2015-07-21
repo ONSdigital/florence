@@ -60,10 +60,11 @@ function datasetEditor(collectionId, data) {
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
+                        allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = [$('#keywords').val()];
+    data.description.keywords = $('#keywords').val().split(',');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -109,16 +110,6 @@ function datasetEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editMarkdownOneObject (collectionId, data, 'section', 'note');
-
-  editRelated (collectionId, data, 'relatedDatasets', 'dataset');
-
-  editRelated (collectionId, data, 'relatedDocuments', 'used');
-
-  editRelated (collectionId, data, 'relatedMethodology', 'methodology');
-
-  addFile (collectionId, data, 'downloads', 'file');
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -150,34 +141,34 @@ function datasetEditor(collectionId, data) {
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
       var title = $('#file-title_'+nameF).val();
-      var file = $('#file-filename_' + nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
     // Notes
-    data.section = {markdown: $('#note-markdown_0').val()};
+    data.section = {markdown: $('#one-markdown').val()};
     // Related datasets
     var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
-      var uri = $('#dataset-uri_' + nameD).val();
-      uriChecked = checkRelatedPath(uri);
-      newRelated[indexD]= {uri: uriChecked};
+      var uri = data.relatedDatasets[parseInt(nameD)].uri;
+      checkPathSlashes (uri);
+      newRelated[indexD]= {uri: uri};
     });
     data.relatedDatasets = newRelated;
     // Used in links
-    var orderUsedIn = $("#sortable-used").sortable('toArray');
+    var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
-      var uri = $('#used-uri_'+nameU).val();
-      uriChecked = checkRelatedPath(uri);
-      newUsedIn[parseInt(indexU)] = {uri: uriChecked};
+      var uri = data.relatedDocuments[parseInt(nameU)].uri;
+      checkPathSlashes (uri);
+      newUsedIn[indexU] = {uri: uri};
     });
     data.relatedDocuments = newUsedIn;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
-      var uri = $('#methodology-uri_'+nameM).val();
-      uriChecked = checkRelatedPath(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: uriChecked};
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: uri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

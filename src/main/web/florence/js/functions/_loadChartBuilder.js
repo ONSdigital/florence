@@ -71,8 +71,8 @@ function loadChartBuilder(pageData, onSave, chart) {
       contentType: false,
       success: function (res) {
         generatePng('#chart', '#hiddenCanvas');
-        renderDownloadChart();
-        generatePng('#hiddenSvgForDownload', '#hiddenCanvasForDownload', '-download');
+        //renderDownloadChart();
+        //generatePng('#hiddenSvgForDownload', '#hiddenCanvasForDownload', '-download');
 
         if (!pageData.charts) {
           pageData.charts = []
@@ -108,7 +108,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
 
-    renderChartObject('#chart', chart, chartHeight, chartWidth);
+    renderChartObject('chart', chart, chartHeight, chartWidth);
 
     if (chart.notes) {
       if (typeof Markdown !== 'undefined') {
@@ -130,7 +130,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
 
-    renderChartObject('#hiddenSvgForDownload', chart, chartHeight, chartWidth);
+    renderChartObject('hiddenSvgForDownload', chart, chartHeight, chartWidth);
     renderSvgAnnotations('#hiddenSvgForDownload', chart, chartHeight, chartWidth)
   }
 
@@ -150,8 +150,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
     chart.source = $('#chart-source').val();
-    chart.legend = $('#chart-legend').val();
-    chart.hideLegend = (chart.legend === 'false') ? true : false;
+
+    chart.decimalPlaces = $('#chart-decimal-places').val();
+    chart.labelInterval = $('#chart-label-interval').val();
 
     chart.notes = $('#chart-notes').val();
     chart.altText = $('#chart-alt-text').val();

@@ -18,6 +18,7 @@ function saveAndCompleteContent(collectionId, path, content) {
 }
 
 function completeContent(collectionId, path) {
+  checkPathSlashes(path);
   // Update content
   $.ajax({
     url: "/zebedee/complete/" + collectionId + "?uri=" + path + "/data.json",

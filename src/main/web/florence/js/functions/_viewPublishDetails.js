@@ -47,11 +47,6 @@ function viewPublishDetails(collections) {
     $('.btn-collection-publish').click(function(){
       var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
       publish(collection);
-      $('.publish-selected').animate({right: "-50%"}, 500);
-      // Wait until the animation ends
-      setTimeout(function () {
-        viewController('publish');
-      }, 500);
     });
 
     //page-list

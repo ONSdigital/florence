@@ -8,15 +8,13 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       $('.browser-location').val(browserLocation);
       var iframeEvent = document.getElementById('iframe').contentWindow;
           iframeEvent.removeEventListener('click', Florence.Handler, true);
-    }
+    };
     return false;
   } else {
     var currentPath = '';
     if (path) {
       currentPath = path;
-      if (currentPath.charAt(0) !== '/') {
-        currentPath = "/" + currentPath;
-      }
+      checkPathSlashes(currentPath);
     }
 
     localStorage.removeItem("pageurl");
@@ -76,12 +74,12 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       $('.browser-location').val(browserLocation);
         var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.addEventListener('click', Florence.Handler, true);
-    }
+    };
 
     viewWorkspace(path, collectionId, menu);
 
   }
-};
+}
 
 
 
