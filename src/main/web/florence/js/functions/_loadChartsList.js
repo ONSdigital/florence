@@ -26,30 +26,36 @@ function loadChartsList(data, collectionId) {
     });
 
     $("#chart-delete_" + chart.filename).click(function () {
-      $("#chart_" + index).remove();
+      var result = confirm("Are you sure you want to delete this chart?");
+      if (result === true) {
+        $("#chart_" + index).remove();
 
-      getPageData(collectionId, chartJson,
-        onSuccess = function (chartData) {
+        getPageData(collectionId, chartJson,
+          onSuccess = function (chartData) {
 
-          // delete any files associated with the table.
-          _(chartData.files).each(function (file) {
-            var fileToDelete = basePath + '/' + file.filename;
-            deleteContent(collectionId, fileToDelete);
-          });
-
-          deleteContent(collectionId, chartJson,
-            onSuccess = function () {
-              data.charts = _(data.charts).filter(function (item) {
-                return item.filename !== chart.filename
-              });
-              postContent(collectionId, basePath, JSON.stringify(data),
-                success = function () {
-                  Florence.Editor.isDirty = false;
-                  refreshPreview();
-                  loadChartsList(data, collectionId);
-                });
+            // delete any files associated with the table.
+            _(chartData.files).each(function (file) {
+              var fileToDelete = basePath + '/' + file.filename;
+              deleteContent(collectionId, fileToDelete);
             });
-        });
+
+            deleteContent(collectionId, chartJson,
+              onSuccess = function () {
+                data.charts = _(data.charts).filter(function (item) {
+                  return item.filename !== chart.filename
+                });
+                postContent(collectionId, basePath, JSON.stringify(data),
+                  success = function () {
+                    Florence.Editor.isDirty = false;
+                    refreshPreview();
+                    loadChartsList(data, collectionId);
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
     });
   });
 }
