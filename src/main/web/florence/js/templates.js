@@ -114,7 +114,7 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">Edit file</button>\n          <button class=\"btn-page-move\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "\">Move file</button>\n          <button id=\"page-delete\" class=\"btn-page-delete\" data-path=\""
+    + "\">Move file</button>\n          <button class=\"btn-page-delete page-delete\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">Delete file</button>\n        </div>\n      </li>\n";
 },"2":function(depth0,helpers,partials,data) {
@@ -134,7 +134,22 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">Review file</button>\n          <button class=\"btn-page-move\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "\">Move file</button>\n          <button id=\"page-delete\" class=\"btn-page-delete\" data-path=\""
+    + "\">Move file</button>\n          <button class=\"btn-page-delete page-delete\" data-path=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">Delete file</button>\n        </div>\n      </li>\n";
+},"6":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "      <li><span class=\"page-item page-item--"
+    + alias3(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</span>\n        <div class=\"page-options\">\n          <button class=\"btn-page-edit\" data-path=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">Edit file</button>\n          <button class=\"btn-page-move\" data-path=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">Move file</button>\n          <button class=\"btn-page-delete\" data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">Delete file</button>\n        </div>\n      </li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -155,8 +170,8 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + "  </ul>\n  <h3 id=\"reviewed-uris\">"
     + alias3(alias4(((stack1 = (depth0 != null ? depth0.reviewed : depth0)) != null ? stack1.length : stack1), depth0))
     + " pages awaiting approval</h3>\n  <ul class=\"page-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.reviewed : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "  </ul>\n</div>\n\n<nav class=\"section-nav\">\n  <button class=\"btn-edit-cancel\">Cancel</button>\n  <button class=\"btn-collection-work-on\">Work on collection</button>\n  <button class=\"btn-collection-approve\">Approve collection</button>\n  <button id=\"collection-delete\" class=\"btn-page-delete\">Delete collection</button>\n</nav>\n";
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.reviewed : depth0),{"name":"each","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "  </ul>\n</div>\n\n<nav class=\"section-nav\">\n  <button class=\"btn-edit-cancel\">Cancel</button>\n  <button class=\"btn-collection-work-on\">Work on collection</button>\n  <button class=\"btn-collection-approve\">Approve collection</button>\n  <button id=\"collection-delete\" class=\"btn-page-delete page-delete\">Delete collection</button>\n</nav>\n";
 },"useData":true});
 templates['collectionList'] = template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
