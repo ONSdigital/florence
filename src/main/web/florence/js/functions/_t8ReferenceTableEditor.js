@@ -146,7 +146,7 @@ function referenceTableEditor(collectionId, data) {
     });
     data.downloads = newFiles;
     // Used in links
-    var orderUsedIn = $("#sortable-used").sortable('toArray');
+    var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
       checkPathSlashes (uri);
