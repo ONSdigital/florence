@@ -7,6 +7,7 @@ RUN echo '{"service": {"name": "florence", "tags": ["blue"], "port": 8080, "chec
 # Add the built artifact
 WORKDIR /usr/src
 ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
+ADD ./target/web /usr/src/target/web
 
 # Update the entry point script
 RUN mv /usr/entrypoint/container.sh /usr/src/
