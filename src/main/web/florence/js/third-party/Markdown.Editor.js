@@ -36,7 +36,7 @@
 
         image: "Image <img> Ctrl+G",
         imagedescription: "enter image description here",
-        imagedialog: "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg \"optional title\"<br><br>Need <a href='http://www.google.com/search?q=free+image+hosting' target='_blank'>free image hosting?</a></p>",
+        imagedialog: "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg</p>",
 
         olist: "Numbered List <ol> Ctrl+O",
         ulist: "Bulleted List <ul> Ctrl+U",
@@ -44,6 +44,12 @@
 
         heading: "Heading <h1>/<h2> Ctrl+H",
         headingexample: "Heading",
+
+        superscript: "Superscript <sup> Ctrl+P",
+        superscriptexample: "superscript text",
+
+        subscript: "Subscript <sub> Ctrl+S",
+        subscriptexample: "subscript text",
 
         hr: "Horizontal Rule <hr> Ctrl+R",
 
@@ -1259,6 +1265,12 @@
                     case "u":
                         doClick(buttons.ulist);
                         break;
+                    case "p":
+                        doClick(buttons.superscript);
+                        break;
+                    case "s":
+                        doClick(buttons.subscript);
+                        break;
                     case "h":
                         doClick(buttons.heading);
                         break;
@@ -1483,6 +1495,10 @@
                 this.doList(chunk, postProcessing, false);
             }));
             buttons.heading = makeButton("wmd-heading-button", getString("heading"), "-160px", bindCommand("doHeading"));
+
+            buttons.superscript = makeButton("wmd-superscript-button", getString("superscript"), "-165px", bindCommand("doSuperscript"));
+            buttons.subscript = makeButton("wmd-subscript-button", getString("subscript"), "-175px", bindCommand("doSubscript"));
+
             buttons.hr = makeButton("wmd-hr-button", getString("hr"), "-180px", bindCommand("doHorizontalRule"));
             makeSpacer(3);
             buttons.undo = makeButton("wmd-undo-button", getString("undo"), "-200px", null);
@@ -2232,6 +2248,76 @@
             }
         }
     };
+
+  commandProto.doSuperscript = function (chunk, postProcessing) {
+
+    // Get rid of whitespace and fixup newlines.
+    chunk.trimWhitespace();
+    chunk.selection = chunk.selection.replace(/\n{2,}/g, "\n");
+
+    // Look for carets before and after.  Is the chunk already marked up?
+    // note that these regex matches cannot fail
+    var caretsBefore = /(\^*$)/.exec(chunk.before)[0];
+    var caretsAfter = /(^\^*)/.exec(chunk.after)[0];
+
+    var prevCarets = Math.min(caretsBefore.length, caretsAfter.length);
+    var nCarets = 1;
+    // Remove carets if we have to since the button acts as a toggle.
+    if (prevCarets >= nCarets) {
+      chunk.before = chunk.before.replace(re("[^]{" + nCarets + "}$", ""), "");
+      chunk.after = chunk.after.replace(re("^[^]{" + nCarets + "}", ""), "");
+    }
+    else {
+      // In most cases, if you don't have any selected text and click the button
+      // you'll get a selected, marked up region with the default text inserted.
+      if (!chunk.selection && !caretsAfter) {
+        chunk.selection = this.getString("superscriptexample");
+      }
+
+      // Add the true markup.
+      var markup = "^";
+      chunk.before = chunk.before + markup;
+      chunk.after = markup + chunk.after;
+    }
+
+    return;
+
+  };
+
+  commandProto.doSubscript = function (chunk, postProcessing) {
+
+    // Get rid of whitespace and fixup newlines.
+    chunk.trimWhitespace();
+    chunk.selection = chunk.selection.replace(/\n{2,}/g, "\n");
+
+    // Look for tildes before and after.  Is the chunk already marked up?
+    // note that these regex matches cannot fail
+    var tildesBefore = /(~*$)/.exec(chunk.before)[0];
+    var tildesAfter = /(^~*)/.exec(chunk.after)[0];
+
+    var prevTildes = Math.min(tildesBefore.length, tildesAfter.length);
+    var nTildes = 1;
+    // Remove tildes if we have to since the button acts as a toggle.
+    if (prevTildes >= nTildes) {
+      chunk.before = chunk.before.replace(re("[~]{" + nTildes + "}$", ""), "");
+      chunk.after = chunk.after.replace(re("^[~]{" + nTildes + "}", ""), "");
+    }
+    else {
+      // In most cases, if you don't have any selected text and click the button
+      // you'll get a selected, marked up region with the default text inserted.
+      if (!chunk.selection && !tildesAfter) {
+        chunk.selection = this.getString("subscriptexample");
+      }
+
+      // Add the true markup.
+      var markup = "~";
+      chunk.before = chunk.before + markup;
+      chunk.after = markup + chunk.after;
+    }
+
+    return;
+
+  };
 
     commandProto.doHorizontalRule = function (chunk, postProcessing) {
         chunk.startTag = "----------\n";
