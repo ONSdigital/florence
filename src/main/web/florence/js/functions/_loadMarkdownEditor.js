@@ -48,6 +48,10 @@ function loadMarkdownEditor(content, onSave, pageData) {
     markDownEditorSetLines();
   });
 
+  $("#wmd-input").on('input', function () {
+    autoSave(onSave);
+  });
+
   // http://stackoverflow.com/questions/6140632/how-to-handle-tab-in-textarea
   $("#wmd-input").keydown(function(e) {
     if(e.keyCode === 9) { // tab was pressed
@@ -131,3 +135,14 @@ function markdownEditor() {
   editor.run();
   markDownEditorSetLines();
 }
+
+var timeoutId;
+function autoSave (onSave) {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function() {
+    // Runs 5 second (5000 ms) after the last change
+    var markdown = $('#wmd-input').val();
+    onSave(markdown);
+  }, 5000);
+}
+
