@@ -38,7 +38,7 @@ function foiEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp)).val(dateTmpFormatted)
           .datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
