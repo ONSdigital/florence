@@ -511,23 +511,25 @@ function addFile (collectionId, data, field, idField) {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position + 200);
-        $(this).parent().remove();
-        $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-          type: "DELETE",
-          success: function (res) {
-            console.log(res);
-          },
-          error: function (res) {
-            console.log(res);
-          }
-        });
-        data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        var result = confirm("Are you sure you want to delete this file?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position + 200);
+          $(this).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+            type: "DELETE",
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (res) {
+                console.log(res);
+            }
+          });
+          data[field].splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
       });
-
       // Edit
       $('#' + idField + '-edit_' + index).click(function() {
         var editedSectionValue = {
@@ -666,21 +668,24 @@ function addFileWithDetails (collectionId, data, field, idField) {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position + 500);
-        $(this).parent().remove();
-        $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-          type: "DELETE",
-          success: function (res) {
-            console.log(res);
-          },
-          error: function (res) {
-            console.log(res);
-          }
-        });
-        data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        var result = confirm("Are you sure you want to delete this file?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position + 500);
+          $(this).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+            type: "DELETE",
+            success: function (res) {
+              console.log(res);
+            },
+            error: function (res) {
+              console.log(res);
+            }
+          });
+          data[field].splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
       });
 
       // Edit
@@ -839,12 +844,15 @@ function editLink (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      var position = $(".workspace-edit").scrollTop();
-      localStorage.setItem("pagePos", position + 300);
-      $(this).parent().remove();
-      data[field].splice(index, 1);
-      saveLink (collectionId, data.uri, data, field, idField);
-      refreshPreview(data.uri);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        var position = $(".workspace-edit").scrollTop();
+        localStorage.setItem("pagePos", position + 300);
+        $(this).parent().remove();
+        data[field].splice(index, 1);
+        saveLink(collectionId, data.uri, data, field, idField);
+        refreshPreview(data.uri);
+      }
     });
   });
 
@@ -906,12 +914,15 @@ function saveLink (collectionId, path, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      var position = $(".workspace-edit").scrollTop();
-      localStorage.setItem("pagePos", position + 300);
-      $(this).parent().remove();
-      data[field].splice(index, 1);
-      saveMarkdown(collectionId, data.uri, data, field, idField);
-      refreshPreview(data.uri);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        var position = $(".workspace-edit").scrollTop();
+        localStorage.setItem("pagePos", position + 300);
+        $(this).parent().remove();
+        data[field].splice(index, 1);
+        saveMarkdown(collectionId, data.uri, data, field, idField);
+        refreshPreview(data.uri);
+      }
     });
   });
 
@@ -966,9 +977,12 @@ function editMarkdownOneObject (collectionId, data, field) {
 
     // Delete
     $('#one-delete').click(function() {
-      $(this).parent().remove();
-      data[field] = {};
-      saveMarkdownOne (collectionId, data.uri, data, field);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        $(this).parent().remove();
+        data[field] = {};
+        saveMarkdownOne(collectionId, data.uri, data, field);
+      }
     });
 }
 
@@ -1014,9 +1028,12 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      $("#"+index).remove();
-      data[field].splice(index, 1);
-      saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        $("#" + index).remove();
+        data[field].splice(index, 1);
+        saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+      }
     });
   });
 
@@ -1078,10 +1095,12 @@ function editRelated (collectionId, data, templateData, field, idField) {
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position);
-        $(this).parent().remove();
-        data[field].splice(index, 1);
+        var result = confirm("Are you sure you want to delete this link?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position);
+          $(this).parent().remove();
+          data[field].splice(index, 1);
           postContent(collectionId, data.uri, JSON.stringify(data),
             success = function (response) {
               Florence.Editor.isDirty = false;
@@ -1100,6 +1119,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
               }
             }
           );
+        }
       });
     });
   }
@@ -4142,9 +4162,12 @@ function t3Editor(collectionId, data) {
         lastIndexTimeseries = index + 1;
         // Delete
         $("#timeseries-delete_"+index).click(function() {
-            $("#"+index).remove();
+          var result = confirm("Are you sure you want to delete?");
+          if (result === true) {
+            $("#" + index).remove();
             data.items.splice(index, 1);
             updateContent(collectionId, data.uri, JSON.stringify(data));
+          }
         });
     });
 
@@ -6529,13 +6552,13 @@ function treeNodeSelect(url){
 //  });
 }
 function updateContent(collectionId, path, content, redirectToPath) {
+  var redirect = redirectToPath;
   postContent(collectionId, path, content,
     success = function (response) {
-      //console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      if (redirectToPath) {
-        createWorkspace(redirectToPath, collectionId, 'edit');
-        return true;
+      if (redirect) {
+        createWorkspace(redirect, collectionId, 'edit');
+        return;
       } else {
         refreshPreview(path);
         loadPageDataIntoEditor(path, collectionId);
