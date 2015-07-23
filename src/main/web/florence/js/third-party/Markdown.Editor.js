@@ -46,10 +46,10 @@
         headingexample: "Heading",
 
         superscript: "Superscript <sup> Ctrl+P",
-        superscriptexample: "superscript text",
+        superscriptexample: "superscript",
 
         subscript: "Subscript <sub> Ctrl+S",
-        subscriptexample: "subscript text",
+        subscriptexample: "subscript",
 
         hr: "Horizontal Rule <hr> Ctrl+R",
 
