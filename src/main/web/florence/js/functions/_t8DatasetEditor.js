@@ -58,6 +58,10 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
+  $("#datasetId").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.datasetId = $(this).val();
+  });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
                         allowSpaces: true,
