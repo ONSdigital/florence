@@ -4,15 +4,10 @@ from carboni.io/java-node-component
 WORKDIR /etc/consul.d
 RUN echo '{"service": {"name": "florence", "tags": ["blue"], "port": 8080, "check": {"script": "curl http://localhost:8080 >/dev/null 2>&1", "interval": "10s"}}}' > florence.json
 
-# Add the repo source
+# Add the built artifact
 WORKDIR /usr/src
-ADD . /usr/src
-
-# Build web
-RUN npm install --prefix ./src/main/web/florence  --unsafe-perm
-
-# Build jar-with-dependencies
-RUN mvn clean install -DskipTests
+ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
+ADD ./target/web /usr/src/target/web
 
 # Update the entry point script
 RUN mv /usr/entrypoint/container.sh /usr/src/
