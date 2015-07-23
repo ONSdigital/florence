@@ -6,6 +6,7 @@ RUN echo '{"service": {"name": "florence", "tags": ["blue"], "port": 8080, "chec
 
 # Add the repo source
 WORKDIR /usr/src
+ADD git_commit_id /usr/src/
 ADD . /usr/src
 
 # Build web
