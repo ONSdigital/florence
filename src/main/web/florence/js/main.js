@@ -232,6 +232,36 @@ function checkPathSlashes (uri) {
     return uri;
 }
 
+function checkSaveContent(collectionId, uri, data) {
+  // check if the page exists
+  var getUri = uri + '/data.json';
+  getPageData(collectionId, getUri,
+    success = function() {
+      alert('This page already exists');
+    },
+    // if the page does not exist, create it
+    error = function() {
+      postContent(collectionId, uri, JSON.stringify(data),
+        success = function (message) {
+          console.log("Updating completed " + message);
+          viewWorkspace(uri, collectionId, 'edit');
+          refreshPreview(uri);
+        },
+        error = function (response) {
+          if (response.status === 400) {
+            alert("Cannot edit this file. It is already part of another collection.");
+          }
+          else if (response.status === 401) {
+            alert("You are not authorised to update content.");
+          }
+          else {
+            handleApiError(response);
+          }
+        }
+      );
+    }
+  );
+}
 function getLastEditedEvent(collection, page) {
 
   var uri = page;
@@ -511,23 +541,25 @@ function addFile (collectionId, data, field, idField) {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position + 200);
-        $(this).parent().remove();
-        $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-          type: "DELETE",
-          success: function (res) {
-            console.log(res);
-          },
-          error: function (res) {
-            console.log(res);
-          }
-        });
-        data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        var result = confirm("Are you sure you want to delete this file?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position + 200);
+          $(this).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+            type: "DELETE",
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (res) {
+                console.log(res);
+            }
+          });
+          data[field].splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
       });
-
       // Edit
       $('#' + idField + '-edit_' + index).click(function() {
         var editedSectionValue = {
@@ -666,21 +698,24 @@ function addFileWithDetails (collectionId, data, field, idField) {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position + 500);
-        $(this).parent().remove();
-        $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-          type: "DELETE",
-          success: function (res) {
-            console.log(res);
-          },
-          error: function (res) {
-            console.log(res);
-          }
-        });
-        data[field].splice(index, 1);
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        var result = confirm("Are you sure you want to delete this file?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position + 500);
+          $(this).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+            type: "DELETE",
+            success: function (res) {
+              console.log(res);
+            },
+            error: function (res) {
+              console.log(res);
+            }
+          });
+          data[field].splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
       });
 
       // Edit
@@ -839,12 +874,15 @@ function editLink (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      var position = $(".workspace-edit").scrollTop();
-      localStorage.setItem("pagePos", position + 300);
-      $(this).parent().remove();
-      data[field].splice(index, 1);
-      saveLink (collectionId, data.uri, data, field, idField);
-      refreshPreview(data.uri);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        var position = $(".workspace-edit").scrollTop();
+        localStorage.setItem("pagePos", position + 300);
+        $(this).parent().remove();
+        data[field].splice(index, 1);
+        saveLink(collectionId, data.uri, data, field, idField);
+        refreshPreview(data.uri);
+      }
     });
   });
 
@@ -906,12 +944,15 @@ function saveLink (collectionId, path, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      var position = $(".workspace-edit").scrollTop();
-      localStorage.setItem("pagePos", position + 300);
-      $(this).parent().remove();
-      data[field].splice(index, 1);
-      saveMarkdown(collectionId, data.uri, data, field, idField);
-      refreshPreview(data.uri);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        var position = $(".workspace-edit").scrollTop();
+        localStorage.setItem("pagePos", position + 300);
+        $(this).parent().remove();
+        data[field].splice(index, 1);
+        saveMarkdown(collectionId, data.uri, data, field, idField);
+        refreshPreview(data.uri);
+      }
     });
   });
 
@@ -966,9 +1007,12 @@ function editMarkdownOneObject (collectionId, data, field) {
 
     // Delete
     $('#one-delete').click(function() {
-      $(this).parent().remove();
-      data[field] = {};
-      saveMarkdownOne (collectionId, data.uri, data, field);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        $(this).parent().remove();
+        data[field] = {};
+        saveMarkdownOne(collectionId, data.uri, data, field);
+      }
     });
 }
 
@@ -1014,9 +1058,12 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      $("#"+index).remove();
-      data[field].splice(index, 1);
-      saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+      var result = confirm("Are you sure you want to delete?");
+      if (result === true) {
+        $("#" + index).remove();
+        data[field].splice(index, 1);
+        saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+      }
     });
   });
 
@@ -1078,10 +1125,12 @@ function editRelated (collectionId, data, templateData, field, idField) {
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position);
-        $(this).parent().remove();
-        data[field].splice(index, 1);
+        var result = confirm("Are you sure you want to delete this link?");
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          localStorage.setItem("pagePos", position);
+          $(this).parent().remove();
+          data[field].splice(index, 1);
           postContent(collectionId, data.uri, JSON.stringify(data),
             success = function (response) {
               Florence.Editor.isDirty = false;
@@ -1100,6 +1149,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
               }
             }
           );
+        }
       });
     });
   }
@@ -1382,23 +1432,19 @@ function loadChartBuilder(pageData, onSave, chart) {
     if (chart.chartType === 'barline') { // if we have a bar line we want to populate the entries for each series
       if (chart.chartTypes) { // if we have existing types use them
         var type = _.values(chart.chartTypes);
-        for (var i = 0; i < chart.series.length; i += 1) {
+        $.each(chart.series, function (index) {
           data.push({
-            series: series[i], type: type[i],
+            series: series[index], type: type[index],
             isChecked: (function () {
-              var checked = _.indexOf(chart.groups[0], series[i]);
-              if (checked < 0) {
-                return checked = false;
-              } else {
-                return checked = true;
-              }
+              var checked = _.indexOf(chart.groups[0], series[index]);
+              return checked >= 0;
             })()
           });
-        }
+        });
       } else { // if we have no existing types, default them
-        for (var i = 0; i < chart.series.length; i += 1) {
-          data.push({series: series[i], type: '', isChecked: false});
-        }
+        $.each(chart.series, function (index) {
+          data.push({series: series[index], type: '', isChecked: false});
+        });
       }
     }
     return data;
@@ -1530,9 +1576,9 @@ function loadChartBuilder(pageData, onSave, chart) {
       var groups = [];
       var group = [];
       var seriesData = chart.series;
-      for (var i = 0; i < seriesData.length; i++) {
-        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
-      }
+      $.each(seriesData, function (index) {
+        types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+      });
       (function () {
         $('#barline input:checkbox:checked').each(function () {
           group.push($(this).val());
@@ -1839,30 +1885,36 @@ function loadChartsList(data, collectionId) {
     });
 
     $("#chart-delete_" + chart.filename).click(function () {
-      $("#chart_" + index).remove();
+      var result = confirm("Are you sure you want to delete this chart?");
+      if (result === true) {
+        $("#chart_" + index).remove();
 
-      getPageData(collectionId, chartJson,
-        onSuccess = function (chartData) {
+        getPageData(collectionId, chartJson,
+          onSuccess = function (chartData) {
 
-          // delete any files associated with the table.
-          _(chartData.files).each(function (file) {
-            var fileToDelete = basePath + '/' + file.filename;
-            deleteContent(collectionId, fileToDelete);
-          });
-
-          deleteContent(collectionId, chartJson,
-            onSuccess = function () {
-              data.charts = _(data.charts).filter(function (item) {
-                return item.filename !== chart.filename
-              });
-              postContent(collectionId, basePath, JSON.stringify(data),
-                success = function () {
-                  Florence.Editor.isDirty = false;
-                  refreshPreview();
-                  loadChartsList(data, collectionId);
-                });
+            // delete any files associated with the table.
+            _(chartData.files).each(function (file) {
+              var fileToDelete = basePath + '/' + file.filename;
+              deleteContent(collectionId, fileToDelete);
             });
-        });
+
+            deleteContent(collectionId, chartJson,
+              onSuccess = function () {
+                data.charts = _(data.charts).filter(function (item) {
+                  return item.filename !== chart.filename
+                });
+                postContent(collectionId, basePath, JSON.stringify(data),
+                  success = function () {
+                    Florence.Editor.isDirty = false;
+                    refreshPreview();
+                    loadChartsList(data, collectionId);
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
     });
   });
 }function loadCreateScreen(collectionId) {
@@ -1958,6 +2010,10 @@ function loadMarkdownEditor(content, onSave, pageData) {
     markDownEditorSetLines();
   });
 
+  $("#wmd-input").on('input', function () {
+    autoSave(onSave);
+  });
+
   // http://stackoverflow.com/questions/6140632/how-to-handle-tab-in-textarea
   $("#wmd-input").keydown(function(e) {
     if(e.keyCode === 9) { // tab was pressed
@@ -2041,6 +2097,17 @@ function markdownEditor() {
   editor.run();
   markDownEditorSetLines();
 }
+
+var timeoutId;
+function autoSave (onSave) {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function() {
+    // Runs 5 second (5000 ms) after the last change
+    var markdown = $('#wmd-input').val();
+    onSave(markdown);
+  }, 5000);
+}
+
 function loadPageDataIntoEditor(path, collectionId) {
 
   checkPathSlashes(path);
@@ -2232,7 +2299,7 @@ function updateReviewScreen(collectionId) {
 
 
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -2254,7 +2321,13 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         contentUrl = contentUrlTmp.join('/');
         parentUrl = contentUrl;
         breadcrumb = checkData.breadcrumb;
+        natStat = checkData.description.nationalStatistic;
+        contactName = checkData.description.contact.name;
+        contactEmail = checkData.description.contact.email;
+        contactTel = checkData.description.contact.telephone;
         pageTitle = checkData.description.title;
+        keyWords = checkData.description.keywords;
+        metaDescr = checkData.description.metaDescription;
         isInheriting = true;
         submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
@@ -2312,6 +2385,12 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = releaseDate;
       }
       if (isInheriting) {
+        pageData.description.nationalStatistic = natStat;
+        pageData.description.contact.name = contactName;
+        pageData.description.contact.email = contactEmail;
+        pageData.description.contact.telephone = contactTel;
+        pageData.description.keywords = keyWords;
+        pageData.description.metaDescription = metaDescr;
         newUri = makeUrl(parentUrl, releaseUri);
       } else {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
@@ -2330,25 +2409,8 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         alert("This is not a valid file title");
         return true;
       }
-       else {
-        postContent(collectionId, newUri, JSON.stringify(pageData),
-          success = function (message) {
-            console.log("Updating completed " + message);
-            viewWorkspace(newUri, collectionId, 'edit');
-            refreshPreview(newUri);
-          },
-          error = function (response) {
-            if (response.status === 400) {
-              alert("Cannot edit this file. It is already part of another collection.");
-            }
-            else if (response.status === 401) {
-              alert("You are not authorised to update content.");
-            }
-            else {
-              handleApiError(response);
-            }
-          }
-        );
+      else {
+        checkSaveContent(collectionId, newUri, pageData);
       }
       e.preventDefault();
     });
@@ -2462,7 +2524,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         breadcrumb = checkData.breadcrumb;
         pageTitle = checkData.description.title;
         isInheriting = true;
-        submitFormHandler (pageTitle, contentUrl, isInheriting);
+        pageData = pageTypeDataT6(pageType, checkData);
+        submitFormHandler (pageTitle, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -2474,7 +2537,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
   });
 
-  function submitFormHandler (title, uri, isInheriting) {
+  function submitFormHandler (title, isInheriting) {
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -2494,13 +2557,11 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
 
     $('form').submit(function (e) {
-      releaseDateManual = $('#releaseDate').val()
+      releaseDateManual = $('#releaseDate').val();
       if (pageType === 'compendium_landing_page') {
         pageData.description.edition = $('#edition').val();
       }
-      if (title) {
-        //do nothing;
-      } else {
+      if (!title) {
         pageTitle = $('#pagename').val();
       }
 
@@ -2548,19 +2609,74 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         alert("This is not a valid file title");
         return true;
       }
-       else {
+      else {
+        getUri = newUri + '/data.json';
+        getPageData(collectionId, getUri,
+          success = function() {
+            alert('This page already exists');
+          },
+          // if the page does not exist, create it
+          error = function() {
+            postContent(collectionId, newUri, JSON.stringify(pageData),
+              success = function (message) {
+                console.log("Updating completed " + message);
+                if (pageData.type === 'compendium_landing_page') {
+                  viewWorkspace(newUri, collectionId, 'edit');
+                  refreshPreview(newUri);
+                  return true;
+                }
+                else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
+                  updateParentLink (newUri);
+                  return true;
+                }
+              },
+              error = function (response) {
+                if (response.status === 400) {
+                  alert("Cannot edit this file. It is already part of another collection.");
+                }
+                else if (response.status === 401) {
+                  alert("You are not authorised to update content.");
+                }
+                else {
+                  handleApiError(response);
+                }
+              }
+            )
+          }
+        );
+      }
+      e.preventDefault();
+    });
+  }
+
+function submitNoForm (title) {
+
+    pageData.description.title = title;
+    pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+
+    if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
+      newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      newUri = '/' + newUri;
+    } else {
+      alert('Oops! Something went the wrong way.');
+      loadCreateScreen(collectionId);
+    }
+
+    pageData.uri = newUri;
+    pageData.breadcrumb = breadcrumb;
+
+    // check if the page exists
+    getUri = newUri + '/data.json';
+    getPageData(collectionId, getUri,
+      success = function() {
+        alert('This page already exists');
+      },
+      // if the page does not exist, create it
+      error = function(){
         postContent(collectionId, newUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
-            if (pageData.type === 'compendium_landing_page') {
-              viewWorkspace(newUri, collectionId, 'edit');
-              refreshPreview(newUri);
-              return true;
-            }
-            else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-              updateParentLink (newUri);
-              return true;
-            }
+            updateParentLink (newUri);
           },
           error = function (response) {
             if (response.status === 400) {
@@ -2574,41 +2690,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
             }
           }
         );
-      }
-      e.preventDefault();
-    });
-  }
-
-function submitNoForm (title) {
-
-    pageData.description.title = pageTitle;
-    pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-
-    if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-      newUri = makeUrl(parentUrl, pageTitleTrimmed);
-    } else {
-      alert('Oops! Something went the wrong way.');
-      loadCreateScreen(collectionId);
-    }
-
-    pageData.uri = '/' + newUri;
-    pageData.breadcrumb = breadcrumb;
-
-    postContent(collectionId, newUri, JSON.stringify(pageData),
-      success = function (message) {
-        console.log("Updating completed " + message);
-        updateParentLink ('/' + newUri);
-      },
-      error = function (response) {
-        if (response.status === 400) {
-          alert("Cannot edit this file. It is already part of another collection.");
-        }
-        else if (response.status === 401) {
-          alert("You are not authorised to update content.");
-        }
-        else {
-          handleApiError(response);
-        }
       }
     );
   }
@@ -2791,22 +2872,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 4) {
         alert("This is not a valid file name");
       } else {
-        postContent(collectionId, newUri, JSON.stringify(pageData),
-          success = function(message) {
-            console.log("Updating completed " + message);
-            viewWorkspace(newUri, collectionId, 'edit');
-            refreshPreview(newUri);
-          },
-          error = function(response) {
-            if (response.status === 400) {
-              alert("Cannot edit this file. It is already part of another collection.");
-            } else if (response.status === 401) {
-              alert("You are not authorised to update content.");
-            } else {
-              handleApiError(response);
-            }
-          }
-        );
+        checkSaveContent(collectionId, newUri, pageData);
       }
     });
   }
@@ -2990,24 +3056,7 @@ function pageTypeDataT7(pageType) {
         return true;
       }
        else {
-        postContent(collectionId, newUri, JSON.stringify(pageData),
-          success = function (message) {
-            console.log("Updating completed " + message);
-            viewWorkspace(newUri, collectionId, 'edit');
-            refreshPreview(newUri);
-          },
-          error = function (response) {
-            if (response.status === 400) {
-              alert("Cannot edit this file. It is already part of another collection.");
-            }
-            else if (response.status === 401) {
-              alert("You are not authorised to update content.");
-            }
-            else {
-              handleApiError(response);
-            }
-          }
-        );
+        checkSaveContent(collectionId, newUri, pageData);
       }
       e.preventDefault();
     });
@@ -3239,38 +3288,44 @@ function loadTablesList(data, collectionId) {
     });
 
     $("#table-delete_" + table.filename).click(function () {
-      $("#table_" + index).remove();
+      var result = confirm("Are you sure you want to delete this table?");
+      if (result === true) {
+        $("#table_" + index).remove();
 
-      getPageData(collectionId, tableJson,
-        onSuccess = function (tableData) {
+        getPageData(collectionId, tableJson,
+          onSuccess = function (tableData) {
 
-          // delete any files associated with the table.
-          _(tableData.files).each(function (file) {
-            var fileToDelete = basePath + '/' + file.filename;
-            deleteContent(collectionId, fileToDelete,
-              onSuccess = function () {
-                //console.log("deleted table file: " + fileToDelete)
-              });
-          });
-
-          // delete the table json file
-          deleteContent(collectionId, tableJson,
-            onSuccess = function () {
-
-              // remove the table from the page json when its deleted
-              data.tables = _(data.tables).filter(function (item) {
-                return item.filename !== table.filename
-              });
-
-              // save the updated page json
-              postContent(collectionId, basePath, JSON.stringify(data),
-                success = function () {
-                  Florence.Editor.isDirty = false;
-                  refreshPreview();
-                  loadTablesList(data, collectionId);
+            // delete any files associated with the table.
+            _(tableData.files).each(function (file) {
+              var fileToDelete = basePath + '/' + file.filename;
+              deleteContent(collectionId, fileToDelete,
+                onSuccess = function () {
+                  //console.log("deleted table file: " + fileToDelete)
                 });
             });
-        });
+
+            // delete the table json file
+            deleteContent(collectionId, tableJson,
+              onSuccess = function () {
+
+                // remove the table from the page json when its deleted
+                data.tables = _(data.tables).filter(function (item) {
+                  return item.filename !== table.filename
+                });
+
+                // save the updated page json
+                postContent(collectionId, basePath, JSON.stringify(data),
+                  success = function () {
+                    Florence.Editor.isDirty = false;
+                    refreshPreview();
+                    loadTablesList(data, collectionId);
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
     });
   });
 }function logout() {
@@ -3283,7 +3338,7 @@ function loadTablesList(data, collectionId) {
 function delete_cookie(name) {
   document.cookie = name + '=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }function makeEditSections(collectionId, pageData, templateData) {           //pageData (plain), templateData (resolved)
-
+  checkPathSlashes(pageData.uri);
   if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
@@ -3828,6 +3883,10 @@ function setupFlorence() {
         return options.inverse(this);
     }
   });
+  // Add two values together. Primary usage was '@index + 1' to create numbered lists
+  Handlebars.registerHelper('plus', function(value1, value2) {
+    return value1 + value2;
+  });
 
   localStorage.setItem('activeTab', false); // do we need this?
 
@@ -3921,7 +3980,7 @@ function t1Editor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -4072,7 +4131,7 @@ function t2Editor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -4131,7 +4190,7 @@ function t3Editor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -4142,9 +4201,12 @@ function t3Editor(collectionId, data) {
         lastIndexTimeseries = index + 1;
         // Delete
         $("#timeseries-delete_"+index).click(function() {
-            $("#"+index).remove();
+          var result = confirm("Are you sure you want to delete?");
+          if (result === true) {
+            $("#" + index).remove();
             data.items.splice(index, 1);
             updateContent(collectionId, data.uri, JSON.stringify(data));
+          }
         });
     });
 
@@ -4310,7 +4372,7 @@ function articleEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -4348,7 +4410,7 @@ function articleEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -4494,7 +4556,8 @@ function bulletinEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      //dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -4544,7 +4607,7 @@ function bulletinEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -4721,7 +4784,7 @@ function timeseriesEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -4868,7 +4931,7 @@ function compendiumChapterEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -4906,7 +4969,7 @@ function compendiumChapterEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -5048,7 +5111,7 @@ function compendiumDataEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -5086,7 +5149,7 @@ function compendiumDataEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -5221,7 +5284,7 @@ function compendiumEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -5263,7 +5326,7 @@ function compendiumEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -5537,7 +5600,7 @@ function adHocEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted)
       .datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
@@ -5557,7 +5620,7 @@ function adHocEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -5645,7 +5708,7 @@ function foiEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp)).val(dateTmpFormatted)
           .datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -5660,7 +5723,7 @@ function foiEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -5754,7 +5817,7 @@ function methodologyEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -5867,7 +5930,7 @@ function qmiEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -5944,7 +6007,7 @@ function staticLandingPageEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -6098,7 +6161,7 @@ function staticPageEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -6177,7 +6240,8 @@ function datasetEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      //dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -6205,13 +6269,17 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
   });
+  $("#datasetId").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.datasetId = $(this).val();
+  });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
                         allowSpaces: true,
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -6352,7 +6420,7 @@ function referenceTableEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -6390,7 +6458,7 @@ function referenceTableEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -6469,7 +6537,7 @@ function referenceTableEditor(collectionId, data) {
     });
     data.downloads = newFiles;
     // Used in links
-    var orderUsedIn = $("#sortable-used").sortable('toArray');
+    var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
       checkPathSlashes (uri);
@@ -6529,13 +6597,13 @@ function treeNodeSelect(url){
 //  });
 }
 function updateContent(collectionId, path, content, redirectToPath) {
+  var redirect = redirectToPath;
   postContent(collectionId, path, content,
     success = function (response) {
-      //console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      if (redirectToPath) {
-        createWorkspace(redirectToPath, collectionId, 'edit');
-        return true;
+      if (redirect) {
+        createWorkspace(redirect, collectionId, 'edit');
+        return;
       } else {
         refreshPreview(path);
         loadPageDataIntoEditor(path, collectionId);
@@ -6632,7 +6700,7 @@ function viewCollectionDetails(collectionId) {
       checkPathSlashes(path);
       createWorkspace(path, collectionId, 'edit');
     });
-    $('#page-delete').click(function () {
+    $('.page-delete').click(function () {
       var result = confirm("Are you sure you want to delete this page from the collection?");
       if (result === true) {
         var path = $(this).attr('data-path');
@@ -6662,8 +6730,9 @@ function viewCollectionDetails(collectionId) {
   }
 
   function ProcessPages(pages) {
+    _.sortBy(pages, 'uri');
     _.each(pages, function (page) {
-      page.uri = page.uri.replace('/data.json', '')
+      page.uri = page.uri.replace('/data.json', '');
       return page;
     });
   }
@@ -7558,6 +7627,8 @@ else
             
             text = _EncodeAmpsAndAngles(text);
             text = _DoItalicsAndBold(text);
+            text = _DoSuperscript(text);
+            text = _DoSubscript(text);
 
             // Do hard breaks:
             text = text.replace(/  +\n/g, " <br>\n");
@@ -7586,6 +7657,18 @@ else
                 return tag;
             });
 
+            return text;
+        }
+
+        function _DoSuperscript(text) {
+            // super
+            text = text.replace(/(?:\^)(?=\S)(\S*)(?:\^)/g, "<sup>$1</sup>");
+            return text;
+        }
+
+        function _DoSubscript(text) {
+            // sub
+            text = text.replace(/(?:~T)(?=\S)(\S*)(?:~T)/g, "<sub>$1</sub>");
             return text;
         }
 
@@ -8674,7 +8757,7 @@ else
 
         image: "Image <img> Ctrl+G",
         imagedescription: "enter image description here",
-        imagedialog: "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg \"optional title\"<br><br>Need <a href='http://www.google.com/search?q=free+image+hosting' target='_blank'>free image hosting?</a></p>",
+        imagedialog: "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg</p>",
 
         olist: "Numbered List <ol> Ctrl+O",
         ulist: "Bulleted List <ul> Ctrl+U",
@@ -8682,6 +8765,12 @@ else
 
         heading: "Heading <h1>/<h2> Ctrl+H",
         headingexample: "Heading",
+
+        superscript: "Superscript <sup> Ctrl+P",
+        superscriptexample: "superscript",
+
+        subscript: "Subscript <sub> Ctrl+S",
+        subscriptexample: "subscript",
 
         hr: "Horizontal Rule <hr> Ctrl+R",
 
@@ -9897,6 +9986,12 @@ else
                     case "u":
                         doClick(buttons.ulist);
                         break;
+                    case "p":
+                        doClick(buttons.superscript);
+                        break;
+                    case "s":
+                        doClick(buttons.subscript);
+                        break;
                     case "h":
                         doClick(buttons.heading);
                         break;
@@ -10121,6 +10216,10 @@ else
                 this.doList(chunk, postProcessing, false);
             }));
             buttons.heading = makeButton("wmd-heading-button", getString("heading"), "-160px", bindCommand("doHeading"));
+
+            buttons.superscript = makeButton("wmd-superscript-button", getString("superscript"), "-165px", bindCommand("doSuperscript"));
+            buttons.subscript = makeButton("wmd-subscript-button", getString("subscript"), "-175px", bindCommand("doSubscript"));
+
             buttons.hr = makeButton("wmd-hr-button", getString("hr"), "-180px", bindCommand("doHorizontalRule"));
             makeSpacer(3);
             buttons.undo = makeButton("wmd-undo-button", getString("undo"), "-200px", null);
@@ -10870,6 +10969,76 @@ else
             }
         }
     };
+
+  commandProto.doSuperscript = function (chunk, postProcessing) {
+
+    // Get rid of whitespace and fixup newlines.
+    chunk.trimWhitespace();
+    chunk.selection = chunk.selection.replace(/\n{2,}/g, "\n");
+
+    // Look for carets before and after.  Is the chunk already marked up?
+    // note that these regex matches cannot fail
+    var caretsBefore = /(\^*$)/.exec(chunk.before)[0];
+    var caretsAfter = /(^\^*)/.exec(chunk.after)[0];
+
+    var prevCarets = Math.min(caretsBefore.length, caretsAfter.length);
+    var nCarets = 1;
+    // Remove carets if we have to since the button acts as a toggle.
+    if (prevCarets >= nCarets) {
+      chunk.before = chunk.before.replace(re("[^]{" + nCarets + "}$", ""), "");
+      chunk.after = chunk.after.replace(re("^[^]{" + nCarets + "}", ""), "");
+    }
+    else {
+      // In most cases, if you don't have any selected text and click the button
+      // you'll get a selected, marked up region with the default text inserted.
+      if (!chunk.selection && !caretsAfter) {
+        chunk.selection = this.getString("superscriptexample");
+      }
+
+      // Add the true markup.
+      var markup = "^";
+      chunk.before = chunk.before + markup;
+      chunk.after = markup + chunk.after;
+    }
+
+    return;
+
+  };
+
+  commandProto.doSubscript = function (chunk, postProcessing) {
+
+    // Get rid of whitespace and fixup newlines.
+    chunk.trimWhitespace();
+    chunk.selection = chunk.selection.replace(/\n{2,}/g, "\n");
+
+    // Look for tildes before and after.  Is the chunk already marked up?
+    // note that these regex matches cannot fail
+    var tildesBefore = /(~*$)/.exec(chunk.before)[0];
+    var tildesAfter = /(^~*)/.exec(chunk.after)[0];
+
+    var prevTildes = Math.min(tildesBefore.length, tildesAfter.length);
+    var nTildes = 1;
+    // Remove tildes if we have to since the button acts as a toggle.
+    if (prevTildes >= nTildes) {
+      chunk.before = chunk.before.replace(re("[~]{" + nTildes + "}$", ""), "");
+      chunk.after = chunk.after.replace(re("^[~]{" + nTildes + "}", ""), "");
+    }
+    else {
+      // In most cases, if you don't have any selected text and click the button
+      // you'll get a selected, marked up region with the default text inserted.
+      if (!chunk.selection && !tildesAfter) {
+        chunk.selection = this.getString("subscriptexample");
+      }
+
+      // Add the true markup.
+      var markup = "~";
+      chunk.before = chunk.before + markup;
+      chunk.after = markup + chunk.after;
+    }
+
+    return;
+
+  };
 
     commandProto.doHorizontalRule = function (chunk, postProcessing) {
         chunk.startTag = "----------\n";
