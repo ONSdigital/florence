@@ -31,6 +31,10 @@ function setupFlorence() {
         return options.inverse(this);
     }
   });
+  // Add two values together. Primary usage was '@index + 1' to create numbered lists
+  Handlebars.registerHelper('plus', function(value1, value2) {
+    return value1 + value2;
+  });
 
   localStorage.setItem('activeTab', false); // do we need this?
 
