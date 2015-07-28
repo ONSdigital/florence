@@ -197,6 +197,10 @@ function authenticate(email,password) {
   });
   return true;
 }
+$('.section').bind('DOMSubtreeModified', function (){
+	$('.auto-size').textareaAutoSize();
+});
+
 function checkForPageChanged(onChanged) {
   var iframeUrl = localStorage.getItem("pageurl");
   var nowUrl = $('#iframe')[0].contentWindow.document.location.pathname;
