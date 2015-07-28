@@ -121,27 +121,23 @@ function datasetEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       //pageData = $('.fl-editor__headline').val();
-      saveData();
+      save();
       saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      saveData();
+      save();
       saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
-    saveData();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  }
-
-  function saveData() {
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
