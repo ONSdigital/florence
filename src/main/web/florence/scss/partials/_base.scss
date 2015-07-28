@@ -129,15 +129,18 @@ $panel-height-2-top-nav: 756px;
 		height: $lineheight * 5;
 
 		button {
-			margin-right: 10px;
+			// See comment on '&:last-child'
+			//margin-right: 10px
+			margin-right: 0;
 			margin-left: 10px;
 			&:first-child {
 				margin-right: 0;
 				margin-left: 20px;
 			}
-			&:last-child {
-				margin-left: 0;
-			}
+			// Broke when cancel button moved to last because it shows without a button inbetween
+			// &:last-child {
+			// 	margin-left: 0;
+			// }
 		}
 	}
 }
