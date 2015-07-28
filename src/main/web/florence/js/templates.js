@@ -229,7 +229,7 @@ templates['editorContent'] = template({"1":function(depth0,helpers,partials,data
     + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
     + "-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" placeholder=\"Type title here and click edit to add content\">"
+    + "\" placeholder=\"Type title here\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
     + "</textarea>\n                    <textarea style=\"display: none;\" id=\""
     + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))

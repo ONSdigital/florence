@@ -282,6 +282,7 @@
 					content: '';
 					position: absolute;
 					left: $gutter / 2;
+					//top: 12px;
 					top: $lineheight / 2;
 					width: 30px;
 					height: $lineheight * 2;
@@ -291,7 +292,7 @@
 				}
 
 				&-counter {
-					margin: 9px 0 0 10px;
+					margin: 10.5px 0 0 10px;
 					color: $scarpa-flow;
 					font-weight: bold;
 					font-size: 16px;
@@ -308,9 +309,10 @@
 					border: 3px solid $scarpa-flow;
 					// min-height: ($lineheight * 2) !important;
 					margin: 0 0 0 10px;
-					line-height: $lineheight - 3;
-					padding: 5px;
+					// line-height: $lineheight - 3;
+					padding: 7px 5px;
 					float: left;
+					height: 41px;
 				}
 
 				button {
