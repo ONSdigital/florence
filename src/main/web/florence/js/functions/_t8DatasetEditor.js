@@ -1,7 +1,7 @@
 function datasetEditor(collectionId, data) {
 
-  var newFiles = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
-  var setActiveTab, getActiveTab, uriChecked;
+  var newFiles = [], newRelatedData = [], newRelatedDocuments = [], newRelatedMethodology = [];
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -153,17 +153,17 @@ function datasetEditor(collectionId, data) {
     $(orderDataset).each(function (indexD, nameD) {
       var uri = data.relatedDatasets[parseInt(nameD)].uri;
       checkPathSlashes (uri);
-      newRelated[indexD]= {uri: uri};
+      newRelatedData[indexD]= {uri: uri};
     });
-    data.relatedDatasets = newRelated;
+    data.relatedDatasets = newRelatedData;
     // Used in links
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
       checkPathSlashes (uri);
-      newUsedIn[indexU] = {uri: uri};
+      newRelatedDocuments[indexU] = {uri: uri};
     });
-    data.relatedDocuments = newUsedIn;
+    data.relatedDocuments = newRelatedDocuments;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
