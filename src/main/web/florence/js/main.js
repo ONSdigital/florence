@@ -1205,7 +1205,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
             }
           }
 
-          else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin')) {
+          else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin' || result.type === 'compendium_landing_page')) {
             if (!data[field]) {
               data[field] = [];
             }
@@ -1980,16 +1980,19 @@ function loadMarkdownEditor(content, onSave, pageData) {
 
   $('.btn-markdown-editor-cancel').on('click', function () {
     $('.markdown-editor').stop().fadeOut(200).remove();
+    clearTimeout(timeoutId);
   });
 
   $(".btn-markdown-editor-save").click(function () {
     var markdown = $('#wmd-input').val();
     onSave(markdown);
+    clearTimeout(timeoutId);
   });
 
   $(".btn-markdown-editor-exit").click(function () {
     var markdown = $('#wmd-input').val();
     onSave(markdown);
+    clearTimeout(timeoutId);
     $('.markdown-editor').stop().fadeOut(200).remove();
   });
 
@@ -6763,6 +6766,8 @@ function viewCollectionDetails(collectionId) {
     $('.btn-collection-work-on').click(function () {
       createWorkspace('', collectionId, 'browse');
     });
+
+    setCollectionDetailsHeight();
   }
 
   function ProcessPages(pages) {
@@ -6772,8 +6777,22 @@ function viewCollectionDetails(collectionId) {
       return page;
     });
   }
-}
-function viewCollections(collectionId) {
+
+  function setCollectionDetailsHeight(){
+    var panelHeight = parseInt($('.collection-selected').height());
+
+    var headHeight = parseInt($('.section-head').height());
+    var headPadding = parseInt($('.section-head').css('padding-bottom'));
+    
+    var contentPadding = parseInt($('.section-content').css('padding-bottom'));
+    
+    var navHeight = parseInt($('.section-nav').height());
+    var navPadding = (parseInt($('.section-nav').css('padding-bottom')))+(parseInt($('.section-nav').css('padding-top')));
+
+    var contentHeight = panelHeight-(headHeight+headPadding+contentPadding+navHeight+navPadding);
+    $('.section-content').css('height', contentHeight);
+  }
+}function viewCollections(collectionId) {
 
   $.ajax({
     url: "/zebedee/collections",

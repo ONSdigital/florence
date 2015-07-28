@@ -207,7 +207,7 @@ templates['editNavCompendium'] = template({"1":function(depth0,helpers,partials,
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<button class=\"btn-edit-save\">Save</button>\n<button class=\"btn-edit-save\" id=\"save-and-exit\" >Save back to compendium</button>\n"
+  return "<button class=\"btn-edit-save\" id=\"save\">Save</button>\n<button class=\"btn-edit-save\" id=\"save-and-exit\" >Save back to compendium</button>\n"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPageComplete : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "");
 },"useData":true});
 templates['editorContent'] = template({"1":function(depth0,helpers,partials,data) {
@@ -333,7 +333,9 @@ templates['editorDownloads'] = template({"1":function(depth0,helpers,partials,da
 
   return "                <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n                    <textarea id=\"file-title_"
+    + "\" class=\"edit-section__sortable-item\">\n                    <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n                    <textarea id=\"file-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" placeholder=\"Type title here and save to add\n                    content\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
@@ -356,7 +358,9 @@ templates['editorDownloadsWithSummary'] = template({"1":function(depth0,helpers,
 
   return "                <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n                    <textarea id=\"file-title_"
+    + "\" class=\"edit-section__sortable-item\">\n                    <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n                    <textarea id=\"file-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" placeholder=\"Type title here and click edit to add\n                    content\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
@@ -385,7 +389,9 @@ templates['editorLinks'] = template({"1":function(depth0,helpers,partials,data,b
 
   return "                <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n                    <textarea class=\"auto-size\" id=\""
+    + "\" class=\"edit-section__sortable-item\">\n                    <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n                    <textarea class=\"auto-size\" id=\""
     + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
     + "-uri_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
@@ -436,7 +442,9 @@ templates['editorRelated'] = template({"1":function(depth0,helpers,partials,data
 
   return "                <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n                    "
+    + "\" class=\"edit-section__sortable-item\">\n                    <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n                    "
     + alias3(alias4(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(6, data, 0, blockParams, depths),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n                    <textarea id=\""
@@ -639,10 +647,12 @@ templates['workEditT1'] = template({"1":function(depth0,helpers,partials,data) {
 
   return "            <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              <p id=\"item-title_"
+    + "\" class=\"edit-section__sortable-item\">\n              <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n              <p id=\"item-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
-    + alias3(this.lambda(((stack1 = ((stack1 = ((stack1 = (depth0 != null ? depth0.statistics : depth0)) != null ? stack1.data : stack1)) != null ? stack1.description : stack1)) != null ? stack1.title : stack1), depth0))
+    + alias3(this.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.statistics : depth0)) != null ? stack1.description : stack1)) != null ? stack1.title : stack1), depth0))
     + "</p>\n              <button class=\"btn-markdown-edit\" id=\"section-edit_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Edit</button>\n            </div>\n";
@@ -681,7 +691,9 @@ templates['workEditT3'] = template({"1":function(depth0,helpers,partials,data) {
 
   return "                    <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n                        <p id=\"timeseries-title_"
+    + "\" class=\"edit-section__sortable-item\">\n                        <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n                        <p id=\"timeseries-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(this.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.data : depth0)) != null ? stack1.description : stack1)) != null ? stack1.title : stack1), depth0))
@@ -851,7 +863,9 @@ templates['workEditT6'] = template({"1":function(depth0,helpers,partials,data) {
 
   return "            <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n              <p id=\"chapter-title_"
+    + "\" class=\"edit-section__sortable-item\">\n                <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n                <p id=\"chapter-title_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" data-url=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
@@ -1033,7 +1047,7 @@ templates['workEditT8Compendium'] = template({"compiler":[6,">= 2.0.0-beta.1"],"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
     + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"document\"></div>\n\n    <div id=\"file\"></div>\n\n    <div id=\"methodology\"></div>\n\n    <div id=\"correction\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"document\"></div>\n\n    <div id=\"dataset\"></div>\n\n    <div id=\"file\"></div>\n\n    <div id=\"methodology\"></div>\n\n    <div id=\"correction\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNavCompendium,depth0,{"name":"editNavCompendium","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
