@@ -152,13 +152,21 @@ function compendiumDataEditor(collectionId, data) {
     });
     data.downloads = newFiles;
     // Related documents
-    var orderUsedIn = $("#sortable-document").sortable('toArray');
-    $(orderUsedIn).each(function(indexD, nameD){
+    var orderRelatedDocument = $("#sortable-document").sortable('toArray');
+    $(orderRelatedDocument).each(function(indexD, nameD){
       var uri = data.relatedDocuments[parseInt(nameD)].uri;
       checkPathSlashes (uri);
       newRelated[indexD] = {uri: uri};
     });
     data.relatedDocuments = newRelated;
+    // Related datasets
+    var orderRelatedDataset = $("#sortable-dataset").sortable('toArray');
+    $(orderRelatedDataset).each(function(indexDt, nameDt){
+      var uri = data.relatedDatasets[parseInt(nameDt)].uri;
+      checkPathSlashes (uri);
+      newRelated[indexDt] = {uri: uri};
+    });
+    data.relatedDatasets = newRelated;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
