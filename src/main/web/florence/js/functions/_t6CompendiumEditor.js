@@ -145,6 +145,9 @@ function compendiumEditor(collectionId, data) {
             Florence.Editor.isDirty = false;
             deleteContent(collectionId, selectedChapter, function() {
               refreshPreview(path);
+              if (path != Florence.pathTest) {
+                alert('Please call Pastor if this happens. Florence needs a revision');
+              }
               loadPageDataIntoEditor(path, collectionId);
             }, error);
           },
@@ -218,6 +221,9 @@ function compendiumEditor(collectionId, data) {
               Florence.Editor.isDirty = false;
               deleteContent(collectionId, selectedData, function() {
                 refreshPreview(path);
+                if (path != Florence.pathTest) {
+                  alert('Please call Pastor if this happens. Florence needs a revision');
+                }
                 loadPageDataIntoEditor(path, collectionId);
               }, error);
             },
