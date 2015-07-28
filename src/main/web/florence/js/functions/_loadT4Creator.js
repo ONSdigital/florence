@@ -64,7 +64,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
 
     $('form').submit(function (e) {
-      releaseDateManual = $('#releaseDate').val()
+      releaseDateManual = $('#releaseDate').val();
       pageData = pageTypeDataT4(pageType);
       pageData.description.edition = $('#edition').val();
       if (title) {
