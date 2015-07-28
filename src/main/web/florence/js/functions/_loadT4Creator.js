@@ -1,5 +1,5 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -16,9 +16,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         submitFormHandler ();
         return true;
       } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
-        contentUrlTmp = parentUrl.split('/');
+        var contentUrlTmp = parentUrl.split('/');
         contentUrlTmp.splice(-1, 1);
-        contentUrl = contentUrlTmp.join('/');
+        var contentUrl = contentUrlTmp.join('/');
         parentUrl = contentUrl;
         breadcrumb = checkData.breadcrumb;
         natStat = checkData.description.nationalStatistic;
@@ -28,6 +28,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageTitle = checkData.description.title;
         keyWords = checkData.description.keywords;
         metaDescr = checkData.description.metaDescription;
+        if (checkData.type === 'bulletin' && pageType === 'bulletin') {
+          relatedData = checkData.relatedData;
+        }
         isInheriting = true;
         submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
@@ -91,6 +94,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.contact.telephone = contactTel;
         pageData.description.keywords = keyWords;
         pageData.description.metaDescription = metaDescr;
+        if (pageType === 'bulletin') {
+          pageData.relatedData = relatedData;
+        }
         newUri = makeUrl(parentUrl, releaseUri);
       } else {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
