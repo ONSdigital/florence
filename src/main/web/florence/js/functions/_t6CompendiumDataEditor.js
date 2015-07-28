@@ -118,7 +118,7 @@ function compendiumDataEditor(collectionId, data) {
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
-  editNav.on('click', '.btn-edit-save', function () {
+  editNav.on('click', '#save', function () {
     save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
