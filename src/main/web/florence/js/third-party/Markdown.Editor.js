@@ -45,10 +45,10 @@
         heading: "Heading <h1>/<h2> Ctrl+H",
         headingexample: "Heading",
 
-        superscript: "Superscript <sup> Ctrl+P",
+        superscript: "Superscript <sup> Ctrl+[",
         superscriptexample: "superscript",
 
-        subscript: "Subscript <sub> Ctrl+S",
+        subscript: "Subscript <sub> Ctrl+]",
         subscriptexample: "subscript",
 
         hr: "Horizontal Rule <hr> Ctrl+R",
@@ -1250,7 +1250,7 @@
                     case "l":
                         doClick(buttons.link);
                         break;
-                    case "q":
+                    case "6":
                         doClick(buttons.quote);
                         break;
                     case "k":
@@ -1265,11 +1265,11 @@
                     case "u":
                         doClick(buttons.ulist);
                         break;
-                    case "p":
-                        doClick(buttons.superscript);
-                        break;
-                    case "s":
+                    case "q":
                         doClick(buttons.subscript);
+                        break;
+                    case "m":
+                        doClick(buttons.superscript);
                         break;
                     case "h":
                         doClick(buttons.heading);
