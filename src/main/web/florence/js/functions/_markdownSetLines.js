@@ -50,12 +50,28 @@ function markDownEditorSetLines() {
   }
 
   //sync scroll
-  $('.markdown-editor-line-numbers ol').css('margin-top', -textarea.scrollTop());
-  textarea.on('scroll', function () {
-    var marginTop = $(this).scrollTop();
-    $('.markdown-editor-line-numbers ol').css('margin-top', -marginTop);
-    $('.wmd-preview').scrollTop(marginTop);
-  });
+  // $('.markdown-editor-line-numbers ol').css('margin-top', -textarea.scrollTop());
+  // textarea.on('scroll', function () {
+  //   // var editorHeight = $('.wmd-input').height();
+  //   // var previewHeight = $('.wmd-preview').height();
+  //   // console.log(editorHeight);
+  //   var marginTop = $(this).scrollTop();
+  //   $('.markdown-editor-line-numbers ol').css('margin-top', -marginTop);
+  //   $('.wmd-preview').scrollTop(marginTop);
+  // });
+
+
+  //proportional scroll
+  var $wmdscrollsync = $('.wmd-input, .wmd-preview');
+  var wmdsync = function(e){
+      var $other = $wmdscrollsync.not(this).off('scroll'), other = $other.get(0);
+      var percentage = this.scrollTop / (this.scrollHeight - this.offsetHeight);
+      other.scrollTop = percentage * (other.scrollHeight - other.offsetHeight);
+      setTimeout( function(){ $other.on('scroll', wmdsync ); },10);
+  }
+  $wmdscrollsync.on( 'scroll', wmdsync);
+
+
 
   for (var i = 0; i < lineLengthArray.length; i++) {
     if(cursorEndPos <= lineLengthArray[i]) {
