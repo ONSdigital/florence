@@ -219,32 +219,32 @@ templates['editorContent'] = template({"1":function(depth0,helpers,partials,data
 },"7":function(depth0,helpers,partials,data) {
     return "Background notes | References |\n            Footnotes";
 },"9":function(depth0,helpers,partials,data,blockParams,depths) {
-    var helper, alias1=helpers.helperMissing, alias2=this.escapeExpression, alias3="function", alias4=this.lambda;
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression, alias4=this.lambda;
 
-  return "                <div>"
-    + alias2((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
-    + ". </div>\n                <div id=\""
-    + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias3 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"edit-section__sortable-item\">\n                    <textarea class=\"auto-size\" id=\""
-    + alias2(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
+  return "                <div id=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" class=\"edit-section__sortable-item\">\n                    <div class=\"edit-section__sortable-item-counter float-left\">"
+    + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
+    + "</div>\n                    <textarea class=\"auto-size\" id=\""
+    + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
     + "-title_"
-    + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias3 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" placeholder=\"Type title here and click edit to add content\">"
-    + alias2(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias3 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
     + "</textarea>\n                    <textarea style=\"display: none;\" id=\""
-    + alias2(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
+    + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
     + "-markdown_"
-    + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias3 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
-    + alias2(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias3 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.markdown || (depth0 != null ? depth0.markdown : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"markdown","hash":{},"data":data}) : helper)))
     + "</textarea>\n                    <button class=\"btn-markdown-edit\" id=\""
-    + alias2(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
+    + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
     + "-edit_"
-    + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias3 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Edit</button>\n                    <button class=\"btn-page-delete\" id=\""
-    + alias2(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
+    + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
     + "-delete_"
-    + alias2(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias3 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n                </div>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data,blockParams,depths) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
