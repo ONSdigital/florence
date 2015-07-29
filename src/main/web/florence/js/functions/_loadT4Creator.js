@@ -1,7 +1,5 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
-
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -23,14 +21,16 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         var contentUrl = contentUrlTmp.join('/');
         parentUrl = contentUrl;
         breadcrumb = checkData.breadcrumb;
+        natStat = checkData.description.nationalStatistic;
+        contactName = checkData.description.contact.name;
+        contactEmail = checkData.description.contact.email;
+        contactTel = checkData.description.contact.telephone;
         pageTitle = checkData.description.title;
-
         keyWords = checkData.description.keywords;
         metaDescr = checkData.description.metaDescription;
         if (checkData.type === 'bulletin' && pageType === 'bulletin') {
           relatedData = checkData.relatedData;
         }
-
         isInheriting = true;
         submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
@@ -88,7 +88,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = releaseDate;
       }
       if (isInheriting) {
-
         pageData.description.nationalStatistic = natStat;
         pageData.description.contact.name = contactName;
         pageData.description.contact.email = contactEmail;
@@ -98,7 +97,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         if (pageType === 'bulletin') {
           pageData.relatedData = relatedData;
         }
-
         newUri = makeUrl(parentUrl, releaseUri);
       } else {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
@@ -117,25 +115,8 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         alert("This is not a valid file title");
         return true;
       }
-       else {
-        postContent(collectionId, newUri, JSON.stringify(pageData),
-          success = function (message) {
-            console.log("Updating completed " + message);
-            viewWorkspace(newUri, collectionId, 'edit');
-            refreshPreview(newUri);
-          },
-          error = function (response) {
-            if (response.status === 400) {
-              alert("Cannot edit this file. It is already part of another collection.");
-            }
-            else if (response.status === 401) {
-              alert("You are not authorised to update content.");
-            }
-            else {
-              handleApiError(response);
-            }
-          }
-        );
+      else {
+        checkSaveContent(collectionId, newUri, pageData);
       }
       e.preventDefault();
     });

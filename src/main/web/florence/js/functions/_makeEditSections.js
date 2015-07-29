@@ -1,5 +1,5 @@
 function makeEditSections(collectionId, pageData, templateData) {           //pageData (plain), templateData (resolved)
-
+  checkPathSlashes(pageData.uri);
   if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
