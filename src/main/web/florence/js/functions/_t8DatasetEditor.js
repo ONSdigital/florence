@@ -30,7 +30,8 @@ function datasetEditor(collectionId, data) {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       });
     } else {
-      dateTmp = $('#releaseDate').val();
+      //dateTmp = $('#releaseDate').val();
+      dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
@@ -57,6 +58,10 @@ function datasetEditor(collectionId, data) {
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
+  });
+  $("#datasetId").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.datasetId = $(this).val();
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
