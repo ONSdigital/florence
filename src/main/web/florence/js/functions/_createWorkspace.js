@@ -52,7 +52,8 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       } else if (menuItem.is('#create')) {
         loadCreateScreen(collectionId);
       } else if (menuItem.is('#edit')) {
-        loadPageDataIntoEditor(getPathName(document.getElementById('iframe').contentWindow.location.href), Florence.collection.id);
+        Florence.pathTest = getPathName(document.getElementById('iframe').contentWindow.location.href);
+        loadPageDataIntoEditor(Florence.pathTest, Florence.collection.id);
       } else {
         loadBrowseScreen(collectionId);
       }

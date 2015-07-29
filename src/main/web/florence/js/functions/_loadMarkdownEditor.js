@@ -14,16 +14,19 @@ function loadMarkdownEditor(content, onSave, pageData) {
 
   $('.btn-markdown-editor-cancel').on('click', function () {
     $('.markdown-editor').stop().fadeOut(200).remove();
+    clearTimeout(timeoutId);
   });
 
   $(".btn-markdown-editor-save").click(function () {
     var markdown = $('#wmd-input').val();
     onSave(markdown);
+    clearTimeout(timeoutId);
   });
 
   $(".btn-markdown-editor-exit").click(function () {
     var markdown = $('#wmd-input').val();
     onSave(markdown);
+    clearTimeout(timeoutId);
     $('.markdown-editor').stop().fadeOut(200).remove();
   });
 

@@ -75,7 +75,8 @@
         <div id="sortable-chapter" class="edit-section__sortable">
           {{#each this.chapters}}
             <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="chapter-title_{{@index}}" data-url="{{uri}}">{{description.title}}</p>
+                <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
+                <p id="chapter-title_{{@index}}" data-url="{{uri}}">{{description.title}}</p>
               <button class="btn-markdown-edit" id="chapter-edit_{{@index}}">Edit</button>
               <button class="btn-page-delete" id="chapter-delete_{{@index}}">Delete</button>
             </div>

@@ -42,6 +42,7 @@
             <div id="sortable-timeseries" class="edit-section__sortable">
                 {{#each this.items}}
                     <div id="{{@index}}" class="edit-section__sortable-item">
+                        <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
                         <p id="timeseries-title_{{@index}}">{{data.description.title}}</p>
                         <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
                     </div>

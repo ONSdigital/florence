@@ -102,6 +102,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     var html = templates.workEditT8Compendium(templateData);
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     accordion();
