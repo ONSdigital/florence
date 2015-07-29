@@ -1,6 +1,6 @@
 function referenceTableEditor(collectionId, data) {
 
-  var newFiles = [], newUsedIn = [], newRelatedMethodology = [];
+  var newFiles = [], newRelatedDocuments = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -150,9 +150,9 @@ function referenceTableEditor(collectionId, data) {
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
       checkPathSlashes (uri);
-      newUsedIn[indexU] = {uri: uri};
+      newRelatedDocuments[indexU] = {uri: uri};
     });
-    data.relatedDocuments = newUsedIn;
+    data.relatedDocuments = newRelatedDocuments;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){

@@ -7,6 +7,7 @@
         <div id="sortable-file" class="edit-section__sortable">
             {{#each list}}
                 <div id="{{@index}}" class="edit-section__sortable-item">
+                    <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
                     <textarea id="file-title_{{@index}}" placeholder="Type title here and click edit to add
                     content">{{title}}</textarea>
                     <textarea style="display: none;" id="file-summary_{{@index}}">{{fileDescription}}</textarea>

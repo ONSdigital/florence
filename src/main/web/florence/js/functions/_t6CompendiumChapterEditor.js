@@ -1,6 +1,6 @@
 function compendiumChapterEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
+  var newSections = [], newTabs = [], newRelatedDocuments = [], newLinks = [];
   var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
@@ -119,7 +119,7 @@ function compendiumChapterEditor(collectionId, data) {
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
-  editNav.on('click', '.btn-edit-save', function () {
+  editNav.on('click', '#save', function () {
     save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
@@ -164,9 +164,9 @@ function compendiumChapterEditor(collectionId, data) {
     $(orderArticle).each(function (indexB, nameB) {
       var uri = data.relatedDocuments[parseInt(nameB)].uri;
       checkPathSlashes (uri);
-      newRelated[indexB]= {uri: uri};
+      newRelatedDocuments[indexB]= {uri: uri};
     });
-    data.relatedDocuments = newRelated;
+    data.relatedDocuments = newRelatedDocuments;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){

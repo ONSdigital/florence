@@ -1,6 +1,6 @@
 function compendiumDataEditor(collectionId, data) {
 
-  var newFiles = [], newRelated = [], newRelatedMethodology = [];
+  var newFiles = [], newRelatedDocuments = [], newRelatedData = [], newRelatedMethodology = [];
   var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
@@ -118,7 +118,7 @@ function compendiumDataEditor(collectionId, data) {
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
-  editNav.on('click', '.btn-edit-save', function () {
+  editNav.on('click', '#save', function () {
     save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
@@ -152,13 +152,21 @@ function compendiumDataEditor(collectionId, data) {
     });
     data.downloads = newFiles;
     // Related documents
-    var orderUsedIn = $("#sortable-document").sortable('toArray');
-    $(orderUsedIn).each(function(indexD, nameD){
+    var orderRelatedDocument = $("#sortable-document").sortable('toArray');
+    $(orderRelatedDocument).each(function(indexD, nameD){
       var uri = data.relatedDocuments[parseInt(nameD)].uri;
       checkPathSlashes (uri);
-      newRelated[indexD] = {uri: uri};
+      newRelatedDocuments[indexD] = {uri: uri};
     });
-    data.relatedDocuments = newRelated;
+    data.relatedDocuments = newRelatedDocuments;
+    // Related datasets
+    var orderRelatedDataset = $("#sortable-dataset").sortable('toArray');
+    $(orderRelatedDataset).each(function(indexDt, nameDt){
+      var uri = data.relatedDatasets[parseInt(nameDt)].uri;
+      checkPathSlashes (uri);
+      newRelatedData[indexDt] = {uri: uri};
+    });
+    data.relatedDatasets = newRelatedData;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
