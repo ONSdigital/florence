@@ -25,23 +25,19 @@ function loadChartBuilder(pageData, onSave, chart) {
     if (chart.chartType === 'barline') { // if we have a bar line we want to populate the entries for each series
       if (chart.chartTypes) { // if we have existing types use them
         var type = _.values(chart.chartTypes);
-        for (var i = 0; i < chart.series.length; i += 1) {
+        $.each(chart.series, function (index) {
           data.push({
-            series: series[i], type: type[i],
+            series: series[index], type: type[index],
             isChecked: (function () {
-              var checked = _.indexOf(chart.groups[0], series[i]);
-              if (checked < 0) {
-                return checked = false;
-              } else {
-                return checked = true;
-              }
+              var checked = _.indexOf(chart.groups[0], series[index]);
+              return checked >= 0;
             })()
           });
-        }
+        });
       } else { // if we have no existing types, default them
-        for (var i = 0; i < chart.series.length; i += 1) {
-          data.push({series: series[i], type: '', isChecked: false});
-        }
+        $.each(chart.series, function (index) {
+          data.push({series: series[index], type: '', isChecked: false});
+        });
       }
     }
     return data;
@@ -173,9 +169,9 @@ function loadChartBuilder(pageData, onSave, chart) {
       var groups = [];
       var group = [];
       var seriesData = chart.series;
-      for (var i = 0; i < seriesData.length; i++) {
-        types[seriesData[i]] = $('#types_' + i).val() || 'bar';
-      }
+      $.each(seriesData, function (index) {
+        types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+      });
       (function () {
         $('#barline input:checkbox:checked').each(function () {
           group.push($(this).val());
