@@ -76,7 +76,7 @@ function viewCollectionDetails(collectionId) {
       checkPathSlashes(path);
       createWorkspace(path, collectionId, 'edit');
     });
-    $('#page-delete').click(function () {
+    $('.page-delete').click(function () {
       var result = confirm("Are you sure you want to delete this page from the collection?");
       if (result === true) {
         var path = $(this).attr('data-path');
@@ -108,8 +108,9 @@ function viewCollectionDetails(collectionId) {
   }
 
   function ProcessPages(pages) {
+    _.sortBy(pages, 'uri');
     _.each(pages, function (page) {
-      page.uri = page.uri.replace('/data.json', '')
+      page.uri = page.uri.replace('/data.json', '');
       return page;
     });
   }
