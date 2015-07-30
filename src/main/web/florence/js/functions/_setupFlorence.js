@@ -36,7 +36,7 @@ function setupFlorence() {
     return value1 + value2;
   });
 
-  localStorage.setItem('activeTab', false); // do we need this?
+  Florence.globalVars.activeTab = false;
 
   // load main florence template
   var florence = templates.florence;

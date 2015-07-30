@@ -61,7 +61,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         return true;
       }
        else {
-        Florence.pathTest = newUri;
+        Florence.globalVars.pagePath = newUri;
         checkSaveContent(collectionId, newUri, pageData);
       }
       e.preventDefault();

@@ -1,10 +1,10 @@
 function getLastPosition () {
-  var position = localStorage.getItem("pagePos");
+  var position = Florence.globalVars.pagePos;
   if (position > 0) {
     setTimeout(function() {
       $(".workspace-edit").scrollTop(position + 100);
-      localStorage.removeItem("pagePos");
-    }, 100);
+      Florence.globalVars.pagePos = '';
+    }, 200);
   }
 }
 
