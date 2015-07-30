@@ -101,7 +101,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
-      newUri = '/' + newUri;
+      checkPathSlashes(newUri);
       pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
@@ -116,7 +116,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         return true;
       }
       else {
-        Florence.globalVars.pagePath = newUri;
+        Florence.globalVars.pagePath = newUri;              //Delete this after test
         checkSaveContent(collectionId, newUri, pageData);
       }
       e.preventDefault();

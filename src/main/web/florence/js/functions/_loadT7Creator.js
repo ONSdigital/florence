@@ -37,7 +37,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
       newUri = makeUrl(parentUrl, pageNameTrimmed);
-      newUri = '/' + newUri;
+      checkPathSlashes(newUri);
       pageData.uri = newUri;
       if (pageData.releaseDate) {
         date = new Date(releaseDate);
@@ -48,7 +48,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 4) {
         alert("This is not a valid file name");
       } else {
-        Florence.globalVars.pagePath = newUri;
+        Florence.globalVars.pagePath = newUri;              //Delete this after test
         checkSaveContent(collectionId, newUri, pageData);
       }
     });

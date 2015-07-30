@@ -101,8 +101,8 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
       var pastedUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (pastedUrl) {
-        checkPathParsed(pastedUrl);
-        var dataUrlData = pastedUrl + "/data";
+        var safeUrl = checkPathParsed(pastedUrl);
+        var dataUrlData = safeUrl + "/data";
       } else {
         var dataUrl = getPathNameTrimLast();
         checkPathParsed(dataUrl);
@@ -166,7 +166,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
         },
         error: function () {
-          console.log('No page data returned');
+          alert('Data not found!');
         }
       });
     });

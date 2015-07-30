@@ -49,7 +49,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = releaseDate;
       }
       newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
-      newUri = '/' + newUri;
+      checkPathSlashes(newUri);
       pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
@@ -61,7 +61,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         return true;
       }
        else {
-        Florence.globalVars.pagePath = newUri;
+        Florence.globalVars.pagePath = newUri;              //Delete this after test
         checkSaveContent(collectionId, newUri, pageData);
       }
       e.preventDefault();
