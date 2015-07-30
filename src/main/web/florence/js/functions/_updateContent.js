@@ -8,9 +8,6 @@ function updateContent(collectionId, path, content, redirectToPath) {
         return;
       } else {
         refreshPreview(path);
-        if (path != Florence.globalVars.pagePath) {
-          alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.globalVars.pagePath);
-        }
         loadPageDataIntoEditor(path, collectionId);
       }
     },
