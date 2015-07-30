@@ -49,7 +49,7 @@ function initialiseMarkdown(collectionId, data, field, idField) {
   });
 
   //Add
-  $('#add-' + idField).one('click', function () {
+  $('#add-' + idField).off().one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 300;
     data[field].push({markdown:"", title:""});

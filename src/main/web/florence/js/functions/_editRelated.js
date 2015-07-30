@@ -15,6 +15,31 @@ function editRelated (collectionId, data, templateData, field, idField) {
   }
   var html = templates.editorRelated(dataTemplate);
   $('#'+ idField).replaceWith(html);
+
+  initialiseRelated(collectionId, data, templateData, field, idField);
+}
+
+function refreshRelated(collectionId, data, templateData, field, idField) {
+  var list = templateData[field];
+  if (idField === 'article') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'articles'};
+  } else if (idField === 'bulletin') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'bulletins'};
+  } else if (idField === 'dataset') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
+  } else if (idField === 'document') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'documents'};
+  } else if (idField === 'methodology') {
+    var dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
+  } else {
+    var dataTemplate = {list: list, idField: idField};
+  }
+  var html = templates.editorRelated(dataTemplate);
+  $('#sortable-'+ idField).replaceWith($(html).find('#sortable-'+ idField));
+  initialiseRelated(collectionId, data, templateData, field, idField);
+}
+
+function initialiseRelated(collectionId, data, templateData, field, idField) {
   // Load
   if (!data[field] || data[field].length === 0) {
     editRelated['lastIndex' + field] = 0;
@@ -30,11 +55,12 @@ function editRelated (collectionId, data, templateData, field, idField) {
           Florence.globalVars.pagePos = position;
           $(this).parent().remove();
           data[field].splice(index, 1);
+          templateData[field].splice(index, 1);
           postContent(collectionId, data.uri, JSON.stringify(data),
             success = function (response) {
               Florence.Editor.isDirty = false;
               refreshPreview(data.uri);
-              editRelated (collectionId, data, field, idField);
+              refreshRelated(collectionId, data, templateData, field, idField)
             },
             error = function (response) {
               if (response.status === 400) {
@@ -54,19 +80,19 @@ function editRelated (collectionId, data, templateData, field, idField) {
   }
 
   //Add
-  $('#add-' + idField).one('click', function () {
+  $('#add-' + idField).off().one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position;
     var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
+    iframeEvent.removeEventListener('click', Florence.Handler, true);
     createWorkspace(data.uri, collectionId, '', true);
 
     $('#sortable-' + idField).append(
-        '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
-        '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get"></textarea>' +
-        '  <button class="btn-page-get" id="' + idField + '-get_' + editRelated['lastIndex' + field] + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
-        '</div>').trigger('create');
+      '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
+      '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get"></textarea>' +
+      '  <button class="btn-page-get" id="' + idField + '-get_' + editRelated['lastIndex' + field] + '">Get</button>' +
+      '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
+      '</div>').trigger('create');
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
       createWorkspace(data.uri, collectionId, 'edit');
@@ -151,4 +177,3 @@ function editRelated (collectionId, data, templateData, field, idField) {
   }
   sortable();
 }
-

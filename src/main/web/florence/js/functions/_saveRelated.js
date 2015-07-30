@@ -6,7 +6,7 @@ function saveRelated (collectionId, path, data, field, idField) {
         var pageUrlDataTemplate = path + "/data.json&resolve";
         getPageData(collectionId, pageUrlDataTemplate,
             success = function (pageDataTemplate) {
-                editRelated(collectionId, data, pageDataTemplate, field, idField);
+                refreshRelated(collectionId, data, pageDataTemplate, field, idField);
                 refreshPreview(path);
                 var iframeEvent = document.getElementById('iframe').contentWindow;
                 iframeEvent.addEventListener('click', Florence.Handler, true);
