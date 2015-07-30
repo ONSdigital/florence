@@ -6,8 +6,7 @@ function viewWorkspace(path, collectionId, menu) {
   }
   checkPathSlashes(currentPath);
 
-  localStorage.removeItem("pageurl");
-  localStorage.setItem("pageurl", currentPath);
+  Florence.globalVars.pagePath = currentPath;
 
   if (menu === 'browse') {
     $('.nav--workspace li').removeClass('selected');
@@ -22,7 +21,7 @@ function viewWorkspace(path, collectionId, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
-    Florence.pathTest = path;
+    Florence.globalVars.pagePath = path;
     loadPageDataIntoEditor(path, collectionId);
   }
 }

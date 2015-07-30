@@ -48,7 +48,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 4) {
         alert("This is not a valid file name");
       } else {
-        Florence.pathTest = newUri;
+        Florence.globalVars.pagePath = newUri;
         checkSaveContent(collectionId, newUri, pageData);
       }
     });

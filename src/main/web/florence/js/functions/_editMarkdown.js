@@ -27,7 +27,7 @@ function editMarkdown (collectionId, data, field, idField) {
       var result = confirm("Are you sure you want to delete?");
       if (result === true) {
         var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position + 300);
+        Florence.globalVars.pagePos = position + 300;
         $(this).parent().remove();
         data[field].splice(index, 1);
         saveMarkdown(collectionId, data.uri, data, field, idField);
@@ -39,7 +39,7 @@ function editMarkdown (collectionId, data, field, idField) {
   //Add
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
-    localStorage.setItem("pagePos", position + 300);
+    Florence.globalVars.pagePos = position + 300;
     data[field].push({markdown:"", title:""});
     saveMarkdown(collectionId, data.uri, data, field, idField);
   });

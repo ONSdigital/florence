@@ -7,11 +7,11 @@ function t3Editor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -53,7 +53,7 @@ function t3Editor(collectionId, data) {
     //Add new related timeseries
     $("#add-timeseries").one('click', function () {
         var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position);
+        Florence.globalVars.pagePos = position;
         var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
         createWorkspace(data.uri, collectionId, '', true);

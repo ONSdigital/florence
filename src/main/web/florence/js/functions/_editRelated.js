@@ -27,7 +27,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
         var result = confirm("Are you sure you want to delete this link?");
         if (result === true) {
           var position = $(".workspace-edit").scrollTop();
-          localStorage.setItem("pagePos", position);
+          Florence.globalVars.pagePos = position;
           $(this).parent().remove();
           data[field].splice(index, 1);
           postContent(collectionId, data.uri, JSON.stringify(data),
@@ -56,7 +56,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
   //Add
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
-    localStorage.setItem("pagePos", position);
+    Florence.globalVars.pagePos = position;
     var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
     createWorkspace(data.uri, collectionId, '', true);
