@@ -146,7 +146,7 @@ function compendiumEditor(collectionId, data) {
             deleteContent(collectionId, selectedChapter, function() {
               refreshPreview(path);
               if (path != Florence.pathTest) {
-                alert('Please call Pastor if this happens. Florence needs a revision');
+                alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.pathTest);
               }
               loadPageDataIntoEditor(path, collectionId);
             }, error);
@@ -222,7 +222,7 @@ function compendiumEditor(collectionId, data) {
               deleteContent(collectionId, selectedData, function() {
                 refreshPreview(path);
                 if (path != Florence.pathTest) {
-                  alert('Please call Pastor if this happens. Florence needs a revision');
+                  alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.pathTest);
                 }
                 loadPageDataIntoEditor(path, collectionId);
               }, error);
