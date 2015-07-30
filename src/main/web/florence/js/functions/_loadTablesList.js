@@ -1,9 +1,18 @@
 function loadTablesList(data, collectionId) {
   var html = templates.workEditTables(data);
   $('#tables').replaceWith(html);
+  initialiseTablesList(data, collectionId);
+}
+
+function refreshTablesList(data, collectionId) {
+  var html = templates.workEditTables(data);
+  $('#table-list').replaceWith($(html).find('#table-list'));
+  initialiseTablesList(data, collectionId);
+}
+
+function initialiseTablesList(data, collectionId) {
 
   $(data.tables).each(function (index, table) {
-
     var basePath = data.uri;
     var tablePath = basePath + '/' + table.filename;
     var tableJson = tablePath + '.json';
@@ -12,7 +21,9 @@ function loadTablesList(data, collectionId) {
       getPageData(collectionId, tableJson,
         onSuccess = function (tableData) {
           loadTableBuilder(data, function () {
+            Florence.Editor.isDirty = false;
             refreshPreview();
+            refreshTablesList(data, collectionId);
           }, tableData);
         })
     });
@@ -31,6 +42,9 @@ function loadTablesList(data, collectionId) {
               deleteContent(collectionId, fileToDelete,
                 onSuccess = function () {
                   //console.log("deleted table file: " + fileToDelete)
+                },
+                onError = function (error) {
+                  console.log(error);
                 });
             });
 
@@ -47,8 +61,7 @@ function loadTablesList(data, collectionId) {
                 postContent(collectionId, basePath, JSON.stringify(data),
                   success = function () {
                     Florence.Editor.isDirty = false;
-                    refreshPreview();
-                    loadTablesList(data, collectionId);
+                    refreshTablesList(data, collectionId);
                   }
                 );
               }

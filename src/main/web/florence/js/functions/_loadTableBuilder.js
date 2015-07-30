@@ -1,6 +1,6 @@
 function loadTableBuilder(pageData, onSave, table) {
-  var pageUrl = pageData.uri;
 
+  var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
   $('body').append(html);
 
@@ -8,58 +8,56 @@ function loadTableBuilder(pageData, onSave, table) {
     renderTable(table.uri);
   }
 
-  var input = document.getElementById("files"), formdata = false;
+  $('#upload-table-form').submit(function (event) {
 
-$('#upload-table-form').submit(function(event) {
+    event.preventDefault();
 
-  event.preventDefault();
-
-  var formData = new FormData($(this)[0]);
-  var table = buildJsonObjectFromForm();
-  var path = table.uri;
-  var xlsPath = path + ".xls";
-  var htmlPath = path + ".html";
+    var formData = new FormData($(this)[0]);
+    var table = buildJsonObjectFromForm();
+    var path = table.uri;
+    var xlsPath = path + ".xls";
+    var htmlPath = path + ".html";
 
 
-  // send xls file to zebedee
-  $.ajax({
-    url: "/zebedee/content/" + Florence.collection.id + "?uri=" + xlsPath,
-    type: 'POST',
-    data: formData,
-    async: false,
-    cache: false,
-    contentType: false,
-    processData: false,
-    success: function (returndata) {
-      createTableHtml();
-    }
-  });
-
-  function createTableHtml() {
+    // send xls file to zebedee
     $.ajax({
-      url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
-      type: "POST",
-      success: function (html) {
-        saveTableJson();
-        saveTableHtml(html);
-      }
-    });
-  }
-
-  function saveTableHtml(data) {
-    $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath,
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + xlsPath,
       type: 'POST',
-      data: data,
+      data: formData,
+      async: false,
+      cache: false,
+      contentType: false,
       processData: false,
-      success: function (response) {
-        renderTable(path);
+      success: function (returndata) {
+        createTableHtml();
       }
     });
-  }
 
-  return false;
-});
+    function createTableHtml() {
+      $.ajax({
+        url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
+        type: "POST",
+        success: function (html) {
+          saveTableJson();
+          saveTableHtml(html);
+        }
+      });
+    }
+
+    function saveTableHtml(data) {
+      $.ajax({
+        url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath,
+        type: 'POST',
+        data: data,
+        processData: false,
+        success: function (response) {
+          renderTable(path);
+        }
+      });
+    }
+
+    return false;
+  });
 
   function renderTable(path) {
     var uri = path + "/table";
@@ -67,8 +65,8 @@ $('#upload-table-form').submit(function(event) {
     console.log(iframeMarkup);
     $('#table').html(iframeMarkup);
 
-    document.getElementById('preview-frame').height= "500px";
-    document.getElementById('preview-frame').width= "100%";
+    document.getElementById('preview-frame').height = "500px";
+    document.getElementById('preview-frame').width = "100%";
   }
 
   $('.btn-table-builder-cancel').on('click', function () {
@@ -78,7 +76,7 @@ $('#upload-table-form').submit(function(event) {
   function saveTableJson() {
 
     table = buildJsonObjectFromForm();
-    var tableJson = table.uri  + ".json";
+    var tableJson = table.uri + ".json";
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
@@ -131,8 +129,8 @@ $('#upload-table-form').submit(function(event) {
     }
 
     table.files = [];
-    table.files.push({ type:'download-xls', filename:table.filename + '.xls' });
-    table.files.push({ type:'html', filename:table.filename + '.html' });
+    table.files.push({type: 'download-xls', filename: table.filename + '.xls'});
+    table.files.push({type: 'html', filename: table.filename + '.html'});
 
     return table;
   }
