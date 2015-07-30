@@ -22,6 +22,7 @@ function viewWorkspace(path, collectionId, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
+    Florence.pathTest = path;
     loadPageDataIntoEditor(path, collectionId);
   }
 }

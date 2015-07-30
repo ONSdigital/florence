@@ -73,7 +73,7 @@ function compendiumEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
@@ -145,6 +145,9 @@ function compendiumEditor(collectionId, data) {
             Florence.Editor.isDirty = false;
             deleteContent(collectionId, selectedChapter, function() {
               refreshPreview(path);
+              if (path != Florence.pathTest) {
+                alert('Please call Pastor if this happens. Florence needs a revision');
+              }
               loadPageDataIntoEditor(path, collectionId);
             }, error);
           },
@@ -218,6 +221,9 @@ function compendiumEditor(collectionId, data) {
               Florence.Editor.isDirty = false;
               deleteContent(collectionId, selectedData, function() {
                 refreshPreview(path);
+                if (path != Florence.pathTest) {
+                  alert('Please call Pastor if this happens. Florence needs a revision');
+                }
                 loadPageDataIntoEditor(path, collectionId);
               }, error);
             },

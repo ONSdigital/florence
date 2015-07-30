@@ -2,8 +2,13 @@ function loadPageDataIntoEditor(path, collectionId) {
 
   checkPathSlashes(path);
 
-  var pageUrlData = path + "/data.json";
-  var pageUrlDataTemplate = path + "/data.json&resolve";
+  if (path === '/') {
+    var pageUrlData = path + "data.json";
+    var pageUrlDataTemplate = path + "data.json&resolve";
+  } else {
+    var pageUrlData = path + "/data.json";
+    var pageUrlDataTemplate = path + "/data.json&resolve";
+  }
   var pageData, pageDataTemplate, isPageComplete;
   var ajaxRequests = [];
 

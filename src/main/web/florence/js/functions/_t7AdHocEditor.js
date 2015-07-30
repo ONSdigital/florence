@@ -57,7 +57,7 @@ function adHocEditor(collectionId, data) {
                         singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(',');
+    data.description.keywords = $('#keywords').val().split(', ');
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
