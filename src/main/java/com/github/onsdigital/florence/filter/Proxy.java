@@ -74,7 +74,7 @@ public class Proxy implements Filter {
                     break;
             }
 
-            CloseableHttpClient httpClient = HttpClients.createDefault();
+            CloseableHttpClient httpClient = HttpClients.custom().disableRedirectHandling().build();
 
             // copy the request headers.
             Enumeration<String> headerNames = request.getHeaderNames();
