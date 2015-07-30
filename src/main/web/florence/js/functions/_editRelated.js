@@ -100,7 +100,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
             }
           }
 
-          else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin')) {
+          else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin' || result.type === 'compendium_landing_page')) {
             if (!data[field]) {
               data[field] = [];
             }

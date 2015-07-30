@@ -197,6 +197,10 @@ function authenticate(email,password) {
   });
   return true;
 }
+$('.section').bind('DOMSubtreeModified', function (){
+	$('.auto-size').textareaAutoSize();
+});
+
 function checkForPageChanged(onChanged) {
   var iframeUrl = localStorage.getItem("pageurl");
   var nowUrl = $('#iframe')[0].contentWindow.document.location.pathname;
@@ -1201,7 +1205,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
             }
           }
 
-          else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin')) {
+          else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin' || result.type === 'compendium_landing_page')) {
             if (!data[field]) {
               data[field] = [];
             }
@@ -1976,16 +1980,19 @@ function loadMarkdownEditor(content, onSave, pageData) {
 
   $('.btn-markdown-editor-cancel').on('click', function () {
     $('.markdown-editor').stop().fadeOut(200).remove();
+    clearTimeout(timeoutId);
   });
 
   $(".btn-markdown-editor-save").click(function () {
     var markdown = $('#wmd-input').val();
     onSave(markdown);
+    clearTimeout(timeoutId);
   });
 
   $(".btn-markdown-editor-exit").click(function () {
     var markdown = $('#wmd-input').val();
     onSave(markdown);
+    clearTimeout(timeoutId);
     $('.markdown-editor').stop().fadeOut(200).remove();
   });
 
@@ -2112,8 +2119,13 @@ function loadPageDataIntoEditor(path, collectionId) {
 
   checkPathSlashes(path);
 
-  var pageUrlData = path + "/data.json";
-  var pageUrlDataTemplate = path + "/data.json&resolve";
+  if (path === '/') {
+    var pageUrlData = path + "data.json";
+    var pageUrlDataTemplate = path + "data.json&resolve";
+  } else {
+    var pageUrlData = path + "/data.json";
+    var pageUrlDataTemplate = path + "/data.json&resolve";
+  }
   var pageData, pageDataTemplate, isPageComplete;
   var ajaxRequests = [];
 
@@ -2299,7 +2311,7 @@ function updateReviewScreen(collectionId) {
 
 
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -2316,9 +2328,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         submitFormHandler ();
         return true;
       } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
-        contentUrlTmp = parentUrl.split('/');
+        var contentUrlTmp = parentUrl.split('/');
         contentUrlTmp.splice(-1, 1);
-        contentUrl = contentUrlTmp.join('/');
+        var contentUrl = contentUrlTmp.join('/');
         parentUrl = contentUrl;
         breadcrumb = checkData.breadcrumb;
         natStat = checkData.description.nationalStatistic;
@@ -2328,6 +2340,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageTitle = checkData.description.title;
         keyWords = checkData.description.keywords;
         metaDescr = checkData.description.metaDescription;
+        if (checkData.type === 'bulletin' && pageType === 'bulletin') {
+          relatedData = checkData.relatedData;
+        }
         isInheriting = true;
         submitFormHandler (pageTitle, contentUrl, isInheriting);
         return true;
@@ -2361,7 +2376,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
 
     $('form').submit(function (e) {
-      releaseDateManual = $('#releaseDate').val()
+      releaseDateManual = $('#releaseDate').val();
       pageData = pageTypeDataT4(pageType);
       pageData.description.edition = $('#edition').val();
       if (title) {
@@ -2391,6 +2406,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.contact.telephone = contactTel;
         pageData.description.keywords = keyWords;
         pageData.description.metaDescription = metaDescr;
+        if (pageType === 'bulletin') {
+          pageData.relatedData = relatedData;
+        }
         newUri = makeUrl(parentUrl, releaseUri);
       } else {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
@@ -3441,6 +3459,7 @@ function delete_cookie(name) {
     var html = templates.workEditT8Compendium(templateData);
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     accordion();
@@ -3651,12 +3670,28 @@ function markDownEditorSetLines() {
   }
 
   //sync scroll
-  $('.markdown-editor-line-numbers ol').css('margin-top', -textarea.scrollTop());
-  textarea.on('scroll', function () {
-    var marginTop = $(this).scrollTop();
-    $('.markdown-editor-line-numbers ol').css('margin-top', -marginTop);
-    $('.wmd-preview').scrollTop(marginTop);
-  });
+  // $('.markdown-editor-line-numbers ol').css('margin-top', -textarea.scrollTop());
+  // textarea.on('scroll', function () {
+  //   // var editorHeight = $('.wmd-input').height();
+  //   // var previewHeight = $('.wmd-preview').height();
+  //   // console.log(editorHeight);
+  //   var marginTop = $(this).scrollTop();
+  //   $('.markdown-editor-line-numbers ol').css('margin-top', -marginTop);
+  //   $('.wmd-preview').scrollTop(marginTop);
+  // });
+
+
+  //proportional scroll
+  var $wmdscrollsync = $('.wmd-input, .wmd-preview');
+  var wmdsync = function(e){
+      var $other = $wmdscrollsync.not(this).off('scroll'), other = $other.get(0);
+      var percentage = this.scrollTop / (this.scrollHeight - this.offsetHeight);
+      other.scrollTop = percentage * (other.scrollHeight - other.offsetHeight);
+      setTimeout( function(){ $other.on('scroll', wmdsync ); },10);
+  }
+  $wmdscrollsync.on( 'scroll', wmdsync);
+
+
 
   for (var i = 0; i < lineLengthArray.length; i++) {
     if(cursorEndPos <= lineLengthArray[i]) {
@@ -4901,7 +4936,7 @@ function timeseriesEditor(collectionId, data) {
 
 function compendiumChapterEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newRelated = [], newLinks = [];
+  var newSections = [], newTabs = [], newRelatedDocuments = [], newLinks = [];
   var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
@@ -5020,7 +5055,7 @@ function compendiumChapterEditor(collectionId, data) {
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
-  editNav.on('click', '.btn-edit-save', function () {
+  editNav.on('click', '#save', function () {
     save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
@@ -5065,9 +5100,9 @@ function compendiumChapterEditor(collectionId, data) {
     $(orderArticle).each(function (indexB, nameB) {
       var uri = data.relatedDocuments[parseInt(nameB)].uri;
       checkPathSlashes (uri);
-      newRelated[indexB]= {uri: uri};
+      newRelatedDocuments[indexB]= {uri: uri};
     });
-    data.relatedDocuments = newRelated;
+    data.relatedDocuments = newRelatedDocuments;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
@@ -5081,7 +5116,7 @@ function compendiumChapterEditor(collectionId, data) {
 
 function compendiumDataEditor(collectionId, data) {
 
-  var newFiles = [], newRelated = [], newRelatedMethodology = [];
+  var newFiles = [], newRelatedDocuments = [], newRelatedData = [], newRelatedMethodology = [];
   var parentUrl = data.parent.uri;
   var setActiveTab, getActiveTab;
 
@@ -5199,7 +5234,7 @@ function compendiumDataEditor(collectionId, data) {
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
-  editNav.on('click', '.btn-edit-save', function () {
+  editNav.on('click', '#save', function () {
     save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
@@ -5233,13 +5268,21 @@ function compendiumDataEditor(collectionId, data) {
     });
     data.downloads = newFiles;
     // Related documents
-    var orderUsedIn = $("#sortable-document").sortable('toArray');
-    $(orderUsedIn).each(function(indexD, nameD){
+    var orderRelatedDocument = $("#sortable-document").sortable('toArray');
+    $(orderRelatedDocument).each(function(indexD, nameD){
       var uri = data.relatedDocuments[parseInt(nameD)].uri;
       checkPathSlashes (uri);
-      newRelated[indexD] = {uri: uri};
+      newRelatedDocuments[indexD] = {uri: uri};
     });
-    data.relatedDocuments = newRelated;
+    data.relatedDocuments = newRelatedDocuments;
+    // Related datasets
+    var orderRelatedDataset = $("#sortable-dataset").sortable('toArray');
+    $(orderRelatedDataset).each(function(indexDt, nameDt){
+      var uri = data.relatedDatasets[parseInt(nameDt)].uri;
+      checkPathSlashes (uri);
+      newRelatedData[indexDt] = {uri: uri};
+    });
+    data.relatedDatasets = newRelatedData;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
@@ -6210,8 +6253,8 @@ function staticPageEditor(collectionId, data) {
 
 function datasetEditor(collectionId, data) {
 
-  var newFiles = [], newRelated = [], newUsedIn = [], newRelatedMethodology = [];
-  var setActiveTab, getActiveTab, uriChecked;
+  var newFiles = [], newRelatedData = [], newRelatedDocuments = [], newRelatedMethodology = [];
+  var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -6331,27 +6374,23 @@ function datasetEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save();
+    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       //pageData = $('.fl-editor__headline').val();
-      saveData();
+      save();
       saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      saveData();
+      save();
       saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
     });
 
   function save() {
-    saveData();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  }
-
-  function saveData() {
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){
@@ -6367,17 +6406,17 @@ function datasetEditor(collectionId, data) {
     $(orderDataset).each(function (indexD, nameD) {
       var uri = data.relatedDatasets[parseInt(nameD)].uri;
       checkPathSlashes (uri);
-      newRelated[indexD]= {uri: uri};
+      newRelatedData[indexD]= {uri: uri};
     });
-    data.relatedDatasets = newRelated;
+    data.relatedDatasets = newRelatedData;
     // Used in links
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
       checkPathSlashes (uri);
-      newUsedIn[indexU] = {uri: uri};
+      newRelatedDocuments[indexU] = {uri: uri};
     });
-    data.relatedDocuments = newUsedIn;
+    data.relatedDocuments = newRelatedDocuments;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
@@ -6391,7 +6430,7 @@ function datasetEditor(collectionId, data) {
 
 function referenceTableEditor(collectionId, data) {
 
-  var newFiles = [], newUsedIn = [], newRelatedMethodology = [];
+  var newFiles = [], newRelatedDocuments = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -6541,9 +6580,9 @@ function referenceTableEditor(collectionId, data) {
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
       checkPathSlashes (uri);
-      newUsedIn[indexU] = {uri: uri};
+      newRelatedDocuments[indexU] = {uri: uri};
     });
-    data.relatedDocuments = newUsedIn;
+    data.relatedDocuments = newRelatedDocuments;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
@@ -6715,7 +6754,7 @@ function viewCollectionDetails(collectionId) {
       }
     });
 
-    $('.collection-selected .btn-edit-cancel').click(function () {
+    $('.collection-selected .btn-collection-cancel').click(function () {
       $('.collection-selected').stop().animate({right: "-50%"}, 500);
       $('.collections-select-table tbody tr').removeClass('selected');
       // Wait until the animation ends
@@ -6727,6 +6766,8 @@ function viewCollectionDetails(collectionId) {
     $('.btn-collection-work-on').click(function () {
       createWorkspace('', collectionId, 'browse');
     });
+
+    setCollectionDetailsHeight();
   }
 
   function ProcessPages(pages) {
@@ -6736,8 +6777,22 @@ function viewCollectionDetails(collectionId) {
       return page;
     });
   }
-}
-function viewCollections(collectionId) {
+
+  function setCollectionDetailsHeight(){
+    var panelHeight = parseInt($('.collection-selected').height());
+
+    var headHeight = parseInt($('.section-head').height());
+    var headPadding = parseInt($('.section-head').css('padding-bottom'));
+    
+    var contentPadding = parseInt($('.section-content').css('padding-bottom'));
+    
+    var navHeight = parseInt($('.section-nav').height());
+    var navPadding = (parseInt($('.section-nav').css('padding-bottom')))+(parseInt($('.section-nav').css('padding-top')));
+
+    var contentHeight = panelHeight-(headHeight+headPadding+contentPadding+navHeight+navPadding);
+    $('.section-content').css('height', contentHeight);
+  }
+}function viewCollections(collectionId) {
 
   $.ajax({
     url: "/zebedee/collections",
@@ -8766,10 +8821,10 @@ else
         heading: "Heading <h1>/<h2> Ctrl+H",
         headingexample: "Heading",
 
-        superscript: "Superscript <sup> Ctrl+P",
+        superscript: "Superscript <sup> Ctrl+[",
         superscriptexample: "superscript",
 
-        subscript: "Subscript <sub> Ctrl+S",
+        subscript: "Subscript <sub> Ctrl+]",
         subscriptexample: "subscript",
 
         hr: "Horizontal Rule <hr> Ctrl+R",
@@ -9971,7 +10026,7 @@ else
                     case "l":
                         doClick(buttons.link);
                         break;
-                    case "q":
+                    case "6":
                         doClick(buttons.quote);
                         break;
                     case "k":
@@ -9986,11 +10041,11 @@ else
                     case "u":
                         doClick(buttons.ulist);
                         break;
-                    case "p":
-                        doClick(buttons.superscript);
-                        break;
-                    case "s":
+                    case "q":
                         doClick(buttons.subscript);
+                        break;
+                    case "m":
+                        doClick(buttons.superscript);
                         break;
                     case "h":
                         doClick(buttons.heading);
