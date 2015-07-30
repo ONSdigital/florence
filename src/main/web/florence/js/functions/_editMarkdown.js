@@ -3,6 +3,18 @@ function editMarkdown (collectionId, data, field, idField) {
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorContent(dataTemplate);
   $('#'+ idField).replaceWith(html);
+  initialiseMarkdown(collectionId, data, field, idField)
+}
+
+function refreshMarkdown (collectionId, data, field, idField) {
+  var list = data[field];
+  var dataTemplate = {list: list, idField: idField};
+  var html = templates.editorContent(dataTemplate);
+  $('#sortable-'+ idField).replaceWith($(html).find('#sortable-'+ idField));
+  initialiseMarkdown(collectionId, data, field, idField)
+}
+
+function initialiseMarkdown(collectionId, data, field, idField) {
   // Load
   $(data[field]).each(function(index){
 
@@ -12,12 +24,12 @@ function editMarkdown (collectionId, data, field, idField) {
         "markdown": $('#' + idField + '-markdown_' + index).val()
       };
 
-       var saveContent = function(updatedContent) {
-         data[field][index].markdown = updatedContent;
-         data[field][index].title = $('#' + idField +'-title_' + index).val();
-         saveMarkdown (collectionId, data.uri, data, field, idField);
-         refreshPreview(data.uri);
-       };
+      var saveContent = function(updatedContent) {
+        data[field][index].markdown = updatedContent;
+        data[field][index].title = $('#' + idField +'-title_' + index).val();
+        saveMarkdown (collectionId, data.uri, data, field, idField);
+        refreshPreview(data.uri);
+      };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
     });
@@ -54,7 +66,9 @@ function saveMarkdown (collectionId, path, data, field, idField) {
     postContent(collectionId, path, JSON.stringify(data),
         success = function () {
             Florence.Editor.isDirty = false;
-            editMarkdown(collectionId, data, field, idField);
+            refreshMarkdown (collectionId, data, field, idField);
+            refreshChartList(data, collectionId);
+            refreshTablesList(data, collectionId);
         },
         error = function (response) {
             if (response.status === 400) {
