@@ -1,42 +1,35 @@
 function editRelated (collectionId, data, templateData, field, idField) {
   var list = templateData[field];
-  if (idField === 'article') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'articles'};
-  } else if (idField === 'bulletin') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'bulletins'};
-  } else if (idField === 'dataset') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
-  } else if (idField === 'document') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'documents'};
-  } else if (idField === 'methodology') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
-  } else {
-    var dataTemplate = {list: list, idField: idField};
-  }
+  var dataTemplate = createRelatedTemplate(idField, list);
   var html = templates.editorRelated(dataTemplate);
   $('#'+ idField).replaceWith(html);
-
   initialiseRelated(collectionId, data, templateData, field, idField);
 }
 
 function refreshRelated(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
-  if (idField === 'article') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'articles'};
-  } else if (idField === 'bulletin') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'bulletins'};
-  } else if (idField === 'dataset') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
-  } else if (idField === 'document') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'documents'};
-  } else if (idField === 'methodology') {
-    var dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
-  } else {
-    var dataTemplate = {list: list, idField: idField};
-  }
+  var dataTemplate = createRelatedTemplate(idField, list);
   var html = templates.editorRelated(dataTemplate);
   $('#sortable-'+ idField).replaceWith($(html).find('#sortable-'+ idField));
   initialiseRelated(collectionId, data, templateData, field, idField);
+}
+
+function createRelatedTemplate(idField, list) {
+  var dataTemplate;
+  if (idField === 'article') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'articles'};
+  } else if (idField === 'bulletin') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'bulletins'};
+  } else if (idField === 'dataset') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
+  } else if (idField === 'document') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'documents'};
+  } else if (idField === 'methodology') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
+  } else {
+    dataTemplate = {list: list, idField: idField};
+  }
+  return dataTemplate;
 }
 
 function initialiseRelated(collectionId, data, templateData, field, idField) {
@@ -99,15 +92,12 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     });
 
     $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
-      var pastedUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
-      if (pastedUrl) {
-        checkPathParsed(pastedUrl);
-        var dataUrlData = pastedUrl + "/data";
-      } else {
-        var dataUrl = getPathNameTrimLast();
-        checkPathParsed(dataUrl);
-        var dataUrlData = dataUrl + "/data";
+      var baseUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
+      if (!baseUrl) {
+        baseUrl = getPathNameTrimLast();
       }
+      baseUrl = checkPathParsed(baseUrl);
+      var dataUrlData = baseUrl + "/data";
 
       $.ajax({
         url: dataUrlData,
@@ -161,7 +151,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             return;
           }
 
-          data[field].push({uri: result.uri});
+          data[field].push({uri: baseUrl});
           saveRelated(collectionId, data.uri, data, field, idField);
 
         },
