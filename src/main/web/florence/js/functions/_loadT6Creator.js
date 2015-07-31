@@ -103,11 +103,11 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         alert('Oops! Something went the wrong way.');
         loadCreateScreen(collectionId);
       }
-      newUri = '/' + newUri;
+      checkPathSlashes(newUri);
       pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
-      Florence.pathTest = newUri;
+      Florence.globalVars.pagePath = newUri;              //Delete this after test
 
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
@@ -166,16 +166,16 @@ function submitNoForm (title) {
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
       newUri = makeUrl(parentUrl, pageTitleTrimmed);
-      newUri = '/' + newUri;
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
 
+    checkPathSlashes(newUri);
     pageData.uri = newUri;
     pageData.breadcrumb = breadcrumb;
 
-    Florence.pathTest = newUri;
+    Florence.globalVars.pagePath = newUri;              //Delete this after test
 
     // check if the page exists
     getUri = newUri + '/data.json';

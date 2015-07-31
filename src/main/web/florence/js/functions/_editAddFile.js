@@ -14,7 +14,7 @@ function addFile (collectionId, data, field, idField) {
         var result = confirm("Are you sure you want to delete this file?");
         if (result === true) {
           var position = $(".workspace-edit").scrollTop();
-          localStorage.setItem("pagePos", position + 200);
+          Florence.globalVars.pagePos = position + 200;
           $(this).parent().remove();
           $.ajax({
             url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
@@ -47,7 +47,7 @@ function addFile (collectionId, data, field, idField) {
   //Add
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
-    localStorage.setItem("pagePos", position + 200);
+    Florence.globalVars.pagePos = position + 200;
     $('#sortable-' + idField).append(
         '<div id="' + lastIndex + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +

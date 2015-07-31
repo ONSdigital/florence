@@ -24,6 +24,8 @@ Florence.collection = {};
 
 Florence.collectionToPublish = {};
 
+Florence.globalVars = {pagePath: '', activeTab: false, pagePos: ''};
+
 Florence.Authentication = {
   accessToken: function () {
     return CookieUtils.getCookieValue("access_token");
@@ -69,3 +71,5 @@ Florence.Handler = function () {
 if (typeof module !== 'undefined') {
   module.exports = Florence;
 }
+
+

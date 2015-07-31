@@ -1,10 +1,11 @@
 function checkPathParsed (uri) {
-  if (uri.charAt(uri.length-1) === '/') {
-      uri = uri.slice(0, -1);
-  }
   if (uri.charAt(0) !== '/') {
     uri = '/' + uri;
   }
   var myUrl = parseURL(uri);
-  return myUrl.pathname;
+  var safeUrl = myUrl.pathname;
+  if (safeUrl.charAt(safeUrl.length-1) === '/') {
+    safeUrl = safeUrl.slice(0, -1);
+  }
+  return safeUrl;
 }
