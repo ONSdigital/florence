@@ -9,7 +9,7 @@ function updateContent(collectionId, path, content, redirectToPath) {
       } else {
         refreshPreview(path);
         if (path != Florence.pathTest) {
-          alert('Please call Pastor if this happens. Florence needs a revision');
+          alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.pathTest);
         }
         loadPageDataIntoEditor(path, collectionId);
       }

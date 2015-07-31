@@ -107,6 +107,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       pageData.uri = newUri;
       pageData.breadcrumb = breadcrumb;
 
+      Florence.pathTest = newUri;
+
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
         return true;
@@ -172,6 +174,8 @@ function submitNoForm (title) {
 
     pageData.uri = newUri;
     pageData.breadcrumb = breadcrumb;
+
+    Florence.pathTest = newUri;
 
     // check if the page exists
     getUri = newUri + '/data.json';
