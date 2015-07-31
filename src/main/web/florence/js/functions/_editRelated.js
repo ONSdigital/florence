@@ -84,21 +84,25 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     $('#sortable-' + idField).append(
       '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
       '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get"></textarea>' +
-      '  <label for="latest">Latest</label>' +
-      '  <input id="latest" type="checkbox" value="value"/>' +
+      '  <div id="latest-container"></div>' +
       '  <button class="btn-page-get" id="' + idField + '-get_' + editRelated['lastIndex' + field] + '">Get</button>' +
       '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
       '</div>').trigger('create');
+
+    if (idField === 'article' || idField === 'bulletin' || idField === 'document') {
+      $('#latest-container').append('<label for="latest">Latest</label>' +
+        '<input id="latest" type="checkbox" value="value" checked/>');
+    }
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
       createWorkspace(data.uri, collectionId, 'edit');
     });
 
-    $('#' + idField + ' input:checkbox').on('change', function () {
-      latestCheck = $('#latest').attr('checked');
+    $('#latest-container input:checkbox').on('change', function () {
+      latestCheck = $(this).prop('checked');
     });
 
-    $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
+    $('#' + idField  + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
       var baseUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (!baseUrl) {
         baseUrl = getPathNameTrimLast();
@@ -107,10 +111,10 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       var dataUrlData = baseUrl + "/data";
       var latestUrl;
       if (latestCheck) {
-        latestUrl = baseUrl.split('/');
-        latestUrl.pop();
-        latestUrl.push('latest');
-        latestUrl.join('/');
+        var tempUrl = baseUrl.split('/');
+        tempUrl.pop();
+        tempUrl.push('latest');
+        latestUrl = tempUrl.join('/');
       } else {
         latestUrl = baseUrl;
       }
