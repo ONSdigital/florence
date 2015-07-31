@@ -189,7 +189,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     parseChartObject(chart);
 
     chart.files = [];
-    chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
+    //chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
     chart.files.push({ type:'png', filename:chart.filename + '.png' });
 
     return chart;
