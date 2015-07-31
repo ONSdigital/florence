@@ -84,11 +84,11 @@ function addFileWithDetails (collectionId, data, field, idField) {
 
           var file = this.files[0];
           uriUpload = data.uri + "/" + file.name;
-          checkPathSlashes(uriUpload);
+          var safeUriUpload = checkPathSlashes(uriUpload);
 
           if (data[field].length > 0) {
             $(data[field]).each(function (i, filesUploaded) {
-              if (filesUploaded.file == uriUpload) {
+              if (filesUploaded.file == safeUriUpload) {
                 alert('This file already exists');
                 $('#' + lastIndex).remove();
                 datasetEditor(collectionId, data);
@@ -109,14 +109,14 @@ function addFileWithDetails (collectionId, data, field, idField) {
 
             if (formdata) {
               $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + uriUpload,
+                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
                 type: "POST",
                 data: formdata,
                 processData: false,
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data[field].push({title:'', file: uriUpload});
+                  data[field].push({title:'', file: safeUriUpload});
                   updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
@@ -136,14 +136,14 @@ function addFileWithDetails (collectionId, data, field, idField) {
 
             if (formdata) {
               $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + uriUpload,
+                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
                 type: "POST",
                 data: formdata,
                 processData: false,
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data[field].push({title:'', file: uriUpload});
+                  data[field].push({title:'', file: safeUriUpload});
                   updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });

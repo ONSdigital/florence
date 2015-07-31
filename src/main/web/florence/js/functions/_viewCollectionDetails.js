@@ -73,8 +73,8 @@ function viewCollectionDetails(collectionId) {
 
     $('.btn-page-edit').click(function () {
       var path = $(this).attr('data-path');
-      checkPathSlashes(path);
-      createWorkspace(path, collectionId, 'edit');
+      var safePath = checkPathSlashes(path);
+      createWorkspace(safePath, collectionId, 'edit');
     });
     $('.page-delete').click(function () {
       var result = confirm("Are you sure you want to delete this page from the collection?");

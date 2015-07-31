@@ -74,6 +74,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
   //Add
   $('#add-' + idField).off().one('click', function () {
+    var latestCheck;
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position;
     var iframeEvent = document.getElementById('iframe').contentWindow;
@@ -83,12 +84,18 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     $('#sortable-' + idField).append(
       '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
       '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get"></textarea>' +
+      '  <label for="latest">Latest</label>' +
+      '  <input id="latest" type="checkbox" value="value"/>' +
       '  <button class="btn-page-get" id="' + idField + '-get_' + editRelated['lastIndex' + field] + '">Get</button>' +
       '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
       '</div>').trigger('create');
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
       createWorkspace(data.uri, collectionId, 'edit');
+    });
+
+    $('#' + idField + ' input:checkbox').on('change', function () {
+      latestCheck = $('#latest').attr('checked');
     });
 
     $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
@@ -98,6 +105,15 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       }
       baseUrl = checkPathParsed(baseUrl);
       var dataUrlData = baseUrl + "/data";
+      var latestUrl;
+      if (latestCheck) {
+        latestUrl = baseUrl.split('/');
+        latestUrl.pop();
+        latestUrl.push('latest');
+        latestUrl.join('/');
+      } else {
+        latestUrl = baseUrl;
+      }
 
       $.ajax({
         url: dataUrlData,
@@ -151,7 +167,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             return;
           }
 
-          data[field].push({uri: baseUrl});
+          data[field].push({uri: latestUrl});
           saveRelated(collectionId, data.uri, data, field, idField);
 
         },

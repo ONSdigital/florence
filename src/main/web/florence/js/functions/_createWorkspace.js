@@ -1,5 +1,5 @@
 function createWorkspace(path, collectionId, menu, stopEventListener) {
-
+  var safePath;
   $("#working-on").on('click', function () {}); // add event listener to mainNav
 
   if(stopEventListener) {
@@ -14,14 +14,14 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     var currentPath = '';
     if (path) {
       currentPath = path;
-      checkPathSlashes(currentPath);
+      safePath = checkPathSlashes(currentPath);
     }
 
-    Florence.globalVars.pagePath = currentPath;
+    Florence.globalVars.pagePath = safePath;
 
     Florence.refreshAdminMenu();
 
-    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + path);
+    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
      $('.section').html(workSpace);
 
     //click handlers
@@ -76,7 +76,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       iframeEvent.addEventListener('click', Florence.Handler, true);
     };
 
-    viewWorkspace(path, collectionId, menu);
+    viewWorkspace(safePath, collectionId, menu);
 
   }
 }
