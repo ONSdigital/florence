@@ -74,7 +74,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
   //Add
   $('#add-' + idField).off().one('click', function () {
-    var latestCheck;
+    var latestCheck = true;
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position;
     var iframeEvent = document.getElementById('iframe').contentWindow;
@@ -98,7 +98,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       createWorkspace(data.uri, collectionId, 'edit');
     });
 
-    $('#latest-container input:checkbox').on('ready change', function () {
+    $('#latest-container input:checkbox').change(function () {
       latestCheck = $(this).prop('checked');
     });
 
