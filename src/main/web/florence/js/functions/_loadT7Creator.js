@@ -9,7 +9,17 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     dataType: 'json',
     crossDomain: true,
     success: function(checkData) {
-      if ((pageType === 'static_landing_page' && checkData.type === 'home_page') || (pageType.match(/static_.+/) && checkData.type.match(/static_.+/))) {
+      if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
+        (pageType === 'static_qmi' || pageType === 'static_adhoc') && checkData.type === 'product_page') {
+        var inheritedBreadcrumb = checkData.breadcrumb;
+        var parentBreadcrumb = {
+          "uri": checkData.uri
+        };
+        inheritedBreadcrumb.push(parentBreadcrumb);
+        breadcrumb = inheritedBreadcrumb;
+        submitFormHandler();
+        return true;
+      } else if (pageType.match(/static_.+/) && checkData.type.match(/static_.+/)) {
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
