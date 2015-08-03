@@ -90,7 +90,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       '</div>').trigger('create');
 
     if (idField === 'article' || idField === 'bulletin' || idField === 'document') {
-      $('#latest-container').append('<label for="latest">Latest</label>' +
+      $('#latest-container').append('<label for="latest">Link to latest</label>' +
         '<input id="latest" type="checkbox" value="value" checked/>');
     }
 
@@ -98,7 +98,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       createWorkspace(data.uri, collectionId, 'edit');
     });
 
-    $('#latest-container input:checkbox').on('change', function () {
+    $('#latest-container input:checkbox').on('ready change', function () {
       latestCheck = $(this).prop('checked');
     });
 
