@@ -1,7 +1,7 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
-  checkPathSlashes(parentUrl);
-  parentUrlData = parentUrl + "/data";
+  var safeParent = checkPathSlashes(parentUrl);
+  parentUrlData = safeParent + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -262,7 +262,7 @@ function submitNoForm (title) {
         "tables": [],
         "correction": [],
         type: pageType,
-        "uri": safeNewUri,
+        "uri": "",
         "parent": {uri: checkData.uri},
         "breadcrumb": []
       };
@@ -290,7 +290,7 @@ function submitNoForm (title) {
         "relatedDocuments": [],
         "relatedMethodology": [],
         type: pageType,
-        "uri": safeNewUri,
+        "uri": "",
         "parent": {uri: checkData.uri},
         "breadcrumb": []
       };

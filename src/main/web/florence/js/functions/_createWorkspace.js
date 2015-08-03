@@ -1,5 +1,5 @@
 function createWorkspace(path, collectionId, menu, stopEventListener) {
-  var safePath;
+  var safePath = '';
   $("#working-on").on('click', function () {}); // add event listener to mainNav
 
   if(stopEventListener) {
