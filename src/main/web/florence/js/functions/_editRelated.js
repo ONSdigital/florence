@@ -106,8 +106,9 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       var baseUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (!baseUrl) {
         baseUrl = getPathNameTrimLast();
+      } else {
+        baseUrl = checkPathParsed(baseUrl);
       }
-      baseUrl = checkPathParsed(baseUrl);
       var dataUrlData = baseUrl + "/data";
       var latestUrl;
       if (latestCheck) {

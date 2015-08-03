@@ -67,14 +67,12 @@ function t3Editor(collectionId, data) {
 
         $("#timeseries-get_" + lastIndexTimeseries).one('click', function () {
             var pastedUrl = $('#timeseries-uri_'+lastIndexTimeseries).val();
-            if (pastedUrl) {
-                checkPathParsed(pastedUrl);
-                var timeseriesUrlData = pastedUrl + "/data";
+            if (!pastedUrl) {
+              pastedUrl = getPathNameTrimLast();
             } else {
-                var timeseriesUrl = getPathNameTrimLast();
-                checkPathParsed(timeseriesUrl);
-                var timeseriesUrlData = timeseriesUrl + "/data";
+              pastedUrl = checkPathParsed(pastedUrl);
             }
+            var timeseriesUrlData = pastedUrl + "/data";
 
             $.ajax({
                 url: timeseriesUrlData,
