@@ -1,12 +1,12 @@
 <div class="section-head">
   <h2>{{name}}</h2>
-  <p>Publish: {{date}}</p>
+  <p>Publish: {{date}}</br>{{createdBy events}}</p>
 </div>
 <div class="section-content">
   <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
   <ul class="page-list">
     {{#each inProgress}}
-      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</span>
+      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
           <button class="btn-page-edit" data-path="{{uri}}">Edit file</button>
           <button class="btn-page-move" data-path="{{uri}}">Move file</button>
@@ -18,7 +18,7 @@
   <h3 id="complete-uris">{{complete.length}} pages awaiting review</h3>
   <ul class="page-list">
     {{#each complete}}
-      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</span>
+      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
           <button class="btn-page-edit" data-path="{{uri}}">Review file</button>
           <button class="btn-page-move" data-path="{{uri}}">Move file</button>
@@ -30,7 +30,7 @@
   <h3 id="reviewed-uris">{{reviewed.length}} pages awaiting approval</h3>
   <ul class="page-list">
     {{#each reviewed}}
-      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</span>
+      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
           <button class="btn-page-edit" data-path="{{uri}}">Edit file</button>
           <button class="btn-page-move" data-path="{{uri}}">Move file</button>

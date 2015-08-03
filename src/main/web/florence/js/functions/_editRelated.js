@@ -74,6 +74,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
   //Add
   $('#add-' + idField).off().one('click', function () {
+    var latestCheck;
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position;
     var iframeEvent = document.getElementById('iframe').contentWindow;
@@ -83,21 +84,40 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     $('#sortable-' + idField).append(
       '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
       '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get"></textarea>' +
+      '  <div id="latest-container"></div>' +
       '  <button class="btn-page-get" id="' + idField + '-get_' + editRelated['lastIndex' + field] + '">Get</button>' +
       '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
       '</div>').trigger('create');
+
+    if (idField === 'article' || idField === 'bulletin' || idField === 'document') {
+      $('#latest-container').append('<label for="latest">Latest</label>' +
+        '<input id="latest" type="checkbox" value="value" checked/>');
+    }
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
       createWorkspace(data.uri, collectionId, 'edit');
     });
 
-    $('#' + idField + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
+    $('#latest-container input:checkbox').on('change', function () {
+      latestCheck = $(this).prop('checked');
+    });
+
+    $('#' + idField  + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
       var baseUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
       if (!baseUrl) {
         baseUrl = getPathNameTrimLast();
       }
       baseUrl = checkPathParsed(baseUrl);
       var dataUrlData = baseUrl + "/data";
+      var latestUrl;
+      if (latestCheck) {
+        var tempUrl = baseUrl.split('/');
+        tempUrl.pop();
+        tempUrl.push('latest');
+        latestUrl = tempUrl.join('/');
+      } else {
+        latestUrl = baseUrl;
+      }
 
       $.ajax({
         url: dataUrlData,
@@ -151,7 +171,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             return;
           }
 
-          data[field].push({uri: baseUrl});
+          data[field].push({uri: latestUrl});
           saveRelated(collectionId, data.uri, data, field, idField);
 
         },
