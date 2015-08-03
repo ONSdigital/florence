@@ -35,6 +35,23 @@ function setupFlorence() {
   Handlebars.registerHelper('plus', function(value1, value2) {
     return value1 + value2;
   });
+  // Add two values together. Primary usage was '@index + 1' to create numbered lists
+  Handlebars.registerHelper('lastEditedBy', function(array) {
+    var event = array[array.length-1];
+    return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+  });
+  Handlebars.registerHelper('createdBy', function(array) {
+    var event = getCollectionCreatedEvent(array);
+    console.log(event);
+    if(event) {
+      return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
+    } else {
+      return "";
+    }
+  });
+
+
+
 
   Florence.globalVars.activeTab = false;
 
