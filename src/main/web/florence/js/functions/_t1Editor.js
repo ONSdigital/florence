@@ -50,15 +50,12 @@ function t1Editor(collectionId, data) {
 
       $("#section-get_" + index).one('click', function () {
         var pastedUrl = $('#uri_'+index).val();
-        if (pastedUrl) {
-          checkPathParsed(pastedUrl);
-          var myUrl = parseURL(pastedUrl);
-          var sectionUrlData = myUrl.pathname + "/data";
+        if (!pastedUrl) {
+          pastedUrl = getPathNameTrimLast();
         } else {
-        var sectionUrl = getPathNameTrimLast();
-        checkPathParsed(sectionUrl);
-        var sectionUrlData = sectionUrl + "/data";
+          pastedUrl = checkPathParsed(pastedUrl);
         }
+        var sectionUrlData = pastedUrl + "/data";
 
         $.ajax({
           url: sectionUrlData,

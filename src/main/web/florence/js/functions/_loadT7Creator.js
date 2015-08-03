@@ -10,7 +10,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function(checkData) {
       if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
-        (pageType === 'static_qmi' || pageType === 'static_adhoc') && checkData.type === 'product_page') {
+        (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology') && checkData.type === 'product_page') {
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
@@ -19,7 +19,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler();
         return true;
-      } else if (pageType.match(/static_.+/) && checkData.type.match(/static_.+/)) {
+      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page' || pageType === 'static_article') && checkData.type.match(/static_.+/)) {
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
