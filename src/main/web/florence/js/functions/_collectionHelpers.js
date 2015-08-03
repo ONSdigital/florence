@@ -18,6 +18,18 @@ function getLastEditedEvent(collection, page) {
   return lastEditedEvent;
 }
 
+function getCollectionCreatedEvent(events) {
+
+  var event = _.chain(events)
+    .filter(function (event) {
+      return event.type === 'CREATED'
+    })
+    .last()
+    .value();
+
+  return event;
+}
+
 function getLastCompletedEvent(collection, page) {
 
   var uri = page;
