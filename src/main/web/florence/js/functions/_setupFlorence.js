@@ -37,17 +37,23 @@ function setupFlorence() {
   });
   // Add two values together. Primary usage was '@index + 1' to create numbered lists
   Handlebars.registerHelper('lastEditedBy', function(array) {
-    var event = array[array.length-1];
-    return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+    if(array) {
+      var event = array[array.length - 1];
+      return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+    }
+    return '';
   });
   Handlebars.registerHelper('createdBy', function(array) {
-    var event = getCollectionCreatedEvent(array);
-    console.log(event);
-    if(event) {
-      return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
-    } else {
-      return "";
+    if(array) {
+      var event = getCollectionCreatedEvent(array);
+      console.log(event);
+      if (event) {
+        return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
+      } else {
+        return "";
+      }
     }
+    return "";
   });
 
 
