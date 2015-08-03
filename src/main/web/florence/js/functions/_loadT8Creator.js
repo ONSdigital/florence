@@ -49,8 +49,8 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = releaseDate;
       }
       newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
-      checkPathSlashes(newUri);
-      pageData.uri = newUri;
+      var safeNewUri = checkPathSlashes(newUri);
+      pageData.uri = safeNewUri;
       pageData.breadcrumb = breadcrumb;
 
       if (!pageData.description.releaseDate) {
@@ -61,8 +61,8 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         return true;
       }
        else {
-        Florence.globalVars.pagePath = newUri;              //Delete this after test
-        checkSaveContent(collectionId, newUri, pageData);
+        Florence.globalVars.pagePath = safeNewUri;              //Delete this after test
+        checkSaveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
     });

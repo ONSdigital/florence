@@ -37,8 +37,8 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
       newUri = makeUrl(parentUrl, pageNameTrimmed);
-      checkPathSlashes(newUri);
-      pageData.uri = newUri;
+      var safeNewUri = checkPathSlashes(newUri);
+      pageData.uri = safeNewUri;
       if (pageData.releaseDate) {
         date = new Date(releaseDate);
         pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
@@ -48,8 +48,8 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 4) {
         alert("This is not a valid file name");
       } else {
-        Florence.globalVars.pagePath = newUri;              //Delete this after test
-        checkSaveContent(collectionId, newUri, pageData);
+        Florence.globalVars.pagePath = safeNewUri;              //Delete this after test
+        checkSaveContent(collectionId, safeNewUri, pageData);
       }
     });
   }

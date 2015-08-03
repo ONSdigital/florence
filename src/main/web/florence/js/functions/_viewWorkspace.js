@@ -4,9 +4,9 @@ function viewWorkspace(path, collectionId, menu) {
   if (path) {
     currentPath = path;
   }
-  checkPathSlashes(currentPath);
+  var safePath = checkPathSlashes(currentPath);
 
-  Florence.globalVars.pagePath = currentPath;
+  Florence.globalVars.pagePath = safePath;
 
   if (menu === 'browse') {
     $('.nav--workspace li').removeClass('selected');
@@ -21,7 +21,7 @@ function viewWorkspace(path, collectionId, menu) {
   else if (menu === 'edit') {
     $('.nav--workspace li').removeClass('selected');
     $("#edit").addClass('selected');
-    loadPageDataIntoEditor(currentPath, collectionId);
+    loadPageDataIntoEditor(safePath, collectionId);
   }
 }
 

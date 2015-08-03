@@ -1,13 +1,13 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
-  checkPathSlashes(path);
+  var safePath = checkPathSlashes(path);
 
-  if (path === '/') {
-    var pageUrlData = path + "data.json";
-    var pageUrlDataTemplate = path + "data.json&resolve";
+  if (safePath === '/') {
+    var pageUrlData = safePath + "data.json";
+    var pageUrlDataTemplate = safePath + "data.json&resolve";
   } else {
-    var pageUrlData = path + "/data.json";
-    var pageUrlDataTemplate = path + "/data.json&resolve";
+    var pageUrlData = safePath + "/data.json";
+    var pageUrlDataTemplate = safePath + "/data.json&resolve";
   }
   var pageData, pageDataTemplate, isPageComplete;
   var ajaxRequests = [];

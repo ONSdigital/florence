@@ -1,9 +1,9 @@
 function getLastEditedEvent(collection, page) {
 
   var uri = page;
-  checkPathSlashes(uri);
+  var safeUri = checkPathSlashes(uri);
 
-  var pageEvents = collection.eventsByUri[uri];
+  var pageEvents = collection.eventsByUri[safeUri];
 
   var lastEditedEvent = _.chain(pageEvents)
     .filter(function (event) {
@@ -18,15 +18,27 @@ function getLastEditedEvent(collection, page) {
   return lastEditedEvent;
 }
 
+function getCollectionCreatedEvent(events) {
+
+  var event = _.chain(events)
+    .filter(function (event) {
+      return event.type === 'CREATED'
+    })
+    .last()
+    .value();
+
+  return event;
+}
+
 function getLastCompletedEvent(collection, page) {
 
   var uri = page;
-  checkPathSlashes(uri);
+  var safeUri = checkPathSlashes(uri);
 
    var lastCompletedEvent;
 
   if (collection.eventsByUri) {
-    var pageEvents = collection.eventsByUri[uri];
+    var pageEvents = collection.eventsByUri[safeUri];
     if (pageEvents) {
       lastCompletedEvent = _.chain(pageEvents)
         .filter(function (event) {

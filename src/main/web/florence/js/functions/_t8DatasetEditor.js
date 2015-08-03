@@ -152,24 +152,24 @@ function datasetEditor(collectionId, data) {
     var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = data.relatedDatasets[parseInt(nameD)].uri;
-      checkPathSlashes (uri);
-      newRelatedData[indexD]= {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedData[indexD]= {uri: safeUri};
     });
     data.relatedDatasets = newRelatedData;
     // Used in links
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
-      checkPathSlashes (uri);
-      newRelatedDocuments[indexU] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedDocuments[indexU] = {uri: safeUri};
     });
     data.relatedDocuments = newRelatedDocuments;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      checkPathSlashes (uri);
-      newRelatedMethodology[indexM] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

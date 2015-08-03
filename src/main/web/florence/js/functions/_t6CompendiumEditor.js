@@ -299,16 +299,16 @@ function compendiumEditor(collectionId, data) {
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function(indexC, nameC){
       var uri = data.chapters[parseInt(nameC)].uri;
-      checkPathSlashes (uri);
-      newChapters[indexC] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newChapters[indexC] = {uri: safeUri};
     });
     data.chapters = newChapters;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedBulletins[parseInt(nameM)].uri;
-      checkPathSlashes (uri);
-      newRelatedMethodology[indexM] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

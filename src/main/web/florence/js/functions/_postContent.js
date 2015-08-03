@@ -1,10 +1,10 @@
 function postContent(collectionId, path, content, success, error) {
-  checkPathSlashes(path);
+  var safePath = checkPathSlashes(path);
   if (path != Florence.globalVars.pagePath) {
     alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.globalVars.pagePath);
   }
   $.ajax({
-    url: "/zebedee/content/" + collectionId + "?uri=" + path + "/data.json",
+    url: "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json",
     dataType: 'json',
     type: 'POST',
     data: content,

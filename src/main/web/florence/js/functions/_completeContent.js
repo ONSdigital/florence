@@ -18,10 +18,10 @@ function saveAndCompleteContent(collectionId, path, content) {
 }
 
 function completeContent(collectionId, path) {
-  checkPathSlashes(path);
+  var safePath = checkPathSlashes(path);
   // Update content
   $.ajax({
-    url: "/zebedee/complete/" + collectionId + "?uri=" + path + "/data.json",
+    url: "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json",
     dataType: 'json',
     type: 'POST',
     success: function (message) {
