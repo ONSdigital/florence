@@ -46,7 +46,15 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
-      newUri = makeUrl(parentUrl, pageNameTrimmed);
+      if (pageType === 'static_qmi') {
+        newUri = makeUrl(parentUrl, 'qmis', pageNameTrimmed);
+      } else if (pageType === 'static_adhoc') {
+        newUri = makeUrl(parentUrl, 'adhocs', pageNameTrimmed);
+      } else if (pageType === 'static_methodology') {
+        newUri = makeUrl(parentUrl, 'methodologies', pageNameTrimmed);
+      } else {
+        newUri = makeUrl(parentUrl, pageNameTrimmed);
+      }
       var safeNewUri = checkPathSlashes(newUri);
       pageData.uri = safeNewUri;
       if (pageData.releaseDate) {

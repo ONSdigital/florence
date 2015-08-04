@@ -24,7 +24,7 @@ function foiEditor(collectionId, data) {
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
-  $("#lastRevised-p").remove();
+  $(".lastRevised-p").remove();
   $("#reference-p").remove();
 
   // Metadata edition and saving
