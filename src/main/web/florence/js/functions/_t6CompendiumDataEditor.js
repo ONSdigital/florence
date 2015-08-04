@@ -147,7 +147,7 @@ function compendiumDataEditor(collectionId, data) {
     $(orderFile).each(function(indexF, nameF){
       var title = $('#file-title_'+nameF).val();
       var fileDescription = $("#file-summary_"+nameF).val();
-      var file = $('#file-filename_' + nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
       newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
     });
     data.downloads = newFiles;
