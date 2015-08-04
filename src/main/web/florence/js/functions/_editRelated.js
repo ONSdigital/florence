@@ -74,7 +74,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
   //Add
   $('#add-' + idField).off().one('click', function () {
-    var latestCheck = true;
+    var latestCheck;
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position;
     var iframeEvent = document.getElementById('iframe').contentWindow;
@@ -90,8 +90,9 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       '</div>').trigger('create');
 
     if (idField === 'article' || idField === 'bulletin' || idField === 'document') {
-      $('#latest-container').append('<label for="latest">Link to latest' +
-        '<input id="latest" type="checkbox" value="value" checked/></label>');
+      $('#latest-container').append('<label for="latest">Link to latest</label>' +
+        '<input id="latest" type="checkbox" value="value" checked/>');
+      latestCheck = true;
     }
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
