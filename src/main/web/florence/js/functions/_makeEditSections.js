@@ -137,7 +137,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
-    addFile (collectionId, pageData, 'downloads', 'file');
+    addPdf(collectionId, pageData, 'downloads', 'file');
     accordion();
     qmiEditor(collectionId, pageData);
   }
