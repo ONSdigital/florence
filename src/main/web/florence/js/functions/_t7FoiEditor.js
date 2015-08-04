@@ -19,6 +19,7 @@ function foiEditor(collectionId, data) {
   $("#metadata-ad").remove();
   $("#summary-p").remove();
   $("#contact-p").remove();
+  $("#natStat").remove();
   $("#survey-p").remove();
   $("#frequency-p").remove();
   $("#compilation-p").remove();
