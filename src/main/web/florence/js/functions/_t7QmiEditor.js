@@ -62,8 +62,17 @@ function qmiEditor(collectionId, data) {
     data.description.sampleSize = $(this).val();
   });
   $("#lastRevised").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.lastRevised = $(this).val();
+    if (!data.description.releaseDate){
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      });
+    } else {
+      dateTmp = data.description.releaseDate;
+      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      });
+    }
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,

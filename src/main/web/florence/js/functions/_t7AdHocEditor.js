@@ -39,8 +39,7 @@ function adHocEditor(collectionId, data) {
     } else {
       dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(dateTmpFormatted)
-      .datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
@@ -96,10 +95,10 @@ function adHocEditor(collectionId, data) {
       data.markdown = newSections;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
-    $(orderFile).each(function(index, name){
-      var title = $('#file-title_'+name).val();
-      var file = $('#file-filename_' + name).val();
-      newFiles[index] = {title: title, uri: file};
+    $(orderFile).each(function(indexF, nameF){
+      var title = $('#file-title_'+nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
+      newFiles[indexF] = {title: title, uri: file};
     });
     data.downloads = newFiles;
   }
