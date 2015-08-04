@@ -19,6 +19,7 @@ function adHocEditor(collectionId, data) {
   $("#metadata-q").remove();
   $("#summary-p").remove();
   $("#contact-p").remove();
+  $("#natStat").remove();
   $("#survey-p").remove();
   $("#frequency-p").remove();
   $("#compilation-p").remove();

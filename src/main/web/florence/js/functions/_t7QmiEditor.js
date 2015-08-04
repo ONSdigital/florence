@@ -85,6 +85,19 @@ function qmiEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function () {
+    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
+      return false;
+    }
+    return true;
+  };
+
+  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  });
+
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
