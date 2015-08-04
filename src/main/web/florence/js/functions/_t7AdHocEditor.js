@@ -24,7 +24,7 @@ function adHocEditor(collectionId, data) {
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
-  $("#lastRevised-p").remove();
+  $(".lastRevised-p").remove();
 
   // Metadata edition and saving
   $("#title").on('input', function () {

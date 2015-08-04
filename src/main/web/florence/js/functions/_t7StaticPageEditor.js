@@ -21,7 +21,7 @@ function staticPageEditor(collectionId, data) {
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
-  $("#lastRevised-p").remove();
+  $(".lastRevised-p").remove();
   $(".release-date").remove();
   $("#reference-p").remove();
 
