@@ -132,7 +132,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             }
           }
 
-          else if (field === 'relatedArticles' && result.type === 'article') {
+          else if (field === 'relatedArticles' && (result.type === 'article' || result.type === 'compendium_landing_page')) {
             if (!data[field]) {
               data[field] = [];
             }
