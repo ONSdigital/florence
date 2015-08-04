@@ -4,6 +4,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
   var html = templates.editorDownloadsWithSummary(dataTemplate);
   $('#'+ idField).replaceWith(html);
   var uriUpload;
+  var downloadExtensions;
   // Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
@@ -50,6 +51,12 @@ function addFileWithDetails (collectionId, data, field, idField) {
   }
 
   //Add
+  if (data.type === 'reference_tables' || data.type === 'compendium_data') {
+    downloadExtensions = /\.csv$|.xls$|.zip$/;
+  } else {
+    alert('Contact an administrator to add this type of file in this document');
+  }
+
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 500;
@@ -95,7 +102,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
                 return;
               }
             });
-            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
+            if (!!file.name.match(downloadExtensions)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -103,7 +110,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
             } else {
               alert('This file type is not supported');
               $('#' + lastIndex).remove();
-              datasetEditor(collectionId, data);
+              addFileWithDetails(collectionId, data, field, idField);
               return;
             }
 
@@ -122,7 +129,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
               });
             }
           } else {
-            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
+            if (!!file.name.match(downloadExtensions)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -130,7 +137,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
             } else {
               alert('This file type is not supported');
               $('#' + lastIndex).remove();
-              datasetEditor(collectionId, data);
+              addFileWithDetails(collectionId, data, field, idField);
               return;
             }
 
