@@ -34,6 +34,9 @@ function loadCreator (collectionId) {
     else if (pageType === 'reference_tables' || pageType === 'dataset') {
       loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
     }
+    else if (pageType === 'release') {
+      loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
+    }
   });
 }
 

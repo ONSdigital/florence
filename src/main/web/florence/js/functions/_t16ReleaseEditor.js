@@ -123,9 +123,9 @@ function releaseEditor(collectionId, data) {
 	    console.log('orderDates = ' + orderDates);
 	    $(orderDates).each(function (indexD, nameD) {
 			var markdown = data.dateChanges[parseInt(nameD)].markdown;
-			var date = $('#previousDate_' + indexD).val();
+			var previousDate = $('#previousDate_' + indexD).val();
 			console.log(date);
-			newDates[indexD] = {date: date, markdown: markdown};
+			newDates[indexD] = {previousDate: previousDate, markdown: markdown};
 	    });
 	    console.log('newDates = ' + newDates);
 	    data.dateChanges = newDates;

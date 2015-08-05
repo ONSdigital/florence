@@ -9,7 +9,7 @@
                 <div id="{{@index}}" class="edit-section__sortable-item dateChange">
                     <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
                     <label for="previousDate_{{@index}}">Release date
-                        <input id="previousDate_{{@index}}" type="text" placeholder="Previous release date" value="{{date}}" />
+                        <input id="previousDate_{{@index}}" type="text" placeholder="Previous release date" value="{{previousDate}}" />
                     </label>
                     {{!-- <textarea class="auto-size" id="{{../idField}}-title_{{@index}}" placeholder="Type title here">{{title}}</textarea> --}}
                     <textarea style="display: none;" id="{{../idField}}-markdown_{{@index}}">{{markdown}}</textarea>
