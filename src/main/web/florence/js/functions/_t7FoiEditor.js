@@ -96,7 +96,7 @@ function foiEditor(collectionId, data) {
     $(orderFile).each(function(indexF, nameF){
       var title = $('#file-title_'+nameF).val();
       var file = data.downloads[parseInt(nameF)].file;
-      newFiles[indexF] = {title: title, uri: file};
+      newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
   }
