@@ -31,12 +31,12 @@ function initialiseNoteMarkdown(collectionId, data, field, idField) {
     $('#' + idField +'-note_'+index).click(function() {
       console.log(idField);
       var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
-      console.log('editedSectionValue = ' + editedSectionValue);
+      //console.log('editedSectionValue = ' + editedSectionValue);
 
       var saveContent = function(updatedContent) {
         data[field][index].markdown = updatedContent;
-        console.log('updatedContent = ' + updatedContent)
-        data[field][index].date = $('#' + 'previousDate_' + index).val();
+        //console.log('updatedContent = ' + updatedContent)
+        data[field][index].previousDate = $('#' + 'previousDate_' + index).val();
         saveNoteMarkdown (collectionId, data.uri, data, field, idField);
         refreshPreview(data.uri);
         runDatePicker();
@@ -63,7 +63,7 @@ function initialiseNoteMarkdown(collectionId, data, field, idField) {
   $('#add-' + idField).off().one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 300;
-    data[field].push({markdown:"", date:""});
+    data[field].push({markdown:"", previousDate:""});
     saveNoteMarkdown(collectionId, data.uri, data, field, idField);
   });
 
