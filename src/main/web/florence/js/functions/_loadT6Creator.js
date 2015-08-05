@@ -1,7 +1,7 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
-  checkPathSlashes(parentUrl);
-  parentUrlData = parentUrl + "/data";
+  var safeParent = checkPathSlashes(parentUrl);
+  parentUrlData = safeParent + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -103,11 +103,11 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         alert('Oops! Something went the wrong way.');
         loadCreateScreen(collectionId);
       }
-      newUri = '/' + newUri;
-      pageData.uri = newUri;
+      var safeNewUri = checkPathSlashes(newUri);
+      pageData.uri = safeNewUri;
       pageData.breadcrumb = breadcrumb;
 
-      Florence.pathTest = newUri;
+      Florence.globalVars.pagePath = safeNewUri;              //Delete this after test
 
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
@@ -120,23 +120,23 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         return true;
       }
       else {
-        getUri = newUri + '/data.json';
+        getUri = safeNewUri + '/data.json';
         getPageData(collectionId, getUri,
           success = function() {
             alert('This page already exists');
           },
           // if the page does not exist, create it
           error = function() {
-            postContent(collectionId, newUri, JSON.stringify(pageData),
+            postContent(collectionId, safeNewUri, JSON.stringify(pageData),
               success = function (message) {
                 console.log("Updating completed " + message);
                 if (pageData.type === 'compendium_landing_page') {
-                  viewWorkspace(newUri, collectionId, 'edit');
-                  refreshPreview(newUri);
+                  viewWorkspace(safeNewUri, collectionId, 'edit');
+                  refreshPreview(safeNewUri);
                   return true;
                 }
                 else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-                  updateParentLink (newUri);
+                  updateParentLink (safeNewUri);
                   return true;
                 }
               },
@@ -166,29 +166,29 @@ function submitNoForm (title) {
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
       newUri = makeUrl(parentUrl, pageTitleTrimmed);
-      newUri = '/' + newUri;
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
 
-    pageData.uri = newUri;
+  var safeNewUri = checkPathSlashes(newUri);
+    pageData.uri = safeNewUri;
     pageData.breadcrumb = breadcrumb;
 
-    Florence.pathTest = newUri;
+    Florence.globalVars.pagePath = safeNewUri;              //Delete this after test
 
     // check if the page exists
-    getUri = newUri + '/data.json';
+    getUri = safeNewUri + '/data.json';
     getPageData(collectionId, getUri,
       success = function() {
         alert('This page already exists');
       },
       // if the page does not exist, create it
       error = function(){
-        postContent(collectionId, newUri, JSON.stringify(pageData),
+        postContent(collectionId, safeNewUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
-            updateParentLink (newUri);
+            updateParentLink (safeNewUri);
           },
           error = function (response) {
             if (response.status === 400) {
@@ -262,7 +262,7 @@ function submitNoForm (title) {
         "tables": [],
         "correction": [],
         type: pageType,
-        "uri": newUri,
+        "uri": "",
         "parent": {uri: checkData.uri},
         "breadcrumb": []
       };
@@ -290,7 +290,7 @@ function submitNoForm (title) {
         "relatedDocuments": [],
         "relatedMethodology": [],
         type: pageType,
-        "uri": newUri,
+        "uri": "",
         "parent": {uri: checkData.uri},
         "breadcrumb": []
       };

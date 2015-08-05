@@ -6,11 +6,11 @@ function qmiEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -18,7 +18,7 @@ function qmiEditor(collectionId, data) {
   $("#metadata-f").remove();
   $("#metadata-ad").remove();
   $("#summary-p").remove();
-  $("#releaseDate-p").remove();
+  $(".release-date").remove();
   $("#reference-p").remove();
 
   // Metadata edition and saving
@@ -55,16 +55,23 @@ function qmiEditor(collectionId, data) {
   });
   $("#geoCoverage").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.geoCoverage = $(this).val();
+    data.description.geographicCoverage = $(this).val();
   });
   $("#sampleSize").on('input', function () {
     $(this).textareaAutoSize();
     data.description.sampleSize = $(this).val();
   });
-  $("#lastRevised").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.lastRevised = $(this).val();
-  });
+  if (!data.description.lastRevised){
+    $('#lastRevised').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.lastRevised = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+    });
+  } else {
+    dateTmp = data.description.lastRevised;
+    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#lastRevised').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.lastRevised = new Date($('#lastRevised').datepicker('getDate')).toISOString();
+    });
+  }
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
                         allowSpaces: true,

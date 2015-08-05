@@ -8,11 +8,11 @@ function compendiumEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -145,8 +145,8 @@ function compendiumEditor(collectionId, data) {
             Florence.Editor.isDirty = false;
             deleteContent(collectionId, selectedChapter, function() {
               refreshPreview(path);
-              if (path != Florence.pathTest) {
-                alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.pathTest);
+              if (path != Florence.globalVars.pagePath) {
+                alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.globalVars.pagePath);
               }
               loadPageDataIntoEditor(path, collectionId);
             }, error);
@@ -221,8 +221,8 @@ function compendiumEditor(collectionId, data) {
               Florence.Editor.isDirty = false;
               deleteContent(collectionId, selectedData, function() {
                 refreshPreview(path);
-                if (path != Florence.pathTest) {
-                  alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.pathTest);
+                if (path != Florence.globalVars.pagePath) {
+                  alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.globalVars.pagePath);
                 }
                 loadPageDataIntoEditor(path, collectionId);
               }, error);
@@ -299,16 +299,16 @@ function compendiumEditor(collectionId, data) {
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function(indexC, nameC){
       var uri = data.chapters[parseInt(nameC)].uri;
-      checkPathSlashes (uri);
-      newChapters[indexC] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newChapters[indexC] = {uri: safeUri};
     });
     data.chapters = newChapters;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedBulletins[parseInt(nameM)].uri;
-      checkPathSlashes (uri);
-      newRelatedMethodology[indexM] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

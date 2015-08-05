@@ -35,8 +35,31 @@ function setupFlorence() {
   Handlebars.registerHelper('plus', function(value1, value2) {
     return value1 + value2;
   });
+  // Add two values together. Primary usage was '@index + 1' to create numbered lists
+  Handlebars.registerHelper('lastEditedBy', function(array) {
+    if(array) {
+      var event = array[array.length - 1];
+      return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+    }
+    return '';
+  });
+  Handlebars.registerHelper('createdBy', function(array) {
+    if(array) {
+      var event = getCollectionCreatedEvent(array);
+      console.log(event);
+      if (event) {
+        return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
+      } else {
+        return "";
+      }
+    }
+    return "";
+  });
 
-  localStorage.setItem('activeTab', false); // do we need this?
+
+
+
+  Florence.globalVars.activeTab = false;
 
   // load main florence template
   var florence = templates.florence;

@@ -6,11 +6,11 @@ function articleEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -158,16 +158,16 @@ function articleEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = data.relatedArticles[parseInt(nameA)].uri;
-      checkPathSlashes (uri);
-      newArticle[indexA]= {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newArticle[indexA]= {uri: safeUri};
     });
     data.relatedArticles = newArticle;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
-      checkPathSlashes (uri);
-      newRelated[indexD] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelated[indexD] = {uri: safeUri};
     });
     data.relatedData = newRelated;
     // External links

@@ -5,11 +5,11 @@ function staticPageEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
 
   $("#metadata-q").remove();
@@ -21,7 +21,7 @@ function staticPageEditor(collectionId, data) {
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
-  $("#lastRevised-p").remove();
+  $(".lastRevised-p").remove();
   $(".release-date").remove();
   $("#reference-p").remove();
 

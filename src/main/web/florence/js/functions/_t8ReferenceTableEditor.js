@@ -6,11 +6,11 @@ function referenceTableEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -149,16 +149,16 @@ function referenceTableEditor(collectionId, data) {
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function(indexU, nameU){
       var uri = data.relatedDocuments[parseInt(nameU)].uri;
-      checkPathSlashes (uri);
-      newRelatedDocuments[indexU] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedDocuments[indexU] = {uri: safeUri};
     });
     data.relatedDocuments = newRelatedDocuments;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      checkPathSlashes (uri);
-      newRelatedMethodology[indexM] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

@@ -14,7 +14,7 @@ function addFile (collectionId, data, field, idField) {
         var result = confirm("Are you sure you want to delete this file?");
         if (result === true) {
           var position = $(".workspace-edit").scrollTop();
-          localStorage.setItem("pagePos", position + 200);
+          Florence.globalVars.pagePos = position + 200;
           $(this).parent().remove();
           $.ajax({
             url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
@@ -47,7 +47,7 @@ function addFile (collectionId, data, field, idField) {
   //Add
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
-    localStorage.setItem("pagePos", position + 200);
+    Florence.globalVars.pagePos = position + 200;
     $('#sortable-' + idField).append(
         '<div id="' + lastIndex + '" class="edit-section__sortable-item">' +
         '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
@@ -79,11 +79,11 @@ function addFile (collectionId, data, field, idField) {
 
           var file = this.files[0];
           uriUpload = data.uri + "/" + file.name;
-          checkPathSlashes(uriUpload);
+          var safeUriUpload = checkPathSlashes(uriUpload);
 
           if (data[field].length > 0) {
             $(data[field]).each(function (i, filesUploaded) {
-              if (filesUploaded.file == uriUpload) {
+              if (filesUploaded.file == safeUriUpload) {
                 alert('This file already exists');
                 $('#' + lastIndex).remove();
                 addFile(collectionId, data, field, idField);
@@ -104,14 +104,14 @@ function addFile (collectionId, data, field, idField) {
 
             if (formdata) {
               $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + uriUpload,
+                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
                 type: "POST",
                 data: formdata,
                 processData: false,
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data[field].push({title:'', file: uriUpload});
+                  data[field].push({title:'', file: safeUriUpload});
                   updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });
@@ -131,14 +131,14 @@ function addFile (collectionId, data, field, idField) {
 
             if (formdata) {
               $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + uriUpload,
+                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
                 type: "POST",
                 data: formdata,
                 processData: false,
                 contentType: false,
                 success: function (res) {
                   document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data[field].push({title:'', file: uriUpload});
+                  data[field].push({title:'', file: safeUriUpload});
                   updateContent(collectionId, data.uri, JSON.stringify(data));
                 }
               });

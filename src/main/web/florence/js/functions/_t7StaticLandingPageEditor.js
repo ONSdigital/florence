@@ -5,11 +5,11 @@ function staticLandingPageEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
 
 
@@ -42,25 +42,25 @@ function staticLandingPageEditor(collectionId, data) {
     $('#section-uri_'+index).on('paste', function() {
       setTimeout(function () {
       var pastedUrl = $('#section-uri_'+index).val();
-        checkPathParsed(pastedUrl);
-        $('#section-uri_'+index).val(pastedUrl);
+        var safeUrl = checkPathParsed(pastedUrl);
+        $('#section-uri_'+index).val(safeUrl);
       }, 50);
     });
 
     if (!$('#section-uri_'+index).val()) {
-      $('<button class="btn-edit-save-and-submit-for-review" id="section-get_' + index + '">Get</button>').insertAfter('#section-uri_'+index);
-    }
-    $('#section-get_'+index).click(function() {
-      var iframeEvent = document.getElementById('iframe').contentWindow;
-      iframeEvent.removeEventListener('click', Florence.Handler, true);
-      createWorkspace(data.uri, collectionId, '', true);
-      $('#section-get_'+index).html('Paste').off().one('click', function() {
-        uriChecked = getPathNameTrimLast();
-        checkPathParsed(uriChecked);
-        data.sections[index].uri = uriChecked;
-        saveRelated(collectionId, data.uri, data);
+      $('<button class="btn-edit-save-and-submit-for-review" id="section-get_' + index + '">Get</button>').insertAfter('#section-uri_' + index);
+      $('#section-get_' + index).click(function () {
+        var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+        createWorkspace(data.uri, collectionId, '', true);
+        $('#section-get_' + index).html('Copy url').off().one('click', function () {
+          var uriCheck = getPathNameTrimLast();
+          var uriChecked = checkPathSlashes(uriCheck);
+          data.sections[index].uri = uriChecked;
+          saveRelated(collectionId, data.uri, data);
+        });
       });
-    });
+    }
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = {
@@ -124,8 +124,8 @@ function staticLandingPageEditor(collectionId, data) {
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var summary = data.sections[parseInt(nameS)].summary;
-      var uri = $('#section-uri_' + nameS).val();
-      uriChecked = checkPathParsed(uri);
+      var uri = data.sections[parseInt(nameS)].uri;
+      var uriChecked = checkPathSlashes(uri);
       newSections[indexS] = {uri: uriChecked, summary: summary};
     });
     data.sections = newSections;

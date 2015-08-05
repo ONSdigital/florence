@@ -1,10 +1,13 @@
 function checkPathParsed (uri) {
-  if (uri.charAt(uri.length-1) === '/') {
-      uri = uri.slice(0, -1);
+  if (uri.match(/^(https?|ftp):\/\/(([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+(:([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+)?@)?((([a-z0-9]\.|[a-z0-9][a-z0-9-]*[a-z0-9]\.)*[a-z][a-z0-9-]*[a-z0-9]|((\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5])\.){3}(\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5]))(:\d+)?)(((\/+([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)?)?)?(#([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)?/i)) {
+    var myUrl = parseURL(uri);
+    var safeUrl = myUrl.pathname;
+    if (safeUrl.charAt(safeUrl.length-1) === '/') {
+      safeUrl = safeUrl.slice(0, -1);
+    }
+  return safeUrl;
+  } else {
+    alert('This is not a valid url');
+    return false;
   }
-  if (uri.charAt(0) !== '/') {
-    uri = '/' + uri;
-  }
-  var myUrl = parseURL(uri);
-  return myUrl.pathname;
 }

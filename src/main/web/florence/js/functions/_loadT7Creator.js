@@ -9,7 +9,17 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     dataType: 'json',
     crossDomain: true,
     success: function(checkData) {
-      if ((pageType === 'static_landing_page' && checkData.type === 'home_page') || (pageType.match(/static_.+/) && checkData.type.match(/static_.+/))) {
+      if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
+        (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology') && checkData.type === 'product_page') {
+        var inheritedBreadcrumb = checkData.breadcrumb;
+        var parentBreadcrumb = {
+          "uri": checkData.uri
+        };
+        inheritedBreadcrumb.push(parentBreadcrumb);
+        breadcrumb = inheritedBreadcrumb;
+        submitFormHandler();
+        return true;
+      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page' || pageType === 'static_article') && checkData.type.match(/static_.+/)) {
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
@@ -36,9 +46,17 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
-      newUri = makeUrl(parentUrl, pageNameTrimmed);
-      newUri = '/' + newUri;
-      pageData.uri = newUri;
+      if (pageType === 'static_qmi') {
+        newUri = makeUrl(parentUrl, 'qmis', pageNameTrimmed);
+      } else if (pageType === 'static_adhoc') {
+        newUri = makeUrl(parentUrl, 'adhocs', pageNameTrimmed);
+      } else if (pageType === 'static_methodology') {
+        newUri = makeUrl(parentUrl, 'methodologies', pageNameTrimmed);
+      } else {
+        newUri = makeUrl(parentUrl, pageNameTrimmed);
+      }
+      var safeNewUri = checkPathSlashes(newUri);
+      pageData.uri = safeNewUri;
       if (pageData.releaseDate) {
         date = new Date(releaseDate);
         pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
@@ -48,8 +66,8 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 4) {
         alert("This is not a valid file name");
       } else {
-        Florence.pathTest = newUri;
-        checkSaveContent(collectionId, newUri, pageData);
+        Florence.globalVars.pagePath = safeNewUri;              //Delete this after test
+        checkSaveContent(collectionId, safeNewUri, pageData);
       }
     });
   }

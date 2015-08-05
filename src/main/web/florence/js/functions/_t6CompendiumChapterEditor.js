@@ -7,11 +7,11 @@ function compendiumChapterEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -163,8 +163,8 @@ function compendiumChapterEditor(collectionId, data) {
     var orderArticle = $("#sortable-document").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {
       var uri = data.relatedDocuments[parseInt(nameB)].uri;
-      checkPathSlashes (uri);
-      newRelatedDocuments[indexB]= {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedDocuments[indexB]= {uri: safeUri};
     });
     data.relatedDocuments = newRelatedDocuments;
     // External links

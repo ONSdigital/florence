@@ -16,7 +16,8 @@ function loadCreator (collectionId) {
 
   $('select').off().change(function () {
     pageType = $(this).val();
-    var parentUrl = localStorage.getItem("pageurl");
+    //var parentUrl = localStorage.getItem("pageurl");
+    var parentUrl = Florence.globalVars.pagePath;
 
     if (pageType === 'bulletin' || pageType === 'article') {
       loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
