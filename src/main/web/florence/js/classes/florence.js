@@ -52,13 +52,14 @@ Florence.Handler = function () {
   function processPreviewClick() {
     setTimeout(function () {
       checkForPageChanged(function (newUrl) {
+        var safeUrl = checkPathSlashes(newUrl);
         var browserLocation = document.getElementById('iframe').contentWindow.location.href;
         $('.browser-location').val(browserLocation);
         if ($('.workspace-edit').length) {
-          loadPageDataIntoEditor(newUrl, Florence.collection.id);
+          loadPageDataIntoEditor(safeUrl, Florence.collection.id);
         }
         else if ($('.workspace-browse').length) {
-          treeNodeSelect(newUrl);
+          treeNodeSelect(safeUrl);
         }
       });
     }, 200);
