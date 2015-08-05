@@ -84,7 +84,8 @@ public class Proxy implements Filter {
                 String headerName = headerNames.nextElement();
 
                 if (StringUtils.equalsIgnoreCase(headerName, "Cookie") ||
-                        StringUtils.equalsIgnoreCase(headerName, "Content-Type"))
+                        StringUtils.equalsIgnoreCase(headerName, "Content-Type") ||
+                        StringUtils.equalsIgnoreCase(headerName, "X-Florence-Token"))
                     proxyRequest.addHeader(headerName, request.getHeader(headerName));
             }
 
