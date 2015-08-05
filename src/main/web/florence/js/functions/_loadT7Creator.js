@@ -140,6 +140,7 @@ function pageTypeDataT7(pageType) {
         "geographicCoverage": "",
         "sampleSize": null,
         "lastRevised": null,
+        "nationalStatistic": false,
         "keywords": [],
         "metaDescription": "",
         "title": ""

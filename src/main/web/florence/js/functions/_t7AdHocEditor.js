@@ -19,6 +19,7 @@ function adHocEditor(collectionId, data) {
   $("#metadata-q").remove();
   $("#summary-p").remove();
   $("#contact-p").remove();
+  $("#natStat").remove();
   $("#survey-p").remove();
   $("#frequency-p").remove();
   $("#compilation-p").remove();
@@ -48,7 +49,12 @@ function adHocEditor(collectionId, data) {
   }
   $("#reference").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.reference = $(this).val();
+    var isNumber = $(this).val();
+    if (isNumber.match(/^\d+$/)) {
+      data.description.reference = isNumber;
+    } else {
+      alert('This needs to be a number');
+    }
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,

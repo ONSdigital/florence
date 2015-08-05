@@ -90,8 +90,8 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       '</div>').trigger('create');
 
     if (idField === 'article' || idField === 'bulletin' || idField === 'document') {
-      $('#latest-container').append('<label for="latest">Link to latest</label>' +
-        '<input id="latest" type="checkbox" value="value" checked/>');
+      $('#latest-container').append('<label for="latest">Link to latest' +
+        '<input id="latest" type="checkbox" value="value" checked/></label>');
       latestCheck = true;
     }
 
@@ -132,7 +132,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             }
           }
 
-          else if (field === 'relatedArticles' && result.type === 'article') {
+          else if (field === 'relatedArticles' && (result.type === 'article' || result.type === 'compendium_landing_page')) {
             if (!data[field]) {
               data[field] = [];
             }
