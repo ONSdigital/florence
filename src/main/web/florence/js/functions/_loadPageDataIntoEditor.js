@@ -1,32 +1,17 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
-  var safePath = checkPathSlashes(path);
-
-  if (safePath === '/') {
-    var pageUrlData = safePath + "data.json";
-    var pageUrlDataTemplate = safePath + "data.json&resolve";
+  if (path === '/') {
+    var pageUrlData = path + "data.json";
   } else {
-    var pageUrlData = safePath + "/data.json";
-    var pageUrlDataTemplate = safePath + "/data.json&resolve";
+    var pageUrlData = path + "/data.json";
   }
-  var pageData, pageDataTemplate, isPageComplete;
+  var pageData, isPageComplete;
   var ajaxRequests = [];
 
   ajaxRequests.push(
     getPageData(collectionId, pageUrlData,
       success = function (response) {
         pageData = response;
-      },
-      error = function (response) {
-        handleApiError(response);
-      }
-    )
-  );
-
-  ajaxRequests.push(
-    getPageData(collectionId, pageUrlDataTemplate,
-      success = function (response) {
-        pageDataTemplate = response;
       },
       error = function (response) {
         handleApiError(response);
@@ -46,7 +31,6 @@ function loadPageDataIntoEditor(path, collectionId) {
   );
 
   $.when.apply($, ajaxRequests).then(function () {
-    pageDataTemplate.isPageComplete = isPageComplete;
-    makeEditSections(collectionId, pageData, pageDataTemplate);
+    makeEditSections(collectionId, pageData, isPageComplete);
   });
 }

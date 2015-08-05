@@ -1,4 +1,5 @@
 function editRelated (collectionId, data, templateData, field, idField) {
+  //resolveDescription(collectionId, data, templateData, field, idField);
   var list = templateData[field];
   var dataTemplate = createRelatedTemplate(idField, list);
   var html = templates.editorRelated(dataTemplate);
@@ -89,7 +90,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
       '</div>').trigger('create');
 
-    if (idField === 'article' || idField === 'bulletin' || idField === 'document') {
+    if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document') {
       $('#latest-container').append('<label for="latest">Link to latest' +
         '<input id="latest" type="checkbox" value="value" checked/></label>');
       latestCheck = true;
@@ -104,11 +105,11 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     });
 
     $('#' + idField  + '-get_' + editRelated['lastIndex' + field]).one('click', function () {
-      var baseUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
-      if (!baseUrl) {
-        baseUrl = getPathNameTrimLast();
+      var pastedUrl = $('#' + idField + '-uri_'+editRelated['lastIndex' + field]).val();
+      if (!pastedUrl) {
+        var baseUrl = getPathNameTrimLast();
       } else {
-        baseUrl = checkPathParsed(baseUrl);
+        var baseUrl = checkPathParsed(pastedUrl);
       }
       var dataUrlData = baseUrl + "/data";
       var latestUrl;
@@ -162,7 +163,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             }
           }
 
-          else if (field === 'relatedMethodology' && result.type === 'static_methodology') {
+          else if (field === 'relatedMethodology' && (result.type === 'static_methodology' || result.type === 'static_qmi')) {
             if (!data[field]) {
               data[field] = [];
             }
@@ -188,4 +189,48 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     $('#sortable-' + idField).sortable();
   }
   sortable();
+
 }
+
+function resolveDescription(collectionId, data, templateData, field, idField) {
+  if (templateData[field]) {
+    $(templateData[field]).each(function (index, uriRelated) {
+      var path = uriRelated.uri + '/data.json';
+      getPageData(collectionId, path,
+        success = function (response) {
+          templateData[field][index].description = response.description;
+          var list =  templateData[field];
+          var dataTemplate = createRelatedTemplate(idField, list);
+          var html = templates.editorRelated(dataTemplate);
+          $('#'+ idField).replaceWith(html);
+          initialiseRelated(collectionId, data, templateData, field, idField);
+        }
+      )
+    });
+  } else {
+    var list =  templateData[field];
+    var dataTemplate = createRelatedTemplate(idField, list);
+    var html = templates.editorRelated(dataTemplate);
+    $('#'+ idField).replaceWith(html);
+    initialiseRelated(collectionId, data, templateData, field, idField);
+  }
+}
+
+//function resolveDescription(collectionId, data, templateData, field, idField) {
+//  var ajaxRequest = [];
+//  $(templateData[field]).each(function (index, path) {
+//    ajaxRequest.push(getPageDataDescription(collectionId, path,
+//      success = function (response) {
+//        templateData[field][index].description = response;
+//      }
+//    ));
+//  });
+//
+//  $.when.apply($, ajaxRequest).then(function () {
+//    var list = templateData[field];
+//    var dataTemplate = createRelatedTemplate(idField, list);
+//    var html = templates.editorRelated(dataTemplate);
+//    $('#' + idField).replaceWith(html);
+//    initialiseRelated(collectionId, data, templateData, field, idField);
+//  });
+//}
