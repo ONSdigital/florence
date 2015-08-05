@@ -6,11 +6,11 @@ function t1Editor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
 
   // Metadata edition and saving
@@ -50,15 +50,12 @@ function t1Editor(collectionId, data) {
 
       $("#section-get_" + index).one('click', function () {
         var pastedUrl = $('#uri_'+index).val();
-        if (pastedUrl) {
-          checkPathParsed(pastedUrl);
-          var myUrl = parseURL(pastedUrl);
-          var sectionUrlData = myUrl.pathname + "/data";
+        if (!pastedUrl) {
+          pastedUrl = getPathNameTrimLast();
         } else {
-        var sectionUrl = getPathNameTrimLast();
-        checkPathParsed(sectionUrl);
-        var sectionUrlData = sectionUrl + "/data";
+          pastedUrl = checkPathParsed(pastedUrl);
         }
+        var sectionUrlData = pastedUrl + "/data";
 
         $.ajax({
           url: sectionUrlData,
@@ -136,10 +133,10 @@ function t1Editor(collectionId, data) {
     var orderSections = $("#sortable-sections").sortable('toArray');
     $(orderSections).each(function(indexS, nameS){
       var uri = data.sections[parseInt(nameS)].statistics.uri;
-      checkPathSlashes (uri);
+      var safeUri = checkPathSlashes (uri);
       var link = data.sections[parseInt(nameS)].theme.uri;
       newSections[parseInt(indexS)] = {theme: {uri: link},
-                                       statistics: {uri: uri}
+                                       statistics: {uri: safeUri}
                                       };
     });
     data.sections = newSections;

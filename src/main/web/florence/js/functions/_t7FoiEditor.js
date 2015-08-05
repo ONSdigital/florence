@@ -6,11 +6,11 @@ function foiEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -24,7 +24,7 @@ function foiEditor(collectionId, data) {
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
-  $("#lastRevised-p").remove();
+  $(".lastRevised-p").remove();
   $("#reference-p").remove();
 
   // Metadata edition and saving
@@ -39,8 +39,8 @@ function foiEditor(collectionId, data) {
       });
     } else {
       dateTmp = data.description.releaseDate;
-      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp)).val(dateTmpFormatted)
-          .datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
@@ -92,10 +92,10 @@ function foiEditor(collectionId, data) {
     data.markdown = newSections;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
-    $(orderFile).each(function(index, name){
-      var title = $('#file-title_'+name).val();
-      var file = $('#file-filename_' + name).val();
-      newFiles[index] = {title: title, uri: file};
+    $(orderFile).each(function(indexF, nameF){
+      var title = $('#file-title_'+nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
+      newFiles[indexF] = {title: title, uri: file};
     });
     data.downloads = newFiles;
   }

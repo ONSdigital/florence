@@ -7,11 +7,11 @@ function bulletinEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -169,16 +169,16 @@ function bulletinEditor(collectionId, data) {
     var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = data.relatedBulletins[parseInt(nameB)].uri;
-      checkPathSlashes (uri);
-      newBulletin[indexB] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newBulletin[indexB] = {uri: safeUri};
     });
     data.relatedBulletins = newBulletin;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
-      checkPathSlashes (uri);
-      newRelated[indexD] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelated[indexD] = {uri: safeUri};
     });
     data.relatedData = newRelated;
     // External links

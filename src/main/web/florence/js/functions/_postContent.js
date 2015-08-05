@@ -1,10 +1,13 @@
 function postContent(collectionId, path, content, success, error) {
-  checkPathSlashes(path);
-  if (path != Florence.pathTest) {
-    alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+path+ '\npathTest: '+Florence.pathTest);
+  var safePath = checkPathSlashes(path);
+  if (safePath != Florence.globalVars.pagePath) {
+    alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+ safePath + '\npathTest: '+Florence.globalVars.pagePath);
+  }
+  if (safePath === '/') {
+    safePath = '';          // edge case for home
   }
   $.ajax({
-    url: "/zebedee/content/" + collectionId + "?uri=" + path + "/data.json",
+    url: "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json",
     dataType: 'json',
     type: 'POST',
     data: content,

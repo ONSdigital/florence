@@ -7,11 +7,11 @@ function compendiumDataEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -155,24 +155,24 @@ function compendiumDataEditor(collectionId, data) {
     var orderRelatedDocument = $("#sortable-document").sortable('toArray');
     $(orderRelatedDocument).each(function(indexD, nameD){
       var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      checkPathSlashes (uri);
-      newRelatedDocuments[indexD] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedDocuments[indexD] = {uri: safeUri};
     });
     data.relatedDocuments = newRelatedDocuments;
     // Related datasets
     var orderRelatedDataset = $("#sortable-dataset").sortable('toArray');
     $(orderRelatedDataset).each(function(indexDt, nameDt){
       var uri = data.relatedDatasets[parseInt(nameDt)].uri;
-      checkPathSlashes (uri);
-      newRelatedData[indexDt] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedData[indexDt] = {uri: safeUri};
     });
     data.relatedDatasets = newRelatedData;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      checkPathSlashes (uri);
-      newRelatedMethodology[indexM] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }

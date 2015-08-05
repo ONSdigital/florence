@@ -66,7 +66,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       processData: false,
       contentType: false,
       success: function (res) {
-        generatePng('#chart', '#hiddenCanvas');
+        //generatePng('#chart', '#hiddenCanvas');
         //renderDownloadChart();
         //generatePng('#hiddenSvgForDownload', '#hiddenCanvasForDownload', '-download');
 
@@ -117,20 +117,6 @@ function loadChartBuilder(pageData, onSave, chart) {
       }
     }
   }
-
-  function renderDownloadChart() {
-    chart = buildChartObject();
-    var preview = $('#preview-chart');
-    $('#hiddenSvgForDownload').empty();
-
-    var chartHeight = preview.width() * chart.aspectRatio;
-    var chartWidth = preview.width();
-
-    renderChartObject('hiddenSvgForDownload', chart, chartHeight, chartWidth);
-    renderSvgAnnotations('#hiddenSvgForDownload', chart, chartHeight, chartWidth)
-  }
-
-
 
   function buildChartObject() {
     var json = $('#chart-data').val();
@@ -189,8 +175,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     parseChartObject(chart);
 
     chart.files = [];
-    chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
-    chart.files.push({ type:'png', filename:chart.filename + '.png' });
+    //chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
+    //chart.files.push({ type:'png', filename:chart.filename + '.png' });
 
     return chart;
   }

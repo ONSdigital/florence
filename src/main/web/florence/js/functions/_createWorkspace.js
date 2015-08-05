@@ -1,5 +1,5 @@
 function createWorkspace(path, collectionId, menu, stopEventListener) {
-
+  var safePath = '';
   $("#working-on").on('click', function () {}); // add event listener to mainNav
 
   if(stopEventListener) {
@@ -14,15 +14,14 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     var currentPath = '';
     if (path) {
       currentPath = path;
-      checkPathSlashes(currentPath);
+      safePath = checkPathSlashes(currentPath);
     }
 
-    localStorage.removeItem("pageurl");
-    localStorage.setItem("pageurl", currentPath);
+    Florence.globalVars.pagePath = safePath;
 
     Florence.refreshAdminMenu();
 
-    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + path);
+    var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
      $('.section').html(workSpace);
 
     //click handlers
@@ -52,8 +51,8 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       } else if (menuItem.is('#create')) {
         loadCreateScreen(collectionId);
       } else if (menuItem.is('#edit')) {
-        Florence.pathTest = getPathName(document.getElementById('iframe').contentWindow.location.href);
-        loadPageDataIntoEditor(Florence.pathTest, Florence.collection.id);
+        Florence.globalVars.pagePath = getPathName();
+        loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
       } else {
         loadBrowseScreen(collectionId);
       }
@@ -73,11 +72,11 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     document.getElementById('iframe').onload = function () {
       var browserLocation = document.getElementById('iframe').contentWindow.location.href;
       $('.browser-location').val(browserLocation);
-        var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.addEventListener('click', Florence.Handler, true);
+      var iframeEvent = document.getElementById('iframe').contentWindow;
+      iframeEvent.addEventListener('click', Florence.Handler, true);
     };
 
-    viewWorkspace(path, collectionId, menu);
+    viewWorkspace(safePath, collectionId, menu);
 
   }
 }

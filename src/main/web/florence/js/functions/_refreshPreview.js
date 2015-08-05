@@ -1,14 +1,15 @@
 function refreshPreview(url) {
 
   if (url) {
-    checkPathSlashes(url);
-    url = Florence.tredegarBaseUrl + url;
+    var safeUrl = checkPathSlashes(url);
+    url = Florence.tredegarBaseUrl + safeUrl;
     document.getElementById('iframe').contentWindow.location.href = url;
   }
   else {
-    var urlStored = localStorage.getItem("pageurl");
-    checkPathSlashes(urlStored);
-    var url = Florence.tredegarBaseUrl + urlStored;
+    //var urlStored = localStorage.getItem("pageurl");
+    var urlStored = Florence.globalVars.pagePath;
+    var safeUrl = checkPathSlashes(urlStored);
+    var url = Florence.tredegarBaseUrl + safeUrl;
     document.getElementById('iframe').contentWindow.location.href = url;
   }
 }

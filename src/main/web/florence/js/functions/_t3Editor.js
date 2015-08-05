@@ -7,11 +7,11 @@ function t3Editor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -53,7 +53,7 @@ function t3Editor(collectionId, data) {
     //Add new related timeseries
     $("#add-timeseries").one('click', function () {
         var position = $(".workspace-edit").scrollTop();
-        localStorage.setItem("pagePos", position);
+        Florence.globalVars.pagePos = position;
         var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
         createWorkspace(data.uri, collectionId, '', true);
@@ -67,14 +67,12 @@ function t3Editor(collectionId, data) {
 
         $("#timeseries-get_" + lastIndexTimeseries).one('click', function () {
             var pastedUrl = $('#timeseries-uri_'+lastIndexTimeseries).val();
-            if (pastedUrl) {
-                checkPathParsed(pastedUrl);
-                var timeseriesUrlData = pastedUrl + "/data";
+            if (!pastedUrl) {
+              pastedUrl = getPathNameTrimLast();
             } else {
-                var timeseriesUrl = getPathNameTrimLast();
-                checkPathParsed(timeseriesUrl);
-                var timeseriesUrlData = timeseriesUrl + "/data";
+              pastedUrl = checkPathParsed(pastedUrl);
             }
+            var timeseriesUrlData = pastedUrl + "/data";
 
             $.ajax({
                 url: timeseriesUrlData,
@@ -150,32 +148,32 @@ function t3Editor(collectionId, data) {
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {
       var uri = data.items[parseInt(titleT)].uri;
-      checkPathSlashes(uri);
-      newTimeseries[indexT] = {uri: uri};
+      var safeUri = checkPathSlashes(uri);
+      newTimeseries[indexT] = {uri: safeUri};
     });
     data.items = newTimeseries;
     // Bulletins
     var orderBulletins = $("#sortable-bulletins").sortable('toArray');
     $(orderBulletins).each(function (indexB, titleB) {
       var uri = data.statsBulletins[parseInt(titleB)].uri;
-      checkPathSlashes (uri);
-      newBulletins[indexB] = {uri: uri};
+      var safeUri = checkPathSlashes(uri);
+      newBulletins[indexB] = {uri: safeUri};
     });
     data.statsBulletins = newBulletins;
     // Articles
     var orderArticles = $("#sortable-articles").sortable('toArray');
     $(orderArticles).each(function (indexA, titleA) {
       var uri = data.relatedArticles[parseInt(titleA)].uri;
-      checkPathSlashes (uri);
-      newArticles[indexA] = {uri: uri};
+      var safeUri = checkPathSlashes(uri);
+      newArticles[indexA] = {uri: safeUri};
     });
     data.relatedArticles = newArticles;
     // Datasets
     var orderDatasets = $("#sortable-datasets").sortable('toArray');
     $(orderDatasets).each(function (indexD, titleD) {
       var uri = data.datasets[parseInt(titleD)].uri;
-      checkPathSlashes (uri);
-      newDatasets[indexD] = {uri: uri};
+      var safeUri = checkPathSlashes(uri);
+      newDatasets[indexD] = {uri: safeUri};
     });
     data.datasets = newDatasets;
   }

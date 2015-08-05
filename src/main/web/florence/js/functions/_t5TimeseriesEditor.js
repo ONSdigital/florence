@@ -6,11 +6,11 @@ function timeseriesEditor(collectionId, data) {
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if(setActiveTab !== false) {
-      localStorage.setItem('activeTab', setActiveTab);
+      Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
-  getActiveTab = localStorage.getItem('activeTab');
+  getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
 
@@ -148,32 +148,32 @@ function timeseriesEditor(collectionId, data) {
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
       var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      checkPathSlashes (uri);
-      newDocument[indexD]= {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newDocument[indexD]= {uri: safeUri};
     });
     data.relatedDocuments = newDocument;
     // Related timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, nameT) {
       var uri = data.relatedData[parseInt(nameT)].uri;
-      checkPathSlashes (uri);
-      newTimeseries[indexT]= {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newTimeseries[indexT]= {uri: safeUri};
     });
     data.relatedData = newTimeseries;
     // Related datasets
     var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = data.relatedDatasets[parseInt(nameD)].uri;
-      checkPathSlashes (uri);
-      newRelated[indexD]= {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelated[indexD]= {uri: safeUri};
     });
     data.relatedDatasets = newRelated;
     // Related methodology
     var orderUsedIn = $("#sortable-methodology").sortable('toArray');
     $(orderUsedIn).each(function(indexM, nameM){
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      checkPathSlashes (uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: uri};
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[parseInt(indexM)] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;
   }
