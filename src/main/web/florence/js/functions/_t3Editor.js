@@ -68,11 +68,11 @@ function t3Editor(collectionId, data) {
         $("#timeseries-get_" + lastIndexTimeseries).one('click', function () {
             var pastedUrl = $('#timeseries-uri_'+lastIndexTimeseries).val();
             if (!pastedUrl) {
-              pastedUrl = getPathNameTrimLast();
+              var timeseriesUrl = getPathNameTrimLast();
             } else {
-              pastedUrl = checkPathParsed(pastedUrl);
+              var timeseriesUrl = checkPathParsed(pastedUrl);
             }
-            var timeseriesUrlData = pastedUrl + "/data";
+            var timeseriesUrlData = timeseriesUrl + "/data";
 
             $.ajax({
                 url: timeseriesUrlData,
@@ -176,6 +176,13 @@ function t3Editor(collectionId, data) {
       newDatasets[indexD] = {uri: safeUri};
     });
     data.datasets = newDatasets;
+    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    $(orderRelatedMethodology).each(function(indexM, nameM){
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedMethodology;
   }
 }
 
