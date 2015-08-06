@@ -1,7 +1,6 @@
 function t3Editor(collectionId, data) {
 
-  var newTimeseries = [], newBulletins = [], newArticles = [], newDatasets = [];
-  var lastIndexTimeseries;
+  var newTimeseries = [], newBulletins = [], newArticles = [], newDatasets = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -37,89 +36,6 @@ function t3Editor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-    $(data.items).each(function(index, section) {
-        lastIndexTimeseries = index + 1;
-        // Delete
-        $("#timeseries-delete_"+index).click(function() {
-          var result = confirm("Are you sure you want to delete?");
-          if (result === true) {
-            $("#" + index).remove();
-            data.items.splice(index, 1);
-            updateContent(collectionId, data.uri, JSON.stringify(data));
-          }
-        });
-    });
-
-    //Add new related timeseries
-    $("#add-timeseries").one('click', function () {
-        var position = $(".workspace-edit").scrollTop();
-        Florence.globalVars.pagePos = position;
-        var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-        createWorkspace(data.uri, collectionId, '', true);
-
-        $('#sortable-timeseries').append(
-            '<div id="' + lastIndexTimeseries + '" class="edit-section__sortable-item">' +
-            '  <textarea id="timeseries-uri_' + lastIndexTimeseries + '" placeholder="Go to the related timeseries and click Get"></textarea>' +
-            '  <button class="btn-page-get" id="timeseries-get_' + lastIndexTimeseries + '">Get</button>' +
-            '  <button class="btn-page-cancel" id="timeseries-cancel_' + lastIndexTimeseries + '">Cancel</button>' +
-            '</div>').trigger('create');
-
-        $("#timeseries-get_" + lastIndexTimeseries).one('click', function () {
-            var pastedUrl = $('#timeseries-uri_'+lastIndexTimeseries).val();
-            if (!pastedUrl) {
-              var timeseriesUrl = getPathNameTrimLast();
-            } else {
-              var timeseriesUrl = checkPathParsed(pastedUrl);
-            }
-            var timeseriesUrlData = timeseriesUrl + "/data";
-
-            $.ajax({
-                url: timeseriesUrlData,
-                dataType: 'json',
-                crossDomain: true,
-                success: function (relatedData) {
-                    if (relatedData.type === 'timeseries') {
-                        if (!data.items) {
-                            data.items = [];
-                        }
-                        data.items.push({uri: relatedData.uri});
-                        postContent(collectionId, data.uri, JSON.stringify(data),
-                            success = function (response) {
-                                Florence.Editor.isDirty = false;
-                                createWorkspace(data.uri, collectionId, 'edit');
-                            },
-                            error = function (response) {
-                                if (response.status === 400) {
-                                    alert("Cannot edit this file. It is already part of another collection.");
-                                }
-                                else if (response.status === 401) {
-                                    alert("You are not authorised to update content.");
-                                }
-                                else {
-                                    handleApiError(response);
-                                }
-                            }
-                        );
-                    } else {
-                        alert("This is not a timeseries");
-                    }
-                },
-                error: function () {
-                    console.log('No page data returned');
-                }
-            });
-        });
-
-        $("#timeseries-cancel_" + lastIndexTimeseries).one('click', function () {
-            createWorkspace(data.uri, collectionId, 'edit');
-        });
-    });
-
-    function sortableTimeseries() {
-        $("#sortable-timeseries").sortable();
-    }
-    sortableTimeseries();
 
   // Save
   var editNav = $('.edit-nav');
