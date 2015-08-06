@@ -33,26 +33,7 @@
       </div>
     </div>
 
-    <div class="edit-section">
-        <div class="edit-section__head">
-            <h1>Related timeseries</h1>
-            <p></p>
-        </div>
-        <div class="edit-section__content">
-            <div id="sortable-timeseries" class="edit-section__sortable">
-                {{#each this.items}}
-                    <div id="{{@index}}" class="edit-section__sortable-item">
-                        <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
-                        <p id="timeseries-title_{{@index}}">{{data.description.title}}</p>
-                        <button class="btn-page-delete" id="timeseries-delete_{{@index}}">Delete</button>
-                    </div>
-                {{/each}}
-            </div>
-            <div class="text-center">
-                <button class="btn-add-section" id="add-timeseries">Add timeseries</button>
-            </div>
-        </div>
-    </div>
+    <div id="timeseries"></div>
 
     <div id="bulletins"></div>
 

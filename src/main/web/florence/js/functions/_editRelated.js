@@ -1,10 +1,10 @@
 function editRelated (collectionId, data, templateData, field, idField) {
-  //resolveDescription(collectionId, data, templateData, field, idField);
   var list = templateData[field];
   var dataTemplate = createRelatedTemplate(idField, list);
   var html = templates.editorRelated(dataTemplate);
   $('#'+ idField).replaceWith(html);
   initialiseRelated(collectionId, data, templateData, field, idField);
+  resolveDescription(collectionId, data, templateData, field, idField);
 }
 
 function refreshRelated(collectionId, data, templateData, field, idField) {
@@ -193,44 +193,25 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 }
 
 function resolveDescription(collectionId, data, templateData, field, idField) {
-  if (templateData[field]) {
-    $(templateData[field]).each(function (index, uriRelated) {
-      var path = uriRelated.uri + '/data.json';
-      getPageData(collectionId, path,
-        success = function (response) {
-          templateData[field][index].description = response.description;
-          var list =  templateData[field];
-          var dataTemplate = createRelatedTemplate(idField, list);
-          var html = templates.editorRelated(dataTemplate);
-          $('#'+ idField).replaceWith(html);
-          initialiseRelated(collectionId, data, templateData, field, idField);
-        }
-      )
-    });
-  } else {
-    var list =  templateData[field];
-    var dataTemplate = createRelatedTemplate(idField, list);
-    var html = templates.editorRelated(dataTemplate);
-    $('#'+ idField).replaceWith(html);
-    initialiseRelated(collectionId, data, templateData, field, idField);
-  }
+  var ajaxRequest = [];
+  $(templateData[field]).each(function (index, path) {
+    var eachUri = path.uri;
+    var dfd = $.Deferred();
+    getPageDataDescription(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].description = response;
+        dfd.resolve();
+      },
+      error = function () {
+        alert(field + ' uri '+ eachUri+ ' is not found.');
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    refreshRelated(collectionId, data, templateData, field, idField);
+  });
 }
 
-//function resolveDescription(collectionId, data, templateData, field, idField) {
-//  var ajaxRequest = [];
-//  $(templateData[field]).each(function (index, path) {
-//    ajaxRequest.push(getPageDataDescription(collectionId, path,
-//      success = function (response) {
-//        templateData[field][index].description = response;
-//      }
-//    ));
-//  });
-//
-//  $.when.apply($, ajaxRequest).then(function () {
-//    var list = templateData[field];
-//    var dataTemplate = createRelatedTemplate(idField, list);
-//    var html = templates.editorRelated(dataTemplate);
-//    $('#' + idField).replaceWith(html);
-//    initialiseRelated(collectionId, data, templateData, field, idField);
-//  });
-//}

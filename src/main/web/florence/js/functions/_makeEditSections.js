@@ -7,7 +7,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
     accordion();
-    t1Editor(collectionId, pageData);
+    t1Editor(collectionId, pageData, templateData);
   }
 
   else if (pageData.type === 'taxonomy_landing_page') {
@@ -20,6 +20,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'product_page') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'items', 'timeseries');
     editRelated (collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'articles');
     editRelated (collectionId, pageData, templateData, 'datasets', 'datasets');
