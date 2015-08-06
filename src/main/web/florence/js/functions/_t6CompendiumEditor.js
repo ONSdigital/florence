@@ -217,7 +217,6 @@ function compendiumEditor(collectionId, data) {
           data.datasets.splice(index, 1);
           postContent(collectionId, path, JSON.stringify(data),
             success = function (response) {
-              //console.log("Updating completed " + response);
               Florence.Editor.isDirty = false;
               deleteContent(collectionId, selectedData, function() {
                 refreshPreview(path);
