@@ -85,6 +85,19 @@ function qmiEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function () {
+    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
+      return false;
+    }
+    return true;
+  };
+
+  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  });
+
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -117,10 +130,10 @@ function qmiEditor(collectionId, data) {
       data.markdown = newSections;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
-    $(orderFile).each(function(index, name){
-      var title = $('#file-title_'+name).val();
-      var file = $('#file-filename_' + name).val();
-      newFiles[index] = {title: title, uri: file};
+    $(orderFile).each(function(indexF, nameF){
+      var title = $('#file-title_'+nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
+      newFiles[indexF] = {title: title, uri: file};
     });
     data.downloads = newFiles;
   }

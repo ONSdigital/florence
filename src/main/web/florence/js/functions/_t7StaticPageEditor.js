@@ -16,6 +16,7 @@ function staticPageEditor(collectionId, data) {
   $("#metadata-f").remove();
   $("#metadata-ad").remove();
   $("#contact-p").remove();
+  $("#natStat").remove();
   $("#survey-p").remove();
   $("#frequency-p").remove();
   $("#compilation-p").remove();

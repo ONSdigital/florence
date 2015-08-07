@@ -1,5 +1,6 @@
 function addFile (collectionId, data, field, idField) {
   var list = data[field];
+  var downloadExtensions;
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorDownloads(dataTemplate);
   $('#'+ idField).replaceWith(html);
@@ -45,6 +46,18 @@ function addFile (collectionId, data, field, idField) {
   }
 
   //Add
+  if (data.type === 'dataset') {
+    downloadExtensions = /\.csv$|.xls$|.csdb$|.zip$/;
+  } else if (data.type === 'static_adhoc') {
+    downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+  } else if (data.type === 'static_qmi') {
+    downloadExtensions = /\.pdf$/;
+  } else if (data.type === 'static_foi') {
+    downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+  } else {
+    alert('Contact an administrator to add this type of file in this document');
+  }
+
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
@@ -90,7 +103,7 @@ function addFile (collectionId, data, field, idField) {
                 return;
               }
             });
-            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
+            if (!!file.name.match(downloadExtensions)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -117,7 +130,7 @@ function addFile (collectionId, data, field, idField) {
               });
             }
           } else {
-            if (!!file.name.match(/\.csv$|.xls$|.csdb$|.zip$/)) {
+            if (!!file.name.match(downloadExtensions)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);

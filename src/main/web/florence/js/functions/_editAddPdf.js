@@ -1,10 +1,9 @@
-function addFileWithDetails (collectionId, data, field, idField) {
+function addPdf (collectionId, data, field, idField) {
   var list = data[field];
   var dataTemplate = {list: list, idField: idField};
-  var html = templates.editorDownloadsWithSummary(dataTemplate);
+  var html = templates.editorDownloads(dataTemplate);
   $('#'+ idField).replaceWith(html);
   var uriUpload;
-  var downloadExtensions;
   // Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
@@ -15,7 +14,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
         var result = confirm("Are you sure you want to delete this file?");
         if (result === true) {
           var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position + 500;
+          Florence.globalVars.pagePos = position + 200;
           $(this).parent().remove();
           $.ajax({
             url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
@@ -31,44 +30,33 @@ function addFileWithDetails (collectionId, data, field, idField) {
           updateContent(collectionId, data.uri, JSON.stringify(data));
         }
       });
-
       // Edit
       $('#' + idField + '-edit_' + index).click(function() {
         var editedSectionValue = {
-          "title": $('#' + idField + '-title_' + index).val(),
-          "markdown": $('#' + idField + '-summary_' + index).val()
+          "markdown": $('#' + idField + '-title_' + index).val(),
         };
-
-         var saveContent = function(updatedContent) {
-           data[field][index].fileDescription = updatedContent;
-           data[field][index].title = $('#' + idField + '-title_' + index).val();
-           updateContent(collectionId, data.uri, JSON.stringify(data));
-         };
-         loadMarkdownEditor(editedSectionValue, saveContent, data);
+        var saveContent = function(updatedContent) {
+          data[field][index].markdown = updatedContent;
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        };
+        loadMarkdownEditor(editedSectionValue, saveContent, data);
       });
-
     });
   }
 
   //Add
-  if (data.type === 'reference_tables' || data.type === 'compendium_data') {
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
-  } else {
-    alert('Contact an administrator to add this type of file in this document');
-  }
-
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
-    Florence.globalVars.pagePos = position + 500;
+    Florence.globalVars.pagePos = position + 200;
     $('#sortable-' + idField).append(
-        '<div id="' + lastIndex + '" class="edit-section__sortable-item">' +
-        '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
-        '    <p><input type="file" name="files" id="files">' +
-        '    <p>' +
-        '  </form>' +
-        '  <div id="response"></div>' +
-        '  <ul id="list"></ul>' +
-        '</div>');
+      '<div id="' + lastIndex + '" class="edit-section__sortable-item">' +
+      '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
+      '    <p><input type="file" name="files" id="files">' +
+      '    <p>' +
+      '  </form>' +
+      '  <div id="response"></div>' +
+      '  <ul id="list"></ul>' +
+      '</div>');
 
     (function () {
       var input = document.getElementById("files"), formdata = false;
@@ -78,9 +66,9 @@ function addFileWithDetails (collectionId, data, field, idField) {
       }
       function showUploadedItem (source) {
         var list = document.getElementById("list"),
-            li   = document.createElement("li"),
-            para = document.createElement("p"),
-            text = document.createTextNode(source);
+          li   = document.createElement("li"),
+          para = document.createElement("p"),
+          text = document.createTextNode(source);
         para.appendChild(text);
         li.appendChild(para);
         list.appendChild(li);
@@ -98,11 +86,11 @@ function addFileWithDetails (collectionId, data, field, idField) {
               if (filesUploaded.file == safeUriUpload) {
                 alert('This file already exists');
                 $('#' + lastIndex).remove();
-                datasetEditor(collectionId, data);
+                addFile(collectionId, data, field, idField);
                 return;
               }
             });
-            if (!!file.name.match(downloadExtensions)) {
+            if (!!file.name.match(/\.pdf$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -110,7 +98,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
             } else {
               alert('This file type is not supported');
               $('#' + lastIndex).remove();
-              addFileWithDetails(collectionId, data, field, idField);
+              addFile(collectionId, data, field, idField);
               return;
             }
 
@@ -129,7 +117,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
               });
             }
           } else {
-            if (!!file.name.match(downloadExtensions)) {
+            if (!!file.name.match(/\.pdf$/)) {
               showUploadedItem(file.name);
               if (formdata) {
                 formdata.append("name", file);
@@ -137,7 +125,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
             } else {
               alert('This file type is not supported');
               $('#' + lastIndex).remove();
-              addFileWithDetails(collectionId, data, field, idField);
+              addFile(collectionId, data, field, idField);
               return;
             }
 
@@ -166,4 +154,5 @@ function addFileWithDetails (collectionId, data, field, idField) {
   }
   sortable();
 }
+
 
