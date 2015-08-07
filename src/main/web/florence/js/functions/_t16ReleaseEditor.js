@@ -1,6 +1,6 @@
 function releaseEditor(collectionId, data) {
 	var newSections = [], newDates = [];
-	var secActiveTab, getActiveTab;
+	var setActiveTab, getActiveTab;
 
 	$(".edit-accordion").on('accordionactivate', function(event, ui) {
 	    setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -78,13 +78,13 @@ function releaseEditor(collectionId, data) {
     	data.description.nationalStatistic = $("#natStat input[type='checkbox']").prop('checked') ? true : false;
   	});
 
-  	$("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
-    	data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
-  	});
+  $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
+    data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
+  });
 
-  	$("#dateChange").on('input', function (){
-  		data.dateChanges.previousDate = $(this).val();
-  	});
+  $("#dateChange").on('input', function (){
+    data.dateChanges.previousDate = $(this).val();
+  });
 
 	// Save
 	var editNav = $('.edit-nav');
@@ -96,39 +96,39 @@ function releaseEditor(collectionId, data) {
 	});
 
 	// completed to review
-    editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-      //pageData = $('.fl-editor__headline').val();
-      save();
-      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
-    });
+  editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
+    //pageData = $('.fl-editor__headline').val();
+    save();
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+  });
 
-    // reviewed to approve
-    editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-      save();
-      saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
-    });
+  // reviewed to approve
+  editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
+    save();
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+  });
 
 
 	function save() {
-	    // Sections
-	    var orderSection = $("#sortable-section").sortable('toArray');
-	    $(orderSection).each(function (indexS, nameS) {
-	      	var markdown = data.sections[parseInt(nameS)].markdown;
-	      	var title = $('#section-title_' + nameS).val();
-	      	newSections[indexS] = {title: title, markdown: markdown};
-	    });
-	    data.sections = newSections;
-	    // Date changes
-	    var orderDates = $("#sortable-date").sortable('toArray');
-	    console.log('orderDates = ' + orderDates);
-	    $(orderDates).each(function (indexD, nameD) {
-			var markdown = data.dateChanges[parseInt(nameD)].markdown;
-			var previousDate = $('#previousDate_' + indexD).val();
-			console.log(date);
-			newDates[indexD] = {previousDate: previousDate, markdown: markdown};
-	    });
-	    console.log('newDates = ' + newDates);
-	    data.dateChanges = newDates;
+	// Sections
+    var orderSection = $("#sortable-section").sortable('toArray');
+    $(orderSection).each(function (indexS, nameS) {
+      var markdown = data.sections[parseInt(nameS)].markdown;
+      var title = $('#section-title_' + nameS).val();
+      newSections[indexS] = {title: title, markdown: markdown};
+    });
+    data.sections = newSections;
+    // Date changes
+    var orderDates = $("#sortable-date").sortable('toArray');
+    console.log('orderDates = ' + orderDates);
+    $(orderDates).each(function (indexD, nameD) {
+      var markdown = data.dateChanges[parseInt(nameD)].markdown;
+      var previousDate = $('#previousDate_' + indexD).val();
+      console.log(date);
+      newDates[indexD] = {previousDate: previousDate, markdown: markdown};
+    });
+    console.log('newDates = ' + newDates);
+    data.dateChanges = newDates;
   }
 
 }

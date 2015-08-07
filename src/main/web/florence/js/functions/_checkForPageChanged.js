@@ -1,5 +1,4 @@
 function checkForPageChanged(onChanged) {
-  //var iframeUrl = localStorage.getItem("pageurl");
   var iframeUrl = Florence.globalVars.pagePath;
   var nowUrl = $('#iframe')[0].contentWindow.document.location.pathname;
   if (iframeUrl !== nowUrl) {

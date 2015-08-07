@@ -1,4 +1,4 @@
-function t1Editor(collectionId, data) {
+function t1Editor(collectionId, data, templateData) {
 
   var newSections = [];
   var setActiveTab, getActiveTab;
@@ -12,6 +12,8 @@ function t1Editor(collectionId, data) {
 
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
+
+  resolveTitle(collectionId, templateData, 'sections', 'section');
 
   // Metadata edition and saving
   $("#summary").on('input', function () {
@@ -102,7 +104,7 @@ function t1Editor(collectionId, data) {
   });
 
   function sortableSections() {
-    $("#sortable-sections").sortable();
+    $("#sortable-section").sortable();
   }
   sortableSections();
 
@@ -130,7 +132,7 @@ function t1Editor(collectionId, data) {
 
   function save() {
     // sections
-    var orderSections = $("#sortable-sections").sortable('toArray');
+    var orderSections = $("#sortable-section").sortable('toArray');
     $(orderSections).each(function(indexS, nameS){
       var uri = data.sections[parseInt(nameS)].statistics.uri;
       var safeUri = checkPathSlashes (uri);
@@ -143,3 +145,27 @@ function t1Editor(collectionId, data) {
   }
 }
 
+function resolveTitle(collectionId, templateData, field, idField) {
+  var ajaxRequest = [];
+  $(templateData[field]).each(function (index, path) {
+    var eachUri = path.statistics.uri;
+    var dfd = $.Deferred();
+    getPageDataTitle(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].statistics.title = response.title;
+        dfd.resolve();
+      },
+      error = function () {
+        alert(field + ' uri '+ eachUri+ ' is not found.');
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    var dataTemplate = templateData[field];
+    var html = templates.workEditT1Sections(dataTemplate);
+    $('#to-populate').replaceWith(html);
+  });
+}
