@@ -1,0 +1,90 @@
+<section class="panel workspace-edit">
+	<div class="edit-accordion">
+		<div class="edit-section">
+    		<div class="edit-section__head">
+	        	<h1>Metadata</h1>
+	        	<p id="metadata-d">Title | Summary | Release date | Next release | Contact | Summary | NS status | Cancel</p>
+      		</div>
+      		<div class="edit-section__content">
+		        <div id="metadata-list">
+		          	<div>
+		            	<label for="title">Title
+		              		<textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
+		            	</label>
+		          	</div>
+		          	<div class="edition">
+			            <label for="edition">Edition
+			         	   <textarea class="auto-size" type="text" id="edition">{{this.description.edition}}</textarea>
+			            </label>
+			        </div>
+		          	<div id="summary-p">
+		            	<label for="summary">Summary
+		              		<textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
+		            	</label>
+		          	</div>
+		          	<div class="release-date">
+		            	<label for="releaseDate">Release date
+		              		<input id="releaseDate" type="text" placeholder="Day month year" value="{{this.description.releaseDate}}"/>
+		            	</label>
+		          	</div>
+		          	<div class="next-p">
+		           		<label for="nextRelease">Next release
+		              		<textarea class="auto-size" type="text" id="nextRelease">{{this.description.nextRelease}}</textarea>
+		            	</label>
+		          	</div>
+		          	<div>
+		           		<label for="contactName">Contact name
+		              		<textarea class="auto-size" type="text" id="contactName">{{this.description.contact.name}}</textarea>
+		            	</label>
+		          	</div>
+		          	<div>
+		            	<label for="contactEmail">Contact email
+		             		<textarea class="auto-size" type="text" id="contactEmail">{{this.description.contact.email}}</textarea>
+		           		</label>
+		          	</div>
+		          	<div>
+		            	<label for="contactTelephone">Contact telephone
+		              		<textarea class="auto-size" type="text" id="contactTelephone">{{this.description.contact.telephone}}</textarea>
+		            	</label>
+		          	</div>
+		          	<div id="natStat">
+		            	<label for="natStat">National statistic </label>
+		            	<input type="checkbox" name="natStat" value="false" class="checkbox" />
+		          	</div>
+		          	<div id="cancelled">
+		          		<label for="cancelled">Cancelled </label>
+		          		<input type="checkbox" name="cancelled" value="false" class="checkbox" />
+		          	</div>
+		        </div>
+	      	</div>
+      	</div>
+      	<div id="document"></div>
+      	<div id="data"></div>
+      	<div id="section"></div>
+      	<div id="tab"></div>
+  		<div id="date"></div>
+
+  		{{!-- <div class="edit-section" id="dateChange">
+			<div class="edit-section__head">
+				<h1>Release date changes</h1>
+				<p>Previous date | Change notice</p>
+			</div>
+			<div class="edit-section__content">
+				{{#each dateChanges}}
+				<div id="sortable-date" class="release-date edit-section__sortable-item">
+              		<input id="releaseDate" type="text" placeholder="Day month year" value="{{this.previousDate}}"/>
+              		<textarea style="display: none;" id="date-markdown_{{@index}}">{{this.changeNotice}}</textarea>
+                    <button class="btn-markdown-edit" id="date-edit_{{@index}}">Note</button>
+                    <button class="btn-page-delete" id="date-delete_{{@index}}">Delete</button>
+				</div>
+				{{/each}}
+				<div class="text-center">
+		            <button class="btn-add-section" id="add-date">Add date</button>
+		        </div>
+	        </div>
+		</div> --}}
+	</div>
+	<nav class="edit-nav">
+    	{{> editNav}}
+  	</nav>
+</section>

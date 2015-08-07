@@ -137,7 +137,7 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
-    addFile (collectionId, pageData, 'downloads', 'file');
+    addFile(collectionId, pageData, 'downloads', 'file');
     accordion();
     qmiEditor(collectionId, pageData);
   }
@@ -188,6 +188,17 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     accordion();
     referenceTableEditor(collectionId, pageData);
+  } 
+
+  else if (pageData.type === 'release') {
+    var html = templates.workEditT16(templateData);
+    $('.workspace-menu').html(html);
+    editMarkdown (collectionId, pageData, 'sections', 'section');
+    editMarkdown (collectionId, pageData, 'accordion', 'tab');
+    editDate (collectionId, pageData, 'dateChanges', 'date');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');
+    releaseEditor(collectionId, pageData);
   }
 
   else {
