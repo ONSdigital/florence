@@ -1,9 +1,13 @@
-function makeEditSections(collectionId, pageData, templateData) {           //pageData (plain), templateData (resolved)
+function makeEditSections(collectionId, pageData, isPageComplete) {
+
+  var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
+  templateData.isPageComplete = isPageComplete;
+
   if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
     accordion();
-    t1Editor(collectionId, pageData);
+    t1Editor(collectionId, pageData, templateData);
   }
 
   else if (pageData.type === 'taxonomy_landing_page') {
@@ -16,9 +20,11 @@ function makeEditSections(collectionId, pageData, templateData) {           //pa
   else if (pageData.type === 'product_page') {
     var html = templates.workEditT3(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'items', 'timeseries');
     editRelated (collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'articles');
     editRelated (collectionId, pageData, templateData, 'datasets', 'datasets');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     accordion();
     t3Editor(collectionId, pageData);
   }

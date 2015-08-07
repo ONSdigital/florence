@@ -59,8 +59,8 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 	        	pageData.description.releaseDate = releaseDate;
 	      	}
 			newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
-			newUri = '/' + newUri;
-			pageData.uri = newUri;
+			safeNewUri = checkPathSlashes(newUri);
+			pageData.uri = safeNewUri;
 			pageData.breadcrumb = breadcrumb;
 
 			if (!pageData.description.releaseDate) {
@@ -70,8 +70,8 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
         		alert("This is not a valid file title");
 	        	return true;
 			} else {
-	        	Florence.globalVars.pagePath = newUri;
-	        	checkSaveContent(collectionId, newUri, pageData);
+	        	Florence.globalVars.pagePath = safeNewUri;
+	        	checkSaveContent(collectionId, safeNewUri, pageData);
 			}
 			e.preventDefault();
 	    });

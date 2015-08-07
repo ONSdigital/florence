@@ -313,7 +313,7 @@ function submitNoForm (title) {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
-    postContent(collectionId, parentUrl, JSON.stringify(parentData),
+    postContent(collectionId, safeParent, JSON.stringify(parentData),
       success = function (message) {
         viewWorkspace(childUri, collectionId, 'edit');
         refreshPreview(childUri);
