@@ -1,4 +1,4 @@
-function compendiumEditor(collectionId, data) {
+function compendiumEditor(collectionId, data, templateData) {
 
 //  var index = data.release;
   var newChapters = [], newRelatedMethodology = [];
@@ -15,6 +15,9 @@ function compendiumEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition ();
+
+  resolveTitleT6(collectionId, templateData, 'chapters');
+  resolveTitleT6(collectionId, templateData, 'datasets');
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {
@@ -180,7 +183,7 @@ function compendiumEditor(collectionId, data) {
         chapterTitle = $(this).val();
       });
     $('#chapter-add').on('click', function () {
-      if (chapterTitle.length < 4) {
+      if (chapterTitle.length < 5) {
         alert("This is not a valid file title");
         return true;
       } else {
@@ -199,7 +202,7 @@ function compendiumEditor(collectionId, data) {
   if (!data.datasets || data.datasets.length === 0) {
     lastIndexDataset = 0;
   } else {
-    $(data.datasets).each(function(index, table) {
+    $(data.datasets).each(function(index) {
       $("#data-edit_"+index).click(function() {
         //open document
         var selectedData = $("#data-title_"+index).attr('data-url');
@@ -216,7 +219,7 @@ function compendiumEditor(collectionId, data) {
           $("#"+index).remove();
           data.datasets.splice(index, 1);
           postContent(collectionId, path, JSON.stringify(data),
-            success = function (response) {
+            success = function () {
               Florence.Editor.isDirty = false;
               deleteContent(collectionId, selectedData, function() {
                 refreshPreview(path);
@@ -257,7 +260,7 @@ function compendiumEditor(collectionId, data) {
           tableTitle = $(this).val();
         });
       $('#data-add').on('click', function () {
-        if (tableTitle.length < 4) {
+        if (tableTitle.length < 5) {
           alert("This is not a valid file title");
           return true;
         } else {
@@ -311,5 +314,35 @@ function compendiumEditor(collectionId, data) {
     });
     data.relatedMethodology = newRelatedMethodology;
   }
+}
+
+function resolveTitleT6(collectionId, templateData, field) {
+  var ajaxRequest = [];
+  $(templateData[field]).each(function (index, path) {
+    templateData[field][index].description = {};
+    var eachUri = path.uri;
+    var dfd = $.Deferred();
+    getPageDataTitle(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].description.title = response.title;
+        dfd.resolve();
+      },
+      error = function () {
+        alert(field + ' uri '+ eachUri+ ' is not found.');
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    var dataTemplate = templateData[field];
+    if (field === 'datasets') {
+      var html = templates.workEditT6Dataset(dataTemplate);
+    } else {
+      var html = templates.workEditT6Chapter(dataTemplate);
+    }
+    $('#'+field).replaceWith(html);
+  });
 }
 
