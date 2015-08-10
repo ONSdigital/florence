@@ -13,7 +13,7 @@ function t1Editor(collectionId, data, templateData) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
 
-  resolveTitle(collectionId, templateData, 'sections', 'section');
+  resolveTitleT1(collectionId, templateData, 'sections');
 
   // Metadata edition and saving
   $("#summary").on('input', function () {
@@ -145,7 +145,7 @@ function t1Editor(collectionId, data, templateData) {
   }
 }
 
-function resolveTitle(collectionId, templateData, field, idField) {
+function resolveTitleT1(collectionId, templateData, field) {
   var ajaxRequest = [];
   $(templateData[field]).each(function (index, path) {
     var eachUri = path.statistics.uri;

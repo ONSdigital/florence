@@ -73,14 +73,7 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-chapter" class="edit-section__sortable">
-          {{#each this.chapters}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-                <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
-                <p id="chapter-title_{{@index}}" data-url="{{uri}}">{{description.title}}</p>
-              <button class="btn-markdown-edit" id="chapter-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="chapter-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
+          <div id="chapters"></div>
         </div>
         <div class="text-center">
           <button class="btn-add-section" id="add-chapter">Add chapter</button>
@@ -95,13 +88,7 @@
       </div>
       <div class="edit-section__content">
         <div id="sortable-data" class="edit-section__sortable">
-          {{#each this.datasets}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <p id="data-title_{{@index}}" data-url="{{uri}}">{{description.title}}</p>
-              <button class="btn-markdown-edit" id="data-edit_{{@index}}">Edit</button>
-              <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
-            </div>
-          {{/each}}
+          <div id="datasets"></div>
         </div>
         <div class="text-center">
           <button class="btn-add-section" id="add-data">Add data</button>
