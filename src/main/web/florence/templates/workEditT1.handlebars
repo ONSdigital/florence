@@ -34,15 +34,9 @@
         <p></p>
       </div>
       <div class="edit-section__content">
-        <div id="sortable-sections" class="edit-section__sortable">
-          {{#each this.sections}}
-            <div id="{{@index}}" class="edit-section__sortable-item">
-              <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
-              <p id="item-title_{{@index}}">{{statistics.description.title}}</p>
-              <button class="btn-markdown-edit" id="section-edit_{{@index}}">Edit</button>
-            </div>
-          {{/each}}
-        </div>
+          <div id="sortable-section" class="edit-section__sortable">
+              <div id="to-populate"></div>
+          </div>
       </div>
     </div>
 
