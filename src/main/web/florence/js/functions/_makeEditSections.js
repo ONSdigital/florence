@@ -7,7 +7,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
     accordion();
-    t1Editor(collectionId, pageData, templateData);
+    t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
   }
 
   else if (pageData.type === 'taxonomy_landing_page') {
@@ -83,7 +83,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     accordion();
-    compendiumEditor(collectionId, pageData);
+    compendiumEditor(collectionId, pageData, templateData);     //templateData used to resolve chapter titles
   }
 
   else if (pageData.type === 'compendium_chapter') {
