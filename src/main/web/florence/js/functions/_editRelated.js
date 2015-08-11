@@ -4,7 +4,11 @@ function editRelated (collectionId, data, templateData, field, idField) {
   var html = templates.editorRelated(dataTemplate);
   $('#'+ idField).replaceWith(html);
   initialiseRelated(collectionId, data, templateData, field, idField);
-  resolveDescription(collectionId, data, templateData, field, idField);
+  if (idField.match(/article(s?)/) || idField.match(/bulletin(s?)/) || idField === 'document') {
+    resolveDescription(collectionId, data, templateData, field, idField);
+  } else {
+    resolveTitle(collectionId, data, templateData, field, idField);
+  }
 }
 
 function refreshRelated(collectionId, data, templateData, field, idField) {
@@ -38,7 +42,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
   if (!data[field] || data[field].length === 0) {
     editRelated['lastIndex' + field] = 0;
   } else {
-    $(data[field]).each(function (index, value) {
+    $(data[field]).each(function (index) {
       editRelated['lastIndex' + field] = index + 1;
 
       // Delete
@@ -51,7 +55,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
           data[field].splice(index, 1);
           templateData[field].splice(index, 1);
           postContent(collectionId, data.uri, JSON.stringify(data),
-            success = function (response) {
+            success = function () {
               Florence.Editor.isDirty = false;
               refreshPreview(data.uri);
               refreshRelated(collectionId, data, templateData, field, idField)
@@ -200,6 +204,30 @@ function resolveDescription(collectionId, data, templateData, field, idField) {
     getPageDataDescription(collectionId, eachUri,
       success = function (response) {
         templateData[field][index].description = response;
+        dfd.resolve();
+      },
+      error = function () {
+        alert(field + ' uri '+ eachUri+ ' is not found.');
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    refreshRelated(collectionId, data, templateData, field, idField);
+  });
+}
+
+function resolveTitle(collectionId, data, templateData, field, idField) {
+  var ajaxRequest = [];
+  $(templateData[field]).each(function (index, path) {
+    templateData[field][index].description = {};
+    var eachUri = path.uri;
+    var dfd = $.Deferred();
+    getPageDataTitle(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].description.title = response.title;
         dfd.resolve();
       },
       error = function () {

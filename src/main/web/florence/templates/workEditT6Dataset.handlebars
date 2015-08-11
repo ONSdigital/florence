@@ -1,0 +1,7 @@
+{{#each this}}
+    <div id="{{@index}}" class="edit-section__sortable-item">
+        <p id="data-title_{{@index}}" data-url="{{uri}}">{{description.title}}</p>
+        <button class="btn-markdown-edit" id="data-edit_{{@index}}">Edit</button>
+        <button class="btn-page-delete" id="data-delete_{{@index}}">Delete</button>
+    </div>
+{{/each}}
