@@ -18,19 +18,17 @@ function loadCreator (collectionId) {
     pageType = $(this).val();
     //var parentUrl = localStorage.getItem("pageurl");
     var parentUrl = Florence.globalVars.pagePath;
+    $('.edition').empty();
 
     if (pageType === 'bulletin' || pageType === 'article') {
       loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
     }
-
     else if (pageType.match(/compendium_.+/)) {
       loadT6Creator(collectionId, releaseDate, pageType, parentUrl);
     }
-
     else if (pageType.match(/static_.+/)) {
       loadT7Creator(collectionId, releaseDate, pageType, parentUrl);
     }
-
     else if (pageType === 'reference_tables' || pageType === 'dataset') {
       loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
     }

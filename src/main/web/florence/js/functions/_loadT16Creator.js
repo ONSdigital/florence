@@ -37,6 +37,7 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 	    );
 	    if (!releaseDate) {
 			$('.edition').append(
+      '<br>' +
 			'<label for="releaseDate">Release date</label>' +
 			'<input id="releaseDate" type="text" placeholder="day month year" />'
 			);

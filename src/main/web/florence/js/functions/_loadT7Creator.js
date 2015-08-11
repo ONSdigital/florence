@@ -39,6 +39,23 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler() {
+    if (!releaseDate && (pageType === 'static_qmi')) {
+      $('.edition').append(
+        '<br>' +
+        '<label for="releaseDate">Last revised</label>' +
+        '<input id="releaseDate" type="text" placeholder="day month year" />'
+      );
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    }
+    else if (!releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+      $('.edition').append(
+        '<br>' +
+        '<label for="releaseDate">Release date</label>' +
+        '<input id="releaseDate" type="text" placeholder="day month year" />'
+      );
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+    }
+
     $('form').submit(function(e) {
       e.preventDefault();
       pageData = pageTypeDataT7(pageType);
@@ -57,13 +74,20 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       }
       var safeNewUri = checkPathSlashes(newUri);
       pageData.uri = safeNewUri;
-      if (pageData.releaseDate) {
+      if (releaseDate && (pageType === 'static_qmi')) {
         date = new Date(releaseDate);
-        pageData.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
-      }
+        pageData.description.lastRevised = $.datepicker.formatDate('dd/mm/yy', date);
+      } else if (releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+        date = new Date(releaseDate);
+        pageData.description.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
+      } else if (!releaseDate && (pageType === 'static_qmi')) {
+        pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
+      } else if (!releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+        pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+      } else return;
       pageData.breadcrumb = breadcrumb;
 
-      if (pageName.length < 4) {
+      if (pageName.length < 5) {
         alert("This is not a valid file name");
       } else {
         Florence.globalVars.pagePath = safeNewUri;              //Delete this after test
@@ -89,28 +113,6 @@ function pageTypeDataT7(pageType) {
       "breadcrumb": [],
       "links" : []
     };
-  } else if ((pageType === "static_article") || (pageType === "static_methodology")) {
-    return {
-      "description": {
-        "contact": {
-          "name": "",
-          "email": "",
-          "telephone": ""
-        },
-        "summary": "",
-        "keywords": [],
-        "metaDescription": "",
-        "title": "",
-        //        "releaseDate": "",
-      },
-      "sections": [],
-      "accordion": [],
-      type: pageType,
-      "uri": "",
-      "breadcrumb": [],
-      "downloads":[],
-      "links" : []
-    };
   } else if (pageType === "static_landing_page") {
     return {
       "description": {
@@ -123,8 +125,30 @@ function pageTypeDataT7(pageType) {
       type: pageType,
       "uri": "",
       "breadcrumb": [],
+      "links": []
+    };
+  }
+  else if ((pageType === "static_article") || (pageType === "static_methodology")) {
+    return {
+      "description": {
+        "contact": {
+          "name": "",
+          "email": "",
+          "telephone": ""
+        },
+        "summary": "",
+        "keywords": [],
+        "metaDescription": "",
+        "title": "",
+        "releaseDate": "",
+      },
+      "sections": [],
+      "accordion": [],
+      type: pageType,
+      "uri": "",
+      "breadcrumb": [],
+      "downloads":[],
       "links" : []
-
     };
   } else if (pageType === "static_qmi") {
     return {
@@ -139,7 +163,7 @@ function pageTypeDataT7(pageType) {
         "compilation": "",
         "geographicCoverage": "",
         "sampleSize": null,
-        "lastRevised": null,
+        "lastRevised": "",
         "nationalStatistic": false,
         "keywords": [],
         "metaDescription": "",
@@ -159,7 +183,7 @@ function pageTypeDataT7(pageType) {
         "keywords": [],
         "metaDescription": "",
         "title": "",
-        "releaseDate": null
+        "releaseDate": ""
       },
       "downloads": [],
       "markdown": [],
@@ -175,7 +199,7 @@ function pageTypeDataT7(pageType) {
         "keywords": [],
         "metaDescription": "",
         "title": "",
-        "releaseDate": null,
+        "releaseDate": "",
         "reference": null,
       },
       "downloads": [],
