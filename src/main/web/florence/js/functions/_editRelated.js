@@ -28,7 +28,7 @@ function createRelatedTemplate(idField, list) {
   } else if (idField === 'dataset') {
     dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
   } else if (idField === 'document') {
-    dataTemplate = {list: list, idField: idField, idPlural: 'documents'};
+    dataTemplate = {list: list, idField: idField, idPlural: 'bulletins | articles | compendia'};
   } else if (idField === 'methodology') {
     dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
   } else {
