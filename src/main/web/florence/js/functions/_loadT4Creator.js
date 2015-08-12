@@ -111,7 +111,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       } if (!pageData.description.releaseDate) {
         alert('Release date can not be empty');
         return true;
-      } if (pageTitle.length < 4) {
+      } if (pageTitle.length < 5) {
         alert("This is not a valid file title");
         return true;
       }
