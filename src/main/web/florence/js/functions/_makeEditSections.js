@@ -144,6 +144,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     accordion();
     qmiEditor(collectionId, pageData);
   }
