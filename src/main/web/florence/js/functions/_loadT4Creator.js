@@ -116,7 +116,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         return true;
       }
       else {
-        Florence.globalVars.pagePath = safeNewUri;              //Delete this after test
         checkSaveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
