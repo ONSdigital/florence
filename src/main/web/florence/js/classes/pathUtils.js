@@ -1,6 +1,6 @@
 var PathUtils = {
   isJsonFile: function (uri) {
-    return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1
+    return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1;
   }
 };
 
