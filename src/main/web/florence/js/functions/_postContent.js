@@ -3,8 +3,15 @@ function postContent(collectionId, path, content, success, error) {
   if (safePath === '/') {
     safePath = '';          // edge case for home
   }
+
+  if (Florence.globalVars.welsh) {
+    var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+  } else {
+    var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json";
+  }
+
   $.ajax({
-    url: "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json",
+    url: url,
     dataType: 'json',
     type: 'POST',
     data: content,
