@@ -1,8 +1,5 @@
 function postContent(collectionId, path, content, success, error) {
   var safePath = checkPathSlashes(path);
-  if (safePath != Florence.globalVars.pagePath) {
-    alert('Please call Pastor if this happens. Florence needs a revision \nSaving to: '+ safePath + '\npathTest: '+Florence.globalVars.pagePath);
-  }
   if (safePath === '/') {
     safePath = '';          // edge case for home
   }
