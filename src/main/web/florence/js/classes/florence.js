@@ -24,7 +24,7 @@ Florence.collection = {};
 
 Florence.collectionToPublish = {};
 
-Florence.globalVars = {pagePath: '', activeTab: false, pagePos: ''};
+Florence.globalVars = {pagePath: '', activeTab: false, pagePos: '', welsh: false};
 
 Florence.Authentication = {
   accessToken: function () {

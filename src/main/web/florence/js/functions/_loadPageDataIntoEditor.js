@@ -1,10 +1,19 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
-  if (path === '/') {
-    var pageUrlData = path + "data.json";
+  if (Florence.globalVars.welsh) {
+    if (path === '/') {
+      var pageUrlData = path + "data_cy.json";
+    } else {
+      var pageUrlData = path + "/data_cy.json";
+    }
   } else {
-    var pageUrlData = path + "/data.json";
+    if (path === '/') {
+      var pageUrlData = path + "data.json";
+    } else {
+      var pageUrlData = path + "/data.json";
+    }
   }
+
   var pageData, isPageComplete;
   var ajaxRequests = [];
 
