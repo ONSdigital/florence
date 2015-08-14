@@ -302,7 +302,7 @@ function compendiumEditor(collectionId, data, templateData) {
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function(indexM, nameM){
-      var uri = data.relatedBulletins[parseInt(nameM)].uri;
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes (uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
