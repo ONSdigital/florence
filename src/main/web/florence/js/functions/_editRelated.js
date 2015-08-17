@@ -179,7 +179,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
           }
 
           data[field].push({uri: latestUrl});
-          saveRelated(collectionId, data.uri, data, field, idField);
+          saveRelated(collectionId, data.uri, data, templateData, field, idField);
 
         },
         error: function () {
