@@ -44,8 +44,6 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       }
       newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
       var safeNewUri = checkPathSlashes(newUri);
-      pageData.uri = safeNewUri;
-      pageData.breadcrumb = breadcrumb;
 
       if (!pageData.description.releaseDate) {
         alert('Release date can not be empty');
@@ -87,9 +85,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 
@@ -115,9 +111,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "correction": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 

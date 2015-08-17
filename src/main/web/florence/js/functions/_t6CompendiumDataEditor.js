@@ -1,7 +1,7 @@
 function compendiumDataEditor(collectionId, data) {
 
   var newFiles = [], newRelatedDocuments = [], newRelatedData = [], newRelatedMethodology = [];
-  var parentUrl = data.parent.uri;
+  var parentUrl = getParentPage(data.uri);
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
