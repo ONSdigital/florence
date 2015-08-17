@@ -15,18 +15,15 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         if (pageTitle) {
           submitNoForm (pageTitle);
         } else {
-          submitFormHandler ();
+          submitFormHandler();
         }
         return true;
       } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_landing_page') {
-        contentUrlTmp = parentUrl.split('/');
-        contentUrlTmp.splice(-1, 1);
-        contentUrl = contentUrlTmp.join('/');
-        parentUrl = contentUrl;
+        safeParent = getParentPage(checkData.uri);
         pageTitle = checkData.description.title;
         isInheriting = true;
         pageData = pageTypeDataT6(pageType, checkData);
-        submitFormHandler (pageTitle, isInheriting);
+        submitFormHandler(pageTitle, parentUrl, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -38,7 +35,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
   });
 
-  function submitFormHandler (title, isInheriting) {
+  function submitFormHandler (title, parentUrl, isInheriting) {
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -83,14 +80,14 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       }
 
       if (isInheriting && pageType === 'compendium_landing_page') {
-        newUri = makeUrl(parentUrl, releaseUri);
+        newUri = makeUrl(safeParent, releaseUri);
       }
       else if (pageType === 'compendium_landing_page') {
         uriSection = "compendium";
-        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed, releaseUri);
       }
       else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-        newUri = makeUrl(parentUrl, pageTitleTrimmed);
+        newUri = makeUrl(safeParent, pageTitleTrimmed);
       }
       else {
         alert('Oops! Something went the wrong way.');
@@ -153,7 +150,7 @@ function submitNoForm (title) {
     pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-      newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      newUri = makeUrl(safeParent, pageTitleTrimmed);
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
@@ -242,8 +239,7 @@ function submitNoForm (title) {
         "charts": [],
         "tables": [],
         "correction": [],
-        type: pageType,
-        "parent": {uri: checkData.uri}        //make this dynamic from babbage
+        type: pageType
       };
     }
 
@@ -268,8 +264,7 @@ function submitNoForm (title) {
         "correction": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
-        type: pageType,
-        "parent": {uri: checkData.uri}
+        type: pageType
       };
     }
 
