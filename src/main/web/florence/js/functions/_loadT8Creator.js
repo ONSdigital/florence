@@ -1,12 +1,13 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
+  var releaseDate, nextRelease, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedDatasets, relatedDocuments, relatedMethodology;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.type === 'product_page') {
+      if (checkData.type === 'product_page' && !Florence.globalVars.welsh) {
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
           "uri": checkData.uri
@@ -15,6 +16,20 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
         return true;
+      } else if (checkData.type === 'dataset' || checkData.type === 'reference_tables' && Florence.globalVars.welsh) {
+        breadcrumb = checkData.breadcrumb;
+        releaseDate = checkData.description.releaseDate;
+        nextRelease = checkData.description.nextRelease;
+        natStat = checkData.description.nationalStatistic;
+        contactName = checkData.description.contact.name;
+        contactEmail = checkData.description.contact.email;
+        contactTel = checkData.description.contact.telephone;
+        pageTitle = checkData.description.title;
+        keyWords = checkData.description.keywords;
+        metaDescr = checkData.description.metaDescription;
+        relatedDatasets = checkData.relatedDatasets || [];
+        relatedDocuments = checkData.relatedDocuments;
+        relatedMethodology = checkData.relatedMethodology;
       } else {
         alert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
@@ -56,7 +71,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       if (!pageData.description.releaseDate) {
         alert('Release date can not be empty');
         return true;
-      } if (pageTitle.length < 4) {
+      } if (pageTitle.length < 5) {
         alert("This is not a valid file title");
         return true;
       }
