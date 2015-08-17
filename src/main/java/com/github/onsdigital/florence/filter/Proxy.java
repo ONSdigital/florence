@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.*;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -60,11 +61,11 @@ public class Proxy implements Filter {
             switch (request.getMethod()) {
                 case "POST":
                     proxyRequest = new HttpPost(requestUrl);
-                    ((HttpPost) proxyRequest).setEntity(new InputStreamEntity(request.getInputStream()));
+                    ((HttpPost) proxyRequest).setEntity(new BufferedHttpEntity(new InputStreamEntity(request.getInputStream())));
                     break;
                 case "PUT":
                     proxyRequest = new HttpPut(requestUrl);
-                    ((HttpPut) proxyRequest).setEntity(new InputStreamEntity(request.getInputStream()));
+                    ((HttpPut) proxyRequest).setEntity(new BufferedHttpEntity(new InputStreamEntity(request.getInputStream())));
                     break;
                 case "DELETE":
                     proxyRequest = new HttpDelete(requestUrl);
