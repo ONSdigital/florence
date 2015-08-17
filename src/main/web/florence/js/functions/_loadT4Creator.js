@@ -1,5 +1,5 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -7,12 +7,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function (checkData) {
       if (checkData.type === 'product_page') {
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "uri": checkData.uri
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
         return true;
       } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
@@ -20,7 +14,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         contentUrlTmp.splice(-1, 1);
         var contentUrl = contentUrlTmp.join('/');
         parentUrl = contentUrl;
-        breadcrumb = checkData.breadcrumb;
         natStat = checkData.description.nationalStatistic;
         contactName = checkData.description.contact.name;
         contactEmail = checkData.description.contact.email;
@@ -102,8 +95,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
       var safeNewUri = checkPathSlashes(newUri);
-      pageData.uri = safeNewUri;
-      pageData.breadcrumb = breadcrumb;
 
       if (pageType === 'bulletin' && !pageData.description.edition) {
         alert('Edition can not be empty');
@@ -152,9 +143,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "correction": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 
@@ -184,9 +173,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "correction": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 

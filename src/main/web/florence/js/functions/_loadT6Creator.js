@@ -11,12 +11,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "uri": checkData.uri
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
         pageData = pageTypeDataT6(pageType, checkData);
         if (pageTitle) {
           submitNoForm (pageTitle);
@@ -29,7 +23,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         contentUrlTmp.splice(-1, 1);
         contentUrl = contentUrlTmp.join('/');
         parentUrl = contentUrl;
-        breadcrumb = checkData.breadcrumb;
         pageTitle = checkData.description.title;
         isInheriting = true;
         pageData = pageTypeDataT6(pageType, checkData);
@@ -104,8 +97,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         loadCreateScreen(collectionId);
       }
       var safeNewUri = checkPathSlashes(newUri);
-      pageData.uri = safeNewUri;
-      pageData.breadcrumb = breadcrumb;
 
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
@@ -118,8 +109,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         return true;
       }
       else {
-        getUri = safeNewUri + '/data.json';
-        getPageData(collectionId, getUri,
+        getPageData(collectionId, safeNewUri,
           success = function() {
             alert('This page already exists');
           },
@@ -170,12 +160,9 @@ function submitNoForm (title) {
     }
 
   var safeNewUri = checkPathSlashes(newUri);
-    pageData.uri = safeNewUri;
-    pageData.breadcrumb = breadcrumb;
 
     // check if the page exists
-    getUri = safeNewUri + '/data.json';
-    getPageData(collectionId, getUri,
+    getPageData(collectionId, safeNewUri,
       success = function() {
         alert('This page already exists');
       },
@@ -225,9 +212,7 @@ function submitNoForm (title) {
         "chapters": [],
         "correction": [],
         "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": []
+        type: pageType
       };
     }
 
@@ -258,9 +243,7 @@ function submitNoForm (title) {
         "tables": [],
         "correction": [],
         type: pageType,
-        "uri": "",
-        "parent": {uri: checkData.uri},
-        "breadcrumb": []
+        "parent": {uri: checkData.uri}        //make this dynamic from babbage
       };
     }
 
@@ -286,9 +269,7 @@ function submitNoForm (title) {
         "relatedDocuments": [],
         "relatedMethodology": [],
         type: pageType,
-        "uri": "",
-        "parent": {uri: checkData.uri},
-        "breadcrumb": []
+        "parent": {uri: checkData.uri}
       };
     }
 

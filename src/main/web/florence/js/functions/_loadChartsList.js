@@ -19,7 +19,7 @@ function initialiseChartList(data, collectionId) {
 
     var basePath = data.uri;
     var chartPath = basePath + '/' + chart.filename;
-    var chartJson = chartPath + '.json';
+    var chartJson = chartPath;
 
     $("#chart-edit_" + chart.filename).click(function () {
       getPageData(collectionId, chartJson,

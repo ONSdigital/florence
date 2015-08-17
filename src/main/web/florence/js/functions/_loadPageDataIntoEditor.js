@@ -1,15 +1,10 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
-  if (path === '/') {
-    var pageUrlData = path + "data.json";
-  } else {
-    var pageUrlData = path + "/data.json";
-  }
   var pageData, isPageComplete;
   var ajaxRequests = [];
 
   ajaxRequests.push(
-    getPageData(collectionId, pageUrlData,
+    getPageData(collectionId, path,
       success = function (response) {
         pageData = response;
       },
@@ -22,7 +17,7 @@ function loadPageDataIntoEditor(path, collectionId) {
   ajaxRequests.push(
     getCollection(collectionId,
       success = function (response) {
-        var lastCompletedEvent = getLastCompletedEvent(response, pageUrlData);
+        var lastCompletedEvent = getLastCompletedEvent(response, path);
         isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
       },
       error = function (response) {
