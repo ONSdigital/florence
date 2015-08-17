@@ -74,7 +74,6 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
 
       $('#nav--workspace__welsh').on('click', function () {
         Florence.globalVars.welsh = Florence.globalVars.welsh === false ? true : false;
-        console.log(Florence.globalVars.welsh);
         createWorkspace(Florence.globalVars.pagePath, collectionId, 'browse');
       });
 
