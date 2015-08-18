@@ -1,8 +1,9 @@
 function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
-	var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, breadcrumb
+	var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual;
 
 	//Stores parent URL
-	var parentUrlData = parentUrl + "/data";
+  var safeParent = checkPathSlashes(parentUrl);
+  var parentUrlData = safeParent + "/data";
 	$.ajax({
 	url: parentUrlData,
 	dataType: 'json',
@@ -10,13 +11,6 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 	success: function (checkData) {
 		//Checks page is built in correct location
 		if (checkData.type === 'product_page') {
-			//Builds breadcrumb from parent breadcrumb/uri
-			var inheritedBreadcrumb = checkData.breadcrumb;
-			var parentBreadcrumb = {
-		  		"uri": checkData.uri
-			};
-			inheritedBreadcrumb.push(parentBreadcrumb);
-			breadcrumb = inheritedBreadcrumb;
 			submitFormHandler ();
 			return true;
 		} else {
@@ -34,18 +28,18 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 		$('.edition').append(
 			'<label for="edition">Edition</label>' +
 			'<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
-	    );
-	    if (!releaseDate) {
+	  );
+	  if (!releaseDate) {
 			$('.edition').append(
-      '<br>' +
-			'<label for="releaseDate">Release date</label>' +
-			'<input id="releaseDate" type="text" placeholder="day month year" />'
+        '<br>' +
+			  '<label for="releaseDate">Release date</label>' +
+			  '<input id="releaseDate" type="text" placeholder="day month year" />'
 			);
 			$('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-	    }
+	  }
 
-	    //Submits inherited and added information to JSON
-	    $('form').submit(function (e) {
+	  //Submits inherited and added information to JSON
+	  $('form').submit(function (e) {
 			releaseDateManual = $('#releaseDate').val()
 			pageData = pageTypeDataT16(pageType);
 			pageData.description.edition = $('#edition').val();
@@ -61,13 +55,11 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 	      	}
 			newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
 			safeNewUri = checkPathSlashes(newUri);
-			pageData.uri = safeNewUri;
-			pageData.breadcrumb = breadcrumb;
 
 			if (!pageData.description.releaseDate) {
 	        	alert('Release date can not be empty');
 	        	return true;
-			} if (pageTitle.length < 4) {
+			} if (pageTitle.length < 5) {
         		alert("This is not a valid file title");
 	        	return true;
 			} else {
@@ -75,7 +67,7 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 	        	checkSaveContent(collectionId, safeNewUri, pageData);
 			}
 			e.preventDefault();
-	    });
+	  });
 	}
 
 	function pageTypeDataT16(pageType) {
@@ -100,8 +92,6 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 			"relatedDatasets": [],
 			"relatedDocuments": [],
 			type: pageType,
-			"uri": "",
-			"breadcrumb": [],
 			"dateChanges": [],
 		};
 	}

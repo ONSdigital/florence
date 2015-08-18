@@ -1,9 +1,11 @@
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   var pageName, pageNameTrimmed, releaseDate, newUri, pageData;
-  if (parentUrl === '/') {
-    parentUrl = '';
+  var safeUrl = checkPathSlashes(parentUrl);
+  var parentUrlData = safeUrl + "/data";
+  if (safeUrl === '/') {        //to check home page
+    safeUrl = '';
   }
-  var parentUrlData = parentUrl + "/data";
+  var parentUrlData = safeUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -51,14 +53,14 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
-      if (pageType === 'static_qmi') {
-        newUri = makeUrl(parentUrl, 'qmis', pageNameTrimmed);
-      } else if (pageType === 'static_adhoc') {
-        newUri = makeUrl(parentUrl, 'adhocs', pageNameTrimmed);
-      } else if (pageType === 'static_methodology') {
-        newUri = makeUrl(parentUrl, 'methodologies', pageNameTrimmed);
-      } else {
-        newUri = makeUrl(parentUrl, pageNameTrimmed);
+      if (pageType === 'static_qmi' && !Florence.globalVars.welsh) {
+        newUri = makeUrl(safeUrl, 'qmis', pageNameTrimmed);
+      } else if (pageType === 'static_adhoc' && !Florence.globalVars.welsh) {
+        newUri = makeUrl(safeUrl, 'adhocs', pageNameTrimmed);
+      } else if (pageType === 'static_methodology' && !Florence.globalVars.welsh) {
+        newUri = makeUrl(safeUrl, 'methodologies', pageNameTrimmed);
+      } else if (!Florence.globalVars.welsh){
+        newUri = makeUrl(safeUrl, pageNameTrimmed);
       }
       var safeNewUri = checkPathSlashes(newUri);
       if (releaseDate && (pageType === 'static_qmi')) {
