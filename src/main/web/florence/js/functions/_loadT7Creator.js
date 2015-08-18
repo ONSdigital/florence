@@ -1,7 +1,6 @@
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   var pageName, pageNameTrimmed, releaseDate, newUri, pageData;
   var safeUrl = checkPathSlashes(parentUrl);
-  var parentUrlData = safeUrl + "/data";
   if (safeUrl === '/') {        //to check home page
     safeUrl = '';
   }
@@ -37,7 +36,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       );
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     }
-    else if (!releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+    else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
       $('.edition').append(
         '<br>' +
         '<label for="releaseDate">Release date</label>' +
@@ -53,13 +52,13 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
-      if (pageType === 'static_qmi' && !Florence.globalVars.welsh) {
+      if (pageType === 'static_qmi') {
         newUri = makeUrl(safeUrl, 'qmis', pageNameTrimmed);
-      } else if (pageType === 'static_adhoc' && !Florence.globalVars.welsh) {
+      } else if (pageType === 'static_adhoc') {
         newUri = makeUrl(safeUrl, 'adhocs', pageNameTrimmed);
-      } else if (pageType === 'static_methodology' && !Florence.globalVars.welsh) {
+      } else if (pageType === 'static_methodology') {
         newUri = makeUrl(safeUrl, 'methodologies', pageNameTrimmed);
-      } else if (!Florence.globalVars.welsh){
+      } else {
         newUri = makeUrl(safeUrl, pageNameTrimmed);
       }
       var safeNewUri = checkPathSlashes(newUri);
@@ -71,9 +70,9 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
       } else if (!releaseDate && (pageType === 'static_qmi')) {
         pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
-      } else if (!releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+      } else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else return;
+      }
 
       if (pageName.length < 5) {
         alert("This is not a valid file name");
@@ -92,7 +91,7 @@ function pageTypeDataT7(pageType) {
         "summary": "",
         "keywords": [],
         "metaDescription": "",
-        "title": "",
+        "title": ""
       },
       "markdown": [],
       type: pageType,
@@ -177,7 +176,7 @@ function pageTypeDataT7(pageType) {
         "metaDescription": "",
         "title": "",
         "releaseDate": "",
-        "reference": null,
+        "reference": null
       },
       "downloads": [],
       "markdown": [],

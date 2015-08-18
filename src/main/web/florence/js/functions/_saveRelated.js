@@ -3,7 +3,7 @@ function saveRelated (collectionId, path, data, templateData, field, idField) {
     success = function (response) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
-      refreshRelated(collectionId, data, templateData, field, idField);
+      resolveTitle(collectionId, data, templateData, field, idField);
       refreshPreview(path);
       var iframeEvent = document.getElementById('iframe').contentWindow;
       iframeEvent.addEventListener('click', Florence.Handler, true);
