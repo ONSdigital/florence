@@ -1,5 +1,4 @@
 function loadPageDataIntoEditor(path, collectionId) {
-
   var pageData, isPageComplete;
   var ajaxRequests = [];
 

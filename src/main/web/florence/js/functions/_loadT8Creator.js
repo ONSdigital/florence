@@ -1,6 +1,7 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData;
-  var parentUrlData = parentUrl + "/data";
+  var safeParent = checkPathSlashes(parentUrl);
+  var parentUrlData = safeParent + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -42,13 +43,13 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
+      newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed);
       var safeNewUri = checkPathSlashes(newUri);
 
       if (!pageData.description.releaseDate) {
         alert('Release date can not be empty');
         return true;
-      } if (pageTitle.length < 4) {
+      } if (pageTitle.length < 5) {
         alert("This is not a valid file title");
         return true;
       }
