@@ -31,7 +31,7 @@ Florence.Authentication = {
     return CookieUtils.getCookieValue("access_token");
   },
   isAuthenticated: function () {
-    return Florence.Authentication.accessToken() !== ''
+    return Florence.Authentication.accessToken() !== '';
   }
 };
 
