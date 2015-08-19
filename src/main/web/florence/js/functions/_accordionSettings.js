@@ -5,12 +5,12 @@ function accordion(active) {
   }
   $(function () {
     $(".edit-accordion").accordion(
-        {
-          header: "div.edit-section__head",
-          heightStyle: "content",
-          active: activeTab,
-          collapsible: true
-        }
+      {
+        header: "div.edit-section__head",
+        heightStyle: "content",
+        active: activeTab,
+        collapsible: true
+      }
     );
   });
 }

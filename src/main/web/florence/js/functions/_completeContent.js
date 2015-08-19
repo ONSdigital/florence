@@ -1,6 +1,6 @@
 function saveAndCompleteContent(collectionId, path, content) {
   postContent(collectionId, path, content,
-    success = function (response) {
+    success = function () {
       Florence.Editor.isDirty = false;
       completeContent(collectionId, path);
     },
@@ -8,7 +8,7 @@ function saveAndCompleteContent(collectionId, path, content) {
       if (response.status === 400) {
         alert("Cannot edit this file. It is already part of another collection.");
       }
-      else if (response.status == 401) {
+      else if (response.status === 401) {
         alert("You are not authorised to update content.");
       }
       else {
@@ -24,9 +24,7 @@ function completeContent(collectionId, path) {
     url: "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json",
     dataType: 'json',
     type: 'POST',
-    success: function (message) {
-      //console.log("Page is now marked as complete " + message);
-      //alert("This content has now been submitted for internal review.")
+    success: function () {
       viewCollections(collectionId);
     },
     error: function (response) {

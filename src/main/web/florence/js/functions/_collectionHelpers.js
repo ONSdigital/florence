@@ -7,7 +7,7 @@ function getLastEditedEvent(collection, page) {
 
   var lastEditedEvent = _.chain(pageEvents)
     .filter(function (event) {
-      return event.type === 'EDITED'
+      return event.type === 'EDITED';
     })
     .sortBy(function (event) {
       return event.date;
@@ -22,7 +22,7 @@ function getCollectionCreatedEvent(events) {
 
   var event = _.chain(events)
     .filter(function (event) {
-      return event.type === 'CREATED'
+      return event.type === 'CREATED';
     })
     .last()
     .value();
@@ -42,7 +42,7 @@ function getLastCompletedEvent(collection, page) {
     if (pageEvents) {
       lastCompletedEvent = _.chain(pageEvents)
         .filter(function (event) {
-          return event.type === 'COMPLETED'
+          return event.type === 'COMPLETED';
         })
         .sortBy(function (event) {
           return event.date;
