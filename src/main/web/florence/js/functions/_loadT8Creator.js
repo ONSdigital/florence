@@ -1,12 +1,13 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData, breadcrumb;
-  var releaseDate, nextRelease, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedDatasets, relatedDocuments, relatedMethodology;
-  var parentUrlData = parentUrl + "/data";
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData;
+  var safeParent = checkPathSlashes(parentUrl);
+  var parentUrlData = safeParent + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
+      if (checkData.type === 'product_page') {
       if (checkData.type === 'product_page' && !Florence.globalVars.welsh) {
         var inheritedBreadcrumb = checkData.breadcrumb;
         var parentBreadcrumb = {
@@ -63,10 +64,8 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
+      newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed);
       var safeNewUri = checkPathSlashes(newUri);
-      pageData.uri = safeNewUri;
-      pageData.breadcrumb = breadcrumb;
 
       if (!pageData.description.releaseDate) {
         alert('Release date can not be empty');
@@ -108,9 +107,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 
@@ -136,9 +133,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "correction": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 

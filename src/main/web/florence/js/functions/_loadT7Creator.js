@@ -1,9 +1,10 @@
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
-  var pageName, pageNameTrimmed, releaseDate, newUri, pageData, breadcrumb;
-  if (parentUrl === '/') {
-    parentUrl = '';
+  var pageName, pageNameTrimmed, releaseDate, newUri, pageData;
+  var safeUrl = checkPathSlashes(parentUrl);
+  if (safeUrl === '/') {        //to check home page
+    safeUrl = '';
   }
-  var parentUrlData = parentUrl + "/data";
+  var parentUrlData = safeUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -11,21 +12,9 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     success: function(checkData) {
       if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
         (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology') && checkData.type === 'product_page') {
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "uri": checkData.uri
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
         submitFormHandler();
         return true;
       } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page' || pageType === 'static_article') && checkData.type.match(/static_.+/)) {
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "uri": checkData.uri
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
         submitFormHandler();
         return true;
       } else {
@@ -47,7 +36,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       );
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     }
-    else if (!releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+    else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
       $('.edition').append(
         '<br>' +
         '<label for="releaseDate">Release date</label>' +
@@ -76,7 +65,6 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         return;
       }
       var safeNewUri = checkPathSlashes(newUri);
-      pageData.uri = safeNewUri;
       if (releaseDate && (pageType === 'static_qmi')) {
         date = new Date(releaseDate);
         pageData.description.lastRevised = $.datepicker.formatDate('dd/mm/yy', date);
@@ -85,10 +73,9 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
       } else if (!releaseDate && (pageType === 'static_qmi')) {
         pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
-      } else if (!releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+      } else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else return;
-      pageData.breadcrumb = breadcrumb;
+      }
 
       if (pageName.length < 5) {
         alert("This is not a valid file name");
@@ -107,12 +94,10 @@ function pageTypeDataT7(pageType) {
         "summary": "",
         "keywords": [],
         "metaDescription": "",
-        "title": "",
+        "title": ""
       },
       "markdown": [],
       type: pageType,
-      "uri": "",
-      "breadcrumb": [],
       "links" : []
     };
   } else if (pageType === "static_landing_page") {
@@ -125,8 +110,6 @@ function pageTypeDataT7(pageType) {
       },
       "sections": [],
       type: pageType,
-      "uri": "",
-      "breadcrumb": [],
       "links": []
     };
   }
@@ -147,8 +130,6 @@ function pageTypeDataT7(pageType) {
       "sections": [],
       "accordion": [],
       type: pageType,
-      "uri": "",
-      "breadcrumb": [],
       "downloads":[],
       "links" : []
     };
@@ -174,9 +155,7 @@ function pageTypeDataT7(pageType) {
       "markdown": [],
       "downloads": [],
       type: pageType,
-      "uri": "",
       "fileName": "",
-      "breadcrumb": [],
       "links" : []
     };
   } else if (pageType === "static_foi") {
@@ -190,9 +169,7 @@ function pageTypeDataT7(pageType) {
       "downloads": [],
       "markdown": [],
       type: pageType,
-      "uri": "",
       "fileName": "",
-      "breadcrumb": [],
       "links" : []
     };
   } else if (pageType === "static_adhoc") {
@@ -202,14 +179,12 @@ function pageTypeDataT7(pageType) {
         "metaDescription": "",
         "title": "",
         "releaseDate": "",
-        "reference": null,
+        "reference": null
       },
       "downloads": [],
       "markdown": [],
       type: pageType,
-      "uri": "",
       "fileName": "",
-      "breadcrumb": [],
       "links" : []
     };
   } else {
