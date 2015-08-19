@@ -201,29 +201,6 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
 }
 
-function resolveDescription(collectionId, data, templateData, field, idField) {
-  var ajaxRequest = [];
-  $(templateData[field]).each(function (index, path) {
-    var eachUri = path.uri;
-    var dfd = $.Deferred();
-    getPageDataDescription(collectionId, eachUri,
-      success = function (response) {
-        templateData[field][index].description = response;
-        dfd.resolve();
-      },
-      error = function () {
-        alert(field + ' uri '+ eachUri+ ' is not found.');
-        dfd.resolve();
-      }
-    );
-    ajaxRequest.push(dfd);
-  });
-
-  $.when.apply($, ajaxRequest).then(function () {
-    refreshRelated(collectionId, data, templateData, field, idField);
-  });
-}
-
 function resolveTitle(collectionId, data, templateData, field, idField) {
   var ajaxRequest = [];
   $(templateData[field]).each(function (index, path) {
@@ -239,7 +216,7 @@ function resolveTitle(collectionId, data, templateData, field, idField) {
         dfd.resolve();
       },
       error = function () {
-        alert(field + ' uri '+ eachUri+ ' is not found.');
+        alert(field + ' uri: ' + eachUri + ' is not found.');
         dfd.resolve();
       }
     );
