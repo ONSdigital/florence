@@ -59,6 +59,7 @@ function qmiEditor(collectionId, data) {
   });
   $("#sampleSize").on('input', function () {
     $(this).textareaAutoSize();
+    var isNumber = $(this).val();
     if (isNumber.match(/^\d+$/)) {
       data.description.sampleSize = isNumber;
     } else {
