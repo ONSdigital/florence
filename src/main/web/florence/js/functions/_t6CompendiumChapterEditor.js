@@ -1,7 +1,7 @@
 function compendiumChapterEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newRelatedDocuments = [], newLinks = [];
-  var parentUrl = data.parent.uri;
+  var parentUrl = getParentPage(data.uri);
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {

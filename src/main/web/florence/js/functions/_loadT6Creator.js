@@ -11,29 +11,19 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page' && !Florence.globalVars.welsh) ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "uri": checkData.uri
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
         pageData = pageTypeDataT6(pageType, checkData);
         if (pageTitle) {
           submitNoForm (pageTitle);
         } else {
-          submitFormHandler ();
+          submitFormHandler();
         }
         return true;
       } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_landing_page') {
-        contentUrlTmp = parentUrl.split('/');
-        contentUrlTmp.splice(-1, 1);
-        contentUrl = contentUrlTmp.join('/');
-        parentUrl = contentUrl;
-        breadcrumb = checkData.breadcrumb;
+        safeParent = getParentPage(checkData.uri);
         pageTitle = checkData.description.title;
         isInheriting = true;
         pageData = pageTypeDataT6(pageType, checkData);
-        submitFormHandler (pageTitle, isInheriting);
+        submitFormHandler(pageTitle, parentUrl, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -45,7 +35,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
   });
 
-  function submitFormHandler (title, isInheriting) {
+  function submitFormHandler (title, parentUrl, isInheriting) {
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -90,22 +80,20 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       }
 
       if (isInheriting && pageType === 'compendium_landing_page') {
-        newUri = makeUrl(parentUrl, releaseUri);
+        newUri = makeUrl(safeParent, releaseUri);
       }
       else if (pageType === 'compendium_landing_page') {
         uriSection = "compendium";
-        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed, releaseUri);
       }
       else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-        newUri = makeUrl(parentUrl, pageTitleTrimmed);
+        newUri = makeUrl(safeParent, pageTitleTrimmed);
       }
       else {
         alert('Oops! Something went the wrong way.');
         loadCreateScreen(collectionId);
       }
       var safeNewUri = checkPathSlashes(newUri);
-      pageData.uri = safeNewUri;
-      pageData.breadcrumb = breadcrumb;
 
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
@@ -118,8 +106,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         return true;
       }
       else {
-        getUri = safeNewUri + '/data.json';
-        getPageData(collectionId, getUri,
+        getPageData(collectionId, safeNewUri,
           success = function() {
             alert('This page already exists');
           },
@@ -163,19 +150,16 @@ function submitNoForm (title) {
     pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-      newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      newUri = makeUrl(safeParent, pageTitleTrimmed);
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
 
   var safeNewUri = checkPathSlashes(newUri);
-    pageData.uri = safeNewUri;
-    pageData.breadcrumb = breadcrumb;
 
     // check if the page exists
-    getUri = safeNewUri + '/data.json';
-    getPageData(collectionId, getUri,
+    getPageData(collectionId, safeNewUri,
       success = function() {
         alert('This page already exists');
       },
@@ -225,9 +209,7 @@ function submitNoForm (title) {
         "chapters": [],
         "correction": [],
         "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": []
+        type: pageType
       };
     }
 
@@ -257,10 +239,7 @@ function submitNoForm (title) {
         "charts": [],
         "tables": [],
         "correction": [],
-        type: pageType,
-        "uri": "",
-        "parent": {uri: checkData.uri},
-        "breadcrumb": []
+        type: pageType
       };
     }
 
@@ -285,10 +264,7 @@ function submitNoForm (title) {
         "correction": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
-        type: pageType,
-        "uri": "",
-        "parent": {uri: checkData.uri},
-        "breadcrumb": []
+        type: pageType
       };
     }
 

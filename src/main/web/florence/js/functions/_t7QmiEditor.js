@@ -59,7 +59,12 @@ function qmiEditor(collectionId, data) {
   });
   $("#sampleSize").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.sampleSize = $(this).val();
+    var isNumber = $(this).val();
+    if (isNumber.match(/^\d+$/)) {
+      data.description.sampleSize = isNumber;
+    } else {
+      alert('This needs to be a number');
+    }
   });
   if (!data.description.lastRevised){
     $('#lastRevised').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {

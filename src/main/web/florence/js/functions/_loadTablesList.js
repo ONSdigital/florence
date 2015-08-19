@@ -15,7 +15,7 @@ function initialiseTablesList(data, collectionId) {
   $(data.tables).each(function (index, table) {
     var basePath = data.uri;
     var tablePath = basePath + '/' + table.filename;
-    var tableJson = tablePath + '.json';
+    var tableJson = tablePath;
 
     $("#table-edit_" + table.filename).click(function () {
       getPageData(collectionId, tableJson,
