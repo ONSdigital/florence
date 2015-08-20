@@ -1,7 +1,7 @@
 function getPageData(collectionId, path, success, error) {
   var safePath = checkPathSlashes(path);
   return $.ajax({
-    url: "/zebedee/content/" + collectionId + "?uri=" + safePath,
+    url: "/zebedee/data/" + collectionId + "?uri=" + safePath,
     dataType: 'json',
     type: 'GET',
     success: function (response) {
