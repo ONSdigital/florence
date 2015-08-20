@@ -53,6 +53,7 @@ Florence.Handler = function () {
     setTimeout(function () {
       checkForPageChanged(function (newUrl) {
         var safeUrl = checkPathSlashes(newUrl);
+        Florence.globalVars.pagePath = safeUrl;
         if ($('.workspace-edit').length) {
           loadPageDataIntoEditor(safeUrl, Florence.collection.id);
         }
