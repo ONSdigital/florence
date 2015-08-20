@@ -1,26 +1,19 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, breadcrumb, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
-  var parentUrlData = parentUrl + "/data";
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
+  var safeParent = checkPathSlashes(parentUrl);
+  var parentUrlData = safeParent + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
       if (checkData.type === 'product_page') {
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "uri": checkData.uri
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
-        submitFormHandler ();
+        var checkedUrl = checkPathSlashes(checkData.uri);
+        submitFormHandler(checkedUrl);
         return true;
       } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
-        var contentUrlTmp = parentUrl.split('/');
-        contentUrlTmp.splice(-1, 1);
-        var contentUrl = contentUrlTmp.join('/');
-        parentUrl = contentUrl;
-        breadcrumb = checkData.breadcrumb;
+        var checkedUrl = checkPathSlashes(checkData.uri);
+        var safeParentUrl = getParentPage(checkedUrl);
         natStat = checkData.description.nationalStatistic;
         contactName = checkData.description.contact.name;
         contactEmail = checkData.description.contact.email;
@@ -32,7 +25,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
           relatedData = checkData.relatedData;
         }
         isInheriting = true;
-        submitFormHandler (pageTitle, contentUrl, isInheriting);
+        submitFormHandler (safeParentUrl, pageTitle, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -44,7 +37,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
   });
 
-  function submitFormHandler (title, uri, isInheriting) {
+  function submitFormHandler (safeParent, title, isInheriting) {
 
     $('.edition').append(
       '<label for="edition">Edition</label>' +
@@ -97,13 +90,11 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         if (pageType === 'bulletin') {
           pageData.relatedData = relatedData;
         }
-        newUri = makeUrl(parentUrl, releaseUri);
+        newUri = makeUrl(safeParent, releaseUri);
       } else {
-        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed, releaseUri);
       }
       var safeNewUri = checkPathSlashes(newUri);
-      pageData.uri = safeNewUri;
-      pageData.breadcrumb = breadcrumb;
 
       if (pageType === 'bulletin' && !pageData.description.edition) {
         alert('Edition can not be empty');
@@ -152,9 +143,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "correction": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 
@@ -184,9 +173,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "correction": [],
-        type: pageType,
-        "uri": "",
-        "breadcrumb": [],
+        type: pageType
       };
     }
 

@@ -1,7 +1,6 @@
 function checkSaveContent(collectionId, uri, data) {
   // check if the page exists
-  var getUri = uri + '/data.json';
-  getPageData(collectionId, getUri,
+  getPageData(collectionId, uri,
     success = function() {
       alert('This page already exists');
     },
