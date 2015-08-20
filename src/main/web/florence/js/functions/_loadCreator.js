@@ -16,7 +16,6 @@ function loadCreator (collectionId) {
 
   $('select').off().change(function () {
     pageType = $(this).val();
-    //var parentUrl = localStorage.getItem("pageurl");
     var parentUrl = Florence.globalVars.pagePath;
     $('.edition').empty();
 
