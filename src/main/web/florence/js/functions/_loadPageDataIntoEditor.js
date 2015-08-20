@@ -1,16 +1,16 @@
 function loadPageDataIntoEditor(path, collectionId) {
 
   if (Florence.globalVars.welsh) {
-    if (path === '/') {
-      var pageUrlData = path + "data_cy.json";
+    if (path === '/') {       //add whatever needed to read content in Welsh
+      var pageUrlData = path;
     } else {
-      var pageUrlData = path + "/data_cy.json";
+      var pageUrlData = path;
     }
   } else {
-    if (path === '/') {
-      var pageUrlData = path + "data.json";
+    if (path === '/') {       //add whatever needed to read content in English
+      var pageUrlData = path;
     } else {
-      var pageUrlData = path + "/data.json";
+      var pageUrlData = path;
     }
   }
 
