@@ -1,5 +1,6 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData;
+  var pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
+  var nextRelease, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedDatasets, relatedDocuments, relatedMethodology;
   var safeParent = checkPathSlashes(parentUrl);
   var parentUrlData = safeParent + "/data";
   $.ajax({
@@ -7,18 +8,10 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.type === 'product_page') {
       if (checkData.type === 'product_page' && !Florence.globalVars.welsh) {
-        var inheritedBreadcrumb = checkData.breadcrumb;
-        var parentBreadcrumb = {
-          "uri": checkData.uri
-        };
-        inheritedBreadcrumb.push(parentBreadcrumb);
-        breadcrumb = inheritedBreadcrumb;
         submitFormHandler ();
         return true;
       } else if (checkData.type === 'dataset' || checkData.type === 'reference_tables' && Florence.globalVars.welsh) {
-        breadcrumb = checkData.breadcrumb;
         releaseDate = checkData.description.releaseDate;
         nextRelease = checkData.description.nextRelease;
         natStat = checkData.description.nationalStatistic;
@@ -99,7 +92,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
           "metaDescription": "",
           "nationalStatistic": false,
           "migrated": false,
-          "title": "",
+          "title": ""
         },
         "downloads": [],
         "section": {},
@@ -126,7 +119,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
           "keywords": [],
           "metaDescription": "",
           "nationalStatistic": false,
-          "title": "",
+          "title": ""
         },
         "migrated": true,
         "downloads": [],
