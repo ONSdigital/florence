@@ -4,11 +4,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
   var html = templates.editorRelated(dataTemplate);
   $('#'+ idField).replaceWith(html);
   initialiseRelated(collectionId, data, templateData, field, idField);
-  if (idField.match(/article(s?)/) || idField.match(/bulletin(s?)/) || idField === 'document') {
-    resolveDescription(collectionId, data, templateData, field, idField);
-  } else {
-    resolveTitle(collectionId, data, templateData, field, idField);
-  }
+  resolveTitle(collectionId, data, templateData, field, idField);
 }
 
 function refreshRelated(collectionId, data, templateData, field, idField) {
@@ -134,52 +130,61 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
           if ((field === 'relatedBulletins' || field === 'statsBulletins') && result.type === 'bulletin') {
             if (!data[field]) {
               data[field] = [];
+              templateData[field] = [];
             }
           }
 
           else if (field === 'relatedArticles' && (result.type === 'article' || result.type === 'compendium_landing_page')) {
             if (!data[field]) {
               data[field] = [];
+              templateData[field] = [];
             }
           }
 
           else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin' || result.type === 'compendium_landing_page')) {
             if (!data[field]) {
               data[field] = [];
+              templateData[field] = [];
             }
           }
 
           else if ((field === 'relatedDatasets' || field === 'datasets') && (result.type === 'dataset' || result.type === 'reference_tables')) {
             if (!data[field]) {
               data[field] = [];
+              templateData[field] = [];
             }
           }
 
           else if ((field === 'items') && (result.type === 'timeseries')) {
             if (!data[field]) {
               data[field] = [];
+              templateData[field] = [];
             }
           }
 
           else if ((field === 'relatedData') && (result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
             if (!data[field]) {
               data[field] = [];
+              templateData[field] = [];
             }
           }
 
           else if (field === 'relatedMethodology' && (result.type === 'static_methodology' || result.type === 'static_qmi')) {
             if (!data[field]) {
               data[field] = [];
+              templateData[field] = [];
             }
           }
 
           else {
             alert("This is not a valid document");
+            createWorkspace(data.uri, collectionId, 'edit');
             return;
           }
 
           data[field].push({uri: latestUrl});
-          saveRelated(collectionId, data.uri, data, field, idField);
+          templateData[field].push({uri: latestUrl});
+          saveRelated(collectionId, data.uri, data, templateData, field, idField);
 
         },
         error: function () {
@@ -196,29 +201,6 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
 }
 
-function resolveDescription(collectionId, data, templateData, field, idField) {
-  var ajaxRequest = [];
-  $(templateData[field]).each(function (index, path) {
-    var eachUri = path.uri;
-    var dfd = $.Deferred();
-    getPageDataDescription(collectionId, eachUri,
-      success = function (response) {
-        templateData[field][index].description = response;
-        dfd.resolve();
-      },
-      error = function () {
-        alert(field + ' uri '+ eachUri+ ' is not found.');
-        dfd.resolve();
-      }
-    );
-    ajaxRequest.push(dfd);
-  });
-
-  $.when.apply($, ajaxRequest).then(function () {
-    refreshRelated(collectionId, data, templateData, field, idField);
-  });
-}
-
 function resolveTitle(collectionId, data, templateData, field, idField) {
   var ajaxRequest = [];
   $(templateData[field]).each(function (index, path) {
@@ -228,10 +210,13 @@ function resolveTitle(collectionId, data, templateData, field, idField) {
     getPageDataTitle(collectionId, eachUri,
       success = function (response) {
         templateData[field][index].description.title = response.title;
+        if(response.edition) {
+          templateData[field][index].description.edition = response.edition;
+        }
         dfd.resolve();
       },
       error = function () {
-        alert(field + ' uri '+ eachUri+ ' is not found.');
+        alert(field + ' uri: ' + eachUri + ' is not found.');
         dfd.resolve();
       }
     );
