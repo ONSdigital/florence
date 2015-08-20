@@ -206,10 +206,11 @@ function resolveTitle(collectionId, data, templateData, field, idField) {
   $(templateData[field]).each(function (index, path) {
     templateData[field][index].description = {};
     var eachUri = path.uri;
+    var latest = eachUri.match(/\/latest(\/?)$/) ? true : false;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
       success = function (response) {
-        templateData[field][index].description.title = response.title;
+        templateData[field][index].description.title = latest ? '(Latest) ' + response.title : response.title;
         if(response.edition) {
           templateData[field][index].description.edition = response.edition;
         }
