@@ -6,6 +6,10 @@ function postContent(collectionId, path, content, success, error) {
 
   if (Florence.globalVars.welsh) {
     var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+    var toAddLang = JSON.parse(content);
+    console.log(toAddLang);
+    toAddLang.description.language = 'cy';
+    content = JSON.stringify(toAddLang);
   } else {
     var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json";
   }
