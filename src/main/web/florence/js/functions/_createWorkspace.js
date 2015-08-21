@@ -19,9 +19,9 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
 
     Florence.globalVars.pagePath = safePath;
     if (Florence.globalVars.welsh !== true) {
-      Florence.tredegarBaseUrl = window.location.origin;
+      document.cookie = "lang=" + "en;path=/";
     } else {
-      Florence.tredegarBaseUrl = 'http://cy.localhost:8080';
+      document.cookie = "lang=" + "cy;path=/";
     }
     Florence.refreshAdminMenu();
 
