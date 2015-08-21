@@ -16,14 +16,21 @@ function saveAndReviewContent(collectionId, path, content) {
 
 function postReview(collectionId, path) {
   var safePath = checkPathSlashes(path);
+  if (safePath === '/') {
+    safePath = '';          // edge case for home
+  }
+
+  if (Florence.globalVars.welsh) {
+    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+  } else {
+    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json";
+  }
   // Open the file for editing
   $.ajax({
-    url: "/zebedee/review/" + collectionId + "?uri=" + safePath + "/data.json",
+    url: url,
     dataType: 'json',
     type: 'POST',
     success: function () {
-      //console.log("File set to reviewed.");
-      //alert("The file is now awaiting approval.");
       viewCollections(collectionId);
     },
     error: function () {
