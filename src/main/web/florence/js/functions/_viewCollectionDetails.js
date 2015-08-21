@@ -74,8 +74,22 @@ function viewCollectionDetails(collectionId) {
     $('.btn-page-edit').click(function () {
       var path = $(this).attr('data-path');
       var safePath = checkPathSlashes(path);
-      createWorkspace(safePath, collectionId, 'edit');
+      // check language
+      getPageDataDescription(collectionId, safePath,
+        success = function (response) {
+          if (response.language) {
+            Florence.globalVars.welsh = true;
+          } else {
+            Florence.globalVars.welsh = false;
+          }
+          createWorkspace(safePath, collectionId, 'edit');
+        },
+        error = function () {
+          alert('uri: ' + safePath + ' is not found.');
+        }
+      );
     });
+
     $('.page-delete').click(function () {
       var result = confirm("Are you sure you want to delete this page from the collection?");
       if (result === true) {
@@ -101,6 +115,7 @@ function viewCollectionDetails(collectionId) {
     });
 
     $('.btn-collection-work-on').click(function () {
+      Florence.globalVars.welsh = false;
       createWorkspace('', collectionId, 'browse');
     });
 

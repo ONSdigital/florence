@@ -2,10 +2,10 @@ function loadPageDataIntoEditor(path, collectionId) {
 
   if (Florence.globalVars.welsh) {
     if (path === '/') {       //add whatever needed to read content in Welsh
-      var pageUrlData = path;
+      var pageUrlData = path + '&lang=cy';
       var toApproveUrlData = '/data_cy.json';
     } else {
-      var pageUrlData = path;
+      var pageUrlData = path + '&lang=cy';
       var toApproveUrlData = path + '/data_cy.json';
     }
   } else {
@@ -17,6 +17,8 @@ function loadPageDataIntoEditor(path, collectionId) {
       var toApproveUrlData = path + '/data.json';
     }
   }
+
+  console.log(pageUrlData);
 
   var pageData, isPageComplete;
   var ajaxRequests = [];
