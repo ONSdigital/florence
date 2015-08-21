@@ -21,7 +21,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     if (Florence.globalVars.welsh !== true) {
       Florence.tredegarBaseUrl = window.location.origin;
     } else {
-      Florence.tredegarBaseUrl = window.location.origin + '/cy';
+      Florence.tredegarBaseUrl = 'http://cy.localhost:8080';
     }
     Florence.refreshAdminMenu();
 
@@ -53,6 +53,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         } else {
           processMenuClick(this);
         }
+
       });
 
       function processMenuClick(clicked) {
