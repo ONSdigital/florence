@@ -3,14 +3,18 @@ function loadPageDataIntoEditor(path, collectionId) {
   if (Florence.globalVars.welsh) {
     if (path === '/') {       //add whatever needed to read content in Welsh
       var pageUrlData = path;
+      var toApproveUrlData = '/data_cy.json';
     } else {
       var pageUrlData = path;
+      var toApproveUrlData = path + '/data_cy.json';
     }
   } else {
     if (path === '/') {       //add whatever needed to read content in English
       var pageUrlData = path;
+      var toApproveUrlData = '/data.json';
     } else {
       var pageUrlData = path;
+      var toApproveUrlData = path + '/data.json';
     }
   }
 
@@ -31,7 +35,7 @@ function loadPageDataIntoEditor(path, collectionId) {
   ajaxRequests.push(
     getCollection(collectionId,
       success = function (response) {
-        var lastCompletedEvent = getLastCompletedEvent(response, pageUrlData);
+        var lastCompletedEvent = getLastCompletedEvent(response, toApproveUrlData);
         isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
       },
       error = function (response) {
