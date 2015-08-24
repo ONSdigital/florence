@@ -1,8 +1,7 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
   var pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
   var nextRelease, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedDatasets, relatedDocuments, relatedMethodology;
-  var safeParent = checkPathSlashes(parentUrl);
-  var parentUrlData = safeParent + "/data";
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -57,7 +56,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed);
+      newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
       var safeNewUri = checkPathSlashes(newUri);
 
       if (!pageData.description.releaseDate) {

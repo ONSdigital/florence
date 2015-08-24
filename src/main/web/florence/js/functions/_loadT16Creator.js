@@ -2,8 +2,7 @@ function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 	var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual;
 
 	//Stores parent URL
-  var safeParent = checkPathSlashes(parentUrl);
-  var parentUrlData = safeParent + "/data";
+  var parentUrlData = parentUrl + "/data";
 	$.ajax({
 	url: parentUrlData,
 	dataType: 'json',

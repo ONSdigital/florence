@@ -1,7 +1,6 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
-  var safeParent = checkPathSlashes(parentUrl);
-  parentUrlData = safeParent + "/data";
+  parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -19,7 +18,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         }
         return true;
       } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_landing_page') {
-        safeParent = getParentPage(checkData.uri);
+        parentUrl = getParentPage(checkData.uri);
         pageTitle = checkData.description.title;
         isInheriting = true;
         pageData = pageTypeDataT6(pageType, checkData);
@@ -80,14 +79,14 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       }
 
       if (isInheriting && pageType === 'compendium_landing_page') {
-        newUri = makeUrl(safeParent, releaseUri);
+        newUri = makeUrl(parentUrl, releaseUri);
       }
       else if (pageType === 'compendium_landing_page') {
         uriSection = "compendium";
-        newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
       else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-        newUri = makeUrl(safeParent, pageTitleTrimmed);
+        newUri = makeUrl(parentUrl, pageTitleTrimmed);
       }
       else {
         alert('Oops! Something went the wrong way.');
@@ -150,7 +149,7 @@ function submitNoForm (title) {
     pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-      newUri = makeUrl(safeParent, pageTitleTrimmed);
+      newUri = makeUrl(parentUrl, pageTitleTrimmed);
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
@@ -285,7 +284,7 @@ function submitNoForm (title) {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
-    postContent(collectionId, safeParent, JSON.stringify(parentData),
+    postContent(collectionId, parentUrl, JSON.stringify(parentData),
       success = function (message) {
         viewWorkspace(childUri, collectionId, 'edit');
         refreshPreview(childUri);
