@@ -16,7 +16,7 @@ function loadPageDataIntoEditor(path, collectionId) {
   ajaxRequests.push(
     getCollection(collectionId,
       success = function (response) {
-        var lastCompletedEvent = getLastCompletedEvent(response, path);
+        var lastCompletedEvent = getLastCompletedEvent(response, path + '/data.json');
         isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
       },
       error = function (response) {
