@@ -1,10 +1,9 @@
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   var pageName, pageNameTrimmed, releaseDate, newUri, pageData;
-  var safeUrl = checkPathSlashes(parentUrl);
-  if (safeUrl === '/') {        //to check home page
-    safeUrl = '';
+  if (parentUrl === '/') {        //to check home page
+    parentUrl = '';
   }
-  var parentUrlData = safeUrl + "/data";
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -53,13 +52,13 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
       if (pageType === 'static_qmi' && !Florence.globalVars.welsh) {
-        newUri = makeUrl(safeUrl, 'qmis', pageNameTrimmed);
+        newUri = makeUrl(parentUrl, 'qmis', pageNameTrimmed);
       } else if (pageType === 'static_adhoc' && !Florence.globalVars.welsh) {
-        newUri = makeUrl(safeUrl, 'adhocs', pageNameTrimmed);
+        newUri = makeUrl(parentUrl, 'adhocs', pageNameTrimmed);
       } else if (pageType === 'static_methodology' && !Florence.globalVars.welsh) {
-        newUri = makeUrl(safeUrl, 'methodologies', pageNameTrimmed);
+        newUri = makeUrl(parentUrl, 'methodologies', pageNameTrimmed);
       } else if (!Florence.globalVars.welsh){
-        newUri = makeUrl(safeUrl, pageNameTrimmed);
+        newUri = makeUrl(parentUrl, pageNameTrimmed);
       } else {
         alert('You can not perform that operation in Welsh.');
         return;
