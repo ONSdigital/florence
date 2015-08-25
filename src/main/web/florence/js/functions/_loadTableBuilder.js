@@ -94,9 +94,13 @@ function loadTableBuilder(pageData, onSave, table) {
     if (!pageData.tables) {
       pageData.tables = []
     } else {
-      if (_.find(pageData.tables, function (existingTable) {
-          return existingTable.filename === table.filename
-        })) {
+
+      var existingTable = _.find(pageData.tables, function (existingTable) {
+        return existingTable.filename === table.filename
+      });
+
+      if (existingTable) {
+        existingTable.title = table.title;
         return;
       }
     }
@@ -105,6 +109,8 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 
   $('.btn-table-builder-create').on('click', function () {
+
+    saveTableJson();
 
     if (onSave) {
       onSave(table.filename, '<ons-table path="' + table.uri + '" />');
