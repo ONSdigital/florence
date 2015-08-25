@@ -1,7 +1,5 @@
 function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
 	var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual;
-
-	//Stores parent URL
   var parentUrlData = parentUrl + "/data";
 	$.ajax({
 	url: parentUrlData,

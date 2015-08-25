@@ -1,6 +1,6 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
-  parentUrlData = parentUrl + "/data";
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -10,11 +10,12 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page' && !Florence.globalVars.welsh) ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
+        parentUrl = checkData.uri;
         pageData = pageTypeDataT6(pageType, checkData);
         if (pageTitle) {
-          submitNoForm (pageTitle);
+          submitNoForm (parentUrl, pageTitle);
         } else {
-          submitFormHandler();
+          submitFormHandler(parentUrl);
         }
         return true;
       } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_landing_page') {
@@ -22,7 +23,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         pageTitle = checkData.description.title;
         isInheriting = true;
         pageData = pageTypeDataT6(pageType, checkData);
-        submitFormHandler(pageTitle, parentUrl, isInheriting);
+        submitFormHandler(parentUrl, pageTitle, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -34,7 +35,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
   });
 
-  function submitFormHandler (title, parentUrl, isInheriting) {
+  function submitFormHandler (parentUrl, title, isInheriting) {
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -143,7 +144,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     });
   }
 
-function submitNoForm (title) {
+function submitNoForm (parentUrl, title) {
 
     pageData.description.title = title;
     pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
