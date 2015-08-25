@@ -68,7 +68,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'timeseries') {
     var html = templates.workEditT5(templateData);
     $('.workspace-menu').html(html);
-    editMarkdownOneObject (collectionId, pageData, 'section', 'section');
+    editMarkdownOneObject (collectionId, pageData, 'section');
     editMarkdownWithNoTitle (collectionId, pageData, 'notes', 'note');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'timeseries');
