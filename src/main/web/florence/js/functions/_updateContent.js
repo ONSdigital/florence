@@ -4,7 +4,8 @@ function updateContent(collectionId, path, content, redirectToPath) {
     success = function (response) {
       Florence.Editor.isDirty = false;
       if (redirect) {
-        createWorkspace(redirect, collectionId, 'edit');
+        refreshPreview(path);
+        viewWorkspace(redirect, collectionId, 'edit');
         return;
       } else {
         refreshPreview(path);

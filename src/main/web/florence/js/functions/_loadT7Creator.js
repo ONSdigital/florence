@@ -61,7 +61,6 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         newUri = makeUrl(parentUrl, pageNameTrimmed);
       } else {
         alert('You can not perform that operation in Welsh.');
-        return;
       }
       var safeNewUri = checkPathSlashes(newUri);
       if (releaseDate && (pageType === 'static_qmi')) {

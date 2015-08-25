@@ -15,7 +15,7 @@ function viewController(view) {
 			viewPublish();
 		}
 		//else if (view === 'workspace') {
-		//	createWorkspace();
+		//	viewWorkspace();
 		//}
 		else {
 			viewController('collections');
