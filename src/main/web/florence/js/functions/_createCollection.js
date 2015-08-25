@@ -6,9 +6,9 @@ function createCollection() {
 
   if (collectionType === 'scheduled') {
     publishDate  = $('#date').val();
-    publishTime  = $('#time').val();
+    publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
     var toIsoDate = $('#date').datepicker("getDate");
-    collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + parseInt(publishTime)).toISOString();
+    collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
   } else {
     collectionDate  = null;
   };
