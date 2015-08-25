@@ -38,6 +38,7 @@ function loadTableBuilder(pageData, onSave, table) {
         url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
         type: "POST",
         success: function (html) {
+          saveTableJson();
           saveTableHtml(html);
         }
       });
