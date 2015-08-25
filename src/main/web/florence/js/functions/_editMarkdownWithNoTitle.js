@@ -1,6 +1,15 @@
 function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   var list = data[field];
-  var dataTemplate = {list: list, idField: idField};
+
+  var dataTemplate;
+  if (idField === 'note') {
+    dataTemplate = {list: list, idField: idField, header: 'Notes'};
+  //} else if (idField === 'something else') {
+  //  dataTemplate = {list: list, idField: idField, header: 'Something else'};
+  } else {
+    dataTemplate = {list: list, idField: idField, header: 'Content'};
+  }
+
   var html = templates.editorContentNoTitle(dataTemplate);
   $('#'+ idField).replaceWith(html);
   // Load
