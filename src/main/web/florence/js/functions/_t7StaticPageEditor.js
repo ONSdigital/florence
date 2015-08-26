@@ -1,6 +1,6 @@
 function staticPageEditor(collectionId, data) {
 
-  var newSections = [], newLinks = [];
+  var newLinks = [];
   var setActiveTab, getActiveTab;
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -71,12 +71,7 @@ function staticPageEditor(collectionId, data) {
 
   function save() {
     // Sections
-    var orderSection = $("#sortable-content").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = $('#content-markdown_' + nameS).val();
-    newSections[indexS] = markdown;
-    });
-    data.markdown = newSections;
+    data.markdown = [$('#content-markdown').val()];
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function(indexL, nameL){
