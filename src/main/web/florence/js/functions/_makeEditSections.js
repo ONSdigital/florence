@@ -179,7 +179,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'dataset') {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
-    editMarkdownOneObject (collectionId, pageData, 'section');
+    editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');

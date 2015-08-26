@@ -11,43 +11,28 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   }
 
   var html = templates.editorContentNoTitle(dataTemplate);
-  $('#'+ idField).replaceWith(html);
+  $('#content').replaceWith(html);
   // Load
-  $(data[field]).each(function(index){
+  $('#content-edit').click(function() {
+    var editedSectionValue = $('#content-markdown').val();
 
-    $('#' + idField +'-edit_'+index).click(function() {
-      var editedSectionValue = $('#' + idField + '-markdown_' + index).val()
-      ;
-
-       var saveContent = function(updatedContent) {
-         data[field][index] = updatedContent;
-         saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
-       };
-
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
-    });
-
-    // Delete
-    $('#' + idField + '-delete_'+index).click(function() {
-      var result = confirm("Are you sure you want to delete?");
-      if (result === true) {
-        $("#" + index).remove();
-        data[field].splice(index, 1);
-        saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
-      }
-    });
+    var saveContent = function(updatedContent) {
+      data[field] = [updatedContent];
+      saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+    };
+    loadMarkdownEditor(editedSectionValue, saveContent, data);
   });
 
-  //Add
-  $('#add-' + idField).one('click', function () {
-    data[field].push("");
-    saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+  // Delete
+  $('#content-delete').click(function() {
+    var result = confirm("Are you sure you want to delete?");
+    if (result === true) {
+      $(this).parent().remove();
+      data[field] = [];
+      saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+    }
   });
 
-  function sortable() {
-    $('#sortable-' + idField).sortable();
-  }
-  sortable();
 }
 
 function saveMarkdownNoTitle (collectionId, path, data, field, idField) {
