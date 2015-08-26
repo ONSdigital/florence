@@ -8,8 +8,7 @@
             {{#each list}}
                 <div id="{{@index}}" class="edit-section__sortable-item">
                     <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
-                    <textarea id="file-title_{{@index}}" placeholder="Type title here and save to add
-                    content">{{title}}</textarea>
+                    <textarea id="file-title_{{@index}}" class="add-tooltip" placeholder="Type title here and save to add content">{{title}}</textarea>
                     <p id="file-filename_show_{{@index}}">{{file}}</p>
                     <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
                 </div>
