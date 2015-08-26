@@ -84,7 +84,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
     $('#sortable-' + idField).append(
       '<div id="' + editRelated['lastIndex' + field] + '" class="edit-section__sortable-item">' +
-      '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get"></textarea>' +
+      '  <textarea id="' + idField + '-uri_' + editRelated['lastIndex' + field] + '" placeholder="Go to the related data and click Get or paste the link and click Get"></textarea>' +
       '  <div id="latest-container"></div>' +
       '  <button class="btn-page-get" id="' + idField + '-get_' + editRelated['lastIndex' + field] + '">Get</button>' +
       '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
@@ -95,6 +95,21 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
         '<input id="latest" type="checkbox" value="value" checked/></label>');
       latestCheck = true;
     }
+
+    $(function() {
+      $('#' + idField + '-uri_' + editRelated['lastIndex' + field]).tooltip({
+        items: '#' + idField + '-uri_' + editRelated['lastIndex' + field],
+        content: 'Go to the related data and click Get or paste the link and click Get',
+        show: "slideDown", // show immediately
+        open: function(event, ui)
+        {
+          ui.tooltip.hover(
+            function () {
+              $(this).fadeTo("slow", 0.5);
+            });
+        }
+      });
+    });
 
     $('#' + idField + '-cancel_' + editRelated['lastIndex' + field]).one('click', function () {
       createWorkspace(data.uri, collectionId, 'edit');
