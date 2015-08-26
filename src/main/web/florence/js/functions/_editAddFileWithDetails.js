@@ -161,6 +161,21 @@ function addFileWithDetails (collectionId, data, field, idField) {
     })();
   });
 
+  $(function() {
+    $('.add-tooltip').tooltip({
+      items: '.add-tooltip',
+      content: 'Type title here and click Edit to add a description',
+      show: "slideDown", // show immediately
+      open: function(event, ui)
+      {
+        ui.tooltip.hover(
+          function () {
+            $(this).fadeTo("slow", 0.5);
+          });
+      }
+    });
+  });
+
   function sortable() {
     $('#sortable-' + idField).sortable();
   }
