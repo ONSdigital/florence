@@ -16,6 +16,14 @@ function t1Editor(collectionId, data, templateData) {
   resolveTitleT1(collectionId, templateData, 'sections');
 
   // Metadata edition and saving
+  if (Florence.globalVars.welsh) {
+    $("#title").on('input', function () {
+      $(this).textareaAutoSize();
+      data.description.title = $(this).val();
+    });
+  } else {
+    $(".title").remove();
+  }
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();

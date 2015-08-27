@@ -4,10 +4,16 @@
     <div class="edit-section">
       <div class="edit-section__head">
         <h1>Metadata</h1>
+
         <p>Keywords</p>
       </div>
       <div class="edit-section__content">
         <div id="metadata-list">
+          <div class="title">
+            <label for="title">Title
+              <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
+            </label>
+          </div>
           <div>
             <label for="keywords">Summary
               <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
@@ -15,7 +21,8 @@
           </div>
           <div>
             <label for="keywords">Keywords
-              <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
+              <input name="tags" id="keywords" value="{{this.description.keywords}}"
+                     style="display: none;">
             </label>
             <ul id="keywordsTag"></ul>
           </div>
@@ -31,15 +38,15 @@
     <div class="edit-section" id="sections">
       <div class="edit-section__head">
         <h1>Statistical highlights</h1>
+
         <p></p>
       </div>
       <div class="edit-section__content">
-          <div id="sortable-section" class="edit-section__sortable">
-              <div id="to-populate"></div>
-          </div>
+        <div id="sortable-section" class="edit-section__sortable">
+          <div id="to-populate"></div>
+        </div>
       </div>
     </div>
-
   </div>
 
   <nav class="edit-nav">
