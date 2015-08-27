@@ -11,7 +11,7 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   }
 
   var html = templates.editorContentNoTitle(dataTemplate);
-  $('#content').replaceWith(html);
+  $('#' + idField).replaceWith(html);
   // Load
   $('#content-edit').click(function() {
     var editedSectionValue = $('#content-markdown').val();
