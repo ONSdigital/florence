@@ -127,7 +127,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
               },
               error = function (response) {
                 if (response.status === 400) {
-                  alert("Cannot edit this file. It is already part of another collection.");
+                  alert("Cannot edit this page. It is already part of another collection.");
                 }
                 else if (response.status === 401) {
                   alert("You are not authorised to update content.");
@@ -172,7 +172,7 @@ function submitNoForm (parentUrl, title) {
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this file. It is already part of another collection.");
+              alert("Cannot edit this page. It is already part of another collection.");
             }
             else if (response.status === 401) {
               alert("You are not authorised to update content.");
@@ -269,7 +269,7 @@ function submitNoForm (parentUrl, title) {
     }
 
     else {
-      alert('unsupported page type');
+      alert('Unsupported page type. This is not a compendium file type');
     }
   }
 
@@ -293,7 +293,7 @@ function submitNoForm (parentUrl, title) {
       },
       error = function (response) {
         if (response.status === 400) {
-          alert("Cannot edit this file. It is already part of another collection.");
+          alert("Cannot edit this page. It is already part of another collection.");
         }
         else if (response.status === 401) {
           alert("You are not authorised to update content.");

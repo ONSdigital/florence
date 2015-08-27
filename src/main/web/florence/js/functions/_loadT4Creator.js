@@ -177,7 +177,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
 
     else {
-      alert('unsupported page type');
+      alert('Unsupported page type. This is not an article or a bulletin');
     }
   }
 }
