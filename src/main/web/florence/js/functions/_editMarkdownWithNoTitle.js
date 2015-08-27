@@ -11,7 +11,7 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   }
 
   var html = templates.editorContentNoTitle(dataTemplate);
-  $('#content').replaceWith(html);
+  $('#' + idField).replaceWith(html);
   // Load
   $('#content-edit').click(function() {
     var editedSectionValue = $('#content-markdown').val();
@@ -43,7 +43,7 @@ function saveMarkdownNoTitle (collectionId, path, data, field, idField) {
         },
         error = function (response) {
             if (response.status === 400) {
-                alert("Cannot edit this file. It is already part of another collection.");
+                alert("Cannot edit this page. It is already part of another collection.");
             }
             else if (response.status === 401) {
                 alert("You are not authorised to update content.");
