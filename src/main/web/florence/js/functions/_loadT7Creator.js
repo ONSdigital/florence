@@ -184,6 +184,6 @@ function pageTypeDataT7(pageType) {
       "links" : []
     };
   } else {
-    alert('unsupported page type');
+    alert('Unsupported page type. This is not a static page');
   }
 }

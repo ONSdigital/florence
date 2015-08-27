@@ -116,7 +116,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
 
     else {
-      alert('unsupported page type');
+      alert('Unsupported page type. This is not a dataset type');
     }
   }
 }
