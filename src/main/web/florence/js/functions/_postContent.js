@@ -5,7 +5,11 @@ function postContent(collectionId, path, content, success, error) {
   }
 
   if (Florence.globalVars.welsh) {
-    var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/cy/data_cy.json";
+    if (safePath.match(/\/cy\/?$/)) {
+      var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+    } else {
+      var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/cy/data_cy.json";
+    }
     var toAddLang = JSON.parse(content);
     toAddLang.description.language = 'cy';
     content = JSON.stringify(toAddLang);
@@ -30,3 +34,4 @@ function postContent(collectionId, path, content, success, error) {
     }
   });
 }
+
