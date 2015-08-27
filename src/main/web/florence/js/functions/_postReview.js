@@ -6,7 +6,7 @@ function saveAndReviewContent(collectionId, path, content) {
     },
     error = function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this file. It is already part of another collection.");
+        alert("Cannot edit this page. It is already part of another collection.");
       }
       else {
         handleApiError(response);
