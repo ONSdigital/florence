@@ -1,96 +1,106 @@
 .ui-datepicker {
 
-	&-header {
-		background: $pickled-bluewood;
-		color: $white;
-		overflow: hidden;
-		color: $cadet-blue;
-	}
+  &-header {
+    background: $pickled-bluewood;
+    color: $white;
+    overflow: hidden;
+    color: $cadet-blue;
+  }
 
-	&-prev {
-		float: left;
-		padding: 40px 0 0 0;
-		margin: 24px 0 0 20px;
-		height: 0;
-		overflow: hidden;
-		background: transparent url(../img/sprite.png) no-repeat 0px -560px;
-		background-size: 30px auto;
-		cursor: pointer;
-	}
+  &-prev {
+    float: left;
+    padding: 40px 0 0 0;
+    margin: 24px 0 0 20px;
+    height: 0;
+    overflow: hidden;
+    background: transparent url(../img/sprite.png) no-repeat 0px -560px;
+    background-size: 30px auto;
+    cursor: pointer;
+  }
 
-	&-next { 
-		float: right;
-		padding: 40px 0 0 0;
-		margin: 24px 20px 0 0;
-		height: 0;
-		overflow: hidden;
-		background: transparent url(../img/sprite.png) no-repeat 0px -608px;
-		background-size: 30px auto;
-		cursor: pointer;
-	}
+  &-next {
+    float: right;
+    padding: 40px 0 0 0;
+    margin: 24px 20px 0 0;
+    height: 0;
+    overflow: hidden;
+    background: transparent url(../img/sprite.png) no-repeat 0px -608px;
+    background-size: 30px auto;
+    cursor: pointer;
+  }
 
-	&-title {
-		// font-size: 30px;
-		@extend .class-for-24px;
-		@extend .text-align-center;
-	}
+  &-title {
+    // font-size: 30px;
+    @extend .class-for-24px;
+    @extend .text-align-center;
+  }
 
-	&-calendar {
+  &-calendar {
 
-		tr {
+    tr {
 
-			background: $tea !important;
-			// background: $ash !important;
-			font-weight: 600;
-			color: $olive-haze;
+      background: $tea !important;
+      // background: $ash !important;
+      font-weight: 600;
+      color: $olive-haze;
 
-			&:hover {
-				// background: $tea !important;
-			}
-		}
+      &:hover {
+        // background: $tea !important;
+      }
+    }
 
-		th {
-			background: $pickled-bluewood;
-			color: $cadet-blue;
-		}
+    th {
+      background: $pickled-bluewood;
+      color: $cadet-blue;
+    }
 
-		td {
-			padding: 0;
-			text-align: center;
-			cursor: initial;
-			border-bottom: 1px solid $nappa;
-				border-right: 1px solid $nappa;
+    td {
+      padding: 0;
+      text-align: center;
+      cursor: initial;
+      border-bottom: 1px solid $nappa;
+      border-right: 1px solid $nappa;
 
-			a {
-				display: block;
-				padding: 20px 21px;
-				background: $ash;
-				color: $kabul;
-				text-decoration: none;
-				// border-bottom: 1px solid $nappa;
-				// border-right: 1px solid $nappa;
-				box-sizing: border-box;
+      a {
+        display: block;
+        padding: 20px 21px;
+        background: $ash;
+        color: $kabul;
+        text-decoration: none;
+        // border-bottom: 1px solid $nappa;
+        // border-right: 1px solid $nappa;
+        box-sizing: border-box;
 
-				&:hover {
-					background: $nappa;
-					color: $ship-gray;
-					// border: 1px solid $ship-gray;
-				}
-			}
+        &:hover {
+          background: $nappa;
+          color: $ship-gray;
+          // border: 1px solid $ship-gray;
+        }
+      }
 
-			span {
-				display: block;
-				padding: 20px 21px;
-				cursor: not-allowed;
-				// border-bottom: 1px solid $nappa;
-				// border-right: 1px solid $nappa;
-				// border-left: 1px solid $nappa;
+      span {
+        display: block;
+        padding: 20px 21px;
+        cursor: not-allowed;
+        // border-bottom: 1px solid $nappa;
+        // border-right: 1px solid $nappa;
+        // border-left: 1px solid $nappa;
 
-				&:hover {
-					// background: $nappa;
-				}
-			}
-		}
-	}
+        &:hover {
+          // background: $nappa;
+        }
+      }
+    }
+  }
+}
 
+.ui-tooltip-content {
+  font-size: 11px;
+  font-weight: 400;
+  position: absolute;
+  padding: 0px 8px;
+  border: 1px solid #9699a5;
+  background-color: #ebebf0;
+  display: block;
+  left: 90px;
 }
