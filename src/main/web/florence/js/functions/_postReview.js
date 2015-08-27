@@ -21,7 +21,11 @@ function postReview(collectionId, path) {
   }
 
   if (Florence.globalVars.welsh) {
-    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/cy/data_cy.json";
+    if (safePath.match(/\/cy\/?$/)) {
+      var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+    } else {
+      var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/cy/data_cy.json";
+    }
   } else {
     var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json";
   }
