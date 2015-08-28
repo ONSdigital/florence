@@ -18,8 +18,6 @@ function loadPageDataIntoEditor(path, collectionId) {
     }
   }
 
-  console.log(pageUrlData);
-
   var pageData, isPageComplete;
   var ajaxRequests = [];
 
