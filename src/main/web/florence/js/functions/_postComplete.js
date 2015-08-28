@@ -19,9 +19,18 @@ function saveAndCompleteContent(collectionId, path, content) {
 
 function completeContent(collectionId, path) {
   var safePath = checkPathSlashes(path);
+  if (safePath === '/') {
+    safePath = '';          // edge case for home
+  }
+
+  if (Florence.globalVars.welsh) {
+    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+  } else {
+    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json";
+  }
   // Update content
   $.ajax({
-    url: "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json",
+    url: url,
     dataType: 'json',
     type: 'POST',
     success: function () {

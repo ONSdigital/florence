@@ -7,7 +7,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     crossDomain: true,
     success: function (checkData) {
       parentData = $.extend(true, {}, checkData);
-      if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page') ||
+      if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page' && !Florence.globalVars.welsh) ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
         parentUrl = checkData.uri;

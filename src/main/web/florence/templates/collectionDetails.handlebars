@@ -1,3 +1,55 @@
+<!--<div class="section-head">-->
+  <!--<h2>{{name}}</h2>-->
+  <!--<p>Publish: {{date}}</br>{{createdBy events}}</p>-->
+<!--</div>-->
+<!--<div class="section-content">-->
+  <!--<h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>-->
+  <!--<ul class="page-list">-->
+    <!--{{#each inProgress}}-->
+      <!--<li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>-->
+        <!--<div class="page-options">-->
+          <!--<button class="btn-page-edit" data-path="{{uri}}">Edit file</button>-->
+          <!--<button class="btn-page-move" data-path="{{uri}}">Move file</button>-->
+          <!--<button class="btn-page-delete page-delete" data-path="{{uri}}">Delete file</button>-->
+        <!--</div>-->
+      <!--</li>-->
+      <!--{{/each}}-->
+  <!--</ul>-->
+  <!--<h3 id="complete-uris">{{complete.length}} pages awaiting review</h3>-->
+  <!--<ul class="page-list">-->
+    <!--{{#each complete}}-->
+      <!--<li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>-->
+        <!--<div class="page-options">-->
+          <!--<button class="btn-page-edit" data-path="{{uri}}">Review file</button>-->
+          <!--<button class="btn-page-move" data-path="{{uri}}">Move file</button>-->
+          <!--<button class="btn-page-delete page-delete" data-path="{{uri}}">Delete file</button>-->
+        <!--</div>-->
+      <!--</li>-->
+    <!--{{/each}}-->
+  <!--</ul>-->
+  <!--<h3 id="reviewed-uris">{{reviewed.length}} pages awaiting approval</h3>-->
+  <!--<ul class="page-list">-->
+    <!--{{#each reviewed}}-->
+      <!--<li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>-->
+        <!--<div class="page-options">-->
+          <!--<button class="btn-page-edit" data-path="{{uri}}">Edit file</button>-->
+          <!--<button class="btn-page-move" data-path="{{uri}}">Move file</button>-->
+          <!--<button class="btn-page-delete page-delete" data-path="{{uri}}">Delete file</button>-->
+        <!--</div>-->
+      <!--</li>-->
+    <!--{{/each}}-->
+  <!--</ul>-->
+<!--</div>-->
+
+<!--<nav class="section-nav">-->
+  <!--<button class="btn-collection-work-on">Work on collection</button>-->
+  <!--<button class="btn-collection-approve">Approve collection</button>-->
+  <!--<button id="collection-delete" class="btn-page-delete page-delete">Delete collection</button>-->
+  <!--<button class="btn-collection-cancel">Cancel</button>-->
+<!--</nav>-->
+
+<!--Ready to Welsh-->
+
 <div class="section-head">
   <h2>{{name}}</h2>
   <p>Publish: {{date}}</br>{{createdBy events}}</p>
@@ -6,21 +58,22 @@
   <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
   <ul class="page-list">
     {{#each inProgress}}
-      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
+      <li><span class="page-item page-item--{{type}}">{{#if description.language}}(Welsh) {{/if}}{{description
+      .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
-          <button class="btn-page-edit" data-path="{{uri}}">Edit file</button>
+          <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit file</button>
           <button class="btn-page-move" data-path="{{uri}}">Move file</button>
           <button class="btn-page-delete page-delete" data-path="{{uri}}">Delete file</button>
         </div>
       </li>
-      {{/each}}
+    {{/each}}
   </ul>
   <h3 id="complete-uris">{{complete.length}} pages awaiting review</h3>
   <ul class="page-list">
     {{#each complete}}
-      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
+      <li><span class="page-item page-item--{{type}}">{{#if description.language}}(Welsh) {{/if}}{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
-          <button class="btn-page-edit" data-path="{{uri}}">Review file</button>
+          <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Review file</button>
           <button class="btn-page-move" data-path="{{uri}}">Move file</button>
           <button class="btn-page-delete page-delete" data-path="{{uri}}">Delete file</button>
         </div>
@@ -30,11 +83,11 @@
   <h3 id="reviewed-uris">{{reviewed.length}} pages awaiting approval</h3>
   <ul class="page-list">
     {{#each reviewed}}
-      <li><span class="page-item page-item--{{type}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
+      <li><span class="page-item page-item--{{type}}">{{#if description.language}}(Welsh) {{/if}}{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
-          <button class="btn-page-edit" data-path="{{uri}}">Edit file</button>
+          <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit file</button>
           <button class="btn-page-move" data-path="{{uri}}">Move file</button>
-          <button class="btn-page-delete" data-path="{{uri}}">Delete file</button>
+          <button class="btn-page-delete page-delete" data-path="{{uri}}">Delete file</button>
         </div>
       </li>
     {{/each}}
@@ -47,3 +100,4 @@
   <button id="collection-delete" class="btn-page-delete page-delete">Delete collection</button>
   <button class="btn-collection-cancel">Cancel</button>
 </nav>
+

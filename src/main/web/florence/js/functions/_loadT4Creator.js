@@ -6,7 +6,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.type === 'product_page') {
+      if (checkData.type === 'product_page' && !Florence.globalVars.welsh) {
         var checkedUrl = checkPathSlashes(checkData.uri);
         submitFormHandler(checkedUrl);
         return true;
