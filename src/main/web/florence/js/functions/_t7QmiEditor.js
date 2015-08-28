@@ -1,6 +1,6 @@
 function qmiEditor(collectionId, data) {
 
-  var newSections = [], newFiles = [];
+  var newFiles = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
@@ -121,13 +121,8 @@ function qmiEditor(collectionId, data) {
   });
 
   function save() {
-   // Sections
-      var orderSection = $("#sortable-content").sortable('toArray');
-      $(orderSection).each(function (indexS, nameS) {
-        var markdown = $('#content-markdown_' + nameS).val();
-      newSections[indexS] = markdown;
-      });
-      data.markdown = newSections;
+    // Sections
+    data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function(indexF, nameF){

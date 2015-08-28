@@ -1,13 +1,14 @@
 <div class="edit-section" id="one">
     <div class="edit-section__head">
-        <h1>Note</h1>
+        <h1>{{header}}</h1>
         <p>Body copy</p>
     </div>
     <div class="edit-section__content">
         <div id="sortable-one" class="edit-section__sortable">
-            <div class="edit-section__sortable-item">
-            <textarea class="auto-size" id="one-markdown" placeholder="Type or click edit to add
-            content">{{this.markdown}}</textarea>
+            <div class="edit-section__item">
+                <textarea class="auto-size" id="one-markdown" placeholder="Type or click edit to add
+                content" style="display: none;">{{list.markdown}}</textarea>
+                <div class="float-left">To add or edit content click edit</div>
                 <button class="btn-markdown-edit" id="one-edit">Edit</button>
                 <button class="btn-page-delete" id="one-delete">Delete</button>
             </div>

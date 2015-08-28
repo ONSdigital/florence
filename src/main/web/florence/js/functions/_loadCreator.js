@@ -1,4 +1,4 @@
-function loadCreator (collectionId) {
+function loadCreator (parentUrl, collectionId) {
   var pageType, releaseDate;
 
   getCollection(collectionId,
@@ -16,7 +16,6 @@ function loadCreator (collectionId) {
 
   $('select').off().change(function () {
     pageType = $(this).val();
-    var parentUrl = Florence.globalVars.pagePath;
     $('.edition').empty();
 
     if (pageType === 'bulletin' || pageType === 'article') {

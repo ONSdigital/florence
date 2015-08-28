@@ -1,7 +1,6 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
-  var safeParent = checkPathSlashes(parentUrl);
-  var parentUrlData = safeParent + "/data";
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -37,7 +36,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
   });
 
-  function submitFormHandler (safeParent, title, isInheriting) {
+  function submitFormHandler (parentUrl, title, isInheriting) {
 
     $('.edition').append(
       '<label for="edition">Edition</label>' +
@@ -90,9 +89,9 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         if (pageType === 'bulletin') {
           pageData.relatedData = relatedData;
         }
-        newUri = makeUrl(safeParent, releaseUri);
+        newUri = makeUrl(parentUrl, releaseUri);
       } else {
-        newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
       var safeNewUri = checkPathSlashes(newUri);
 
@@ -178,7 +177,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
 
     else {
-      alert('unsupported page type');
+      alert('Unsupported page type. This is not an article or a bulletin');
     }
   }
 }
