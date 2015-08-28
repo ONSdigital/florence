@@ -1,7 +1,6 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
-  var safeParent = checkPathSlashes(parentUrl);
-  parentUrlData = safeParent + "/data";
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -11,19 +10,20 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
+        parentUrl = checkData.uri;
         pageData = pageTypeDataT6(pageType, checkData);
         if (pageTitle) {
-          submitNoForm (pageTitle);
+          submitNoForm (parentUrl, pageTitle);
         } else {
-          submitFormHandler();
+          submitFormHandler(parentUrl);
         }
         return true;
       } if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_landing_page') {
-        safeParent = getParentPage(checkData.uri);
+        parentUrl = getParentPage(checkData.uri);
         pageTitle = checkData.description.title;
         isInheriting = true;
         pageData = pageTypeDataT6(pageType, checkData);
-        submitFormHandler(pageTitle, parentUrl, isInheriting);
+        submitFormHandler(parentUrl, pageTitle, isInheriting);
         return true;
       } else {
         alert("This is not a valid place to create this page.");
@@ -35,7 +35,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
   });
 
-  function submitFormHandler (title, parentUrl, isInheriting) {
+  function submitFormHandler (parentUrl, title, isInheriting) {
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -80,14 +80,14 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       }
 
       if (isInheriting && pageType === 'compendium_landing_page') {
-        newUri = makeUrl(safeParent, releaseUri);
+        newUri = makeUrl(parentUrl, releaseUri);
       }
       else if (pageType === 'compendium_landing_page') {
         uriSection = "compendium";
-        newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
       }
       else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-        newUri = makeUrl(safeParent, pageTitleTrimmed);
+        newUri = makeUrl(parentUrl, pageTitleTrimmed);
       }
       else {
         alert('Oops! Something went the wrong way.');
@@ -127,7 +127,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
               },
               error = function (response) {
                 if (response.status === 400) {
-                  alert("Cannot edit this file. It is already part of another collection.");
+                  alert("Cannot edit this page. It is already part of another collection.");
                 }
                 else if (response.status === 401) {
                   alert("You are not authorised to update content.");
@@ -144,13 +144,13 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     });
   }
 
-function submitNoForm (title) {
+function submitNoForm (parentUrl, title) {
 
     pageData.description.title = title;
     pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-      newUri = makeUrl(safeParent, pageTitleTrimmed);
+      newUri = makeUrl(parentUrl, pageTitleTrimmed);
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
@@ -172,7 +172,7 @@ function submitNoForm (title) {
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this file. It is already part of another collection.");
+              alert("Cannot edit this page. It is already part of another collection.");
             }
             else if (response.status === 401) {
               alert("You are not authorised to update content.");
@@ -269,7 +269,7 @@ function submitNoForm (title) {
     }
 
     else {
-      alert('unsupported page type');
+      alert('Unsupported page type. This is not a compendium file type');
     }
   }
 
@@ -285,7 +285,7 @@ function submitNoForm (title) {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
-    postContent(collectionId, safeParent, JSON.stringify(parentData),
+    postContent(collectionId, parentUrl, JSON.stringify(parentData),
       success = function (message) {
         viewWorkspace(childUri, collectionId, 'edit');
         refreshPreview(childUri);
@@ -293,7 +293,7 @@ function submitNoForm (title) {
       },
       error = function (response) {
         if (response.status === 400) {
-          alert("Cannot edit this file. It is already part of another collection.");
+          alert("Cannot edit this page. It is already part of another collection.");
         }
         else if (response.status === 401) {
           alert("You are not authorised to update content.");

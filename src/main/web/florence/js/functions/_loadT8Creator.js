@@ -1,7 +1,6 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData;
-  var safeParent = checkPathSlashes(parentUrl);
-  var parentUrlData = safeParent + "/data";
+  var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -43,7 +42,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       } else {
         pageData.description.releaseDate = releaseDate;
       }
-      newUri = makeUrl(safeParent, uriSection, pageTitleTrimmed);
+      newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
       var safeNewUri = checkPathSlashes(newUri);
 
       if (!pageData.description.releaseDate) {
@@ -117,7 +116,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
 
     else {
-      alert('unsupported page type');
+      alert('Unsupported page type. This is not a dataset type');
     }
   }
 }

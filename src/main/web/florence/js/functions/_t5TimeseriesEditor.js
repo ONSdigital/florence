@@ -1,6 +1,6 @@
 function timeseriesEditor(collectionId, data) {
 
-  var newSections = [], newNotes = [], newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
+  var newNotes = [], newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {

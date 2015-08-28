@@ -7,7 +7,7 @@ function checkPathParsed (uri) {
     }
   return safeUrl;
   } else {
-    alert('This is not a valid url');
+    alert('This is not a valid link');
     return false;
   }
 }
