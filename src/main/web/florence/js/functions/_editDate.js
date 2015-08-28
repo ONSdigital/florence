@@ -84,7 +84,7 @@ function saveNoteMarkdown (collectionId, path, data, field, idField) {
         },
         error = function (response) {
             if (response.status === 400) {
-                alert("Cannot edit this file. It is already part of another collection.");
+                alert("Cannot edit this page. It is already part of another collection.");
             }
             else if (response.status === 401) {
                 alert("You are not authorised to update content.");

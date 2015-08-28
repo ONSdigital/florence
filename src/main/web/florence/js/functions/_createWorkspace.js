@@ -49,7 +49,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       if (menuItem.is('#browse')) {
         loadBrowseScreen(collectionId, 'click');
       } else if (menuItem.is('#create')) {
-        loadCreateScreen(collectionId);
+        loadCreateScreen(Florence.globalVars.pagePath, collectionId);
       } else if (menuItem.is('#edit')) {
         Florence.globalVars.pagePath = getPathName();
         loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
@@ -60,12 +60,18 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
 
     $('.workspace-menu').on('click', '.btn-browse-create', function () {
       var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-      viewWorkspace(dest, Florence.collection.id, 'create');
+      Florence.globalVars.pagePath = dest;
+      $('.nav--workspace li').removeClass('selected');
+      $("#create").addClass('selected');
+      loadCreateScreen(Florence.globalVars.pagePath, collectionId);
     });
 
     $('.workspace-menu').on('click', '.btn-browse-edit', function () {
       var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-      viewWorkspace(dest, Florence.collection.id, 'edit');
+      Florence.globalVars.pagePath = dest;
+      $('.nav--workspace li').removeClass('selected');
+      $("#edit").addClass('selected');
+      loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
     });
 
     document.getElementById('iframe').onload = function () {
@@ -75,8 +81,16 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       iframeEvent.addEventListener('click', Florence.Handler, true);
     };
 
-    viewWorkspace(safePath, collectionId, menu);
-
+    if (menu === 'edit') {
+      $('.nav--workspace li').removeClass('selected');
+      $("#edit").addClass('selected');
+      loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+    } else {
+      //browse screen by default
+      $('.nav--workspace li').removeClass('selected');
+      $("#browse").addClass('selected');
+      loadBrowseScreen(collectionId, 'click');
+    }
   }
 }
 
