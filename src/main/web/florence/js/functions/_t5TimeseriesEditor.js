@@ -116,15 +116,22 @@ function timeseriesEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    if (Florence.globalVars.welsh) {
+      alert('You cannot perform this operation in Welsh.');
+    } else {
+      save();
+      updateContent(collectionId, data.uri, JSON.stringify(data));
+    }
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    if (Florence.globalVars.welsh) {
+      alert('You cannot perform this operation in Welsh.');
+    } else {
+      save();
+      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    }
   });
 
   // reviewed to approve
