@@ -1,8 +1,8 @@
-function addFileWithDetails (collectionId, data, field, idField) {
+function addFileWithDetails(collectionId, data, field, idField) {
   var list = data[field];
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorDownloadsWithSummary(dataTemplate);
-  $('#'+ idField).replaceWith(html);
+  $('#' + idField).replaceWith(html);
   var uriUpload;
   var downloadExtensions;
   // Edit
@@ -33,18 +33,18 @@ function addFileWithDetails (collectionId, data, field, idField) {
       });
 
       // Edit
-      $('#' + idField + '-edit_' + index).click(function() {
+      $('#' + idField + '-edit_' + index).click(function () {
         var editedSectionValue = {
           "title": $('#' + idField + '-title_' + index).val(),
           "markdown": $('#' + idField + '-summary_' + index).val()
         };
 
-         var saveContent = function(updatedContent) {
-           data[field][index].fileDescription = updatedContent;
-           data[field][index].title = $('#' + idField + '-title_' + index).val();
-           updateContent(collectionId, data.uri, JSON.stringify(data));
-         };
-         loadMarkdownEditor(editedSectionValue, saveContent, data);
+        var saveContent = function (updatedContent) {
+          data[field][index].fileDescription = updatedContent;
+          data[field][index].title = $('#' + idField + '-title_' + index).val();
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        };
+        loadMarkdownEditor(editedSectionValue, saveContent, data);
       });
 
     });
@@ -83,9 +83,10 @@ function addFileWithDetails (collectionId, data, field, idField) {
       e.stopImmediatePropagation();
       var formdata = new FormData();
 
-      function showUploadedItem (source) {
+      function showUploadedItem(source) {
         $('#list').append(source);
       }
+
       document.getElementById("response").innerHTML = "Uploading . . .";
 
       var file = this[0].files[0];
@@ -101,44 +102,43 @@ function addFileWithDetails (collectionId, data, field, idField) {
             return;
           }
         });
-        if (!!file.name.match(downloadExtensions)) {
-          showUploadedItem(file.name);
-          if (formdata) {
-            formdata.append("name", file);
-          }
-        } else {
-          alert('This file type is not supported');
-          $('#' + lastIndex).remove();
-          addFile(collectionId, data, field, idField);
-          return;
-        }
-
+      }
+      if (!!file.name.match(downloadExtensions)) {
+        showUploadedItem(file.name);
         if (formdata) {
-          $.ajax({
-            url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-            type: "POST",
-            data: formdata,
-            cache: false,
-            processData: false,
-            contentType: false,
-            success: function (res) {
-              document.getElementById("response").innerHTML = "File uploaded successfully";
-              data[field].push({title:'', file: safeUriUpload});
-              updateContent(collectionId, data.uri, JSON.stringify(data));
-            }
-          });
+          formdata.append("name", file);
         }
+      } else {
+        alert('This file type is not supported');
+        $('#' + lastIndex).remove();
+        addFile(collectionId, data, field, idField);
+        return;
+      }
+
+      if (formdata) {
+        $.ajax({
+          url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+          type: "POST",
+          data: formdata,
+          cache: false,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+            document.getElementById("response").innerHTML = "File uploaded successfully";
+            data[field].push({title: '', file: safeUriUpload});
+            updateContent(collectionId, data.uri, JSON.stringify(data));
+          }
+        });
       }
     });
   });
 
-  $(function() {
+  $(function () {
     $('.add-tooltip').tooltip({
       items: '.add-tooltip',
       content: 'Type title here and click Edit to add a description',
       show: "slideDown", // show immediately
-      open: function(event, ui)
-      {
+      open: function (event, ui) {
         ui.tooltip.hover(
           function () {
             $(this).fadeTo("slow", 0.5);
@@ -150,6 +150,7 @@ function addFileWithDetails (collectionId, data, field, idField) {
   function sortable() {
     $('#sortable-' + idField).sortable();
   }
+
   sortable();
 }
 
