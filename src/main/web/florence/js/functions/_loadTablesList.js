@@ -32,42 +32,35 @@ function initialiseTablesList(data, collectionId) {
       var result = confirm("Are you sure you want to delete this table?");
       if (result === true) {
         $("#table_" + index).remove();
-
-        getPageData(collectionId, tableJson,
-          onSuccess = function (tableData) {
-
-            // delete any files associated with the table.
-            _(tableData.files).each(function (file) {
-              var fileToDelete = basePath + '/' + file.filename;
-              deleteContent(collectionId, fileToDelete,
-                onSuccess = function () {
-                  //console.log("deleted table file: " + fileToDelete)
-                },
-                onError = function (error) {
-                  console.log(error);
-                });
+        // delete any files associated with the table.
+        var extraFiles = [table.filename + '.html', table.filename + '.xls'];
+        _(extraFiles).each(function (file) {
+          var fileToDelete = basePath + '/' + file;
+          deleteContent(collectionId, fileToDelete,
+            onSuccess = function () {
+            },
+            onError = function (error) {
+              console.log(error);
             });
 
-            // delete the table json file
-            deleteContent(collectionId, tableJson,
-              onSuccess = function () {
+          // delete the table json file
+          deleteContent(collectionId, tableJson + '.json',
+            onSuccess = function () {
+              // remove the table from the page json when its deleted
+              data.tables = _(data.tables).filter(function (item) {
+                return item.filename !== table.filename
+              });
 
-                // remove the table from the page json when its deleted
-                data.tables = _(data.tables).filter(function (item) {
-                  return item.filename !== table.filename
-                });
-
-                // save the updated page json
-                postContent(collectionId, basePath, JSON.stringify(data),
-                  success = function () {
-                    Florence.Editor.isDirty = false;
-                    refreshTablesList(data, collectionId);
-                  }
-                );
-              }
-            );
-          }
-        );
+              // save the updated page json
+              postContent(collectionId, basePath, JSON.stringify(data),
+                success = function () {
+                  Florence.Editor.isDirty = false;
+                  refreshTablesList(data, collectionId);
+                }
+              );
+            }
+          );
+        });
       }
     });
   });
