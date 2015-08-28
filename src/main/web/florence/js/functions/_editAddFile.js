@@ -55,111 +55,97 @@ function addFile (collectionId, data, field, idField) {
   } else if (data.type === 'static_foi') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else {
-    alert('Contact an administrator to add this type of file in this document');
+    alert('This file type is not valid. Contact an administrator to add this type of file in this document');
   }
 
   $('#add-' + idField).one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
     $('#sortable-' + idField).append(
-        '<div id="' + lastIndex + '" class="edit-section__sortable-item">' +
-        '  <form id="UploadForm" action="" method="post" enctype="multipart/form-data">' +
-        '    <p><input type="file" name="files" id="files">' +
-        '    <p>' +
+        '<div id="' + lastIndex + '" class="edit-section__item">' +
+        '  <form id="UploadForm">' +
+        '    <input type="file" title="Select a file and click Submit" name="files">' +
+        '    <br>' +
+        '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
+        '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
         '  </form>' +
         '  <div id="response"></div>' +
         '  <ul id="list"></ul>' +
         '</div>');
 
-    (function () {
-      var input = document.getElementById("files"), formdata = false;
+    $('#file-cancel').one('click', function (e) {
+      e.preventDefault();
+      $('#' + lastIndex).remove();
+      addFile(collectionId, data, field, idField);
+    });
 
-      if (window.FormData) {
-        formdata = new FormData();
-      }
+    $('#UploadForm').submit(function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var formdata = new FormData();
+
       function showUploadedItem (source) {
-        var list = document.getElementById("list"),
-            li   = document.createElement("li"),
-            para = document.createElement("p"),
-            text = document.createTextNode(source);
-        para.appendChild(text);
-        li.appendChild(para);
-        list.appendChild(li);
+        $('#list').append(source);
       }
-      if (input.addEventListener) {
-        input.addEventListener("change", function (evt) {
-          document.getElementById("response").innerHTML = "Uploading . . .";
+      document.getElementById("response").innerHTML = "Uploading . . .";
 
-          var file = this.files[0];
-          uriUpload = data.uri + "/" + file.name;
-          var safeUriUpload = checkPathSlashes(uriUpload);
+      var file = this[0].files[0];
+      uriUpload = data.uri + "/" + file.name;
+      var safeUriUpload = checkPathSlashes(uriUpload);
 
-          if (data[field].length > 0) {
-            $(data[field]).each(function (i, filesUploaded) {
-              if (filesUploaded.file == safeUriUpload) {
-                alert('This file already exists');
-                $('#' + lastIndex).remove();
-                addFile(collectionId, data, field, idField);
-                return;
-              }
-            });
-            if (!!file.name.match(downloadExtensions)) {
-              showUploadedItem(file.name);
-              if (formdata) {
-                formdata.append("name", file);
-              }
-            } else {
-              alert('This file type is not supported');
-              $('#' + lastIndex).remove();
-              addFile(collectionId, data, field, idField);
-              return;
-            }
-
-            if (formdata) {
-              $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                type: "POST",
-                data: formdata,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                  document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data[field].push({title:'', file: safeUriUpload});
-                  updateContent(collectionId, data.uri, JSON.stringify(data));
-                }
-              });
-            }
-          } else {
-            if (!!file.name.match(downloadExtensions)) {
-              showUploadedItem(file.name);
-              if (formdata) {
-                formdata.append("name", file);
-              }
-            } else {
-              alert('This file type is not supported');
-              $('#' + lastIndex).remove();
-              addFile(collectionId, data, field, idField);
-              return;
-            }
-
-            if (formdata) {
-              $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                type: "POST",
-                data: formdata,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                  document.getElementById("response").innerHTML = "File uploaded successfully";
-                  data[field].push({title:'', file: safeUriUpload});
-                  updateContent(collectionId, data.uri, JSON.stringify(data));
-                }
-              });
-            }
+      if (data[field].length > 0) {
+        $(data[field]).each(function (i, filesUploaded) {
+          if (filesUploaded.file == safeUriUpload) {
+            alert('This file already exists');
+            $('#' + lastIndex).remove();
+            addFile(collectionId, data, field, idField);
+            return;
           }
-        }, false);
+        });
+        if (!!file.name.match(downloadExtensions)) {
+          showUploadedItem(file.name);
+          if (formdata) {
+            formdata.append("name", file);
+          }
+        } else {
+          alert('This file type is not supported');
+          $('#' + lastIndex).remove();
+          addFile(collectionId, data, field, idField);
+          return;
+        }
+
+        if (formdata) {
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+            type: "POST",
+            data: formdata,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+              document.getElementById("response").innerHTML = "File uploaded successfully";
+              data[field].push({title:'', file: safeUriUpload});
+              updateContent(collectionId, data.uri, JSON.stringify(data));
+            }
+          });
+        }
       }
-    })();
+    });
+  });
+
+  $(function() {
+    $('.add-tooltip').tooltip({
+      items: '.add-tooltip',
+      content: 'Type title here and click Save to add it to the page',
+      show: "slideDown", // show immediately
+      open: function(event, ui)
+      {
+        ui.tooltip.hover(
+          function () {
+            $(this).fadeTo("slow", 0.5);
+          });
+      }
+    });
   });
 
   function sortable() {

@@ -16,7 +16,7 @@ function viewCollectionDetails(collectionId) {
     if (!collection.publishDate) {
       collection.date = '[manual collection]';
     } else {
-      collection.date = StringUtils.formatIsoFullDateString(collection.publishDate);
+      collection.date = StringUtils.formatIsoFull(collection.publishDate);
     }
 
     ProcessPages(collection.inProgress);
