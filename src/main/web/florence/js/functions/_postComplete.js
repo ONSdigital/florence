@@ -24,11 +24,7 @@ function completeContent(collectionId, path) {
   }
 
   if (Florence.globalVars.welsh) {
-    if (safePath.match(/\/cy\/?$/)) {
-      var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
-    } else {
-      var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/cy/data_cy.json";
-    }
+    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
   } else {
     var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json";
   }
