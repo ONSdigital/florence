@@ -1,26 +1,25 @@
 function checkSaveContent(collectionId, uri, data) {
-  if (!Florence.globalVars.welsh) {
-    // check if the page exists
-    var getUri = uri + '/data.json';
-    getPageData(collectionId, getUri,
-      success = function() {
-        alert('This page already exists');
-      },
-      // if the page does not exist, create it
-      error = function() {
-        save(collectionId, uri, data);
-      }
-    );
+  // check if the page exists
+  if (Florence.globalVars.welsh) {
+    var getUri = uri + '/data_cy.json';
   } else {
-    save(collectionId, uri, data);
+    var getUri = uri + '/data.json';
   }
+  getPageData(collectionId, getUri,
+    success = function () {
+      alert('This page already exists');
+    },
+    // if the page does not exist, create it
+    error = function () {
+      save(collectionId, uri, data);
+    }
+  );
 
-  function save (collectionId, uri, data) {
+  function save(collectionId, uri, data) {
     postContent(collectionId, uri, JSON.stringify(data),
       success = function (message) {
         console.log("Updating completed " + message);
-        viewWorkspace(uri, collectionId, 'edit');
-        refreshPreview(uri);
+        createWorkspace(uri, collectionId, 'edit');
       },
       error = function (response) {
         if (response.status === 400) {
