@@ -21,9 +21,9 @@ function postReview(collectionId, path) {
   }
 
   if (Florence.globalVars.welsh) {
-    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+    var url = "/zebedee/review/" + collectionId + "?uri=" + safePath + "/data_cy.json";
   } else {
-    var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json";
+    var url = "/zebedee/review/" + collectionId + "?uri=" + safePath + "/data.json";
   }
   // Open the file for editing
   $.ajax({

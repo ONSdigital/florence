@@ -18,6 +18,9 @@ function createCollection() {
   if (collectionId === '') {
     alert('This is not a valid collection name');
     return true;
+  } if (collectionId.match(/\./)) {
+    alert('This is not a valid collection name. You can not use dots');
+    return true;
   } if ((collectionType === 'scheduled') && (isValidDate(new Date(collectionDate)))) {
     alert('This is not a valid date');
     return true;

@@ -14,7 +14,11 @@ function loadCreator (parentUrl, collectionId) {
     }
   );
 
-  $('select').off().change(function () {
+  //releaseDate = Florence.collection.date;
+
+  $('select').off().change(function (e) {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
     pageType = $(this).val();
     $('.edition').empty();
 

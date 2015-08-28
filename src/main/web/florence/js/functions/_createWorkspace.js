@@ -29,7 +29,8 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
     $('.section').html(workSpace);
 
-    document.getElementById('iframe').onload = function () {
+    document.getElementById('iframe').onload = function (e) {
+      e.stopImmediatePropagation();
       $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
       var iframeEvent = document.getElementById('iframe').contentWindow;
       iframeEvent.addEventListener('click', Florence.Handler, true);
@@ -65,6 +66,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         if (menuItem.is('#browse')) {
           loadBrowseScreen(collectionId, 'click');
         } else if (menuItem.is('#create')) {
+          Florence.globalVars.pagePath = getPathName();
           loadCreateScreen(Florence.globalVars.pagePath, collectionId);
         } else if (menuItem.is('#edit')) {
           Florence.globalVars.pagePath = getPathName();
@@ -79,7 +81,9 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         createWorkspace(Florence.globalVars.pagePath, collectionId);
       });
 
-      $('.workspace-menu').on('click', '.btn-browse-create', function () {
+      $('.workspace-menu').on('click', '.btn-browse-create', function (e) {
+        e.stopImmediatePropagation();
+        e.stopPropagation();
         var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
         Florence.globalVars.pagePath = dest;
         $('.nav--workspace li').removeClass('selected');
