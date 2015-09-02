@@ -47,8 +47,10 @@ function addFile(collectionId, data, field, idField) {
 
   //Add
   if (data.type === 'dataset') {
-    downloadExtensions = /\.csv$|.xls$|.csdb$|.zip$/;
-  } else if (data.type === 'static_adhoc') {
+    downloadExtensions = /\.csv$|.xls$|.zip$/;
+  }  else if (data.type === 'timeseries_dataset') {
+    downloadExtensions = /\.csdb$/;
+  }  else if (data.type === 'static_adhoc') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_qmi') {
     downloadExtensions = /\.pdf$/;
