@@ -104,6 +104,34 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       };
     }
 
+    else if (pageType === "timeseries_dataset") {
+      return {
+        "description": {
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "summary": "",
+          "datasetId":"",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": false,
+          "migrated": false,
+          "title": ""
+        },
+        "downloads": [],
+        "section": {},
+        "correction": [],
+        "relatedDatasets": [],
+        "relatedDocuments": [],
+        "relatedMethodology": [],
+        type: pageType
+      };
+    }
+
     else if (pageType === "reference_tables") {
       return {
         "description": {
