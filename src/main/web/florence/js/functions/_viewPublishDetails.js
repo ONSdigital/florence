@@ -57,7 +57,7 @@ function viewPublishDetails(collections) {
       $(this).parent('li').addClass('selected');
       $(this).next('.page-options').show();
     });
-    $('.publish-selected .btn-edit-cancel').click(function(){
+    $('.publish-selected .btn-collection-cancel').click(function(){
       $('.publish-selected').animate({right: "-50%"}, 500);
       $('.publish-select').animate({marginLeft: "25%"}, 800);
       $('.publish-select-table tbody tr').removeClass('selected');
