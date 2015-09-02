@@ -1,5 +1,6 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,

@@ -1,4 +1,5 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
+  var releaseDate = null;             //overwrite scheduled collection date
   var pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
   var nextRelease, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedDatasets, relatedDocuments, relatedMethodology;
   var parentUrlData = parentUrl + "/data";
