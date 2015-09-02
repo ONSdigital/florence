@@ -78,7 +78,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
 
       $('#nav--workspace__welsh').on('click', function () {
         Florence.globalVars.welsh = Florence.globalVars.welsh === false ? true : false;
-        createWorkspace(Florence.globalVars.pagePath, collectionId);
+        createWorkspace(Florence.globalVars.pagePath, collectionId, 'browse');
       });
 
       $('.workspace-menu').on('click', '.btn-browse-create', function (e) {
@@ -103,8 +103,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         $('.nav--workspace li').removeClass('selected');
         $("#edit").addClass('selected');
         loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
-      } else {
-        //browse screen by default
+      } else if (menu === 'browse') {
         $('.nav--workspace li').removeClass('selected');
         $("#browse").addClass('selected');
         loadBrowseScreen(collectionId, 'click');
