@@ -7,8 +7,9 @@ function updateContent(collectionId, path, content, redirectToPath) {
         createWorkspace(redirect, collectionId, 'edit');
         return;
       } else {
-        refreshPreview(path);
-        loadPageDataIntoEditor(path, collectionId);
+        createWorkspace(path, collectionId, 'edit');
+        //refreshPreview(path);
+        //loadPageDataIntoEditor(path, collectionId);
       }
     },
     error = function (response) {

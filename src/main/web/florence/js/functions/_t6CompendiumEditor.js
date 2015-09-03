@@ -260,8 +260,8 @@ function editChapters (collectionId, data) {
     $("#chapter-edit_"+index).click(function() {
       //open document
       var selectedChapter = $("#chapter-title_"+index).attr('data-url');
-      refreshPreview(selectedChapter);
-      viewWorkspace(selectedChapter, collectionId, 'edit');
+      //refreshPreview(selectedChapter);
+      createWorkspace(selectedChapter, collectionId, 'edit');
     });
 
     // Delete
