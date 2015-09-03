@@ -5,6 +5,9 @@ function addFileWithDetails(collectionId, data, field, idField) {
   $('#' + idField).replaceWith(html);
   var uriUpload;
   var downloadExtensions;
+
+  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
+
   // Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
