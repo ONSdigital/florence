@@ -29,12 +29,11 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
     $('.section').html(workSpace);
 
-    document.getElementById('iframe').onload = function (e) {
-      e.stopImmediatePropagation();
+    document.getElementById('iframe').onload = function () {
       $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
       var iframeEvent = document.getElementById('iframe').contentWindow;
       iframeEvent.addEventListener('click', Florence.Handler, true);
-    }
+    };
 
       if (Florence.globalVars.welsh !== true) {
         $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -82,9 +81,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         createWorkspace(Florence.globalVars.pagePath, collectionId, 'browse');
       });
 
-      $('.workspace-menu').on('click', '.btn-browse-create', function (e) {
-        e.stopImmediatePropagation();
-        e.stopPropagation();
+      $('.workspace-menu').on('click', '.btn-browse-create', function () {
         var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
         Florence.globalVars.pagePath = dest;
         $('.nav--workspace li').removeClass('selected');
