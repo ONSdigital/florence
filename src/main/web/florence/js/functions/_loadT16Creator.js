@@ -1,5 +1,6 @@
 function loadT16Creator (collectionId, releaseDate, pageType, parentUrl) {
-	var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual;
   var parentUrlData = parentUrl + "/data";
 	$.ajax({
 	url: parentUrlData,

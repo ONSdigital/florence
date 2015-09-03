@@ -1,5 +1,6 @@
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
-  var pageName, pageNameTrimmed, releaseDate, newUri, pageData;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageName, pageNameTrimmed, newUri, pageData;
   if (parentUrl === '/') {        //to check home page
     parentUrl = '';
   }

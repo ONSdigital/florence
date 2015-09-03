@@ -261,6 +261,11 @@ $panel-height-2-top-nav: 756px;
         content: 'DA';
       }
     }
+    &--timeseries_dataset {
+      &:after {
+        content: 'DB';
+      }
+    }
     &--reference_tables {
       &:after {
         content: 'RF';

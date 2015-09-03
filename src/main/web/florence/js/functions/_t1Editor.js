@@ -44,7 +44,7 @@ function t1Editor(collectionId, data, templateData) {
   //Edit section
   $(data.sections).each(function(index, section) {
 //  lastIndexSections = index + 1;
-    $("#section-edit_"+index).click(function() {
+    $("#section-edit_" + index).on('click', function() {
 
       var iframeEvent = document.getElementById('iframe').contentWindow;
           iframeEvent.removeEventListener('click', Florence.Handler, true);

@@ -1,5 +1,6 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, isInheriting, newUri, pageData, parentData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,

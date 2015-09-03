@@ -28,7 +28,7 @@ function compendiumEditor(collectionId, data, templateData) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  if (!Florence.collection.date) {
+  //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate) {
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
@@ -40,9 +40,9 @@ function compendiumEditor(collectionId, data, templateData) {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
-  } else {
-    $('.release-date').hide();
-  }
+  //} else {
+  //  $('.release-date').hide();
+  //}
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
