@@ -34,6 +34,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
       var iframeEvent = document.getElementById('iframe').contentWindow;
       iframeEvent.addEventListener('click', Florence.Handler, true);
+    }
 
       if (Florence.globalVars.welsh !== true) {
         $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -108,7 +109,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         $("#browse").addClass('selected');
         loadBrowseScreen(collectionId, 'click');
       }
-    };
+    //};
   }
 }
 

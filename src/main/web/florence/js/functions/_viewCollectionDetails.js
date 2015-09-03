@@ -96,7 +96,7 @@ function viewCollectionDetails(collectionId) {
       if (path.match(/\/bulletins\//) || path.match(/\/articles\//)) {
         var result = confirm("This will delete the English and Welsh content of this page, if any. Are you sure you" +
           " want to delete this page from the collection?");
-      } else if (language) {
+      } else if (language === 'cy') {
         var result = confirm("Are you sure you want to delete this page from the collection?");
       } else {
         var result = confirm("This will delete the English and Welsh content of this page, if any. Are you sure you" +
