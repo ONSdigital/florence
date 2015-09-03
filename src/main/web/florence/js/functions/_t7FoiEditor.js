@@ -33,7 +33,7 @@ function foiEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
   });
-  if (!Florence.collection.date) {
+  //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate){
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
@@ -45,9 +45,9 @@ function foiEditor(collectionId, data) {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
-  } else {
-      $('.release-date').hide();
-  }
+  //} else {
+  //    $('.release-date').hide();
+  //}
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
                         allowSpaces: true,

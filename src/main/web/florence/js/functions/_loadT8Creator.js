@@ -1,4 +1,5 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
+  var releaseDate = null;             //overwrite scheduled collection date
   var pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
   var nextRelease, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedDatasets, relatedDocuments, relatedMethodology;
   var parentUrlData = parentUrl + "/data";
@@ -77,6 +78,34 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
   function pageTypeDataT8(pageType) {
 
     if (pageType === "dataset") {
+      return {
+        "description": {
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "summary": "",
+          "datasetId":"",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": false,
+          "migrated": false,
+          "title": ""
+        },
+        "downloads": [],
+        "section": {},
+        "correction": [],
+        "relatedDatasets": [],
+        "relatedDocuments": [],
+        "relatedMethodology": [],
+        type: pageType
+      };
+    }
+
+    else if (pageType === "timeseries_dataset") {
       return {
         "description": {
           "releaseDate": "",
