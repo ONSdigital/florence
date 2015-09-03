@@ -83,10 +83,14 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
 
       $('.workspace-menu').on('click', '.btn-browse-create', function () {
         var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+        var spanType = $(this).parent().prev('span');
+        var typeClass = spanType[0].attributes[0].nodeValue;
+        var typeGroup = typeClass.match(/--(\w*)$/);
+        var type = typeGroup[1];
         Florence.globalVars.pagePath = dest;
         $('.nav--workspace li').removeClass('selected');
         $("#create").addClass('selected');
-        loadCreateScreen(Florence.globalVars.pagePath, collectionId);
+        loadCreateScreen(Florence.globalVars.pagePath, collectionId, type);
       });
 
       $('.workspace-menu').on('click', '.btn-browse-edit', function () {

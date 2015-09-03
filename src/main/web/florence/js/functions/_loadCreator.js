@@ -1,4 +1,4 @@
-function loadCreator (parentUrl, collectionId) {
+function loadCreator (parentUrl, collectionId, type) {
   var pageType, releaseDate;
 
   getCollection(collectionId,
@@ -14,29 +14,36 @@ function loadCreator (parentUrl, collectionId) {
     }
   );
 
-  //releaseDate = Florence.collection.date;
+  //releaseDate = Florence.collection.date;             //scheduled collections
 
-  $('select').off().change(function (e) {
-    e.stopImmediatePropagation();
-    e.stopPropagation();
-    pageType = $(this).val();
-    $('.edition').empty();
+  if (type === 'bulletin' || type === 'article') {
+    $('#pagetype').val(type).change();
+    loadT4Creator(collectionId, releaseDate, type, parentUrl);
+  } else if (type === 'compendium_landing_page') {
+    $('#pagetype').val(type).change();
+    loadT6Creator(collectionId, releaseDate, type, parentUrl);
+  } else {
+    $('select').off().change(function () {
+      pageType = $(this).val();
+      $('.edition').empty();
 
-    if (pageType === 'bulletin' || pageType === 'article') {
-      loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
-    }
-    else if (pageType.match(/compendium_.+/)) {
-      loadT6Creator(collectionId, releaseDate, pageType, parentUrl);
-    }
-    else if (pageType.match(/static_.+/)) {
-      loadT7Creator(collectionId, releaseDate, pageType, parentUrl);
-    }
-    else if (pageType === 'reference_tables' || pageType === 'dataset') {
-      loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
-    }
-    else if (pageType === 'release') {
-      loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
-    }
-  });
+      if (pageType === 'bulletin' || pageType === 'article') {
+        loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
+      }
+      else if (pageType.match(/compendium_.+/)) {
+        loadT6Creator(collectionId, releaseDate, pageType, parentUrl);
+      }
+      else if (pageType.match(/static_.+/)) {
+        loadT7Creator(collectionId, releaseDate, pageType, parentUrl);
+      }
+      else if (pageType === 'reference_tables' || pageType === 'dataset') {
+        loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
+      }
+      else if (pageType === 'release') {
+        loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
+      }
+    });
+  }
+
 }
 
