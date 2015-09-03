@@ -6,7 +6,8 @@
   <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
   <ul class="page-list">
     {{#each inProgress}}
-      <li><span class="page-item page-item--{{type}}">{{#if description.language}}(Welsh) {{/if}}{{description
+      <li><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
+      {{/ifCond}}{{description
       .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
           <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit file</button>
@@ -19,7 +20,9 @@
   <h3 id="complete-uris">{{complete.length}} pages awaiting review</h3>
   <ul class="page-list">
     {{#each complete}}
-      <li><span class="page-item page-item--{{type}}">{{#if description.language}}(Welsh) {{/if}}{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
+      <li><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
+      {{/ifCond}}{{description
+      .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
           <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Review file</button>
           <button class="btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move file</button>
@@ -31,7 +34,9 @@
   <h3 id="reviewed-uris">{{reviewed.length}} pages awaiting approval</h3>
   <ul class="page-list">
     {{#each reviewed}}
-      <li><span class="page-item page-item--{{type}}">{{#if description.language}}(Welsh) {{/if}}{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
+      <li><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
+      {{/ifCond}}{{description
+      .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
         <div class="page-options">
           <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit file</button>
           <button class="btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move file</button>

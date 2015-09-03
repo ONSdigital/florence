@@ -7,6 +7,7 @@ function updateContent(collectionId, path, content, redirectToPath) {
         createWorkspace(redirect, collectionId, 'edit');
         return;
       } else {
+        //createWorkspace(path, collectionId, 'edit');
         refreshPreview(path);
         loadPageDataIntoEditor(path, collectionId);
       }
