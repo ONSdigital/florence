@@ -1,0 +1,21 @@
+<section class="panel col col--6 publish-select">
+  <h1 class="text-align-center">Select a published collection</h1>
+  <table class="publish-select-table">
+    <thead>
+    <tr>
+      <th id="collection-name" scope="col">Collection name</th>
+      <th id="publish-date" scope="col">Publish date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each this}}
+      <tr data-collections="{{this.ids}}">
+        <td>{{this.date}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+</section>
+<section class="panel col col--6 publish-selected">
+
+</section>
