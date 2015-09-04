@@ -1,0 +1,36 @@
+<div class="section-head">
+  <h2>{{date}}</h2>
+  <p>{{subtitle}}</p>
+</div>
+
+<div class="section-content section-content--fullwidth">
+  {{#each collectionDetails}}
+    <div class="collections-accordion">
+      <div class="collections-section">
+        <div class="collections-section__head">
+          <h3 class="collection-name" data-id="{{id}}">{{name}}</h3>
+        </div>
+        <div class="collections-section__content">
+          {{#if pageType}}
+            <button class="btn-collection-publish">Publish collection</button>
+          {{/if}}
+          <button class="btn-collection-unlock">Unlock collection</button>
+          <h4>Approved pages in this collection</h4>
+          <ul class="page-list">
+            {{#each pageDetails}}
+              <li><span class="page-item page-item--{{type}}" data-path="{{uri}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</span>
+                <div class="page-options">
+                  <button class="btn-page-delete">Remove from this publish</button>
+                </div>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
+
+<nav class="section-nav">
+  <button class="btn-collection-cancel">Cancel</button>
+</nav>
