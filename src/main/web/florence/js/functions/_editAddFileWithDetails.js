@@ -18,7 +18,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
         var result = confirm("Are you sure you want to delete this file?");
         if (result === true) {
           var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position + 500;
+          Florence.globalVars.pagePos = position;
           $(this).parent().remove();
           $.ajax({
             url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
