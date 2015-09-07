@@ -2,14 +2,12 @@ function viewReports() {
   var manual = '[manual collection]';
 
   $.ajax({
-    url: "/zebedee/collections",
+    url: "/zebedee/publishedcollections",
     type: "get",
     crossDomain: true,
     success: function (collections) {
       $(collections).each(function (i) {
-        if (!collections[i].publishDate) {
-          collections[i].publishDate = manual;
-        }
+        collections[i].order = i;
       });
       populatePublishTable(collections);
     },
@@ -18,37 +16,26 @@ function viewReports() {
     }
   });
 
-  var result = [];
   function populatePublishTable(collections) {
 
-
     var collectionsByDate = _.chain(collections)
-      .filter( function(collection) { return collection.approvedStatus; })
-      .sortBy('publishDate')
-      .groupBy('publishDate')
+      .filter(function (collection) {
+        return collection.publishResults[collection.publishResults.length - 1].transaction.startDate;
+      })
+      .sortBy('startDate')
       .value();
 
-    for (var key in collectionsByDate) {
-      var response = [];
-      if (key === manual) {
-        var formattedDate = manual;
-      } else {
-        var formattedDate = StringUtils.formatIsoFull(key);
-      }
-      $(collectionsByDate[key]).each(function (n) {
-        var id = collectionsByDate[key][n].id;
-        response.push(id);
-      });
-      result.push({date: formattedDate, ids: response});
-    }
+    $(collectionsByDate).each(function (n, coll) {
+      var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
+      collectionsByDate[n].formattedDate = StringUtils.formatIsoFull(date);
+    });
 
-    var reportList = templates.reportList(result);
+    var reportList = templates.reportList(collectionsByDate);
     $('.section').html(reportList);
 
-    $('.publish-select-table tbody tr').click(function(){
-      var collections = $(this).attr('data-collections').split(',');
-      Florence.collectionToPublish.publishDate = $(this).find('td').html();
-      viewPublishDetails(collections);
+    $('.publish-select-table tbody tr').click(function () {
+      var i = $(this).attr('data-collections-order');
+      viewReportDetails(collections[i]);
 
       $('.publish-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
