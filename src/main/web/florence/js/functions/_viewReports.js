@@ -18,19 +18,22 @@ function viewReports() {
 
   function populatePublishTable(collections) {
 
-    var collectionsByDate = _.chain(collections)
-      .filter(function (collection) {
-        return collection.publishResults[collection.publishResults.length - 1].transaction.startDate;
-      })
-      .sortBy('startDate')
-      .value();
+    //var collectionsByDate = _.chain(collections)
+    //  .filter(function (collection) {
+    //    return collection.publishResults[collection.publishResults.length - 1].transaction.startDate;
+    //  })
+    //  .sortBy('startDate')
+    //  .value();
 
-    $(collectionsByDate).each(function (n, coll) {
+    //$(collectionsByDate).each(function (n, coll) {
+    $(collections).each(function (n, coll) {
       var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
-      collectionsByDate[n].formattedDate = StringUtils.formatIsoFull(date);
+      //collectionsByDate[n].formattedDate = StringUtils.formatIsoFull(date);
+      collections[n].formattedDate = StringUtils.formatIsoFull(date);
     });
 
-    var reportList = templates.reportList(collectionsByDate);
+    //var reportList = templates.reportList(collectionsByDate);
+    var reportList = templates.reportList(collections);
     $('.section').html(reportList);
 
     $('.publish-select-table tbody tr').click(function () {
