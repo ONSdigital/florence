@@ -107,17 +107,19 @@
 
     tr {
       display: block;
+      width: 760px;
     }
   }
 
 
   tbody {
-    max-height: $lineheight * 24;
+    max-height: $lineheight * 12;
     overflow-y: scroll;
     display: block;
 
     tr {
       display: block;
+      width: 760px;
     }
   }
 
