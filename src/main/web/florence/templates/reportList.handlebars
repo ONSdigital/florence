@@ -4,13 +4,14 @@
     <thead>
     <tr>
       <th id="collection-name" scope="col">Collection name</th>
-      <th id="publish-date" scope="col">Publish date</th>
+      <th id="collection-date" scope="col">Publish date</th>
     </tr>
     </thead>
     <tbody>
     {{#each this}}
-      <tr data-collections="{{this.ids}}">
-        <td>{{this.date}}</td>
+      <tr data-collections-order="{{this.order}}">
+        <td class="collection-name">{{this.name}}</td>
+        <td class="collection-date">{{this.formattedDate}}</td>
       </tr>
     {{/each}}
     </tbody>

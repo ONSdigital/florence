@@ -1,34 +1,49 @@
 <div class="section-head">
-  <h2>{{date}}</h2>
-  <p>{{subtitle}}</p>
+  <h2>{{name}}</h2>
+
+  <p>{{date}}</p>
+
+  <p>
+    Total time: <span {{#ifCond duration '<' '60000'}} style="color: green; font-weight: 700;" {{/ifCond}} {{#ifCond
+  duration '>='
+  '60000'}} style="color:
+  red; font-weight: 700;"
+  {{/ifCond}}>{{duration}}</span> ms
+  </p>
 </div>
 
 <div class="section-content section-content--fullwidth">
-  {{#each collectionDetails}}
-    <div class="collections-accordion">
-      <div class="collections-section">
-        <div class="collections-section__head">
-          <h3 class="collection-name" data-id="{{id}}">{{name}}</h3>
-        </div>
-        <div class="collections-section__content">
-          {{#if pageType}}
-            <button class="btn-collection-publish">Publish collection</button>
-          {{/if}}
-          <button class="btn-collection-unlock">Unlock collection</button>
-          <h4>Approved pages in this collection</h4>
-          <ul class="page-list">
-            {{#each pageDetails}}
-              <li><span class="page-item page-item--{{type}}" data-path="{{uri}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</span>
-                <div class="page-options">
-                  <button class="btn-page-delete">Remove from this publish</button>
-                </div>
-              </li>
-            {{/each}}
-          </ul>
-        </div>
+  <div class="collections-accordion">
+    <div class="collections-section">
+      <div class="collections-section__head">
+        <h3 class="collection-name">{{#ifCond success.transaction.uriInfos.length '>' '1'}} {{success.transaction.uriInfos.length}} files published
+        {{/ifCond}} {{#ifCond success.transaction.uriInfos.length '<=' '1'}} {{success.transaction.uriInfos.length}}
+          file published {{/ifCond}}</h3>
+      </div>
+      <div class="collections-section__content">
+
+        <table class="collections-report-table">
+          <thead>
+          <tr>
+            <th class="file-name">Name</th>
+            <th class="file-size">Size</th>
+            <th class="file-duration">Duration</th>
+          </tr>
+          </thead>
+          <tbody>
+          {{#each success.transaction.uriInfos}}
+            <tr>
+              <td class="file-name">{{uri}}</td>
+              <td class="file-size">{{size}} kB</td>
+              <td class="file-duration">{{duration}} ms</td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+
       </div>
     </div>
-  {{/each}}
+  </div>
 </div>
 
 <nav class="section-nav">
