@@ -26,16 +26,16 @@
           <thead>
           <tr>
             <th class="file-name">Name</th>
-            <th class="file-size">Size</th>
-            <th class="file-duration">Duration</th>
+            <th class="file-size">Size (kB)</th>
+            <th class="file-duration">Duration (ms)</th>
           </tr>
           </thead>
           <tbody>
           {{#each success.transaction.uriInfos}}
             <tr>
               <td class="file-name">{{uri}}</td>
-              <td class="file-size">{{size}} kB</td>
-              <td class="file-duration">{{duration}} ms</td>
+              <td class="file-size">{{size}}</td>
+              <td class="file-duration">{{duration}}</td>
             </tr>
           {{/each}}
           </tbody>
