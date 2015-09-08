@@ -3,13 +3,13 @@ function viewReportDetails(collection) {
   if(!collection.publishResults || collection.publishResults.length === 0) { return; }
 
   var success = collection.publishResults[collection.publishResults.length - 1];
-  console.log(success);
   var duration = (function () {
     var start = new Date(success.transaction.startDate);
     var end = new Date(success.transaction.endDate);
     return end - start;
   })();
-  var details = {name: collection.name, date: collection.formattedDate, duration: duration, success: success}
+  var starting = StringUtils.formatIsoFullSec(success.transaction.startDate);
+  var details = {name: collection.name, date: collection.formattedDate, starting: starting, duration: duration, success: success}
 
   var reportDetails = templates.reportDetails(details);
   $('.publish-selected').html(reportDetails);
