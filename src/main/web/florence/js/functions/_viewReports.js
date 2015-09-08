@@ -6,9 +6,7 @@ function viewReports() {
     type: "get",
     crossDomain: true,
     success: function (collections) {
-      $(collections).each(function (i) {
-        collections[i].order = i;
-      });
+
       populatePublishTable(collections);
     },
     error: function (response) {
@@ -18,30 +16,34 @@ function viewReports() {
 
   function populatePublishTable(collections) {
 
-    //var collectionsByDate = _.chain(collections)
-    //  .filter(function (collection) {
-    //    return collection.publishResults[collection.publishResults.length - 1].transaction.startDate;
-    //  })
-    //  .sortBy('startDate')
-    //  .value();
+    var filteredCollections = _.chain(collections)
+      .filter(function (collection) {
+        return collection.publishResults && collection.publishResults.length > 0;
+      })
+      //.sortBy('startDate')
+      .value();
+
+    $(filteredCollections).each(function (i) {
+      filteredCollections[i].order = i;
+    });
 
     //$(collectionsByDate).each(function (n, coll) {
-    $(collections).each(function (n, coll) {
+    $(filteredCollections).each(function (n, coll) {
       if(coll.publishResults && coll.publishResults.length > 0) {
         var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
 
         //collectionsByDate[n].formattedDate = StringUtils.formatIsoFull(date);
-        collections[n].formattedDate = StringUtils.formatIsoFull(date);
+        filteredCollections[n].formattedDate = StringUtils.formatIsoFull(date);
       }
     });
 
     //var reportList = templates.reportList(collectionsByDate);
-    var reportList = templates.reportList(collections);
+    var reportList = templates.reportList(filteredCollections);
     $('.section').html(reportList);
 
     $('.publish-select-table tbody tr').click(function () {
       var i = $(this).attr('data-collections-order');
-      viewReportDetails(collections[i]);
+      viewReportDetails(filteredCollections[i]);
 
       $('.publish-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
