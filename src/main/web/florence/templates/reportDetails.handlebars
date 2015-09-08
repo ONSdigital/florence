@@ -12,39 +12,56 @@
   </p>
 </div>
 
-<div class="section-content section-content--fullwidth">
-  <div class="collections-accordion">
-    <div class="collections-section">
-      <div class="collections-section__head">
-        <h3 class="collection-name">{{#ifCond success.transaction.uriInfos.length '>' '1'}} {{success.transaction.uriInfos.length}} files published
-        {{/ifCond}} {{#ifCond success.transaction.uriInfos.length '<=' '1'}} {{success.transaction.uriInfos.length}}
-          file published {{/ifCond}}</h3>
-      </div>
-      <div class="collections-section__content">
-
-        <table class="collections-report-table">
-          <thead>
-          <tr>
-            <th class="file-name">Name</th>
-            <th class="file-size">Size (B)</th>
-            <th class="file-duration">Time (ms)</th>
-          </tr>
-          </thead>
-          <tbody>
-          {{#each success.transaction.uriInfos}}
-            <tr>
-              <td class="file-name">{{uri}}</td>
-              <td class="file-size">{{size}}</td>
-              <td class="file-duration">{{duration}}</td>
-            </tr>
-          {{/each}}
-          </tbody>
-        </table>
-
+{{#if success.error}}
+  <div class="section-content section-content--fullwidth">
+    <div class="collections-accordion">
+      <div class="collections-section">
+        <div class="collections-section__head">
+          <h3 class="collection-name">Error list</h3>
+        </div>
+        <div class="collections-section__content">
+          <ul class="page-list">
+            {{#each success.errors}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>
+{{else}}
+  <div class="section-content section-content--fullwidth">
+    <div class="collections-accordion">
+      <div class="collections-section">
+        <div class="collections-section__head">
+          <h3 class="collection-name">{{#ifCond success.transaction.uriInfos.length '>' '1'}} {{success.transaction.uriInfos.length}} files published
+          {{/ifCond}} {{#ifCond success.transaction.uriInfos.length '<=' '1'}} {{success.transaction.uriInfos.length}}
+            file published {{/ifCond}}</h3>
+        </div>
+        <div class="collections-section__content">
+          <table class="collections-report-table">
+            <thead>
+            <tr>
+              <th class="file-name">Name</th>
+              <th class="file-size">Size (B)</th>
+              <th class="file-duration">Time (ms)</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each success.transaction.uriInfos}}
+              <tr>
+                <td class="file-name">{{uri}}</td>
+                <td class="file-size">{{size}}</td>
+                <td class="file-duration">{{duration}}</td>
+              </tr>
+            {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/if}}
 
 <nav class="section-nav">
   <button class="btn-collection-cancel">Cancel</button>
