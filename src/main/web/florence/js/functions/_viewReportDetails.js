@@ -1,5 +1,7 @@
 function viewReportDetails(collection) {
 
+  if(!collection.publishResults || collection.publishResults.length === 0) { return; }
+
   var success = collection.publishResults[collection.publishResults.length - 1];
   console.log(success);
   var duration = (function () {

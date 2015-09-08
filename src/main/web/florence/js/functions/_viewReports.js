@@ -27,9 +27,12 @@ function viewReports() {
 
     //$(collectionsByDate).each(function (n, coll) {
     $(collections).each(function (n, coll) {
-      var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
-      //collectionsByDate[n].formattedDate = StringUtils.formatIsoFull(date);
-      collections[n].formattedDate = StringUtils.formatIsoFull(date);
+      if(coll.publishResults && coll.publishResults.length > 0) {
+        var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
+
+        //collectionsByDate[n].formattedDate = StringUtils.formatIsoFull(date);
+        collections[n].formattedDate = StringUtils.formatIsoFull(date);
+      }
     });
 
     //var reportList = templates.reportList(collectionsByDate);
