@@ -9,7 +9,7 @@ function viewReportDetails(collection) {
     return end - start;
   })();
   var starting = StringUtils.formatIsoFullSec(success.transaction.startDate);
-  var details = {name: collection.name, date: collection.formattedDate, starting: starting, duration: duration, success: success}
+  var details = {name: collection.name, date: collection.formattedDate, starting: starting, duration: duration, success: success};
 
   var reportDetails = templates.reportDetails(details);
   $('.publish-selected').html(reportDetails);

@@ -20,24 +20,19 @@ function viewReports() {
       .filter(function (collection) {
         return collection.publishResults && collection.publishResults.length > 0;
       })
-      //.sortBy('startDate')
       .value();
 
     $(filteredCollections).each(function (i) {
       filteredCollections[i].order = i;
     });
 
-    //$(collectionsByDate).each(function (n, coll) {
     $(filteredCollections).each(function (n, coll) {
       if(coll.publishResults && coll.publishResults.length > 0) {
         var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
-
-        //collectionsByDate[n].formattedDate = StringUtils.formatIsoFull(date);
         filteredCollections[n].formattedDate = StringUtils.formatIsoFull(date);
       }
     });
 
-    //var reportList = templates.reportList(collectionsByDate);
     var reportList = templates.reportList(filteredCollections);
     $('.section').html(reportList);
 
