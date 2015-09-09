@@ -142,15 +142,6 @@ function timeseriesEditor(collectionId, data) {
 
 
   function save() {
-    // Sections
-    data.section = {markdown: $('#section-markdown_0').val()};
-    // Notes
-    var orderNote = $("#sortable-note").sortable('toArray');
-    $(orderNote).each(function (indexN, nameN) {
-      var markdown = $('#note-markdown_' + nameN).val();
-      newNotes[indexN] = markdown;
-    });
-    data.notes = newNotes;
     // Related documents
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
