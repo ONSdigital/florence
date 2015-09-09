@@ -93,7 +93,8 @@ function addFileWithDetails(collectionId, data, field, idField) {
       document.getElementById("response").innerHTML = "Uploading . . .";
 
       var file = this[0].files[0];
-      uriUpload = data.uri + "/" + file.name;
+      var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
+      uriUpload = data.uri + "/" + fileNameNoSpace;
       var safeUriUpload = checkPathSlashes(uriUpload);
 
       if (data[field].length > 0) {
@@ -107,7 +108,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
         });
       }
       if (!!file.name.match(downloadExtensions)) {
-        showUploadedItem(file.name);
+        showUploadedItem(fileNameNoSpace);
         if (formdata) {
           formdata.append("name", file);
         }
