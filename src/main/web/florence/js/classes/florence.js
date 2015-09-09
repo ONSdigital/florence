@@ -55,7 +55,7 @@ Florence.Handler = function () {
         var safeUrl = checkPathSlashes(newUrl);
         Florence.globalVars.pagePath = safeUrl;
         if ($('.workspace-edit').length) {
-          loadPageDataIntoEditor(safeUrl, Florence.collection.id);
+          loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
         }
         else if ($('.workspace-browse').length) {
           treeNodeSelect(safeUrl);

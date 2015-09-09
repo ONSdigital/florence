@@ -3,7 +3,7 @@ function checkForPageChanged(onChanged) {
   var nowUrl = $('#iframe')[0].contentWindow.document.location.pathname;
   if (iframeUrl !== nowUrl) {
     Florence.globalVars.activeTab = false;
-    Florence.globalVars.pagePos = false;
+    Florence.globalVars.pagePos = '';
     if (!onChanged) {
       Florence.globalVars.pagePath = nowUrl;
     } else {

@@ -5,6 +5,9 @@ function addFile(collectionId, data, field, idField) {
   var html = templates.editorDownloads(dataTemplate);
   $('#' + idField).replaceWith(html);
   var uriUpload;
+
+  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
+
   // Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
@@ -15,7 +18,7 @@ function addFile(collectionId, data, field, idField) {
         var result = confirm("Are you sure you want to delete this file?");
         if (result === true) {
           var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position + 200;
+          Florence.globalVars.pagePos = position;
           $(this).parent().remove();
           $.ajax({
             url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
@@ -34,7 +37,7 @@ function addFile(collectionId, data, field, idField) {
       // Edit
       $('#' + idField + '-edit_' + index).click(function () {
         var editedSectionValue = {
-          "markdown": $('#' + idField + '-title_' + index).val(),
+          "markdown": $('#' + idField + '-title_' + index).val()
         };
         var saveContent = function (updatedContent) {
           data[field][index].markdown = updatedContent;
@@ -93,7 +96,8 @@ function addFile(collectionId, data, field, idField) {
         document.getElementById("response").innerHTML = "Uploading . . .";
 
         var file = this[0].files[0];
-        uriUpload = data.uri + "/" + file.name;
+        var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
+        uriUpload = data.uri + "/" + fileNameNoSpace;
         var safeUriUpload = checkPathSlashes(uriUpload);
 
         if (data[field].length > 0) {
@@ -107,7 +111,7 @@ function addFile(collectionId, data, field, idField) {
           });
         }
         if (!!file.name.match(downloadExtensions)) {
-          showUploadedItem(file.name);
+          showUploadedItem(fileNameNoSpace);
           if (formdata) {
             formdata.append("name", file);
           }

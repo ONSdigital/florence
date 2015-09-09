@@ -48,28 +48,49 @@ function staticLandingPageEditor(collectionId, data) {
     });
 
     if (!$('#section-uri_'+index).val()) {
-      $('<button class="btn-edit-save-and-submit-for-review" id="section-get_' + index + '">Get</button>').insertAfter('#section-uri_' + index);
+      $('<button class="btn-edit-save-and-submit-for-review" id="section-get_' + index + '">Go to</button>').insertAfter('#section-uri_' + index);
       $('#section-get_' + index).click(function () {
         var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
         createWorkspace(data.uri, collectionId, '', true);
-        $('#section-get_' + index).html('Copy url').off().one('click', function () {
+        $('#section-get_' + index).html('Copy link').off().one('click', function () {
           var uriCheck = getPathNameTrimLast();
           var uriChecked = checkPathSlashes(uriCheck);
           data.sections[index].uri = uriChecked;
-          saveRelated(collectionId, data.uri, data);
+          postContent(collectionId, data.uri, JSON.stringify(data),
+            success = function (response) {
+              console.log("Updating completed " + response);
+              Florence.Editor.isDirty = false;
+              viewWorkspace(data.uri, collectionId, 'edit');
+              refreshPreview(data.uri);
+              var iframeEvent = document.getElementById('iframe').contentWindow;
+              iframeEvent.addEventListener('click', Florence.Handler, true);
+            },
+            error = function (response) {
+              if (response.status === 400) {
+                alert("Cannot edit this page. It is already part of another collection.");
+              }
+              else if (response.status === 401) {
+                alert("You are not authorised to update content.");
+              }
+              else {
+                handleApiError(response);
+              }
+            }
+          );
         });
       });
     }
 
     $("#section-edit_"+index).click(function() {
       var editedSectionValue = {
-        "title": $('#section-uri_' + index).val(),
+        "title": $('#section-title_' + index).val(),
         "markdown": $("#section-markdown_" + index).val()
       };
 
        var saveContent = function(updatedContent) {
          data.sections[index].summary = updatedContent;
+         data.sections[index].title = $('#section-title_' + index).val();
          data.sections[index].uri = $('#section-uri_' + index).val();
          updateContent(collectionId, data.uri, JSON.stringify(data));
        };
@@ -83,11 +104,41 @@ function staticLandingPageEditor(collectionId, data) {
       data.sections.splice(index, 1);
       updateContent(collectionId, data.uri, JSON.stringify(data));
     });
+
+    $(function() {
+      $('#section-uri_' + index).tooltip({
+        items: '#section-uri_' + index,
+        content: 'Copy link or click Go to, navigate to page and click Copy link. Then add a title and click Edit',
+        show: "slideDown", // show immediately
+        open: function(event, ui)
+        {
+          ui.tooltip.hover(
+            function () {
+              $(this).fadeTo("slow", 0.5);
+            });
+        }
+      });
+    });
+
+    $(function() {
+      $('#section-title_' + index).tooltip({
+        items: '#section-title_' + index,
+        content: 'Type a title and click Edit',
+        show: "slideDown", // show immediately
+        open: function(event, ui)
+        {
+          ui.tooltip.hover(
+            function () {
+              $(this).fadeTo("slow", 0.5);
+            });
+        }
+      });
+    });
   });
 
   //Add new content
   $("#add-section").one('click', function () {
-    data.sections.push({uri:"", summary:""});
+    data.sections.push({uri:"", title:"", summary:""});
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
@@ -124,9 +175,10 @@ function staticLandingPageEditor(collectionId, data) {
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var summary = data.sections[parseInt(nameS)].summary;
+      var title = data.sections[parseInt(nameS)].title;
       var uri = data.sections[parseInt(nameS)].uri;
       var uriChecked = checkPathSlashes(uri);
-      newSections[indexS] = {uri: uriChecked, summary: summary};
+      newSections[indexS] = {uri: uriChecked, title: title, summary: summary};
     });
     data.sections = newSections;
     // External links
