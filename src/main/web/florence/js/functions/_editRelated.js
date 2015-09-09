@@ -5,6 +5,7 @@ function editRelated (collectionId, data, templateData, field, idField) {
   $('#'+ idField).replaceWith(html);
   initialiseRelated(collectionId, data, templateData, field, idField);
   resolveTitle(collectionId, data, templateData, field, idField);
+  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 }
 
 function refreshRelated(collectionId, data, templateData, field, idField) {

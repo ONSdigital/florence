@@ -67,3 +67,82 @@
 		box-sizing: border-box;
 	}
 }
+
+.publish-select-table {
+
+  thead {
+    display: block;
+
+    tr {
+      display: block;
+    }
+  }
+
+
+  tbody {
+    max-height: $lineheight * 24;
+    overflow-y: scroll;
+    display: block;
+
+    tr {
+      display: block;
+    }
+  }
+
+  tr {
+    display: block;
+  }
+
+  th, td {
+    display: inline-block;
+    width: 49%;
+    box-sizing: border-box;
+  }
+}
+
+.collections-report-table {
+
+  thead {
+    display: block;
+
+    tr {
+      display: block;
+      width: 760px;
+    }
+  }
+
+
+  tbody {
+    max-height: $lineheight * 12;
+    overflow-y: scroll;
+    display: block;
+
+    tr {
+      display: block;
+      width: 760px;
+    }
+  }
+
+  tr {
+    display: block;
+  }
+
+  .file-name {
+    display: inline-block;
+    word-wrap:break-word;
+    width: 59%;
+    box-sizing: border-box;
+  }
+  .file-size {
+    display: inline-block;
+    text-align: right;
+    width: 19%;
+    box-sizing: border-box;
+  }
+  .file-duration {
+    display: inline-block;
+    text-align: right;
+    width: 19%;
+    box-sizing: border-box;
+  }
+}

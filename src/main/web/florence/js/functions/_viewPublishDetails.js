@@ -44,20 +44,25 @@ function viewPublishDetails(collections) {
       collapsible: true
     });
 
-    $('.btn-collection-publish').click(function(){
+    $('.btn-collection-publish').click(function () {
       var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
       publish(collection);
     });
 
+    $('.btn-collection-unlock').click(function () {
+      var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
+      unlock(collection);
+    });
+
     //page-list
-    $('.page-item').click(function(){
+    $('.page-item').click(function () {
       $('.page-list li').removeClass('selected');
       $('.page-options').hide();
 
       $(this).parent('li').addClass('selected');
       $(this).next('.page-options').show();
     });
-    $('.publish-selected .btn-collection-cancel').click(function(){
+    $('.publish-selected .btn-collection-cancel').click(function () {
       $('.publish-selected').animate({right: "-50%"}, 500);
       $('.publish-select').animate({marginLeft: "25%"}, 800);
       $('.publish-select-table tbody tr').removeClass('selected');

@@ -1,4 +1,4 @@
-function loadPageDataIntoEditor(path, collectionId) {
+function loadPageDataIntoEditor(path, collectionId, click) {
 
   if (Florence.globalVars.welsh) {
     if (path === '/') {       //add whatever needed to read content in Welsh
@@ -44,6 +44,16 @@ function loadPageDataIntoEditor(path, collectionId) {
   );
 
   $.when.apply($, ajaxRequests).then(function () {
-    makeEditSections(collectionId, pageData, isPageComplete);
+    if (click) {
+      var iframe = getPathName();
+      console.log(iframe);
+      if (iframe !== pageData.uri) {
+        setTimeout(loadPageDataIntoEditor(path, collectionId), 200);
+      } else {
+        makeEditSections(collectionId, pageData, isPageComplete);
+      }
+    } else {
+      makeEditSections(collectionId, pageData, isPageComplete);
+    }
   });
 }
