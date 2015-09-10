@@ -113,70 +113,72 @@ function resolveTitleT1(collectionId, data, templateData, field) {
     $(data.sections).each(function (index, section) {
 //  lastIndexSections = index + 1;
       $("#section-edit_" + index).on('click', function () {
+        var result = confirm('If you do not come back to this page, you will loose any unsaved changes');
+        if (result === true) {
+          var iframeEvent = document.getElementById('iframe').contentWindow;
+          iframeEvent.removeEventListener('click', Florence.Handler, true);
+          createWorkspace('/', collectionId, '', true);
 
-        var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-        createWorkspace('/', collectionId, '', true);
+          $('#' + index).replaceWith(
+            '<div id="' + index + '" class="edit-section__sortable-item">' +
+            '  <textarea id="uri_' + index + '" placeholder="Go to the related document and click Get"></textarea>' +
+            '  <button class="btn-page-get" id="section-get_' + index + '">Get</button>' +
+            '  <button class="btn-page-cancel" id="section-cancel_' + index + '">Cancel</button>' +
+            '</div>');
+          $("#section-cancel_" + index).hide();
 
-        $('#' + index).replaceWith(
-          '<div id="' + index + '" class="edit-section__sortable-item">' +
-          '  <textarea id="uri_' + index + '" placeholder="Go to the related document and click Get"></textarea>' +
-          '  <button class="btn-page-get" id="section-get_' + index + '">Get</button>' +
-          '  <button class="btn-page-cancel" id="section-cancel_' + index + '">Cancel</button>' +
-          '</div>');
-        $("#section-cancel_" + index).hide();
-
-        $("#section-get_" + index).one('click', function () {
-          var pastedUrl = $('#uri_' + index).val();
-          if (!pastedUrl) {
-            pastedUrl = getPathNameTrimLast();
-          } else {
-            pastedUrl = checkPathParsed(pastedUrl);
-          }
-          var sectionUrlData = pastedUrl + "/data";
-
-          $.ajax({
-            url: sectionUrlData,
-            dataType: 'json',
-            crossDomain: true,
-            success: function (sectionData) {
-              if (sectionData.type === 'timeseries') {
-                data.sections.splice(index, 1,
-                  {
-                    theme: {uri: getTheme(sectionData.uri)},
-                    statistics: {uri: sectionData.uri}
-                  });
-                postContent(collectionId, '', JSON.stringify(data),
-                  success = function (response) {
-                    console.log("Updating completed " + response);
-                    Florence.Editor.isDirty = false;
-                    createWorkspace('/', collectionId, 'edit');
-                  },
-                  error = function (response) {
-                    if (response.status === 400) {
-                      alert("Cannot edit this page. It is already part of another collection.");
-                    }
-                    else if (response.status === 401) {
-                      alert("You are not authorised to update content.");
-                    }
-                    else {
-                      handleApiError(response);
-                    }
-                  }
-                );
-              } else {
-                alert("This is not a time series");
-              }
-            },
-            error: function () {
-              console.log('No page data returned');
+          $("#section-get_" + index).one('click', function () {
+            var pastedUrl = $('#uri_' + index).val();
+            if (!pastedUrl) {
+              pastedUrl = getPathNameTrimLast();
+            } else {
+              pastedUrl = checkPathParsed(pastedUrl);
             }
-          });
-        });
+            var sectionUrlData = pastedUrl + "/data";
 
-        $("#section-cancel_" + index).show().one('click', function () {
-          createWorkspace('', collectionId, 'edit');
-        });
+            $.ajax({
+              url: sectionUrlData,
+              dataType: 'json',
+              crossDomain: true,
+              success: function (sectionData) {
+                if (sectionData.type === 'timeseries') {
+                  data.sections.splice(index, 1,
+                    {
+                      theme: {uri: getTheme(sectionData.uri)},
+                      statistics: {uri: sectionData.uri}
+                    });
+                  postContent(collectionId, '', JSON.stringify(data),
+                    success = function (response) {
+                      console.log("Updating completed " + response);
+                      Florence.Editor.isDirty = false;
+                      createWorkspace('/', collectionId, 'edit');
+                    },
+                    error = function (response) {
+                      if (response.status === 400) {
+                        alert("Cannot edit this page. It is already part of another collection.");
+                      }
+                      else if (response.status === 401) {
+                        alert("You are not authorised to update content.");
+                      }
+                      else {
+                        handleApiError(response);
+                      }
+                    }
+                  );
+                } else {
+                  alert("This is not a time series");
+                }
+              },
+              error: function () {
+                console.log('No page data returned');
+              }
+            });
+          });
+
+          $("#section-cancel_" + index).show().one('click', function () {
+            createWorkspace('', collectionId, 'edit');
+          });
+        }
       });
     });
 
