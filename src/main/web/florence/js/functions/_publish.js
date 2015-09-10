@@ -29,7 +29,7 @@ function unlock(collectionId) {
     crossDomain: true,
     type: 'POST',
     success: function () {
-      alert("Published!");
+      alert("Unlocked!");
       $('.publish-selected').animate({right: "-50%"}, 500);
       // Wait until the animation ends
       setTimeout(function () {
