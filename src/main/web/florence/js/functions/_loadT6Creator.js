@@ -37,6 +37,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
   });
 
   function submitFormHandler (parentUrl, title, isInheriting) {
+    $('.edition').empty();
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
@@ -98,12 +99,15 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
 
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
         alert('Edition can not be empty');
+        e.preventDefault();
         return true;
       } if ((pageType === 'compendium_landing_page') && (!pageData.description.releaseDate)) {
         alert('Release date can not be empty');
+        e.preventDefault();
         return true;
-      } if (pageTitle.length < 4) {
+      } if (pageTitle.length < 5) {
         alert("This is not a valid file title");
+        e.preventDefault();
         return true;
       }
       else {
