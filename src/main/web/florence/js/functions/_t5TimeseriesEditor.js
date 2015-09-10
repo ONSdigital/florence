@@ -1,7 +1,8 @@
 function timeseriesEditor(collectionId, data) {
 
-  var newNotes = [], newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
+  var newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
+  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -18,10 +19,12 @@ function timeseriesEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -29,34 +32,42 @@ function timeseriesEditor(collectionId, data) {
   $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#number").on('input', function () {
     $(this).textareaAutoSize();
     data.description.number = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#keyNote").on('input', function () {
     $(this).textareaAutoSize();
     data.description.keyNote = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#unit").on('input', function () {
     $(this).textareaAutoSize();
     data.description.unit = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#preUnit").on('input', function () {
     $(this).textareaAutoSize();
     data.description.preUnit = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#source").on('input', function () {
     $(this).textareaAutoSize();
     data.description.source = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
@@ -65,10 +76,12 @@ function timeseriesEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -83,6 +96,7 @@ function timeseriesEditor(collectionId, data) {
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   // Correction section

@@ -2,6 +2,7 @@ function t3Editor(collectionId, data) {
 
   var newTimeseries = [], newBulletins = [], newArticles = [], newDatasets = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
+  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -18,10 +19,12 @@ function t3Editor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
@@ -30,10 +33,12 @@ function t3Editor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
 
