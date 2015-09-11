@@ -116,15 +116,22 @@ function timeseriesEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    if (Florence.globalVars.welsh) {
+      alert('You cannot perform this operation in Welsh.');
+    } else {
+      save();
+      updateContent(collectionId, data.uri, JSON.stringify(data));
+    }
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    if (Florence.globalVars.welsh) {
+      alert('You cannot perform this operation in Welsh.');
+    } else {
+      save();
+      saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    }
   });
 
   // reviewed to approve
@@ -135,15 +142,6 @@ function timeseriesEditor(collectionId, data) {
 
 
   function save() {
-    // Sections
-    data.section = {markdown: $('#section-markdown_0').val()};
-    // Notes
-    var orderNote = $("#sortable-note").sortable('toArray');
-    $(orderNote).each(function (indexN, nameN) {
-      var markdown = $('#note-markdown_' + nameN).val();
-      newNotes[indexN] = markdown;
-    });
-    data.notes = newNotes;
     // Related documents
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {

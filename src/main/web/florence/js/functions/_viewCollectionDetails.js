@@ -44,8 +44,7 @@ function viewCollectionDetails(collectionId) {
             })
           } else {}
         });
-      }
-      else {
+      } else {
         deleteButton.hide();
       }
 
@@ -73,13 +72,40 @@ function viewCollectionDetails(collectionId) {
 
     $('.btn-page-edit').click(function () {
       var path = $(this).attr('data-path');
-      var safePath = checkPathSlashes(path);
-      createWorkspace(safePath, collectionId, 'edit');
+      var language = $(this).attr('data-language');
+      if (language === 'cy') {
+        var safePath = checkPathSlashes(path);
+        Florence.globalVars.welsh = true;
+      } else {
+        var safePath = checkPathSlashes(path);
+        Florence.globalVars.welsh = false;
+      }
+      getPageDataDescription(collectionId, safePath,
+        success = function () {
+          createWorkspace(safePath, collectionId, 'edit');
+        },
+        error = function () {
+          alert('uri: ' + safePath + ' is not found.');
+        }
+      );
     });
+
     $('.page-delete').click(function () {
-      var result = confirm("Are you sure you want to delete this page from the collection?");
+      var path = $(this).attr('data-path');
+      var language = $(this).attr('data-language');
+      if (path.match(/\/bulletins\//) || path.match(/\/articles\//)) {
+        var result = confirm("This will delete the English and Welsh content of this page, if any. Are you sure you" +
+          " want to delete this page from the collection?");
+      } else if (language === 'cy') {
+        var result = confirm("Are you sure you want to delete this page from the collection?");
+      } else {
+        var result = confirm("This will delete the English and Welsh content of this page, if any. Are you sure you" +
+          " want to delete this page from the collection?");
+      }
       if (result === true) {
-        var path = $(this).attr('data-path');
+        if (language === 'cy' && !(path.match(/\/bulletins\//) || path.match(/\/articles\//))) {
+          path = path + '/data_cy.json';
+        }
         deleteContent(collectionId, path, function() {
             viewCollectionDetails(collectionId);
             alert('File deleted');
@@ -101,6 +127,7 @@ function viewCollectionDetails(collectionId) {
     });
 
     $('.btn-collection-work-on').click(function () {
+      Florence.globalVars.welsh = false;
       createWorkspace('', collectionId, 'browse');
     });
 

@@ -1,5 +1,6 @@
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
-  var pageName, pageNameTrimmed, releaseDate, newUri, pageData;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageName, pageNameTrimmed, newUri, pageData;
   if (parentUrl === '/') {        //to check home page
     parentUrl = '';
   }
@@ -51,14 +52,16 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
-      if (pageType === 'static_qmi') {
+      if (pageType === 'static_qmi' && !Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, 'qmis', pageNameTrimmed);
-      } else if (pageType === 'static_adhoc') {
+      } else if (pageType === 'static_adhoc' && !Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, 'adhocs', pageNameTrimmed);
-      } else if (pageType === 'static_methodology') {
+      } else if (pageType === 'static_methodology' && !Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, 'methodologies', pageNameTrimmed);
-      } else {
+      } else if (!Florence.globalVars.welsh){
         newUri = makeUrl(parentUrl, pageNameTrimmed);
+      } else {
+        alert('You can not perform that operation in Welsh.');
       }
       var safeNewUri = checkPathSlashes(newUri);
       if (releaseDate && (pageType === 'static_qmi')) {

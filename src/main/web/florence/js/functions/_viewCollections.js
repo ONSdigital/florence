@@ -44,10 +44,12 @@ function viewCollections(collectionId) {
     $('form input[type=radio]').click(function () {
       if ($('form input[type=radio]:checked').val() === 'manual') {
         $('#date').hide();
-        $('#time').hide();
+        $('#hour').hide();
+        $('#min').hide();
       } else {
         $('#date').show();
-        $('#time').show();
+        $('#hour').show();
+        $('#min').show();
       }
     });
 

@@ -188,6 +188,19 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     datasetEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'timeseries_dataset') {
+    var html = templates.workEditT8(templateData);
+    $('.workspace-menu').html(html);
+    editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    addFile (collectionId, pageData, 'downloads', 'file');
+    accordion();
+    datasetEditor(collectionId, pageData);
+  }
+
+
   else if (pageData.type === 'reference_tables') {
     var html = templates.workEditT8ReferenceTable(templateData);
     $('.workspace-menu').html(html);

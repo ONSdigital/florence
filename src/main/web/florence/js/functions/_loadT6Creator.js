@@ -1,5 +1,6 @@
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, parentData;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, isInheriting, newUri, pageData, parentData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -7,7 +8,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     crossDomain: true,
     success: function (checkData) {
       parentData = $.extend(true, {}, checkData);
-      if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page') ||
+      if ((checkData.type === 'product_page' && pageType === 'compendium_landing_page' && !Florence.globalVars.welsh) ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_chapter') ||
           (checkData.type === 'compendium_landing_page' && pageType === 'compendium_data')) {
         parentUrl = checkData.uri;
@@ -225,8 +226,8 @@ function submitNoForm (parentUrl, title) {
           },
           "_abstract": "",
           "authors": [],
-          "keywords": [],
-          "metaDescription": "",
+          "keywords": checkData.description.keywords || [],
+          "metaDescription": checkData.description.metaDescription || "",
           "nationalStatistic": checkData.description.nationalStatistic,
           "title": "",
           "headline": "",
@@ -255,8 +256,8 @@ function submitNoForm (parentUrl, title) {
           },
           "summary": "",
           "datasetId":"",
-          "keywords": [],
-          "metaDescription": "",
+          "keywords": checkData.description.keywords || [],
+          "metaDescription": checkData.description.metaDescription || "",
           "nationalStatistic": checkData.description.nationalStatistic,
           "title": ""
         },

@@ -1,14 +1,30 @@
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, newUri, pageData;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
+  var nextRelease, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedDatasets, relatedDocuments, relatedMethodology;
   var parentUrlData = parentUrl + "/data";
+
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.type === 'product_page') {
+      if (checkData.type === 'product_page' && !Florence.globalVars.welsh) {
         submitFormHandler ();
         return true;
+      } else if (checkData.type === 'dataset' || checkData.type === 'reference_tables' && Florence.globalVars.welsh) {
+        releaseDate = checkData.description.releaseDate;
+        nextRelease = checkData.description.nextRelease;
+        natStat = checkData.description.nationalStatistic;
+        contactName = checkData.description.contact.name;
+        contactEmail = checkData.description.contact.email;
+        contactTel = checkData.description.contact.telephone;
+        pageTitle = checkData.description.title;
+        keyWords = checkData.description.keywords;
+        metaDescr = checkData.description.metaDescription;
+        relatedDatasets = checkData.relatedDatasets || [];
+        relatedDocuments = checkData.relatedDocuments;
+        relatedMethodology = checkData.relatedMethodology;
       } else {
         alert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
@@ -77,7 +93,35 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
           "metaDescription": "",
           "nationalStatistic": false,
           "migrated": false,
-          "title": "",
+          "title": ""
+        },
+        "downloads": [],
+        "section": {},
+        "correction": [],
+        "relatedDatasets": [],
+        "relatedDocuments": [],
+        "relatedMethodology": [],
+        type: pageType
+      };
+    }
+
+    else if (pageType === "timeseries_dataset") {
+      return {
+        "description": {
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "summary": "",
+          "datasetId":"",
+          "keywords": [],
+          "metaDescription": "",
+          "nationalStatistic": false,
+          "migrated": false,
+          "title": ""
         },
         "downloads": [],
         "section": {},
@@ -104,7 +148,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
           "keywords": [],
           "metaDescription": "",
           "nationalStatistic": false,
-          "title": "",
+          "title": ""
         },
         "migrated": true,
         "downloads": [],

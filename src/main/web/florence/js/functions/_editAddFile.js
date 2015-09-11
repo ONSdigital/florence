@@ -1,10 +1,13 @@
-function addFile (collectionId, data, field, idField) {
+function addFile(collectionId, data, field, idField) {
   var list = data[field];
   var downloadExtensions;
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorDownloads(dataTemplate);
-  $('#'+ idField).replaceWith(html);
+  $('#' + idField).replaceWith(html);
   var uriUpload;
+
+  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
+
   // Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
@@ -15,16 +18,16 @@ function addFile (collectionId, data, field, idField) {
         var result = confirm("Are you sure you want to delete this file?");
         if (result === true) {
           var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position + 200;
+          Florence.globalVars.pagePos = position;
           $(this).parent().remove();
           $.ajax({
             url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
             type: "DELETE",
             success: function (res) {
-                console.log(res);
+              console.log(res);
             },
             error: function (res) {
-                console.log(res);
+              console.log(res);
             }
           });
           data[field].splice(index, 1);
@@ -32,11 +35,11 @@ function addFile (collectionId, data, field, idField) {
         }
       });
       // Edit
-      $('#' + idField + '-edit_' + index).click(function() {
+      $('#' + idField + '-edit_' + index).click(function () {
         var editedSectionValue = {
-          "markdown": $('#' + idField + '-title_' + index).val(),
+          "markdown": $('#' + idField + '-title_' + index).val()
         };
-        var saveContent = function(updatedContent) {
+        var saveContent = function (updatedContent) {
           data[field][index].markdown = updatedContent;
           updateContent(collectionId, data.uri, JSON.stringify(data));
         };
@@ -47,8 +50,10 @@ function addFile (collectionId, data, field, idField) {
 
   //Add
   if (data.type === 'dataset') {
-    downloadExtensions = /\.csv$|.xls$|.csdb$|.zip$/;
-  } else if (data.type === 'static_adhoc') {
+    downloadExtensions = /\.csv$|.xls$|.zip$/;
+  }  else if (data.type === 'timeseries_dataset') {
+    downloadExtensions = /\.csdb$/;
+  }  else if (data.type === 'static_adhoc') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_qmi') {
     downloadExtensions = /\.pdf$/;
@@ -59,9 +64,9 @@ function addFile (collectionId, data, field, idField) {
   }
 
   $('#add-' + idField).one('click', function () {
-    var position = $(".workspace-edit").scrollTop();
-    Florence.globalVars.pagePos = position + 200;
-    $('#sortable-' + idField).append(
+      var position = $(".workspace-edit").scrollTop();
+      Florence.globalVars.pagePos = position + 200;
+      $('#sortable-' + idField).append(
         '<div id="' + lastIndex + '" class="edit-section__item">' +
         '  <form id="UploadForm">' +
         '    <input type="file" title="Select a file and click Submit" name="files">' +
@@ -73,37 +78,40 @@ function addFile (collectionId, data, field, idField) {
         '  <ul id="list"></ul>' +
         '</div>');
 
-    $('#file-cancel').one('click', function (e) {
-      e.preventDefault();
-      $('#' + lastIndex).remove();
-      addFile(collectionId, data, field, idField);
-    });
+      $('#file-cancel').one('click', function (e) {
+        e.preventDefault();
+        $('#' + lastIndex).remove();
+        addFile(collectionId, data, field, idField);
+      });
 
-    $('#UploadForm').submit(function (e) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      var formdata = new FormData();
+      $('#UploadForm').submit(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var formdata = new FormData();
 
-      function showUploadedItem (source) {
-        $('#list').append(source);
-      }
-      document.getElementById("response").innerHTML = "Uploading . . .";
+        function showUploadedItem(source) {
+          $('#list').append(source);
+        }
 
-      var file = this[0].files[0];
-      uriUpload = data.uri + "/" + file.name;
-      var safeUriUpload = checkPathSlashes(uriUpload);
+        document.getElementById("response").innerHTML = "Uploading . . .";
 
-      if (data[field].length > 0) {
-        $(data[field]).each(function (i, filesUploaded) {
-          if (filesUploaded.file == safeUriUpload) {
-            alert('This file already exists');
-            $('#' + lastIndex).remove();
-            addFile(collectionId, data, field, idField);
-            return;
-          }
-        });
+        var file = this[0].files[0];
+        var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
+        uriUpload = data.uri + "/" + fileNameNoSpace;
+        var safeUriUpload = checkPathSlashes(uriUpload);
+
+        if (data[field].length > 0) {
+          $(data[field]).each(function (i, filesUploaded) {
+            if (filesUploaded.file == safeUriUpload) {
+              alert('This file already exists');
+              $('#' + lastIndex).remove();
+              addFile(collectionId, data, field, idField);
+              return;
+            }
+          });
+        }
         if (!!file.name.match(downloadExtensions)) {
-          showUploadedItem(file.name);
+          showUploadedItem(fileNameNoSpace);
           if (formdata) {
             formdata.append("name", file);
           }
@@ -124,22 +132,21 @@ function addFile (collectionId, data, field, idField) {
             contentType: false,
             success: function (res) {
               document.getElementById("response").innerHTML = "File uploaded successfully";
-              data[field].push({title:'', file: safeUriUpload});
+              data[field].push({title: '', file: safeUriUpload});
               updateContent(collectionId, data.uri, JSON.stringify(data));
             }
           });
         }
-      }
-    });
-  });
+      });
+    }
+  );
 
-  $(function() {
+  $(function () {
     $('.add-tooltip').tooltip({
       items: '.add-tooltip',
       content: 'Type title here and click Save to add it to the page',
       show: "slideDown", // show immediately
-      open: function(event, ui)
-      {
+      open: function (event, ui) {
         ui.tooltip.hover(
           function () {
             $(this).fadeTo("slow", 0.5);
@@ -151,6 +158,7 @@ function addFile (collectionId, data, field, idField) {
   function sortable() {
     $('#sortable-' + idField).sortable();
   }
+
   sortable();
 }
 

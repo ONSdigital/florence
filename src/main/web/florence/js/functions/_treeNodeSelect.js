@@ -12,9 +12,4 @@ function treeNodeSelect(url){
   $('.tree-nav-holder ul').removeClass('active');
   $(selectedListItem).parents('ul').addClass('active');
   $(selectedListItem).closest('li').children('ul').addClass('active');
-
-//  $('.btn-browse-delete').click(function () {
-//    var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-//
-//  });
 }

@@ -28,7 +28,7 @@ function compendiumEditor(collectionId, data, templateData) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  if (!Florence.collection.date) {
+  //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate) {
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
@@ -40,9 +40,9 @@ function compendiumEditor(collectionId, data, templateData) {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       });
     }
-  } else {
-    $('.release-date').hide();
-  }
+  //} else {
+  //  $('.release-date').hide();
+  //}
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
@@ -206,9 +206,9 @@ function compendiumEditor(collectionId, data, templateData) {
     data.chapters = newChapters;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-    $(orderRelatedMethodology).each(function (indexM, nameM) {
+    $(orderRelatedMethodology).each(function(indexM, nameM){
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
+      var safeUri = checkPathSlashes (uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;
@@ -260,8 +260,8 @@ function editChapters (collectionId, data) {
     $("#chapter-edit_"+index).click(function() {
       //open document
       var selectedChapter = $("#chapter-title_"+index).attr('data-url');
-      refreshPreview(selectedChapter);
-      viewWorkspace(selectedChapter, collectionId, 'edit');
+      //refreshPreview(selectedChapter);
+      createWorkspace(selectedChapter, collectionId, 'edit');
     });
 
     // Delete

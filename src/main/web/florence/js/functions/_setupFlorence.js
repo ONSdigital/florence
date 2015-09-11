@@ -113,6 +113,8 @@ function setupFlorence() {
       viewController('users-and-access');
     } else if (menuItem.hasClass("nav--admin__item--publish")) {
       viewController('publish');
+    } else if (menuItem.hasClass("nav--admin__item--reports")) {
+        viewController('reports');
     } else if (menuItem.hasClass("nav--admin__item--login")) {
       viewController('login');
     } else if (menuItem.hasClass("nav--admin__item--logout")) {
