@@ -33,7 +33,7 @@ var manual = '[manual collection]';
       if (key === manual) {
         var formattedDate = manual;
       } else {
-        var formattedDate = StringUtils.formatIsoFullDateString(key);
+        var formattedDate = StringUtils.formatIsoFull(key);
       }
       $(collectionsByDate[key]).each(function (n) {
         var id = collectionsByDate[key][n].id;

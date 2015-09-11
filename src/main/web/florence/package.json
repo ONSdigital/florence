@@ -10,7 +10,7 @@
     "catw": "latest",
     "jasmine": "^2.2.1",
     "onchange": "latest",
-    "handlebars": "latest"
+    "handlebars": "~3.0.1"
   },
   "scripts": {
     "test": "jasmine",

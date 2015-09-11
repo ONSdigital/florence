@@ -25,12 +25,10 @@ function loadBrowseScreen(collectionId, click) {
           $('.page-options').hide();
           $(this).next('.page-options').show();
 
-
-
           //change iframe location
           browserContent.location.href = newURL;
+          Florence.globalVars.pagePath = uri;
           $('.browser-location').val(newURL);
-          checkForPageChanged();
         }
 
         //page-list-tree
@@ -43,22 +41,19 @@ function loadBrowseScreen(collectionId, click) {
           $('.page-item--directory').removeClass('page-item--directory--selected');
           $(this).addClass('page-item--directory--selected');
         }
-
       });
 
       if (click) {
-        treeNodeSelect(document.getElementById('iframe').contentWindow.location.href);
+        var url = getPathName();
+        if (url === "/blank") {
+          setTimeout(treeNodeSelect('/'), 500);
+        } else {
+          treeNodeSelect(url);
+        }
       } else {
         treeNodeSelect('/');
       }
 
-      //$('.page-list--tree .page-item').click(function(){
-      //  //change iframe location
-      //  var newURL = baseURL + $(this).closest('li').attr('data-url');
-      //  browserContent.location.href = newURL;
-      //  $('.browser-location').val(newURL);
-      //  checkForPageChanged();
-      //});
     },
     error: function (response) {
       handleApiError(response);

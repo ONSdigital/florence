@@ -1,12 +1,13 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDate, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
+  var releaseDate = null;             //overwrite scheduled collection date
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
     success: function (checkData) {
-      if (checkData.type === 'product_page') {
+      if (checkData.type === 'product_page' && !Florence.globalVars.welsh) {
         var checkedUrl = checkPathSlashes(checkData.uri);
         submitFormHandler(checkedUrl);
         return true;
