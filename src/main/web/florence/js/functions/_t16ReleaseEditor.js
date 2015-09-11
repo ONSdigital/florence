@@ -1,6 +1,7 @@
 function releaseEditor(collectionId, data) {
   var newSections = [], newDates = [];
   var setActiveTab, getActiveTab;
+  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -15,15 +16,18 @@ function releaseEditor(collectionId, data) {
 
   $("#title").on('input', function () {
     $data.description.title = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   $("#edition").on('input', function () {
     data.description.edition = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   //if (!Florence.collection.date) {                    //overwrite scheduled collection date
   if (!data.description.releaseDate) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      autoSaveMetadata(timeoutId, collectionId, data);
     });
   } else {
     //dateTmp = $('#releaseDate').val();
@@ -31,6 +35,7 @@ function releaseEditor(collectionId, data) {
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      autoSaveMetadata(timeoutId, collectionId, data);
     });
   }
   //} else {
@@ -38,21 +43,26 @@ function releaseEditor(collectionId, data) {
   //}
   $("#nextRelease").on('input', function () {
     data.description.nextRelease = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
   $("#contactName").on('input', function () {
     data.description.contact.name = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#contactEmail").on('input', function () {
     data.description.contact.email = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#contactTelephone").on('input', function () {
     data.description.contact.telephone = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#summary").on('input', function () {
     data.description.summary = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
@@ -75,14 +85,17 @@ function releaseEditor(collectionId, data) {
   // Gets status of checkbox and sets JSON to match
   $("#natStat input[type='checkbox']").prop('checked', checkBoxStatus($('#natStat').attr('id'))).click(function () {
     data.description.nationalStatistic = $("#natStat input[type='checkbox']").prop('checked') ? true : false;
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
     data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   $("#dateChange").on('input', function () {
     data.dateChanges.previousDate = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   // Save
