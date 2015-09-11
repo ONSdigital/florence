@@ -2,6 +2,7 @@ function methodologyEditor(collectionId, data) {
 
   var newSections = [];
   var setActiveTab, getActiveTab;
+  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -18,6 +19,7 @@ function methodologyEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -25,18 +27,22 @@ function methodologyEditor(collectionId, data) {
   $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
@@ -45,10 +51,12 @@ function methodologyEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   // Save

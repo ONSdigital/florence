@@ -2,9 +2,10 @@ function staticLandingPageEditor(collectionId, data) {
 
   var newSections = [], newLinks = [];
   var setActiveTab, getActiveTab;
-  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+  var timeoutId;
+  $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
+    if (setActiveTab !== false) {
       Florence.globalVars.activeTab = setActiveTab;
     }
   });
@@ -17,38 +18,44 @@ function staticLandingPageEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
-  $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        singleField: true,
-                        allowSpaces: true,
-                        singleFieldNode: $('#keywords')
+  $("#keywordsTag").tagit({
+    availableTags: data.description.keywords,
+    singleField: true,
+    allowSpaces: true,
+    singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
- // Edit content
+  // Edit content
   // Load and edition
-  $(data.sections).each(function(index) {
+  $(data.sections).each(function (index) {
 
-    $('#section-uri_'+index).on('paste', function() {
+    $('#section-uri_' + index).on('paste', function () {
       setTimeout(function () {
-      var pastedUrl = $('#section-uri_'+index).val();
+        var pastedUrl = $('#section-uri_' + index).val();
         var safeUrl = checkPathParsed(pastedUrl);
-        $('#section-uri_'+index).val(safeUrl);
+        $('#section-uri_' + index).val(safeUrl);
       }, 50);
     });
 
-    if (!$('#section-uri_'+index).val()) {
+    if (!$('#section-uri_' + index).val()) {
       $('<button class="btn-edit-save-and-submit-for-review" id="section-get_' + index + '">Go to</button>').insertAfter('#section-uri_' + index);
+
       $('#section-get_' + index).click(function () {
         var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
@@ -82,36 +89,35 @@ function staticLandingPageEditor(collectionId, data) {
       });
     }
 
-    $("#section-edit_"+index).click(function() {
+    $("#section-edit_" + index).click(function () {
       var editedSectionValue = {
         "title": $('#section-title_' + index).val(),
         "markdown": $("#section-markdown_" + index).val()
       };
 
-       var saveContent = function(updatedContent) {
-         data.sections[index].summary = updatedContent;
-         data.sections[index].title = $('#section-title_' + index).val();
-         data.sections[index].uri = $('#section-uri_' + index).val();
-         updateContent(collectionId, data.uri, JSON.stringify(data));
-       };
+      var saveContent = function (updatedContent) {
+        data.sections[index].summary = updatedContent;
+        data.sections[index].title = $('#section-title_' + index).val();
+        data.sections[index].uri = $('#section-uri_' + index).val();
+        updateContent(collectionId, data.uri, JSON.stringify(data));
+      };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
     });
 
     // Delete
-    $("#section-delete_"+index).click(function() {
-      $("#"+index).remove();
+    $("#section-delete_" + index).click(function () {
+      $("#" + index).remove();
       data.sections.splice(index, 1);
       updateContent(collectionId, data.uri, JSON.stringify(data));
     });
 
-    $(function() {
+    $(function () {
       $('#section-uri_' + index).tooltip({
         items: '#section-uri_' + index,
         content: 'Copy link or click Go to, navigate to page and click Copy link. Then add a title and click Edit',
         show: "slideDown", // show immediately
-        open: function(event, ui)
-        {
+        open: function (event, ui) {
           ui.tooltip.hover(
             function () {
               $(this).fadeTo("slow", 0.5);
@@ -120,13 +126,12 @@ function staticLandingPageEditor(collectionId, data) {
       });
     });
 
-    $(function() {
+    $(function () {
       $('#section-title_' + index).tooltip({
         items: '#section-title_' + index,
         content: 'Type a title and click Edit',
         show: "slideDown", // show immediately
-        open: function(event, ui)
-        {
+        open: function (event, ui) {
           ui.tooltip.hover(
             function () {
               $(this).fadeTo("slow", 0.5);
@@ -138,18 +143,24 @@ function staticLandingPageEditor(collectionId, data) {
 
   //Add new content
   $("#add-section").one('click', function () {
-    data.sections.push({uri:"", title:"", summary:""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    var result = confirm('If you do not come back to this page, you will loose any unsaved changes');
+    if (result === true) {
+      data.sections.push({uri: "", title: "", summary: ""});
+      updateContent(collectionId, data.uri, JSON.stringify(data));
+    } else {
+      loadPageDataIntoEditor(data.uri, collectionId);
+    }
   });
 
   function sortableContent() {
     $("#sortable-section").sortable();
   }
+
   sortableContent();
 
   editLink(collectionId, data, 'links', 'link');
 
- // Save
+  // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
@@ -183,9 +194,9 @@ function staticLandingPageEditor(collectionId, data) {
     data.sections = newSections;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
-    $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link-markdown_'+nameL).val();
-      var link = $('#link-uri_'+nameL).val();
+    $(orderLink).each(function (indexL, nameL) {
+      var displayText = $('#link-markdown_' + nameL).val();
+      var link = $('#link-uri_' + nameL).val();
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;

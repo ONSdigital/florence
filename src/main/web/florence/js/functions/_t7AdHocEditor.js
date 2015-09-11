@@ -2,6 +2,7 @@ function adHocEditor(collectionId, data) {
 
   var newFiles = [];
   var setActiveTab, getActiveTab;
+  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function(event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -31,17 +32,20 @@ function adHocEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate){
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+        autoSaveMetadata(timeoutId, collectionId, data);
       });
     } else {
       dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+        autoSaveMetadata(timeoutId, collectionId, data);
       });
     }
   //} else {
@@ -52,6 +56,7 @@ function adHocEditor(collectionId, data) {
     var isNumber = $(this).val();
     if (isNumber.match(/^\d+$/)) {
       data.description.reference = isNumber;
+      autoSaveMetadata(timeoutId, collectionId, data);
     } else {
       alert('This needs to be a number');
     }
@@ -63,10 +68,12 @@ function adHocEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
+    autoSaveMetadata(timeoutId, collectionId, data);
   });
 
   // Save
