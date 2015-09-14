@@ -37,7 +37,7 @@ function viewUserAndAccess(view) {
           name: name,
           email: email,
         }),
-        success: function (response) {
+        success: function () {
           console.log('User created');
           setPassword(email, password);
         },
@@ -56,7 +56,7 @@ function viewUserAndAccess(view) {
           password: password,
           email: email
         }),
-        success: function (response) {
+        success: function () {
           console.log('Password set');
           alert("User created");
         },

@@ -7,6 +7,7 @@ function publish(collectionId) {
     crossDomain: true,
     type: 'POST',
     success: function () {
+      $('.over').remove();
       alert("Published!");
       $('.publish-selected').animate({right: "-50%"}, 500);
       // Wait until the animation ends

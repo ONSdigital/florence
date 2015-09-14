@@ -53,6 +53,13 @@ function viewCollectionDetails(collectionId) {
       && collection.complete.length === 0
       && collection.reviewed.length > 0) {
       approve.show().click(function () {
+        $('.js').prepend(
+          "<div class='over'>" +
+          "<div class='hourglass'>" +
+          "<div class='top'></div>" +
+          "<div class='bottom'></div>" +
+          "</div>" +
+          "</div>");
         postApproveCollection(collection.id);
       });
     }
