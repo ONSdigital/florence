@@ -26,7 +26,11 @@ function qmiEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function() {
+      // Runs 3 second (3000 ms) after the last change
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -34,54 +38,54 @@ function qmiEditor(collectionId, data) {
   $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#survey").on('input', function () {
     $(this).textareaAutoSize();
     data.description.surveyName = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#frequency").on('input', function () {
     $(this).textareaAutoSize();
     data.description.frequency = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#compilation").on('input', function () {
     $(this).textareaAutoSize();
     data.description.compilation = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#geoCoverage").on('input', function () {
     $(this).textareaAutoSize();
     data.description.geographicCoverage = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#sampleSize").on('input', function () {
     $(this).textareaAutoSize();
     data.description.sampleSize = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   if (!data.description.lastRevised){
     $('#lastRevised').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.lastRevised = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-      autoSaveMetadata(timeoutId, collectionId, data);
+      clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
     });
   } else {
     dateTmp = data.description.lastRevised;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#lastRevised').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.lastRevised = new Date($('#lastRevised').datepicker('getDate')).toISOString();
-      autoSaveMetadata(timeoutId, collectionId, data);
+      clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
     });
   }
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
@@ -91,12 +95,12 @@ function qmiEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -110,7 +114,7 @@ function qmiEditor(collectionId, data) {
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
 
   // Save
@@ -148,3 +152,4 @@ function qmiEditor(collectionId, data) {
     data.downloads = newFiles;
   }
 }
+

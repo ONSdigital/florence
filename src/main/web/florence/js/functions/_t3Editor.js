@@ -19,12 +19,12 @@ function t3Editor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
@@ -33,12 +33,12 @@ function t3Editor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
 
 

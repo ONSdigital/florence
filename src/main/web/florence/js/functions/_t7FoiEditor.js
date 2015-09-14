@@ -33,20 +33,20 @@ function foiEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate){
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-        autoSaveMetadata(timeoutId, collectionId, data);
+        clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
       });
     } else {
       dateTmp = data.description.releaseDate;
       var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
       $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
         data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-        autoSaveMetadata(timeoutId, collectionId, data);
+        clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
       });
     }
   //} else {
@@ -59,12 +59,12 @@ function foiEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
 
   // Save
