@@ -91,8 +91,8 @@ function viewCollectionDetails(collectionId) {
         success = function () {
           createWorkspace(safePath, collectionId, 'edit');
         },
-        error = function () {
-          alert('uri: ' + safePath + ' is not found.');
+        error = function (response) {
+          handleApiError(response);
         }
       );
     });
@@ -117,8 +117,7 @@ function viewCollectionDetails(collectionId) {
             viewCollectionDetails(collectionId);
             alert('File deleted');
           }, function(error) {
-            viewCollectionDetails(collectionId);
-            alert(error + ' File has not been deleted. Contact an administrator');
+            handleApiError(error);
           }
         );
       }
