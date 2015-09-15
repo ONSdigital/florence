@@ -18,12 +18,12 @@ function staticLandingPageEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
@@ -33,12 +33,12 @@ function staticLandingPageEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
 
   // Edit content
@@ -76,9 +76,6 @@ function staticLandingPageEditor(collectionId, data) {
             error = function (response) {
               if (response.status === 400) {
                 alert("Cannot edit this page. It is already part of another collection.");
-              }
-              else if (response.status === 401) {
-                alert("You are not authorised to update content.");
               }
               else {
                 handleApiError(response);

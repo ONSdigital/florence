@@ -40,7 +40,7 @@ function initialiseTablesList(data, collectionId) {
             onSuccess = function () {
             },
             onError = function (error) {
-              console.log(error);
+              handleApiError(error);
             });
 
           // delete the table json file
@@ -56,6 +56,9 @@ function initialiseTablesList(data, collectionId) {
                 success = function () {
                   Florence.Editor.isDirty = false;
                   refreshTablesList(data, collectionId);
+                },
+                error = function (response) {
+                  handleApiError(response);
                 }
               );
             }

@@ -19,7 +19,7 @@ function methodologyEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -27,22 +27,22 @@ function methodologyEditor(collectionId, data) {
   $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#keywordsTag").tagit({availableTags: data.description.keywords,
                         singleField: true,
@@ -51,12 +51,12 @@ function methodologyEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
   });
 
   // Save

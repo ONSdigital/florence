@@ -130,7 +130,7 @@ function addFile(collectionId, data, field, idField) {
             cache: false,
             processData: false,
             contentType: false,
-            success: function (res) {
+            success: function () {
               document.getElementById("response").innerHTML = "File uploaded successfully";
               data[field].push({title: '', file: safeUriUpload});
               updateContent(collectionId, data.uri, JSON.stringify(data));
