@@ -16,6 +16,7 @@ function publish(collectionId) {
       }, 500);
     },
     error: function (response) {
+      $('.over').remove();
       handleApiError(response);
     }
   });
