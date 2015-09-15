@@ -7,7 +7,7 @@ function handleApiError(response) {
     logout();
   }
   else {
-    console.log('Error: ' + response.responseText);
+    console.log('An error has occurred, please contact an administrator. ' + response.responseText);
     alert(response.responseText);
   }
 }

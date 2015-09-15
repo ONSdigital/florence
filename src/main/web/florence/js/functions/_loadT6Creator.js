@@ -134,9 +134,6 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
                 if (response.status === 400) {
                   alert("Cannot edit this page. It is already part of another collection.");
                 }
-                else if (response.status === 401) {
-                  alert("You are not authorised to update content.");
-                }
                 else {
                   handleApiError(response);
                 }
@@ -178,9 +175,6 @@ function submitNoForm (parentUrl, title) {
           error = function (response) {
             if (response.status === 400) {
               alert("Cannot edit this page. It is already part of another collection.");
-            }
-            else if (response.status === 401) {
-              alert("You are not authorised to update content.");
             }
             else {
               handleApiError(response);
@@ -299,9 +293,6 @@ function submitNoForm (parentUrl, title) {
       error = function (response) {
         if (response.status === 400) {
           alert("Cannot edit this page. It is already part of another collection.");
-        }
-        else if (response.status === 401) {
-          alert("You are not authorised to update content.");
         }
         else {
           handleApiError(response);

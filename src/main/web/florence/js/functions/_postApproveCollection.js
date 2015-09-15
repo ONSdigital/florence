@@ -7,6 +7,7 @@ function postApproveCollection(collectionId) {
     success: function (response) {
       //console.log(response);
       //console.log(collectionId + ' collection is now approved');
+      $('.over').remove();
       $('.collection-selected').stop().animate({right: "-50%"}, 500);
       $('.collections-select-table tbody tr').removeClass('selected');
       // Wait until the animation ends

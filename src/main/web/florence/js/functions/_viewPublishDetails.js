@@ -45,6 +45,13 @@ function viewPublishDetails(collections) {
     });
 
     $('.btn-collection-publish').click(function () {
+      $('.js').prepend(
+        "<div class='over'>" +
+        "<div class='hourglass'>" +
+        "<div class='top'></div>" +
+        "<div class='bottom'></div>" +
+        "</div>" +
+        "</div>");
       var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
       publish(collection);
     });
