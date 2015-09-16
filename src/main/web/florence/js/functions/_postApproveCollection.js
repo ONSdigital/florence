@@ -16,6 +16,7 @@ function postApproveCollection(collectionId) {
       }, 500);
     },
     error: function (response) {
+      $('.over').remove();
       if (response.status === 409) {
         alert("Cannot approve this collection. It contains files that have not been approved.");
       }
