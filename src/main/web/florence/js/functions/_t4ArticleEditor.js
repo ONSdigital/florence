@@ -1,6 +1,6 @@
 function articleEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newArticle = [], newRelated = [], newLinks = [];
+  var newSections = [], newTabs = [], newArticle = [], newRelated = [], newLinks = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -190,6 +190,14 @@ function articleEditor(collectionId, data) {
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
+    // Related methodology
+    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    $(orderRelatedMethodology).each(function(indexM, nameM){
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes (uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedMethodology;
   }
 }
 

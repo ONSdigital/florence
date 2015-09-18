@@ -234,6 +234,7 @@ function submitNoForm (parentUrl, title) {
         "accordion": [],
         "relatedDocuments": [],
         "relatedData": [],
+        "relatedMethodology": [],
         "externalLinks": [],
         "charts": [],
         "tables": [],
