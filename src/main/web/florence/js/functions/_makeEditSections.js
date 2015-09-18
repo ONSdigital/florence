@@ -42,6 +42,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     bulletinEditor(collectionId, pageData);
@@ -60,6 +61,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'article');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     articleEditor(collectionId, pageData);
@@ -98,6 +100,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     compendiumChapterEditor(collectionId, pageData);
