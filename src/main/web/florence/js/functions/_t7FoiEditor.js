@@ -4,16 +4,16 @@ function foiEditor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
 
-  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+  $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
+    if (setActiveTab !== false) {
       Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
-  getLastPosition ();
+  getLastPosition();
 
   $("#metadata-s").remove();
   $("#metadata-q").remove();
@@ -33,38 +33,54 @@ function foiEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   //if (!Florence.collection.date) {                    //overwrite scheduled collection date
-    if (!data.description.releaseDate){
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-        clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
-      });
-    } else {
-      dateTmp = data.description.releaseDate;
-      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-        clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
-      });
-    }
+  if (!data.description.releaseDate) {
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  } else {
+    dateTmp = data.description.releaseDate;
+    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  }
   //} else {
   //    $('.release-date').hide();
   //}
-  $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        singleField: true,
-                        allowSpaces: true,
-                        singleFieldNode: $('#keywords')
+  $("#keywordsTag").tagit({
+    availableTags: data.description.keywords,
+    singleField: true,
+    allowSpaces: true,
+    singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   // Save
@@ -94,8 +110,8 @@ function foiEditor(collectionId, data) {
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
-    $(orderFile).each(function(indexF, nameF){
-      var title = $('#file-title_'+nameF).val();
+    $(orderFile).each(function (indexF, nameF) {
+      var title = $('#file-title_' + nameF).val();
       var file = data.downloads[parseInt(nameF)].file;
       newFiles[indexF] = {title: title, file: file};
     });
