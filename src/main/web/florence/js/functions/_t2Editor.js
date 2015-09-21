@@ -65,7 +65,7 @@ function t2Editor(collectionId, data) {
     // Highligths
     var orderHighlights = $("#sortable-highlights").sortable('toArray');
     $(orderHighlights).each(function (indexH, titleH) {
-      var uri = data.items[parseInt(titleH)].uri;
+      var uri = data.highlightedLinks[parseInt(titleH)].uri;
       var safeUri = checkPathSlashes(uri);
       newHighlights[indexH] = {uri: safeUri};
     });
