@@ -3,9 +3,9 @@ function staticPageEditor(collectionId, data) {
   var newLinks = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
-  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+  $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
+    if (setActiveTab !== false) {
       Florence.globalVars.activeTab = setActiveTab;
     }
   });
@@ -31,26 +31,39 @@ function staticPageEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
-  $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        singleField: true,
-                        allowSpaces: true,
-                        singleFieldNode: $('#keywords')
+  $("#keywordsTag").tagit({
+    availableTags: data.description.keywords,
+    singleField: true,
+    allowSpaces: true,
+    singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   // Save
@@ -79,9 +92,9 @@ function staticPageEditor(collectionId, data) {
     data.markdown = [$('#content-markdown').val()];
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
-    $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link-markdown_'+nameL).val();
-      var link = $('#link-uri_'+nameL).val();
+    $(orderLink).each(function (indexL, nameL) {
+      var displayText = $('#link-markdown_' + nameL).val();
+      var link = $('#link-uri_' + nameL).val();
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;

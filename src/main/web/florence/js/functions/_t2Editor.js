@@ -4,7 +4,7 @@ function t2Editor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
 
-  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+  $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
       Florence.globalVars.activeTab = setActiveTab;
@@ -18,26 +18,39 @@ function t2Editor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
-  $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        singleField: true,
-                        allowSpaces: true,
-                        singleFieldNode: $('#keywords')
+  $("#keywordsTag").tagit({
+    availableTags: data.description.keywords,
+    singleField: true,
+    allowSpaces: true,
+    singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   // Save
