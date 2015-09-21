@@ -4,49 +4,64 @@ function articleEditor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
 
-  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+  $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
+    if (setActiveTab !== false) {
       Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
-  getLastPosition ();
+  getLastPosition();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#edition").on('input', function () {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   //if (!Florence.collection.date) {                    //overwrite scheduled collection date
-    if (!data.description.releaseDate){
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-        data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-        clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
-      });
-    } else {
-      dateTmp = data.description.releaseDate;
-      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-        data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-        clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
-      });
-    }
+  if (!data.description.releaseDate) {
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  } else {
+    dateTmp = data.description.releaseDate;
+    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  }
   //} else {
   //    $('.release-date').hide();
   //}
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -54,42 +69,61 @@ function articleEditor(collectionId, data) {
   $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#abstract").on('input', function () {
     $(this).textareaAutoSize();
     data.description._abstract = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
-  $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        singleField: true,
-                        allowSpaces: true,
-                        singleFieldNode: $('#keywords')
+  $("#keywordsTag").tagit({
+    availableTags: data.description.keywords,
+    singleField: true,
+    allowSpaces: true,
+    singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if(data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
+    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
       return false;
     } else {
       return true;
@@ -98,7 +132,10 @@ function articleEditor(collectionId, data) {
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
-    clearTimeout(timeoutId);  timeoutId = setTimeout(function () { autoSaveMetadata(collectionId, data); }, 3000);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   // Correction section
@@ -123,7 +160,7 @@ function articleEditor(collectionId, data) {
 
   // New correction
   $("#addCorrection").one('click', function () {
-    data.correction.push({text:"", date:""});
+    data.correction.push({text: "", date: ""});
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
@@ -170,31 +207,31 @@ function articleEditor(collectionId, data) {
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = data.relatedArticles[parseInt(nameA)].uri;
-      var safeUri = checkPathSlashes (uri);
-      newArticle[indexA]= {uri: safeUri};
+      var safeUri = checkPathSlashes(uri);
+      newArticle[indexA] = {uri: safeUri};
     });
     data.relatedArticles = newArticle;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes (uri);
+      var safeUri = checkPathSlashes(uri);
       newRelated[indexD] = {uri: safeUri};
     });
     data.relatedData = newRelated;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
-    $(orderLink).each(function(indexL, nameL){
-      var displayText = $('#link-markdown_'+nameL).val();
-      var link = $('#link-uri_'+nameL).val();
+    $(orderLink).each(function (indexL, nameL) {
+      var displayText = $('#link-markdown_' + nameL).val();
+      var link = $('#link-uri_' + nameL).val();
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-    $(orderRelatedMethodology).each(function(indexM, nameM){
+    $(orderRelatedMethodology).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes (uri);
+      var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;

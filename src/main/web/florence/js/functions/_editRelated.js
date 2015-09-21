@@ -90,7 +90,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
         '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
         '</div>').trigger('create');
 
-      if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document') {
+      if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights') {
         $('#latest-container').append('<label for="latest">Link to latest' +
           '<input id="latest" type="checkbox" value="value" checked/></label>');
         latestCheck = true;
@@ -184,6 +184,13 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             }
 
             else if (field === 'relatedMethodology' && (result.type === 'static_methodology' || result.type === 'static_qmi')) {
+              if (!data[field]) {
+                data[field] = [];
+                templateData[field] = [];
+              }
+            }
+
+            else if (field === 'highlightedLinks' && (result.type === 'bulletin')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];
