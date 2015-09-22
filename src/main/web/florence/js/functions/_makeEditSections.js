@@ -218,12 +218,12 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'release') {
     var html = templates.workEditT16(templateData);
     $('.workspace-menu').html(html);
-    editMarkdown (collectionId, pageData, 'sections', 'section');
-    editMarkdown (collectionId, pageData, 'accordion', 'tab');
-    editDate (collectionId, pageData, 'dateChanges', 'date');
-    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
-    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');
-    releaseEditor(collectionId, pageData);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    editDate (collectionId, pageData, templateData, 'dateChanges', 'changeDate');
+    //editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    //editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');
+    accordion();
+    releaseEditor(collectionId, pageData, templateData);
   }
 
   else {
