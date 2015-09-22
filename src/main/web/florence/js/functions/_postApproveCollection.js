@@ -2,6 +2,7 @@ function postApproveCollection(collectionId) {
   $.ajax({
     url: "/zebedee/approve/" + collectionId,
     dataType: 'json',
+    contentType: 'application/json',
     crossDomain: true,
     type: 'POST',
     success: function (response) {

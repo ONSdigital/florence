@@ -29,6 +29,7 @@ function completeContent(collectionId, path) {
   $.ajax({
     url: url,
     dataType: 'json',
+    contentType: 'application/json',
     type: 'POST',
     success: function () {
       viewCollections(collectionId);
