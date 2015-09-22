@@ -22,7 +22,6 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler() {
-    //Adds manual 'release date' field
     $('.edition').append(
       '<label for="releaseDate">Release date</label>' +
       '<input id="releaseDate" type="text" placeholder="day month year" />'
@@ -38,12 +37,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageTitle;
       uriSection = "releases";
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-
-      //if (!releaseDate) {
       pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      //} else {
-      //  pageData.description.releaseDate = releaseDate;
-      //}
       newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
       safeNewUri = checkPathSlashes(newUri);
 

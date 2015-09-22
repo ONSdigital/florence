@@ -21,13 +21,6 @@ function releaseEditor(collectionId, data) {
     }, 3000);
   });
 
-  $("#edition").on('input', function () {
-    data.description.edition = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
   dateTmp = data.description.releaseDate;
   var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
   $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
@@ -35,10 +28,6 @@ function releaseEditor(collectionId, data) {
     if (result === true) {
       saveOldDate(collectionId, data, dateTmp);
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
     } else {
       e.preventDefault();
     }
@@ -126,22 +115,7 @@ function releaseEditor(collectionId, data) {
 
   function saveOldDate(collectionId, data, oldDate) {
     data.dateChanges.push({previousDate: oldDate, changeNotice: ""});
-    //Save
-    postContent(collectionId, data.uri, JSON.stringify(data),
-      success = function () {
-        Florence.Editor.isDirty = false;
-        //Open editor to add a notice
-        initialiseLastNoteMarkdown(collectionId, data, 'dateChanges');
-      },
-      error = function (response) {
-        if (response.status === 400) {
-          alert("Cannot edit this page. It is already part of another collection.");
-        }
-        else {
-          handleApiError(response);
-        }
-      }
-    );
+    initialiseLastNoteMarkdown(collectionId, data, 'dateChanges');
   }
 
   // Save
