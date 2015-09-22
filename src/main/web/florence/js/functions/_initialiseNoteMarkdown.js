@@ -4,7 +4,6 @@ function initialiseLastNoteMarkdown(collectionId, data, field) {
   var editedSectionValue = '';
   var saveContent = function (updatedContent) {
     data[field][lastIndex].changeNotice = updatedContent;
-
     postContent(collectionId, data.uri, JSON.stringify(data),
       success = function () {
         Florence.Editor.isDirty = false;
@@ -21,6 +20,5 @@ function initialiseLastNoteMarkdown(collectionId, data, field) {
       }
     );
   };
-  loadMarkdownEditor(editedSectionValue, saveContent, data);
-
+  loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
 }

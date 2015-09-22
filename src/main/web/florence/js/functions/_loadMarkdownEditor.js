@@ -1,4 +1,4 @@
-function loadMarkdownEditor(content, onSave, pageData) {
+function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
   if (content.title == undefined) {
     var html = templates.markdownEditorNoTitle(content);
@@ -12,23 +12,41 @@ function loadMarkdownEditor(content, onSave, pageData) {
 
   markdownEditor();
 
-  $('.btn-markdown-editor-cancel').on('click', function () {
-    $('.markdown-editor').stop().fadeOut(200).remove();
-    clearTimeout(timeoutId);
-  });
+  var markdown = $('#wmd-input').val();
+
+  if (notEmpty === true || markdown === '') {
+    $('.btn-markdown-editor-cancel').hide();
+  } else {
+    $('.btn-markdown-editor-cancel').on('click', function () {
+      $('.markdown-editor').stop().fadeOut(200).remove();
+      clearTimeout(timeoutId);
+    });
+  }
 
   $(".btn-markdown-editor-save").click(function () {
-    var markdown = $('#wmd-input').val();
     onSave(markdown);
     clearTimeout(timeoutId);
   });
 
-  $(".btn-markdown-editor-exit").click(function () {
-    var markdown = $('#wmd-input').val();
-    onSave(markdown);
-    clearTimeout(timeoutId);
-    $('.markdown-editor').stop().fadeOut(200).remove();
-  });
+  if (notEmpty) {
+    $(".btn-markdown-editor-exit").click(function () {
+      var markdown = $('#wmd-input').val();
+      if (markdown === '') {
+        alert('This cannot be empty');
+      } else {
+        onSave(markdown);
+        clearTimeout(timeoutId);
+        $('.markdown-editor').stop().fadeOut(200).remove();
+      }
+    });
+  } else {
+    $(".btn-markdown-editor-exit").click(function () {
+      //var markdown = $('#wmd-input').val();
+      onSave(markdown);
+      clearTimeout(timeoutId);
+      $('.markdown-editor').stop().fadeOut(200).remove();
+    });
+  }
 
   var onInsertSave = function(name, markdown) {
     insertAtCursor($('#wmd-input')[0], markdown);
