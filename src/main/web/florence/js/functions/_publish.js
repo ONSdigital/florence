@@ -4,6 +4,7 @@ function publish(collectionId) {
   $.ajax({
     url: "/zebedee/publish/" + collectionId,
     dataType: 'json',
+    contentType: 'application/json',
     crossDomain: true,
     type: 'POST',
     success: function () {
@@ -28,6 +29,7 @@ function unlock(collectionId) {
   $.ajax({
     url: "/zebedee/unlock/" + collectionId,
     dataType: 'json',
+    contentType: 'application/json',
     crossDomain: true,
     type: 'POST',
     success: function () {

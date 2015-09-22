@@ -1,5 +1,4 @@
 function releaseEditor(collectionId, data) {
-  var newSections = [], newDates = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -29,30 +28,21 @@ function releaseEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
-  //if (!Florence.collection.date) {                    //overwrite scheduled collection date
-  if (!data.description.releaseDate) {
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
-    });
-  } else {
-    //dateTmp = $('#releaseDate').val();
-    dateTmp = data.description.releaseDate;
-    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+  dateTmp = data.description.releaseDate;
+  var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+  $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
+    if (result === true) {
+      saveOldDate(collectionId, data, dateTmp);
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       clearTimeout(timeoutId);
       timeoutId = setTimeout(function () {
         autoSaveMetadata(collectionId, data);
       }, 3000);
-    });
-  }
-  //} else {
-  //	$('.release-date').hide();
-  //}
+    } else {
+      e.preventDefault();
+    }
+  });
   $("#nextRelease").on('input', function () {
     data.description.nextRelease = $(this).val();
     clearTimeout(timeoutId);
@@ -134,49 +124,42 @@ function releaseEditor(collectionId, data) {
     }, 3000);
   });
 
+  function saveOldDate(collectionId, data, oldDate) {
+    data.dateChanges.push({previousDate: oldDate, changeNotice: ""});
+    //Save
+    postContent(collectionId, data.uri, JSON.stringify(data),
+      success = function () {
+        Florence.Editor.isDirty = false;
+        //Open editor to add a notice
+        initialiseLastNoteMarkdown(collectionId, data, 'dateChanges');
+      },
+      error = function (response) {
+        if (response.status === 400) {
+          alert("Cannot edit this page. It is already part of another collection.");
+        }
+        else {
+          handleApiError(response);
+        }
+      }
+    );
+  }
+
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
     saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
-
-
-  function save() {
-    // Sections
-    var orderSection = $("#sortable-section").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = data.sections[parseInt(nameS)].markdown;
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    // Date changes
-    var orderDates = $("#sortable-date").sortable('toArray');
-    console.log('orderDates = ' + orderDates);
-    $(orderDates).each(function (indexD, nameD) {
-      var markdown = data.dateChanges[parseInt(nameD)].markdown;
-      var previousDate = $('#previousDate_' + indexD).val();
-      console.log(date);
-      newDates[indexD] = {previousDate: previousDate, markdown: markdown};
-    });
-    console.log('newDates = ' + newDates);
-    data.dateChanges = newDates;
-  }
-
 }
+

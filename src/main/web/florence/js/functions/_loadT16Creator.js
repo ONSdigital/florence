@@ -1,7 +1,7 @@
 function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual;
-  var parentUrlData = parentUrl + "/data";
+  var parentUrlData = "/data"; //home page
   $.ajax({
     url: parentUrlData,
     dataType: 'json',
@@ -22,19 +22,12 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler() {
-    //Adds 'edition' and manual 'release date' field
+    //Adds manual 'release date' field
     $('.edition').append(
-      '<label for="edition">Edition</label>' +
-      '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
+      '<label for="releaseDate">Release date</label>' +
+      '<input id="releaseDate" type="text" placeholder="day month year" />'
     );
-    if (!releaseDate) {
-      $('.edition').append(
-        '<br>' +
-        '<label for="releaseDate">Release date</label>' +
-        '<input id="releaseDate" type="text" placeholder="day month year" />'
-      );
-      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-    }
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
 
     //Submits inherited and added information to JSON
     $('form').submit(function (e) {
@@ -43,14 +36,14 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.edition = $('#edition').val();
       pageTitle = $('#pagename').val();
       pageData.description.title = pageTitle;
-      uriSection = "release";
+      uriSection = "releases";
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
-      if (!releaseDate) {
-        pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-      } else {
-        pageData.description.releaseDate = releaseDate;
-      }
+      //if (!releaseDate) {
+      pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+      //} else {
+      //  pageData.description.releaseDate = releaseDate;
+      //}
       newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
       safeNewUri = checkPathSlashes(newUri);
 
@@ -68,30 +61,30 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
       e.preventDefault();
     });
   }
-
-  function pageTypeDataT16(pageType) {
-    return {
-      "description": {
-        "edition": "",
-        "releaseDate": "",
-        "nextRelease": "",
-        "contact": {
-          "name": "",
-          "email": "",
-          "telephone": ""
-        },
-        "summary": "",
-        "title": "",
-        "nationalStatistic": false,
-        "cancelled": false,
-        "cancellationNotice": "",
-      },
-      "sections": [],
-      "accordion": [],
-      "relatedDatasets": [],
-      "relatedDocuments": [],
-      type: pageType,
-      "dateChanges": [],
-    };
-  }
 }
+
+function pageTypeDataT16(pageType) {
+  return {
+    "description": {
+      "releaseDate": "",
+      "nextRelease": "", //does not make sense
+      "contact": {
+        "name": "",
+        "email": "",
+        "telephone": ""
+      },
+      "summary": "",
+      "title": "",
+      "nationalStatistic": false,
+      "cancelled": false,
+      "cancellationNotice": [],
+      "published": false
+    },
+    "markdown": [],
+    "relatedDatasets": [],
+    "relatedDocuments": [],
+    type: pageType,
+    "dateChanges": []
+  };
+}
+

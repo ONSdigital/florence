@@ -16,6 +16,7 @@ function postContent(collectionId, path, content, success, error) {
   $.ajax({
     url: url,
     dataType: 'json',
+    contentType: 'application/json',
     type: 'POST',
     data: content,
     success: function (response) {

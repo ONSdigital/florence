@@ -32,6 +32,7 @@ function createCollection() {
     $.ajax({
       url: "/zebedee/collection",
       dataType: 'json',
+      contentType: 'application/json',
       type: 'POST',
       data: JSON.stringify({name: collectionId, type: collectionType, publishDate: collectionDate}),
       success: function (collection) {
