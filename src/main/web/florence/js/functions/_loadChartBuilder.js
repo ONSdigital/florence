@@ -61,10 +61,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     var jsonPath = chart.uri + ".json";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
-      type: "POST",
+      type: 'POST',
       data: JSON.stringify(chart),
       processData: false,
-      contentType: false,
+      contentType: 'application/json',
       success: function (res) {
         //generatePng('#chart', '#hiddenCanvas');
         //renderDownloadChart();
@@ -433,7 +433,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var pngUri = pageUrl + "/" + chart.filename + suffix + ".png";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
-      type: "POST",
+      type: 'POST',
       data: new Blob([array], {type: 'image/png'}),
       contentType: "image/png",
       processData: false,

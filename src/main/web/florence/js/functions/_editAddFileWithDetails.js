@@ -122,7 +122,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
       if (formdata) {
         $.ajax({
           url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-          type: "POST",
+          type: 'POST',
           data: formdata,
           cache: false,
           processData: false,

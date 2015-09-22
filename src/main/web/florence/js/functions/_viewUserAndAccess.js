@@ -32,6 +32,7 @@ function viewUserAndAccess(view) {
       $.ajax({
         url: "/zebedee/users",
         dataType: 'json',
+        contentType: 'application/json',
         type: 'POST',
         data: JSON.stringify({
           name: name,
@@ -51,6 +52,7 @@ function viewUserAndAccess(view) {
       $.ajax({
         url: "/zebedee/password",
         dataType: 'json',
+        contentType: 'application/json',
         type: 'POST',
         data: JSON.stringify({
           password: password,
