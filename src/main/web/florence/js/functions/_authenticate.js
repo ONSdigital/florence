@@ -2,6 +2,7 @@ function authenticate(email,password) {
   $.ajax({
     url: "/zebedee/login",
     dataType: 'json',
+    contentType: 'application/json',
     crossDomain: true,
     type: 'POST',
     data: JSON.stringify({
