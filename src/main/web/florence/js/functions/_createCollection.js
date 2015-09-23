@@ -36,11 +36,7 @@ function createCollection() {
       type: 'POST',
       data: JSON.stringify({name: collectionId, type: collectionType, publishDate: collectionDate}),
       success: function (collection) {
-        //console.log("Collection " + collection.name + " created");
-        collection.type = collectionType;
         Florence.setActiveCollection(collection);
-
-        //localStorage.setItem("collection", collectionId);
         createWorkspace('', collection.id, 'browse');
       },
       error: function (response) {
