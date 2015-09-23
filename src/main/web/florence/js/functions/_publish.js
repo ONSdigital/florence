@@ -10,7 +10,7 @@ function publish(collectionId) {
     success: function (response) {
       $('.over').remove();
 
-      if(response === 'true') {
+      if(response) {
         alert("Published!");
 
         $('.publish-selected').animate({right: "-50%"}, 500);
