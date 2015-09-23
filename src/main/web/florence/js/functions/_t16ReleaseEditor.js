@@ -1,6 +1,8 @@
 function releaseEditor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
+  var pageDataRequests = [];
+  var pages = {};
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -12,6 +14,8 @@ function releaseEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition();
+
+  $.load(processCollection(collectionId, 'noSave'));
 
   $("#title").on('input', function () {
     $data.description.title = $(this).val();
@@ -141,6 +145,77 @@ function releaseEditor(collectionId, data) {
     data.dateChanges.push({previousDate: oldDate, changeNotice: ""});
     initialiseLastNoteMarkdown(collectionId, data, 'dateChanges', 'changeNotice');
   }
+
+  $('#add-preview').click(function () {
+    //Check if it is article, bulletin or dataset
+    processCollection(collectionId);
+  });
+
+  function processCollection(collectionId, noSave) {
+    pageDataRequests.push(
+      getCollectionDetails(collectionId,
+        success = function (response) {
+          pages = response;
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      )
+    );
+    $.when.apply($, pageDataRequests).then(function () {
+      processPreview(data, pages);
+      if (noSave) {
+        postContent(collectionId, data.uri, JSON.stringify(data),
+          success = function () {
+            Florence.Editor.isDirty = false;
+            refreshPreview(data.uri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this page. It is already part of another collection.");
+            } else {
+              handleApiError(response);
+            }
+          }
+        );
+      } else {
+        updateContent(collectionId, data.uri, JSON.stringify(data));
+      }
+    });
+  }
+
+  //Add uri to relatedDocuments or relatedDatasets
+  function processPreview(data, pages) {
+    data.relatedDocuments = [];
+    data.relatedDatasets = [];
+    _.each(pages.inProgress, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+    _.each(pages.complete, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+    _.each(pages.reviewed, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+  }
+
+  //Save and update preview page
+  //Get collection content
 
   // Save
   var editNav = $('.edit-nav');
