@@ -1,9 +1,9 @@
-function initialiseLastNoteMarkdown(collectionId, data, field) {
+function initialiseLastNoteMarkdown(collectionId, data, field, field2) {
   // Load
   var lastIndex = data[field].length - 1;
   var editedSectionValue = '';
   var saveContent = function (updatedContent) {
-    data[field][lastIndex].changeNotice = updatedContent;
+    data[field][lastIndex][field2] = updatedContent;
     postContent(collectionId, data.uri, JSON.stringify(data),
       success = function () {
         Florence.Editor.isDirty = false;
