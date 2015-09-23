@@ -99,6 +99,30 @@ function releaseEditor(collectionId, data) {
 
   $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
     data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
+    if (data.description.cancelled) {
+      var editedSectionValue = '';
+      var saveContent = function (updatedContent) {
+        data.description.cancellationNotice = [updatedContent];
+        postContent(collectionId, data.uri, JSON.stringify(data),
+          success = function () {
+            Florence.Editor.isDirty = false;
+            loadPageDataIntoEditor(data.uri, collectionId);
+            refreshPreview(data.uri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this page. It is already part of another collection.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      };
+      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
+    } else {
+      data.description.cancellationNotice = [];
+    }
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -115,7 +139,7 @@ function releaseEditor(collectionId, data) {
 
   function saveOldDate(collectionId, data, oldDate) {
     data.dateChanges.push({previousDate: oldDate, changeNotice: ""});
-    initialiseLastNoteMarkdown(collectionId, data, 'dateChanges');
+    initialiseLastNoteMarkdown(collectionId, data, 'dateChanges', 'changeNotice');
   }
 
   // Save
