@@ -15,7 +15,7 @@ function releaseEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  $.load(processCollection(collectionId, 'noSave'));
+  processCollection(collectionId, 'noSave');
 
   $("#title").on('input', function () {
     $data.description.title = $(this).val();
