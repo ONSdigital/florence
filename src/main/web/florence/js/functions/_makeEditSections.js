@@ -218,7 +218,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'release') {
     var html = templates.workEditT16(templateData);
     $('.workspace-menu').html(html);
-    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'prerelease');
     editDate (collectionId, pageData, templateData, 'dateChanges', 'changeDate');
     //editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     //editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');

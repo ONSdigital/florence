@@ -12,7 +12,9 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
   markdownEditor();
 
-  var markdown = $('#wmd-input').val();
+  if (notEmpty) {
+    var markdown = $('#wmd-input').val();
+  }
 
   if (notEmpty === true || markdown === '') {
     $('.btn-markdown-editor-cancel').hide();
@@ -41,7 +43,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     });
   } else {
     $(".btn-markdown-editor-exit").click(function () {
-      //var markdown = $('#wmd-input').val();
+      var markdown = $('#wmd-input').val();
       onSave(markdown);
       clearTimeout(timeoutId);
       $('.markdown-editor').stop().fadeOut(200).remove();
