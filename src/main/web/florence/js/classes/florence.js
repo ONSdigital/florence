@@ -11,7 +11,7 @@ var Florence = Florence || {
       } else {
         var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
       }
-      Florence.collection = {id: collection.id, name: collection.name, date: formattedDate};
+      Florence.collection = {id: collection.id, name: collection.name, date: formattedDate, type: collection.type};
     }
   };
 
