@@ -7,14 +7,21 @@ function publish(collectionId) {
     contentType: 'application/json',
     crossDomain: true,
     type: 'POST',
-    success: function () {
+    success: function (response) {
       $('.over').remove();
-      alert("Published!");
-      $('.publish-selected').animate({right: "-50%"}, 500);
-      // Wait until the animation ends
-      setTimeout(function () {
-        viewController('publish');
-      }, 500);
+
+      if(response === 'true') {
+        alert("Published!");
+
+        $('.publish-selected').animate({right: "-50%"}, 500);
+        // Wait until the animation ends
+        setTimeout(function () {
+          viewController('publish');
+        }, 500);
+      } else {
+        console.log('An error has occurred during the publish process, please contact an administrator. ' + response);
+        alert('An error has occurred during the publish process, please contact an administrator. ');
+      }
     },
     error: function (response) {
       $('.over').remove();

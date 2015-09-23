@@ -8,6 +8,6 @@ function handleApiError(response) {
   }
   else {
     console.log('An error has occurred, please contact an administrator. ' + response.responseText);
-    alert(response.responseText);
+    alert('An error has occurred, please contact an administrator. ' + response.responseText);
   }
 }
