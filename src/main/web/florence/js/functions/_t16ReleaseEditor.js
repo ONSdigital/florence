@@ -33,8 +33,9 @@ function releaseEditor(collectionId, data) {
   });
   var dateTmp = data.description.releaseDate;
   var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-  if (!data.description.final) {
-    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+  $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'});
+  if (!data.description.finalised) {
+    $('.release-date').on('change', function () {
       var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
       var toIsoDate = $('#releaseDate').datepicker("getDate");
       data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
@@ -44,7 +45,7 @@ function releaseEditor(collectionId, data) {
       }, 3000);
     });
   } else {
-    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    $('.release-date').on('change', function () {
       var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
       if (result === true) {
         saveOldDate(collectionId, data, dateTmp);
@@ -109,8 +110,8 @@ function releaseEditor(collectionId, data) {
       } else {
         return true;
       }
-    } else if (id === 'final') {
-      if (data.description.final === "false" || data.description.final === false) {
+    } else if (id === 'finalised') {
+      if (data.description.finalised === "false" || data.description.finalised === false) {
         return false;
       } else {
         return true;
@@ -159,7 +160,7 @@ function releaseEditor(collectionId, data) {
     }, 3000);
   });
 
-  if (data.description.final) {
+  if (data.description.finalised) {
     $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function (e) {
       alert('You cannot change this field once it is finalised.');
       e.preventDefault();
