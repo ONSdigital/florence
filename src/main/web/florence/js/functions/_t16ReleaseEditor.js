@@ -57,6 +57,14 @@ function releaseEditor(collectionId, data) {
       }
     });
   }
+
+  var date = new Date(data.description.releaseDate);
+  var hour = date.getHours();
+  $('#release-hour').val(hour*3600000);
+
+  var minutes = date.getMinutes();
+  $('#release-min').val(minutes*60000);
+
   $("#nextRelease").on('input', function () {
     data.description.nextRelease = $(this).val();
     clearTimeout(timeoutId);
