@@ -1,6 +1,6 @@
 function staticPageEditor(collectionId, data) {
 
-  var newLinks = [];
+  var newLinks = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
