@@ -182,6 +182,7 @@ function releaseEditor(collectionId, data) {
           // remove provisional date
           data.description.provisionalDate = "";
           $('.provisional-date').remove();
+          $('#finalised').remove();
         }
         clearTimeout(timeoutId);
         timeoutId = setTimeout(function () {
