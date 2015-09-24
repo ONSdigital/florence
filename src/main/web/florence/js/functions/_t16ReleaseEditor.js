@@ -24,18 +24,38 @@ function releaseEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
-
-  dateTmp = data.description.releaseDate;
-  var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-  $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-    var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
-    if (result === true) {
-      saveOldDate(collectionId, data, dateTmp);
-      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-    } else {
-      e.preventDefault();
-    }
+  $("#provisionalDate").on('input', function () {
+    data.description.provisionalDate = $(this).val();
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
+  var dateTmp = data.description.releaseDate;
+  var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+  if (!data.description.final) {
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+      var toIsoDate = $('#releaseDate').datepicker("getDate");
+      data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  } else {
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
+      if (result === true) {
+        saveOldDate(collectionId, data, dateTmp);
+        var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+        var toIsoDate = $('#releaseDate').datepicker("getDate");
+        data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
+      } else {
+        e.preventDefault();
+      }
+    });
+  }
   $("#nextRelease").on('input', function () {
     data.description.nextRelease = $(this).val();
     clearTimeout(timeoutId);
@@ -89,6 +109,12 @@ function releaseEditor(collectionId, data) {
       } else {
         return true;
       }
+    } else if (id === 'final') {
+      if (data.description.final === "false" || data.description.final === false) {
+        return false;
+      } else {
+        return true;
+      }
     }
   };
 
@@ -132,6 +158,31 @@ function releaseEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
+
+  if (data.description.final) {
+    $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function (e) {
+      alert('You cannot change this field once it is finalised.');
+      e.preventDefault();
+    });
+  } else {
+    $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function () {
+      var result = confirm("You will not be able to reverse this operation. Are you sure you want to proceed?");
+      if (result) {
+        data.description.finalised = $("#finalised input[type='checkbox']").prop('checked') ? true : false;
+        if (data.description.finalised) {
+          // remove provisional date
+          data.description.provisionalDate = "";
+          $('.provisional-date').remove();
+        }
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(function () {
+          autoSaveMetadata(collectionId, data);
+        }, 3000);
+      } else {
+        e.preventDefault();
+      }
+    });
+  }
 
   $("#dateChange").on('input', function () {
     data.dateChanges.previousDate = $(this).val();

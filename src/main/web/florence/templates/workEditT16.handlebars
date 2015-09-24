@@ -18,11 +18,53 @@
               <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
             </label>
           </div>
+          <div class="provisional-date">
+            <label for="provisionalDate">Provisional date
+              <textarea class="auto-size" type="text"
+                        id="provisionalDate">{{this.description.provisionalDate}}</textarea>
+            </label>
+          </div>
+          <div id="finalised">
+            <label for="finalised" style="display: inline-block;">Final </label>
+            <input type="checkbox" name="finalised" value="false" class="checkbox"/>
+          </div>
           <div class="release-date">
             <label for="releaseDate">Release date
               <input id="releaseDate" type="text" placeholder="Day month year"
                      value="{{this.description.releaseDate}}"/>
             </label>
+          </div>
+          <div class="release-hour">
+            <select id="release-hour" style="width: 50%;" class="selectbg--small">
+              <option value="0">00</option>
+              <option value="3600000">01</option>
+              <option value="7200000">02</option>
+              <option value="10800000">03</option>
+              <option value="14400000">04</option>
+              <option value="18000000">05</option>
+              <option value="21600000">06</option>
+              <option value="25200000">07</option>
+              <option value="28800000">08</option>
+              <option value="32400000" selected="selected">09</option>
+              <option value="36000000">10</option>
+              <option value="39600000">11</option>
+              <option value="43200000">12</option>
+              <option value="46800000">13</option>
+              <option value="50400000">14</option>
+              <option value="54000000">15</option>
+              <option value="57600000">16</option>
+              <option value="61200000">17</option>
+              <option value="64800000">18</option>
+              <option value="68400000">19</option>
+              <option value="72000000">20</option>
+              <option value="75600000">21</option>
+              <option value="79200000">22</option>
+              <option value="82800000">23</option>
+            </select>
+            <select id="release-min" style="width: 50%;" class="selectbg--small">
+              <option value="0">00</option>
+              <option value="1800000" selected="selected">30</option>
+            </select>
           </div>
           <div class="next-p">
             <label for="nextRelease">Next release
@@ -66,6 +108,7 @@
     <div class="edit-section">
       <div class="edit-section__head">
         <h1>Preview release content</h1>
+
         <p>References</p>
       </div>
       <div class="edit-section__content">
