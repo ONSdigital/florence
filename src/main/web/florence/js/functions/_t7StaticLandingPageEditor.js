@@ -121,6 +121,7 @@ function staticLandingPageEditor(collectionId, data) {
       updateContent(collectionId, data.uri, JSON.stringify(data));
     });
 
+      // Tooltips
     $(function () {
       $('#section-uri_' + index).tooltip({
         items: '#section-uri_' + index,
@@ -191,12 +192,16 @@ function staticLandingPageEditor(collectionId, data) {
   });
 
   function save() {
+
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var summary = data.sections[parseInt(nameS)].summary;
-      var title = data.sections[parseInt(nameS)].title;
-      var uri = data.sections[parseInt(nameS)].uri;
+        // Fixes title or uri not saving unless markdown edited
+        var title = $('#section-title_' + nameS).val();
+        var uri = $('#section-uri_' + nameS).val();
+      //var title = data.sections[parseInt(nameS)].title;
+      //var uri = data.sections[parseInt(nameS)].uri;
       var uriChecked = checkPathSlashes(uri);
       newSections[indexS] = {uri: uriChecked, title: title, summary: summary};
     });
