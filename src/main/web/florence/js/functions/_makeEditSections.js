@@ -121,6 +121,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_landing_page') {
     var html = templates.workEditT7Landing(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     accordion();
     staticLandingPageEditor(collectionId, pageData);
   }
@@ -138,6 +139,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    addFile(collectionId, pageData, 'downloads', 'file');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     staticPageEditor(collectionId, pageData);
