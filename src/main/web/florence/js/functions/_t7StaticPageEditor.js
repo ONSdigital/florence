@@ -1,6 +1,6 @@
 function staticPageEditor(collectionId, data) {
 
-  var newLinks = [];
+  var newLinks = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -90,6 +90,14 @@ function staticPageEditor(collectionId, data) {
   function save() {
     // Sections
     data.markdown = [$('#content-markdown').val()];
+    // Files are uploaded. Save metadata
+    var orderFile = $("#sortable-file").sortable('toArray');
+    $(orderFile).each(function (indexF, nameF) {
+      var title = $('#file-title_' + nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
+      newFiles[indexF] = {title: title, file: file};
+    });
+    data.downloads = newFiles;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {

@@ -96,6 +96,7 @@ function pageTypeDataT7(pageType) {
         "title": ""
       },
       "markdown": [],
+      "downloads": [],
       type: pageType,
       "links" : []
     };
@@ -108,6 +109,7 @@ function pageTypeDataT7(pageType) {
         "title": "",
       },
       "sections": [],
+      "markdown": [],
       type: pageType,
       "links": []
     };
