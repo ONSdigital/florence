@@ -59,6 +59,8 @@ function addFile(collectionId, data, field, idField) {
     downloadExtensions = /\.pdf$/;
   } else if (data.type === 'static_foi') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+  } else if (data.type === 'static_page') {
+    downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else {
     alert('This file type is not valid. Contact an administrator to add this type of file in this document');
   }

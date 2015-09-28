@@ -15,6 +15,8 @@ function viewCollectionDetails(collectionId) {
 
     if (!collection.publishDate) {
       collection.date = '[manual collection]';
+    } else if (collection.publishDate && collection.type === 'manual') {
+      collection.date = '[manual collection] Originally scheduled for ' + StringUtils.formatIsoFull(collection.publishDate);
     } else {
       collection.date = StringUtils.formatIsoFull(collection.publishDate);
     }

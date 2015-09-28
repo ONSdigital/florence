@@ -18,6 +18,9 @@ function viewCollections(collectionId) {
         if (!collection.publishDate) {
           date = '[manual collection]';
           response.push({id: collection.id, name: collection.name, date: date});
+        } else if (collection.publishDate && collection.type === 'manual') {
+          var formattedDate = StringUtils.formatIsoDateString(collection.publishDate) + ' [rolled back]';
+          response.push({id: collection.id, name: collection.name, date: formattedDate});
         } else {
           var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
           response.push({id: collection.id, name: collection.name, date: formattedDate});

@@ -33,9 +33,10 @@ function initialiseNoteMarkdown(collectionId, data, templateData, field, idField
       var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
       var saveContent = function (updatedContent) {
         data[field][index].changeNotice = updatedContent;
+        templateData[field][index].changeNotice = updatedContent;
         saveNoteMarkdown(collectionId, data.uri, data, templateData, field, idField);
       };
-      loadMarkdownEditor(editedSectionValue, saveContent, data);
+      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
     });
   });
 }

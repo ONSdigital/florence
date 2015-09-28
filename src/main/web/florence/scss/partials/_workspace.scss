@@ -247,6 +247,12 @@
 				padding-top: $lineheight;
 				// display: none;
 
+                select {
+                  background-color: white;
+                  margin-left: 20px;
+                  width: 44%;
+                }
+
 				&--correction {
 					
 

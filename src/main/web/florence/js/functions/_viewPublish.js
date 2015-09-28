@@ -7,7 +7,7 @@ var manual = '[manual collection]';
     crossDomain: true,
     success: function (collections) {
     $(collections).each(function (i) {
-      if (!collections[i].publishDate) {
+      if (!collections[i].type || (collections[i].type === 'manual')) {
         collections[i].publishDate = manual;
       }
     });

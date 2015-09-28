@@ -1,6 +1,8 @@
 function releaseEditor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
+  var pageDataRequests = [];
+  var pages = {};
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -13,6 +15,8 @@ function releaseEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
+  processCollection(collectionId, 'noSave');
+
   $("#title").on('input', function () {
     $data.description.title = $(this).val();
     clearTimeout(timeoutId);
@@ -20,29 +24,47 @@ function releaseEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
-
-  $("#edition").on('input', function () {
-    data.description.edition = $(this).val();
+  $("#provisionalDate").on('input', function () {
+    data.description.provisionalDate = $(this).val();
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
-  dateTmp = data.description.releaseDate;
+  var dateTmp = data.description.releaseDate;
   var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-  $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-    var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
-    if (result === true) {
-      saveOldDate(collectionId, data, dateTmp);
-      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+  $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'});
+  if (!data.description.finalised) {
+    $('.release-date').on('change', function () {
+      var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+      var toIsoDate = $('#releaseDate').datepicker("getDate");
+      data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
       clearTimeout(timeoutId);
       timeoutId = setTimeout(function () {
         autoSaveMetadata(collectionId, data);
       }, 3000);
-    } else {
-      e.preventDefault();
-    }
-  });
+    });
+  } else {
+    $('.release-date').on('change', function () {
+      var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
+      if (result === true) {
+        saveOldDate(collectionId, data, dateTmp);
+        var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+        var toIsoDate = $('#releaseDate').datepicker("getDate");
+        data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
+      } else {
+        e.preventDefault();
+      }
+    });
+  }
+
+  var date = new Date(data.description.releaseDate);
+  var hour = date.getHours();
+  $('#release-hour').val(hour*3600000);
+
+  var minutes = date.getMinutes();
+  $('#release-min').val(minutes*60000);
+
   $("#nextRelease").on('input', function () {
     data.description.nextRelease = $(this).val();
     clearTimeout(timeoutId);
@@ -96,6 +118,12 @@ function releaseEditor(collectionId, data) {
       } else {
         return true;
       }
+    } else if (id === 'finalised') {
+      if (data.description.finalised === "false" || data.description.finalised === false) {
+        return false;
+      } else {
+        return true;
+      }
     }
   };
 
@@ -110,11 +138,61 @@ function releaseEditor(collectionId, data) {
 
   $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
     data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
+    if (data.description.cancelled) {
+      var editedSectionValue = '';
+      var saveContent = function (updatedContent) {
+        data.description.cancellationNotice = [updatedContent];
+        postContent(collectionId, data.uri, JSON.stringify(data),
+          success = function () {
+            Florence.Editor.isDirty = false;
+            loadPageDataIntoEditor(data.uri, collectionId);
+            refreshPreview(data.uri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this page. It is already part of another collection.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      };
+      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
+    } else {
+      data.description.cancellationNotice = [];
+    }
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
+
+  if (data.description.finalised) {
+    $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function (e) {
+      alert('You cannot change this field once it is finalised.');
+      e.preventDefault();
+    });
+  } else {
+    $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function () {
+      var result = confirm("You will not be able to reverse this operation. Are you sure you want to proceed?");
+      if (result) {
+        data.description.finalised = $("#finalised input[type='checkbox']").prop('checked') ? true : false;
+        if (data.description.finalised) {
+          // remove provisional date
+          data.description.provisionalDate = "";
+          $('.provisional-date').remove();
+          $('#finalised').remove();
+        }
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(function () {
+          autoSaveMetadata(collectionId, data);
+        }, 3000);
+      } else {
+        e.preventDefault();
+      }
+    });
+  }
 
   $("#dateChange").on('input', function () {
     data.dateChanges.previousDate = $(this).val();
@@ -126,23 +204,79 @@ function releaseEditor(collectionId, data) {
 
   function saveOldDate(collectionId, data, oldDate) {
     data.dateChanges.push({previousDate: oldDate, changeNotice: ""});
-    //Save
-    postContent(collectionId, data.uri, JSON.stringify(data),
-      success = function () {
-        Florence.Editor.isDirty = false;
-        //Open editor to add a notice
-        initialiseLastNoteMarkdown(collectionId, data, 'dateChanges');
-      },
-      error = function (response) {
-        if (response.status === 400) {
-          alert("Cannot edit this page. It is already part of another collection.");
-        }
-        else {
+    initialiseLastNoteMarkdown(collectionId, data, 'dateChanges', 'changeNotice');
+  }
+
+  $('#add-preview').click(function () {
+    //Check if it is article, bulletin or dataset
+    processCollection(collectionId);
+  });
+
+  function processCollection(collectionId, noSave) {
+    pageDataRequests.push(
+      getCollectionDetails(collectionId,
+        success = function (response) {
+          pages = response;
+        },
+        error = function (response) {
           handleApiError(response);
         }
-      }
+      )
     );
+    $.when.apply($, pageDataRequests).then(function () {
+      processPreview(data, pages);
+      if (noSave) {
+        postContent(collectionId, data.uri, JSON.stringify(data),
+          success = function () {
+            Florence.Editor.isDirty = false;
+            refreshPreview(data.uri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this page. It is already part of another collection.");
+            } else {
+              handleApiError(response);
+            }
+          }
+        );
+      } else {
+        updateContent(collectionId, data.uri, JSON.stringify(data));
+      }
+    });
   }
+
+  //Add uri to relatedDocuments or relatedDatasets
+  function processPreview(data, pages) {
+    data.relatedDocuments = [];
+    data.relatedDatasets = [];
+    _.each(pages.inProgress, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+    _.each(pages.complete, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+    _.each(pages.reviewed, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+  }
+
+  //Save and update preview page
+  //Get collection content
 
   // Save
   var editNav = $('.edit-nav');

@@ -1,5 +1,4 @@
 function viewReports() {
-  var manual = '[manual collection]';
 
   $.ajax({
     url: "/zebedee/publishedcollections",
