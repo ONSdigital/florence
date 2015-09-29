@@ -1,11 +1,10 @@
 function createCollection() {
 
-  var publishDate, publishTime, collectionId, collectionDate, collectionType;
+  var publishDate, publishTime, collectionId, collectionDate, collectionType, releaseUri;
   collectionId = $('#collectionname').val();
   collectionType = $('form input[type=radio]:checked').val();
 
   if (collectionType === 'scheduled') {
-    publishDate  = $('#date').val();
     publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
     var toIsoDate = $('#date').datepicker("getDate");
     collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
@@ -13,6 +12,11 @@ function createCollection() {
     collectionDate  = null;
   };
 
+  if (collectionType === 'release') {
+    releaseUri  = $('#collection-release').val();
+  } else {
+    releaseUri  = null;
+  };
 
   // inline tests
   if (collectionId === '') {
@@ -34,7 +38,7 @@ function createCollection() {
       dataType: 'json',
       contentType: 'application/json',
       type: 'POST',
-      data: JSON.stringify({name: collectionId, type: collectionType, publishDate: collectionDate}),
+      data: JSON.stringify({name: collectionId, type: collectionType, publishDate: collectionDate, releaseUri: releaseUri}),
       success: function (collection) {
         Florence.setActiveCollection(collection);
         createWorkspace('', collection.id, 'browse');
