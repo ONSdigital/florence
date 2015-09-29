@@ -31,8 +31,9 @@
     </select>
     <input type="radio" id="scheduledpublish" name="publishtype" value="scheduled" checked><label for="scheduledpublish">Scheduled publish</label>
     <input type="radio" id="manualpublish" name="publishtype" value="manual" required><label for="manualpublish">Manual publish</label>
+    <input type="radio" id="releasepublish" name="publishtype" value="release" required><label for="releasepublish">Release publish</label>
     <br>
-    <div class="block text-center">
+    <div id="scheduledPublishOptions" class="block text-center">
       <label for="date" class="hidden">Date</label>
       <input id="date" type="text" placeholder="dd/mm/yyyy"/>
       <br>
@@ -67,6 +68,11 @@
       <select id="min" class="selectbg--small">
           <option value="0">00</option>
           <option value="1800000" selected="selected">30</option>
+      </select>
+    </div>
+    <div id="releasePublishOptions" class="block text-center hidden">
+      <label for="collection-release hidden">Release</label>
+      <select id="collection-release" class="selectbg">
       </select>
     </div>
     <button class="btn-collection-create">Create collection</button>

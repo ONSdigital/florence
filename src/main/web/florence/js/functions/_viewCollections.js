@@ -11,10 +11,13 @@ function viewCollections(collectionId) {
     }
   });
 
+  populateReleases();
+
   var response = [];
+
   function populateCollectionTable(data) {
     $.each(data, function (i, collection) {
-      if(!collection.approvedStatus) {
+      if (!collection.approvedStatus) {
         if (!collection.publishDate) {
           date = '[manual collection]';
           response.push({id: collection.id, name: collection.name, date: date});
@@ -31,7 +34,7 @@ function viewCollections(collectionId) {
     var collectionsHtml = templates.collectionList(response);
     $('.section').html(collectionsHtml);
 
-    if(collectionId) {
+    if (collectionId) {
       $('.collections-select-table tr[data-id="' + collectionId + '"]')
         .addClass('selected');
       viewCollectionDetails(collectionId);
@@ -45,38 +48,69 @@ function viewCollections(collectionId) {
     }
 
     $('form input[type=radio]').click(function () {
-      if ($('form input[type=radio]:checked').val() === 'manual') {
-        $('#date').hide();
-        $('#hour').hide();
-        $('#min').hide();
-      } else {
-        $('#date').show();
-        $('#hour').show();
-        $('#min').show();
+
+      console.log();
+
+      if ($(this).val() === 'manual') {
+        $('#scheduledPublishOptions').hide();
+        $('#releasePublishOptions').hide();
+      } else if ($(this).val() === 'release') {
+        $('#releasePublishOptions').show();
+        $('#scheduledPublishOptions').hide();
+      } else if ($(this).val() === 'scheduled') {
+        $('#releasePublishOptions').hide();
+        $('#scheduledPublishOptions').show();
       }
     });
 
-    var noBefore = function (date){
-      if (date < new Date()){
-      return [false];
+    var noBefore = function (date) {
+      if (date < new Date()) {
+        return [false];
       }
       return [true];
     }
 
 
-    $(function() {
+    $(function () {
       var today = new Date();
-       $('#date').datepicker({
-                    minDate: today,
-                    dateFormat: 'dd/mm/yy',
-                    constrainInput: true,
-                    beforeShowDay: noBefore
-                  });
+      $('#date').datepicker({
+        minDate: today,
+        dateFormat: 'dd/mm/yy',
+        constrainInput: true,
+        beforeShowDay: noBefore
+      });
     });
 
     $('.form-create-collection').submit(function (e) {
       e.preventDefault();
       createCollection();
     });
+  }
+
+  function populateReleases() {
+    $.ajax({
+      url: "/releasecalendar/data?view=upcoming",
+      type: "get",
+      success: function (data) {
+        //console.log('populating releases!');
+        //console.log(data);
+        populateReleasesDropdown(data);
+      },
+      error: function (response) {
+        handleApiError(response);
+      }
+    });
+
+    function populateReleasesDropdown(data) {
+
+      var releaseSelect = $('#collection-release');
+
+      _(data.results).each(function (release) {
+        //console.log('release: ' + release.uri);
+        //console.log(release);
+        releaseSelect.append( new Option(release.description.title, release.uri) );
+      });
+    }
+
   }
 }
