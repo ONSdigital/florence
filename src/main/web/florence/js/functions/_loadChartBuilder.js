@@ -302,20 +302,16 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     if (chart.chartType === 'line') {
       xAxis.tickmarkPlacement = 'on';
-      var interval = chart.labelInterval || 1;
       //start from last data when rendering ticks and labels, decrement interval to go backward
-      if (interval > 1) {
         xAxis.tickPositioner = function() {
-          console.debug("Positioning");
           var positions = [];
           var tick = Math.floor(this.dataMax);
           console.debug(this.dataMax);
-          for (tick; tick >= this.dataMin; tick -= interval) {
+          for (tick; tick >= this.dataMin; tick -= this.tickInterval) {
             positions.push(tick);
           }
           return positions;
         };
-      }
     }
 
 
