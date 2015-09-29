@@ -5,13 +5,12 @@ function viewCollections(collectionId) {
     type: "get",
     success: function (data) {
       populateCollectionTable(data);
+      populateReleases();
     },
     error: function (jqxhr) {
       handleApiError(jqxhr);
     }
   });
-
-  populateReleases();
 
   var response = [];
 
