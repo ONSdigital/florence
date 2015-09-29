@@ -1,8 +1,13 @@
 function createCollection() {
 
-  var publishDate, publishTime, collectionId, collectionDate, collectionType, releaseUri;
+  var publishTime, collectionId, collectionDate, collectionType, releaseUri;
   collectionId = $('#collectionname').val();
   collectionType = $('form input[type=radio]:checked').val();
+
+  var publishType = collectionType;
+  if (collectionType === 'release') {
+    publishType = 'scheduled';
+  }
 
   if (collectionType === 'scheduled') {
     publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
@@ -38,7 +43,7 @@ function createCollection() {
       dataType: 'json',
       contentType: 'application/json',
       type: 'POST',
-      data: JSON.stringify({name: collectionId, type: collectionType, publishDate: collectionDate, releaseUri: releaseUri}),
+      data: JSON.stringify({name: collectionId, type: publishType, publishDate: collectionDate, releaseUri: releaseUri}),
       success: function (collection) {
         Florence.setActiveCollection(collection);
         createWorkspace('', collection.id, 'browse');
