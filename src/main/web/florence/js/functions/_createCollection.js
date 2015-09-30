@@ -50,7 +50,7 @@ function createCollection() {
       },
       error: function (response) {
         if(response.status === 409) {
-          alert('A collection already exists with the name ' + collectionId);
+          alert(response.responseJSON.message);
         }
         else {
           handleApiError(response);
