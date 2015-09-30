@@ -48,68 +48,67 @@ function viewCollections(collectionId) {
 
     $('form input[type=radio]').click(function () {
 
-      console.log();
-
       if ($(this).val() === 'manual') {
         $('#scheduledPublishOptions').hide();
-        $('#releasePublishOptions').hide();
-      } else if ($(this).val() === 'release') {
-        $('#releasePublishOptions').show();
-        $('#scheduledPublishOptions').hide();
       } else if ($(this).val() === 'scheduled') {
-        $('#releasePublishOptions').hide();
         $('#scheduledPublishOptions').show();
+      } else if ($(this).val() === 'custom') {
+        $('#customScheduleOptions').show();
+        $('#releaseScheduleOptions').hide();
+      } else if ($(this).val() === 'release') {
+        $('#customScheduleOptions').hide();
+        $('#releaseScheduleOptions').show();
       }
     });
 
-    var noBefore = function (date) {
-      if (date < new Date()) {
-        return [false];
+      var noBefore = function (date) {
+        if (date < new Date()) {
+          return [false];
+        }
+        return [true];
       }
-      return [true];
-    }
 
 
-    $(function () {
-      var today = new Date();
-      $('#date').datepicker({
-        minDate: today,
-        dateFormat: 'dd/mm/yy',
-        constrainInput: true,
-        beforeShowDay: noBefore
+      $(function () {
+        var today = new Date();
+        $('#date').datepicker({
+          minDate: today,
+          dateFormat: 'dd/mm/yy',
+          constrainInput: true,
+          beforeShowDay: noBefore
+        });
       });
-    });
 
-    $('.form-create-collection').submit(function (e) {
-      e.preventDefault();
-      createCollection();
-    });
-  }
-
-  function populateReleases() {
-    $.ajax({
-      url: "/releasecalendar/data?view=upcoming",
-      type: "get",
-      success: function (data) {
-        //console.log('populating releases!');
-        //console.log(data);
-        populateReleasesDropdown(data);
-      },
-      error: function (response) {
-        handleApiError(response);
-      }
-    });
-
-    function populateReleasesDropdown(data) {
-
-      var releaseSelect = $('#collection-release');
-
-      _(data.results).each(function (release) {
-        //console.log('release: ' + release.uri);
-        //console.log(release);
-        releaseSelect.append( new Option(release.description.title, release.uri) );
+      $('.form-create-collection').submit(function (e) {
+        e.preventDefault();
+        createCollection();
       });
     }
 
+    function populateReleases() {
+      $.ajax({
+        url: "/releasecalendar/data?view=upcoming",
+        type: "get",
+        success: function (data) {
+          //console.log('populating releases!');
+          //console.log(data);
+          populateReleasesDropdown(data);
+        },
+        error: function (response) {
+          handleApiError(response);
+        }
+      });
+
+      function populateReleasesDropdown(data) {
+
+        var releaseSelect = $('#collection-release');
+
+        _(data.results).each(function (release) {
+          //console.log('release: ' + release.uri);
+          //console.log(release);
+          releaseSelect.append(new Option(release.description.title, release.uri));
+        });
+      }
+
+    }
   }
-}
