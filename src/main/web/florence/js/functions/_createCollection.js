@@ -1,15 +1,14 @@
 function createCollection() {
 
-  var publishTime, collectionId, collectionDate, collectionType, releaseUri;
+  var publishTime, collectionId, collectionDate, releaseUri;
   collectionId = $('#collectionname').val();
-  collectionType = $('form input[type=radio]:checked').val();
+  var publishType = $('input[name="publishType"]:checked').val();
+  var scheduleType = $('input[name="scheduleType"]:checked').val();
 
-  var publishType = collectionType;
-  if (collectionType === 'release') {
-    publishType = 'scheduled';
-  }
+  console.log('publish type: ' + publishType);
+  console.log('schedule type: ' + scheduleType);
 
-  if (collectionType === 'scheduled') {
+  if (publishType === 'scheduled') {
     publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
     var toIsoDate = $('#date').datepicker("getDate");
     collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
@@ -17,7 +16,7 @@ function createCollection() {
     collectionDate  = null;
   };
 
-  if (collectionType === 'release') {
+  if (scheduleType === 'release') {
     releaseUri  = $('#collection-release').val();
   } else {
     releaseUri  = null;
@@ -30,10 +29,10 @@ function createCollection() {
   } if (collectionId.match(/\./)) {
     alert('This is not a valid collection name. You can not use dots');
     return true;
-  } if ((collectionType === 'scheduled') && (isValidDate(new Date(collectionDate)))) {
+  } if ((publishType === 'scheduled') && (scheduleType === 'custom')  && (isValidDate(new Date(collectionDate)))) {
     alert('This is not a valid date');
     return true;
-  } if ((collectionType === 'scheduled') && (Date.parse(collectionDate) < new Date())) {
+  } if ((publishType === 'scheduled') && (scheduleType === 'custom') && (Date.parse(collectionDate) < new Date())) {
     alert('This is not a valid date');
     return true;
   } else {
