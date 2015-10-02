@@ -16,7 +16,7 @@ function createCollection() {
     collectionDate  = null;
   };
 
-  if (scheduleType === 'release') {
+  if (scheduleType === 'release' && publishType === 'scheduled') {
     releaseUri  = $('#collection-release').val();
   } else {
     releaseUri  = null;
