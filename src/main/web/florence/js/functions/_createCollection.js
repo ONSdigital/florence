@@ -1,11 +1,14 @@
 function createCollection() {
 
-  var publishDate, publishTime, collectionId, collectionDate, collectionType;
+  var publishTime, collectionId, collectionDate, releaseUri;
   collectionId = $('#collectionname').val();
-  collectionType = $('form input[type=radio]:checked').val();
+  var publishType = $('input[name="publishType"]:checked').val();
+  var scheduleType = $('input[name="scheduleType"]:checked').val();
 
-  if (collectionType === 'scheduled') {
-    publishDate  = $('#date').val();
+  console.log('publish type: ' + publishType);
+  console.log('schedule type: ' + scheduleType);
+
+  if (publishType === 'scheduled') {
     publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
     var toIsoDate = $('#date').datepicker("getDate");
     collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
@@ -13,6 +16,11 @@ function createCollection() {
     collectionDate  = null;
   };
 
+  if (scheduleType === 'release' && publishType === 'scheduled') {
+    releaseUri  = $('#collection-release').val();
+  } else {
+    releaseUri  = null;
+  };
 
   // inline tests
   if (collectionId === '') {
@@ -21,10 +29,10 @@ function createCollection() {
   } if (collectionId.match(/\./)) {
     alert('This is not a valid collection name. You can not use dots');
     return true;
-  } if ((collectionType === 'scheduled') && (isValidDate(new Date(collectionDate)))) {
+  } if ((publishType === 'scheduled') && (scheduleType === 'custom')  && (isValidDate(new Date(collectionDate)))) {
     alert('This is not a valid date');
     return true;
-  } if ((collectionType === 'scheduled') && (Date.parse(collectionDate) < new Date())) {
+  } if ((publishType === 'scheduled') && (scheduleType === 'custom') && (Date.parse(collectionDate) < new Date())) {
     alert('This is not a valid date');
     return true;
   } else {
@@ -34,14 +42,14 @@ function createCollection() {
       dataType: 'json',
       contentType: 'application/json',
       type: 'POST',
-      data: JSON.stringify({name: collectionId, type: collectionType, publishDate: collectionDate}),
+      data: JSON.stringify({name: collectionId, type: publishType, publishDate: collectionDate, releaseUri: releaseUri}),
       success: function (collection) {
         Florence.setActiveCollection(collection);
         createWorkspace('', collection.id, 'browse');
       },
       error: function (response) {
         if(response.status === 409) {
-          alert('A collection already exists with the name ' + collectionId);
+          alert(response.responseJSON.message);
         }
         else {
           handleApiError(response);
