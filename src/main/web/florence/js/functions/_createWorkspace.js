@@ -1,3 +1,4 @@
+// Handles the initial creation of the workspace screen.
 function createWorkspace(path, collectionId, menu, stopEventListener) {
   var safePath = '';
   $("#working-on").on('click', function () {
