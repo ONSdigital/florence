@@ -61,54 +61,98 @@ function viewCollections(collectionId) {
       }
     });
 
-      var noBefore = function (date) {
-        if (date < new Date()) {
-          return [false];
-        }
-        return [true];
+    var noBefore = function (date) {
+      if (date < new Date()) {
+        return [false];
       }
-
-
-      $(function () {
-        var today = new Date();
-        $('#date').datepicker({
-          minDate: today,
-          dateFormat: 'dd/mm/yy',
-          constrainInput: true,
-          beforeShowDay: noBefore
-        });
-      });
-
-      $('.form-create-collection').submit(function (e) {
-        e.preventDefault();
-        createCollection();
-      });
+      return [true];
     }
 
-    function populateReleases() {
-      $.ajax({
-        url: "/releasecalendar/data?view=upcoming",
+
+    $(function () {
+      var today = new Date();
+      $('#date').datepicker({
+        minDate: today,
+        dateFormat: 'dd/mm/yy',
+        constrainInput: true,
+        beforeShowDay: noBefore
+      });
+    });
+
+    $('.form-create-collection').submit(function (e) {
+      e.preventDefault();
+      createCollection();
+    });
+  }
+
+  function populateReleases() {
+
+    var dataArray = [];
+    var baseReleaseUri = "/releasecalendar/data?view=upcoming";
+
+    $.ajax({
+        url: baseReleaseUri,
         type: "get",
         success: function (data) {
-          //console.log('populating releases!');
-          //console.log(data);
-          populateReleasesDropdown(data);
+
+          var pageSize = 10;
+          dataArray.push(data);
+
+          console.log('populating releases!');
+          console.log(data);
+
+          // if there are more results than the existing page size, go get them.
+          if (data.numberOfResults > pageSize) {
+
+            var pagesToGet = Math.ceil((data.numberOfResults - pageSize) / pageSize);
+            var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+
+            for (var i = 2; i < pagesToGet + 2; i++) {
+
+              var dfd = $.Deferred();
+
+
+                //console.log("Calling release list for page " + i);
+                $.ajax({
+                  url: baseReleaseUri + '&page=' + i,
+                  type: "get",
+                  success: function (data) {
+                    //console.log('populating releases for page ' + i);
+                    //console.log(data);
+                    dataArray.push(data);
+                    dfd.resolve();
+                  },
+                  error: function (response) {
+                    handleApiError(response);
+                    dfd.resolve();
+                  }
+                });
+
+              pageDataRequests.push(dfd);
+            }
+
+            $.when.apply($, pageDataRequests).then(function () {
+              populateReleasesDropdown(dataArray);
+            });
+
+          }
         },
         error: function (response) {
           handleApiError(response);
         }
-      });
+      }
+    );
 
-      function populateReleasesDropdown(data) {
+    function populateReleasesDropdown(dataArray) {
 
-        var releaseSelect = $('#collection-release');
-
+      var releaseSelect = $('#collection-release');
+      _(dataArray).each(function (data) {
         _(data.results).each(function (release) {
           //console.log('release: ' + release.uri);
           //console.log(release);
           releaseSelect.append(new Option(release.description.title, release.uri));
         });
-      }
-
+      })
     }
   }
+}

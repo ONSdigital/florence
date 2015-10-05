@@ -8,7 +8,13 @@ function handleApiError(response) {
   } else if (response.status === 504) {
     alert('This task is taking longer than expected. It will continue to run in the background.');
   } else {
-    console.log('An error has occurred, please contact an administrator. ' + response.responseJSON.message);
-    alert('An error has occurred, please contact an administrator. ' + response.responseJSON.message);
+    var message = 'An error has occurred, please contact an administrator.';
+
+    if(response.responseJSON) {
+      message = message + ' ' + response.responseJSON.message;
+    }
+
+    console.log(message);
+    alert(message);
   }
 }
