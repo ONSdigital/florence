@@ -8,12 +8,14 @@ function editDate(collectionId, data, templateData, field, idField) {
 }
 
 function runDatePicker(dataTemplate) {
-  var countSections = dataTemplate.list.length;
-  var i = 0;
-  while (i < countSections) {
-    var tmpDate = dataTemplate.list[i].previousDate;
-    dataTemplate.list[i].previousDate = $.datepicker.formatDate('dd MM yy', new Date(tmpDate));
-    i++;
+  if(dataTemplate && dataTemplate.list) {
+    var countSections = dataTemplate.list.length;
+    var i = 0;
+    while (i < countSections) {
+      var tmpDate = dataTemplate.list[i].previousDate;
+      dataTemplate.list[i].previousDate = $.datepicker.formatDate('dd MM yy', new Date(tmpDate));
+      i++;
+    }
   }
 }
 
