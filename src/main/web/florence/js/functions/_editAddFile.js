@@ -51,9 +51,9 @@ function addFile(collectionId, data, field, idField) {
   //Add
   if (data.type === 'dataset') {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
-  }  else if (data.type === 'timeseries_dataset') {
+  } else if (data.type === 'timeseries_dataset') {
     downloadExtensions = /\.csdb$/;
-  }  else if (data.type === 'static_adhoc') {
+  } else if (data.type === 'static_adhoc') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_qmi') {
     downloadExtensions = /\.pdf$/;
@@ -89,20 +89,26 @@ function addFile(collectionId, data, field, idField) {
       $('#UploadForm').submit(function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
+
         var formdata = new FormData();
 
         function showUploadedItem(source) {
           $('#list').append(source);
         }
 
+        var file = this[0].files[0];
+        if(!file) {
+          alert('Please select a file to upload.');
+          return;
+        }
+
         document.getElementById("response").innerHTML = "Uploading . . .";
 
-        var file = this[0].files[0];
         var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
         uriUpload = data.uri + "/" + fileNameNoSpace;
         var safeUriUpload = checkPathSlashes(uriUpload);
 
-        if (data[field].length > 0) {
+        if (data[field] && data[field].length > 0) {
           $(data[field]).each(function (i, filesUploaded) {
             if (filesUploaded.file == safeUriUpload) {
               alert('This file already exists');
@@ -134,6 +140,9 @@ function addFile(collectionId, data, field, idField) {
             contentType: false,
             success: function () {
               document.getElementById("response").innerHTML = "File uploaded successfully";
+              if (!data[field]) {
+                data[field] = [];
+              }
               data[field].push({title: '', file: safeUriUpload});
               updateContent(collectionId, data.uri, JSON.stringify(data));
             }
