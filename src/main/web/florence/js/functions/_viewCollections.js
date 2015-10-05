@@ -37,14 +37,14 @@ function viewCollections(collectionId) {
       $('.collections-select-table tr[data-id="' + collectionId + '"]')
         .addClass('selected');
       viewCollectionDetails(collectionId);
-    } else {
-      $('.collections-select-table tbody tr').click(function () {
-        $('.collections-select-table tbody tr').removeClass('selected');
-        $(this).addClass('selected');
-        var collectionId = $(this).attr('data-id');
-        viewCollectionDetails(collectionId);
-      });
     }
+
+    $('.collections-select-table tbody tr').click(function () {
+      $('.collections-select-table tbody tr').removeClass('selected');
+      $(this).addClass('selected');
+      var collectionId = $(this).attr('data-id');
+      viewCollectionDetails(collectionId);
+    });
 
     $('form input[type=radio]').click(function () {
 
@@ -112,21 +112,21 @@ function viewCollections(collectionId) {
               var dfd = $.Deferred();
 
 
-                //console.log("Calling release list for page " + i);
-                $.ajax({
-                  url: baseReleaseUri + '&page=' + i,
-                  type: "get",
-                  success: function (data) {
-                    //console.log('populating releases for page ' + i);
-                    //console.log(data);
-                    dataArray.push(data);
-                    dfd.resolve();
-                  },
-                  error: function (response) {
-                    handleApiError(response);
-                    dfd.resolve();
-                  }
-                });
+              //console.log("Calling release list for page " + i);
+              $.ajax({
+                url: baseReleaseUri + '&page=' + i,
+                type: "get",
+                success: function (data) {
+                  //console.log('populating releases for page ' + i);
+                  //console.log(data);
+                  dataArray.push(data);
+                  dfd.resolve();
+                },
+                error: function (response) {
+                  handleApiError(response);
+                  dfd.resolve();
+                }
+              });
 
               pageDataRequests.push(dfd);
             }
