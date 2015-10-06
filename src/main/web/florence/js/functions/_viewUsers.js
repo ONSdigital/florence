@@ -1,16 +1,14 @@
-function viewUserAndAccess(view) {
+function viewUsers(view) {
 
-  $.ajax({
-    url: "/zebedee/users",
-    type: "get",
-    success: function (data) {
+  getUsers(
+    success = function (data) {
       console.log(data);
       populateUsersTable(data);
     },
-    error: function (jqxhr) {
+    error = function (jqxhr) {
       handleApiError(jqxhr);
     }
-  });
+  );
 
   function populateUsersTable(data) {
 
