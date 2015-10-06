@@ -1,72 +1,82 @@
 function viewUserAndAccess(view) {
 
-  if (view == 'create') {
-    var create_user =
-    '<section class="fl-panel fl-panel--user-and-access">' +
-      '<section class="fl-creator">' +
-        '<section class="fl-user-and-access__create">' +
-          '<span class="fl-user-and-access__title"> Enter the name of the new user</span>' +
-          '<input class="fl-user-and-access__name" name="fl-editor__headline" cols="40" rows="1"></input>' +
-          '<br>' +
-          '<span class="fl-user-and-access__title"> enter the email of the new user </span>' +
-          '<input class="fl-user-and-access__email" name="fl-editor__headline" cols="40" rows="1"></input>' +
-          '<br>' +
-          'password:<input class="fl-user-and-access__password" name="fl-editor__headline" cols="40" rows="1"></input>'+
-        '</section>' +
-      '</section>' +
-      '<nav class="fl-panel--user-and-access__nav">' +
-        '<button class="fl-panel--user-and-access__create">Create User</button>' +
-      '</nav>' +
-    '</section>';
+  $.ajax({
+    url: "/zebedee/users",
+    type: "get",
+    success: function (data) {
+      console.log(data);
+      populateUsersTable(data);
+    },
+    error: function (jqxhr) {
+      handleApiError(jqxhr);
+    }
+  });
 
-    $('.fl-view').prepend(create_user);
+  function populateUsersTable(data) {
 
-    $('.fl-panel--user-and-access__create').click(function () {
-      var name  = $('.fl-user-and-access__name').val();
-      var email = $('.fl-user-and-access__email').val();
-      var password = $('.fl-user-and-access__password').val();
-      createUser(name, email, password);
+    var usersHtml = templates.userList(data);
+    $('.section').html(usersHtml);
+
+    //if (collectionId) {
+    //  $('.collections-select-table tr[data-id="' + collectionId + '"]')
+    //    .addClass('selected');
+    //  viewCollectionDetails(collectionId);
+    //}
+
+    $('.collections-select-table tbody tr').click(function () {
+      $('.collections-select-table tbody tr').removeClass('selected');
+      $(this).addClass('selected');
+      var userId = $(this).attr('data-id');
+      viewUserDetails(userId);
     });
 
-    function createUser(name, email, password) {
-      $.ajax({
-        url: "/zebedee/users",
-        dataType: 'json',
-        contentType: 'application/json',
-        type: 'POST',
-        data: JSON.stringify({
-          name: name,
-          email: email,
-        }),
-        success: function () {
-          console.log('User created');
-          setPassword(email, password);
-        },
-        error: function (response) {
-          handleApiError(response);
-        }
-      });
-    }
-
-    function setPassword(email, password) {
-      $.ajax({
-        url: "/zebedee/password",
-        dataType: 'json',
-        contentType: 'application/json',
-        type: 'POST',
-        data: JSON.stringify({
-          password: password,
-          email: email
-        }),
-        success: function () {
-          console.log('Password set');
-          alert("User created");
-        },
-        error: function (response) {
-          handleApiError(response);
-        }
-      });
-    }
+    $('.form-create-user').submit(function (e) {
+      e.preventDefault();
+      createUser();
+    });
   }
+
+
+  //
+  //  function createUser(name, email, password) {
+  //    $.ajax({
+  //      url: "/zebedee/users",
+  //      dataType: 'json',
+  //      contentType: 'application/json',
+  //      type: 'POST',
+  //      data: JSON.stringify({
+  //        name: name,
+  //        email: email,
+  //      }),
+  //      success: function () {
+  //        console.log('User created');
+  //        setPassword(email, password);
+  //      },
+  //      error: function (response) {
+  //        handleApiError(response);
+  //      }
+  //    });
+  //  }
+  //
+  //  function setPassword(email, password) {
+  //    $.ajax({
+  //      url: "/zebedee/password",
+  //      dataType: 'json',
+  //      contentType: 'application/json',
+  //      type: 'POST',
+  //      data: JSON.stringify({
+  //        password: password,
+  //        email: email
+  //      }),
+  //      success: function () {
+  //        console.log('Password set');
+  //        alert("User created");
+  //      },
+  //      error: function (response) {
+  //        handleApiError(response);
+  //      }
+  //    });
+  //  }
+  //}
 }
 
