@@ -87,8 +87,29 @@ function viewCollections(collectionId) {
 
   function populateReleases() {
 
-    var dataArray = [];
+    var releases = [];
     var baseReleaseUri = "/releasecalendar/data?view=upcoming";
+
+    function getReleasesPage(i, releases) {
+      var dfd = $.Deferred();
+      $.ajax({
+        url: baseReleaseUri + '&page=' + i,
+        type: "get",
+        success: function (data) {
+          console.log('populating releases for page ' + i);
+          console.log(data);
+          _(data.results).each(function (release) {
+            releases.push(release);
+          });
+          dfd.resolve();
+        },
+        error: function (response) {
+          handleApiError(response);
+          dfd.resolve();
+        }
+      });
+      return dfd;
+    }
 
     $.ajax({
         url: baseReleaseUri,
@@ -96,7 +117,9 @@ function viewCollections(collectionId) {
         success: function (data) {
 
           var pageSize = 10;
-          dataArray.push(data);
+          _(data.results).each(function (release) {
+            releases.push(release);
+          });
 
           console.log('populating releases!');
           console.log(data);
@@ -108,34 +131,15 @@ function viewCollections(collectionId) {
             var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
             for (var i = 2; i < pagesToGet + 2; i++) {
-
-              var dfd = $.Deferred();
-
-
               console.log("Calling release list for page " + baseReleaseUri + '&page=' + i);
-              $.ajax({
-                url: baseReleaseUri + '&page=' + i,
-                type: "get",
-                success: function (data) {
-                  console.log('populating releases for page ' + i);
-                  console.log(data);
-                  dataArray.push(data);
-                  dfd.resolve();
-                },
-                error: function (response) {
-                  handleApiError(response);
-                  dfd.resolve();
-                }
-              });
-
+              var dfd = getReleasesPage(i, releases);
               pageDataRequests.push(dfd);
             }
 
             $.when.apply($, pageDataRequests).then(function () {
               console.log('Finished getting all release pages');
-              populateReleasesDropdown(dataArray);
+              populateReleasesDropdown(releases);
             });
-
           }
         },
         error: function (response) {
@@ -144,16 +148,15 @@ function viewCollections(collectionId) {
       }
     );
 
-    function populateReleasesDropdown(dataArray) {
+    function populateReleasesDropdown(releases) {
 
       var releaseSelect = $('#collection-release');
-      _(dataArray).each(function (data) {
-        _(data.results).each(function (release) {
-          //console.log('release: ' + release.uri);
-          //console.log(release);
-          releaseSelect.append(new Option(release.description.title, release.uri));
-        });
-      })
+
+      _(_.sortBy(releases, 'uri')).each(function (release) {
+        //console.log('release: ' + release.uri);
+        //console.log(release);
+        releaseSelect.append(new Option(release.description.title, release.uri));
+      });
     }
   }
 }
