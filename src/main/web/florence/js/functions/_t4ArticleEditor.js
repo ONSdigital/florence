@@ -32,7 +32,7 @@ function articleEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
-  //if (!Florence.collection.date) {                    //overwrite scheduled collection date
+
   if (!data.description.releaseDate) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();

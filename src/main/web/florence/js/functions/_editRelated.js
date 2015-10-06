@@ -176,7 +176,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               }
             }
 
-            else if ((field === 'relatedData') && (result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
+            else if ((field === 'relatedData') && (result.type === 'timeseries_dataset' || result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];

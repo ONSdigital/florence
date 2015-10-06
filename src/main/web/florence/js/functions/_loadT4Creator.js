@@ -1,6 +1,8 @@
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, isInheriting, newUri, pageData, natStat, contactName, contactEmail, contactTel, keyWords, metaDescr, relatedData;
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual,
+    isInheriting, newUri, pageData, natStat, contactName, contactEmail,
+    contactTel, keyWords, metaDescr, relatedData, summary;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -20,6 +22,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         contactTel = checkData.description.contact.telephone;
         pageTitle = checkData.description.title;
         keyWords = checkData.description.keywords;
+        summary = checkData.description.summary;
         metaDescr = checkData.description.metaDescription;
         if (checkData.type === 'bulletin' && pageType === 'bulletin') {
           relatedData = checkData.relatedData;
@@ -88,6 +91,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.keywords = keyWords;
         pageData.description.metaDescription = metaDescr;
         if (pageType === 'bulletin') {
+          pageData.description.summary = summary;
           pageData.relatedData = relatedData;
         }
         newUri = makeUrl(parentUrl, releaseUri);
