@@ -112,13 +112,13 @@ function viewCollections(collectionId) {
               var dfd = $.Deferred();
 
 
-              //console.log("Calling release list for page " + i);
+              console.log("Calling release list for page " + baseReleaseUri + '&page=' + i);
               $.ajax({
                 url: baseReleaseUri + '&page=' + i,
                 type: "get",
                 success: function (data) {
-                  //console.log('populating releases for page ' + i);
-                  //console.log(data);
+                  console.log('populating releases for page ' + i);
+                  console.log(data);
                   dataArray.push(data);
                   dfd.resolve();
                 },
@@ -132,6 +132,7 @@ function viewCollections(collectionId) {
             }
 
             $.when.apply($, pageDataRequests).then(function () {
+              console.log('Finished getting all release pages');
               populateReleasesDropdown(dataArray);
             });
 
