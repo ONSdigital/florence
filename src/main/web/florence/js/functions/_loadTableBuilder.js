@@ -36,7 +36,7 @@ function loadTableBuilder(pageData, onSave, table) {
     function createTableHtml() {
       $.ajax({
         url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
-        type: "POST",
+        type: 'POST',
         success: function (html) {
           saveTableJson();
           saveTableHtml(html);
@@ -80,10 +80,10 @@ function loadTableBuilder(pageData, onSave, table) {
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
-      type: "POST",
+      type: 'POST',
       data: JSON.stringify(table),
       processData: false,
-      contentType: false,
+      contentType: 'application/json',
       success: function (res) {
         addTableToPageJson(table);
       }

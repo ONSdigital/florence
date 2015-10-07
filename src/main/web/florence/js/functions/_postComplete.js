@@ -8,9 +8,6 @@ function saveAndCompleteContent(collectionId, path, content) {
       if (response.status === 400) {
         alert("Cannot edit this page. It is already part of another collection.");
       }
-      else if (response.status === 401) {
-        alert("You are not authorised to update content.");
-      }
       else {
         handleApiError(response);
       }
@@ -32,6 +29,7 @@ function completeContent(collectionId, path) {
   $.ajax({
     url: url,
     dataType: 'json',
+    contentType: 'application/json',
     type: 'POST',
     success: function () {
       viewCollections(collectionId);

@@ -61,9 +61,6 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               if (response.status === 400) {
                 alert("Cannot edit this page. It is already part of another collection.");
               }
-              else if (response.status === 401) {
-                alert("You are not authorised to update content.");
-              }
               else {
                 handleApiError(response);
               }
@@ -93,7 +90,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
         '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editRelated['lastIndex' + field] + '">Cancel</button>' +
         '</div>').trigger('create');
 
-      if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document') {
+      if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights') {
         $('#latest-container').append('<label for="latest">Link to latest' +
           '<input id="latest" type="checkbox" value="value" checked/></label>');
         latestCheck = true;
@@ -179,7 +176,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               }
             }
 
-            else if ((field === 'relatedData') && (result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
+            else if ((field === 'relatedData') && (result.type === 'timeseries_dataset' || result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];
@@ -187,6 +184,13 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             }
 
             else if (field === 'relatedMethodology' && (result.type === 'static_methodology' || result.type === 'static_qmi')) {
+              if (!data[field]) {
+                data[field] = [];
+                templateData[field] = [];
+              }
+            }
+
+            else if (field === 'highlightedLinks' && (result.type === 'bulletin')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];

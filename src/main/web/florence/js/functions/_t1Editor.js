@@ -21,7 +21,10 @@ function t1Editor(collectionId, data, templateData) {
     $("#title").on('input', function () {
       $(this).textareaAutoSize();
       data.description.title = $(this).val();
-      autoSaveMetadata(timeoutId, collectionId, data);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
     });
   } else {
     $(".title").remove();
@@ -29,7 +32,10 @@ function t1Editor(collectionId, data, templateData) {
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
@@ -39,12 +45,18 @@ function t1Editor(collectionId, data, templateData) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
 
@@ -157,9 +169,6 @@ function resolveTitleT1(collectionId, data, templateData, field) {
                       if (response.status === 400) {
                         alert("Cannot edit this page. It is already part of another collection.");
                       }
-                      else if (response.status === 401) {
-                        alert("You are not authorised to update content.");
-                      }
                       else {
                         handleApiError(response);
                       }
@@ -191,7 +200,7 @@ function resolveTitleT1(collectionId, data, templateData, field) {
   });
 }
 
-function getTheme (uri) {
+function getTheme(uri) {
   var parts = uri.split('/');
   var theme = parts.splice(0, 2);
   return theme.join('/');

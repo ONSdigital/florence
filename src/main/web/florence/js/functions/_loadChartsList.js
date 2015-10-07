@@ -33,7 +33,11 @@ function initialiseChartList(data, collectionId) {
                 Florence.Editor.isDirty = false;
                 refreshPreview();
                 refreshChartList(data, collectionId);
-              });
+              },
+              error = function (response) {
+                handleApiError(response);
+              }
+            );
           }, chartData);
         })
     });
@@ -51,6 +55,9 @@ function initialiseChartList(data, collectionId) {
               success = function () {
                 Florence.Editor.isDirty = false;
                 refreshChartList(data, collectionId);
+              },
+              error = function (response) {
+                handleApiError(response);
               }
             );
           }

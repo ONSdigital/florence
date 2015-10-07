@@ -15,6 +15,8 @@ function viewCollectionDetails(collectionId) {
 
     if (!collection.publishDate) {
       collection.date = '[manual collection]';
+    } else if (collection.publishDate && collection.type === 'manual') {
+      collection.date = '[manual collection] Originally scheduled for ' + StringUtils.formatIsoFull(collection.publishDate);
     } else {
       collection.date = StringUtils.formatIsoFull(collection.publishDate);
     }
@@ -53,6 +55,13 @@ function viewCollectionDetails(collectionId) {
       && collection.complete.length === 0
       && collection.reviewed.length > 0) {
       approve.show().click(function () {
+        $('.js').prepend(
+          "<div class='over'>" +
+          "<div class='hourglass'>" +
+          "<div class='top'></div>" +
+          "<div class='bottom'></div>" +
+          "</div>" +
+          "</div>");
         postApproveCollection(collection.id);
       });
     }
@@ -84,8 +93,8 @@ function viewCollectionDetails(collectionId) {
         success = function () {
           createWorkspace(safePath, collectionId, 'edit');
         },
-        error = function () {
-          alert('uri: ' + safePath + ' is not found.');
+        error = function (response) {
+          handleApiError(response);
         }
       );
     });
@@ -110,8 +119,7 @@ function viewCollectionDetails(collectionId) {
             viewCollectionDetails(collectionId);
             alert('File deleted');
           }, function(error) {
-            viewCollectionDetails(collectionId);
-            alert(error + ' File has not been deleted. Contact an administrator');
+            handleApiError(error);
           }
         );
       }
