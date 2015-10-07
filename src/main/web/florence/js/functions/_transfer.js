@@ -3,17 +3,17 @@ function transfer(source, destination, uri) {
     source: source,
     destination: destination,
     uri: uri
-  }
-  console.log(transferRequest);
+  };
   $.ajax({
     url: "/zebedee/transfer",
     type: "POST",
     dataType: "json",
+    contentType: 'application/json',
     data: JSON.stringify(transferRequest),
-    success: function(response) {
+    success: function() {
       console.log(' file has been moved');
     },
-    error: function(response) {
+    error: function() {
       console.log('error moving file');
     }
   });

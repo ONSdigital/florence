@@ -4,27 +4,33 @@ function timeseriesEditor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
 
-  $(".edit-accordion").on('accordionactivate', function(event, ui) {
+  $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
-    if(setActiveTab !== false) {
+    if (setActiveTab !== false) {
       Florence.globalVars.activeTab = setActiveTab;
     }
   });
 
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
-  getLastPosition ();
+  getLastPosition();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -32,62 +38,93 @@ function timeseriesEditor(collectionId, data) {
   $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#number").on('input', function () {
     $(this).textareaAutoSize();
     data.description.number = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#keyNote").on('input', function () {
     $(this).textareaAutoSize();
     data.description.keyNote = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#unit").on('input', function () {
     $(this).textareaAutoSize();
     data.description.unit = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#preUnit").on('input', function () {
     $(this).textareaAutoSize();
     data.description.preUnit = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#source").on('input', function () {
     $(this).textareaAutoSize();
     data.description.source = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
-  $("#keywordsTag").tagit({availableTags: data.description.keywords,
-                        singleField: true,
-                        allowSpaces: true,
-                        singleFieldNode: $('#keywords')
+  $("#keywordsTag").tagit({
+    availableTags: data.description.keywords,
+    singleField: true,
+    allowSpaces: true,
+    singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
-    if(data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
+    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
       return false;
     } else {
       return true;
@@ -96,7 +133,10 @@ function timeseriesEditor(collectionId, data) {
 
   $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
     data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   // Correction section
@@ -121,7 +161,7 @@ function timeseriesEditor(collectionId, data) {
 
   // New correction
   $("#addCorrection").one('click', function () {
-    data.correction.push({text:"", date:""});
+    data.correction.push({text: "", date: ""});
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
@@ -160,31 +200,31 @@ function timeseriesEditor(collectionId, data) {
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
       var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes (uri);
-      newDocument[indexD]= {uri: safeUri};
+      var safeUri = checkPathSlashes(uri);
+      newDocument[indexD] = {uri: safeUri};
     });
     data.relatedDocuments = newDocument;
     // Related timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, nameT) {
       var uri = data.relatedData[parseInt(nameT)].uri;
-      var safeUri = checkPathSlashes (uri);
-      newTimeseries[indexT]= {uri: safeUri};
+      var safeUri = checkPathSlashes(uri);
+      newTimeseries[indexT] = {uri: safeUri};
     });
     data.relatedData = newTimeseries;
     // Related datasets
     var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexD, nameD) {
       var uri = data.relatedDatasets[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes (uri);
-      newRelated[indexD]= {uri: safeUri};
+      var safeUri = checkPathSlashes(uri);
+      newRelated[indexD] = {uri: safeUri};
     });
     data.relatedDatasets = newRelated;
     // Related methodology
     var orderUsedIn = $("#sortable-methodology").sortable('toArray');
-    $(orderUsedIn).each(function(indexM, nameM){
+    $(orderUsedIn).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes (uri);
+      var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[parseInt(indexM)] = {uri: safeUri};
     });
     data.relatedMethodology = newRelatedMethodology;

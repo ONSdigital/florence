@@ -13,6 +13,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'taxonomy_landing_page') {
     var html = templates.workEditT2(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'highlightedLinks', 'highlights');
     accordion();
     t2Editor(collectionId, pageData);
   }
@@ -42,6 +43,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     bulletinEditor(collectionId, pageData);
@@ -60,6 +62,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'article');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     articleEditor(collectionId, pageData);
@@ -98,6 +101,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     compendiumChapterEditor(collectionId, pageData);
@@ -117,6 +121,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_landing_page') {
     var html = templates.workEditT7Landing(templateData);
     $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     accordion();
     staticLandingPageEditor(collectionId, pageData);
   }
@@ -134,6 +139,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    addFile(collectionId, pageData, 'downloads', 'file');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     staticPageEditor(collectionId, pageData);
@@ -214,12 +220,12 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'release') {
     var html = templates.workEditT16(templateData);
     $('.workspace-menu').html(html);
-    editMarkdown (collectionId, pageData, 'sections', 'section');
-    editMarkdown (collectionId, pageData, 'accordion', 'tab');
-    editDate (collectionId, pageData, 'dateChanges', 'date');
-    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
-    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');
-    releaseEditor(collectionId, pageData);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'prerelease');
+    editDate (collectionId, pageData, templateData, 'dateChanges', 'changeDate');
+    //editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    //editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');
+    accordion();
+    releaseEditor(collectionId, pageData, templateData);
   }
 
   else {

@@ -1,7 +1,8 @@
 function releaseEditor(collectionId, data) {
-  var newSections = [], newDates = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
+  var pageDataRequests = [];
+  var pages = {};
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -14,55 +15,93 @@ function releaseEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
+  processCollection(collectionId, 'noSave');
+
   $("#title").on('input', function () {
     $data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
-
-  $("#edition").on('input', function () {
-    data.description.edition = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+  $("#provisionalDate").on('input', function () {
+    data.description.provisionalDate = $(this).val();
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
-  //if (!Florence.collection.date) {                    //overwrite scheduled collection date
-  if (!data.description.releaseDate) {
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-      autoSaveMetadata(timeoutId, collectionId, data);
+  var dateTmp = data.description.releaseDate;
+  var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+  $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'});
+  if (!data.description.finalised) {
+    $('.release-date').on('change', function () {
+      var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+      var toIsoDate = $('#releaseDate').datepicker("getDate");
+      data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
     });
   } else {
-    //dateTmp = $('#releaseDate').val();
-    dateTmp = data.description.releaseDate;
-    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-      autoSaveMetadata(timeoutId, collectionId, data);
+    $('.release-date').on('change', function () {
+      var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
+      if (result === true) {
+        saveOldDate(collectionId, data, dateTmp);
+        var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+        var toIsoDate = $('#releaseDate').datepicker("getDate");
+        data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
+      } else {
+        e.preventDefault();
+      }
     });
   }
-  //} else {
-  //	$('.release-date').hide();
-  //}
+
+  var date = new Date(data.description.releaseDate);
+  var hour = date.getHours();
+  $('#release-hour').val(hour*3600000);
+
+  var minutes = date.getMinutes();
+  $('#release-min').val(minutes*60000);
+
   $("#nextRelease").on('input', function () {
     data.description.nextRelease = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
   }
   $("#contactName").on('input', function () {
     data.description.contact.name = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#contactEmail").on('input', function () {
     data.description.contact.email = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#contactTelephone").on('input', function () {
     data.description.contact.telephone = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#summary").on('input', function () {
     data.description.summary = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
@@ -79,68 +118,182 @@ function releaseEditor(collectionId, data) {
       } else {
         return true;
       }
+    } else if (id === 'finalised') {
+      if (data.description.finalised === "false" || data.description.finalised === false) {
+        return false;
+      } else {
+        return true;
+      }
     }
   };
 
   // Gets status of checkbox and sets JSON to match
   $("#natStat input[type='checkbox']").prop('checked', checkBoxStatus($('#natStat').attr('id'))).click(function () {
     data.description.nationalStatistic = $("#natStat input[type='checkbox']").prop('checked') ? true : false;
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
     data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
-    autoSaveMetadata(timeoutId, collectionId, data);
+    if (data.description.cancelled) {
+      var editedSectionValue = '';
+      var saveContent = function (updatedContent) {
+        data.description.cancellationNotice = [updatedContent];
+        postContent(collectionId, data.uri, JSON.stringify(data),
+          success = function () {
+            Florence.Editor.isDirty = false;
+            loadPageDataIntoEditor(data.uri, collectionId);
+            refreshPreview(data.uri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this page. It is already part of another collection.");
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      };
+      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
+    } else {
+      data.description.cancellationNotice = [];
+    }
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
+
+  if (data.description.finalised) {
+    $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function (e) {
+      alert('You cannot change this field once it is finalised.');
+      e.preventDefault();
+    });
+  } else {
+    $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function () {
+      var result = confirm("You will not be able to reverse this operation. Are you sure you want to proceed?");
+      if (result) {
+        data.description.finalised = $("#finalised input[type='checkbox']").prop('checked') ? true : false;
+        if (data.description.finalised) {
+          // remove provisional date
+          data.description.provisionalDate = "";
+          $('.provisional-date').remove();
+          $('#finalised').remove();
+        }
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(function () {
+          autoSaveMetadata(collectionId, data);
+        }, 3000);
+      } else {
+        e.preventDefault();
+      }
+    });
+  }
 
   $("#dateChange").on('input', function () {
     data.dateChanges.previousDate = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
+
+  function saveOldDate(collectionId, data, oldDate) {
+    data.dateChanges.push({previousDate: oldDate, changeNotice: ""});
+    initialiseLastNoteMarkdown(collectionId, data, 'dateChanges', 'changeNotice');
+  }
+
+  $('#add-preview').click(function () {
+    //Check if it is article, bulletin or dataset
+    processCollection(collectionId);
+  });
+
+  function processCollection(collectionId, noSave) {
+    pageDataRequests.push(
+      getCollectionDetails(collectionId,
+        success = function (response) {
+          pages = response;
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      )
+    );
+    $.when.apply($, pageDataRequests).then(function () {
+      processPreview(data, pages);
+      if (noSave) {
+        postContent(collectionId, data.uri, JSON.stringify(data),
+          success = function () {
+            Florence.Editor.isDirty = false;
+            refreshPreview(data.uri);
+          },
+          error = function (response) {
+            if (response.status === 400) {
+              alert("Cannot edit this page. It is already part of another collection.");
+            } else {
+              handleApiError(response);
+            }
+          }
+        );
+      } else {
+        updateContent(collectionId, data.uri, JSON.stringify(data));
+      }
+    });
+  }
+
+  //Add uri to relatedDocuments or relatedDatasets
+  function processPreview(data, pages) {
+    data.relatedDocuments = [];
+    data.relatedDatasets = [];
+    _.each(pages.inProgress, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+    _.each(pages.complete, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+    _.each(pages.reviewed, function (page) {
+      if (page.type === 'article' || page.type === 'bulletin') {
+        data.relatedDocuments.push({uri: page.uri});
+        console.log(page.uri);
+      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+        data.relatedDatasets.push({uri: page.uri});
+      }
+    });
+  }
+
+  //Save and update preview page
+  //Get collection content
 
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
     saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
-
-
-  function save() {
-    // Sections
-    var orderSection = $("#sortable-section").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = data.sections[parseInt(nameS)].markdown;
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    // Date changes
-    var orderDates = $("#sortable-date").sortable('toArray');
-    console.log('orderDates = ' + orderDates);
-    $(orderDates).each(function (indexD, nameD) {
-      var markdown = data.dateChanges[parseInt(nameD)].markdown;
-      var previousDate = $('#previousDate_' + indexD).val();
-      console.log(date);
-      newDates[indexD] = {previousDate: previousDate, markdown: markdown};
-    });
-    console.log('newDates = ' + newDates);
-    data.dateChanges = newDates;
-  }
-
 }
+

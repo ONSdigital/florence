@@ -18,12 +18,18 @@ function staticLandingPageEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
@@ -33,12 +39,18 @@ function staticLandingPageEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(', ');
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    autoSaveMetadata(timeoutId, collectionId, data);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
   });
 
   // Edit content
@@ -77,9 +89,6 @@ function staticLandingPageEditor(collectionId, data) {
               if (response.status === 400) {
                 alert("Cannot edit this page. It is already part of another collection.");
               }
-              else if (response.status === 401) {
-                alert("You are not authorised to update content.");
-              }
               else {
                 handleApiError(response);
               }
@@ -112,6 +121,7 @@ function staticLandingPageEditor(collectionId, data) {
       updateContent(collectionId, data.uri, JSON.stringify(data));
     });
 
+      // Tooltips
     $(function () {
       $('#section-uri_' + index).tooltip({
         items: '#section-uri_' + index,
@@ -182,12 +192,16 @@ function staticLandingPageEditor(collectionId, data) {
   });
 
   function save() {
+
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
       var summary = data.sections[parseInt(nameS)].summary;
-      var title = data.sections[parseInt(nameS)].title;
-      var uri = data.sections[parseInt(nameS)].uri;
+        // Fixes title or uri not saving unless markdown edited
+        var title = $('#section-title_' + nameS).val();
+        var uri = $('#section-uri_' + nameS).val();
+      //var title = data.sections[parseInt(nameS)].title;
+      //var uri = data.sections[parseInt(nameS)].uri;
       var uriChecked = checkPathSlashes(uri);
       newSections[indexS] = {uri: uriChecked, title: title, summary: summary};
     });

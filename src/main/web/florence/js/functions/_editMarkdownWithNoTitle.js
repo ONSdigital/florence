@@ -4,8 +4,8 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   var dataTemplate;
   if (idField === 'note') {
     dataTemplate = {list: list, idField: idField, header: 'Notes'};
-  //} else if (idField === 'something else') {
-  //  dataTemplate = {list: list, idField: idField, header: 'Something else'};
+  } else if (idField === 'prerelease') {
+    dataTemplate = {list: list, idField: idField, header: 'Pre-release access'};
   } else {
     dataTemplate = {list: list, idField: idField, header: 'Content'};
   }
@@ -44,9 +44,6 @@ function saveMarkdownNoTitle (collectionId, path, data, field, idField) {
         error = function (response) {
             if (response.status === 400) {
                 alert("Cannot edit this page. It is already part of another collection.");
-            }
-            else if (response.status === 401) {
-                alert("You are not authorised to update content.");
             }
             else {
                 handleApiError(response);
