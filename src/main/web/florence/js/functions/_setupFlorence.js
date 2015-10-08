@@ -110,7 +110,7 @@ function setupFlorence() {
       viewCollections(thisCollection);
       $(".nav--admin__item--collections").addClass('selected');
     } else if (menuItem.hasClass("nav--admin__item--users")) {
-      viewController('users-and-access');
+      viewController('users');
     } else if (menuItem.hasClass("nav--admin__item--publish")) {
       viewController('publish');
     } else if (menuItem.hasClass("nav--admin__item--reports")) {
