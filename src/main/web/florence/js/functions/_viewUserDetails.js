@@ -23,16 +23,8 @@ function viewUserDetails(userId) {
       deleteButton.show().click(function () {
         var result = confirm("Are you sure you want to delete this user?");
         if (result === true) {
-          //deleteCollection(collectionId,
-          //  function () {
-          //    alert('Collection deleted');
-          //    viewCollections();
-          //  },
-          //  function (error) {
-          //    viewCollectionDetails(collectionId);
-          //    alert(error + ' File has not been deleted. Contact an administrator');
-          //  })
-        } else {}
+          deleteUser(userId);
+        }
       });
     } else {
       deleteButton.hide();
