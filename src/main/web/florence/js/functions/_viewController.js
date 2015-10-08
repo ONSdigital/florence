@@ -5,7 +5,7 @@ function viewController(view) {
 		if (view === 'collections') {
 			viewCollections();
 		}
-		else if (view === 'users-and-access') {
+		else if (view === 'users') {
 			viewUsers('create');
 		}
 		else if (view === 'login') {

@@ -6,7 +6,7 @@ function getUsers(success, error, userId) {
     url += '?email=' + userId;
   }
 
-  console.log('Sending user request to api: ' + url);
+  //console.log('Sending user request to api: ' + url);
 
   return $.ajax({
     url: url,
