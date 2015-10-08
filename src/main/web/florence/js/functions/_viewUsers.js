@@ -50,56 +50,7 @@ function viewUsers(view) {
         return;
       }
 
-      createUser(username, email, password);
-    });
-  }
-
-
-  function createUser(name, email, password) {
-    $.ajax({
-      url: "/zebedee/users",
-      dataType: 'json',
-      contentType: 'application/json',
-      type: 'POST',
-      data: JSON.stringify({
-        name: name,
-        email: email
-      }),
-      success: function () {
-        console.log('User created');
-        setPassword(email, password);
-      },
-      error: function (response) {
-        if (response.status === 403 || response.status === 401) {
-          alert("You are not permitted to create users.")
-        }
-        else if (response.status === 409) {
-          alert(response.responseJSON.message)
-        } else {
-          handleApiError(response);
-        }
-      }
-    });
-  }
-
-  function setPassword(email, password) {
-    $.ajax({
-      url: "/zebedee/password",
-      dataType: 'json',
-      contentType: 'application/json',
-      type: 'POST',
-      data: JSON.stringify({
-        password: password,
-        email: email
-      }),
-      success: function () {
-        console.log('Password set');
-        alert("User created");
-        viewController('users');
-      },
-      error: function (response) {
-        handleApiError(response);
-      }
+      postUser(username, email, password);
     });
   }
 }
