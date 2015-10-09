@@ -32,7 +32,8 @@ Florence.Authentication = {
   },
   isAuthenticated: function () {
     return Florence.Authentication.accessToken() !== '';
-  }
+  },
+  loggedInEmail:""
 };
 
 Florence.Handler = function (e) {
