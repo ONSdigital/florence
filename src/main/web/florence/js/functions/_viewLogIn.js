@@ -7,7 +7,7 @@ function viewLogIn() {
     e.preventDefault();
     var email = $('.fl-user-and-access__email').val();
     var password = $('.fl-user-and-access__password').val();
-    authenticate(email, password);
+    postLogin(email, password);
   });
 }
 

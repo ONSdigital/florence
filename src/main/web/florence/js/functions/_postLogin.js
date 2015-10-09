@@ -4,7 +4,7 @@
  * @param password - the password of the user
  * @returns {boolean}
  */
-function authenticate(email, password) {
+function postLogin(email, password) {
   $.ajax({
     url: "/zebedee/login",
     dataType: 'json',
