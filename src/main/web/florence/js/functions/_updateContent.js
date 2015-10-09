@@ -13,7 +13,7 @@ function updateContent(collectionId, path, content, redirectToPath) {
       }
     },
     error = function (response) {
-      if (response.status === 400) {
+      if (response.status === 409) {
         alert("Cannot edit this page. It is already part of another collection.");
       } else {
         handleApiError(response);
