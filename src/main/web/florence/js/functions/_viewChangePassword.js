@@ -21,6 +21,14 @@ function viewChangePassword(email, authenticate) {
       return;
     }
 
+    submitNewPassword(newPassword, oldPassword);
+  });
+
+  $('#update-password-cancel').on('click', function () {
+    $('.change-password-overlay').stop().fadeOut(200).remove();
+  });
+
+  function submitNewPassword(newPassword, oldPassword) {
     postPassword(
       success = function () {
         console.log('Password updated');
@@ -28,9 +36,9 @@ function viewChangePassword(email, authenticate) {
         $('.change-password-overlay').stop().fadeOut(200).remove();
         viewController();
       },
-      error = function(response) {
-        if(response.status === 403 || response.status === 401) {
-          if(authenticate) {
+      error = function (response) {
+        if (response.status === 403 || response.status === 401) {
+          if (authenticate) {
             alert('The current password you entered is incorrect. Please try again');
           } else {
             alert('You are not authorised to change the password for this user');
@@ -40,10 +48,6 @@ function viewChangePassword(email, authenticate) {
       email,
       newPassword,
       oldPassword);
-  });
-
-  $('#update-password-cancel').on('click', function () {
-    $('.change-password-overlay').stop().fadeOut(200).remove();
-  });
+  }
 }
 

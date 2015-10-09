@@ -1,3 +1,4 @@
+Adding comments Adding// The florence object is used for storing application state.
 var Florence = Florence || {
     tredegarBaseUrl: window.location.origin,
     refreshAdminMenu: function () {

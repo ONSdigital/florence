@@ -1,3 +1,9 @@
+/**
+ * Http post to the zebedee API to authenticate a user.
+ * @param email - the email of the user to authenticate
+ * @param password - the password of the user
+ * @returns {boolean}
+ */
 function authenticate(email, password) {
   $.ajax({
     url: "/zebedee/login",
@@ -10,9 +16,7 @@ function authenticate(email, password) {
       password: password
     }),
     success: function (response) {
-      //console.log(response);
       document.cookie = "access_token=" + response + ";path=/";
-      //localStorage.setItem("loggedInAs", email);
       Florence.Authentication.loggedInEmail = email;
       Florence.refreshAdminMenu();
       viewController();
