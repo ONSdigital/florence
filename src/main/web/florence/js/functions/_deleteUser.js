@@ -6,6 +6,7 @@ function deleteUser(email) {
     type: 'DELETE',
     success: function () {
       console.log('User deleted');
+      alert('User deleted');
       viewController('users');
     },
     error: function (response) {
