@@ -10,7 +10,7 @@ function postUser(name, email, password) {
     }),
     success: function () {
       console.log('User created');
-      postPassword(email, password);
+      setPassword();
     },
     error: function (response) {
       if (response.status === 403 || response.status === 401) {
@@ -23,4 +23,16 @@ function postUser(name, email, password) {
       }
     }
   });
+
+  function setPassword() {
+    postPassword(
+      success = function () {
+        console.log('Password set');
+        alert("User created");
+        viewController('users');
+      },
+      error = null,
+      email,
+      password);
+  }
 }
