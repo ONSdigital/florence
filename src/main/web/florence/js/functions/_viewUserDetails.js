@@ -25,9 +25,14 @@ function viewUserDetails(email) {
     });
 
     $('.btn-user-delete').click(function () {
-      var result = confirm("Are you sure you want to delete this user?");
-      if (result === true) {
-        deleteUser(email);
+
+      var result = prompt("Please enter the email of the user to confirm the delete");
+      if (result != null) {
+        if (result === email) {
+          deleteUser(email);
+        } else {
+          alert('The email you entered did not match the user you want to delete.')
+        }
       }
     });
 
