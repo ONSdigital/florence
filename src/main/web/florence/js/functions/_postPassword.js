@@ -1,4 +1,4 @@
-function postPassword(email, password) {
+function postPassword(success, error, email, password, oldPassword) {
   $.ajax({
     url: "/zebedee/password",
     dataType: 'json',
@@ -6,15 +6,20 @@ function postPassword(email, password) {
     type: 'POST',
     data: JSON.stringify({
       password: password,
-      email: email
+      email: email,
+      oldPassword: oldPassword
     }),
     success: function () {
-      console.log('Password set');
-      alert("User created");
-      viewController('users');
+      if(success) {
+        success();
+      }
     },
     error: function (response) {
-      handleApiError(response);
+      if(error) {
+        error(response);
+      } else {
+        handleApiError(response);
+      }
     }
   });
 }
