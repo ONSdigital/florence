@@ -1,3 +1,7 @@
+/**
+ * Display the details of the user with the given email.
+ * @param email
+ */
 function viewUserDetails(email) {
 
   getUsers(
@@ -16,7 +20,6 @@ function viewUserDetails(email) {
     $('.collection-selected').html(html).animate({right: "0%"}, 500);
 
     $('.btn-user-change-password').click(function () {
-
       var currentPasswordRequired = false;
       viewChangePassword(email, currentPasswordRequired);
     });

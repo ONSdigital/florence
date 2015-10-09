@@ -1,3 +1,6 @@
+/**
+ * Logout the current user and return to the login screen.
+ */
 function logout() {
   delete_cookie('access_token');
   Florence.Authentication.loggedInEmail = "";
