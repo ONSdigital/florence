@@ -1,4 +1,4 @@
-function authenticate(email,password) {
+function authenticate(email, password) {
   $.ajax({
     url: "/zebedee/login",
     dataType: 'json',
@@ -11,15 +11,18 @@ function authenticate(email,password) {
     }),
     success: function (response) {
       //console.log(response);
-      document.cookie="access_token="+response + ";path=/";
-      localStorage.setItem("loggedInAs", email);
+      document.cookie = "access_token=" + response + ";path=/";
+      //localStorage.setItem("loggedInAs", email);
+      Florence.Authentication.loggedInEmail = email;
       Florence.refreshAdminMenu();
-
-
       viewController();
     },
     error: function (response) {
-      handleApiError(response);
+      if (response.status === 417) {
+        viewChangePassword(email, true);
+      } else {
+        handleApiError(response);
+      }
     }
   });
   return true;
