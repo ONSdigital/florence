@@ -119,7 +119,7 @@ function updateReviewScreenWithCollection(collection) {
     editButton.show();
 
     var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
-    if (lastCompletedEvent.email !== localStorage.getItem("loggedInAs")) {
+    if (lastCompletedEvent.email !== Florence.Authentication.loggedInEmail) {
       reviewButton.show();
     }
 

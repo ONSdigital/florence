@@ -1,6 +1,6 @@
 function logout() {
   delete_cookie('access_token');
-  localStorage.removeItem("loggedInAs");
+  Florence.Authentication.loggedInEmail = "";
   Florence.refreshAdminMenu();
   viewController();
 }
