@@ -208,6 +208,7 @@ function submitNoForm (parentUrl, title) {
         "chapters": [],
         "correction": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }

@@ -101,6 +101,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }
@@ -129,6 +130,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }
@@ -155,6 +157,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "correction": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }
