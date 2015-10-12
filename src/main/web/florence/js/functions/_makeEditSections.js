@@ -44,6 +44,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     bulletinEditor(collectionId, pageData);
@@ -63,6 +64,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'article');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     articleEditor(collectionId, pageData);
@@ -85,6 +87,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT6(templateData);
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     accordion();
     compendiumEditor(collectionId, pageData, templateData);     //templateData used to resolve chapter titles
   }
@@ -189,6 +192,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     datasetEditor(collectionId, pageData);
@@ -201,6 +205,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     datasetEditor(collectionId, pageData);
@@ -212,6 +217,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     accordion();
     referenceTableEditor(collectionId, pageData);
