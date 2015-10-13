@@ -148,6 +148,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "links": [],
         "charts": [],
         "tables": [],
+        "images": [],
         "correction": [],
         type: pageType
       };
@@ -180,6 +181,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "links": [],
         "charts": [],
         "tables": [],
+        "images": [],
         "correction": [],
         type: pageType
       };
