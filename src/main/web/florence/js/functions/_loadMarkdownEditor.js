@@ -63,6 +63,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     loadTableBuilder(pageData, onInsertSave);
   });
 
+  $(".btn-markdown-editor-image").click(function(){
+    loadImageBuilder(pageData, onInsertSave);
+  });
+
   $("#wmd-input").on('click', function () {
     markDownEditorSetLines();
   });
