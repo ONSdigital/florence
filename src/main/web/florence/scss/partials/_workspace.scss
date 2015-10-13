@@ -765,15 +765,94 @@
 	
 }
 
+.image-builder {
 
+  &__inner {
+    background-color: $wild-sand;
+    height: $lineheight * 30;
+    width: $col--10;
+    margin-top: $lineheight * 6;
+    margin-right: auto;
+    margin-left: auto;
+    // margin-right: $gutter * 6;
+    // margin-left: $gutter * 6;
+    overflow: hidden;
+    position: relative;
+  }
 
+  &__editor {
+    box-sizing: border-box;
+    width: 30%;
+    height: $lineheight * 30;
+    float: left;
+    padding: ($lineheight * 2) $gutter $lineheight $gutter;
+    overflow-y: scroll;
+  }
 
+  &__preview {
+    box-sizing: border-box;
+    width: 70%;
+    height: $lineheight * 30;
+    float: right;
+    padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+    overflow-y: scroll;
+    // background-color: $white;
+  }
 
+  &__footer {
+    height: $lineheight * 2;
+    width: 70%;
+    padding: $lineheight 0;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    background-color: $wild-sand;
+    // background-color: $pickled-bluewood;
 
+    button {
+      margin-top: 0;
+    }
+  }
 
+  form {
+    margin-top: 0;
+  }
 
+  input, select {
+    margin-top: 0;
+    width: $col--12 - .4%;
+    background-color: $white;
+  }
 
+  input[type=submit] {
+    @extend button;
+    color: $concrete;
+    background-color: $astral;
+    width: auto;
+    border: none;
+    margin-left: 0;
+  }
 
+  textarea {
+    height: $lineheight * 6;
+    width: $col--12 - .3%;
+    border: 3px solid $scarpa-flow;
+    white-space: pre;
+    word-wrap: normal;
+    tab-size: 30;
+  }
 
+  label {
+    display: inline-block;
+    width: $col--6 - .4%;
+    margin-top: -5px;
+    margin-bottom: 4px;
 
+    input, select {
+      width: 100%;
+    }
+  }
+
+}
 
