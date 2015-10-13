@@ -1,5 +1,5 @@
 function loadImageBuilder(pageData, onSave, image) {
-
+  var file = {};
   var pageUrl = pageData.uri;
   var html = templates.imageBuilder(image);
   $('body').append(html);
@@ -11,16 +11,21 @@ function loadImageBuilder(pageData, onSave, image) {
   $('#upload-image-form').submit(function (event) {
 
     event.preventDefault();
+    event.stopImmediatePropagation();
 
     var formData = new FormData($(this)[0]);
-    var image = buildJsonObjectFromForm();
-    var path = image.uri;
-    var jpgPath = path + ".jpg";
+    file = this[1].files[0];
+    if(!file) {
+      alert('Please select a file to upload.');
+      return;
+    }
+    var image = buildJsonObjectFromForm(file);
+    var imagePath = image.uri;
 
 
     // send jpg file to zebedee
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jpgPath,
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imagePath,
       type: 'POST',
       data: formData,
       async: false,
@@ -34,10 +39,8 @@ function loadImageBuilder(pageData, onSave, image) {
     return false;
   });
 
-  function renderImage(path) {
-    var uri = path + "/image";
-    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + uri + '"></iframe>';
-    console.log(iframeMarkup);
+  function renderImage(image) {
+    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "no" src="' + '/zebedee/resource/' + Florence.collection.id + '?uri=' + image.uri + '"></iframe>';
     $('#image').html(iframeMarkup);
 
     document.getElementById('preview-frame').height = "500px";
@@ -49,9 +52,8 @@ function loadImageBuilder(pageData, onSave, image) {
   });
 
   function saveImageJson() {
-
-    image = buildJsonObjectFromForm();
-    var imageJson = image.uri + ".json";
+    var noExtension = image.uri.match(/^(.+?)(\.[^.]*$|$)/);
+    var imageJson = noExtension[1] + ".json";
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imageJson,
@@ -94,24 +96,21 @@ function loadImageBuilder(pageData, onSave, image) {
 
   });
 
-  function buildJsonObjectFromForm() {
+  function buildJsonObjectFromForm(file) {
     if (!image) {
       image = {};
     }
 
-    image.type = 'image';
+    image.type = file.type;
     image.title = $('#image-title').val();
-    image.filename = image.filename ? image.filename : StringUtils.randomId();
+    var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
+    image.filename = fileNameNoSpace;
 
     image.uri = pageUrl + "/" + image.filename;
 
     if (image.title === '') {
       image.title = '[Title]';
     }
-
-    image.files = [];
-    image.files.push({type: 'image-jpg', filename: image.filename + '.jpg'});
-
     return image;
   }
 }
