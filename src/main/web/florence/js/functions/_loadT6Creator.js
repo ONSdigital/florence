@@ -239,6 +239,7 @@ function submitNoForm (parentUrl, title) {
         "externalLinks": [],
         "charts": [],
         "tables": [],
+        "images": [],
         "correction": [],
         type: pageType
       };

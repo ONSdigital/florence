@@ -39,6 +39,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
     }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
@@ -58,6 +61,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     }
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
+    }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
@@ -101,6 +107,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
     }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -132,6 +141,15 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_article') {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
@@ -180,6 +198,15 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_methodology') {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     accordion();
     methodologyEditor(collectionId, pageData);

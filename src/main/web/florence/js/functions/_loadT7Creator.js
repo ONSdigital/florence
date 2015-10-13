@@ -126,10 +126,13 @@ function pageTypeDataT7(pageType) {
         "keywords": [],
         "metaDescription": "",
         "title": "",
-        "releaseDate": "",
+        "releaseDate": ""
       },
       "sections": [],
       "accordion": [],
+      "charts": [],
+      "tables": [],
+      "images": [],
       type: pageType,
       "downloads":[],
       "links" : []
