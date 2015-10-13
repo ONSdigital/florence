@@ -4,13 +4,13 @@ function editTopics(collectionId, data, templateData, field, idField) {
   var html = templates.editorTopics(dataTemplate);
   $('#' + idField).replaceWith(html);
   initialiseTopics(collectionId, data, templateData, field, idField);
-  resolveTitle(collectionId, data, templateData, field, idField);
+  resolveTopicTitle(collectionId, data, templateData, field, idField);
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 }
 
 function refreshTopics(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
-  var dataTemplate = createRelatedTemplate(idField, list);
+  var dataTemplate = {list: list, idField: idField};
   var html = templates.editorRelated(dataTemplate);
   $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
   initialiseTopics(collectionId, data, templateData, field, idField);
@@ -119,7 +119,7 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
 
             data[field].push({uri: result.uri});
             templateData[field].push({uri: result.uri});
-            saveRelated(collectionId, data.uri, data, templateData, field, idField);
+            saveTopics(collectionId, data.uri, data, templateData, field, idField);
 
           },
           error: function () {
@@ -136,6 +136,51 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
     $('#sortable-' + idField).sortable();
   }
   sortable();
+
 }
 
+function resolveTopicTitle(collectionId, data, templateData, field, idField) {
+  var ajaxRequest = [];
+  $(templateData[field]).each(function (index, path) {
+    templateData[field][index].description = {};
+    var eachUri = path.uri;
+    var dfd = $.Deferred();
+    getPageDataTitle(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].description.title = response.title;
+        dfd.resolve();
+      },
+      error = function () {
+        alert(field + ' address: ' + eachUri + ' is not found.');
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    refreshTopics(collectionId, data, templateData, field, idField);
+  });
+}
+
+function saveTopics (collectionId, path, data, templateData, field, idField) {
+  postContent(collectionId, path, JSON.stringify(data),
+    success = function (response) {
+      console.log("Updating completed " + response);
+      Florence.Editor.isDirty = false;
+      resolveTopicTitle(collectionId, data, templateData, field, idField);
+      refreshPreview(path);
+      var iframeEvent = document.getElementById('iframe').contentWindow;
+      iframeEvent.addEventListener('click', Florence.Handler, true);
+    },
+    error = function (response) {
+      if (response.status === 400) {
+        alert("Cannot edit this page. It is already part of another collection.");
+      }
+      else {
+        handleApiError(response);
+      }
+    }
+  );
+}
 
