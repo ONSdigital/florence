@@ -5,7 +5,7 @@ function loadImagesList(data, collectionId) {
 }
 
 function refreshImagesList(data, collectionId) {
-  var html = templates.workEditTables(data);
+  var html = templates.workEditImages(data);
   $('#image-list').replaceWith($(html).find('#image-list'));
   initialiseImagesList(data, collectionId);
 }
