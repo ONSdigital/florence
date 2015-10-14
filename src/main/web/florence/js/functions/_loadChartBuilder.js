@@ -22,7 +22,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var data = [];
     var series = chart.series;
 
-    if (chart.chartType === 'barline') { // if we have a bar line we want to populate the entries for each series
+    if (isBarLine(chart.chartType)) { // if we have a bar line we want to populate the entries for each series
       if (chart.chartTypes) { // if we have existing types use them
         var type = _.values(chart.chartTypes);
         $.each(chart.series, function(index) {
@@ -167,7 +167,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     chart.aspectRatio = $('#aspect-ratio').val();
 
-    if (chart.chartType === 'barline') {
+    if (isBarLine(chart.chartType)) {
       var types = {};
       var groups = [];
       var group = [];
@@ -198,6 +198,11 @@ function loadChartBuilder(pageData, onSave, chart) {
     return chart;
   }
 
+  //Determines if selected chart type is barline or rotated bar line
+  function isBarLine(chartType) {
+    return (chartType === 'barline' || chartType === "rotated-barline");
+  }
+
   function parseChartObject(chart) {
 
     // Determine if we have a time series
@@ -220,7 +225,25 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   //// Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
   function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
-      
+
+    var jqxhr = $.post("/chartconfig", {
+          data: JSON.stringify(chart)
+        },
+        function() {
+          var chartConfig = window["chart-" + chart.filename];
+          console.debug("chart", chart);
+          console.debug("chartconfig", chartConfig);
+          if (chartConfig) {
+            chartConfig.chart.renderTo = "chart";
+            new Highcharts.Chart(chartConfig);
+            delete window["chart-" + chart.filename];//clear data from window object after rendering
+          }
+        }, "script")
+      .fail(function() {
+        console.log("Failed reading chart configuration from server", chart);
+      });
+
+      console.debug(jqxhr);
   }
 
   // Data load from text box functions
