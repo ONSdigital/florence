@@ -17,7 +17,7 @@ function viewChangePassword(email, authenticate) {
     var confirmPassword = $('#password-confirm').val();
 
     if(newPassword !== confirmPassword) {
-      alert('The passwords provided do not match. Please enter the new password again and confirm it.')
+      alert('The passwords provided do not match. Please enter the new password again and confirm it.');
       return;
     }
 
@@ -34,7 +34,10 @@ function viewChangePassword(email, authenticate) {
         console.log('Password updated');
         alert("Password updated");
         $('.change-password-overlay').stop().fadeOut(200).remove();
-        viewController();
+
+        if(authenticate) {
+          postLogin(email, newPassword);
+        }
       },
       error = function (response) {
         if (response.status === 403 || response.status === 401) {
