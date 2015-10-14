@@ -1,3 +1,11 @@
+/**
+ * Manages file with description
+ * @param collectionId
+ * @param data
+ * @param field - JSON data key
+ * @param idField - HTML id for the template
+ */
+
 function addFileWithDetails(collectionId, data, field, idField) {
   var list = data[field];
   var dataTemplate = {list: list, idField: idField};

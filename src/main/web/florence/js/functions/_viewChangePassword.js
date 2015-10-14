@@ -17,7 +17,17 @@ function viewChangePassword(email, authenticate) {
     var confirmPassword = $('#password-confirm').val();
 
     if(newPassword !== confirmPassword) {
-      alert('The passwords provided do not match. Please enter the new password again and confirm it.')
+      alert('The passphrases provided do not match. Please enter the new passphrase again and confirm it.');
+      return;
+    }
+
+    if(!newPassword.match(/.+\s.+\s.+\s.+/)) {
+      alert('The passphrase does not have four words. Please enter a new passphrase and confirm it.');
+      return;
+    }
+
+    if(newPassword.length < 15) {
+      alert('The passphrase is too short. Please make sure it has at least 15 characters (including spaces).');
       return;
     }
 
@@ -34,7 +44,10 @@ function viewChangePassword(email, authenticate) {
         console.log('Password updated');
         alert("Password updated");
         $('.change-password-overlay').stop().fadeOut(200).remove();
-        viewController();
+
+        if(authenticate) {
+          postLogin(email, newPassword);
+        }
       },
       error = function (response) {
         if (response.status === 403 || response.status === 401) {
