@@ -1,3 +1,9 @@
+/**
+ * Return the last edited event for the given page, from the given collection.
+ * @param collection
+ * @param page
+ * @returns {*}
+ */
 function getLastEditedEvent(collection, page) {
 
   var uri = page;
@@ -18,6 +24,11 @@ function getLastEditedEvent(collection, page) {
   return lastEditedEvent;
 }
 
+/**
+ * Return the collection created event from the given collection of events.
+ * @param events
+ * @returns {*}
+ */
 function getCollectionCreatedEvent(events) {
 
   var event = _.chain(events)
@@ -30,6 +41,12 @@ function getCollectionCreatedEvent(events) {
   return event;
 }
 
+/**
+ * Return the last completed event for the given page, from the given collection.
+ * @param collection
+ * @param page
+ * @returns {*}
+ */
 function getLastCompletedEvent(collection, page) {
 
   var uri = page;

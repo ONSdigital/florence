@@ -1,3 +1,9 @@
+/**
+ * Checks a file does not exist before saving
+ * @param collectionId
+ * @param uri
+ * @param data
+ */
 function checkSaveContent(collectionId, uri, data) {
   // check if the page exists
   if (Florence.globalVars.welsh) {

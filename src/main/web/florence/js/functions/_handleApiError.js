@@ -1,3 +1,8 @@
+/**
+ * Generic error handler method for ajax responses.
+ * Apply your specific requirements for an error response and then call this method to take care of the rest.
+ * @param response
+ */
 function handleApiError(response) {
 
   if(!response || response.status === 200)

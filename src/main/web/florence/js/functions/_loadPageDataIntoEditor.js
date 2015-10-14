@@ -1,3 +1,10 @@
+/**
+ * Editor data loader
+ * @param path
+ * @param collectionId
+ * @param click - if present checks the page url to keep in sync with iframe
+ */
+
 function loadPageDataIntoEditor(path, collectionId, click) {
 
   if (Florence.globalVars.welsh) {
@@ -36,7 +43,7 @@ function loadPageDataIntoEditor(path, collectionId, click) {
     getCollection(collectionId,
       success = function (response) {
         var lastCompletedEvent = getLastCompletedEvent(response, toApproveUrlData);
-        isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
+        isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail);
       },
       error = function (response) {
         handleApiError(response);
@@ -46,7 +53,6 @@ function loadPageDataIntoEditor(path, collectionId, click) {
   $.when.apply($, ajaxRequests).then(function () {
     if (click) {
       var iframe = getPathName();
-      console.log(iframe);
       if (iframe !== pageData.uri) {
         setTimeout(loadPageDataIntoEditor(path, collectionId), 200);
       } else {

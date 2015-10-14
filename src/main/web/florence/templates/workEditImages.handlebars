@@ -1,0 +1,18 @@
+<div class="edit-section" id="images">
+  <div class="edit-section__head">
+    <h1>Images</h1>
+
+    <p>Edit existing images</p>
+  </div>
+  <div class="edit-section__content">
+    <div id="image-list" class="edit-section__sorimage">
+      {{#each this.images}}
+        <div id="image_{{@index}}" class="edit-section__item">
+          <div class="edit-section__item__title">{{title}}</div>
+          <button class="btn-markdown-edit" id="image-edit_{{@index}}">Edit</button>
+          <button class="btn-page-delete" id="image-delete_{{@index}}">Delete</button>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>

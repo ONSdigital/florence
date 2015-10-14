@@ -1,3 +1,11 @@
+/**
+ * Manages markdown content (saves an object)
+ * @param collectionId
+ * @param data
+ * @param field - JSON data key
+ * @param title - header to appear in the editor
+ */
+
 function editMarkdownOneObject (collectionId, data, field, title) {
   var list = data[field];
 
