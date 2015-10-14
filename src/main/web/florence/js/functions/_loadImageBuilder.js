@@ -33,6 +33,7 @@ function loadImageBuilder(pageData, onSave, image) {
       contentType: false,
       processData: false,
       success: function () {
+        renderImage(image.uri);
       }
     });
 
@@ -40,9 +41,8 @@ function loadImageBuilder(pageData, onSave, image) {
   });
 
   function renderImage(image) {
-    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "no" src="' + '/zebedee/resource/' + Florence.collection.id + '?uri=' + image.uri + '"></iframe>';
+    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + '/zebedee/resource/' + Florence.collection.id + '?uri=' + image + '"></iframe>';
     $('#image').html(iframeMarkup);
-
     document.getElementById('preview-frame').height = "500px";
     document.getElementById('preview-frame').width = "100%";
   }

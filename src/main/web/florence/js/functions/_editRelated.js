@@ -1,3 +1,12 @@
+/**
+ * Manages related data
+ * @param collectionId
+ * @param data
+ * @param templateData
+ * @param field - JSON data key
+ * @param idField - HTML id for the template
+ */
+
 function editRelated(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = createRelatedTemplate(idField, list);

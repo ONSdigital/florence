@@ -1,3 +1,8 @@
+/**
+ * Keeps the accordion open in the tab specified
+ * @param active - the active tab
+ */
+
 function accordion(active) {
   var activeTab = parseInt(active);
   if(!activeTab){
