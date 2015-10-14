@@ -44,7 +44,10 @@ function viewChangePassword(email, authenticate) {
         console.log('Password updated');
         alert("Password updated");
         $('.change-password-overlay').stop().fadeOut(200).remove();
-        viewController();
+
+        if(authenticate) {
+          postLogin(email, newPassword);
+        }
       },
       error = function (response) {
         if (response.status === 403 || response.status === 401) {
