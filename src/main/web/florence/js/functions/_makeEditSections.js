@@ -1,3 +1,10 @@
+/**
+ * Manages the editor menus
+ * @param collectionId
+ * @param pageData
+ * @param isPageComplete - if present page has been approved
+ */
+
 function makeEditSections(collectionId, pageData, isPageComplete) {
 
   var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.

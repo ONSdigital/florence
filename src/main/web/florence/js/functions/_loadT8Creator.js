@@ -1,3 +1,11 @@
+/**
+ * Creates data JSON
+ * @param collectionId
+ * @param releaseDate
+ * @param pageType
+ * @param parentUrl
+ */
+
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
