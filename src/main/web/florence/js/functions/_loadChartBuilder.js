@@ -10,6 +10,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     refreshBarLineSection();
   }
 
+  renderText();
   renderChart();
 
   function refreshBarLineSection() {
@@ -49,10 +50,21 @@ function loadChartBuilder(pageData, onSave, chart) {
   }
 
 
-  $('#edit-chart').on('input change', ':input', function() {
+  $('.refresh-chart').on('input', function() {
     chart = buildChartObject();
     refreshBarLineSection();
     renderChart();
+  });
+
+  $('.refresh-chart').on('checked', function() {
+    chart = buildChartObject();
+    refreshBarLineSection();
+    renderChart();
+  });
+
+
+  $('.refresh-text').on('input', function() {
+    renderText();
   });
 
   $('.btn-chart-builder-cancel').on('click', function() {
@@ -101,30 +113,34 @@ function loadChartBuilder(pageData, onSave, chart) {
     });
   });
 
-  // Builds, parses, and renders our chart in the chart editor
-  function renderChart() {
-    chart = buildChartObject();
-    $('#preview-chart').empty();
+  //Renders html outside actual chart area (title, subtitle, source, notes etc.)
+  function renderText() {
 
-    var preview = $('#preview-chart');
-    var previewHtml = templates.chartBuilderPreview(chart);
-    preview.html(previewHtml);
+    $('#chart-title-preview').html($('#chart-title').val());
+    $('#chart-subtitle-preview').html($('#chart-subtitle').val());
+    $('#chart-source-preview').html($('#chart-source').val());
+    var chartNotes = $('#chart-notes').val();
 
-    var chartHeight = preview.width() * chart.aspectRatio;
-    var chartWidth = preview.width();
-
-    renderChartObject('chart', chart, chartHeight, chartWidth);
-
-    if (chart.notes) {
+    if (chartNotes) {
       if (typeof Markdown !== 'undefined') {
         var converter = new Markdown.getSanitizingConverter();
         Markdown.Extra.init(converter, {
           extensions: "all"
         });
-        var notes = converter.makeHtml(chart.notes);
-        preview.append(notes);
+        var notes = converter.makeHtml(chartNotes);
+        $('#chart-notes-preview').html(chartNotes);
       }
     }
+  }
+
+
+  // Builds, parses, and renders our chart in the chart editor
+  function renderChart() {
+    chart = buildChartObject();
+    var preview = $('#preview-chart');
+    var chartHeight = preview.width() * chart.aspectRatio;
+    var chartWidth = preview.width();
+    renderChartObject('chart', chart, chartHeight, chartWidth);
   }
 
   function buildChartObject() {
@@ -242,8 +258,6 @@ function loadChartBuilder(pageData, onSave, chart) {
       .fail(function() {
         console.log("Failed reading chart configuration from server", chart);
       });
-
-      console.debug(jqxhr);
   }
 
   // Data load from text box functions
