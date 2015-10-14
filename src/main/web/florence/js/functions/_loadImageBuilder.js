@@ -34,7 +34,6 @@ function loadImageBuilder(pageData, onSave, image) {
       processData: false,
       success: function () {
         renderImage(image.uri);
-        loadImagesList(pageData, Florence.collection.id);
       }
     });
 
