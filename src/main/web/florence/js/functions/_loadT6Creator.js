@@ -1,3 +1,12 @@
+/**
+ * Creates compendium documents
+ * @param collectionId
+ * @param releaseDate
+ * @param pageType
+ * @param parentUrl
+ * @param pageTitle
+ */
+
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, isInheriting, newUri, pageData, parentData;
@@ -208,6 +217,7 @@ function submitNoForm (parentUrl, title) {
         "chapters": [],
         "correction": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }
@@ -238,6 +248,7 @@ function submitNoForm (parentUrl, title) {
         "externalLinks": [],
         "charts": [],
         "tables": [],
+        "images": [],
         "correction": [],
         type: pageType
       };

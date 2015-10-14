@@ -130,7 +130,7 @@ function viewCollectionDetails(collectionId) {
       $('.collections-select-table tbody tr').removeClass('selected');
       // Wait until the animation ends
       setTimeout(function () {
-        viewController('collections');
+        //viewController('collections');
       }, 500);
     });
 

@@ -1,3 +1,10 @@
+/**
+ * Manages the editor menus
+ * @param collectionId
+ * @param pageData
+ * @param isPageComplete - if present page has been approved
+ */
+
 function makeEditSections(collectionId, pageData, isPageComplete) {
 
   var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
@@ -39,11 +46,16 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
     }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     bulletinEditor(collectionId, pageData);
@@ -58,11 +70,16 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
     }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'article');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     articleEditor(collectionId, pageData);
@@ -85,6 +102,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT6(templateData);
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     accordion();
     compendiumEditor(collectionId, pageData, templateData);     //templateData used to resolve chapter titles
   }
@@ -97,6 +115,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     }
     if (pageData.tables) {
       loadTablesList(pageData, collectionId);
+    }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
@@ -129,6 +150,15 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_article') {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
@@ -177,6 +207,15 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_methodology') {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     accordion();
     methodologyEditor(collectionId, pageData);
@@ -189,6 +228,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     datasetEditor(collectionId, pageData);
@@ -201,6 +241,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     datasetEditor(collectionId, pageData);
@@ -212,6 +253,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     accordion();
     referenceTableEditor(collectionId, pageData);
@@ -279,7 +321,7 @@ function refreshEditNavigation() {
       var pagePath = getPathName();
       var pageFile = pagePath + '/data.json';
       var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
-      var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === localStorage.getItem("loggedInAs"));
+      var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail);
 
       var editNav = templates.editNav({isPageComplete: isPageComplete});
       $('.edit-nav').html(editNav);

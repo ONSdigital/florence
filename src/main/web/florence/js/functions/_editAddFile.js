@@ -1,3 +1,11 @@
+/**
+ * Manage files associated with content
+ * @param collectionId
+ * @param data
+ * @param field - JSON data key
+ * @param idField - HTML id for the template
+ */
+
 function addFile(collectionId, data, field, idField) {
   var list = data[field];
   var downloadExtensions;
