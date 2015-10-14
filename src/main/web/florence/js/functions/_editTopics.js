@@ -1,3 +1,12 @@
+/**
+ * Manages topics to appear in list pages
+ * @param collectionId
+ * @param data
+ * @param templateData
+ * @param field - JSON data key
+ * @param idField - HTML id for the template
+ */
+
 function editTopics(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = {list: list, idField: idField};

@@ -1,3 +1,7 @@
+/**
+ * Checks for changes in the iframe path
+ * @param onChanged - function
+ */
 function checkForPageChanged(onChanged) {
   var iframeUrl = Florence.globalVars.pagePath;
   var nowUrl = $('#iframe')[0].contentWindow.document.location.pathname;

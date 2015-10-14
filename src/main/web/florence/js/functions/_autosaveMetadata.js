@@ -1,3 +1,8 @@
+/**
+ * Saves data. Used to save metadata in a timeout
+ * @param collectionId
+ * @param data
+ */
 function autoSaveMetadata(collectionId, data) {
   postContent(collectionId, data.uri, JSON.stringify(data),
     success = function () {

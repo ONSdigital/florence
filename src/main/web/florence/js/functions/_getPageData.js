@@ -1,3 +1,12 @@
+/**
+ * Gets the JSON file for the page
+ * @param collectionId
+ * @param path
+ * @param success
+ * @param error
+ * @returns {*}
+ */
+
 function getPageData(collectionId, path, success, error) {
   var safePath = checkPathSlashes(path);
   return $.ajax({

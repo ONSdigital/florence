@@ -1,3 +1,10 @@
+/**
+ * Manages markdown content (saves an array)
+ * @param collectionId
+ * @param data
+ * @param field - JSON data key
+ */
+
 function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   var list = data[field];
 

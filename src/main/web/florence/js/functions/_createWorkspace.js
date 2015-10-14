@@ -1,4 +1,12 @@
-// Handles the initial creation of the workspace screen.
+/**
+ * Handles the initial creation of the workspace screen.
+ * @param path - path to iframe
+ * @param collectionId
+ * @param menu - opens a specific menu
+ * @param stopEventListener - separates the link between editor and iframe
+ * @returns {boolean}
+ */
+
 function createWorkspace(path, collectionId, menu, stopEventListener) {
   var safePath = '';
   $("#working-on").on('click', function () {
