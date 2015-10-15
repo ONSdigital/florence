@@ -51,6 +51,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
   $('.refresh-chart').on('input', function() {
+    console.log(this);
     chart = buildChartObject();
     refreshBarLineSection();
     renderChart();
@@ -248,6 +249,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         },
         function() {
           var chartConfig = window["chart-" + chart.filename];
+          console.debug("Refreshing the chart");
           if (chartConfig) {
             chartConfig.chart.renderTo = "chart";
             new Highcharts.Chart(chartConfig);
