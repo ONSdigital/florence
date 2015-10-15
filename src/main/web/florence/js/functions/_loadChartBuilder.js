@@ -20,14 +20,17 @@ function loadChartBuilder(pageData, onSave, chart) {
   }
 
   function editBarline(chart) {
-    var data = [];
+    var data = {
+      stacking: isShowStackingOptions(chart.chartType),
+      options: []
+    };
     var series = chart.series;
 
-    if (isBarLine(chart.chartType)) { // if we have a bar line we want to populate the entries for each series
+    if (isShowExtraOptions(chart.chartType)) { // if we have a bar line we want to populate the entries for each series
       if (chart.chartTypes) { // if we have existing types use them
         var type = _.values(chart.chartTypes);
         $.each(chart.series, function(index) {
-          data.push({
+          data.options.push({
             series: series[index],
             type: type[index],
             isChecked: (function() {
@@ -38,7 +41,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         });
       } else { // if we have no existing types, default them
         $.each(chart.series, function(index) {
-          data.push({
+          data.options.push({
             series: series[index],
             type: '',
             isChecked: false
@@ -129,8 +132,10 @@ function loadChartBuilder(pageData, onSave, chart) {
           extensions: "all"
         });
         var notes = converter.makeHtml(chartNotes);
-        $('#chart-notes-preview').html(chartNotes);
+        $('#chart-notes-preview').html(notes);
       }
+    } else {
+      $('#chart-notes-preview').empty();
     }
   }
 
@@ -184,7 +189,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     chart.aspectRatio = $('#aspect-ratio').val();
 
-    if (isBarLine(chart.chartType)) {
+    if (isShowExtraOptions(chart.chartType)) {
       var types = {};
       var groups = [];
       var group = [];
@@ -216,7 +221,12 @@ function loadChartBuilder(pageData, onSave, chart) {
   }
 
   //Determines if selected chart type is barline or rotated bar line
-  function isBarLine(chartType) {
+  function isShowExtraOptions(chartType) {
+    return (chartType === 'barline' || chartType === "rotated-barline" || chartType === "dual-axis");
+  }
+
+  //Determines if selected chart type is barline or rotated bar line
+  function isShowStackingOptions(chartType) {
     return (chartType === 'barline' || chartType === "rotated-barline");
   }
 
@@ -258,6 +268,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }, "script")
       .fail(function() {
         console.log("Failed reading chart configuration from server", chart);
+        $("#chart").empty();
       });
   }
 
