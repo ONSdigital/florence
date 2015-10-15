@@ -1,4 +1,4 @@
-{{#each this}}
+{{#each options}}
   <label>{{this.series}}</label>
   <select id="types_{{@index}}" class="col--5">
     {{#select this.type}}
@@ -6,7 +6,9 @@
       <option value="line">Line</option>
     {{/select}}
   </select>
+  {{#if ../stacking}}
   <label for="{{this.series}}">Bar stack</label>
     <input id="{{this.series}}" name="group_check" value="{{this.series}}" type="checkbox"{{#if isChecked}} checked{{/if}}>
+  {{/if}}
   <br/>
 {{/each}}
