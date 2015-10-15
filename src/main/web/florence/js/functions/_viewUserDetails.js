@@ -21,6 +21,11 @@ function viewUserDetails(email) {
 
     $('.btn-user-change-password').click(function () {
       var currentPasswordRequired = false;
+
+      if(email == Florence.Authentication.loggedInEmail()) {
+        currentPasswordRequired = true;
+      }
+
       viewChangePassword(email, currentPasswordRequired);
     });
 
