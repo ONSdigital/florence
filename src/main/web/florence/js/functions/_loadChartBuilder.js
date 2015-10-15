@@ -56,7 +56,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     renderChart();
   });
 
-  $('.refresh-chart').on('checked', function() {
+  $('.refresh-chart').on('change', ':checkbox',  function() {
     chart = buildChartObject();
     refreshBarLineSection();
     renderChart();
@@ -243,12 +243,11 @@ function loadChartBuilder(pageData, onSave, chart) {
   function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     var jqxhr = $.post("/chartconfig", {
-          data: JSON.stringify(chart)
+          data: JSON.stringify(chart),
+          width: chartWidth
         },
         function() {
           var chartConfig = window["chart-" + chart.filename];
-          console.debug("chart", chart);
-          console.debug("chartconfig", chartConfig);
           if (chartConfig) {
             chartConfig.chart.renderTo = "chart";
             new Highcharts.Chart(chartConfig);
