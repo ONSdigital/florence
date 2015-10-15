@@ -54,7 +54,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
   $('.refresh-chart').on('input', function() {
-    console.log(this);
     chart = buildChartObject();
     refreshBarLineSection();
     renderChart();
