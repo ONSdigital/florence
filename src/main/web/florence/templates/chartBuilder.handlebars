@@ -4,46 +4,53 @@
 
     <div id="edit-chart" class="chart-builder__editor">
 
-      <input type="text" id="chart-title" placeholder="[Title]" value="{{title}}"/>
-      <input type="text" id="chart-subtitle" placeholder="[Subtitle]" value="{{subtitle}}"/>
-      <input type="text" id="chart-unit" placeholder="[Unit]" value="{{unit}}"/>
-      <input type="text" id="chart-source" placeholder="[Source]" value="{{source}}"/>
+      <span class="refresh-text">
+        <input type="text" id="chart-title" placeholder="[Title]" value="{{title}}"/>
+        <input type="text" id="chart-subtitle" placeholder="[Subtitle]" value="{{subtitle}}"/>
+        <input type="text" id="chart-source" placeholder="[Source]" value="{{source}}"/>
+      </span>
+      <input type="text" id="chart-unit" class="refresh-chart" placeholder="[Unit]" value="{{unit}}"/>
 
-      <textarea id="chart-data" placeholder="Paste your data here" rows="4" cols="120"></textarea>
+      <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4" cols="120"></textarea>
       <br/>
 
       <label>Alt text <br>
-        <input type="text" id="chart-alt-text" placeholder="[Alt text]" value="{{altText}}"/>
+        <input type="text" id="chart-alt-text" class="refresh-text" placeholder="[Alt text]" value="{{altText}}"/>
       </label>
 
       <label>Chart type <br>
-        <select id="chart-type">
+        <select id="chart-type" class="refresh-chart" >
             {{#select chartType}}
               <option value="bar">Bar Chart</option>
-              <option value="line">Line Chart</option>
-              <option value="barline">Bar + Line Chart</option>
               <option value="rotated">Bar Chart (rotated)</option>
-              <!--<option value="stackedArea">Stacked Area</option>-->
-              <!--<option value="stackedPercent">Stacked Percent</option>-->
-              <!--<option value="pyramid">Pyramid</option>-->
+              <option value="line">Line Chart</option>
+              <option value="area">Area Chart</option>
+              <option value="barline">Bar + Line Chart</option>
+              <option value="rotated-barline">Bar + Line Chart (rotated)</option>
+              <option value="dual-axis">Dual Axis</option>
+              <option value="scatter">Scatter Plot Chart</option>
+              <option value="pie">Pie Chart</option>
+              <option value="population">Population Pyramid</option>
+              <option value="confidence-interval">Confidence Interval</option>
+              <option value="box-and-whisker">Box and Whisker</option>
             {{/select}}
         </select>
       </label>
 
-      <div id="barline">
+      <div id="barline" class="refresh-chart">
 
       </div>
 
       <label>Label interval<br>
-        <input type="text" id="chart-label-interval" placeholder="[Label interval]" value="{{labelInterval}}"/>
+        <input type="text" id="chart-label-interval" class="refresh-chart" placeholder="[Label interval]" value="{{labelInterval}}"/>
       </label>
 
       <label>Decimal places<br>
-        <input type="text" id="chart-decimal-places" placeholder="[Decimal places]" value="{{decimalPlaces}}"/>
+        <input type="text" id="chart-decimal-places" class="refresh-chart" placeholder="[Decimal places]" value="{{decimalPlaces}}"/>
       </label>
 
       <label>Aspect ratio<br>
-        <select id="aspect-ratio">
+        <select id="aspect-ratio" class="refresh-chart">
             {{#select aspectRatio}}
               <option value="0.56">16:9</option>
               <option value="0.75">4:3</option>
@@ -54,13 +61,22 @@
         </select>
       </label>
 
-      <textarea id="chart-notes" placeholder="Add chart notes here" rows="4" cols="120">{{notes}}</textarea>
+      <textarea id="chart-notes" class="refresh-text" placeholder="Add chart notes here" rows="4" cols="120">{{notes}}</textarea>
       <br/>
 
     </div>
 
     <div id="preview-chart" class="chart-builder__preview">
 
+        <span id="chart-title-preview"></span>
+        </br>
+        <span id="chart-subtitle-preview"></span>
+
+        <div id="chart"></div>
+
+        <span id="chart-source-preview"></span>
+        <span id="chart-notes-preview"></span>
+        
     </div>
 
     <div class="chart-builder__footer">
