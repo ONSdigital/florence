@@ -18,20 +18,13 @@ function viewChangePassword(email, authenticate) {
 
     if(newPassword !== confirmPassword) {
       alert('The passphrases provided do not match. Please enter the new passphrase again and confirm it.');
-      return;
-    }
-
-    if(!newPassword.match(/.+\s.+\s.+\s.+/)) {
+    } else if(!newPassword.match(/.+\s.+\s.+\s.+/)) {
       alert('The passphrase does not have four words. Please enter a new passphrase and confirm it.');
-      return;
-    }
-
-    if(newPassword.length < 15) {
+    } else if(newPassword.length < 15) {
       alert('The passphrase is too short. Please make sure it has at least 15 characters (including spaces).');
-      return;
+    } else {
+      submitNewPassword(newPassword, oldPassword);
     }
-
-    submitNewPassword(newPassword, oldPassword);
   });
 
   $('#update-password-cancel').on('click', function () {
