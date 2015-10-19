@@ -43,6 +43,16 @@ function initialiseTablesList(data, collectionId) {
               handleApiError(error);
             });
 
+          // delete any files associated with the table.   //get the info from json
+          //_(table.files).each(function (file) {
+          //  var fileToDelete = basePath + '/' + file.filename;
+          //  deleteContent(collectionId, fileToDelete,
+          //    onSuccess = function () {
+          //      console.log("deleted table file: " + fileToDelete)
+          //    });
+          //});
+
+
           // delete the table json file
           deleteContent(collectionId, tableJson + '.json',
             onSuccess = function () {

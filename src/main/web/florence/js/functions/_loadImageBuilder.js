@@ -24,7 +24,7 @@ function loadImageBuilder(pageData, onSave, image) {
     var imagePath = image.uri;
 
 
-    // send jpg file to zebedee
+    // send image file to zebedee
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imagePath,
       type: 'POST',
