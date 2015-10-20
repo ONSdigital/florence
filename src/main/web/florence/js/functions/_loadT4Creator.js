@@ -79,10 +79,15 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageTitle;
       uriSection = pageType + "s";
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-      if (releaseDateManual) {                                                          //Manual collections
+
+      if (pageData.description.edition) {
+        releaseUri = pageData.description.edition;
+      }
+
+      if (!pageData.description.edition && releaseDateManual) {                          //Manual collections
         date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
         releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
-      } else {
+      } else if (!pageData.description.edition && !releaseDateManual) {
         releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
@@ -157,7 +162,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "images": [],
-        "correction": [],
+        "corrections": [],
         type: pageType
       };
     }
@@ -190,7 +195,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "images": [],
-        "correction": [],
+        "corrections": [],
         type: pageType
       };
     }

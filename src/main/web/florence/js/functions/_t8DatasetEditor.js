@@ -161,7 +161,8 @@ function datasetEditor(collectionId, data) {
 
   // New correction
   $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
+    data.versions.push({correctionNotice: "", date: "", uri: ""});
+    // call the new endpoint to get the uri
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
