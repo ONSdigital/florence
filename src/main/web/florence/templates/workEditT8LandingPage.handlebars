@@ -52,10 +52,6 @@
             <label for="natStat">National statistic </label>
             <input type="checkbox" name="natStat" value="false" />
           </div>
-          <!--<div id="migrated">-->
-          <!--<label for="migrated">Migrated </label>-->
-          <!--<input type="checkbox" name="migrated" value="false" />-->
-          <!--</div>-->
           <div>
             <label for="keywords">Keywords
               <input name="tags" id="keywords" value="{{this.description.keywords}}" style="display: none;">
@@ -71,13 +67,41 @@
       </div>
     </div>
 
-    <div id="file"></div>
+    <div class="edit-section">
+      <div class="edit-section__head">
+        <h1>Versions</h1>
+        <p>Title</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-data" class="edit-section__sortable">
+          <div id="datasets"></div>
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="add-data">Add version</button>
+        </div>
+      </div>
+    </div>
 
     <div id="document"></div>
 
     <div id="methodology"></div>
 
-    <div id="correction"></div>
+    <div class="edit-section">
+      <div class="edit-section__head">
+        <h1>Correction</h1>
+        <p>Title</p>
+      </div>
+      <div class="edit-section__content">
+        <div id="sortable-correction" class="edit-section__sortable">
+          <div id="datasets"></div>
+        </div>
+        <div class="text-center">
+          <button class="btn-add-section" id="add-correction">Add correction</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="correction-notice"></div>
 
   </div>
 

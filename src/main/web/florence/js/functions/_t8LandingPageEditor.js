@@ -1,6 +1,6 @@
-function referenceTableEditor(collectionId, data) {
+function datasetLandingEditor(collectionId, data) {
 
-  var newFiles = [], newRelatedDocuments = [], newRelatedMethodology = [];
+  var newDatasets = [], newRelatedDocuments = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -14,6 +14,8 @@ function referenceTableEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition();
+
+  resolveTitleT8(collectionId, data, templateData, 'datasets');
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -137,30 +139,31 @@ function referenceTableEditor(collectionId, data) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
+  //Add new edition
+  $("#add-dataset").one('click', function () {
+    var datasetTitle;
+    $('#sortable-dataset').append(
+      '<div id="' + lastIndexDataset + '" class="edit-section__sortable-item">' +
+      '<textarea class="auto-size" id="new-dataset-title" placeholder="Type title here and click add"></textarea>' +
+      '<button class="btn-markdown-edit" id="dataset-add">Edit dataset</button>' +
+      '</div>');
+    $('#new-dataset-title').on('input', function () {
       $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
+      datasetTitle = $(this).val();
     });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
+    $('#dataset-add').on('click', function () {
+      if (datasetTitle.length < 4) {
+        alert("This is not a valid file title");
+        return true;
+      } else {
+        if (data.timeseries) {
+          var datasetType = 'timeseries_dataset';
+        } else {
+          var datasetType = 'dataset';
+        }
+        loadT8Creator(collectionId, data.description.releaseDate, datasetType, data.uri, datasetTitle);
+      }
     });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // Save
@@ -186,15 +189,13 @@ function referenceTableEditor(collectionId, data) {
   });
 
   function save() {
-    // Files are uploaded. Save metadata
-    var orderFile = $("#sortable-file").sortable('toArray');
-    $(orderFile).each(function (indexF, nameF) {
-      var title = $('#file-title_' + nameF).val();
-      var fileDescription = $("#file-summary_" + nameF).val();
-      var file = data.downloads[parseInt(nameF)].file;
-      newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
+    // Datasets are uploaded. Save metadata
+    var orderDataset = $("#sortable-dataset").sortable('toArray');
+    $(orderDataset).each(function (indexF, nameF) {
+      var file = data.datasets[parseInt(nameF)].uri;
+      newDatasets[indexF] = {uri: file};
     });
-    data.downloads = newFiles;
+    data.datasets = newDatasets;
     // Used in links
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function (indexU, nameU) {
@@ -214,3 +215,49 @@ function referenceTableEditor(collectionId, data) {
   }
 }
 
+function resolveTitleT8(collectionId, data, templateData, field) {
+  var ajaxRequest = [];
+  $(templateData[field]).each(function (index, path) {
+    templateData[field][index].description = {};
+    var eachUri = path.uri;
+    var dfd = $.Deferred();
+    getPageDataTitle(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].description.title = response.title;
+        dfd.resolve();
+      },
+      error = function () {
+        alert(field + ' address: ' + eachUri + ' is not found.');
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    var dataTemplate = templateData[field];
+    var html = templates.workEditT8LandingDatasetList(dataTemplate);
+    $('#' + field).replaceWith(html);
+    addVersion(collectionId, data);
+  });
+}
+
+function addVersion(collectionId, data) {
+  // Edit dataset
+  // Load dataset to edit
+  $(data.datasets).each(function (index) {
+    lastIndexDataset = index + 1;
+
+    $("#data-version_" + index).click(function () {
+      //open document
+      var selectedVersion = $("#data-title_" + index).attr('data-url');
+      createWorkspace(selectedVersion, collectionId, 'edit');
+    });
+  });
+
+  function sortableSections() {
+    $("#sortable-version").sortable();
+  }
+
+  sortableSections();
+}

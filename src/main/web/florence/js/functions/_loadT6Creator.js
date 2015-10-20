@@ -76,10 +76,15 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
 
       pageData.description.title = pageTitle;
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-      if (releaseDateManual) {                                                          //Manual collections
+
+      if (pageData.description.edition) {
+        releaseUri = pageData.description.edition;
+      }
+
+      if (!pageData.description.edition && releaseDateManual) {                          //Manual collections
         date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
         releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
-      } else {
+      } else if (!pageData.description.edition && !releaseDateManual) {
         releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
@@ -175,7 +180,7 @@ function submitNoForm (parentUrl, title) {
         alert('This page already exists');
       },
       // if the page does not exist, create it
-      error = function(){
+      error = function() {
         postContent(collectionId, safeNewUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
@@ -215,7 +220,7 @@ function submitNoForm (parentUrl, title) {
         },
         "datasets": [],
         "chapters": [],
-        "correction": [],
+        "corrections": [],
         "relatedMethodology": [],
         "topics": [],
         type: pageType
@@ -249,7 +254,7 @@ function submitNoForm (parentUrl, title) {
         "charts": [],
         "tables": [],
         "images": [],
-        "correction": [],
+        "corrections": [],
         type: pageType
       };
     }
@@ -265,14 +270,14 @@ function submitNoForm (parentUrl, title) {
             "telephone": checkData.description.contact.telephone || ""
           },
           "summary": "",
-          "datasetId":"",
+          "datasetId": "",
           "keywords": checkData.description.keywords || [],
           "metaDescription": checkData.description.metaDescription || "",
           "nationalStatistic": checkData.description.nationalStatistic,
           "title": ""
         },
         "downloads": [],
-        "correction": [],
+        "versions": [], //{date, uri, correctionNotice}
         "relatedDocuments": [],
         "relatedMethodology": [],
         type: pageType

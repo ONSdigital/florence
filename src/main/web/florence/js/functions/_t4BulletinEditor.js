@@ -163,30 +163,12 @@ function bulletinEditor(collectionId, data) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
   // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
+  $("#add-correction").one('click', function () {
+    data.corrections.push({correctionNotice: "", date: "", uri: ""});
+    // call the new endpoint to get the uri and the new version
     updateContent(collectionId, data.uri, JSON.stringify(data));
+    editCorrection(collectionId, data, templateData, 'corrections', 'correction')
   });
 
   // Save

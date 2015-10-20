@@ -182,7 +182,7 @@ function compendiumEditor(collectionId, data, templateData) {
     $('#sortable-chapter').append(
       '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
       '<textarea class="auto-size" id="new-chapter-title" placeholder="Type title here and click add"></textarea>' +
-      '<button class="btn-markdown-edit" id="chapter-add">Start editing chapter</button>' +
+      '<button class="btn-markdown-edit" id="chapter-add">Edit chapter</button>' +
       '</div>');
     $('#new-chapter-title').on('input', function () {
       $(this).textareaAutoSize();
@@ -193,7 +193,7 @@ function compendiumEditor(collectionId, data, templateData) {
         alert("This is not a valid file title");
         return true;
       } else {
-        loadT6Creator(collectionId, data.description.releaseDate, 'compendium_chapter', data.uri, chapterTitle)
+        loadT6Creator(collectionId, data.description.releaseDate, 'compendium_chapter', data.uri, chapterTitle);
       }
     });
   });
@@ -205,7 +205,7 @@ function compendiumEditor(collectionId, data, templateData) {
       $('#sortable-data').append(
         '<div id="' + lastIndexDataset + '" class="edit-section__sortable-item">' +
         '<textarea class="auto-size" id="new-data-title" placeholder="Type title here and click add"></textarea>' +
-        '<button class="btn-markdown-edit" id="data-add">Start editing data</button>' +
+        '<button class="btn-markdown-edit" id="data-add">Edit data</button>' +
         '</div>');
       $('#new-data-title').on('input', function () {
         $(this).textareaAutoSize();
