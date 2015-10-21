@@ -67,19 +67,16 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
     $('#' + idField + '-delete_' + index).click(function () {
       var result = confirm("Are you sure you want to delete this correction?");
       if (result === true) {
-        var versionDir = getParentPage(data[field][index].uri);
-        deleteContent(collectionId, data[field][index].uri, function () {
-          deleteContent(collectionId, versionDir, function () {
-            var position = $(".workspace-edit").scrollTop();
-            Florence.globalVars.pagePos = position;
-            $(this).parent().remove();
-            data[field].splice(index, 1);
-            templateData[field].splice(index, 1);
-            saveCorrection(collectionId, data.uri, data, templateData, field, idField);
-          });
+        deleteUnpublishedVersion(collectionId, data[field][index].uri, function () {
+          var position = $(".workspace-edit").scrollTop();
+          Florence.globalVars.pagePos = position;
+          $(this).parent().remove();
+          data[field].splice(index, 1);
+          templateData[field].splice(index, 1);
+          saveCorrection(collectionId, data.uri, data, templateData, field, idField);
         }, function (response) {
           if (response.status === 400) {
-            alert("Cannot edit this page. It is already part of another collection.");
+            alert("Cannot delete a correction that has been published.");
           }
           else {
             handleApiError(response);
@@ -92,12 +89,12 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
 
 function saveCorrection(collectionId, path, data, templateData, field, idField) {
   postContent(collectionId, path, JSON.stringify(data),
-    success = function () {
+    function () {
       Florence.Editor.isDirty = false;
       refreshCorrection(collectionId, data, templateData, field, idField);
       refreshPreview(data.uri);
     },
-    error = function (response) {
+    function (response) {
       if (response.status === 400) {
         alert("Cannot edit this page. It is already part of another collection.");
       }

@@ -257,8 +257,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   }
 
 
-  else if (pageData.type === 'reference_tables') {
-    var html = templates.workEditT8ReferenceTable(templateData);
+  else if (pageData.type === 'dataset_landing_page') {
+    var html = templates.workEditT8LandingPage(templateData);
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
@@ -266,7 +266,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
-    referenceTableEditor(collectionId, pageData);
+    datasetLandingEditor(collectionId, pageData);
   } 
 
   else if (pageData.type === 'release') {
