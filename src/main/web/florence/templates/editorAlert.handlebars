@@ -1,12 +1,13 @@
 <div class="edit-section" id="{{idField}}">
   <div class="edit-section__head">
-    <h1>Corrections</h1>
-    <p>Date | Notice </p>
+    <h1>Alerts</h1>
+    <p>Date | Body copy </p>
   </div>
   <div class="edit-section__content">
     <div id="sortable-{{idField}}" class="edit-section__sortable">
       {{#each list}}
-        <div id="{{@index}}" class="edit-section__item">
+        <div id="{{@index}}" class="edit-section__sortable-item">
+          <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
           <input id="date_{{@index}}" type="text" placeholder="Day month year" value="{{this.date}}"/>
           <textarea style="display: none;" id="{{../idField}}-markdown_{{@index}}">{{this.correctionNotice}}</textarea>
           <button class="btn-markdown-edit" id="{{../idField}}-edit_{{@index}}">Edit</button>

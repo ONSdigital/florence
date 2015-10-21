@@ -10,23 +10,31 @@
 function editCorrection(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = {list: list, idField: idField};
-  runDatePickerVersions(dataTemplate);
   var html = templates.editorCorrection(dataTemplate);
   $('#' + idField).replaceWith(html);
   initialiseCorrection(collectionId, data, templateData, field, idField);
-  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
-}
-
-function runDatePickerVersions(dataTemplate) {
-  if(dataTemplate && dataTemplate.list) {
-    var countSections = dataTemplate.list.length;
-    var i = 0;
-    while (i < countSections) {
-      var tmpDate = dataTemplate.list[i].date;
-      dataTemplate.list[i].date = $.datepicker.formatDate('dd MM yy', new Date(tmpDate));
-      i++;
+  // New correction
+  $("#add-" + idField).one('click', function () {
+    if (!data[field]) {
+      data[field] = [];
+      templateData[field] = [];
     }
-  }
+    saveNewCorrection(collectionId, data.uri, function (response) {
+      var tmpDate = (new Date()).toISOString();
+      data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
+      templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
+      saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+      $("#add-" + idField).remove();
+    }, function (response) {
+      if (response.status === 409) {
+        alert("You can add only one correction before publishing.");
+      }
+      else {
+        handleApiError(response);
+      }
+    });
+  });
+  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 }
 
 function refreshCorrection(collectionId, data, templateData, field, idField) {
@@ -34,25 +42,18 @@ function refreshCorrection(collectionId, data, templateData, field, idField) {
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorCorrection(dataTemplate);
   $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
-  initialiseCorrection(collectionId, data, templateData, field, idField)
+  initialiseCorrection(collectionId, data, templateData, field, idField);
 }
 
 function initialiseCorrection(collectionId, data, templateData, field, idField) {
   // Load
   $(data[field]).each(function (index) {
-    if (!data[field][index].date) {
-      $('#date_' + index).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-        data[field][index].date = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-        templateData[field][index].date = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-      });
-    } else {
-      dateTmp = data[field][index].date;
-      var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-      $('#date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-        data[field][index].date = new Date($('#date_' + index).datepicker('getDate')).toISOString();
-        templateData[field][index].date = new Date($('#date_' + index).datepicker('getDate')).toISOString();
-      });
-    }
+    dateTmp = data[field][index].updateDate;
+    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data[field][index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
+      templateData[field][index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
+    });
     $('#' + idField + '-edit_' + index).click(function () {
       var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
       var saveContent = function (updatedContent) {
@@ -62,19 +63,29 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
       };
       loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
     });
-  });
-
-  // New correction
-  $("#add-correction").one('click', function () {
-    if (!data[field]) {
-      data[field] = [];
-      templateData[field] = [];
-    }
-    saveNewCorrection (collectionId, data.uri, success = function (response) {
-      var tmpDate = (new Date()).toISOString();
-      data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
-      templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
-      saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+    // Delete
+    $('#' + idField + '-delete_' + index).click(function () {
+      var result = confirm("Are you sure you want to delete this correction?");
+      if (result === true) {
+        var versionDir = getParentPage(data[field][index].uri);
+        deleteContent(collectionId, data[field][index].uri, function () {
+          deleteContent(collectionId, versionDir, function () {
+            var position = $(".workspace-edit").scrollTop();
+            Florence.globalVars.pagePos = position;
+            $(this).parent().remove();
+            data[field].splice(index, 1);
+            templateData[field].splice(index, 1);
+            saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+          });
+        }, function (response) {
+          if (response.status === 400) {
+            alert("Cannot edit this page. It is already part of another collection.");
+          }
+          else {
+            handleApiError(response);
+          }
+        });
+      }
     });
   });
 }
