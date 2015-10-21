@@ -163,13 +163,6 @@ function bulletinEditor(collectionId, data) {
     }, 3000);
   });
 
-  // New correction
-  $("#add-correction").one('click', function () {
-    data.corrections.push({correctionNotice: "", date: "", uri: ""});
-    // call the new endpoint to get the uri and the new version
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  });
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.

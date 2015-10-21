@@ -7,9 +7,9 @@
     <div id="sortable-{{idField}}" class="edit-section__sortable">
       {{#each list}}
         <div id="{{@index}}" class="edit-section__item">
-          <div id="date_{{@index}}">{{this.date}}</div>
+          <input id="date_{{@index}}" type="text" placeholder="Day month year" value="{{this.date}}"/>
           <textarea style="display: none;" id="{{../idField}}-markdown_{{@index}}">{{this.correctionNotice}}</textarea>
-          <button class="btn-markdown-edit" id="{{../idField}}-edit_{{@index}}">Edit</button>
+          <button class="btn-markdown-edit" id="{{../idField}}-edit_{{@index}}">Add/edit notice</button>
           <!--<button class="btn-markdown-edit" id="{{../idField}}-add_{{@index}}">Add supplementary files</button>-->
         </div>
       {{/each}}
@@ -18,4 +18,4 @@
       <button class="btn-add-section" id="add-{{idField}}">Add {{idField}}</button>
     </div>
   </div>
-</div>
+</div
