@@ -2,7 +2,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
-  var uploadedNotSaved = {uploaded: false, saved: false, table: ""};
+  var uploadedNotSaved = {uploaded: false, saved: false};
   $('body').append(html);
 
   if (table) {
@@ -10,8 +10,6 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 
   $('#upload-table-form').submit(function (event) {
-    event.preventDefault();
-
     var formData = new FormData($(this)[0]);
     var table = buildJsonObjectFromForm();
     var path = table.uri;
@@ -28,10 +26,8 @@ function loadTableBuilder(pageData, onSave, table) {
       cache: false,
       contentType: false,
       processData: false,
-      success: function (returndata) {
+      success: function () {
         createTableHtml();
-        uploadedNotSaved.uploaded = true;
-        uploadedNotSaved.table = path;
       }
     });
 
@@ -54,6 +50,7 @@ function loadTableBuilder(pageData, onSave, table) {
         processData: false,
         success: function () {
           renderTable(path);
+          uploadedNotSaved.uploaded = true;
         }
       });
     }
@@ -72,11 +69,14 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 
   $('.btn-table-builder-cancel').on('click', function () {
+    console.log("got here");
     $('.table-builder').stop().fadeOut(200).remove();
     if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
-       //delete any files associated with the table.
-      _(table.files).each(function (file) {
-        var fileToDelete = path + '/' + file.filename;
+      //delete any files associated with the table.
+      //add table.json to file
+      table.files.push({"type":"json","filename": table.filename + '.json'});
+      $(table.files).each(function (index, file) {
+        var fileToDelete = pageUrl + '/' + file.filename;
         deleteContent(Florence.collection.id, fileToDelete,
           onSuccess = function () {
             console.log("deleted table file: " + fileToDelete);
@@ -98,7 +98,6 @@ function loadTableBuilder(pageData, onSave, table) {
       contentType: 'application/json',
       success: function () {
         addTableToPageJson(table);
-        uploadedNotSaved.saved = true;
       }
     });
   }
@@ -124,7 +123,7 @@ function loadTableBuilder(pageData, onSave, table) {
   $('.btn-table-builder-create').on('click', function () {
 
     saveTableJson();
-
+    uploadedNotSaved.saved = true;
     if (onSave) {
       onSave(table.filename, '<ons-table path="' + table.uri + '" />');
     }
