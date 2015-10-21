@@ -1,16 +1,7 @@
-/**
- * Gets the JSON file for the page
- * @param collectionId
- * @param path
- * @param success
- * @param error
- * @returns {*}
- */
-
-function getPageData(collectionId, path, success, error) {
+function getPageResource(collectionId, path, success, error) {
   var safePath = checkPathSlashes(path);
   return $.ajax({
-    url: "/zebedee/data/" + collectionId + "?uri=" + safePath,
+    url: "/zebedee/resource/" + collectionId + "?uri=" + safePath,
     dataType: 'json',
     type: 'GET',
     success: function (response) {
@@ -26,3 +17,4 @@ function getPageData(collectionId, path, success, error) {
     }
   });
 }
+

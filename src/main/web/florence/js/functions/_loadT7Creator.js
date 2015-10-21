@@ -1,3 +1,11 @@
+/**
+ * Creates static pages' JSON
+ * @param collectionId
+ * @param releaseDate
+ * @param pageType
+ * @param parentUrl
+ */
+
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageName, pageNameTrimmed, newUri, pageData;
@@ -126,10 +134,13 @@ function pageTypeDataT7(pageType) {
         "keywords": [],
         "metaDescription": "",
         "title": "",
-        "releaseDate": "",
+        "releaseDate": ""
       },
       "sections": [],
       "accordion": [],
+      "charts": [],
+      "tables": [],
+      "images": [],
       type: pageType,
       "downloads":[],
       "links" : []

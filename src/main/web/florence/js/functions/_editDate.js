@@ -1,3 +1,12 @@
+/**
+ * Manages dates for release calendar
+ * @param collectionId
+ * @param data
+ * @param templateData
+ * @param field - JSON data key
+ * @param idField - HTML id for the template
+ */
+
 function editDate(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = {list: list, idField: idField};

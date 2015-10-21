@@ -1,3 +1,11 @@
+/**
+ * Creates article and bulletin JSON
+ * @param collectionId
+ * @param releaseDate
+ * @param pageType
+ * @param parentUrl
+ */
+
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual,
@@ -141,12 +149,14 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         },
         "sections": [],
         "accordion": [],
-        "relatedBulletins": [],
+        "relatedDocuments": [],
         "relatedData": [],
         "relatedMethodology": [],
+        "topics": [],
         "links": [],
         "charts": [],
         "tables": [],
+        "images": [],
         "correction": [],
         type: pageType
       };
@@ -172,12 +182,14 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         },
         "sections": [],
         "accordion": [],
-        "relatedArticles": [],
+        "relatedDocuments": [],
         "relatedData": [],
         "relatedMethodology": [],
+        "topics": [],
         "links": [],
         "charts": [],
         "tables": [],
+        "images": [],
         "correction": [],
         type: pageType
       };

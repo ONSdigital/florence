@@ -1,3 +1,11 @@
+/**
+ * Manages markdown editor
+ * @param content
+ * @param onSave
+ * @param pageData
+ * @param notEmpty - if present, markdown cannot be left empty
+ */
+
 function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
   if (content.title == undefined) {
@@ -61,6 +69,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
   $(".btn-markdown-editor-table").click(function(){
     loadTableBuilder(pageData, onInsertSave);
+  });
+
+  $(".btn-markdown-editor-image").click(function(){
+    loadImageBuilder(pageData, onInsertSave);
   });
 
   $("#wmd-input").on('click', function () {
