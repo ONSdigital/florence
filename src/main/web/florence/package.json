@@ -15,8 +15,8 @@
   },
   "scripts": {
     "test": "jasmine",
-    "watch-js": "npm run build-js && onchange 'js/classes/*.js' 'js/functions/*.js' 'js/third-party/*.js' -- npm run build-js ",
-    "build-js": "cat js/classes/*.js js/functions/*.js js/third-party/*.js > js/main.js",
+    "watch-js": "npm run build-js && onchange 'js/classes/*.js' 'js/functions/*.js' -- npm run build-js ",
+    "build-js": "cat js/classes/*.js js/functions/*.js > js/main.js",
     "watch-templates": "npm run build-templates && onchange 'templates/*.handlebars' -- npm run build-templates ",
     "build-templates": "handlebars templates/*.handlebars --output js/templates.js",
     "watch-css": "npm run build-css && onchange 'scss/partials/*.scss' -- npm run build-css ",
