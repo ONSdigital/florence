@@ -168,7 +168,6 @@ function bulletinEditor(collectionId, data) {
     data.corrections.push({correctionNotice: "", date: "", uri: ""});
     // call the new endpoint to get the uri and the new version
     updateContent(collectionId, data.uri, JSON.stringify(data));
-    editCorrection(collectionId, data, templateData, 'corrections', 'correction')
   });
 
   // Save

@@ -37,7 +37,7 @@ function refreshNoteMarkdown(collectionId, data, templateData, field, idField) {
   initialiseNoteMarkdown(collectionId, data, templateData, field, idField)
 }
 
-function initialiseNoteMarkdown(collectionId, data, templateData, field, idField) {
+function initialiseCorrection(collectionId, data, templateData, field, idField) {
   // Load
   $(data[field]).each(function (index) {
     if (!data[field][index].date) {
