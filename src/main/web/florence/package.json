@@ -10,15 +10,18 @@
     "catw": "latest",
     "jasmine": "^2.2.1",
     "onchange": "latest",
-    "handlebars": "~3.0.1"
+    "handlebars": "~3.0.1",
+    "node-sass": "latest"
   },
   "scripts": {
     "test": "jasmine",
-    "watch-js": "catw js/classes/*.js js/functions/*.js js/third-party/*.js -o js/main.js -v",
+    "watch-js": "npm run build-js && onchange 'js/classes/*.js' 'js/functions/*.js' 'js/third-party/*.js' -- npm run build-js ",
     "build-js": "cat js/classes/*.js js/functions/*.js js/third-party/*.js > js/main.js",
     "watch-templates": "npm run build-templates && onchange 'templates/*.handlebars' -- npm run build-templates ",
     "build-templates": "handlebars templates/*.handlebars --output js/templates.js",
-    "watch": "npm run watch-js & npm run watch-templates",
-    "postinstall" : "npm run build-js & npm run build-templates"
+    "watch-css": "npm run build-css && onchange 'scss/partials/*.scss' -- npm run build-css ",
+    "build-css": "node-sass --output-style compressed scss/style.scss css/style.min.css",
+    "watch": "npm run watch-js & npm run watch-templates & npm run watch-css",
+    "postinstall" : "npm run build-js & npm run build-templates & npm run build-css"
   }
 }

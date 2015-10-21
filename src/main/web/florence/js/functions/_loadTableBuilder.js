@@ -2,6 +2,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
+  var uploadedNotSaved = {uploaded: false, saved: false, table: ""};
   $('body').append(html);
 
   if (table) {
@@ -9,7 +10,7 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 
   $('#upload-table-form').submit(function (event) {
-
+    $(this).find(':submit').attr('disabled', 'disabled');
     event.preventDefault();
 
     var formData = new FormData($(this)[0]);
@@ -30,6 +31,8 @@ function loadTableBuilder(pageData, onSave, table) {
       processData: false,
       success: function (returndata) {
         createTableHtml();
+        uploadedNotSaved.uploaded = true;
+        uploadedNotSaved.table = path;
       }
     });
 
@@ -50,7 +53,7 @@ function loadTableBuilder(pageData, onSave, table) {
         type: 'POST',
         data: data,
         processData: false,
-        success: function (response) {
+        success: function () {
           renderTable(path);
         }
       });
@@ -71,6 +74,16 @@ function loadTableBuilder(pageData, onSave, table) {
 
   $('.btn-table-builder-cancel').on('click', function () {
     $('.table-builder').stop().fadeOut(200).remove();
+    if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
+      // delete any files associated with the table.   //get the info from json
+      //_(table.files).each(function (file) {
+      //  var fileToDelete = path + '/' + file.filename;
+      //  deleteContent(Florence.collection.id, fileToDelete,
+      //    onSuccess = function () {
+      //      console.log("deleted table file: " + fileToDelete)
+      //    });
+      //});
+    }
   });
 
   function saveTableJson() {
@@ -86,6 +99,7 @@ function loadTableBuilder(pageData, onSave, table) {
       contentType: 'application/json',
       success: function (res) {
         addTableToPageJson(table);
+        uploadedNotSaved.saved = true;
       }
     });
   }

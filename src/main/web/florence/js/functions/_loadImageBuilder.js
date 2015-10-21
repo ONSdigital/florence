@@ -2,6 +2,7 @@ function loadImageBuilder(pageData, onSave, image) {
   var file = {};
   var pageUrl = pageData.uri;
   var html = templates.imageBuilder(image);
+  var uploadedNotSaved = {uploaded: false, saved: false, image: ""};
   $('body').append(html);
 
   if (image) {
@@ -9,13 +10,13 @@ function loadImageBuilder(pageData, onSave, image) {
   }
 
   $('#upload-image-form').submit(function (event) {
-
+    $(this).find(':submit').attr('disabled', 'disabled');
     event.preventDefault();
     event.stopImmediatePropagation();
 
     var formData = new FormData($(this)[0]);
     file = this[1].files[0];
-    if(!file) {
+    if (!file) {
       alert('Please select a file to upload.');
       return;
     }
@@ -23,7 +24,7 @@ function loadImageBuilder(pageData, onSave, image) {
     var imagePath = image.uri;
 
 
-    // send jpg file to zebedee
+    // send image file to zebedee
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imagePath,
       type: 'POST',
@@ -34,6 +35,8 @@ function loadImageBuilder(pageData, onSave, image) {
       processData: false,
       success: function () {
         renderImage(image.uri);
+        uploadedNotSaved.uploaded = true;
+        uploadedNotSaved.image = imagePath;
       }
     });
 
@@ -43,12 +46,27 @@ function loadImageBuilder(pageData, onSave, image) {
   function renderImage(image) {
     var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + '/zebedee/resource/' + Florence.collection.id + '?uri=' + image + '"></iframe>';
     $('#image').html(iframeMarkup);
-    document.getElementById('preview-frame').height = "500px";
-    document.getElementById('preview-frame').width = "100%";
+    var iframe = document.getElementById('preview-frame');
+    iframe.height = "500px";
+    iframe.width = "100%";
+    setTimeout(
+      function () {
+        body = $('#preview-frame').contents().find('body');
+        $(body).children().css('height', '100%');
+      }, 100);
   }
 
   $('.btn-image-builder-cancel').on('click', function () {
     $('.image-builder').stop().fadeOut(200).remove();
+    if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
+      deleteContent(Florence.collection.id, uploadedNotSaved.image,
+        onSuccess = function () {
+        },
+        onError = function (error) {
+          handleApiError(error);
+        }
+      );
+    }
   });
 
   function saveImageJson() {
@@ -63,6 +81,7 @@ function loadImageBuilder(pageData, onSave, image) {
       contentType: 'application/json',
       success: function () {
         addImageToPageJson(image);
+        uploadedNotSaved.saved = true;
       }
     });
   }
