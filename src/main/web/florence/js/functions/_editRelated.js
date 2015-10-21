@@ -64,7 +64,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             success = function () {
               Florence.Editor.isDirty = false;
               refreshPreview(data.uri);
-              refreshRelated(collectionId, data, templateData, field, idField)
+              refreshRelated(collectionId, data, templateData, field, idField);
             },
             error = function (response) {
               if (response.status === 400) {

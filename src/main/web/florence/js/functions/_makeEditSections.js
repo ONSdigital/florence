@@ -58,6 +58,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
     editCorrection(collectionId, pageData, templateData, 'versions', 'correction');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     bulletinEditor(collectionId, pageData);
   }
@@ -82,6 +83,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
+    editCorrection(collectionId, pageData, templateData, 'versions', 'correction');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     articleEditor(collectionId, pageData);
   }
@@ -95,6 +98,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedData', 'timeseries');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     timeseriesEditor(collectionId, pageData);
   }
@@ -104,6 +108,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     compendiumEditor(collectionId, pageData, templateData);     //templateData used to resolve chapter titles
   }
@@ -125,6 +130,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
+    editCorrection(collectionId, pageData, templateData, 'versions', 'correction');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     compendiumChapterEditor(collectionId, pageData);
   }
@@ -218,6 +225,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
       loadImagesList(pageData, collectionId);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     methodologyEditor(collectionId, pageData);
   }
@@ -256,6 +264,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     referenceTableEditor(collectionId, pageData);
   } 
