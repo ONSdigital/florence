@@ -1,3 +1,12 @@
+/**
+ * Manages related data
+ * @param collectionId
+ * @param data
+ * @param templateData
+ * @param field - JSON data key
+ * @param idField - HTML id for the template
+ */
+
 function editRelated(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = createRelatedTemplate(idField, list);
@@ -19,9 +28,9 @@ function refreshRelated(collectionId, data, templateData, field, idField) {
 function createRelatedTemplate(idField, list) {
   var dataTemplate;
   if (idField === 'article') {
-    dataTemplate = {list: list, idField: idField, idPlural: 'articles'};
+    dataTemplate = {list: list, idField: idField, idPlural: 'articles (DO NOT USE. TO BE DELETED)'};
   } else if (idField === 'bulletin') {
-    dataTemplate = {list: list, idField: idField, idPlural: 'bulletins'};
+    dataTemplate = {list: list, idField: idField, idPlural: 'bulletins (DO NOT USE. TO BE DELETED)'};
   } else if (idField === 'dataset') {
     dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
   } else if (idField === 'document') {

@@ -1,3 +1,11 @@
+/**
+ * Creates data JSON
+ * @param collectionId
+ * @param releaseDate
+ * @param pageType
+ * @param parentUrl
+ */
+
 function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
@@ -101,6 +109,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }
@@ -129,6 +138,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }
@@ -155,6 +165,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
         "correction": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "topics": [],
         type: pageType
       };
     }
