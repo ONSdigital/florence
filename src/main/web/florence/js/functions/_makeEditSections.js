@@ -321,7 +321,7 @@ function refreshEditNavigation() {
       var pagePath = getPathName();
       var pageFile = pagePath + '/data.json';
       var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
-      var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail);
+      var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail());
 
       var editNav = templates.editNav({isPageComplete: isPageComplete});
       $('.edit-nav').html(editNav);

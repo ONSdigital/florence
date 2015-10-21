@@ -143,33 +143,6 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl) {
       };
     }
 
-    else if (pageType === "reference_tables") {
-      return {
-        "description": {
-          "releaseDate": "",
-          "nextRelease": "",
-          "contact": {
-            "name": "",
-            "email": "",
-            "telephone": ""
-          },
-          "summary": "",
-          "datasetId":"",
-          "keywords": [],
-          "metaDescription": "",
-          "nationalStatistic": false,
-          "title": ""
-        },
-        "migrated": true,
-        "downloads": [],
-        "correction": [],
-        "relatedDocuments": [],
-        "relatedMethodology": [],
-        "topics": [],
-        type: pageType
-      };
-    }
-
     else {
       alert('Unsupported page type. This is not a dataset type');
     }
