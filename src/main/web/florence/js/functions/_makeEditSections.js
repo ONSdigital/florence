@@ -57,6 +57,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
+    editCorrection(collectionId, data, templateData, 'corrections', 'correction');
     accordion();
     bulletinEditor(collectionId, pageData);
   }
