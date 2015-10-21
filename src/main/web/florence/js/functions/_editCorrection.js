@@ -29,12 +29,12 @@ function runDatePickerVersions(dataTemplate) {
   }
 }
 
-function refreshNoteMarkdown(collectionId, data, templateData, field, idField) {
+function refreshCorrection(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = {list: list, idField: idField};
-  var html = templates.editorDate(dataTemplate);
+  var html = templates.editorCorrection(dataTemplate);
   $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
-  initialiseNoteMarkdown(collectionId, data, templateData, field, idField)
+  initialiseCorrection(collectionId, data, templateData, field, idField)
 }
 
 function initialiseCorrection(collectionId, data, templateData, field, idField) {
@@ -58,18 +58,32 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
       var saveContent = function (updatedContent) {
         data[field][index].correctionNotice = updatedContent;
         templateData[field][index].correctionNotice = updatedContent;
-        saveNoteMarkdown(collectionId, data.uri, data, templateData, field, idField);
+        saveCorrection(collectionId, data.uri, data, templateData, field, idField);
       };
       loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
     });
   });
+
+  // New correction
+  $("#add-correction").one('click', function () {
+    if (!data[field]) {
+      data[field] = [];
+      templateData[field] = [];
+    }
+    saveNewCorrection (collectionId, data.uri, success = function (response) {
+      var tmpDate = (new Date()).toISOString();
+      data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
+      templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
+      saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+    });
+  });
 }
 
-function saveNoteMarkdown(collectionId, path, data, templateData, field, idField) {
+function saveCorrection(collectionId, path, data, templateData, field, idField) {
   postContent(collectionId, path, JSON.stringify(data),
     success = function () {
       Florence.Editor.isDirty = false;
-      refreshNoteMarkdown(collectionId, data, templateData, field, idField);
+      refreshCorrection(collectionId, data, templateData, field, idField);
       refreshPreview(data.uri);
     },
     error = function (response) {
