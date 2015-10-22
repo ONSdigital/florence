@@ -16,6 +16,8 @@ function datasetEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
+  resolveVersionCorrectionTitleT8(collectionId, data, 'versions')
+
   // Metadata edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
@@ -190,39 +192,76 @@ function datasetEditor(collectionId, data) {
 
   function save() {
     // Files are uploaded. Save metadata
-    var orderFile = $("#sortable-file").sortable('toArray');
+    var orderFile = $("#sortable-supplementary-files").sortable('toArray');
     $(orderFile).each(function (indexF, nameF) {
-      var title = $('#file-title_' + nameF).val();
-      var file = data.downloads[parseInt(nameF)].file;
+      var title = $('#supplementary-files-title_' + nameF).val();
+      var file = data.supplementaryFiles[parseInt(nameF)].file;
       newFiles[indexF] = {title: title, file: file};
     });
-    data.downloads = newFiles;
+    data.supplementaryFiles = newFiles;
     // Notes
     data.section = {markdown: $('#one-markdown').val()};
-    // Related datasets
-    var orderDataset = $("#sortable-dataset").sortable('toArray');
-    $(orderDataset).each(function (indexD, nameD) {
-      var uri = data.relatedDatasets[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedData[indexD] = {uri: safeUri};
-    });
-    data.relatedDatasets = newRelatedData;
-    // Used in links
-    var orderUsedIn = $("#sortable-document").sortable('toArray');
-    $(orderUsedIn).each(function (indexU, nameU) {
-      var uri = data.relatedDocuments[parseInt(nameU)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedDocuments[indexU] = {uri: safeUri};
-    });
-    data.relatedDocuments = newRelatedDocuments;
-    // Related methodology
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-    $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedMethodology[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodology = newRelatedMethodology;
+    //// Related datasets
+    //var orderDataset = $("#sortable-dataset").sortable('toArray');
+    //$(orderDataset).each(function (indexD, nameD) {
+    //  var uri = data.relatedDatasets[parseInt(nameD)].uri;
+    //  var safeUri = checkPathSlashes(uri);
+    //  newRelatedData[indexD] = {uri: safeUri};
+    //});
+    //data.relatedDatasets = newRelatedData;
+    //// Used in links
+    //var orderUsedIn = $("#sortable-document").sortable('toArray');
+    //$(orderUsedIn).each(function (indexU, nameU) {
+    //  var uri = data.relatedDocuments[parseInt(nameU)].uri;
+    //  var safeUri = checkPathSlashes(uri);
+    //  newRelatedDocuments[indexU] = {uri: safeUri};
+    //});
+    //data.relatedDocuments = newRelatedDocuments;
+    //// Related methodology
+    //var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    //$(orderRelatedMethodology).each(function (indexM, nameM) {
+    //  var uri = data.relatedMethodology[parseInt(nameM)].uri;
+    //  var safeUri = checkPathSlashes(uri);
+    //  newRelatedMethodology[indexM] = {uri: safeUri};
+    //});
+    //data.relatedMethodology = newRelatedMethodology;
   }
+}
+
+function resolveVersionCorrectionTitleT8(collectionId, data, field) {
+  var ajaxRequest = [];
+  var templateData = $.extend(true, {}, data);
+  $(templateData[field]).each(function (index, path) {
+    templateData[field][index].description = {};
+    var eachUri = path.uri;
+    var dfd = $.Deferred();
+    getPageDataTitle(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].description.title = response.title;
+        dfd.resolve();
+      },
+      error = function () {
+        alert(field + ' address: ' + eachUri + ' is not found.');
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    var dataTemplate = templateData[field];
+    var versionsTemplate = [], correctionsTemplate = [];
+    $(dataTemplate).each(function (index, version) {
+      if (version.correctionNotice) {
+        correctionsTemplate.push(version);
+      } else {
+        versionsTemplate.push(version);
+      }
+    });
+    var htmlVersion = templates.workEditT8VersionList(versionsTemplate);
+    var htmlCorrection = templates.workEditT8CorrectionList(correctionsTemplate);
+    $('#version').replaceWith(htmlVersion);
+    $('#correction').replaceWith(htmlCorrection);
+  });
 }
 
