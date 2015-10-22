@@ -36,7 +36,7 @@ function loadCreator (parentUrl, collectionId, type) {
       else if (pageType.match(/static_.+/)) {
         loadT7Creator(collectionId, releaseDate, pageType, parentUrl);
       }
-      else if (pageType === 'reference_tables' || pageType === 'dataset' || pageType === 'timeseries_dataset') {
+      else if (pageType === 'dataset_landing_page' || pageType === 'timeseries_landing_page') {
         loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
       }
       else if (pageType === 'release') {
