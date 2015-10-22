@@ -17,7 +17,7 @@ function postLogin(email, password) {
     }),
     success: function (response) {
       document.cookie = "access_token=" + response + ";path=/";
-      Florence.Authentication.loggedInEmail = email;
+      localStorage.setItem("loggedInAs", email);
       Florence.refreshAdminMenu();
       viewController();
     },

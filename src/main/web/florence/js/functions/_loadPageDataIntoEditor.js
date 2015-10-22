@@ -43,7 +43,7 @@ function loadPageDataIntoEditor(path, collectionId, click) {
     getCollection(collectionId,
       success = function (response) {
         var lastCompletedEvent = getLastCompletedEvent(response, toApproveUrlData);
-        isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail);
+        isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail());
       },
       error = function (response) {
         handleApiError(response);

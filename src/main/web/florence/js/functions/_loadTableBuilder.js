@@ -2,6 +2,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
+  var uploadedNotSaved = {uploaded: false, saved: false};
   $('body').append(html);
 
   if (table) {
@@ -9,9 +10,6 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 
   $('#upload-table-form').submit(function (event) {
-
-    event.preventDefault();
-
     var formData = new FormData($(this)[0]);
     var table = buildJsonObjectFromForm();
     var path = table.uri;
@@ -28,7 +26,7 @@ function loadTableBuilder(pageData, onSave, table) {
       cache: false,
       contentType: false,
       processData: false,
-      success: function (returndata) {
+      success: function () {
         createTableHtml();
       }
     });
@@ -50,8 +48,9 @@ function loadTableBuilder(pageData, onSave, table) {
         type: 'POST',
         data: data,
         processData: false,
-        success: function (response) {
+        success: function () {
           renderTable(path);
+          uploadedNotSaved.uploaded = true;
         }
       });
     }
@@ -70,7 +69,20 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 
   $('.btn-table-builder-cancel').on('click', function () {
+    console.log("got here");
     $('.table-builder').stop().fadeOut(200).remove();
+    if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
+      //delete any files associated with the table.
+      //add table.json to file
+      table.files.push({"type":"json","filename": table.filename + '.json'});
+      $(table.files).each(function (index, file) {
+        var fileToDelete = pageUrl + '/' + file.filename;
+        deleteContent(Florence.collection.id, fileToDelete,
+          onSuccess = function () {
+            console.log("deleted table file: " + fileToDelete);
+          });
+      });
+    }
   });
 
   function saveTableJson() {
@@ -84,7 +96,7 @@ function loadTableBuilder(pageData, onSave, table) {
       data: JSON.stringify(table),
       processData: false,
       contentType: 'application/json',
-      success: function (res) {
+      success: function () {
         addTableToPageJson(table);
       }
     });
@@ -96,7 +108,7 @@ function loadTableBuilder(pageData, onSave, table) {
     } else {
 
       var existingTable = _.find(pageData.tables, function (existingTable) {
-        return existingTable.filename === table.filename
+        return existingTable.filename === table.filename;
       });
 
       if (existingTable) {
@@ -111,7 +123,7 @@ function loadTableBuilder(pageData, onSave, table) {
   $('.btn-table-builder-create').on('click', function () {
 
     saveTableJson();
-
+    uploadedNotSaved.saved = true;
     if (onSave) {
       onSave(table.filename, '<ons-table path="' + table.uri + '" />');
     }
@@ -131,7 +143,7 @@ function loadTableBuilder(pageData, onSave, table) {
     table.uri = pageUrl + "/" + table.filename;
 
     if (table.title === '') {
-      table.title = '[Title]'
+      table.title = '[Title]';
     }
 
     table.files = [];
