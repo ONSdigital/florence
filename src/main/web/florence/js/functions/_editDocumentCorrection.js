@@ -7,7 +7,7 @@
  * @param idField - HTML id for the template
  */
 
-function editCorrection(collectionId, data, templateData, field, idField) {
+function editDocumentCorrection(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorCorrection(dataTemplate);

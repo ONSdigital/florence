@@ -57,7 +57,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
-    editCorrection(collectionId, pageData, templateData, 'versions', 'correction');
+    editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     bulletinEditor(collectionId, pageData);
@@ -83,7 +83,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
-    editCorrection(collectionId, pageData, templateData, 'versions', 'correction');
+    editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     articleEditor(collectionId, pageData);
@@ -130,7 +130,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
-    editCorrection(collectionId, pageData, templateData, 'versions', 'correction');
+    editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     compendiumChapterEditor(collectionId, pageData);
@@ -230,14 +230,24 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     methodologyEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'dataset') {
-    var html = templates.workEditT8(templateData);
+  else if (pageData.type === 'dataset_landing_page') {
+    var html = templates.workEditT8LandingPage(templateData);
     $('.workspace-menu').html(html);
     editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
+    addDataset (collectionId, pageData, 'datasets', 'edition');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
+    accordion();
+    datasetLandingEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'dataset') {
+    var html = templates.workEditT8(templateData);
+    $('.workspace-menu').html(html);
+    editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
     addFile (collectionId, pageData, 'downloads', 'file');
     accordion();
     datasetEditor(collectionId, pageData);
@@ -247,27 +257,10 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
-    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
-    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
-    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
-    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
-    addFile (collectionId, pageData, 'downloads', 'file');
+    addFile (collectionId, pageData, 'downloads', 'file');  //versions //corrections
     accordion();
     datasetEditor(collectionId, pageData);
   }
-
-
-  else if (pageData.type === 'dataset_landing_page') {
-    var html = templates.workEditT8LandingPage(templateData);
-    $('.workspace-menu').html(html);
-    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
-    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
-    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
-    addFileWithDetails (collectionId, pageData, 'downloads', 'file');
-    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
-    accordion();
-    datasetLandingEditor(collectionId, pageData);
-  } 
 
   else if (pageData.type === 'release') {
     var html = templates.workEditT16(templateData);
