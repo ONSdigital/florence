@@ -6,16 +6,16 @@
  * @param parentUrl
  */
 
-function loadT8Creator (collectionId, data, pageType, pageTitle) {
+function loadT8EditionCreator (collectionId, data, pageType, pageTitle, downloadUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageTitleTrimmed, newUri, pageData;
 
-  pageTypeDataT8(pageType, data)
-  submitNoForm(data.uri, pageTitle);
+  pageData = pageTypeDataT8(pageType, data);
+  submitNoForm(data.uri, pageTitle, downloadUrl);
 
-  function submitNoForm (parentUrl, title) {
-
+  function submitNoForm (parentUrl, title, downloadUrl) {
     pageData.description.title = title;
+    pageData.downloads.push({title: title, uri: downloadUrl});
     pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'dataset') || (pageType === 'timeseries_dataset')) {

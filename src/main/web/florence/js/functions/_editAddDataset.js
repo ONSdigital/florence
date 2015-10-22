@@ -9,52 +9,10 @@
 function addDataset(collectionId, data, field, idField) {
   var list = data[field];
   var downloadExtensions, pageType;
-  var dataTemplate = {list: list, idField: idField};
-  var html = templates.editorDownloads(dataTemplate);
-  $('#' + idField).replaceWith(html);
   var uriUpload;
+  var lastIndex = 100;
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
-
-  //// Edit
-  //if (!data[field] || data[field].length === 0) {
-  //  var lastIndex = 0;
-  //} else {
-  //  $(data[field]).each(function (index) {
-  //    // Delete
-  //    $('#' + idField + '-delete_' + index).click(function () {
-  //      var result = confirm("Are you sure you want to delete this file?");
-  //      if (result === true) {
-  //        var position = $(".workspace-edit").scrollTop();
-  //        Florence.globalVars.pagePos = position;
-  //        $(this).parent().remove();
-  //        $.ajax({
-  //          url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-  //          type: "DELETE",
-  //          success: function (res) {
-  //            console.log(res);
-  //          },
-  //          error: function (res) {
-  //            console.log(res);
-  //          }
-  //        });
-  //        data[field].splice(index, 1);
-  //        updateContent(collectionId, data.uri, JSON.stringify(data));
-  //      }
-  //    });
-  //    // Edit
-  //    $('#' + idField + '-edit_' + index).click(function () {
-  //      var editedSectionValue = {
-  //        "markdown": $('#' + idField + '-title_' + index).val()
-  //      };
-  //      var saveContent = function (updatedContent) {
-  //        data[field][index].markdown = updatedContent;
-  //        updateContent(collectionId, data.uri, JSON.stringify(data));
-  //      };
-  //      loadMarkdownEditor(editedSectionValue, saveContent, data);
-  //    });
-  //  });
-  //}
 
   //Add
   if (data.timeseries) {
@@ -86,7 +44,7 @@ function addDataset(collectionId, data, field, idField) {
       $('#file-cancel').one('click', function (e) {
         e.preventDefault();
         $('#' + lastIndex).remove();
-        addFile(collectionId, data, field, idField);
+        addDataset (collectionId, pageData, 'datasets', 'edition');
       });
 
       $('#UploadForm').submit(function (e) {
@@ -99,10 +57,10 @@ function addDataset(collectionId, data, field, idField) {
           $('#list').append(source);
         }
 
-        var title = $('#title').val();
-        var pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+        var pageTitle = this[0].value;
+        var pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
-        var file = this[0].files[0];
+        var file = this[1].files[0];
         if(!file) {
           alert('Please select a file to upload.');
           return;
@@ -119,7 +77,7 @@ function addDataset(collectionId, data, field, idField) {
             if (filesUploaded.file == safeUriUpload) {
               alert('This file already exists');
               $('#' + lastIndex).remove();
-              addFile(collectionId, data, field, idField);
+              addDataset (collectionId, pageData, 'datasets', 'edition');
               return;
             }
           });
@@ -133,11 +91,11 @@ function addDataset(collectionId, data, field, idField) {
         } else {
           alert('This file type is not supported');
           $('#' + lastIndex).remove();
-          addFile(collectionId, data, field, idField);
+          addDataset (collectionId, pageData, 'datasets', 'edition');
           return;
         }
 
-        if (title.length < 4) {
+        if (pageTitle.length < 4) {
           alert("This is not a valid file title");
           return;
         }
@@ -155,9 +113,9 @@ function addDataset(collectionId, data, field, idField) {
               if (!data[field]) {
                 data[field] = [];
               }
-              data[field].push({uri: safeUriUpload});
+              data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
               // create the dataset
-              loadT8Creator (collectionId, data, pageType, pageTitleTrimmed);
+              loadT8EditionCreator (collectionId, data, pageType, pageTitle, safeUriUpload);
               // on success save parent and child data
             }
           });

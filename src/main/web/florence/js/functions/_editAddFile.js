@@ -16,7 +16,9 @@ function addFile(collectionId, data, field, idField) {
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
-  // Edit
+  //Edit saved from editor
+
+  // Delete
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
   } else {
@@ -41,17 +43,6 @@ function addFile(collectionId, data, field, idField) {
           data[field].splice(index, 1);
           updateContent(collectionId, data.uri, JSON.stringify(data));
         }
-      });
-      // Edit
-      $('#' + idField + '-edit_' + index).click(function () {
-        var editedSectionValue = {
-          "markdown": $('#' + idField + '-title_' + index).val()
-        };
-        var saveContent = function (updatedContent) {
-          data[field][index].markdown = updatedContent;
-          updateContent(collectionId, data.uri, JSON.stringify(data));
-        };
-        loadMarkdownEditor(editedSectionValue, saveContent, data);
       });
     });
   }

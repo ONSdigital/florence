@@ -15,7 +15,7 @@ function datasetLandingEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  resolveTitleT8(collectionId, data, templateData, 'edition');
+  resolveTitleT8(collectionId, data, 'datasets');
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -211,12 +211,12 @@ function resolveTitleT8(collectionId, data, field) {
   $.when.apply($, ajaxRequest).then(function () {
     var dataTemplate = templateData[field];
     var html = templates.workEditT8LandingDatasetList(dataTemplate);
-    $('#' + field).replaceWith(html);
-    addDatasetEdition(collectionId, templateData);
+    $('#edition').replaceWith(html);
+    addEditionEditButton(collectionId, templateData);
   });
 }
 
-function addDatasetEdition(collectionId, templateData) {
+function addEditionEditButton(collectionId, templateData) {
   // Load dataset to edit
   $(templateData.datasets).each(function (index) {
     $("#edition-edit_" + index).click(function () {
