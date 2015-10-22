@@ -5,9 +5,6 @@ function createCollection() {
   var publishType = $('input[name="publishType"]:checked').val();
   var scheduleType = $('input[name="scheduleType"]:checked').val();
 
-  console.log('publish type: ' + publishType);
-  console.log('schedule type: ' + scheduleType);
-
   if (publishType === 'scheduled') {
     publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
     var toIsoDate = $('#date').datepicker("getDate");
