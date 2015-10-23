@@ -232,12 +232,12 @@ function resolveVersionCorrectionTitleT8(collectionId, data, field) {
   var ajaxRequest = [];
   var templateData = $.extend(true, {}, data);
   $(templateData[field]).each(function (index, path) {
-    templateData[field][index].description = {};
+    templateData[field][index].title = '';
     var eachUri = path.uri;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
       success = function (response) {
-        templateData[field][index].description.title = response.title;
+        templateData[field][index].title = response.title;
         dfd.resolve();
       },
       error = function () {
@@ -262,6 +262,8 @@ function resolveVersionCorrectionTitleT8(collectionId, data, field) {
     var htmlCorrection = templates.workEditT8CorrectionList(correctionsTemplate);
     $('#version').replaceWith(htmlVersion);
     $('#correction').replaceWith(htmlCorrection);
+    editDatasetCorrection(collectionId, data, correctionsTemplate, 'versions', 'correction');
+    editDatasetVersion(collectionId, data, correctionsTemplate, 'versions', 'version');
   });
 }
 

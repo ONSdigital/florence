@@ -76,7 +76,7 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
           saveCorrection(collectionId, data.uri, data, templateData, field, idField);
         }, function (response) {
           if (response.status === 400) {
-            alert("Cannot delete a correction that has been published.");
+            alert("You cannot delete a correction that has been published.");
           }
           else {
             handleApiError(response);

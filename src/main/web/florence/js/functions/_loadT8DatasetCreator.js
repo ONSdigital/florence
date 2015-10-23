@@ -71,7 +71,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageTitle, download
           "title": ""       //edition
         },
         "section": parentData.section || {},      //notes
-        "versions": [], //{date, uri, correctionNotice}
+        "versions": [], //{updateDate, uri, correctionNotice}
         "downloads": [],
         "supplementaryFiles": [],
         type: pageType
@@ -96,7 +96,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageTitle, download
           "title": ""       //edition
         },
         "section": parentData.section || {},      //notes
-        "versions": [], //{date, uri, correctionNotice}
+        "versions": [], //{updateDate, uri, correctionNotice}
         "downloads": [],
         "supplementaryFiles": [],
         type: pageType

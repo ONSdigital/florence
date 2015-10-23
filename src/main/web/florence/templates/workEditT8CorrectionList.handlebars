@@ -1,6 +1,8 @@
 {{#each this}}
-  <div id="{{@index}}" class="edit-section__sortable-item">
-    <p id="correction-title_{{@index}}" correction-url="{{this.uri}}">{{this.description.title}}</p>
+  <div id="{{@index}}" class="edit-section__item">
+    <input id="date_{{@index}}" type="text" placeholder="Day month year" value="{{this.date}}"/>
+    <textarea style="display: none;" id="correction-markdown_{{@index}}">{{this.correctionNotice}}</textarea>
     <button class="btn-markdown-edit" id="correction-edit_{{@index}}">Edit</button>
+    <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
   </div>
 {{/each}}
