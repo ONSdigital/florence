@@ -6,9 +6,10 @@
  * @param idField - HTML id for the template
  */
 
-function editDatasetCorrection(collectionId, data, templateData, field, idField) {
+function editDatasetVersion(collectionId, data, templateData, field, idField) {
   var list = data[field];
-  var downloadExtensions, uriUpload, file;
+  var downloadExtensions;
+  var uriUpload;
   var lastIndex = 100;
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
@@ -41,8 +42,7 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
       $('#' + lastIndex).remove();
-
-      editDatasetCorrection(collectionId, data, templateData, field, idField);
+      editDatasetVersion(collectionId, data, templateData, field, idField);
     });
 
     $('#UploadForm').submit(function (e) {
@@ -57,7 +57,7 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
 
       var pageTitle = this[0].value;
       data.description.title = pageTitle;
-      file = this[1].files[0];
+      var file = this[1].files[0];
       if (!file) {
         alert('Please select a file to upload.');
         return;
@@ -74,7 +74,7 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
       //    if (filesUploaded.file == safeUriUpload) {
       //      alert('This file already exists');
       //      $('#' + lastIndex).remove();
-      //      editDatasetCorrection (collectionId, data, templateData, field, idField);
+      //      editDatasetVersion (collectionId, data, templateData, field, idField);
       //      return;
       //    }
       //  });
@@ -88,7 +88,7 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
       } else {
         alert('This file type is not supported');
         $('#' + lastIndex).remove();
-        editDatasetCorrection(collectionId, data, templateData, field, idField);
+        editDatasetVersion(collectionId, data, templateData, field, idField);
         return;
       }
 
@@ -112,7 +112,7 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
               var tmpDate = (new Date()).toISOString();           // it could use releaseDate
               data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
               templateData.push({correctionNotice: "", updateDate: tmpDate, uri: response});
-              initialiseDatasetCorrection(collectionId, data, templateData, field, idField);
+              initialiseDatasetVersion(collectionId, data, templateData, field, idField);
               $("#add-" + idField).remove();
             }, function (response) {
               if (response.status === 409) {
@@ -129,15 +129,15 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
   });
 }
 
-function refreshDatasetCorrection(collectionId, data, templateData, field, idField) {
+function refreshDatasetVersion(collectionId, data, templateData, field, idField) {
   var list = templateData;
   var dataTemplate = {list: list, idField: idField};
-  var html = templates.workEditT8CorrectionList(dataTemplate);
+  var html = templates.workEditT8VersionList(dataTemplate);
   $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
-  initialiseDatasetCorrection(collectionId, data, templateData, field, idField);
+  initialiseDatasetVersion(collectionId, data, templateData, field, idField);
 }
 
-function initialiseDatasetCorrection(collectionId, data, templateData, field, idField) {
+function initialiseDatasetVersion(collectionId, data, templateData, field, idField) {
   // Load
   $(data[field]).each(function (index) {
     dateTmp = data[field][index].updateDate;
@@ -145,15 +145,6 @@ function initialiseDatasetCorrection(collectionId, data, templateData, field, id
     $('#date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data[field][index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
       templateData[index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
-    });
-    $('#' + idField + '-edit_' + index).click(function () {
-      var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
-      var saveContent = function (updatedContent) {
-        data[field][index].correctionNotice = updatedContent;
-        templateData[index].correctionNotice = updatedContent;
-        saveDatasetCorrection(collectionId, data.uri, data, templateData, field, idField);
-      };
-      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
     });
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
@@ -165,7 +156,7 @@ function initialiseDatasetCorrection(collectionId, data, templateData, field, id
           $(this).parent().remove();
           data[field].splice(index, 1);
           templateData.splice(index, 1);
-          saveDatasetCorrection(collectionId, data.uri, data, templateData, field, idField);
+          saveDatasetVersion(collectionId, data.uri, data, templateData, field, idField);
         }, function (response) {
           if (response.status === 400) {
             alert("You cannot delete a correction that has been published.");
@@ -179,12 +170,12 @@ function initialiseDatasetCorrection(collectionId, data, templateData, field, id
   });
 }
 
-function saveDatasetCorrection(collectionId, path, data, templateData, field, idField) {
+function saveDatasetVersion(collectionId, path, data, templateData, field, idField) {
   data.description.releaseDate = data[field][-1].updateDate;
   postContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
-      refreshDatasetCorrection(collectionId, data, templateData, field, idField);
+      refreshDatasetVersion(collectionId, data, templateData, field, idField);
       refreshPreview(data.uri);
     },
     function (response) {

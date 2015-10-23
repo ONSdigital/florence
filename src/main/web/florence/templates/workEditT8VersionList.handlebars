@@ -1,6 +1,7 @@
 {{#each this}}
-  <div id="{{@index}}" class="edit-section__sortable-item">
+  <div id="{{@index}}" class="edit-section__item">
+    <input id="date_{{@index}}" type="text" placeholder="Day month year" value="{{this.date}}"/>
     <p id="version-title_{{@index}}" version-url="{{this.uri}}">{{this.description.title}}</p>
-    <button class="btn-markdown-edit" id="version-edit_{{@index}}">Edit</button>
+    <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
   </div>
 {{/each}}
