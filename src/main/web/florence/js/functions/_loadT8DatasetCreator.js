@@ -1,9 +1,10 @@
 /**
  * Creates data JSON
  * @param collectionId
- * @param releaseDate
+ * @param data
  * @param pageType
- * @param parentUrl
+ * @param pageTitle
+ * @param downloadUrl
  */
 
 function loadT8EditionCreator (collectionId, data, pageType, pageTitle, downloadUrl) {
@@ -15,7 +16,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageTitle, download
 
   function submitNoForm (parentUrl, title, downloadUrl) {
     pageData.description.title = title;
-    pageData.downloads.push({title: title, uri: downloadUrl});
+    pageData.downloads.push({uri: downloadUrl});
     pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'dataset') || (pageType === 'timeseries_dataset')) {

@@ -7,9 +7,8 @@
  */
 
 function editDatasetCorrection(collectionId, data, templateData, field, idField) {
-  var list = data[field];
   var downloadExtensions, uriUpload, file;
-  var lastIndex = 100;
+  var lastIndex = data[field].length;
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
@@ -20,10 +19,10 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
     downloadExtensions = /\.csv$|.xls$|.zip$/;
   }
 
-  $('#add-' + idField).one('click', function () {
+  function addTheCorrection () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
-    $('#sortable-' + idField).append(
+    $('#' + idField).append(
       '<div id="' + lastIndex + '" class="edit-section__item">' +
       '  <form id="UploadForm">' +
       '    <label for="title">Title' +
@@ -41,8 +40,7 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
       $('#' + lastIndex).remove();
-
-      editDatasetCorrection(collectionId, data, templateData, field, idField);
+      initialiseDatasetCorrection(collectionId, data, templateData, field, idField);
     });
 
     $('#UploadForm').submit(function (e) {
@@ -74,7 +72,7 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
       //    if (filesUploaded.file == safeUriUpload) {
       //      alert('This file already exists');
       //      $('#' + lastIndex).remove();
-      //      editDatasetCorrection (collectionId, data, templateData, field, idField);
+      //      editDatasetCorrection(collectionId, data, templateData, field, idField);
       //      return;
       //    }
       //  });
@@ -107,12 +105,13 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
           contentType: false,
           success: function () {
             document.getElementById("response").innerHTML = "File uploaded successfully";
-            // create the new version
+            // create the new correction
             saveNewCorrection(collectionId, data.uri, function (response) {
               var tmpDate = (new Date()).toISOString();           // it could use releaseDate
-              data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
-              templateData.push({correctionNotice: "", updateDate: tmpDate, uri: response});
-              initialiseDatasetCorrection(collectionId, data, templateData, field, idField);
+              data[field].push({correctionNotice: " ", updateDate: tmpDate, uri: response});
+              templateData.push({correctionNotice: " ", updateDate: tmpDate, uri: response});
+              data.downloads = [{file: fileNameNoSpace}];
+              refreshDatasetCorrection(collectionId, data, templateData, field, idField);
               $("#add-" + idField).remove();
             }, function (response) {
               if (response.status === 409) {
@@ -126,25 +125,32 @@ function editDatasetCorrection(collectionId, data, templateData, field, idField)
         });
       }
     });
-  });
+  };
+  addTheCorrection();
 }
 
 function refreshDatasetCorrection(collectionId, data, templateData, field, idField) {
   var list = templateData;
   var dataTemplate = {list: list, idField: idField};
   var html = templates.workEditT8CorrectionList(dataTemplate);
-  $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
+  //$('#' + idField).replaceWith($(html).find('#' + idField));
+  $('#' + idField).replaceWith($(html));
   initialiseDatasetCorrection(collectionId, data, templateData, field, idField);
 }
 
 function initialiseDatasetCorrection(collectionId, data, templateData, field, idField) {
   // Load
+  var list = templateData;
+  var dataTemplate = {list: list, idField: idField};
+  var html = templates.workEditT8CorrectionList(dataTemplate);
+  $('#sortable' + idField).replaceWith($(html));
   $(data[field]).each(function (index) {
     dateTmp = data[field][index].updateDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data[field][index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
       templateData[index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
+      saveDatasetCorrection(collectionId, data.uri, data, templateData, field, idField);
     });
     $('#' + idField + '-edit_' + index).click(function () {
       var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
@@ -167,7 +173,7 @@ function initialiseDatasetCorrection(collectionId, data, templateData, field, id
           templateData.splice(index, 1);
           saveDatasetCorrection(collectionId, data.uri, data, templateData, field, idField);
         }, function (response) {
-          if (response.status === 400) {
+          if (response.status === 404) {
             alert("You cannot delete a correction that has been published.");
           }
           else {
@@ -180,7 +186,7 @@ function initialiseDatasetCorrection(collectionId, data, templateData, field, id
 }
 
 function saveDatasetCorrection(collectionId, path, data, templateData, field, idField) {
-  data.description.releaseDate = data[field][-1].updateDate;
+  data.description.releaseDate = data[field][data[field].length - 1].updateDate;
   postContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
