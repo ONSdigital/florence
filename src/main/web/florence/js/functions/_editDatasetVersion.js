@@ -144,6 +144,7 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
   var dataTemplate = {list: list, idField: idField};
   var html = templates.workEditT8VersionList(dataTemplate);
   $('#sortable-' + idField).replaceWith($(html));
+  var indexToDelete;
   $(data[field]).each(function (index) {
     dateTmp = data[field][index].updateDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
@@ -155,9 +156,8 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
       var result = confirm("Are you sure you want to delete this version?");
-      var indexToDelete;
       if (result === true) {
-        var uriToDelete = $(this).parent().children('#version-title_' + index).attr('version-url');
+        var uriToDelete = $(this).parent().children('#' + idField + '-title_' + index).attr(idField + +'-url');
         _.each(data[field], function (version, index) {
           if (version.uri === uriToDelete) {
             indexToDelete = index;
@@ -184,7 +184,8 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
 }
 
 function saveDatasetVersion(collectionId, path, data, templateData, field, idField) {
-  data.description.releaseDate = data[field][data[field].length - 1].updateDate;
+  //Updates release date of dataset. Not compatible with delete
+  //data.description.releaseDate = data[field][data[field].length - 1].updateDate;
   postContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
