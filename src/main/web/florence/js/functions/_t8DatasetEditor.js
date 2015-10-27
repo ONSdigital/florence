@@ -141,33 +141,6 @@ function datasetEditor(collectionId, data) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.versions.push({correctionNotice: "", date: "", uri: ""});
-    // call the new endpoint to get the uri
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  });
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -251,7 +224,7 @@ function resolveVersionCorrectionTitleT8(collectionId, data, field) {
   $.when.apply($, ajaxRequest).then(function () {
     var dataTemplate = templateData[field];
     var versionsTemplate = [], correctionsTemplate = [];
-    $(dataTemplate).each(function (index, version) {
+    _.each(dataTemplate, function (version) {
       if (version.correctionNotice) {
         correctionsTemplate.push(version);
       } else {
@@ -262,8 +235,19 @@ function resolveVersionCorrectionTitleT8(collectionId, data, field) {
     var htmlCorrection = templates.workEditT8CorrectionList(correctionsTemplate);
     $('#version').replaceWith(htmlVersion);
     $('#correction').replaceWith(htmlCorrection);
-    editDatasetCorrection(collectionId, data, correctionsTemplate, 'versions', 'correction');
-    editDatasetVersion(collectionId, data, correctionsTemplate, 'versions', 'version');
+    initialiseDatasetCorrection(collectionId, data, correctionsTemplate, 'versions', 'correction');
+    initialiseDatasetVersion(collectionId, data, versionsTemplate, 'versions', 'version');
+
+    // Version/Correction section
+    // New version
+    $("#add-version").one('click', function () {
+      editDatasetVersion(collectionId, data, versionsTemplate, 'versions', 'version');
+    });
+    // New correction
+    $("#add-correction").one('click', function () {
+      editDatasetCorrection(collectionId, data, correctionsTemplate, 'versions', 'correction');
+    });
+
   });
 }
 
