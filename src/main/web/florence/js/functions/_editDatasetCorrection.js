@@ -143,7 +143,7 @@ function initialiseDatasetCorrection(collectionId, data, templateData, field, id
   var list = templateData;
   var dataTemplate = {list: list, idField: idField};
   var html = templates.workEditT8CorrectionList(dataTemplate);
-  $('#sortable' + idField).replaceWith($(html));
+  $('#sortable-' + idField).replaceWith(html);
   $(data[field]).each(function (index) {
     dateTmp = data[field][index].updateDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
@@ -165,28 +165,39 @@ function initialiseDatasetCorrection(collectionId, data, templateData, field, id
     $('#' + idField + '-delete_' + index).click(function () {
       var result = confirm("Are you sure you want to delete this correction?");
       if (result === true) {
-        deleteUnpublishedVersion(collectionId, data[field][index].uri, function () {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position;
-          $(this).parent().remove();
-          data[field].splice(index, 1);
-          templateData.splice(index, 1);
-          saveDatasetCorrection(collectionId, data.uri, data, templateData, field, idField);
-        }, function (response) {
-          if (response.status === 404) {
-            alert("You cannot delete a correction that has been published.");
-          }
-          else {
+        var uriToDelete = $(this).parent().children('#' + idField + '-title_' + index).attr(idField + '-url');
+        var oldPageData;
+        getPageData(collectionId, uriToDelete,
+          success = function (response) {
+            oldPageData = response;
+            deleteUnpublishedVersion(collectionId, uriToDelete, function () {
+              var position = $(".workspace-edit").scrollTop();
+              Florence.globalVars.pagePos = position;
+              $(this).parent().remove();
+              data = oldPageData;
+              templateData = $.extend(true, {}, data);
+              saveDatasetCorrection(collectionId, data.uri, data, templateData, field, idField);
+            }, function (response) {
+              if (response.status === 404) {
+                alert("You cannot delete a correction that has been published.");
+              }
+              else {
+                handleApiError(response);
+              }
+            });
+          },
+          error = function (response) {
             handleApiError(response);
           }
-        });
+        );
       }
     });
   });
 }
 
 function saveDatasetCorrection(collectionId, path, data, templateData, field, idField) {
-  data.description.releaseDate = data[field][data[field].length - 1].updateDate;
+  //Updates release date of dataset. Not compatible with delete
+  //data.description.releaseDate = data[field][data[field].length - 1].updateDate;
   postContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
