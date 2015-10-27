@@ -3,24 +3,24 @@
  * @param collectionId
  * @param data
  * @param pageType
- * @param pageTitle
+ * @param pageEdition
  * @param downloadUrl
  */
 
-function loadT8EditionCreator (collectionId, data, pageType, pageTitle, downloadUrl) {
+function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downloadUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
-  var pageTitleTrimmed, newUri, pageData;
+  var pageEditionTrimmed, newUri, pageData;
 
   pageData = pageTypeDataT8(pageType, data);
-  submitNoForm(data.uri, pageTitle, downloadUrl);
+  submitNoForm(data.uri, pageEdition, downloadUrl);
 
-  function submitNoForm (parentUrl, title, downloadUrl) {
-    pageData.description.title = title;
-    pageData.downloads.push({uri: downloadUrl});
-    pageTitleTrimmed = title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+  function submitNoForm (parentUrl, edition, downloadUrl) {
+    pageData.description.edition = edition;
+    pageData.downloads.push({file: downloadUrl});
+    pageEditionTrimmed = edition.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
     if ((pageType === 'dataset') || (pageType === 'timeseries_dataset')) {
-      newUri = makeUrl(parentUrl, pageTitleTrimmed);
+      newUri = makeUrl(parentUrl, pageEditionTrimmed);
     } else {
       alert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
@@ -69,7 +69,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageTitle, download
           "keywords": parentData.description.keywords || [],
           "metaDescription": parentData.description.metaDescription || "",
           "nationalStatistic": parentData.description.nationalStatistic || false,
-          "title": ""       //edition
+          "edition": ""
         },
         "section": parentData.section || {},      //notes
         "versions": [], //{updateDate, uri, correctionNotice}
@@ -94,7 +94,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageTitle, download
           "keywords": parentData.description.keywords || [],
           "metaDescription": parentData.description.metaDescription || "",
           "nationalStatistic": parentData.description.nationalStatistic || false,
-          "title": ""       //edition
+          "edition": ""
         },
         "section": parentData.section || {},      //notes
         "versions": [], //{updateDate, uri, correctionNotice}

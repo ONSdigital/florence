@@ -1,7 +1,7 @@
 <div id="{{idField}}">
   {{#each list}}
     <div id="{{@index}}" class="edit-section__item">
-      <div id="{{../idField}}-title_{{@index}}" {{../idField}}-url="{{this.uri}}">{{this.title}}</div>
+      <div id="{{../idField}}-edition_{{@index}}" {{../idField}}-url="{{this.uri}}">{{this.edition}}</div>
       <input id="date_{{@index}}" type="text" placeholder="Day month year" value="{{this.updateDate}}"/>
       <textarea style="display: none;" id="{{../idField}}-markdown_{{@index}}">{{this.correctionNotice}}</textarea>
       <button class="btn-markdown-edit" id="{{../idField}}-edit_{{@index}}">Edit</button>

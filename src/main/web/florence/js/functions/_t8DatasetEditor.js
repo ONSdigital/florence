@@ -235,8 +235,8 @@ function resolveVersionCorrectionTitleT8(collectionId, data, field) {
     var htmlCorrection = templates.workEditT8CorrectionList(correctionsTemplate);
     $('#version').replaceWith(htmlVersion);
     $('#correction').replaceWith(htmlCorrection);
-    initialiseDatasetCorrection(collectionId, data, correctionsTemplate, 'versions', 'correction');
     initialiseDatasetVersion(collectionId, data, versionsTemplate, 'versions', 'version');
+    initialiseDatasetVersion(collectionId, data, correctionsTemplate, 'versions', 'correction');
 
     // Version/Correction section
     // New version
@@ -245,7 +245,7 @@ function resolveVersionCorrectionTitleT8(collectionId, data, field) {
     });
     // New correction
     $("#add-correction").one('click', function () {
-      editDatasetCorrection(collectionId, data, correctionsTemplate, 'versions', 'correction');
+      editDatasetVersion(collectionId, data, correctionsTemplate, 'versions', 'correction');
     });
 
   });

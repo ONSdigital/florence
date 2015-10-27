@@ -163,7 +163,7 @@ function datasetLandingEditor(collectionId, data) {
 
   function save() {
     // Datasets are uploaded. Save metadata
-    var orderDataset = $("#sortable-dataset").sortable('toArray');
+    var orderDataset = $("#sortable-edition").sortable('toArray');
     $(orderDataset).each(function (indexF, nameF) {
       var file = data.datasets[parseInt(nameF)].uri;
       newDatasets[indexF] = {uri: file};

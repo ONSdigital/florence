@@ -7,10 +7,14 @@
  */
 
 function addDataset(collectionId, data, field, idField) {
-  var list = data[field];
   var downloadExtensions, pageType;
   var uriUpload;
-  var lastIndex = 100;
+  var lastIndex;
+  if (data[field]) {
+    lastIndex = data[field].length;
+  } else {
+    lastIndex = 0
+  }
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
@@ -115,7 +119,7 @@ function addDataset(collectionId, data, field, idField) {
             }
             data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
             // create the dataset
-            loadT8EditionCreator(collectionId, data, pageType, pageTitle, safeUriUpload);
+            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace);
             // on success save parent and child data
           }
         });
