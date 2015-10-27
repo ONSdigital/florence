@@ -87,6 +87,7 @@ function viewCollections(collectionId) {
 
   function populateReleasesDropdown(releases) {
     var releaseSelect = $('#collection-release');
+    releaseSelect.find('option').remove();
     _(_.sortBy(releases, 'uri')).each(function (release) {
       releaseSelect.append(new Option(release.description.title, release.uri));
     });
@@ -94,9 +95,6 @@ function viewCollections(collectionId) {
 
 
   function populateReleases() {
-
-    var releaseSelect = $('#collection-release');
-    releaseSelect.find('option').remove();
     var releases = [];
 
     PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
