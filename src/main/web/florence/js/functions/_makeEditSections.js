@@ -248,7 +248,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
-    addFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
+    addSupplementaryFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
     accordion();
     datasetEditor(collectionId, pageData);
   }
@@ -257,7 +257,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
-    addFile (collectionId, pageData, 'downloads', 'file');  //versions //corrections
+    addSupplementaryFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
     accordion();
     datasetEditor(collectionId, pageData);
   }
