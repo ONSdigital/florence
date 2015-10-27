@@ -85,67 +85,89 @@ function viewCollections(collectionId) {
     });
   }
 
+  function populateReleasesDropdown(releases) {
+    var releaseSelect = $('#collection-release');
+    _(_.sortBy(releases, 'uri')).each(function (release) {
+      releaseSelect.append(new Option(release.description.title, release.uri));
+    });
+  }
+
+
   function populateReleases() {
 
+    var releaseSelect = $('#collection-release');
+    releaseSelect.find('option').remove();
     var releases = [];
-    var baseReleaseUri = "/releasecalendar/data?view=upcoming";
 
-    function getReleasesPage(i, releases) {
-      var dfd = $.Deferred();
-      $.ajax({
-        url: baseReleaseUri + '&page=' + i,
-        type: "get",
-        success: function (data) {
-          _(data.results).each(function (release) {
-            releases.push(release);
-          });
-          dfd.resolve();
-        },
-        error: function (response) {
-          handleApiError(response);
-          dfd.resolve();
-        }
+    PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
+    PopulateReleasesForUri("/releasecalendar/data", releases);
+  }
+
+  function populateRemainingReleasePages(data, releases, baseReleaseUri) {
+    var pageSize = 10;
+    _(data.results).each(function (release) {
+      releases.push(release);
+    });
+
+    console.log("data.numberOfResults:  " + data.numberOfResults + " for " + baseReleaseUri);
+
+    // if there are more results than the existing page size, go get them.
+    if (data.numberOfResults > pageSize) {
+
+
+      var pagesToGet = Math.ceil((data.numberOfResults - pageSize) / pageSize);
+      var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
+
+      for (var i = 2; i < pagesToGet + 2; i++) {
+        var dfd = getReleasesPage(baseReleaseUri, i, releases);
+        pageDataRequests.push(dfd);
+      }
+
+      $.when.apply($, pageDataRequests).then(function () {
+        populateReleasesDropdown(releases);
       });
-      return dfd;
+    } else {
+      populateReleasesDropdown(releases);
     }
+  }
 
+
+  function getReleasesPage(baseReleaseUri, i, releases) {
+
+    console.log("getting page  " + i + " for " + baseReleaseUri);
+
+    var dfd = $.Deferred();
+    $.ajax({
+      url: baseReleaseUri + '&page=' + i,
+      type: "get",
+      success: function (data) {
+        _(data.results).each(function (release) {
+          releases.push(release);
+        });
+        dfd.resolve();
+      },
+      error: function (response) {
+        handleApiError(response);
+        dfd.resolve();
+      }
+    });
+    return dfd;
+  }
+
+
+  function PopulateReleasesForUri(baseReleaseUri, releases) {
+    console.log("populating release for uri " + baseReleaseUri);
     $.ajax({
         url: baseReleaseUri,
         type: "get",
         success: function (data) {
-
-          var pageSize = 10;
-          _(data.results).each(function (release) {
-            releases.push(release);
-          });
-
-          // if there are more results than the existing page size, go get them.
-          if (data.numberOfResults > pageSize) {
-
-            var pagesToGet = Math.ceil((data.numberOfResults - pageSize) / pageSize);
-            var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-
-            for (var i = 2; i < pagesToGet + 2; i++) {
-              var dfd = getReleasesPage(i, releases);
-              pageDataRequests.push(dfd);
-            }
-
-            $.when.apply($, pageDataRequests).then(function () {
-              populateReleasesDropdown(releases);
-            });
-          }
+          populateRemainingReleasePages(data, releases, baseReleaseUri);
         },
         error: function (response) {
           handleApiError(response);
         }
       }
     );
-
-    function populateReleasesDropdown(releases) {
-      var releaseSelect = $('#collection-release');
-      _(_.sortBy(releases, 'uri')).each(function (release) {
-        releaseSelect.append(new Option(release.description.title, release.uri));
-      });
-    }
   }
+
 }
