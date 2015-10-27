@@ -19,9 +19,9 @@ function datasetEditor(collectionId, data) {
   resolveVersionCorrectionTitleT8(collectionId, data, 'versions')
 
   // Metadata edition and saving
-  $("#title").on('input', function () {
+  $("#edition").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.title = $(this).val();
+    data.description.edition = $(this).val();
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -205,12 +205,12 @@ function resolveVersionCorrectionTitleT8(collectionId, data, field) {
   var ajaxRequest = [];
   var templateData = $.extend(true, {}, data);
   $(templateData[field]).each(function (index, path) {
-    templateData[field][index].title = '';
+    templateData[field][index].edition = '';
     var eachUri = path.uri;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
       success = function (response) {
-        templateData[field][index].title = response.title;
+        templateData[field][index].edition = response.edition;
         dfd.resolve();
       },
       error = function () {

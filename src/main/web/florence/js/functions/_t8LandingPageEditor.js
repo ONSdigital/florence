@@ -193,11 +193,12 @@ function resolveTitleT8(collectionId, data, field) {
   var templateData = $.extend(true, {}, data);
   $(templateData[field]).each(function (index, path) {
     templateData[field][index].description = {};
-    var eachUri = path.uri;
+    var eachUri = data.uri + path.uri;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
       success = function (response) {
-        templateData[field][index].description.title = response.title;
+        templateData[field][index].description.edition = response.edition;
+        templateData[field][index].uri = eachUri;
         dfd.resolve();
       },
       error = function () {
@@ -221,7 +222,7 @@ function addEditionEditButton(collectionId, templateData) {
   $(templateData.datasets).each(function (index) {
     $("#edition-edit_" + index).click(function () {
       //open document
-      var selectedVersion = $("#edition-title_" + index).attr('edition-url');
+      var selectedVersion = $("#edition_" + index).attr('edition-url');
       createWorkspace(selectedVersion, collectionId, 'edit');
     });
   });

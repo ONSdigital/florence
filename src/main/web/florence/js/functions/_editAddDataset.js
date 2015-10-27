@@ -13,9 +13,9 @@ function addDataset(collectionId, data, field, idField) {
   if (data[field]) {
     lastIndex = data[field].length;
   } else {
-    lastIndex = 0
+    lastIndex = 0;
   }
-
+  var uploadedNotSaved = {uploaded: false, saved: false, editionUri: ""};
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
   //Add
@@ -48,6 +48,17 @@ function addDataset(collectionId, data, field, idField) {
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
       $('#' + lastIndex).remove();
+      //Check files uploaded and delete them
+      if (uploadedNotSaved.uploaded === true) {
+        data[field].splice(-1, 1);
+        deleteContent(Florence.collection.id, uploadedNotSaved.editionUri,
+          onSuccess = function () {
+          },
+          onError = function (error) {
+            handleApiError(error);
+          }
+        );
+      }
       addDataset(collectionId, pageData, 'datasets', 'edition');
     });
 
@@ -114,10 +125,12 @@ function addDataset(collectionId, data, field, idField) {
           contentType: false,
           success: function () {
             document.getElementById("response").innerHTML = "File uploaded successfully";
+            uploadedNotSaved.fileUrl = safeUriUpload;
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
+            data[field].push({uri: "/" + pageTitleTrimmed});
+            uploadedNotSaved.uploaded = true;
             // create the dataset
             loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace);
             // on success save parent and child data

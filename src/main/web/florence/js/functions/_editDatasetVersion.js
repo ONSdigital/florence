@@ -9,6 +9,7 @@
 function editDatasetVersion(collectionId, data, templateData, field, idField) {
   var downloadExtensions, uriUpload, file;
   var lastIndex = data[field].length;
+  var uploadedNotSaved = {uploaded: false, saved: false, fileUrl: "", oldEdition: data.description.edition};
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
@@ -40,8 +41,17 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
       $('#' + lastIndex).remove();
+      if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
+        data.description.edition = uploadedNotSaved.oldEdition;
+        deleteContent(collectionId, uploadedNotSaved.fileUrl,
+          onSuccess = function () {
+          },
+          onError = function (error) {
+            handleApiError(error);
+          }
+        );
+      }
       initialiseDatasetVersion(collectionId, data, templateData, field, idField);
-      //Check files uploaded and delete them
     });
 
     $('#UploadForm').submit(function (e) {
@@ -106,6 +116,8 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
           contentType: false,
           success: function () {
             document.getElementById("response").innerHTML = "File uploaded successfully";
+            uploadedNotSaved.uploaded = true;
+            uploadedNotSaved.fileUrl = safeUriUpload;
             // create the new version/correction
             saveNewCorrection(collectionId, data.uri, function (response) {
               var tmpDate = (new Date()).toISOString();           // it could use releaseDate
@@ -117,11 +129,15 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
                 templateData.push({correctionNotice: "", updateDate: tmpDate, uri: response});
               }
               data.downloads = [{file: fileNameNoSpace}];
+              uploadedNotSaved.saved = true;
               refreshDatasetVersion(collectionId, data, templateData, field, idField);
               $("#add-" + idField).remove();
             }, function (response) {
               if (response.status === 409) {
                 alert("You can add only one correction before publishing.");
+              }
+              else if (response.status === 404) {
+                alert("You can only add corrections to content that has been published.");
               }
               else {
                 handleApiError(response);
