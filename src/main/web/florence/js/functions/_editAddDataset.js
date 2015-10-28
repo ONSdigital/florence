@@ -129,7 +129,7 @@ function addDataset(collectionId, data, field, idField) {
             if (!data[field]) {
               data[field] = [];
             }
-            data[field].push({uri: "/" + pageTitleTrimmed});
+            data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
             uploadedNotSaved.uploaded = true;
             // create the dataset
             loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace);

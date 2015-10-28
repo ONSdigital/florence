@@ -193,7 +193,7 @@ function resolveTitleT8(collectionId, data, field) {
   var templateData = $.extend(true, {}, data);
   $(templateData[field]).each(function (index, path) {
     templateData[field][index].description = {};
-    var eachUri = data.uri + path.uri;
+    var eachUri = path.uri;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
       success = function (response) {
