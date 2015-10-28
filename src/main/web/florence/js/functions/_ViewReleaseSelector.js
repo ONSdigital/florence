@@ -9,17 +9,24 @@ function viewReleaseSelector() {
   var html = templates.releaseSelector();
   $('body').append(html);
 
-  populateReleases();
+  var releases = [];
 
-  /**
-   * Get the first page of release pages and see if there any others to add.
-   */
-  function populateReleases() {
+  // todo: remove past releases once release calendar migration is complete.
+  // currently loading both past and future releases into the list while migrating
+  PopulateReleasesForUri("/releasecalendar/data", releases);
+  PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
+
+  $('.btn-release-selector-cancel').on('click', function() {
+    $('.release-select').stop().fadeOut(200).remove();
+  });
+
+  function PopulateReleasesForUri(baseReleaseUri, releases) {
+    //console.log("populating release for uri " + baseReleaseUri);
     $.ajax({
         url: baseReleaseUri,
         type: "get",
         success: function (data) {
-          populateAnyOtherPages(data);
+          populateRemainingReleasePages(data, releases, baseReleaseUri);
         },
         error: function (response) {
           handleApiError(response);
@@ -33,26 +40,31 @@ function viewReleaseSelector() {
    * determine if there are any more pages to get.
    * @param data
    */
-  function populateAnyOtherPages(data) {
+  function populateRemainingReleasePages(data, releases, baseReleaseUri) {
     var pageSize = 10;
     _(data.results).each(function (release) {
       releases.push(release);
     });
 
+    //console.log("data.numberOfResults:  " + data.numberOfResults + " for " + baseReleaseUri);
+
     // if there are more results than the existing page size, go get them.
     if (data.numberOfResults > pageSize) {
+
 
       var pagesToGet = Math.ceil((data.numberOfResults - pageSize) / pageSize);
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
       for (var i = 2; i < pagesToGet + 2; i++) {
-        var dfd = getReleasesPage(i, releases);
+        var dfd = getReleasesPage(baseReleaseUri, i, releases);
         pageDataRequests.push(dfd);
       }
 
       $.when.apply($, pageDataRequests).then(function () {
         populateReleasesList(releases);
       });
+    } else {
+      populateReleasesList(releases);
     }
   }
 
@@ -62,7 +74,9 @@ function viewReleaseSelector() {
    * @param releases
    * @returns {*}
    */
-  function getReleasesPage(i, releases) {
+
+  function getReleasesPage(baseReleaseUri, i, releases) {
+    console.log("getting page  " + i + " for " + baseReleaseUri);
     var dfd = $.Deferred();
     $.ajax({
       url: baseReleaseUri + '&page=' + i,
@@ -87,6 +101,7 @@ function viewReleaseSelector() {
    */
   function populateReleasesList(releases) {
     var releaseList = $('#release-list');
+    releaseList.find('tr').remove();
     _(_.sortBy(releases, 'uri')).each(function (release) {
       console.log(release);
       var date = StringUtils.formatIsoFullDateString(release.description.releaseDate);
