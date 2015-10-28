@@ -2,8 +2,8 @@
  * Manage files associated with datasets. When uploading a file creates a new dataset
  * @param collectionId
  * @param data
- * @param field - JSON data key
- * @param idField - HTML id for the template
+ * @param field - JSON data key ('versions')
+ * @param idField - HTML id for the template ('version' or 'correction')
  */
 
 function editDatasetVersion(collectionId, data, templateData, field, idField) {
@@ -20,15 +20,13 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
   }
 
-  function addTheVersion () {
+  function addTheVersion() {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
     $('#' + idField).append(
       '<div id="' + lastIndex + '" class="edit-section__item">' +
       '  <form id="UploadForm">' +
-      '    <label for="edition">Edition' +
-      '      <textarea class="auto-size" type="text" id="edition"></textarea>' +
-      '    </label>' +
+      '    <textarea class="auto-size" type="text" placeholder="Add a label here (E.g. Revised, Final, etc" id="label"></textarea>' +
       '    <input type="file" title="Select a file and click Submit" name="files">' +
       '    <br>' +
       '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
@@ -64,8 +62,8 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
         $('#list').append(source);
       }
 
-      var pageEdition = this[0].value;
-      data.description.edition = pageEdition;
+      var versionLabel = this[0].value;
+      data.description.edition = versionLabel;
       file = this[1].files[0];
       if (!file) {
         alert('Please select a file to upload.');
@@ -77,17 +75,6 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
       var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
       uriUpload = data.uri + '/' + fileNameNoSpace;
       var safeUriUpload = checkPathSlashes(uriUpload);
-
-      //if (data[field] && data[field].length > 0) {
-      //  $(data[field]).each(function (i, filesUploaded) {
-      //    if (filesUploaded.file == safeUriUpload) {
-      //      alert('This file already exists');
-      //      $('#' + lastIndex).remove();
-      //      editDatasetVersion(collectionId, data, templateData, field, idField);
-      //      return;
-      //    }
-      //  });
-      //}
 
       if (!!file.name.match(downloadExtensions)) {
         showUploadedItem(fileNameNoSpace);
@@ -101,7 +88,7 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
         return;
       }
 
-      if (pageEdition.length < 4) {
+      if (versionLabel.length < 4) {
         alert("This is not a valid file title");
         return;
       }
@@ -122,22 +109,24 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
             saveNewCorrection(collectionId, data.uri, function (response) {
               var tmpDate = (new Date()).toISOString();           // it could use releaseDate
               if (idField === "correction") {
-                data[field].push({correctionNotice: " ", updateDate: tmpDate, uri: response});
-                templateData.push({correctionNotice: " ", updateDate: tmpDate, uri: response});
+                data[field].push({correctionNotice: " ", updateDate: data.description.releaseDate, uri: response, label: data.description.versionLabel});
+                templateData.push({correctionNotice: " ", updateDate: data.description.releaseDate, uri: response, label: data.description.versionLabel});
               } else {
-                data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
-                templateData.push({correctionNotice: "", updateDate: tmpDate, uri: response});
+                data[field].push({correctionNotice: "", updateDate: data.description.releaseDate, uri: response, label: data.description.versionLabel});
+                templateData.push({correctionNotice: "", updateDate: data.description.releaseDate, uri: response, label: data.description.versionLabel});
               }
               data.downloads = [{file: fileNameNoSpace}];
+              data.description.versionLabel = versionLabel;
+              data.description.releaseDate = tmpDate;
               uploadedNotSaved.saved = true;
-              refreshDatasetVersion(collectionId, data, templateData, field, idField);
+              saveDatasetVersion(collectionId, data.uri, data, templateData, field, idField);
               $("#add-" + idField).remove();
             }, function (response) {
               if (response.status === 409) {
-                alert("You can add only one correction before publishing.");
+                alert("You can add only one " + idField + " before publishing.");
               }
               else if (response.status === 404) {
-                alert("You can only add corrections to content that has been published.");
+                alert("You can only add " + idField + "s to content that has been published.");
               }
               else {
                 handleApiError(response);
@@ -147,7 +136,7 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
         });
       }
     });
-  };
+  }
   addTheVersion();
 }
 
@@ -181,57 +170,69 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
       templateData[index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
       saveDatasetVersion(collectionId, data.uri, data, templateData, field, idField);
     });
-    $('#' + idField + '-edit_' + index).click(function () {
+    if (idField === 'correction') {
+      $('#' + idField + '-edit_' + index).click(function () {
+        var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
+        var saveContent = function (updatedContent) {
+          data[field][index].correctionNotice = updatedContent;
+          templateData[index].correctionNotice = updatedContent;
+          saveDatasetVersion(collectionId, data.uri, data, templateData, field, idField);
+        };
+        loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
+      });
+    }
+    $('#' + idField + '-edit_label' + index).click(function () {
       var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
       var saveContent = function (updatedContent) {
-        data[field][index].correctionNotice = updatedContent;
-        templateData[index].correctionNotice = updatedContent;
+        data[field][index].label = updatedContent;
+        templateData[index].label = updatedContent;
         saveDatasetVersion(collectionId, data.uri, data, templateData, field, idField);
       };
-      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
+      loadMarkdownEditor(editedSectionValue, saveContent, data);
     });
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
-      var result = confirm("Are you sure you want to delete this correction?");
+      var result = confirm("Are you sure you want to delete this " + idField + "?");
       if (result === true) {
+        var pathToDelete = data.uri;
+        var fileToDelete = data[0].downloads.file;  //Saves always the latest
         var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
-        var oldPageData;
-        getPageData(collectionId, uriToDelete,
-          success = function (response) {
-            oldPageData = response;
-            deleteUnpublishedVersion(collectionId, uriToDelete, function () {
-              var position = $(".workspace-edit").scrollTop();
-              Florence.globalVars.pagePos = position;
-              $(this).parent().remove();
-              data = oldPageData;
-              templateData = $.extend(true, {}, data);
-              saveDatasetVersion(collectionId, data.uri, data, templateData, field, idField);
-            }, function (response) {
-              if (response.status === 404) {
-                alert("You cannot delete a correction that has been published.");
-              }
-              else {
-                handleApiError(response);
-              }
-            });
-          },
-          error = function (response) {
+        deleteUnpublishedVersion(collectionId, uriToDelete, function () {
+          var position = $(".workspace-edit").scrollTop();
+          Florence.globalVars.pagePos = position;
+          $(this).parent().remove();
+          // delete uploaded file
+          deleteContent(collectionId, fileToDelete, function () {
+            console.log("File deleted");
+          }, function (error) {
+            handleApiError(error);
+          });
+          // delete modified data.json and revert to pubished
+          deleteContent(collectionId, pathToDelete, function () {
+            loadPageDataIntoEditor(pathToDelete, collectionId);
+            refreshPreview(pathToDelete);
+          }, function (error) {
+            handleApiError(error);
+          });
+        }, function (response) {
+          if (response.status === 404) {
+            alert("You cannot delete a " + idField + " that has been published.");
+          }
+          else {
             handleApiError(response);
           }
-        );
+        });
       }
     });
   });
 }
 
 function saveDatasetVersion(collectionId, path, data, templateData, field, idField) {
-  //Updates release date of dataset. Not compatible with delete
-  //data.description.releaseDate = data[field][data[field].length - 1].updateDate;
   postContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
       refreshDatasetVersion(collectionId, data, templateData, field, idField);
-      refreshPreview(data.uri);
+      refreshPreview(path);
     },
     function (response) {
       if (response.status === 400) {

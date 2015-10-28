@@ -7,15 +7,16 @@
  * @param downloadUrl
  */
 
-function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downloadUrl) {
+function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downloadUrl, versionLabel) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageEditionTrimmed, newUri, pageData;
 
   pageData = pageTypeDataT8(pageType, data);
-  submitNoForm(data.uri, pageEdition, downloadUrl);
+  submitNoForm(data.uri, pageEdition, downloadUrl, versionLabel);
 
   function submitNoForm (parentUrl, edition, downloadUrl) {
     pageData.description.edition = edition;
+    pageData.description.versionLabel = versionLabel;
     pageData.downloads.push({file: downloadUrl});
     pageEditionTrimmed = edition.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
@@ -58,21 +59,10 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
       return {
         "description": {
           "releaseDate": parentData.description.releaseDate || "",
-          "nextRelease": parentData.description.nextRelease || "",
-          "contact": {
-            "name": parentData.description.contact.name || "",
-            "email": parentData.description.contact.email || "",
-            "telephone": parentData.description.contact.telephone || ""
-          },
-          "summary": parentData.description.contact.summary || "",
-          "datasetId": parentData.description.contact.datasetId || "",
-          "keywords": parentData.description.keywords || [],
-          "metaDescription": parentData.description.metaDescription || "",
-          "nationalStatistic": parentData.description.nationalStatistic || false,
-          "edition": ""
+          "edition": "",
+          "versionLabel": ""
         },
-        "section": parentData.section || {},      //notes
-        "versions": [], //{updateDate, uri, correctionNotice}
+        "versions": [], //{updateDate, uri, correctionNotice, label}
         "downloads": [],
         "supplementaryFiles": [],
         type: pageType
@@ -83,21 +73,11 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
       return {
         "description": {
           "releaseDate": parentData.description.releaseDate || "",
-          "nextRelease": parentData.description.nextRelease || "",
-          "contact": {
-            "name": parentData.description.contact.name || "",
-            "email": parentData.description.contact.email || "",
-            "telephone": parentData.description.contact.telephone || ""
-          },
-          "summary": parentData.description.contact.summary || "",
-          "datasetId": parentData.description.contact.datasetId || "",
-          "keywords": parentData.description.keywords || [],
-          "metaDescription": parentData.description.metaDescription || "",
-          "nationalStatistic": parentData.description.nationalStatistic || false,
-          "edition": ""
+          "edition": "",
+          "versionLabel": ""
         },
         "section": parentData.section || {},      //notes
-        "versions": [], //{updateDate, uri, correctionNotice}
+        "versions": [], //{updateDate, uri, correctionNotice, label}
         "downloads": [],
         "supplementaryFiles": [],
         type: pageType
