@@ -33,9 +33,8 @@ function addDataset(collectionId, data, field, idField) {
     $('#sortable-' + idField).append(
       '<div id="' + lastIndex + '" class="edit-section__item">' +
       '  <form id="UploadForm">' +
-      '    <label for="title">Title' +
-      '      <textarea class="auto-size" type="text" id="title"></textarea>' +
-      '    </label>' +
+      '    <textarea class="auto-size" placeholder="Period (E.g. 2015, August to December 2010, etc." type="text"             id="edition"></textarea>' +
+      '    <textarea class="auto-size" placeholder="Label (E.g. Final, Revised, etc.)" type="text" id="version"></textarea>' +
       '    <input type="file" title="Select a file and click Submit" name="files">' +
       '    <br>' +
       '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
@@ -75,7 +74,9 @@ function addDataset(collectionId, data, field, idField) {
       var pageTitle = this[0].value;
       var pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
-      var file = this[1].files[0];
+      var versionLabel = this[1].value;
+
+      var file = this[2].files[0];
       if (!file) {
         alert('Please select a file to upload.');
         return;
@@ -132,7 +133,7 @@ function addDataset(collectionId, data, field, idField) {
             data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
             uploadedNotSaved.uploaded = true;
             // create the dataset
-            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace);
+            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
             // on success save parent and child data
           }
         });
