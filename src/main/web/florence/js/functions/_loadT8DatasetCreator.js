@@ -76,7 +76,6 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
           "edition": "",
           "versionLabel": ""
         },
-        "section": parentData.section || {},      //notes
         "versions": [], //{updateDate, uri, correctionNotice, label}
         "downloads": [],
         "supplementaryFiles": [],

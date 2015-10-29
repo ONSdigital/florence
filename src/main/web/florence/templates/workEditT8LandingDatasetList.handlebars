@@ -1,6 +1,7 @@
 {{#each this}}
   <div id="{{@index}}" class="edit-section__sortable-item">
     <p id="edition_{{@index}}" edition-url="{{this.uri}}">{{this.description.edition}}</p>
-    <button class="btn-markdown-edit" id="edition-edit_{{@index}}">Edit</button>
+    <button class="btn-markdown-edit" id="edition-edit-label_{{@index}}">Edit title</button>
+    <button class="btn-markdown-edit" id="edition-edit_{{@index}}">Add version</button>
   </div>
 {{/each}}
