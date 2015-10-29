@@ -127,8 +127,9 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
                 data.description.releaseDate = tmpDate;
                 data.description.versionLabel = versionLabel;
                 uploadedNotSaved.saved = true;
+                $("#" + idField).parent().prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+                $("#" + idField).remove();
                 saveDatasetVersion(collectionId, data.uri, data, field, idField);
-                $("#add-" + idField).remove();
               }, function (response) {
                 if (response.status === 409) {
                   alert("You can add only one " + idField + " before publishing.");
@@ -141,6 +142,10 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
                 }
               }
             );
+          },
+          error: function (response) {
+            console.log("Error in creating the version");
+            handleApiError(response);
           }
         });
       }
