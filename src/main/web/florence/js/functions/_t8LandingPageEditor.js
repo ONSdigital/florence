@@ -220,10 +220,41 @@ function resolveTitleT8(collectionId, data, field) {
 function addEditionEditButton(collectionId, templateData) {
   // Load dataset to edit
   $(templateData.datasets).each(function (index) {
+    //open document
+    var selectedEdition = $("#edition_" + index).attr('edition-url');
     $("#edition-edit_" + index).click(function () {
-      //open document
-      var selectedVersion = $("#edition_" + index).attr('edition-url');
-      createWorkspace(selectedVersion, collectionId, 'edit');
+      createWorkspace(selectedEdition, collectionId, 'edit');
+    });
+
+    $('#edition-edit-label_' + index).click(function () {
+      getPageData(collectionId, selectedEdition,
+        success = function (response) {
+          var pageData = response;
+          var editedSectionValue = pageData.description.edition;
+          var saveContent = function (updatedContent) {
+            pageData.description.edition = updatedContent;
+            postContent(collectionId, pageData.uri, JSON.stringify(pageData),
+              success = function (message) {
+                console.log("Updating completed " + message);
+                viewWorkspace(pageData.uri, collectionId, 'edit');
+                refreshPreview(pageData.uri);
+              },
+              error = function (message) {
+                if (message.status === 400) {
+                  alert("Cannot edit this page. It is already part of another collection.");
+                }
+                else {
+                  handleApiError(message);
+                }
+              }
+            )
+          };
+          loadMarkdownEditor(editedSectionValue, saveContent, pageData);
+        },
+        error = function (message) {
+          handleApiError(message);
+        }
+      )
     });
   });
 
@@ -233,3 +264,4 @@ function addEditionEditButton(collectionId, templateData) {
 
   sortableSections();
 }
+
