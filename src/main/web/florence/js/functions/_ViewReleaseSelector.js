@@ -3,9 +3,6 @@
  */
 function viewReleaseSelector() {
 
-  var releases = [];
-  var baseReleaseUri = "/releasecalendar/data?view=upcoming";
-
   var html = templates.releaseSelector();
   $('body').append(html);
 
@@ -19,6 +16,12 @@ function viewReleaseSelector() {
   $('.btn-release-selector-cancel').on('click', function() {
     $('.release-select').stop().fadeOut(200).remove();
   });
+
+  $('release-search-input').on('input', function() {
+    var searchText = this.val();
+    console.log(searchText);
+  });
+
 
   function PopulateReleasesForUri(baseReleaseUri, releases) {
     //console.log("populating release for uri " + baseReleaseUri);
@@ -101,8 +104,9 @@ function viewReleaseSelector() {
    */
   function populateReleasesList(releases) {
     var releaseList = $('#release-list');
-    releaseList.find('tr').remove();
-    _(_.sortBy(releases, 'uri')).each(function (release) {
+    releaseList.find('tr').remove(); // remove existing table entries+
+    _(_.sortBy(releases, function(release) { return release.description.releaseDate }))
+      .each(function (release) {
       console.log(release);
       var date = StringUtils.formatIsoFullDateString(release.description.releaseDate);
       releaseList.append('<tr data-id="' + release.description.title + '" data-uri="' + release.uri + '"><td>' + release.description.title + '</td><td>' + date + '</td></tr>');

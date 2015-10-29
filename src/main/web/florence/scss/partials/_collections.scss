@@ -205,7 +205,7 @@
 
   &-search{
     float: right;
-    width: 430px;
+    width: 320px;
 
     &__input {
       width: 300px;
@@ -228,6 +228,15 @@
 }
 
 
+.release-select-table {
+  &thead {
+    display: block;
+  }
+
+  &tbody {
+
+  }
+}
 
 
 
