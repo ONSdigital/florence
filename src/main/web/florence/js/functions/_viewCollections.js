@@ -98,7 +98,7 @@ function viewCollections(collectionId) {
     var releases = [];
 
     PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
-    PopulateReleasesForUri("/releasecalendar/data", releases);
+    PopulateReleasesForUri("/releasecalendar/data?", releases);
   }
 
   function populateRemainingReleasePages(data, releases, baseReleaseUri) {
