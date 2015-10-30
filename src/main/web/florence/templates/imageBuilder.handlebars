@@ -2,15 +2,36 @@
   <div class="image-builder__inner">
 
     <div id="edit-image" class="image-builder__editor">
-      <form id="upload-image-form">
+
+      <span class="refresh-text">
         <input type="text" id="image-title" placeholder="[Title]" value="{{title}}"/>
+        <input type="text" id="image-subtitle" placeholder="[Subtitle]" value="{{subtitle}}"/>
+        <input type="text" id="image-source" placeholder="[Source]" value="{{source}}"/>
+      </span>
+
+      <label>Alt text <br>
+        <input type="text" id="chart-alt-text" class="refresh-text" placeholder="[Alt text]" value="{{altText}}"/>
+      </label>
+
+      <form id="upload-image-form">
         <input type="file" name="files" id="files">
         <input type="submit" value="Submit">
       </form>
+
+      <textarea id="image-notes" class="refresh-text" placeholder="Add image notes here" rows="4" cols="120">{{notes}}</textarea>
+
     </div>
 
     <div id="preview-image" class="image-builder__preview">
+      <span id="image-title-preview"></span>
+      </br>
+      <span id="image-subtitle-preview"></span>
+
       <div id="image"></div>
+
+      <span id="image-source-preview"></span>
+      <span id="image-notes-preview"></span>
+
     </div>
 
     <div class="image-builder__footer">
