@@ -107,7 +107,7 @@ function viewCollections(collectionId) {
       releases.push(release);
     });
 
-    console.log("data.numberOfResults:  " + data.numberOfResults + " for " + baseReleaseUri);
+    //console.log("data.numberOfResults:  " + data.numberOfResults + " for " + baseReleaseUri);
 
     // if there are more results than the existing page size, go get them.
     if (data.numberOfResults > pageSize) {
@@ -132,7 +132,7 @@ function viewCollections(collectionId) {
 
   function getReleasesPage(baseReleaseUri, i, releases) {
 
-    console.log("getting page  " + i + " for " + baseReleaseUri);
+    //console.log("getting page  " + i + " for " + baseReleaseUri);
 
     var dfd = $.Deferred();
     $.ajax({
