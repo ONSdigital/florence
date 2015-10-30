@@ -9,6 +9,31 @@ function loadImageBuilder(pageData, onSave, image) {
     renderImage(image.uri);
   }
 
+  $('.refresh-text').on('input', function() {
+    renderText();
+  });
+
+  function renderText() {
+
+    $('#image-title-preview').html($('#image-title').val());
+    $('#image-subtitle-preview').html($('#image-subtitle').val());
+    $('#image-source-preview').html($('#image-source').val());
+    var notes = $('#image-notes').val();
+
+    if (notes) {
+      if (typeof Markdown !== 'undefined') {
+        var converter = new Markdown.getSanitizingConverter();
+        Markdown.Extra.init(converter, {
+          extensions: "all"
+        });
+        var notes = converter.makeHtml(notes);
+        $('#image-notes-preview').html(notes);
+      }
+    } else {
+      $('#image-notes-preview').empty();
+    }
+  }
+
   $('#upload-image-form').submit(function (event) {
     $(this).find(':submit').attr('disabled', 'disabled');
     event.preventDefault();
