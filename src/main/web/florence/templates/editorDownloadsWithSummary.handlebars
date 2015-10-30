@@ -8,10 +8,11 @@
             {{#each list}}
                 <div id="{{@index}}" class="edit-section__sortable-item">
                     <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
-                    <textarea id="file-title_{{@index}}" class="add-tooltip" placeholder="Type title here and click edit to add content">{{title}}</textarea>
+                    <textarea id="file-title_{{@index}}" class="add-tooltip" placeholder="Type title here and click
+                    edit to add description">{{title}}</textarea>
                     <textarea style="display: none;" id="file-summary_{{@index}}">{{fileDescription}}</textarea>
                     <div id="file-filename_show_{{@index}}">{{file}}</div>
-                    <button class="btn-markdown-edit" id="file-edit_{{@index}}">Edit</button>
+                    <button class="btn-markdown-edit" id="file-edit_{{@index}}">Edit description</button>
                     <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
                 </div>
             {{/each}}
