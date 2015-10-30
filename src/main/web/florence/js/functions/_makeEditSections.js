@@ -247,7 +247,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'dataset') {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
+    editDatasetVersion(collectionId, pageData, 'versions', 'version');
     addSupplementaryFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
+    editDatasetVersion(collectionId, pageData, 'versions', 'correction');
     accordion();
     datasetEditor(collectionId, pageData);
   }

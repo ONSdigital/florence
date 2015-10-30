@@ -6,19 +6,17 @@
  * @param idField - HTML id for the template ('version' or 'correction')
  */
 
-function editDatasetVersion(collectionId, data, templateData, field, idField) {
+function editDatasetVersion(collectionId, data, field, idField) {
   var downloadExtensions, uriUpload, file;
   var lastIndex;
   if (data[field]) {
     lastIndex = data[field].length;
   } else {
     lastIndex = 0;
+    data[field] = [];
   }
-
   var uploadedNotSaved = {uploaded: false, saved: false, fileUrl: "", oldLabel: data.description.versionLabel};
-
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
-
   //Add
   if (data.type === 'timeseries_dataset') {
     downloadExtensions = /\.csdb$/;
@@ -26,10 +24,34 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
   }
 
+  var ajaxRequest = [];
+  var templateData = $.extend(true, {}, data);
+  $(templateData[field]).each(function (index, version) {
+    var dfd = $.Deferred();
+    if (version.correctionNotice) {
+      templateData[field][index].type = true;
+    } else {
+      templateData[field][index].type = false;
+    }
+    templateData[field][index].label = version.label;
+    dfd.resolve();
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    var html = templates.editorCorrection({idField: idField});
+    $('#' + idField).replaceWith(html);
+    initialiseDatasetVersion(collectionId, data, templateData, field, idField);
+  });
+
+  $("#add-" + idField).one('click', function () {
+    addTheVersion();
+  });
+
   function addTheVersion() {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
-    $('#' + idField).append(
+    $('#' + idField + '-section').append(
       '<div id="' + lastIndex + '" class="edit-section__item">' +
       '  <form id="UploadForm">' +
       '    <textarea class="auto-size" type="text" placeholder="Add a label here (E.g. Revised, Final, etc" id="label"></textarea>' +
@@ -89,7 +111,7 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
       } else {
         alert('This file type is not supported');
         $('#' + lastIndex).remove();
-        editDatasetVersion(collectionId, data, templateData, field, idField);
+        editDatasetVersion(collectionId, data, field, idField);
         return;
       }
 
@@ -133,8 +155,8 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
                 data.description.releaseDate = tmpDate;
                 data.description.versionLabel = versionLabel;
                 uploadedNotSaved.saved = true;
-                $("#" + idField).parent().prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
-                $("#" + idField).remove();
+                $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+                $("#" + idField + '-section').remove();
                 saveDatasetVersion(collectionId, data.uri, data, field, idField);
               }, function (response) {
                 if (response.status === 409) {
@@ -157,7 +179,6 @@ function editDatasetVersion(collectionId, data, templateData, field, idField) {
       }
     });
   }
-  addTheVersion();
 }
 
 function refreshDatasetVersion(collectionId, data, field, idField) {
@@ -176,7 +197,6 @@ function refreshDatasetVersion(collectionId, data, field, idField) {
   });
 
   $.when.apply($, ajaxRequest).then(function () {
-    initialiseDatasetVersion(collectionId, data, templateData, field, idField);
     initialiseDatasetVersion(collectionId, data, templateData, field, idField);
   });
 
