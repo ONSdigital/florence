@@ -9,7 +9,7 @@
 function editDatasetVersion(collectionId, data, templateData, field, idField) {
   var downloadExtensions, uriUpload, file;
   var lastIndex;
-  if (data.field) {
+  if (data[field]) {
     lastIndex = data[field].length;
   } else {
     lastIndex = 0;
