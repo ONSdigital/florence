@@ -1,5 +1,5 @@
 {{#if correction}}
-  <div id="{{idField}}">
+  <div id="{{idField}}-section">
     {{#each list}}
       {{#if this.type}}
         <div id="{{@index}}" class="edit-section__item">
@@ -16,7 +16,7 @@
     {{/each}}
   </div>
 {{else}}
-  <div id="{{idField}}">
+  <div id="{{idField}}-section">
     {{#each list}}
       {{#unless this.type}}
         <div id="{{@index}}" class="edit-section__item">

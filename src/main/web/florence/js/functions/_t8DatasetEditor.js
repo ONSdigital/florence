@@ -16,7 +16,7 @@ function datasetEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  resolveVersionCorrectionTitleT8(collectionId, data, 'versions');
+  //resolveVersionCorrectionTitleT8(collectionId, data, 'versions');
 
   // Save
   var editNav = $('.edit-nav');
@@ -54,37 +54,37 @@ function datasetEditor(collectionId, data) {
   }
 }
 
-function resolveVersionCorrectionTitleT8(collectionId, data, field) {
-  var ajaxRequest = [];
-  var templateData = $.extend(true, {}, data);
-  $(templateData[field]).each(function (index, version) {
-    var dfd = $.Deferred();
-    if (version.correctionNotice) {
-      templateData[field][index].type = true;
-    } else {
-      templateData[field][index].type = false;
-    }
-    templateData[field][index].label = version.label;
-    dfd.resolve();
-    ajaxRequest.push(dfd);
-  });
-
-  $.when.apply($, ajaxRequest).then(function () {
-
-    initialiseDatasetVersion(collectionId, data, templateData, 'versions', 'version');
-    initialiseDatasetVersion(collectionId, data, templateData, 'versions', 'correction');
-
-    // Version/Correction section
-    // New version
-    $("#add-version").one('click', function () {
-      //console.log("clicked");
-      editDatasetVersion(collectionId, data, templateData, 'versions', 'version');
-    });
-
-    // New correction
-    $("#add-correction").one('click', function () {
-      editDatasetVersion(collectionId, data, templateData, 'versions', 'correction');
-    });
-  });
-}
+//function resolveVersionCorrectionTitleT8(collectionId, data, field) {
+//  var ajaxRequest = [];
+//  var templateData = $.extend(true, {}, data);
+//  $(templateData[field]).each(function (index, version) {
+//    var dfd = $.Deferred();
+//    if (version.correctionNotice) {
+//      templateData[field][index].type = true;
+//    } else {
+//      templateData[field][index].type = false;
+//    }
+//    templateData[field][index].label = version.label;
+//    dfd.resolve();
+//    ajaxRequest.push(dfd);
+//  });
+//
+//  $.when.apply($, ajaxRequest).then(function () {
+//
+//    initialiseDatasetVersion(collectionId, data, templateData, 'versions', 'version');
+//    initialiseDatasetVersion(collectionId, data, templateData, 'versions', 'correction');
+//
+//    // Version/Correction section
+//    // New version
+//    $("#add-version").one('click', function () {
+//      //console.log("clicked");
+//      editDatasetVersion(collectionId, data, templateData, 'versions', 'version');
+//    });
+//
+//    // New correction
+//    $("#add-correction").one('click', function () {
+//      editDatasetVersion(collectionId, data, templateData, 'versions', 'correction');
+//    });
+//  });
+//}
 
