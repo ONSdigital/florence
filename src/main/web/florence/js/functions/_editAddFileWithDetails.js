@@ -29,7 +29,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
           Florence.globalVars.pagePos = position;
           $(this).parent().remove();
           $.ajax({
-            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+            url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + data[field][index].file,
             type: "DELETE",
             success: function (res) {
               console.log(res);
@@ -102,12 +102,12 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
       var file = this[0].files[0];
       var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
-      uriUpload = data.uri + "/" + fileNameNoSpace;
-      var safeUriUpload = checkPathSlashes(uriUpload);
+      //uriUpload = data.uri + "/" + fileNameNoSpace;
+      uriUpload = "/" + fileNameNoSpace;    //make file path relative
 
       if (data[field].length > 0) {
         $(data[field]).each(function (i, filesUploaded) {
-          if (filesUploaded.file == safeUriUpload) {
+          if (filesUploaded.file == uriUpload) {
             alert('This file already exists');
             $('#' + lastIndex).remove();
             addFile(collectionId, data, field, idField);
@@ -129,7 +129,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
       if (formdata) {
         $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+          url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + uriUpload,
           type: 'POST',
           data: formdata,
           cache: false,
@@ -137,7 +137,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
           contentType: false,
           success: function (res) {
             document.getElementById("response").innerHTML = "File uploaded successfully";
-            data[field].push({title: '', file: safeUriUpload});
+            data[field].push({title: '', file: uriUpload});
             updateContent(collectionId, data.uri, JSON.stringify(data));
           }
         });
