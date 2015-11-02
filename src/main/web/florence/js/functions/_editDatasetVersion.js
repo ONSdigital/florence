@@ -161,9 +161,23 @@ function editDatasetVersion(collectionId, data, field, idField) {
               }, function (response) {
                 if (response.status === 409) {
                   alert("You can add only one " + idField + " before publishing.");
+                  deleteContent(collectionId, uploadedNotSaved.fileUrl,
+                    onSuccess = function () {
+                    },
+                    onError = function (error) {
+                      handleApiError(error);
+                    }
+                  );
                 }
                 else if (response.status === 404) {
                   alert("You can only add " + idField + "s to content that has been published.");
+                  deleteContent(collectionId, uploadedNotSaved.fileUrl,
+                    onSuccess = function () {
+                    },
+                    onError = function (error) {
+                      handleApiError(error);
+                    }
+                  );
                 }
                 else {
                   handleApiError(response);
@@ -172,7 +186,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
             );
           },
           error: function (response) {
-            console.log("Error in creating the version");
+            console.log("Error in uploading this file");
             handleApiError(response);
           }
         });
@@ -212,7 +226,7 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
     correction = false;
   }
   var dataTemplate = {list: list, idField: idField, correction: correction};
-  var html = templates.workEditT8CorrectionList(dataTemplate);
+  var html = templates.workEditT8VersionList(dataTemplate);
   $('#sortable-' + idField).replaceWith(html);
   $(data[field]).each(function (index) {
     dateTmp = data[field][index].updateDate;
@@ -244,7 +258,7 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
       var result = confirm("Are you sure you want to delete this " + idField + "?");
       if (result === true) {
         var pathToDelete = data.uri;
-        var fileToDelete = data.downloads[0].file;  //Saves always the latest
+        var fileToDelete = pathToDelete + data.downloads[0].file;  //Saves always the latest
         var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
         deleteUnpublishedVersion(collectionId, uriToDelete, function () {
           var position = $(".workspace-edit").scrollTop();
