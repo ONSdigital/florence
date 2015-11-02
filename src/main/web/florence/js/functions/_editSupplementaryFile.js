@@ -51,13 +51,7 @@ function addSupplementaryFile(collectionId, data, field, idField) {
   }
 
   //Add
-  if (data.type === 'dataset') {
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
-  } else if (data.type === 'timeseries_dataset') {
-    downloadExtensions = /\.csdb$/;
-  } else {
-    alert('This file type is not valid. Contact an administrator to add this type of file in this document');
-  }
+  downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
 
   $('#add-' + idField).one('click', function () {
       var position = $(".workspace-edit").scrollTop();
