@@ -171,7 +171,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               }
             }
 
-            else if ((field === 'relatedDatasets' || field === 'datasets') && (result.type === 'dataset' || result.type === 'reference_tables')) {
+            else if ((field === 'relatedDatasets' || field === 'datasets') && (result.type === 'dataset_landing_page' || result.type === 'compendium_data')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];
@@ -185,7 +185,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               }
             }
 
-            else if ((field === 'relatedData') && (result.type === 'timeseries_dataset' || result.type === 'timeseries' || result.type === 'dataset' || result.type === 'reference_tables')) {
+            else if ((field === 'relatedData') && (result.type === 'dataset_landing_page' || result.type === 'timeseries' || result.type === 'compendium_data')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];
