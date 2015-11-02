@@ -143,6 +143,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
+    editCompendiumDatasetCorrection(collectionId, pageData, 'versions', 'correction');
     accordion();
     compendiumDataEditor(collectionId, pageData);
   }
