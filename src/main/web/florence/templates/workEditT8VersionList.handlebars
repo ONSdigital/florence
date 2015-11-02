@@ -1,0 +1,33 @@
+{{#if correction}}
+  <div id="{{idField}}-section">
+    {{#each list}}
+      {{#if this.type}}
+        <div id="{{@index}}" class="edit-section__item">
+          <div id="correction-edition_{{@index}}" correction-url="{{this.uri}}">{{this.label}}</div>
+          <input id="correction-date_{{@index}}" type="text" placeholder="Day month year"
+                 value="{{this.updateDate}}"/>
+          <textarea style="display: none;" id="correction-markdown_{{@index}}">{{this.correctionNotice}}</textarea>
+          <textarea style="display: none;" id="correction-markdown-label_{{@index}}">{{this.label}}</textarea>
+          <button class="btn-markdown-edit" id="correction-edit-label_{{@index}}">Edit label</button>
+          <button class="btn-markdown-edit" id="correction-edit_{{@index}}">Edit notice</button>
+          <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
+        </div>
+      {{/if}}
+    {{/each}}
+  </div>
+{{else}}
+  <div id="{{idField}}-section">
+    {{#each list}}
+      {{#unless this.type}}
+        <div id="{{@index}}" class="edit-section__item">
+          <div id="version-edition_{{@index}}" version-url="{{this.uri}}">{{this.label}}</div>
+          <input id="version-date_{{@index}}" type="text" placeholder="Day month year"
+                 value="{{this.updateDate}}"/>
+          <textarea style="display: none;" id="version-markdown-label_{{@index}}">{{this.label}}</textarea>
+          <button class="btn-markdown-edit" id="version-edit-label_{{@index}}">Edit label</button>
+          <button class="btn-page-delete" id="version-delete_{{@index}}">Delete</button>
+        </div>
+      {{/unless}}
+    {{/each}}
+  </div>
+{{/if}}
