@@ -20,8 +20,8 @@ function editAlert(collectionId, data, templateData, field, idField) {
       templateData[field] = [];
     }
     var tmpDate = (new Date()).toISOString();
-    data[field].push({markdown: "", date: tmpDate});
-    templateData[field].push({markdown: "", date: tmpDate});
+    data[field].push({markdown: "", date: tmpDate, type: "alert"});
+    templateData[field].push({markdown: "", date: tmpDate, type: "alert"});
     saveAlert(collectionId, data.uri, data, templateData, field, idField);
   });
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
@@ -53,6 +53,29 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
       };
       loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
     });
+
+    var correctionCheck;
+    if (data[field][index].type === 'correction') {
+      correctionCheck = 'checked';
+    } else if (data[field][index].type === 'alert') {
+      correctionCheck = 'unchecked';
+    }
+
+    if (data.type === 'dataset_landing_page' || data.type === 'compendium_landing_page') {
+      $('#correction-container').append('<label for="correction-alert">Correction' +
+        '<input id="correction-alert" type="checkbox" value="value" ' + correctionCheck + '/></label>');
+    }
+
+    $('#correction-container input:checkbox').change(function () {
+      if ($(this).prop('checked') === true) {
+        data[field][index].type = 'correction';
+      }
+      else {
+        data[field][index].type = 'alert';
+      }
+      saveAlert(collectionId, data.uri, data, templateData, field, idField);
+    });
+
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
       var result = confirm("Are you sure you want to delete this alert?");
