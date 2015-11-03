@@ -827,6 +827,28 @@ input[type="checkbox"] {
 
 }
 
+#correction-container {
+  width: 47%;
+  //height: 41px;
+  float: left;
+  //margin-bottom: $gutter;
+
+  label {
+    margin: 0;
+    margin-bottom: $gutter;
+    padding: 1rem 0;;
+    height: $lineheight;
+    float: right;
+  }
+
+  input[type="checkbox"] {
+    margin-left: $gutter;
+    float: right;
+    width: auto;
+  }
+
+}
+
 .overlay {
   background-color: rgba($black, 0.5);
   position: absolute;
