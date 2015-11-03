@@ -33,13 +33,19 @@ function initialiseImagesList(data, collectionId) {
       if (result === true) {
         $("#image_" + index).remove();
         // delete any files associated with the image.
-        deleteContent(collectionId, image.uri,
-          onSuccess = function () {
-          },
-          onError = function (error) {
-            handleApiError(error);
-          });
 
+        _.each(image.files, function(file) {
+          var fileUri = basePath + file.filename;
+          console.log('deleting ' + fileUri);
+          deleteContent(collectionId, fileUri,
+            onSuccess = function () {
+            },
+            onError = function (error) {
+              handleApiError(error);
+            });
+        });
+
+        console.log('deleting ' + imageJson);
         // delete the image json file
         deleteContent(collectionId, imageJson,
           onSuccess = function () {
