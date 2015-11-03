@@ -1,19 +1,34 @@
+/**
+ * Load the image builder screen. This screen is for adding images that cannot be built using the chart
+ * builder, hence the additional parameters in the builder that imitate a chart.
+ * @param pageData - The data for the page the image is being added to.
+ * @param onSave - The function to call when the image is saved and the image builder is closed.
+ * @param image - The existing image object if an existing image is being edited.
+ */
 function loadImageBuilder(pageData, onSave, image) {
+
   var image = image;
   var pageUrl = pageData.uri;
+
+  // render the template for the image builder screen
   var html = templates.imageBuilder(image);
-  var uploadedNotSaved = {uploadedImage: false, uploadedData: false, saved: false, image: "", data: ""};
-
-  var imageFileKey = "uploaded-image";
-  var dataFileKey = "uploaded-data";
-
   $('body').append(html);
 
+  // Holds state for the image builder screen with regards to what actions have been taken.
+  var uploadedNotSaved = {uploadedImage: false, uploadedData: false, saved: false, image: "", data: ""};
+
+  // The files uploaded as part of the image creation are stored in an array on the image object.
+  // These keys identify the different types of files that can be added.
+  var imageFileKey = "uploaded-image"; // The actual image shown on screen
+  var dataFileKey = "uploaded-data"; // The associated data file for the image.
+
+  // if we are passing an existing image to the builder, go ahead and show it.
   if (image) {
     renderImage(getImageUri());
     renderText();
   }
 
+  // If any text fields on the form are changed, update them.
   $('.refresh-text').on('input', function () {
     renderText();
   });
@@ -80,8 +95,8 @@ function loadImageBuilder(pageData, onSave, image) {
         success = function () {
           image.files.push({type: dataFileKey, filename: fileName});
           renderImage(getImageUri());
-          uploadedNotSaved.uploadedImage = true;
-          uploadedNotSaved.image = filePath;
+          uploadedNotSaved.uploadedData = true;
+          uploadedNotSaved.data = filePath;
         })
     }
 
@@ -109,12 +124,12 @@ function loadImageBuilder(pageData, onSave, image) {
     if (onSave) {
       onSave(image.filename, '<ons-image path="' + imageFileName + '" />');
     }
-    $('.image-builder').stop().fadeOut(200).remove();
+    closeImageBuilderScreen();
 
   });
 
   $('.btn-image-builder-cancel').on('click', function () {
-    $('.image-builder').stop().fadeOut(200).remove();
+    closeImageBuilderScreen();
     if (uploadedNotSaved.uploadedImage === true && uploadedNotSaved.saved === false) {
       deleteContent(Florence.collection.id, uploadedNotSaved.image,
         onSuccess = function () {
@@ -126,13 +141,17 @@ function loadImageBuilder(pageData, onSave, image) {
     }
   });
 
+  function closeImageBuilderScreen() {
+    $('.image-builder').stop().fadeOut(200).remove();
+  }
+
   function renderText() {
 
     $('#image-title-preview').html($('#image-title').val());
     $('#image-subtitle-preview').html($('#image-subtitle').val());
     $('#image-source-preview').html($('#image-source').val());
-    var notes = $('#image-notes').val();
 
+    var notes = $('#image-notes').val();
     if (notes) {
       if (typeof Markdown !== 'undefined') {
         var converter = new Markdown.getSanitizingConverter();
@@ -161,7 +180,6 @@ function loadImageBuilder(pageData, onSave, image) {
   }
 
   function uploadFile(path, formData, success) {
-    // send image file to zebedee
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + path,
       type: 'POST',
