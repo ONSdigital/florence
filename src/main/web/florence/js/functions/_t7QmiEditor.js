@@ -1,6 +1,6 @@
 function qmiEditor(collectionId, data) {
 
-  var newFiles = [];
+  var newFiles = [], newDocument = [], newDataset = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -190,6 +190,22 @@ function qmiEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexD, nameD) {
+      var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocument[indexD] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocument;
+    // Related dataset
+    var orderDataset = $("#sortable-dataset").sortable('toArray');
+    $(orderDataset).each(function (indexData, nameData) {
+      var uri = data.relatedDataset[parseInt(nameData)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDataset[indexData] = {uri: safeUri};
+    });
+    data.relatedDataset = newDataset;
   }
 }
 

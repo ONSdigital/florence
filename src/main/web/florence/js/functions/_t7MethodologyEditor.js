@@ -1,6 +1,6 @@
 function methodologyEditor(collectionId, data) {
 
-  var newSections = [];
+  var newSections = [], newTabs = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -19,6 +19,14 @@ function methodologyEditor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
+  });
+  $("#releaseDate").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.releaseDate = $(this).val();
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -111,6 +119,14 @@ function methodologyEditor(collectionId, data) {
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
+    // Tabs
+    var orderTab = $("#sortable-tab").sortable('toArray');
+    $(orderTab).each(function (indexT, nameT) {
+      var markdown = data.accordion[parseInt(nameT)].markdown;
+      var title = $('#tab-title_' + nameT).val();
+      newTabs[indexT] = {title: title, markdown: markdown};
+    });
+    data.accordion = newTabs;
   }
 }
 

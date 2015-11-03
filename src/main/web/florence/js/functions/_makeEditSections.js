@@ -156,23 +156,23 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     staticLandingPageEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'static_article') {
-    var html = templates.workEditT4Methodology(templateData);
-    $('.workspace-menu').html(html);
-    if (pageData.charts) {
-      loadChartsList(pageData, collectionId);
-    }
-    if (pageData.tables) {
-      loadTablesList(pageData, collectionId);
-    }
-    if (pageData.images) {
-      loadImagesList(pageData, collectionId);
-    }
-    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
-    editLink (collectionId, pageData, 'links', 'link');
-    accordion();
-    methodologyEditor(collectionId, pageData);
-  }
+  //else if (pageData.type === 'static_article') {
+  //  var html = templates.workEditT4Methodology(templateData);
+  //  $('.workspace-menu').html(html);
+  //  if (pageData.charts) {
+  //    loadChartsList(pageData, collectionId);
+  //  }
+  //  if (pageData.tables) {
+  //    loadTablesList(pageData, collectionId);
+  //  }
+  //  if (pageData.images) {
+  //    loadImagesList(pageData, collectionId);
+  //  }
+  //  editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+  //  editLink (collectionId, pageData, 'links', 'link');
+  //  accordion();
+  //  methodologyEditor(collectionId, pageData);
+  //}
 
   else if (pageData.type === 'static_page') {
     var html = templates.workEditT7(templateData);
@@ -226,6 +226,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
       loadImagesList(pageData, collectionId);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
+    editMarkdown (collectionId, pageData, 'accordion', 'tab');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     methodologyEditor(collectionId, pageData);
