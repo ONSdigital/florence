@@ -250,7 +250,7 @@ function releaseEditor(collectionId, data) {
     data.relatedDocuments = [];
     data.relatedDatasets = [];
     _.each(pages.inProgress, function (page) {
-      if (page.type === 'article' || page.type === 'bulletin') {
+      if (page.type === 'article' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
         data.relatedDocuments.push({uri: page.uri});
         console.log(page.uri);
       } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
@@ -258,18 +258,18 @@ function releaseEditor(collectionId, data) {
       }
     });
     _.each(pages.complete, function (page) {
-      if (page.type === 'article' || page.type === 'bulletin') {
+      if (page.type === 'article' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
         data.relatedDocuments.push({uri: page.uri});
         console.log(page.uri);
-      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+      } else if (page.type === 'dataset_landing_page') {
         data.relatedDatasets.push({uri: page.uri});
       }
     });
     _.each(pages.reviewed, function (page) {
-      if (page.type === 'article' || page.type === 'bulletin') {
+      if (page.type === 'article' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
         data.relatedDocuments.push({uri: page.uri});
         console.log(page.uri);
-      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+      } else if (page.type === 'dataset_landing_page') {
         data.relatedDatasets.push({uri: page.uri});
       }
     });
