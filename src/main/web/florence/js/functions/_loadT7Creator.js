@@ -130,19 +130,22 @@ function pageTypeDataT7(pageType) {
           "email": "",
           "telephone": ""
         },
-        "summary": "",
-        "keywords": [],
-        "metaDescription": "",
         "title": "",
-        "releaseDate": ""
+        "summary": "",
+        "releaseDate": "",
+        "keywords": [],
+        "metaDescription": ""
       },
       "sections": [],
       "accordion": [],
       "charts": [],
       "tables": [],
       "images": [],
+      "relatedDocuments": [],
+      "relatedDatasets": [],
       type: pageType,
       "downloads":[],
+      "alerts": [],
       "links" : []
     };
   } else if (pageType === "static_qmi") {
@@ -166,6 +169,8 @@ function pageTypeDataT7(pageType) {
       },
       "markdown": [],
       "downloads": [],
+      "relatedDocuments": [],
+      "relatedDatasets": [],
       type: pageType,
       "fileName": "",
       "links" : []
