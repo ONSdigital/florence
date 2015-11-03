@@ -68,7 +68,7 @@ function foiEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
