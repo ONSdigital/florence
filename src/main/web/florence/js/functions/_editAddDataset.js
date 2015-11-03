@@ -126,7 +126,6 @@ function addDataset(collectionId, data, field, idField) {
           contentType: false,
           success: function () {
             document.getElementById("response").innerHTML = "File uploaded successfully";
-            uploadedNotSaved.fileUrl = safeUriUpload;
             if (!data[field]) {
               data[field] = [];
             }
