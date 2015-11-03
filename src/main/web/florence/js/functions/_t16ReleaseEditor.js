@@ -253,7 +253,7 @@ function releaseEditor(collectionId, data) {
       if (page.type === 'article' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
         data.relatedDocuments.push({uri: page.uri});
         console.log(page.uri);
-      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+      } else if (page.type === 'dataset_landing_page') {
         data.relatedDatasets.push({uri: page.uri});
       }
     });
