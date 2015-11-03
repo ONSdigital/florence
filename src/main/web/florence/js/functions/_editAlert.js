@@ -62,7 +62,7 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
     }
 
     if (data.type === 'dataset_landing_page' || data.type === 'compendium_landing_page') {
-      $('#correction-container').append('<label for="correction-alert">Correction' +
+      $('#correction-container_' + index).append('<label for="correction-alert">Correction' +
         '<input id="correction-alert" type="checkbox" value="value" ' + correctionCheck + '/></label>');
     }
 
