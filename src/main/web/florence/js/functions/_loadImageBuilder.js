@@ -50,12 +50,15 @@ function loadImageBuilder(pageData, onSave, image) {
     var image = buildJsonObjectFromForm();
     var imagePath = image.uri + '.' + fileExtension;
     var imageFileName = image.filename + '.' + fileExtension;
+    var fileExists = getExistingFileName(image, imageFileKey);
 
     uploadFile(
       imagePath,
       formData,
       success = function () {
-        image.files.push({type: imageFileKey, filename: imageFileName});
+        if (!fileExists) {
+          image.files.push({type: imageFileKey, filename: imageFileName, fileType: fileExtension});
+        }
         renderImage(getImageUri());
         uploadedNotSaved.uploadedImage = true;
         uploadedNotSaved.image = imagePath;
@@ -80,12 +83,15 @@ function loadImageBuilder(pageData, onSave, image) {
     var image = buildJsonObjectFromForm();
     var filePath = image.uri + '.' + fileExtension;
     var fileName = image.filename + '.' + fileExtension;
+    var fileExists = getExistingFileName(image, dataFileKey);
 
     uploadFile(
       filePath,
       formData,
       success = function () {
-        image.files.push({type: dataFileKey, filename: fileName});
+        if (!fileExists) {
+          image.files.push({type: dataFileKey, filename: fileName, fileType: fileExtension});
+        }
         renderImage(getImageUri());
         uploadedNotSaved.uploadedData = true;
         uploadedNotSaved.data = filePath;
@@ -98,14 +104,14 @@ function loadImageBuilder(pageData, onSave, image) {
 
     var image = buildJsonObjectFromForm();
 
-    if(!image.title) {
+    if (!image.title) {
       alert("Please enter a title for the image.");
       return;
     }
 
     var imageFileName = getExistingFileName(image, imageFileKey);
 
-    if(!imageFileName) {
+    if (!imageFileName) {
       alert("Please upload an image");
       return;
     }
@@ -113,7 +119,7 @@ function loadImageBuilder(pageData, onSave, image) {
     saveImageJson(image);
 
     if (onSave) {
-      onSave(image.filename, '<ons-image path="' + imageFileName + '" />');
+      onSave(image.filename, '<ons-image path="' + image.filename + '" />');
     }
     closeImageBuilderScreen();
 
@@ -192,7 +198,7 @@ function loadImageBuilder(pageData, onSave, image) {
   }
 
   function getImageFilename() {
-    return  getExistingFileName(image, imageFileKey)
+    return getExistingFileName(image, imageFileKey)
   }
 
   // for any figure object, iterate the files and return the file path for the given key.
@@ -246,6 +252,7 @@ function loadImageBuilder(pageData, onSave, image) {
       image = {};
     }
 
+    image.type = "image";
     // give the image a unique ID if it does not already have one.
     image.filename = image.filename ? image.filename : StringUtils.randomId();
     image.title = $('#image-title').val();
