@@ -154,7 +154,6 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
       document.getElementById("response").innerHTML = "Uploading . . .";
 
       var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
-      uriUpload = '/' + fileNameNoSpace;
 
       if (!!file.name.match(downloadExtensions)) {
         showUploadedItem(fileNameNoSpace);
@@ -170,7 +169,7 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
 
       if (formdata) {
         $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + uriUpload,
+          url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + '/' + fileNameNoSpace,
           type: 'POST',
           data: formdata,
           cache: false,
@@ -180,8 +179,8 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
             document.getElementById("response").innerHTML = "File uploaded successfully";
             uploadedNotSaved.uploaded = true;
             $('#file-added_' + index).remove();
-            $('#correction-filename_show_' + index).replaceWith('<p id="correction-filename_show_' + index + '">' + uriUpload + '</p>');
-            data.downloads[index].file = uriUpload;
+            $('#correction-filename_show_' + index).replaceWith('<p id="correction-filename_show_' + index + '">' + fileNameNoSpace + '</p>');
+            data.downloads[index].file = fileNameNoSpace;
           },
           error: function (response) {
             console.log("Error in uploading this file");
