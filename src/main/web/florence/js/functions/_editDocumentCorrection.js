@@ -51,8 +51,9 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
     dateTmp = data[field][index].updateDate;
     var dateTmpCorr = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#correction-date_' + index).val(dateTmpCorr).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data[field][index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
-      templateData[field][index].updateDate = new Date($('#date_' + index).datepicker('getDate')).toISOString();
+      data[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
+      templateData[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
+      saveCorrection(collectionId, data.uri, data, templateData, field, idField);
     });
     $('#' + idField + '-edit_' + index).click(function () {
       var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
