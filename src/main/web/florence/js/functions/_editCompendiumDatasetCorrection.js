@@ -11,7 +11,8 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
   if (!data[field]) {
     data[field] = [];
   }
-  var uploadedNotSaved = {uploaded: false, saved: false, fileUrl: data.downloads};
+  var oldFile = $.extend(true, {}, data);
+  var uploadedNotSaved = {uploaded: false, saved: false, files: oldFile.downloads};
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
   //Add file types
   downloadExtensions = /\.csv$|.xls$|.zip$/;
@@ -20,6 +21,9 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
 
 
   $("#add-" + idField).one('click', function () {
+
+    $("#add-" + idField).parent().append('<button class="btn-page-delete"' +
+      ' id="cancel-correction">Cancel</button>');
     //Display the list of uploaded files in the ref table
     var list = data.downloads;
     var html = templates.editorCompendiumDatasetFiles(list);
@@ -32,6 +36,24 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
       }).children().click(function (e) {
         e.stopPropagation();
       });
+    });
+
+    //Cancel the corrections
+    $('#cancel-correction').click(function () {
+      //Check the files uploaded
+      var filesToDelete = checkFilesUploaded (uploadedNotSaved.files, data.downloads);
+      if (filesToDelete) {
+        _.each(filesToDelete, function (file) {
+          fileToDelete = data.uri + file;
+          deleteContent(collectionId, fileToDelete, function () {
+            console.log("File deleted");
+          }, function (error) {
+            console.log(error);
+          });
+        });
+      }
+      loadPageDataIntoEditor(data.uri, collectionId);
+      refreshPreview(data.uri);
     });
 
     //Save the correction
@@ -100,8 +122,8 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
       e.preventDefault();
       $('#file-added_' + index).remove();
       if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
-        data.downloads[index].file = uploadedNotSaved.fileUrl[index].file;
-        var fileToDelete = data.uri + uploadedNotSaved.fileUrl[index].file;
+        data.downloads[index].file = uploadedNotSaved.files[index].file;
+        var fileToDelete = data.uri + uploadedNotSaved.files[index].file;
         deleteContent(collectionId, fileToDelete,
           onSuccess = function () {
           },
@@ -201,7 +223,8 @@ function initialiseCompendiumDatasetCorrection(collectionId, data, field, idFiel
 
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
-      var result = confirm("Are you sure you want to delete this " + idField + "?");
+      var result = confirm("This will revert all changes you have made in this file. Are you sure you want to delete" +
+        " this " + idField + "?");
       if (result === true) {
         var pathToDelete = data.uri;
         var filesToDelete = data.downloads;  //Delete all files in directory
@@ -257,4 +280,12 @@ function saveCompendiumDatasetCorrection(collectionId, path, data, field, idFiel
   );
 }
 
-
+function checkFilesUploaded (oldFiles, newFiles) {
+  var diff = [];
+  _.each(oldFiles, function (oldFile, i) {
+    if (oldFile.file !== newFiles[i].file) {
+      diff.push(newFiles[i].file);
+    }
+  });
+  return diff;
+}
