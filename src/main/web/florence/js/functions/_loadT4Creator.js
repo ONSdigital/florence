@@ -146,10 +146,10 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
           },
           "title": "",
           "summary": "",
-          "keywords": [],
           "edition": "",
           "releaseDate": "",
           "nextRelease": "",
+          "keywords": [],
           "metaDescription": "",
         },
         "sections": [],
@@ -162,6 +162,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "images": [],
+        "alerts": [],
         "corrections": [],
         type: pageType
       };
@@ -177,13 +178,13 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
             "email": "",
             "telephone": ""
           },
+          "title": "",
           "_abstract": "",
           "authors": [],
+          "nationalStatistic": false,
+          "releaseDate": "",
           "keywords": [],
           "metaDescription": "",
-          "nationalStatistic": false,
-          "title": "",
-          "releaseDate": "",
         },
         "sections": [],
         "accordion": [],
@@ -195,6 +196,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "images": [],
+        "alerts": [],
         "corrections": [],
         type: pageType
       };
