@@ -26,6 +26,7 @@ function loadImageBuilder(pageData, onSave, image) {
   if (image) {
     renderImage(getImageUri());
     renderText();
+    uploadedNotSaved.saved = true;
   }
 
   // If any text fields on the form are changed, update them.
@@ -50,20 +51,15 @@ function loadImageBuilder(pageData, onSave, image) {
     var imagePath = image.uri + '.' + fileExtension;
     var imageFileName = image.filename + '.' + fileExtension;
 
-    var existingFile = getExistingFileName(imageFileKey);
-    if (existingFile) {
-      // todo: delete existing and upload the new one
-    } else {
-      uploadFile(
-        imagePath,
-        formData,
-        success = function () {
-          image.files.push({type: imageFileKey, filename: imageFileName});
-          renderImage(getImageUri());
-          uploadedNotSaved.uploadedImage = true;
-          uploadedNotSaved.image = imagePath;
-        })
-    }
+    uploadFile(
+      imagePath,
+      formData,
+      success = function () {
+        image.files.push({type: imageFileKey, filename: imageFileName});
+        renderImage(getImageUri());
+        uploadedNotSaved.uploadedImage = true;
+        uploadedNotSaved.image = imagePath;
+      });
 
     return false;
   });
@@ -85,20 +81,15 @@ function loadImageBuilder(pageData, onSave, image) {
     var filePath = image.uri + '.' + fileExtension;
     var fileName = image.filename + '.' + fileExtension;
 
-    var existingFile = getExistingFileName(dataFileKey);
-    if (existingFile) {
-      // todo: delete existing and upload the new one
-    } else {
-      uploadFile(
-        filePath,
-        formData,
-        success = function () {
-          image.files.push({type: dataFileKey, filename: fileName});
-          renderImage(getImageUri());
-          uploadedNotSaved.uploadedData = true;
-          uploadedNotSaved.data = filePath;
-        })
-    }
+    uploadFile(
+      filePath,
+      formData,
+      success = function () {
+        image.files.push({type: dataFileKey, filename: fileName});
+        renderImage(getImageUri());
+        uploadedNotSaved.uploadedData = true;
+        uploadedNotSaved.data = filePath;
+      });
 
     return false;
   });
@@ -129,15 +120,15 @@ function loadImageBuilder(pageData, onSave, image) {
   });
 
   $('.btn-image-builder-cancel').on('click', function () {
+
     closeImageBuilderScreen();
+
     if (uploadedNotSaved.uploadedImage === true && uploadedNotSaved.saved === false) {
-      deleteContent(Florence.collection.id, uploadedNotSaved.image,
-        onSuccess = function () {
-        },
-        onError = function (error) {
-          handleApiError(error);
-        }
-      );
+      deleteContent(Florence.collection.id, uploadedNotSaved.image);
+    }
+
+    if (uploadedNotSaved.uploadedData === true && uploadedNotSaved.saved === false) {
+      deleteContent(Florence.collection.id, uploadedNotSaved.data);
     }
   });
 
