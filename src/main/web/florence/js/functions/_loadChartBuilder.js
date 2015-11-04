@@ -59,7 +59,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     renderChart();
   });
 
-  $('.refresh-chart').on('change', ':checkbox',  function() {
+  $('.refresh-chart').on('change', ':checkbox', function() {
     chart = buildChartObject();
     refreshBarLineSection();
     renderChart();
@@ -118,26 +118,37 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   //Renders html outside actual chart area (title, subtitle, source, notes etc.)
   function renderText() {
-
-    $('#chart-title-preview').html($('#chart-title').val());
-    $('#chart-subtitle-preview').html($('#chart-subtitle').val());
+    var title = doSuperscriptAndSubscript($('#chart-title').val());
+    var subtitle = doSuperscriptAndSubscript($('#chart-subtitle').val());
     $('#chart-source-preview').html($('#chart-source').val());
-    var chartNotes = $('#chart-notes').val();
-
-    if (chartNotes) {
-      if (typeof Markdown !== 'undefined') {
-        var converter = new Markdown.getSanitizingConverter();
-        Markdown.Extra.init(converter, {
-          extensions: "all"
-        });
-        var notes = converter.makeHtml(chartNotes);
-        $('#chart-notes-preview').html(notes);
-      }
-    } else {
-      $('#chart-notes-preview').empty();
-    }
+    $('#chart-title-preview').html(title);
+    $('#chart-subtitle-preview').html(subtitle);
+    $('#chart-notes-preview').html(toMarkdown($('#chart-notes').val()));
   }
 
+  function toMarkdown(text) {
+    if (text && isMarkdownAvailable) {
+      var converter = new Markdown.getSanitizingConverter();
+      Markdown.Extra.init(converter, {
+        extensions: "all"
+      });
+      return converter.makeHtml(text)
+    }
+    return '';
+  }
+
+  function isMarkdownAvailable() {
+    return typeof Markdown !== 'undefined'
+  }
+
+  function doSuperscriptAndSubscript(text) {
+    if (text && isMarkdownAvailable) {
+      var converter = new Markdown.Converter();
+      return converter._DoSubscript(converter._DoSuperscript(text));
+    }
+    return text;
+
+  }
 
   // Builds, parses, and renders our chart in the chart editor
   function renderChart() {
@@ -262,7 +273,7 @@ function loadChartBuilder(pageData, onSave, chart) {
           if (chartConfig) {
             chartConfig.chart.renderTo = "chart";
             new Highcharts.Chart(chartConfig);
-            delete window["chart-" + chart.filename];//clear data from window object after rendering
+            delete window["chart-" + chart.filename]; //clear data from window object after rendering
           }
         }, "script")
       .fail(function() {
