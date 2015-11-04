@@ -36,16 +36,26 @@ function initialiseImagesList(data, collectionId) {
 
         getPageResource(collectionId, imageJson,
           onSuccess = function (imageData) {
-            _.each(imageData.files, function(file) {
-              var fileUri = basePath + '/' + file.filename;
-              console.log('deleting ' + fileUri);
-              deleteContent(collectionId, fileUri,
+            if(imageData.files) {
+              _.each(imageData.files, function (file) {
+                var fileUri = basePath + '/' + file.filename;
+                console.log('deleting ' + fileUri);
+                deleteContent(collectionId, fileUri,
+                  onSuccess = function () {
+                  },
+                  onError = function (error) {
+                    handleApiError(error);
+                  });
+              });
+            } else {
+              console.log('deleting ' + image.uri);
+              deleteContent(collectionId, image.uri,
                 onSuccess = function () {
                 },
                 onError = function (error) {
                   handleApiError(error);
                 });
-            });
+            }
           });
 
         // delete the image json file
