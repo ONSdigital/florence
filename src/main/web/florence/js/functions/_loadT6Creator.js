@@ -220,9 +220,9 @@ function submitNoForm (parentUrl, title) {
         },
         "datasets": [],
         "chapters": [],
-        "corrections": [],
         "relatedMethodology": [],
         "topics": [],
+        "alerts": [],
         type: pageType
       };
     }
@@ -255,6 +255,7 @@ function submitNoForm (parentUrl, title) {
         "tables": [],
         "images": [],
         "corrections": [],
+        "alerts": [],
         type: pageType
       };
     }
