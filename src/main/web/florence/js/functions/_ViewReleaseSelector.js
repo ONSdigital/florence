@@ -107,8 +107,6 @@ function viewReleaseSelector() {
       return release.description.releaseDate
     }))
       .each(function (release) {
-        console.log(release.description.title.indexOf(filter));
-        console.log(!filter || release.description.title.indexOf(filter) > -1);
         if (!filter || (release.description.title.indexOf(filter) > -1)) {
           var date = StringUtils.formatIsoFullDateString(release.description.releaseDate);
           releaseList.append('<tr data-id="' + release.description.title + '" data-uri="' + release.uri + '"><td>' + release.description.title + '</td><td>' + date + '</td></tr>');
@@ -118,7 +116,6 @@ function viewReleaseSelector() {
     releaseList.find('tr').on('click', function () {
       var releaseTitle = $(this).attr('data-id');
       var releaseUri = $(this).attr('data-uri');
-      //console.log(releaseTitle);
       Florence.CreateCollection.selectedRelease = {uri: releaseUri, title: releaseTitle};
 
       $('.selected-release').text(releaseTitle);
