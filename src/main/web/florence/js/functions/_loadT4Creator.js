@@ -8,7 +8,7 @@
 
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual,
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, pageEditionTrimmed, releaseDateManual,
     isInheriting, newUri, pageData, natStat, contactName, contactEmail,
     contactTel, keyWords, metaDescr, relatedData, summary;
   var parentUrlData = parentUrl + "/data";
@@ -69,6 +69,17 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
 
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val();
+      //Check for reserved words
+      if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for a title');
+        $('#pagename').val('');
+        return false;
+      }
+      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for an edition');
+        $('#edition').val('');
+        return false;
+      }
       pageData = pageTypeDataT4(pageType);
       pageData.description.edition = $('#edition').val();
       if (title) {
@@ -77,11 +88,15 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageTitle = $('#pagename').val();
       }
       pageData.description.title = pageTitle;
-      uriSection = pageType + "s";
+      if (pageType === 'static_article') {
+       uriSection = 'bulletins'; // 'articles'?
+      } else {
+        uriSection = pageType + "s";
+      }
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-
       if (pageData.description.edition) {
-        releaseUri = pageData.description.edition;
+        pageEditionTrimmed = pageData.description.edition.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+        var releaseUri = pageEditionTrimmed;
       }
 
       if (!pageData.description.edition && releaseDateManual) {                          //Manual collections
@@ -135,20 +150,20 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     if (pageType === "bulletin") {
       return {
         "description": {
-          "headline1": "",
-          "headline2": "",
-          "headline3": "",
-          "nationalStatistic": false,
+          "title": "",
+          "edition": "",
+          "summary": "",
+          "releaseDate": "",
+          "nextRelease": "",
           "contact": {
             "name": "",
             "email": "",
             "telephone": ""
           },
-          "title": "",
-          "summary": "",
-          "edition": "",
-          "releaseDate": "",
-          "nextRelease": "",
+          "nationalStatistic": false,
+          "headline1": "",
+          "headline2": "",
+          "headline3": "",
           "keywords": [],
           "metaDescription": "",
         },
@@ -171,18 +186,18 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     else if (pageType === "article") {
       return {
         "description": {
+          "title": "",
           "edition": "",
+          "_abstract": "",
+          "authors": [],
+          "releaseDate": "",
           "nextRelease": "",
           "contact": {
             "name": "",
             "email": "",
             "telephone": ""
           },
-          "title": "",
-          "_abstract": "",
-          "authors": [],
           "nationalStatistic": false,
-          "releaseDate": "",
           "keywords": [],
           "metaDescription": "",
         },
@@ -196,6 +211,40 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "charts": [],
         "tables": [],
         "images": [],
+        "alerts": [],
+        "corrections": [],
+        type: pageType
+      };
+    }
+
+    else if (pageType === "static_article") {
+      return {
+        "description": {
+          "title": "",
+          "_abstract": "",
+          "edition": "",
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "nationalStatistic": false,
+          "keywords": [],
+          "metaDescription": "",
+        },
+        "sections": [],
+        "accordion": [],
+        "relatedDocuments": [],
+        "relatedDatasets": [],
+        "relatedMethodology": [],
+        "topics": [],
+        "links": [],
+        "charts": [],
+        "tables": [],
+        "images": [],
+        "downloads":[],
         "alerts": [],
         "corrections": [],
         type: pageType

@@ -89,6 +89,31 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     articleEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'static_article') {
+    var html = templates.workEditT4StaticArticle(templateData);
+    $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(pageData, collectionId);
+    }
+    if (pageData.tables) {
+      loadTablesList(pageData, collectionId);
+    }
+    if (pageData.images) {
+      loadImagesList(pageData, collectionId);
+    }
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
+    addFile(collectionId, pageData, 'downloads', 'file');
+    editLink (collectionId, pageData, 'links', 'link');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
+    //add corrections
+    accordion();
+    staticArticleEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'timeseries') {
     var html = templates.workEditT5(templateData);
     $('.workspace-menu').html(html);
@@ -155,24 +180,6 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     accordion();
     staticLandingPageEditor(collectionId, pageData);
   }
-
-  //else if (pageData.type === 'static_article') {
-  //  var html = templates.workEditT4Methodology(templateData);
-  //  $('.workspace-menu').html(html);
-  //  if (pageData.charts) {
-  //    loadChartsList(pageData, collectionId);
-  //  }
-  //  if (pageData.tables) {
-  //    loadTablesList(pageData, collectionId);
-  //  }
-  //  if (pageData.images) {
-  //    loadImagesList(pageData, collectionId);
-  //  }
-  //  editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
-  //  editLink (collectionId, pageData, 'links', 'link');
-  //  accordion();
-  //  methodologyEditor(collectionId, pageData);
-  //}
 
   else if (pageData.type === 'static_page') {
     var html = templates.workEditT7(templateData);

@@ -48,13 +48,11 @@ function addFile(collectionId, data, field, idField) {
   }
 
   //Add
-  if (data.type === 'dataset') {
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
-  } else if (data.type === 'timeseries_dataset') {
-    downloadExtensions = /\.csdb$/;
-  } else if (data.type === 'static_adhoc') {
+  if (data.type === 'static_adhoc') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_qmi') {
+    downloadExtensions = /\.pdf$/;
+  } else if (data.type === 'static_article') {
     downloadExtensions = /\.pdf$/;
   } else if (data.type === 'static_foi') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
