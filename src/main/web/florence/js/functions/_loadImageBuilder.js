@@ -118,9 +118,6 @@ function loadImageBuilder(pageData, onSave, image) {
 
     saveImageJson(image);
 
-    if (onSave) {
-      onSave(image.filename, '<ons-image path="' + image.filename + '" />');
-    }
     closeImageBuilderScreen();
 
   });
@@ -225,6 +222,10 @@ function loadImageBuilder(pageData, onSave, image) {
       success: function () {
         addImageToPageJson(image);
         uploadedNotSaved.saved = true;
+
+        if (onSave) {
+          onSave(image.filename, '<ons-image path="' + image.filename + '" />', pageData);
+        }
       }
     });
   }
