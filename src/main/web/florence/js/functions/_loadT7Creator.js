@@ -19,10 +19,10 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function(checkData) {
       if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
-        (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology') && checkData.type === 'product_page') {
+        (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_article') && checkData.type === 'product_page') {
         submitFormHandler();
         return true;
-      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page' || pageType === 'static_article') && checkData.type.match(/static_.+/)) {
+      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page') && checkData.type.match(/static_.+/)) {
         submitFormHandler();
         return true;
       } else {
@@ -55,6 +55,17 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
 
     $('form').submit(function(e) {
       e.preventDefault();
+      //Check for reserved words
+      if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for a title');
+        $('#pagename').val('');
+        return false;
+      }
+      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for an edition');
+        $('#edition').val('');
+        return false;
+      }
       pageData = pageTypeDataT7(pageType);
       pageName = $('#pagename').val().trim();
       pageData.description.title = pageName;
@@ -98,10 +109,10 @@ function pageTypeDataT7(pageType) {
   if (pageType === "static_page") {
     return {
       "description": {
+        "title": "",
         "summary": "",
         "keywords": [],
-        "metaDescription": "",
-        "title": ""
+        "metaDescription": ""
       },
       "markdown": [],
       "downloads": [],
@@ -111,10 +122,10 @@ function pageTypeDataT7(pageType) {
   } else if (pageType === "static_landing_page") {
     return {
       "description": {
+        "title": "",
         "summary": "",
         "keywords": [],
         "metaDescription": "",
-        "title": "",
       },
       "sections": [],
       "markdown": [],
@@ -122,35 +133,36 @@ function pageTypeDataT7(pageType) {
       "links": []
     };
   }
-  else if ((pageType === "static_article") || (pageType === "static_methodology")) {
+  else if (pageType === "static_methodology") {
     return {
       "description": {
+        "title": "",
+        "summary": "",
+        "releaseDate": "",
         "contact": {
           "name": "",
           "email": "",
           "telephone": ""
         },
-        "title": "",
-        "summary": "",
-        "releaseDate": "",
         "keywords": [],
         "metaDescription": ""
       },
       "sections": [],
       "accordion": [],
+      "relatedDocuments": [],
+      "relatedDatasets": [],
       "charts": [],
       "tables": [],
       "images": [],
-      "relatedDocuments": [],
-      "relatedDatasets": [],
-      type: pageType,
       "downloads":[],
+      "links" : [],
       "alerts": [],
-      "links" : []
+      type: pageType
     };
   } else if (pageType === "static_qmi") {
     return {
       "description": {
+        "title": "",
         "contact": {
           "name": "",
           "email": "",
@@ -164,45 +176,41 @@ function pageTypeDataT7(pageType) {
         "lastRevised": "",
         "nationalStatistic": false,
         "keywords": [],
-        "metaDescription": "",
-        "title": ""
+        "metaDescription": ""
       },
       "markdown": [],
       "downloads": [],
       "relatedDocuments": [],
       "relatedDatasets": [],
-      type: pageType,
-      "fileName": "",
-      "links" : []
+      "links" : [],
+      type: pageType
     };
   } else if (pageType === "static_foi") {
     return {
       "description": {
-        "keywords": [],
-        "metaDescription": "",
         "title": "",
-        "releaseDate": ""
+        "releaseDate": "",
+        "keywords": [],
+        "metaDescription": ""
       },
       "downloads": [],
       "markdown": [],
-      type: pageType,
-      "fileName": "",
-      "links" : []
+      "links" : [],
+      type: pageType
     };
   } else if (pageType === "static_adhoc") {
     return {
       "description": {
-        "keywords": [],
-        "metaDescription": "",
         "title": "",
         "releaseDate": "",
-        "reference": null
+        "reference": null,
+        "keywords": [],
+        "metaDescription": ""
       },
       "downloads": [],
       "markdown": [],
-      type: pageType,
-      "fileName": "",
-      "links" : []
+      "links" : [],
+      type: pageType
     };
   } else {
     alert('Unsupported page type. This is not a static page');

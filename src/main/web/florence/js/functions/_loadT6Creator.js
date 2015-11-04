@@ -67,6 +67,17 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
 
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val();
+      //Check for reserved words
+      if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for a title');
+        $('#pagename').val('');
+        return false;
+      }
+      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for an edition');
+        $('#edition').val('');
+        return false;
+      }
       if (pageType === 'compendium_landing_page') {
         pageData.description.edition = $('#edition').val();
       }
@@ -120,6 +131,10 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         e.preventDefault();
         return true;
       } if (pageTitle.length < 5) {
+        alert("This is not a valid file title");
+        e.preventDefault();
+        return true;
+      } if (pageTitle.toLowerCase() === 'current' || pageTitle.toLowerCase() === 'latest') {
         alert("This is not a valid file title");
         e.preventDefault();
         return true;

@@ -46,6 +46,17 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     }
 
     $('form').submit(function (e) {
+      //Check for reserved words
+      if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for a title');
+        $('#pagename').val('');
+        return false;
+      }
+      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for an edition');
+        $('#edition').val('');
+        return false;
+      }
       releaseDateManual = $('#releaseDate').val()
       pageData = pageTypeDataT8(pageType);
       pageTitle = $('#pagename').val();

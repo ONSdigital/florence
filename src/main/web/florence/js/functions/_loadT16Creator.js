@@ -68,6 +68,17 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
 
     //Submits inherited and added information to JSON
     $('form').submit(function (e) {
+      //Check for reserved words
+      if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for a title');
+        $('#pagename').val('');
+        return false;
+      }
+      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for an edition');
+        $('#edition').val('');
+        return false;
+      }
       pageData = pageTypeDataT16(pageType);
       var publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
       var toIsoDate = $('#releaseDate').datepicker("getDate");
