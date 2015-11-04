@@ -229,12 +229,33 @@
 
 
 .release-select-table {
-  &thead {
+
+  thead {
     display: block;
+
+    tr {
+      display: block;
+      width: 100%;
+
+      th {
+        width: 400px;
+      }
+    }
   }
 
-  &tbody {
+  tbody {
+    max-height: 375px;
+    overflow-y: scroll;
+    display: block;
 
+    tr {
+      display: block;
+      width: 100%;
+
+      td {
+        width: 400px;
+      }
+    }
   }
 }
 
