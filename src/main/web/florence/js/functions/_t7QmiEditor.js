@@ -201,11 +201,11 @@ function qmiEditor(collectionId, data) {
     // Related dataset
     var orderDataset = $("#sortable-dataset").sortable('toArray');
     $(orderDataset).each(function (indexData, nameData) {
-      var uri = data.relatedDataset[parseInt(nameData)].uri;
+      var uri = data.relatedDatasets[parseInt(nameData)].uri;
       var safeUri = checkPathSlashes(uri);
       newDataset[indexData] = {uri: safeUri};
     });
-    data.relatedDataset = newDataset;
+    data.relatedDatasets = newDataset;
   }
 }
 
