@@ -27,7 +27,7 @@ function loadCreator (parentUrl, collectionId, type) {
       pageType = $(this).val();
       $('.edition').empty();
 
-      if (pageType === 'bulletin' || pageType === 'article') {
+      if (pageType === 'bulletin' || pageType === 'article' || pageType === 'static_article') {
         loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
       }
       else if (pageType.match(/compendium_.+/)) {
