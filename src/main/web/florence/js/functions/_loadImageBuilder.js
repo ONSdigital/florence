@@ -46,6 +46,11 @@ function loadImageBuilder(pageData, onSave, image) {
       return;
     }
 
+    if(!/\.png|.jpeg$|.jpg$|/.test(file)) {
+      alert('The data file upload is limited to PNG and JPEG.');
+      return;
+    }
+
     var fileExtension = file.name.split('.').pop();
     var image = buildJsonObjectFromForm();
     var imagePath = image.uri + '.' + fileExtension;
@@ -79,11 +84,17 @@ function loadImageBuilder(pageData, onSave, image) {
       return;
     }
 
+    if(!/\.csv$|.xls$|.xlsx$|/.test(file)) {
+      alert('The data file upload is limited to CSV, XLS, or XLSX.');
+      return;
+    }
+
     var fileExtension = file.name.split('.').pop();
     var image = buildJsonObjectFromForm();
     var filePath = image.uri + '.' + fileExtension;
     var fileName = image.filename + '.' + fileExtension;
     var fileExists = getExistingFileName(image, dataFileKey);
+
 
     uploadFile(
       filePath,
