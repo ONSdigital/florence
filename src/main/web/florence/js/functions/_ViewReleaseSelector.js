@@ -13,15 +13,16 @@ function viewReleaseSelector() {
   PopulateReleasesForUri("/releasecalendar/data", releases);
   PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
 
-  $('.btn-release-selector-cancel').on('click', function() {
+  $('.btn-release-selector-cancel').on('click', function () {
     $('.release-select').stop().fadeOut(200).remove();
   });
 
-  $('release-search-input').on('input', function() {
-    var searchText = this.val();
-    console.log(searchText);
+  $('#release-search-input').on('input', function () {
+    var searchText = $(this).val();
+    console.log('yo');
+    console.log(releases);
+    populateReleasesList(releases, searchText)
   });
-
 
   function PopulateReleasesForUri(baseReleaseUri, releases) {
     //console.log("populating release for uri " + baseReleaseUri);
@@ -49,11 +50,8 @@ function viewReleaseSelector() {
       releases.push(release);
     });
 
-    //console.log("data.numberOfResults:  " + data.numberOfResults + " for " + baseReleaseUri);
-
     // if there are more results than the existing page size, go get them.
     if (data.numberOfResults > pageSize) {
-
 
       var pagesToGet = Math.ceil((data.numberOfResults - pageSize) / pageSize);
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
@@ -77,9 +75,8 @@ function viewReleaseSelector() {
    * @param releases
    * @returns {*}
    */
-
   function getReleasesPage(baseReleaseUri, i, releases) {
-    console.log("getting page  " + i + " for " + baseReleaseUri);
+    //console.log("getting page  " + i + " for " + baseReleaseUri);
     var dfd = $.Deferred();
     $.ajax({
       url: baseReleaseUri + '&page=' + i,
@@ -102,15 +99,21 @@ function viewReleaseSelector() {
    * Populate the releases list from the given array of releases.
    * @param releases
    */
-  function populateReleasesList(releases) {
+  function populateReleasesList(releases, filter) {
     var releaseList = $('#release-list');
-    releaseList.find('tr').remove(); // remove existing table entries+
-    _(_.sortBy(releases, function(release) { return release.description.releaseDate }))
+    releaseList.find('tr').remove(); // remove existing table entries
+
+    _(_.sortBy(releases, function (release) {
+      return release.description.releaseDate
+    }))
       .each(function (release) {
-      console.log(release);
-      var date = StringUtils.formatIsoFullDateString(release.description.releaseDate);
-      releaseList.append('<tr data-id="' + release.description.title + '" data-uri="' + release.uri + '"><td>' + release.description.title + '</td><td>' + date + '</td></tr>');
-    });
+        console.log(release.description.title.indexOf(filter));
+        console.log(!filter || release.description.title.indexOf(filter) > -1);
+        if (!filter || (release.description.title.indexOf(filter) > -1)) {
+          var date = StringUtils.formatIsoFullDateString(release.description.releaseDate);
+          releaseList.append('<tr data-id="' + release.description.title + '" data-uri="' + release.uri + '"><td>' + release.description.title + '</td><td>' + date + '</td></tr>');
+        }
+      });
 
     releaseList.find('tr').on('click', function () {
       var releaseTitle = $(this).attr('data-id');
