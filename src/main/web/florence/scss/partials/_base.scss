@@ -689,6 +689,20 @@ button {
     background-color: $astral;
     margin-left: 0;
   }
+  &.btn-release-selector-cancel {
+    color: $emperor;
+    background-color: $concrete;
+  }
+
+  &.btn-release-search {
+    float: right;
+    margin: 21px 20px 21px 0px;
+  }
+
+  &.btn-select-release {
+    color: $concrete;
+    background-color: $astral;
+  }
 
 }
 

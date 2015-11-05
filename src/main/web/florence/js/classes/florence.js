@@ -21,6 +21,10 @@ Florence.Editor = {
   data: {}
 };
 
+Florence.CreateCollection = {
+  selectedRelease:""
+};
+
 Florence.collection = {};
 
 Florence.collectionToPublish = {};

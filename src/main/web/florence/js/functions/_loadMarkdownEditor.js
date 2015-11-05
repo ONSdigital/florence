@@ -72,7 +72,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
   });
 
   $(".btn-markdown-editor-image").click(function(){
-    loadImageBuilder(pageData, onInsertSave);
+    loadImageBuilder(pageData, function(name, markdown, pageData) {
+      onInsertSave(name, markdown);
+      refreshImagesList(pageData, Florence.collection.id)
+    });
   });
 
   $("#wmd-input").on('click', function () {

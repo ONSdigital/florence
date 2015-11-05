@@ -33,11 +33,29 @@ function initialiseImagesList(data, collectionId) {
       if (result === true) {
         $("#image_" + index).remove();
         // delete any files associated with the image.
-        deleteContent(collectionId, image.uri,
-          onSuccess = function () {
-          },
-          onError = function (error) {
-            handleApiError(error);
+
+        getPageResource(collectionId, imageJson,
+          onSuccess = function (imageData) {
+            if(imageData.files) {
+              _.each(imageData.files, function (file) {
+                var fileUri = basePath + '/' + file.filename;
+                console.log('deleting ' + fileUri);
+                deleteContent(collectionId, fileUri,
+                  onSuccess = function () {
+                  },
+                  onError = function (error) {
+                    handleApiError(error);
+                  });
+              });
+            } else {
+              console.log('deleting ' + image.uri);
+              deleteContent(collectionId, image.uri,
+                onSuccess = function () {
+                },
+                onError = function (error) {
+                  handleApiError(error);
+                });
+            }
           });
 
         // delete the image json file

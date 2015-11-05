@@ -17,7 +17,11 @@ function createCollection() {
   };
 
   if (scheduleType === 'release' && publishType === 'scheduled') {
-    releaseUri  = $('#collection-release').val();
+    if(!Florence.CreateCollection.selectedRelease) {
+      alert('Please select a release');
+      return true;
+    }
+    releaseUri  = Florence.CreateCollection.selectedRelease.uri;
   } else {
     releaseUri  = null;
   };

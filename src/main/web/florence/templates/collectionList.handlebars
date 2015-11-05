@@ -1,4 +1,4 @@
-<section class="panel col col--6 collection-select">
+<section class="panel col col--6 collection-select" xmlns="http://www.w3.org/1999/html">
   <h1 class="text-align-center">Select a collection</h1>
   <table class="collections-select-table">
     <thead>
@@ -38,60 +38,63 @@
     publish</label>
     <br>
 
-    <div id="scheduledPublishOptions" class="block">
+    <div id="scheduledPublishOptions" class="block scheduled-publish-options">
       <input type="radio" id="customschedule" name="scheduleType" value="custom" checked><label for="customschedule">Custom
       schedule</label>
       <input type="radio" id="releaseschedule" name="scheduleType" value="release" required><label
         for="releaseschedule">Release schedule</label>
 
-      <div id="customScheduleOptions" class="block text-center">
-        <label for="date" class="hidden">Date</label>
-        <input id="date" type="text" placeholder="dd/mm/yyyy"/>
-        <br>
-        <label for="hour" class="hidden">Hour</label>
-        <div class="select-wrap">
-          <select id="hour" class="selectbg--small">
-            <option value="0">00</option>
-            <option value="3600000">01</option>
-            <option value="7200000">02</option>
-            <option value="10800000">03</option>
-            <option value="14400000">04</option>
-            <option value="18000000">05</option>
-            <option value="21600000">06</option>
-            <option value="25200000">07</option>
-            <option value="28800000">08</option>
-            <option value="32400000" selected="selected">09</option>
-            <option value="36000000">10</option>
-            <option value="39600000">11</option>
-            <option value="43200000">12</option>
-            <option value="46800000">13</option>
-            <option value="50400000">14</option>
-            <option value="54000000">15</option>
-            <option value="57600000">16</option>
-            <option value="61200000">17</option>
-            <option value="64800000">18</option>
-            <option value="68400000">19</option>
-            <option value="72000000">20</option>
-            <option value="75600000">21</option>
-            <option value="79200000">22</option>
-            <option value="82800000">23</option>
-          </select>
-        </div>
-        <label for="min" class="hidden">Minutes</label>
-        <div class="select-wrap">
-          <select id="min" class="selectbg--small">
-            <option value="0">00</option>
-            <option value="1800000" selected="selected">30</option>
-          </select>
+      <div id="customScheduleOptions" class="text-center custom-schedule-options">
+        <div class="block">
+          <label for="date" class="hidden">Date</label>
+          <input id="date" type="text" placeholder="dd/mm/yyyy"/>
+          <br>
+          <label for="hour" class="hidden">Hour</label>
+          <div class="select-wrap">
+            <select id="hour" class="selectbg--small">
+              <option value="0">00</option>
+              <option value="3600000">01</option>
+              <option value="7200000">02</option>
+              <option value="10800000">03</option>
+              <option value="14400000">04</option>
+              <option value="18000000">05</option>
+              <option value="21600000">06</option>
+              <option value="25200000">07</option>
+              <option value="28800000">08</option>
+              <option value="32400000" selected="selected">09</option>
+              <option value="36000000">10</option>
+              <option value="39600000">11</option>
+              <option value="43200000">12</option>
+              <option value="46800000">13</option>
+              <option value="50400000">14</option>
+              <option value="54000000">15</option>
+              <option value="57600000">16</option>
+              <option value="61200000">17</option>
+              <option value="64800000">18</option>
+              <option value="68400000">19</option>
+              <option value="72000000">20</option>
+              <option value="75600000">21</option>
+              <option value="79200000">22</option>
+              <option value="82800000">23</option>
+            </select>
+          </div>
+          <label for="min" class="hidden">Minutes</label>
+          <div class="select-wrap">
+            <select id="min" class="selectbg--small">
+              <option value="0">00</option>
+              <option value="1800000" selected="selected">30</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <div id="releaseScheduleOptions" class="block text-center hidden">
-        <label for="collection-release hidden">Release</label>
-        <div class="select-wrap">
-          <select id="collection-release">
-          </select>
-        </div>
+      <div id="releaseScheduleOptions" class="block text-center hidden release-schedule-options">
+        <button class="btn-select-release">Select a release</button>
+
+        </br>
+        </br>
+        <span class="selected-release"></span>
+
       </div>
 
     </div>
