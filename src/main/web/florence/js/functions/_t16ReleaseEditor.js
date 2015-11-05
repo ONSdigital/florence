@@ -139,7 +139,8 @@ function releaseEditor(collectionId, data) {
   $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
     data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
     if (data.description.cancelled) {
-      var editedSectionValue = '';
+      var editedSectionValue = {};
+      editedSectionValue.title = "Please enter the reason for the cancellation";
       var saveContent = function (updatedContent) {
         data.description.cancellationNotice = [updatedContent];
         postContent(collectionId, data.uri, JSON.stringify(data),
