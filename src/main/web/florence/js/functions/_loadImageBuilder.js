@@ -151,24 +151,12 @@ function loadImageBuilder(pageData, onSave, image) {
   }
 
   function renderText() {
-
-    $('#image-title-preview').html($('#image-title').val());
-    $('#image-subtitle-preview').html($('#image-subtitle').val());
+    var title = doSuperscriptAndSubscript($('#image-title').val());
+    var subtitle = doSuperscriptAndSubscript($('#image-subtitle').val());
+    $('#image-title-preview').html(title);
+    $('#image-subtitle-preview').html(subtitle);
     $('#image-source-preview').html($('#image-source').val());
-
-    var notes = $('#image-notes').val();
-    if (notes) {
-      if (typeof Markdown !== 'undefined') {
-        var converter = new Markdown.getSanitizingConverter();
-        Markdown.Extra.init(converter, {
-          extensions: "all"
-        });
-        var notes = converter.makeHtml(notes);
-        $('#image-notes-preview').html(notes);
-      }
-    } else {
-      $('#image-notes-preview').empty();
-    }
+    $('#image-notes-preview').html(toMarkdown($('#image-notes').val()));
   }
 
   function renderImage(imageUri) {
@@ -183,6 +171,31 @@ function loadImageBuilder(pageData, onSave, image) {
         $(body).children().css('height', '100%');
       }, 100);
   }
+
+  function toMarkdown(text) {
+    if (text && isMarkdownAvailable) {
+      var converter = new Markdown.getSanitizingConverter();
+      Markdown.Extra.init(converter, {
+        extensions: "all"
+      });
+      return converter.makeHtml(text)
+    }
+    return '';
+  }
+
+  function isMarkdownAvailable() {
+    return typeof Markdown !== 'undefined'
+  }
+
+  function doSuperscriptAndSubscript(text) {
+    if (text && isMarkdownAvailable) {
+      var converter = new Markdown.Converter();
+      return converter._DoSubscript(converter._DoSuperscript(text));
+    }
+    return text;
+
+  }
+
 
   function uploadFile(path, formData, success) {
     $.ajax({
