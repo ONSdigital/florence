@@ -40,21 +40,11 @@ function initialiseImagesList(data, collectionId) {
               _.each(imageData.files, function (file) {
                 var fileUri = basePath + '/' + file.filename;
                 console.log('deleting ' + fileUri);
-                deleteContent(collectionId, fileUri,
-                  onSuccess = function () {
-                  },
-                  onError = function (error) {
-                    handleApiError(error);
-                  });
+                deleteContent(collectionId, fileUri);
               });
             } else {
               console.log('deleting ' + image.uri);
-              deleteContent(collectionId, image.uri,
-                onSuccess = function () {
-                },
-                onError = function (error) {
-                  handleApiError(error);
-                });
+              deleteContent(collectionId, image.uri);
             }
           });
 
