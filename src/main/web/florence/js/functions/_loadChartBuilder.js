@@ -187,6 +187,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     chart.notes = $('#chart-notes').val();
     chart.altText = $('#chart-alt-text').val();
+    chart.xAxisLabel = $('#chart-x-axis-label').val();
 
     if (chart.title === '') {
       chart.title = '[Title]'
