@@ -251,24 +251,14 @@ $panel-height-2-top-nav: 756px;
         content: 'AR';
       }
     }
+    &--article_download {
+      &:after {
+        content: 'AP';
+      }
+    }
     &--bulletin {
       &:after {
         content: 'SB';
-      }
-    }
-    &--dataset {
-      &:after {
-        content: 'DA';
-      }
-    }
-    &--timeseries_dataset {
-      &:after {
-        content: 'DB';
-      }
-    }
-    &--reference_tables {
-      &:after {
-        content: 'RF';
       }
     }
     &--timeseries {
@@ -296,11 +286,6 @@ $panel-height-2-top-nav: 756px;
         content: 'SL';
       }
     }
-    &--static_article {
-      &:after {
-        content: 'SA';
-      }
-    }
     &--static_page {
       &:after {
         content: 'SP';
@@ -324,6 +309,26 @@ $panel-height-2-top-nav: 756px;
     &--static_methodology {
       &:after {
         content: 'ME';
+      }
+    }
+    &--static_methodology_download {
+      &:after {
+        content: 'MP';
+      }
+    }
+    &--dataset_landing_page {
+      &:after {
+        content: 'DL';
+      }
+    }
+    &--dataset {
+      &:after {
+        content: 'DA';
+      }
+    }
+    &--timeseries_dataset {
+      &:after {
+        content: 'DB';
       }
     }
     &--release {
