@@ -1,7 +1,7 @@
-function staticArticleEditor(collectionId, data) {
+function ArticleDownloadEditor(collectionId, data) {
 
 //  var index = data.release;
-  var newSections = [], newTabs = [], newFiles = [], newDatasets = [], newLinks = [], newRelatedMethodology = [], newDocuments = [];
+  var newFiles = [], newData = [], newLinks = [], newRelatedMethodology = [], newDocuments = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -162,21 +162,7 @@ function staticArticleEditor(collectionId, data) {
 
   function save() {
     // Sections
-    var orderSection = $("#sortable-section").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = data.sections[parseInt(nameS)].markdown;
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    // Tabs
-    var orderTab = $("#sortable-tab").sortable('toArray');
-    $(orderTab).each(function (indexT, nameT) {
-      var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab-title_' + nameT).val();
-      newTabs[indexT] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
+    data.markdown = [$('#content-markdown').val()];
     // Related documents
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
@@ -186,13 +172,13 @@ function staticArticleEditor(collectionId, data) {
     });
     data.relatedDocuments = newDocuments;
     // Related data
-    var orderData = $("#sortable-dataset").sortable('toArray');
-    $(orderData).each(function (indexD, nameD) {
-      var uri = data.relatedDatasets[parseInt(nameD)].uri;
+    var orderData = $("#sortable-data").sortable('toArray');
+    $(orderData).each(function (indexDat, nameDat) {
+      var uri = data.relatedData[parseInt(nameDat)].uri;
       var safeUri = checkPathSlashes(uri);
-      newDatasets[indexD] = {uri: safeUri};
+      newData[indexDat] = {uri: safeUri};
     });
-    data.relatedDatasets = newDatasets;
+    data.relatedData = newData;
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function (indexF, nameF) {

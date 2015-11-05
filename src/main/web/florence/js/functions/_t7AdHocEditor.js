@@ -15,9 +15,10 @@ function adHocEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  $("#metadata-s").remove();
   $("#metadata-f").remove();
+  $("#metadata-md").remove();
   $("#metadata-q").remove();
+  $("#metadata-s").remove();
   $("#summary-p").remove();
   $("#contact-p").remove();
   $("#natStat").remove();

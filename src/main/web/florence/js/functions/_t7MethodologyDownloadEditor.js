@@ -1,6 +1,6 @@
-function qmiEditor(collectionId, data) {
+function methodologyDownloadEditor(collectionId, data) {
 
-  var newFiles = [], newDocument = [], newDataset = [];
+  var newFiles = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -17,9 +17,15 @@ function qmiEditor(collectionId, data) {
 
   $("#metadata-ad").remove();
   $("#metadata-f").remove();
-  $("#metadata-md").remove();
+  $("#metadata-q").remove();
   $("#metadata-s").remove();
   $("#summary-p").remove();
+  $("#natStat").remove();
+  $("#survey-p").remove();
+  $("#frequency-p").remove();
+  $("#compilation-p").remove();
+  $("#geoCoverage-p").remove();
+  $("#sampleSize-p").remove();
   $(".release-date").remove();
   $("#reference-p").remove();
 
@@ -29,7 +35,6 @@ function qmiEditor(collectionId, data) {
     data.description.title = $(this).val();
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
-      // Runs 3 second (3000 ms) after the last change
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
@@ -55,46 +60,6 @@ function qmiEditor(collectionId, data) {
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-  $("#survey").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.surveyName = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-  $("#frequency").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.frequency = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-  $("#compilation").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.compilation = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-  $("#geoCoverage").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.geographicCoverage = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-  $("#sampleSize").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.sampleSize = $(this).val();
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -141,23 +106,6 @@ function qmiEditor(collectionId, data) {
     }, 3000);
   });
 
-  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
-   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
-  var checkBoxStatus = function () {
-    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
-      return false;
-    }
-    return true;
-  };
-
-  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -191,22 +139,7 @@ function qmiEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
-    // Related documents
-    var orderDocument = $("#sortable-document").sortable('toArray');
-    $(orderDocument).each(function (indexD, nameD) {
-      var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDocument[indexD] = {uri: safeUri};
-    });
-    data.relatedDocuments = newDocument;
-    // Related dataset
-    var orderDataset = $("#sortable-dataset").sortable('toArray');
-    $(orderDataset).each(function (indexData, nameData) {
-      var uri = data.relatedDatasets[parseInt(nameData)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDataset[indexData] = {uri: safeUri};
-    });
-    data.relatedDatasets = newDataset;
   }
 }
+
 

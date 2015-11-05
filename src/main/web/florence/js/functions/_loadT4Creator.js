@@ -21,7 +21,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         var checkedUrl = checkPathSlashes(checkData.uri);
         submitFormHandler(checkedUrl);
         return true;
-      } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
+      } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article') || (checkData.type === 'article_download' && pageType === 'article_download')) {
         var checkedUrl = checkPathSlashes(checkData.uri);
         var safeParentUrl = getParentPage(checkedUrl);
         natStat = checkData.description.nationalStatistic;
@@ -88,8 +88,8 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageTitle = $('#pagename').val();
       }
       pageData.description.title = pageTitle;
-      if (pageType === 'static_article') {
-       uriSection = 'bulletins'; // 'articles'?
+      if (pageType === 'article_download') {
+       uriSection = 'articles';
       } else {
         uriSection = pageType + "s";
       }
@@ -178,7 +178,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "tables": [],
         "images": [],
         "alerts": [],
-        "corrections": [],
+        "versions": [],
         type: pageType
       };
     }
@@ -189,7 +189,6 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
           "title": "",
           "edition": "",
           "_abstract": "",
-          "authors": [],
           "releaseDate": "",
           "nextRelease": "",
           "contact": {
@@ -212,12 +211,12 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "tables": [],
         "images": [],
         "alerts": [],
-        "corrections": [],
+        "versions": [],
         type: pageType
       };
     }
 
-    else if (pageType === "static_article") {
+    else if (pageType === "article_download") {
       return {
         "description": {
           "title": "",
@@ -232,21 +231,20 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
           },
           "nationalStatistic": false,
           "keywords": [],
-          "metaDescription": "",
+          "metaDescription": ""
         },
-        "sections": [],
-        "accordion": [],
+        "markdown": [],
+        "downloads": [],
         "relatedDocuments": [],
-        "relatedDatasets": [],
+        "relatedData": [],
         "relatedMethodology": [],
         "topics": [],
         "links": [],
         "charts": [],
         "tables": [],
         "images": [],
-        "downloads":[],
         "alerts": [],
-        "corrections": [],
+        "versions": [],
         type: pageType
       };
     }
