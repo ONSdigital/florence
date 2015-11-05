@@ -13,9 +13,10 @@ function staticPageEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
 
-  $("#metadata-q").remove();
-  $("#metadata-f").remove();
   $("#metadata-ad").remove();
+  $("#metadata-f").remove();
+  $("#metadata-md").remove();
+  $("#metadata-q").remove();
   $("#contact-p").remove();
   $("#natStat").remove();
   $("#survey-p").remove();

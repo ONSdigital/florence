@@ -89,8 +89,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     articleEditor(collectionId, pageData);
   }
 
-  else if (pageData.type === 'static_article') {
-    var html = templates.workEditT4StaticArticle(templateData);
+  else if (pageData.type === 'article_download') {
+    var html = templates.workEditT4ArticleDownload(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
       loadChartsList(pageData, collectionId);
@@ -103,7 +103,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     }
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
-    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFile(collectionId, pageData, 'downloads', 'file');
@@ -111,7 +111,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     //add corrections
     accordion();
-    staticArticleEditor(collectionId, pageData);
+    ArticleDownloadEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'timeseries') {
@@ -241,6 +241,18 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     methodologyEditor(collectionId, pageData);
   }
 
+  else if (pageData.type === 'static_methodology_download') {
+    var html = templates.workEditT7(templateData);
+    $('.workspace-menu').html(html);
+    editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
+    addFile(collectionId, pageData, 'downloads', 'file');
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
+    accordion();
+    methodologyDownloadEditor(collectionId, pageData);
+  }
+
   else if (pageData.type === 'dataset_landing_page') {
     var html = templates.workEditT8LandingPage(templateData);
     $('.workspace-menu').html(html);
@@ -259,7 +271,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     editDatasetVersion(collectionId, pageData, 'versions', 'version');
-    addSupplementaryFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
+    addFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
     editDatasetVersion(collectionId, pageData, 'versions', 'correction');
     accordion();
     datasetEditor(collectionId, pageData);
@@ -269,7 +281,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
-    addSupplementaryFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
+    addFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
     accordion();
     datasetEditor(collectionId, pageData);
   }

@@ -19,7 +19,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function(checkData) {
       if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
-        (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_article') && checkData.type === 'product_page') {
+        (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_methodology_download') && checkData.type === 'product_page') {
         submitFormHandler();
         return true;
       } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page') && checkData.type.match(/static_.+/)) {
@@ -36,7 +36,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler() {
-    if (!releaseDate && (pageType === 'static_qmi')) {
+    if (pageType === 'static_qmi' || pageType === 'static_methodology' || pageType === 'static_methodology_download') {
       $('.edition').append(
         '<br>' +
         '<label for="releaseDate">Last revised</label>' +
@@ -61,11 +61,6 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         $('#pagename').val('');
         return false;
       }
-      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
-        alert ('That is not an accepted value for an edition');
-        $('#edition').val('');
-        return false;
-      }
       pageData = pageTypeDataT7(pageType);
       pageName = $('#pagename').val().trim();
       pageData.description.title = pageName;
@@ -75,7 +70,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         newUri = makeUrl(parentUrl, 'qmis', pageNameTrimmed);
       } else if (pageType === 'static_adhoc' && !Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, 'adhocs', pageNameTrimmed);
-      } else if (pageType === 'static_methodology' && !Florence.globalVars.welsh) {
+      } else if ((pageType === 'static_methodology' || pageType === 'static_methodology_download') && !Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, 'methodologies', pageNameTrimmed);
       } else if (!Florence.globalVars.welsh){
         newUri = makeUrl(parentUrl, pageNameTrimmed);
@@ -89,7 +84,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       } else if (releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
         date = new Date(releaseDate);
         pageData.description.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
-      } else if (!releaseDate && (pageType === 'static_qmi')) {
+      } else if (!releaseDate && (pageType === 'static_qmi' || pageType === 'static_methodology' || pageType === 'static_methodology_download')) {
         pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
       } else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
@@ -155,6 +150,27 @@ function pageTypeDataT7(pageType) {
       "tables": [],
       "images": [],
       "downloads":[],
+      "links" : [],
+      "alerts": [],
+      type: pageType
+    };
+  } else if (pageType === "static_methodology_download") {
+    return {
+      "description": {
+        "title": "",
+        "contact": {
+          "name": "",
+          "email": "",
+          "phone": ""
+        },
+        "lastRevised": "",
+        "keywords": [],
+        "metaDescription": ""
+      },
+      "markdown": [],
+      "downloads": [],
+      "relatedDocuments": [],
+      "relatedDatasets": [],
       "links" : [],
       "alerts": [],
       type: pageType

@@ -269,7 +269,7 @@ function submitNoForm (parentUrl, title) {
         "charts": [],
         "tables": [],
         "images": [],
-        "corrections": [],
+        "versions": [],
         "alerts": [],
         type: pageType
       };

@@ -27,7 +27,7 @@ function loadCreator (parentUrl, collectionId, type) {
       pageType = $(this).val();
       $('.edition').empty();
 
-      if (pageType === 'bulletin' || pageType === 'article' || pageType === 'static_article') {
+      if (pageType === 'bulletin' || pageType === 'article' || pageType === 'article_download') {
         loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
       }
       else if (pageType.match(/compendium_.+/)) {
@@ -41,6 +41,9 @@ function loadCreator (parentUrl, collectionId, type) {
       }
       else if (pageType === 'release') {
         loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
+      }
+      else {
+        alert('Page type not recognised. Contact an administrator');
       }
     });
   }
