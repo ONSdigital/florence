@@ -8,8 +8,13 @@
 
 function addFile(collectionId, data, field, idField) {
   var list = data[field];
-  var downloadExtensions;
-  var dataTemplate = {list: list, idField: idField};
+  var downloadExtensions, supplementary;
+  if (field === 'supplementaryFiles') {
+    supplementary = 'supplementary ';
+  } else {
+    supplementary = '';
+  }
+  var dataTemplate = {list: list, idField: idField, supplementary: supplementary};
   var html = templates.editorDownloads(dataTemplate);
   $('#' + idField).replaceWith(html);
   var uriUpload;
@@ -52,11 +57,13 @@ function addFile(collectionId, data, field, idField) {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_qmi') {
     downloadExtensions = /\.pdf$/;
-  } else if (data.type === 'static_article') {
+  } else if (data.type === 'article_download' || data.type === 'static_methodology_download') {
     downloadExtensions = /\.pdf$/;
   } else if (data.type === 'static_foi') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_page') {
+    downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+  } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else {
     alert('This file type is not valid. Contact an administrator to add this type of file in this document');
@@ -140,7 +147,7 @@ function addFile(collectionId, data, field, idField) {
               if (!data[field]) {
                 data[field] = [];
               }
-              data[field].push({title: '', file: safeUriUpload});
+              data[field].push({title: '', file: fileNameNoSpace});
               updateContent(collectionId, data.uri, JSON.stringify(data));
             }
           });

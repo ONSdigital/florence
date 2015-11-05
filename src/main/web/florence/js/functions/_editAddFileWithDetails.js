@@ -62,7 +62,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
   }
 
   //Add
-  if (data.type === 'reference_tables' || data.type === 'compendium_data') {
+  if (data.type === 'compendium_data') {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
   } else {
     alert('This file type is not valid. Contact an administrator to add this type of file in this document');
@@ -86,7 +86,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
       $('#' + lastIndex).remove();
-      addFile(collectionId, data, field, idField);
+      addFileWithDetails(collectionId, data, field, idField);
     });
 
     $('#UploadForm').submit(function (e) {
@@ -102,15 +102,20 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
       var file = this[0].files[0];
       var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
-      //uriUpload = data.uri + "/" + fileNameNoSpace;
-      uriUpload = "/" + fileNameNoSpace;    //make file path relative
+      uriUpload = fileNameNoSpace;    //make file path relative
 
       if (data[field].length > 0) {
         $(data[field]).each(function (i, filesUploaded) {
-          if (filesUploaded.file == uriUpload) {
+          if (filesUploaded.file === uriUpload) {
             alert('This file already exists');
             $('#' + lastIndex).remove();
-            addFile(collectionId, data, field, idField);
+            addFileWithDetails(collectionId, data, field, idField);
+            return;
+          }
+          else if (filesUploaded.file === data.uri + '/' + uriUpload) {   //case for old uri
+            alert('This file already exists');
+            $('#' + lastIndex).remove();
+            addFileWithDetails(collectionId, data, field, idField);
             return;
           }
         });
@@ -123,13 +128,13 @@ function addFileWithDetails(collectionId, data, field, idField) {
       } else {
         alert('This file type is not supported');
         $('#' + lastIndex).remove();
-        addFile(collectionId, data, field, idField);
+        addFileWithDetails(collectionId, data, field, idField);
         return;
       }
 
       if (formdata) {
         $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + uriUpload,
+          url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + '/' + uriUpload,
           type: 'POST',
           data: formdata,
           cache: false,
