@@ -318,12 +318,12 @@ $panel-height-2-top-nav: 756px;
     }
     &--dataset_landing_page {
       &:after {
-        content: 'DL';
+        content: 'DA';
       }
     }
     &--dataset {
       &:after {
-        content: 'DA';
+        content: 'DS';
       }
     }
     &--timeseries_dataset {
