@@ -78,15 +78,30 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
-      var result = confirm("Are you sure you want to delete this alert?");
-      if (result === true) {
-        var position = $(".workspace-edit").scrollTop();
-        Florence.globalVars.pagePos = position;
-        $(this).parent().remove();
-        data[field].splice(index, 1);
-        templateData[field].splice(index, 1);
-        saveAlert(collectionId, data.uri, data, templateData, field, idField);
-      }
+      swal ({
+        title: "Warning",
+        text: "Are you sure you want to delete this alert?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result) {
+        if (result === true) {
+          swal({
+            title: "Deleted",
+            text: "This alert has been deleted",
+            type: "success",
+            timer: 2000
+          });
+          var position = $(".workspace-edit").scrollTop();
+          Florence.globalVars.pagePos = position;
+          $(this).parent().remove();
+          data[field].splice(index, 1);
+          templateData[field].splice(index, 1);
+          saveAlert(collectionId, data.uri, data, templateData, field, idField);
+        }
+      });
     });
   });
   function sortable() {
@@ -106,7 +121,7 @@ function saveAlert(collectionId, path, data, templateData, field, idField) {
     },
     error = function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);

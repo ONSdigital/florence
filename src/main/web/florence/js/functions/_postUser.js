@@ -39,7 +39,7 @@ function postUser(name, email, password) {
   function setPermissions() {
     postPermission(
       success = function () {
-        alert("User created");
+        sweetAlert("User created", "User '" + email + "' has been created", "success");
         viewController('users');
       },
       error = null,
@@ -54,10 +54,10 @@ function postUser(name, email, password) {
    */
   function handleUserPostError(response) {
     if (response.status === 403 || response.status === 401) {
-      alert("You are not permitted to create users.")
+      sweetAlert("You are not permitted to create users.")
     }
     else if (response.status === 409) {
-      alert(response.responseJSON.message)
+      sweetAlert("Error", response.responseJSON.message, "error")
     } else {
       handleApiError(response);
     }

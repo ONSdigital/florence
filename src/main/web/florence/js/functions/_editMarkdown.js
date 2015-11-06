@@ -44,15 +44,31 @@ function initialiseMarkdown(collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      var result = confirm("Are you sure you want to delete?");
-      if (result === true) {
-        var position = $(".workspace-edit").scrollTop();
-        Florence.globalVars.pagePos = position + 300;
-        $(this).parent().remove();
-        data[field].splice(index, 1);
-        saveMarkdown(collectionId, data.uri, data, field, idField);
-        refreshPreview(data.uri);
-      }
+      swal ({
+        title: "Warning",
+        text: "Are you sure you want to delete?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result) {
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          Florence.globalVars.pagePos = position + 300;
+          $(this).parent().remove();
+          data[field].splice(index, 1);
+          saveMarkdown(collectionId, data.uri, data, field, idField);
+          refreshPreview(data.uri);
+          console.log(idField);
+          swal({
+            title: "Deleted",
+            text: "This " + idField + " has been deleted",
+            type: "success",
+            timer: 2000
+          });
+        }
+      });
     });
   });
 
@@ -80,7 +96,7 @@ function saveMarkdown (collectionId, path, data, field, idField) {
         },
         error = function (response) {
             if (response.status === 400) {
-                alert("Cannot edit this page. It is already part of another collection.");
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
             }
             else {
                 handleApiError(response);

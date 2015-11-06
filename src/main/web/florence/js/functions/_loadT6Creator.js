@@ -36,7 +36,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         submitFormHandler(parentUrl, pageTitle, isInheriting);
         return true;
       } else {
-        alert("This is not a valid place to create this page.");
+        sweetAlert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
       }
     },
@@ -117,21 +117,21 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         newUri = makeUrl(parentUrl, pageTitleTrimmed);
       }
       else {
-        alert('Oops! Something went the wrong way.');
+        sweetAlert('Oops! Something went the wrong.', "", "error");
         loadCreateScreen(collectionId);
       }
       var safeNewUri = checkPathSlashes(newUri);
 
       if ((pageType === 'compendium_landing_page') && (!pageData.description.edition)) {
-        alert('Edition can not be empty');
+        sweetAlert('Edition can not be empty');
         e.preventDefault();
         return true;
       } if ((pageType === 'compendium_landing_page') && (!pageData.description.releaseDate)) {
-        alert('Release date can not be empty');
+        sweetAlert('Release date can not be empty');
         e.preventDefault();
         return true;
       } if (pageTitle.length < 5) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         e.preventDefault();
         return true;
       } if (pageTitle.toLowerCase() === 'current' || pageTitle.toLowerCase() === 'latest') {
@@ -142,7 +142,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       else {
         getPageData(collectionId, safeNewUri,
           success = function() {
-            alert('This page already exists');
+            sweetAlert('This page already exists');
           },
           // if the page does not exist, create it
           error = function() {
@@ -161,7 +161,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
               },
               error = function (response) {
                 if (response.status === 400) {
-                  alert("Cannot edit this page. It is already part of another collection.");
+                  sweetAlert("Cannot edit this page. It is already part of another collection.");
                 }
                 else {
                   handleApiError(response);
@@ -183,7 +183,7 @@ function submitNoForm (parentUrl, title) {
     if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
       newUri = makeUrl(parentUrl, pageTitleTrimmed);
     } else {
-      alert('Oops! Something went the wrong way.');
+      sweetAlert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
 
@@ -192,7 +192,7 @@ function submitNoForm (parentUrl, title) {
     // check if the page exists
     getPageData(collectionId, safeNewUri,
       success = function() {
-        alert('This page already exists');
+        sweetAlert('This page already exists');
       },
       // if the page does not exist, create it
       error = function() {
@@ -203,7 +203,7 @@ function submitNoForm (parentUrl, title) {
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this page. It is already part of another collection.");
+              sweetAlert("Cannot edit this page. It is already part of another collection.");
             }
             else {
               handleApiError(response);
@@ -303,7 +303,7 @@ function submitNoForm (parentUrl, title) {
     }
 
     else {
-      alert('Unsupported page type. This is not a compendium file type');
+      sweetAlert('Unsupported page type. This is not a compendium file type');
     }
   }
 
@@ -316,7 +316,7 @@ function submitNoForm (parentUrl, title) {
     }
     else
     {
-      alert('Oops! Something went the wrong way.');
+      sweetAlert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
     postContent(collectionId, parentUrl, JSON.stringify(parentData),
@@ -327,7 +327,7 @@ function submitNoForm (parentUrl, title) {
       },
       error = function (response) {
         if (response.status === 400) {
-          alert("Cannot edit this page. It is already part of another collection.");
+          sweetAlert("Cannot edit this page. It is already part of another collection.");
         }
         else {
           handleApiError(response);

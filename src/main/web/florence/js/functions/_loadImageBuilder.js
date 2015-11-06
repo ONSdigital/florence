@@ -42,12 +42,12 @@ function loadImageBuilder(pageData, onSave, image) {
     var formData = new FormData($(this)[0]);
     var file = this[0].files[0];
     if (!file) {
-      alert('Please select a file to upload.');
+      sweetAlert('Please select a file to upload.');
       return;
     }
 
     if(!/\.png|.jpeg$|.jpg$|/.test(file)) {
-      alert('The data file upload is limited to PNG and JPEG.');
+      sweetAlert('The data file upload is limited to PNG and JPEG.', "", "info");
       return;
     }
 
@@ -80,12 +80,12 @@ function loadImageBuilder(pageData, onSave, image) {
     var formData = new FormData($(this)[0]);
     var file = this[0].files[0];
     if (!file) {
-      alert('Please select a file to upload.');
+      sweetAlert('Please select a file to upload.');
       return;
     }
 
     if(!/\.csv$|.xls$|.xlsx$|/.test(file)) {
-      alert('The data file upload is limited to CSV, XLS, or XLSX.');
+      sweetAlert('The data file upload is limited to CSV, XLS, or XLSX.');
       return;
     }
 
@@ -116,14 +116,14 @@ function loadImageBuilder(pageData, onSave, image) {
     var image = buildJsonObjectFromForm();
 
     if (!image.title) {
-      alert("Please enter a title for the image.");
+      sweetAlert("Please enter a title for the image.");
       return;
     }
 
     var imageFileName = getExistingFileName(image, imageFileKey);
 
     if (!imageFileName) {
-      alert("Please upload an image");
+      sweetAlert("Please upload an image");
       return;
     }
 

@@ -26,7 +26,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         submitFormHandler();
         return true;
       } else {
-        alert("This is not a valid place to create this page.");
+        sweetAlert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
       }
     },
@@ -70,10 +70,10 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       var safeNewUri = checkPathSlashes(newUri);
 
       if (!pageData.description.releaseDate) {
-        alert('Release date can not be empty');
+        sweetAlert('Release date can not be empty');
         return true;
       } if (pageTitle.length < 5) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         return true;
       }
       else {
@@ -115,7 +115,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       };
     }
     else {
-      alert('Unsupported page type. This is not a dataset type');
+      sweetAlert('Unsupported page type. This is not a dataset type');
     }
   }
 }

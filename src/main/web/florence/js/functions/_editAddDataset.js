@@ -78,7 +78,7 @@ function addDataset(collectionId, data, field, idField) {
 
       var file = this[2].files[0];
       if (!file) {
-        alert('Please select a file to upload.');
+        sweetAlert("Please select a file to upload");
         return;
       }
 
@@ -91,7 +91,7 @@ function addDataset(collectionId, data, field, idField) {
       if (data[field] && data[field].length > 0) {
         $(data[field]).each(function (i, filesUploaded) {
           if (filesUploaded.file == safeUriUpload) {
-            alert('This file already exists');
+            sweetAlert('This file already exists');
             $('#' + lastIndex).remove();
             addDataset(collectionId, pageData, 'datasets', 'edition');
             return;
@@ -105,14 +105,14 @@ function addDataset(collectionId, data, field, idField) {
           formdata.append("name", file);
         }
       } else {
-        alert('This file type is not supported');
+        sweetAlert('This file type is not supported');
         $('#' + lastIndex).remove();
         addDataset(collectionId, pageData, 'datasets', 'edition');
         return;
       }
 
       if (pageTitle.length < 4) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         return;
       }
 

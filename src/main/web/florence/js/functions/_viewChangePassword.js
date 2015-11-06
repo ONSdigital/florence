@@ -17,11 +17,11 @@ function viewChangePassword(email, authenticate) {
     var confirmPassword = $('#password-confirm').val();
 
     if(newPassword !== confirmPassword) {
-      alert('The passphrases provided do not match. Please enter the new passphrase again and confirm it.');
+      sweetAlert('The passphrases provided do not match', 'Please enter the new passphrase again and confirm it.');
     } else if(!newPassword.match(/.+\s.+\s.+\s.+/)) {
-      alert('The passphrase does not have four words. Please enter a new passphrase and confirm it.');
+      sweetAlert('The passphrase does not have four words', 'Please enter a new passphrase and confirm it.');
     } else if(newPassword.length < 15) {
-      alert('The passphrase is too short. Please make sure it has at least 15 characters (including spaces).');
+      sweetAlert('The passphrase is too short', 'Please make sure it has at least 15 characters (including spaces).');
     } else {
       submitNewPassword(newPassword, oldPassword);
     }
@@ -35,7 +35,7 @@ function viewChangePassword(email, authenticate) {
     postPassword(
       success = function () {
         console.log('Password updated');
-        alert("Password updated");
+        sweetAlert("Password updated", "", "success");
         $('.change-password-overlay').stop().fadeOut(200).remove();
 
         if(authenticate) {
@@ -45,9 +45,9 @@ function viewChangePassword(email, authenticate) {
       error = function (response) {
         if (response.status === 403 || response.status === 401) {
           if (authenticate) {
-            alert('The current password you entered is incorrect. Please try again');
+            sweetAlert('The password you entered is incorrect. Please try again');
           } else {
-            alert('You are not authorised to change the password for this user');
+            sweetAlert('You are not authorised to change the password for this user');
           }
         }
       },

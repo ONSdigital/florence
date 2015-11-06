@@ -27,7 +27,7 @@ function editDocumentCorrection(collectionId, data, templateData, field, idField
       $("#add-" + idField).remove();
     }, function (response) {
       if (response.status === 409) {
-        alert("You can add only one correction before publishing.");
+        sweetAlert("You can add only one correction before publishing.");
       }
       else {
         handleApiError(response);
@@ -66,24 +66,39 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
     });
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
-      var result = confirm("Are you sure you want to delete this correction?");
-      if (result === true) {
-        deleteUnpublishedVersion(collectionId, data[field][index].uri, function () {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position;
-          $(this).parent().remove();
-          data[field].splice(index, 1);
-          templateData[field].splice(index, 1);
-          saveCorrection(collectionId, data.uri, data, templateData, field, idField);
-        }, function (response) {
-          if (response.status === 400) {
-            alert("You cannot delete a correction that has been published.");
-          }
-          else {
-            handleApiError(response);
-          }
-        });
-      }
+      swal ({
+        title: "Warning",
+        text: "Are you sure you want to delete this correction?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result){
+        if (result === true) {
+          deleteUnpublishedVersion(collectionId, data[field][index].uri, function () {
+            var position = $(".workspace-edit").scrollTop();
+            Florence.globalVars.pagePos = position;
+            $(this).parent().remove();
+            data[field].splice(index, 1);
+            templateData[field].splice(index, 1);
+            saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+            swal({
+              title: "Deleted",
+              text: "This correction has been deleted",
+              type: "success",
+              timer: 2000
+            });
+          }, function (response) {
+            if (response.status === 400) {
+              sweetAlert("You cannot delete a correction that has been published.");
+            }
+            else {
+              handleApiError(response);
+            }
+          });
+        }
+      });
     });
   });
 }
@@ -97,7 +112,7 @@ function saveCorrection(collectionId, path, data, templateData, field, idField) 
     },
     function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);
