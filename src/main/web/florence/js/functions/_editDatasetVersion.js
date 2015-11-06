@@ -161,23 +161,11 @@ function editDatasetVersion(collectionId, data, field, idField) {
               }, function (response) {
                 if (response.status === 409) {
                   alert("You can add only one " + idField + " before publishing.");
-                  deleteContent(collectionId, uploadedNotSaved.fileUrl,
-                    onSuccess = function () {
-                    },
-                    onError = function (error) {
-                      handleApiError(error);
-                    }
-                  );
+                  deleteContent(collectionId, uploadedNotSaved.fileUrl);
                 }
                 else if (response.status === 404) {
                   alert("You can only add " + idField + "s to content that has been published.");
-                  deleteContent(collectionId, uploadedNotSaved.fileUrl,
-                    onSuccess = function () {
-                    },
-                    onError = function (error) {
-                      handleApiError(error);
-                    }
-                  );
+                  deleteContent(collectionId, uploadedNotSaved.fileUrl);
                 }
                 else {
                   handleApiError(response);
