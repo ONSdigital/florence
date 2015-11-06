@@ -18,7 +18,7 @@ function createCollection() {
 
   if (scheduleType === 'release' && publishType === 'scheduled') {
     if(!Florence.CreateCollection.selectedRelease) {
-      alert('Please select a release');
+      sweetAlert('Please select a release');
       return true;
     }
     releaseUri  = Florence.CreateCollection.selectedRelease.uri;
@@ -28,16 +28,16 @@ function createCollection() {
 
   // inline tests
   if (collectionId === '') {
-    alert('This is not a valid collection name');
+    sweetAlert('This is not a valid collection name', "A collection name can't be empty");
     return true;
   } if (collectionId.match(/\./)) {
-    alert('This is not a valid collection name. You can not use dots');
+    sweetAlert('This is not a valid collection name', "You can't use fullstops");
     return true;
   } if ((publishType === 'scheduled') && (scheduleType === 'custom')  && (isValidDate(new Date(collectionDate)))) {
-    alert('This is not a valid date');
+    sweetAlert('This is not a valid date');
     return true;
   } if ((publishType === 'scheduled') && (scheduleType === 'custom') && (Date.parse(collectionDate) < new Date())) {
-    alert('This is not a valid date');
+    sweetAlert('This is not a valid date');
     return true;
   } else {
     // Create the collection
@@ -53,7 +53,7 @@ function createCollection() {
       },
       error: function (response) {
         if(response.status === 409) {
-          alert(response.responseJSON.message);
+          sweetAlert("Error", response.responseJSON.message, "error");
         }
         else {
           handleApiError(response);

@@ -23,7 +23,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
     if ((pageType === 'dataset') || (pageType === 'timeseries_dataset')) {
       newUri = makeUrl(parentUrl, pageEditionTrimmed);
     } else {
-      alert('Oops! Something went the wrong way.');
+      sweetAlert('Oops! Something went the wrong.');
       loadCreateScreen(collectionId);
     }
 
@@ -32,7 +32,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
     // check if the page exists
     getPageData(collectionId, safeNewUri,
       success = function() {
-        alert('This page already exists');
+        sweetAlert('This page already exists');
       },
       // if the page does not exist, create it
       error = function() {
@@ -42,7 +42,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this page. It is already part of another collection.");
+              sweetAlert("Cannot edit this page", "It is already part of another collection.");
             }
             else {
               handleApiError(response);
@@ -84,7 +84,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
     }
 
     else {
-      alert('Unsupported page type. This is not a dataset type');
+      sweetAlert('Unsupported page type', 'This is not a dataset type');
     }
   }
 }

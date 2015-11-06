@@ -11,7 +11,7 @@ function publish(collectionId) {
       $('.over').remove();
 
       if(response) {
-        alert("Published!");
+        sweetAlert("Published!", "Your collection has successfully published", "success");
 
         $('.publish-selected').animate({right: "-50%"}, 500);
         // Wait until the animation ends
@@ -20,7 +20,7 @@ function publish(collectionId) {
         }, 500);
       } else {
         console.log('An error has occurred during the publish process, please contact an administrator. ' + response);
-        alert('An error has occurred during the publish process, please contact an administrator. ');
+        sweetAlert("Oops!", 'An error has occurred during the publish process, please contact an administrator.', "error");
       }
     },
     error: function (response) {
@@ -40,7 +40,7 @@ function unlock(collectionId) {
     crossDomain: true,
     type: 'POST',
     success: function () {
-      alert("Unlocked!");
+      sweetAlert("Unlocked!", "Your collection has be unlocked from publishing", "success");
       $('.publish-selected').animate({right: "-50%"}, 500);
       // Wait until the animation ends
       setTimeout(function () {

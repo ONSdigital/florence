@@ -23,24 +23,39 @@ function addFileWithDetails(collectionId, data, field, idField) {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var result = confirm("Are you sure you want to delete this file?");
-        if (result === true) {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position;
-          $(this).parent().remove();
-          $.ajax({
-            url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + data[field][index].file,
-            type: "DELETE",
-            success: function (res) {
-              console.log(res);
-            },
-            error: function (res) {
-              console.log(res);
-            }
-          });
-          data[field].splice(index, 1);
-          updateContent(collectionId, data.uri, JSON.stringify(data));
-        }
+        swal ({
+          title: "Warning",
+          text: "Are you sure you want to delete this file?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+          closeOnConfirm: false
+        }, function(result) {
+          if (result === true) {
+            swal({
+              title: "Deleted",
+              text: "This alert has been deleted",
+              type: "success",
+              timer: 2000
+            });
+            var position = $(".workspace-edit").scrollTop();
+            Florence.globalVars.pagePos = position;
+            $(this).parent().remove();
+            $.ajax({
+              url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + data[field][index].file,
+              type: "DELETE",
+              success: function (res) {
+                console.log(res);
+              },
+              error: function (res) {
+                console.log(res);
+              }
+            });
+            data[field].splice(index, 1);
+            updateContent(collectionId, data.uri, JSON.stringify(data));
+          }
+        });
       });
 
       // Edit
@@ -65,7 +80,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
   if (data.type === 'compendium_data') {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
   } else {
-    alert('This file type is not valid. Contact an administrator to add this type of file in this document');
+    sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
   }
 
   $('#add-' + idField).one('click', function () {
@@ -107,7 +122,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
       if (data[field].length > 0) {
         $(data[field]).each(function (i, filesUploaded) {
           if (filesUploaded.file === uriUpload) {
-            alert('This file already exists');
+              sweetAlert('This file already exists');
             $('#' + lastIndex).remove();
             addFileWithDetails(collectionId, data, field, idField);
             return;
@@ -126,7 +141,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
           formdata.append("name", file);
         }
       } else {
-        alert('This file type is not supported');
+        sweetAlert("This file type is not supported");
         $('#' + lastIndex).remove();
         addFileWithDetails(collectionId, data, field, idField);
         return;

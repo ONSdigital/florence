@@ -93,7 +93,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
       var versionLabel = this[0].value;
       file = this[1].files[0];
       if (!file) {
-        alert('Please select a file to upload.');
+        sweetAlert('Please select a file to upload');
         return;
       }
 
@@ -109,14 +109,14 @@ function editDatasetVersion(collectionId, data, field, idField) {
           formdata.append("name", file);
         }
       } else {
-        alert('This file type is not supported');
+        sweetAlert('This file type is not supported');
         $('#' + lastIndex).remove();
         editDatasetVersion(collectionId, data, field, idField);
         return;
       }
 
       if (versionLabel.length < 4) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         return;
       }
 
@@ -160,11 +160,11 @@ function editDatasetVersion(collectionId, data, field, idField) {
                 saveDatasetVersion(collectionId, data.uri, data, field, idField);
               }, function (response) {
                 if (response.status === 409) {
-                  alert("You can add only one " + idField + " before publishing.");
+                  sweetAlert("You can add only one " + idField + " before publishing.");
                   deleteContent(collectionId, uploadedNotSaved.fileUrl);
                 }
                 else if (response.status === 404) {
-                  alert("You can only add " + idField + "s to content that has been published.");
+                  sweetAlert("You can only add " + idField + "s to content that has been published.");
                   deleteContent(collectionId, uploadedNotSaved.fileUrl);
                 }
                 else {
@@ -243,37 +243,52 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
     });
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
-      var result = confirm("Are you sure you want to delete this " + idField + "?");
-      if (result === true) {
-        var pathToDelete = data.uri;
-        var fileToDelete = pathToDelete + data.downloads[0].file;  //Saves always the latest
-        var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
-        deleteUnpublishedVersion(collectionId, uriToDelete, function () {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position;
-          $(this).parent().remove();
-          // delete uploaded file
-          deleteContent(collectionId, fileToDelete, function () {
-            console.log("File deleted");
-          }, function (error) {
-            handleApiError(error);
+      swal ({
+        title: "Warning",
+        text: "This will revert all changes you have made in this file. Are you sure you want to delete this " + idField + "?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result){
+        if (result === true) {
+          swal({
+            title: "Deleted",
+            text: "This " + idField + " version has been deleted",
+            type: "success",
+            timer: 2000
           });
-          // delete modified data.json and revert to pubished
-          deleteContent(collectionId, pathToDelete, function () {
-            loadPageDataIntoEditor(pathToDelete, collectionId);
-            refreshPreview(pathToDelete);
-          }, function (error) {
-            handleApiError(error);
+          var pathToDelete = data.uri;
+          var fileToDelete = pathToDelete + data.downloads[0].file;  //Saves always the latest
+          var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
+          deleteUnpublishedVersion(collectionId, uriToDelete, function () {
+            var position = $(".workspace-edit").scrollTop();
+            Florence.globalVars.pagePos = position;
+            $(this).parent().remove();
+            // delete uploaded file
+            deleteContent(collectionId, fileToDelete, function () {
+              console.log("File deleted");
+            }, function (error) {
+              handleApiError(error);
+            });
+            // delete modified data.json and revert to pubished
+            deleteContent(collectionId, pathToDelete, function () {
+              loadPageDataIntoEditor(pathToDelete, collectionId);
+              refreshPreview(pathToDelete);
+            }, function (error) {
+              handleApiError(error);
+            });
+          }, function (response) {
+            if (response.status === 404) {
+              sweetAlert("You cannot delete a " + idField + " that has been published.");
+            }
+            else {
+              handleApiError(response);
+            }
           });
-        }, function (response) {
-          if (response.status === 404) {
-            alert("You cannot delete a " + idField + " that has been published.");
-          }
-          else {
-            handleApiError(response);
-          }
-        });
-      }
+        }
+      });
     });
   });
 }
@@ -287,7 +302,7 @@ function saveDatasetVersion(collectionId, path, data, field, idField) {
     },
     function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);

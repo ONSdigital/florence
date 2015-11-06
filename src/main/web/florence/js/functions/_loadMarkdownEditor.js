@@ -42,7 +42,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     $(".btn-markdown-editor-exit").click(function () {
       var markdown = $('#wmd-input').val();
       if (markdown === '') {
-        alert('This cannot be empty');
+        sweetAlert('Please add some text', "This can't be left empty");
       } else {
         onSave(markdown);
         clearTimeout(timeoutId);
