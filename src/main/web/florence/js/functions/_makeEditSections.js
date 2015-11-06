@@ -131,6 +131,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'compendium_landing_page') {
     var html = templates.workEditT6(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');

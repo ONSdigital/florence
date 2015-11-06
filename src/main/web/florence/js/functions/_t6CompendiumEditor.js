@@ -1,7 +1,7 @@
 function compendiumEditor(collectionId, data, templateData) {
 
 //  var index = data.release;
-  var newChapters = [], newRelatedMethodology = [];
+  var newChapters = [], newRelatedMethodology = [], newDocuments = [], newData = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
   var timeoutId;
@@ -200,28 +200,28 @@ function compendiumEditor(collectionId, data, templateData) {
 
   //Add new table (only one per compendium)
   if (!data.datasets || data.datasets.length === 0) {
-    $("#add-data").one('click', function () {
+    $("#add-compendium-data").one('click', function () {
       var tableTitle;
-      $('#sortable-data').append(
-        '<div id="' + lastIndexDataset + '" class="edit-section__sortable-item">' +
-        '<textarea class="auto-size" id="new-data-title" placeholder="Type title here and click add"></textarea>' +
-        '<button class="btn-markdown-edit" id="data-add">Edit data</button>' +
+      $('#sortable-compendium-data').append(
+        '<div id="' + lastIndexDataset + '" class="edit-section__item">' +
+        '<textarea class="auto-size" id="new-compendium-data-title" placeholder="Type title here and click add"></textarea>' +
+        '<button class="btn-markdown-edit" id="compendium-data-add">Edit data</button>' +
         '</div>');
-      $('#new-data-title').on('input', function () {
+      $('#new-compendium-data-title').on('input', function () {
         $(this).textareaAutoSize();
         tableTitle = $(this).val();
       });
-      $('#data-add').on('click', function () {
+      $('#compendium-data-add').on('click', function () {
         if (tableTitle.length < 5) {
           alert("This is not a valid file title");
           return true;
         } else {
-          loadT6Creator(collectionId, data.description.releaseDate, 'compendium_data', data.uri, tableTitle)
+          loadT6Creator(collectionId, data.description.releaseDate, 'compendium_data', data.uri, tableTitle);
         }
       });
     });
   } else {
-    $('#add-data').hide().one('click', function () {
+    $('#add-compendium-data').hide().one('click', function () {
       alert('At the moment you can have one section here.');
     });
   }
@@ -257,6 +257,22 @@ function compendiumEditor(collectionId, data, templateData) {
       newChapters[indexC] = {uri: safeUri};
     });
     data.chapters = newChapters;
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexD, nameD) {
+      var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocuments[indexD] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocuments;
+    // Related data
+    var orderData = $("#sortable-data").sortable('toArray');
+    $(orderData).each(function (indexDat, nameDat) {
+      var uri = data.relatedData[parseInt(nameDat)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newData[indexDat] = {uri: safeUri};
+    });
+    data.relatedData = newData;
     // Related methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
@@ -360,18 +376,18 @@ function editData(collectionId, data) {
     lastIndexDataset = 0;
   } else {
     $(data.datasets).each(function (index) {
-      $("#data-edit_" + index).click(function () {
+      $("#compendium-data-edit_" + index).click(function () {
         //open document
-        var selectedData = $("#data-title_" + index).attr('data-url');
+        var selectedData = $("#compendium-data-title_" + index).attr('data-url');
         refreshPreview(selectedData);
         viewWorkspace(selectedData, collectionId, 'edit');
       });
 
       // Delete
-      $("#data-delete_" + index).click(function () {
+      $("#compendium-data-delete_" + index).click(function () {
         var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
         if (result === true) {
-          var selectedData = $("#data-title_" + index).attr('data-url');
+          var selectedData = $("#compendium-data-title_" + index).attr('data-url');
           var path = data.uri;
           $("#" + index).remove();
           data.datasets.splice(index, 1);
