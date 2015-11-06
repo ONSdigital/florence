@@ -235,6 +235,8 @@ function submitNoForm (parentUrl, title) {
         },
         "datasets": [],
         "chapters": [],
+        "relatedDocuments": [],
+        "relatedData": [],
         "relatedMethodology": [],
         "topics": [],
         "alerts": [],
