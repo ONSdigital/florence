@@ -282,8 +282,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'timeseries_dataset') {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
-    editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
+    editDatasetVersion(collectionId, pageData, 'versions', 'version');
     addFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
+    editDatasetVersion(collectionId, pageData, 'versions', 'correction');
     accordion();
     datasetEditor(collectionId, pageData);
   }
