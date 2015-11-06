@@ -1,0 +1,12 @@
+{{#each series}}
+  <label>{{this}}</label>
+  <select id="types_{{@index}}" class="col--5">
+    {{#select (lookup ../chartTypes this)}}
+      <option value="bar">Bar</option>
+      <option value="line">Line</option>
+    {{/select}}
+  </select>
+  <label for="{{this}}">Bar stack</label>
+    <input id="{{this}}" name="group_check" value="{{this}}" type="checkbox"{{#ifContains this ../groups.[0]}} checked{{/ifContains}}>
+  <br/>
+{{/each}}

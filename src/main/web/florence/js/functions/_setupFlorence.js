@@ -31,6 +31,13 @@ function setupFlorence() {
         return options.inverse(this);
     }
   });
+  //Check if array contains element
+  Handlebars.registerHelper('ifContains', function(elem, list, options) {
+    if(list.indexOf(elem) > -1) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
   // Add two values together. Primary usage was '@index + 1' to create numbered lists
   Handlebars.registerHelper('plus', function(value1, value2) {
     return value1 + value2;
