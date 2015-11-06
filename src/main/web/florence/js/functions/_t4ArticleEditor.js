@@ -1,6 +1,6 @@
 function articleEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newArticle = [], newRelated = [], newLinks = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -203,7 +203,7 @@ function articleEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-    // Related articles
+    // Related articles TO BE DELETED
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = data.relatedArticles[parseInt(nameA)].uri;
@@ -211,14 +211,22 @@ function articleEditor(collectionId, data) {
       newArticle[indexA] = {uri: safeUri};
     });
     data.relatedArticles = newArticle;
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexDoc, nameDoc) {
+      var uri = data.relatedDocuments[parseInt(nameDoc)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocuments[indexDoc] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocuments;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
       var safeUri = checkPathSlashes(uri);
-      newRelated[indexD] = {uri: safeUri};
+      newData[indexD] = {uri: safeUri};
     });
-    data.relatedData = newRelated;
+    data.relatedData = newData;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {

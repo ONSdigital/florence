@@ -74,11 +74,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
         $('#pagename').val('');
         return false;
       }
-      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
-        alert ('That is not an accepted value for an edition');
-        $('#edition').val('');
-        return false;
-      }
+
       pageData = pageTypeDataT16(pageType);
       var publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
       var toIsoDate = $('#releaseDate').datepicker("getDate");

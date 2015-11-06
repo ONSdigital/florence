@@ -52,11 +52,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         $('#pagename').val('');
         return false;
       }
-      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
-        alert ('That is not an accepted value for an edition');
-        $('#edition').val('');
-        return false;
-      }
+
       releaseDateManual = $('#releaseDate').val()
       pageData = pageTypeDataT8(pageType);
       pageTitle = $('#pagename').val();
