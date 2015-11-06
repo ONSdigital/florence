@@ -157,14 +157,14 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               }
             }
 
-            else if (field === 'relatedArticles' && (result.type === 'article' || result.type === 'compendium_landing_page')) {
+            else if (field === 'relatedArticles' && (result.type === 'article' || result.type === 'article_download' || result.type === 'compendium_landing_page')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];
               }
             }
 
-            else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'bulletin' || result.type === 'compendium_landing_page')) {
+            else if ((field === 'relatedDocuments') && (result.type === 'article' || result.type === 'article_download' || result.type === 'bulletin' || result.type === 'compendium_landing_page')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];
@@ -192,7 +192,14 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               }
             }
 
-            else if (field === 'relatedMethodology' && (result.type === 'static_methodology' || result.type === 'static_qmi')) {
+            else if (field === 'relatedMethodology' && (result.type === 'static_qmi')) {
+              if (!data[field]) {
+                data[field] = [];
+                templateData[field] = [];
+              }
+            }
+
+            else if (field === 'relatedMethodologyArticle' && (result.type === 'static_methodology' || result.type === 'static_methodology_download')) {
               if (!data[field]) {
                 data[field] = [];
                 templateData[field] = [];

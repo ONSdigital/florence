@@ -109,7 +109,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     addFile(collectionId, pageData, 'downloads', 'file');
     editLink (collectionId, pageData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
-    //add corrections
+    editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
     accordion();
     ArticleDownloadEditor(collectionId, pageData);
   }
@@ -131,6 +131,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'compendium_landing_page') {
     var html = templates.workEditT6(templateData);
     $('.workspace-menu').html(html);
+    editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+    editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
@@ -168,7 +170,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
-    editCompendiumDatasetCorrection(collectionId, pageData, 'versions', 'correction');
+    editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
     accordion();
     compendiumDataEditor(collectionId, pageData);
   }
@@ -280,8 +282,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'timeseries_dataset') {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
-    editMarkdownOneObject (collectionId, pageData, 'section', 'Notes');
+    editDatasetVersion(collectionId, pageData, 'versions', 'version');
     addFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
+    editDatasetVersion(collectionId, pageData, 'versions', 'correction');
     accordion();
     datasetEditor(collectionId, pageData);
   }

@@ -10,7 +10,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
   var pageType, pageTitle, uriSection, pageTitleTrimmed, pageEditionTrimmed, releaseDateManual,
     isInheriting, newUri, pageData, natStat, contactName, contactEmail,
-    contactTel, keyWords, metaDescr, relatedData, summary;
+    contactTel, keyWords, metaDescr, relatedData, summary, relatedMethodology;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -32,6 +32,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         keyWords = checkData.description.keywords;
         summary = checkData.description.summary;
         metaDescr = checkData.description.metaDescription;
+        relatedMethodology = checkData.relatedMethodology;
         if (checkData.type === 'bulletin' && pageType === 'bulletin') {
           relatedData = checkData.relatedData;
         }
@@ -118,6 +119,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.contact.telephone = contactTel;
         pageData.description.keywords = keyWords;
         pageData.description.metaDescription = metaDescr;
+        pageData.relatedMethodology = relatedMethodology;
         if (pageType === 'bulletin') {
           pageData.description.summary = summary;
           pageData.relatedData = relatedData;
