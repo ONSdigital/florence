@@ -109,7 +109,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     addFile(collectionId, pageData, 'downloads', 'file');
     editLink (collectionId, pageData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
-    //add corrections
+    editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
     accordion();
     ArticleDownloadEditor(collectionId, pageData);
   }
@@ -168,7 +168,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'methodology');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
-    editCompendiumDatasetCorrection(collectionId, pageData, 'versions', 'correction');
+    editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
     accordion();
     compendiumDataEditor(collectionId, pageData);
   }
