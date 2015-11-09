@@ -32,12 +32,27 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
 
   // Delete
   $('#content-delete').click(function() {
-    var result = confirm("Are you sure you want to delete?");
-    if (result === true) {
-      $(this).parent().remove();
-      data[field] = [];
-      saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
-    }
+    swal ({
+      title: "Warning",
+      text: "Are you sure you want to delete?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      closeOnConfirm: false
+    }, function(result){
+      if (result === true) {
+        $(this).parent().remove();
+        data[field] = [];
+        saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+        swal({
+          title: "Deleted",
+          text: "This " + idField + " has been deleted",
+          type: "success",
+          timer: 2000
+        });
+      }
+    });
   });
 
 }
@@ -50,7 +65,7 @@ function saveMarkdownNoTitle (collectionId, path, data, field, idField) {
         },
         error = function (response) {
             if (response.status === 400) {
-                alert("Cannot edit this page. It is already part of another collection.");
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
             }
             else {
                 handleApiError(response);

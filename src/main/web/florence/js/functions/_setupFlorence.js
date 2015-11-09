@@ -31,6 +31,13 @@ function setupFlorence() {
         return options.inverse(this);
     }
   });
+  //Check if array contains element
+  Handlebars.registerHelper('ifContains', function(elem, list, options) {
+    if(list.indexOf(elem) > -1) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
   // Add two values together. Primary usage was '@index + 1' to create numbered lists
   Handlebars.registerHelper('plus', function(value1, value2) {
     return value1 + value2;
@@ -71,14 +78,22 @@ function setupFlorence() {
   // dirty checks on admin menu
   adminMenu.on('click', '.nav--admin__item', function () {
     if (Florence.Editor.isDirty) {
-      var result = confirm("You have unsaved changes. Are you sure you want to continue");
-      if (result === true) {
-        Florence.Editor.isDirty = false;
-        processMenuClick(this);
-        return true;
-      } else {
-        return false;
-      }
+      swal ({
+        title: "Warning",
+        text: "If you do not come back to this page, you will lose any unsaved changes",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        cancelButtonText: "Cancel"
+      }, function(result){
+        if (result === true) {
+          Florence.Editor.isDirty = false;
+          processMenuClick(this);
+          return true;
+        } else {
+          return false;
+        }
+      });
     } else {
       processMenuClick(this);
     }

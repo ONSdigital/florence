@@ -131,13 +131,30 @@ function timeseriesEditor(collectionId, data) {
     }
   };
 
-  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  $("#metadata-list #natStat input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.description.nationalStatistic = $("#metadata-list #natStat input[type='checkbox']").prop('checked') ? true : false;
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
+
+  var isIndexStatus = function () {
+    if (data.description.isIndex === "false" || data.description.isIndex === false) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  $("#metadata-list #isIndex input[type='checkbox']").prop('checked', isIndexStatus).click(function () {
+    data.description.isIndex = $("#metadata-list #isIndex input[type='checkbox']").prop('checked') ? true : false;
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
+  });
+
 
   // Correction section
   // Load
@@ -171,7 +188,7 @@ function timeseriesEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     if (Florence.globalVars.welsh) {
-      alert('You cannot perform this operation in Welsh.');
+      sweetAlert('You cannot perform this operation in Welsh.');
     } else {
       save();
       updateContent(collectionId, data.uri, JSON.stringify(data));
@@ -181,7 +198,7 @@ function timeseriesEditor(collectionId, data) {
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     if (Florence.globalVars.welsh) {
-      alert('You cannot perform this operation in Welsh.');
+      sweetAlert('You cannot perform this operation in Welsh.');
     } else {
       save();
       saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));

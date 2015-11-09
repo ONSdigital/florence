@@ -40,7 +40,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         submitFormHandler (safeParentUrl, pageTitle, isInheriting);
         return true;
       } else {
-        alert("This is not a valid place to create this page.");
+        sweetAlert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
       }
     },
@@ -131,13 +131,13 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       var safeNewUri = checkPathSlashes(newUri);
 
       if (pageType === 'bulletin' && !pageData.description.edition) {
-        alert('Edition can not be empty');
+        sweetAlert('Edition can not be empty');
         return true;
       } if (!pageData.description.releaseDate) {
-        alert('Release date can not be empty');
+        sweetAlert('Release date can not be empty');
         return true;
       } if (pageTitle.length < 5) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         return true;
       }
       else {
@@ -252,7 +252,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     }
 
     else {
-      alert('Unsupported page type. This is not an article or a bulletin');
+      sweetAlert('Unsupported page type. This is not an article or a bulletin');
     }
   }
 }
