@@ -70,6 +70,11 @@ function viewCollectionDetails(collectionId) {
       approve.hide();
     }
 
+    //edit collection
+    $('.collection-selected .btn-collection-edit').click(function () {
+     editCollection(collection);
+    });
+
     //page-list
     $('.page-item').click(function () {
       $('.page-list li').removeClass('selected');
