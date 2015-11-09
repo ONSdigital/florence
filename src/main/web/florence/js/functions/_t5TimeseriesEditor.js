@@ -140,10 +140,10 @@ function timeseriesEditor(collectionId, data) {
   });
 
   var isIndexStatus = function () {
-    if (data.description.isIndex === "false" || data.description.isIndex === false) {
-      return false;
-    } else {
+    if (data.description.isIndex === true) {
       return true;
+    } else {
+      return false;
     }
   };
 
