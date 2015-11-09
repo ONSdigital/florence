@@ -2,6 +2,7 @@ function editCollection (collection) {
   var collDetails = $('.section-content').detach();
   var html = templates.collectionEdit(collection);
   $('.section-head').after(html);
+  $('.collection-selected .btn-collection-edit').off();
 
   console.log(collection);
 
@@ -28,12 +29,15 @@ function editCollection (collection) {
 
   //Save
   $('.btn-collection-editor-save').click(function () {
-    alert("Work in progress! Be patient");
+    sweetAlert("Work in progress", "Please, be patient.");
     //to be done
   });
 
   //Cancel
   $('.btn-collection-editor-cancel').click(function () {
+    $('.collection-selected .btn-collection-edit').click(function () {
+      editCollection(collection);
+    });
     $('.collection-editor').remove();
     $('.section-head').after(collDetails);
   });

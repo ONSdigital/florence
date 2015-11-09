@@ -9,7 +9,7 @@
 
 function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitle) {
   var releaseDate = null;             //overwrite scheduled collection date
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual, isInheriting, newUri, pageData, parentData;
+  var pageType, pageTitle, pageEdition, uriSection, pageTitleTrimmed, pageEditionTrimmed, releaseDateManual, isInheriting, newUri, pageData, parentData;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -50,10 +50,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
     if (pageType === 'compendium_landing_page') {
       $('.edition').append(
         '<label for="edition">Edition</label>' +
-        '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
-      );
-    } if ((pageType === 'compendium_landing_page') && (!releaseDate)) {
-      $('.edition').append(
+        '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
         '<br>' +
         '<label for="releaseDate">Release date</label>' +
         '<input id="releaseDate" type="text" placeholder="day month year" />'
@@ -88,16 +85,8 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       pageData.description.title = pageTitle;
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
-      if (pageData.description.edition) {
-        releaseUri = pageData.description.edition;
-      }
-
-      if (!pageData.description.edition && releaseDateManual) {                          //Manual collections
-        date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
-        releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
-      } else if (!pageData.description.edition && !releaseDateManual) {
-        releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
-      }
+      pageEdition = pageData.description.edition;
+      pageEditionTrimmed = pageEdition.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
 
       if (pageType === 'compendium_landing_page' && releaseDate == null) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
@@ -107,11 +96,11 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       }
 
       if (isInheriting && pageType === 'compendium_landing_page') {
-        newUri = makeUrl(parentUrl, releaseUri);
+        newUri = makeUrl(parentUrl, pageEditionTrimmed);
       }
       else if (pageType === 'compendium_landing_page') {
         uriSection = "compendium";
-        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, releaseUri);
+        newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed, pageEditionTrimmed);
       }
       else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
         newUri = makeUrl(parentUrl, pageTitleTrimmed);
