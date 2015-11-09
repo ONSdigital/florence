@@ -237,8 +237,8 @@ function timeseriesEditor(collectionId, data) {
       newRelated[indexD] = {uri: safeUri};
     });
     data.relatedDatasets = newRelated;
-    // Related methodology
-    var orderUsedIn = $("#sortable-methodology").sortable('toArray');
+    // Related qmi
+    var orderUsedIn = $("#sortable-qmi").sortable('toArray');
     $(orderUsedIn).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
