@@ -1,10 +1,12 @@
 {{#each series}}
   <label>{{this}}</label>
-  <select id="types_{{@index}}" class="col--5">
-    {{#select (lookup ../chartTypes this)}}
-      <option value="bar">Bar</option>
-      <option value="line">Line</option>
-    {{/select}}
-  </select>
+  <div class="select-wrap">
+    <select id="types_{{@index}}" class="col--5">
+      {{#select (lookup ../chartTypes this)}}
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+      {{/select}}
+    </select>
+  </div>
   <br/>
 {{/each}}
