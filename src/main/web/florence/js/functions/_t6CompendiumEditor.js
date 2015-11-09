@@ -273,8 +273,8 @@ function compendiumEditor(collectionId, data, templateData) {
       newData[indexDat] = {uri: safeUri};
     });
     data.relatedData = newData;
-    // Related methodology
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    // Related qmi
+    var orderRelatedMethodology = $("#sortable-qmi").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);

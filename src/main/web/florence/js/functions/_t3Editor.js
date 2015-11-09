@@ -110,7 +110,8 @@ function t3Editor(collectionId, data) {
       newDatasets[indexD] = {uri: safeUri};
     });
     data.datasets = newDatasets;
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    // qmi
+    var orderRelatedMethodology = $("#sortable-qmi").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
