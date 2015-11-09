@@ -2,9 +2,8 @@ function datasetEditor(collectionId, data) {
 
   var newFiles = [];
   var setActiveTab, getActiveTab;
-  //var timeoutId;
 
-  $(".edit-accordion").on('accordionactivate', function (event, ui) {
+  $(".edit-accordion").on('accordionactivate', function () {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
       Florence.globalVars.activeTab = setActiveTab;
@@ -16,29 +15,23 @@ function datasetEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  //resolveVersionCorrectionTitleT8(collectionId, data, 'versions');
-
   //Add parent link onto page
   var parentUri = getParentPage(data.uri);
-  $.ajax ({
-    url: parentUri + "/data",
-    dataType: 'json',
-    crossDomain: true,
-    success: function (data) {
-      //Add title to parent link area
-      var parentTitle = data.description.title;
+  getPageDataTitle(collectionId, parentUri,
+    function (response) {
+      var parentTitle = response.title;
       $('.child-page__title').append(parentTitle);
     },
-    error: function() {
+    function () {
       sweetAlert("Error", "Could not find parent that this is a sub page of", "error");
     }
-  });
+  );
 
   //Add link back to parent page
   $('.child-page').append("<a class='child-page__link'>Back to parent page</a>");
 
   //Take user to parent edit screen on link click
-  $('.child-page__link').click(function(){
+  $('.child-page__link').click(function () {
     //If there are edits check whether user wants to continue
     if (Florence.Editor.isDirty) {
       swal ({
@@ -57,8 +50,8 @@ function datasetEditor(collectionId, data) {
         }
       });
     } else {
-      //Return to parent
-      updateContent(collectionId, data.uri, JSON.stringify(data), parentUri);
+      //Return to parent without saving
+      createWorkspace(parentUri, collectionId, 'edit');
     }
   });
 
@@ -98,38 +91,4 @@ function datasetEditor(collectionId, data) {
     data.section = {markdown: $('#one-markdown').val()};
   }
 }
-
-//function resolveVersionCorrectionTitleT8(collectionId, data, field) {
-//  var ajaxRequest = [];
-//  var templateData = $.extend(true, {}, data);
-//  $(templateData[field]).each(function (index, version) {
-//    var dfd = $.Deferred();
-//    if (version.correctionNotice) {
-//      templateData[field][index].type = true;
-//    } else {
-//      templateData[field][index].type = false;
-//    }
-//    templateData[field][index].label = version.label;
-//    dfd.resolve();
-//    ajaxRequest.push(dfd);
-//  });
-//
-//  $.when.apply($, ajaxRequest).then(function () {
-//
-//    initialiseDatasetVersion(collectionId, data, templateData, 'versions', 'version');
-//    initialiseDatasetVersion(collectionId, data, templateData, 'versions', 'correction');
-//
-//    // Version/Correction section
-//    // New version
-//    $("#add-version").one('click', function () {
-//      //console.log("clicked");
-//      editDatasetVersion(collectionId, data, templateData, 'versions', 'version');
-//    });
-//
-//    // New correction
-//    $("#add-correction").one('click', function () {
-//      editDatasetVersion(collectionId, data, templateData, 'versions', 'correction');
-//    });
-//  });
-//}
 
