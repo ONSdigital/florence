@@ -41,5 +41,18 @@ function editCollection (collection) {
     $('.collection-editor').remove();
     $('.section-head').after(collDetails);
   });
+
+  setCollectionEditorHeight();
+
 }
+
+  function setCollectionEditorHeight(){
+    var panelHeight = parseInt($('.collection-selected').height());
+
+    var headHeight = parseInt($('.section-head').height());
+    var headPadding = parseInt($('.section-head').css('padding-bottom'));
+
+    var contentHeight = panelHeight - (headHeight + headPadding);
+    $('.collection-editor__editor').css('height', contentHeight);
+  }
 
