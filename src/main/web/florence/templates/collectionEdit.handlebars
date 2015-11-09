@@ -2,7 +2,7 @@
   <div class="collection-editor__inner">
 
     <div class="collection-editor__editor">
-      <input type="text" id="collection-editor-name" placeholder="Enter new name" value="{{name}}"/>
+      <textarea class="auto-size" type="text" id="collection-editor-name" placeholder="Enter new name">{{name}}</textarea>
       <input type="text" id="collection-editor-date" placeholder="dd/mm/yyyy" value="{{publishDate}}"/>
       <input type="radio" id="collection-editor-scheduled" name="publishType" value="scheduled" required {{#ifCond type
       '===' 'scheduled'}}checked{{/ifCond}} ><label for="collection-editor-scheduled">Scheduled publish</label>
