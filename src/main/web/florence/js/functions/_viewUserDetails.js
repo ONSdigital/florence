@@ -30,15 +30,31 @@ function viewUserDetails(email) {
     });
 
     $('.btn-user-delete').click(function () {
-
-      var result = prompt("Please enter the email of the user to confirm the delete");
-      if (result != null) {
-        if (result === email) {
-          deleteUser(email);
-        } else {
-          alert('The email you entered did not match the user you want to delete.')
+      swal ({
+        title: "Confirm deletion",
+        text: "Please enter the email address of the user you want to delete",
+        type: "input",
+        inputPlaceHolder: "Email address",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        confirmButtonText: "Delete",
+        animation: "slide-from-top"
+      }, function(result) {
+        console.log(result);
+        if (result) {
+          if (result === email) {
+            swal ({
+              title: "User deleted",
+              text: "This user has been deleted",
+              type: "success",
+              timer: 2000
+            });
+            deleteUser(email);
+          } else {
+            sweetAlert("Oops!", 'The email you entered did not match the user you want to delete.')
+          }
         }
-      }
+      });
     });
 
     $('.collection-selected .btn-collection-cancel').click(function () {

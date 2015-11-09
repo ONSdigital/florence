@@ -10,7 +10,7 @@ function saveRelated (collectionId, path, data, templateData, field, idField) {
     },
     error = function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);

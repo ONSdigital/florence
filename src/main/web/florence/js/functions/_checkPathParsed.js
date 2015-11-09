@@ -13,7 +13,7 @@ function checkPathParsed (uri) {
     }
   return safeUrl;
   } else {
-    alert('This is not a valid link');
+    sweetAlert('This is not a valid link');
     return false;
   }
 }

@@ -28,7 +28,7 @@ function postPermission(success, error, email, admin, editor) {
         error(response);
       } else {
         if (response.status === 403 || response.status === 401) {
-          alert("You are not permitted to update permissions.")
+          sweetAlert("You are not permitted to update permissions.")
         } else {
           handleApiError(response);
         }
