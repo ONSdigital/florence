@@ -196,7 +196,7 @@ function ArticleDownloadEditor(collectionId, data) {
     });
     data.links = newLinks;
     // Related methodology
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    var orderRelatedMethodology = $("#sortable-qmi").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);

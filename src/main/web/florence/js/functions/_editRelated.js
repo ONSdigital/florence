@@ -35,6 +35,8 @@ function createRelatedTemplate(idField, list) {
     dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
   } else if (idField === 'document') {
     dataTemplate = {list: list, idField: idField, idPlural: 'bulletins | articles | compendia'};
+  } else if (idField === 'qmi') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'QMIs'};
   } else if (idField === 'methodology') {
     dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
   } else {
