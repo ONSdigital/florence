@@ -33,7 +33,8 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
     $('.edition').append(
       '<label for="releaseDate">Release date</label>' +
       '<input id="releaseDate" type="text" placeholder="day month year" />' +
-      '<select id="hour" style="width: 50%;" class="selectbg--small">' +
+      '<div class="select-wrap select-wrap--half">' +
+      '<select id="hour">' +
       '  <option value="0">00</option>' +
       '  <option value="3600000">01</option>' +
       '  <option value="7200000">02</option>' +
@@ -59,10 +60,13 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
       '  <option value="79200000">22</option>' +
       '  <option value="82800000">23</option>' +
       '</select>' +
-      '<select id="min" style="width: 50%;" class="selectbg--small">' +
+      '</div>' +
+      '<div class="select-wrap select-wrap--half">' +
+      '<select id="min">' +
       '  <option value="0">00</option>' +
       '  <option value="1800000" selected="selected">30</option>' +
-      '</select>'
+      '</select>' +
+      '</div>'
     );
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
 

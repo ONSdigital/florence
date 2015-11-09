@@ -150,17 +150,11 @@ select {
 	 &--small {
 		 width: 28%;
 	 }
- }
 
-//select:before {
-//	content: "";
-//	display: block;
-//	width: 30px;
-//	height: $lineheight * 2;
-//	background-color: $scarpa-flow;
-//	position: absolute;
-//	right: 0;
-//}
+	 &--half {
+		 width: 50%;
+	 }
+ }
 
 input[type="radio"] {
 	position:absolute;
