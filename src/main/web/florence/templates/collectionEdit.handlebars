@@ -1,0 +1,21 @@
+<div class="collection-editor">
+  <div class="collection-editor__inner">
+
+    <div class="collection-editor__editor">
+      <input type="text" id="collection-editor-name" placeholder="Enter new name" value="{{name}}"/>
+      <input type="text" id="collection-editor-date" placeholder="dd/mm/yyyy" value="{{publishDate}}"/>
+      <input type="radio" id="collection-editor-scheduled" name="publishType" value="scheduled" required {{#ifCond type
+      '===' 'scheduled'}}checked{{/ifCond}} ><label for="collection-editor-scheduled">Scheduled publish</label>
+      <input type="radio" id="collection-editor-manual" name="publishType" value="manual" required {{#ifCond type '==='
+      'manual'}}checked{{/ifCond}}><label for="collection-editor-manual">Manual publish</label>
+    </div>
+
+    <div class="collection-editor__footer">
+      <div class="collection-editor__footer-div">
+        <button class="btn-collection-editor-save">Save changes</button>
+        <button class="btn-collection-editor-cancel">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
