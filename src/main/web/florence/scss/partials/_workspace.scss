@@ -921,3 +921,49 @@
 }
 
 
+.child-page {
+	background-color: $scarpa-flow;
+	color: $porcelain;
+	padding: $lineheight 0;
+
+	&__title {
+		font-weight: bold;
+	}
+
+	&__content {
+		margin: 0 $lineheight;
+	}
+
+	&__link {
+		height: $lineheight * 2;
+		margin: $lineheight $lineheight 0 $lineheight;
+		padding: 0 $lineheight 0 ($lineheight * 2);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		background-color: $silver-sand;
+		color: $mine-shaft;
+		position: relative;
+		width: 30%;
+		border-radius: 4px;
+
+		&:hover {
+			background: $gray-chateau;
+		}
+
+		&:before {
+			content: "";
+			position: absolute;
+			width: 0;
+			height: 0;
+			left: 10px;
+			top: 10px;
+			border-top: 11px solid transparent;
+			border-bottom: 11px solid transparent;
+			border-right: 11px solid $mine-shaft;
+		}
+
+	}
+}
+
+
