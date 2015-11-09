@@ -202,7 +202,7 @@ function resolveTitleT8(collectionId, data, field) {
         dfd.resolve();
       },
       error = function () {
-        alert(field + ' address: ' + eachUri + ' is not found.');
+        sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
         dfd.resolve();
       }
     );
@@ -241,7 +241,7 @@ function addEditionEditButton(collectionId, templateData) {
               },
               error = function (message) {
                 if (message.status === 400) {
-                  alert("Cannot edit this page. It is already part of another collection.");
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
                 }
                 else {
                   handleApiError(message);

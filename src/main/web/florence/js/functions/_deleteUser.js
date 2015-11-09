@@ -6,12 +6,12 @@ function deleteUser(email) {
     type: 'DELETE',
     success: function () {
       console.log('User deleted');
-      alert('User deleted');
+      sweetAlert('Deleted', "User '"  + email + "' has been deleted", 'success');
       viewController('users');
     },
     error: function (response) {
       if (response.status === 403 || response.status === 401) {
-        alert("You are not permitted to delete users.")
+        sweetAlert("Error", "You are not permitted to delete users", "error")
       } else {
         handleApiError(response);
       }

@@ -33,15 +33,30 @@ function editLink (collectionId, data, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_'+index).click(function() {
-      var result = confirm("Are you sure you want to delete?");
-      if (result === true) {
-        var position = $(".workspace-edit").scrollTop();
-        Florence.globalVars.pagePos = position + 300;
-        $(this).parent().remove();
-        data[field].splice(index, 1);
-        saveLink(collectionId, data.uri, data, field, idField);
-        refreshPreview(data.uri);
-      }
+      swal ({
+        title: "Warning",
+        text: "Are you sure you want to delete?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result) {
+        if (result === true) {
+          var position = $(".workspace-edit").scrollTop();
+          Florence.globalVars.pagePos = position + 300;
+          $(this).parent().remove();
+          data[field].splice(index, 1);
+          saveLink(collectionId, data.uri, data, field, idField);
+          refreshPreview(data.uri);
+          swal({
+            title: "Deleted",
+            text: "This link has been deleted",
+            type: "success",
+            timer: 2000
+          });
+        }
+      });
     });
   });
 
@@ -49,6 +64,11 @@ function editLink (collectionId, data, field, idField) {
   $('#add-' + idField).click(function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 300;
+
+      //TODO This function breaking when adding related link
+      console.log(data);
+      console.log(data[field]);
+
     data[field].push({uri:"", title:""});
     saveLink (collectionId, data.uri, data, field, idField);
   });
@@ -67,7 +87,7 @@ function saveLink (collectionId, path, data, field, idField) {
         },
         error = function (response) {
             if (response.status === 400) {
-                alert("Cannot edit this page. It is already part of another collection.");
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
             }
             else {
                 handleApiError(response);

@@ -72,7 +72,7 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
           saveCompendiumDatasetCorrection(collectionId, data.uri, data, field, idField);
         }, function (response) {
           if (response.status === 409) {
-            alert("You can add only one " + idField + " before publishing.");
+            sweetAlert("You can add only one " + idField + " before publishing.");
             var filesToDelete = data.downloads;  //Delete all files in directory
             _.each(filesToDelete, function (download) {
               fileToDelete = data.uri + download.file;
@@ -84,7 +84,7 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
             });
           }
           else if (response.status === 404) {
-            alert("You can only add " + idField + "s to content that has been published.");
+            sweetAlert("You can only add " + idField + "s to content that has been published.");
             var filesToDelete = data.downloads;  //Delete all files in directory
             _.each(filesToDelete, function (download) {
               fileToDelete = data.uri + download.file;
@@ -147,7 +147,7 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
 
       file = this[0].files[0];
       if (!file) {
-        alert('Please select a file to upload.');
+        sweetAlert('Please select a file to upload.');
         return;
       }
 
@@ -161,7 +161,7 @@ function editCompendiumDatasetCorrection(collectionId, data, field, idField) {
           formdata.append("name", file);
         }
       } else {
-        alert('This file type is not supported');
+        sweetAlert('This file type is not supported');
         $('#' + index).remove();
         editCompendiumDatasetCorrection(collectionId, data, field, idField);
         return;
@@ -222,41 +222,55 @@ function initialiseCompendiumDatasetCorrection(collectionId, data, field, idFiel
 
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
-      var result = confirm("This will revert all changes you have made in this file. Are you sure you want to delete" +
-        " this " + idField + "?");
-      if (result === true) {
-        var pathToDelete = data.uri;
-        var filesToDelete = data.downloads;  //Delete all files in directory
-        var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
-        deleteUnpublishedVersion(collectionId, uriToDelete, function () {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position;
-          $(this).parent().remove();
-          //delete uploaded files in this directory
-          _.each(filesToDelete, function (download) {
-            fileToDelete = data.uri + download.file;
-            deleteContent(collectionId, fileToDelete, function () {
-              console.log("File deleted");
-            }, function (error) {
-              console.log(error);
+      swal ({
+        title: "Warning",
+        text: "This will revert all changes you have made in this file. Are you sure you want to delete this " + idField + "?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result){
+        if (result === true) {
+          swal({
+            title: "Deleted",
+            text: "This file has been deleted",
+            type: "success",
+            timer: 2000
+          });
+          var pathToDelete = data.uri;
+          var filesToDelete = data.downloads;  //Delete all files in directory
+          var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
+          deleteUnpublishedVersion(collectionId, uriToDelete, function () {
+            var position = $(".workspace-edit").scrollTop();
+            Florence.globalVars.pagePos = position;
+            $(this).parent().remove();
+            //delete uploaded files in this directory
+            _.each(filesToDelete, function (download) {
+              fileToDelete = data.uri + download.file;
+              deleteContent(collectionId, fileToDelete, function () {
+                console.log("File deleted");
+              }, function (error) {
+                console.log(error);
+              });
             });
+            // delete modified data.json and revert to published
+            deleteContent(collectionId, pathToDelete, function () {
+              loadPageDataIntoEditor(pathToDelete, collectionId);
+              refreshPreview(pathToDelete);
+            }, function (error) {
+              handleApiError(error);
+            });
+          }, function (response) {
+            if (response.status === 404) {
+              sweetAlert("You cannot delete a " + idField + " that has been published.");
+            }
+            else {
+              handleApiError(response);
+            }
           });
-          // delete modified data.json and revert to pubished
-          deleteContent(collectionId, pathToDelete, function () {
-            loadPageDataIntoEditor(pathToDelete, collectionId);
-            refreshPreview(pathToDelete);
-          }, function (error) {
-            handleApiError(error);
-          });
-        }, function (response) {
-          if (response.status === 404) {
-            alert("You cannot delete a " + idField + " that has been published.");
-          }
-          else {
-            handleApiError(response);
-          }
-        });
-      }
+        }
+      });
     });
   });
 }
@@ -270,7 +284,7 @@ function saveCompendiumDatasetCorrection(collectionId, path, data, field, idFiel
     },
     function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);

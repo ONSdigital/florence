@@ -44,14 +44,14 @@
       <input type="radio" id="releaseschedule" name="scheduleType" value="release" required><label
         for="releaseschedule">Calendar entry schedule</label>
 
-      <div id="customScheduleOptions" class="text-center custom-schedule-options">
+      <div id="customScheduleOptions" class="custom-schedule-options">
         <div class="block">
           <label for="date" class="hidden">Date</label>
           <input id="date" type="text" placeholder="dd/mm/yyyy"/>
           <br>
           <label for="hour" class="hidden">Hour</label>
-          <div class="select-wrap">
-            <select id="hour" class="selectbg--small">
+          <div class="select-wrap select-wrap--small">
+            <select id="hour">
               <option value="0">00</option>
               <option value="3600000">01</option>
               <option value="7200000">02</option>
@@ -79,8 +79,8 @@
             </select>
           </div>
           <label for="min" class="hidden">Minutes</label>
-          <div class="select-wrap">
-            <select id="min" class="selectbg--small">
+          <div class="select-wrap select-wrap--small">
+            <select id="min">
               <option value="0">00</option>
               <option value="1800000" selected="selected">30</option>
             </select>

@@ -43,26 +43,41 @@ function initialiseChartList(data, collectionId) {
     });
 
     $("#chart-delete_" + chart.filename).click(function () {
-      var result = confirm("Are you sure you want to delete this chart?");
-      if (result === true) {
-        $("#chart_" + index).remove();
-        deleteContent(collectionId, chartJson + '.json',
-          onSuccess = function () {
-            data.charts = _(data.charts).filter(function (item) {
-              return item.filename !== chart.filename
-            });
-            postContent(collectionId, basePath, JSON.stringify(data),
-              success = function () {
-                Florence.Editor.isDirty = false;
-                refreshChartList(data, collectionId);
-              },
-              error = function (response) {
-                handleApiError(response);
-              }
-            );
-          }
-        );
-      }
+      swal ({
+        title: "Warning",
+        text: "Are you sure you want to delete this chart?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result) {
+        if (result === true) {
+          swal({
+            title: "Deleted",
+            text: "This chart has been deleted",
+            type: "success",
+            timer: 2000
+          });
+          $("#chart_" + index).remove();
+          deleteContent(collectionId, chartJson + '.json',
+            onSuccess = function () {
+              data.charts = _(data.charts).filter(function (item) {
+                return item.filename !== chart.filename
+              });
+              postContent(collectionId, basePath, JSON.stringify(data),
+                success = function () {
+                  Florence.Editor.isDirty = false;
+                  refreshChartList(data, collectionId);
+                },
+                error = function (response) {
+                  handleApiError(response);
+                }
+              );
+            }
+          );
+        }
+      });
     });
   });
 }

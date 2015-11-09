@@ -13,7 +13,7 @@ function checkSaveContent(collectionId, uri, data) {
   }
   getPageData(collectionId, getUri,
     success = function () {
-      alert('This page already exists');
+      sweetAlert('This page already exists', '');
     },
     // if the page does not exist, create it
     error = function () {
@@ -29,7 +29,7 @@ function checkSaveContent(collectionId, uri, data) {
       },
       error = function (response) {
         if (response.status === 400) {
-          alert("Cannot edit this file. It is already part of another collection.");
+            sweetAlert("Cannot edit this page", "It is already part of another collection.");
         }
         else {
           handleApiError(response);
