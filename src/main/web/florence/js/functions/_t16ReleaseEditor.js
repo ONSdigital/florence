@@ -46,15 +46,23 @@ function releaseEditor(collectionId, data) {
     });
   } else {
     $('.release-date').on('change', function () {
-      var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
-      if (result === true) {
-        saveOldDate(collectionId, data, dateTmp);
-        var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
-        var toIsoDate = $('#releaseDate').datepicker("getDate");
-        data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
-      } else {
-        e.preventDefault();
-      }
+      swal ({
+        title: "Warning",
+        text: "You will need to add an explanation for this change. Are you sure you want to proceed?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        cancelButtonText: "Cancel"
+      }, function(result){
+        if (result === true) {
+          saveOldDate(collectionId, data, dateTmp);
+          var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+          var toIsoDate = $('#releaseDate').datepicker("getDate");
+          data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
+        } else {
+          $('#releaseDate').val(dateTmpFormatted);
+        }
+      });
     });
   }
 
@@ -151,7 +159,7 @@ function releaseEditor(collectionId, data) {
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this page. It is already part of another collection.");
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
             }
             else {
               handleApiError(response);
@@ -171,27 +179,35 @@ function releaseEditor(collectionId, data) {
 
   if (data.description.finalised) {
     $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function (e) {
-      alert('You cannot change this field once it is finalised.');
+      sweetAlert('You cannot change this field once it is finalised.');
       e.preventDefault();
     });
   } else {
     $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function () {
-      var result = confirm("You will not be able to reverse this operation. Are you sure you want to proceed?");
-      if (result) {
-        data.description.finalised = $("#finalised input[type='checkbox']").prop('checked') ? true : false;
-        if (data.description.finalised) {
-          // remove provisional date
-          data.description.provisionalDate = "";
-          $('.provisional-date').remove();
-          $('#finalised').remove();
+      swal ({
+        title: "Warning",
+        text: "You will not be able reset the date to provisional once you've done this. Are you sure you want to proceed?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        cancelButtonText: "Cancel"
+      }, function(result){
+        if (result) {
+          data.description.finalised = $("#finalised input[type='checkbox']").prop('checked') ? true : false;
+          if (data.description.finalised) {
+            // remove provisional date
+            data.description.provisionalDate = "";
+            $('.provisional-date').remove();
+            $('#finalised').remove();
+          }
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(function () {
+            autoSaveMetadata(collectionId, data);
+          }, 3000);
+        } else {
+          $("#finalised input[type='checkbox']").prop('checked', false);
         }
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-          autoSaveMetadata(collectionId, data);
-        }, 3000);
-      } else {
-        e.preventDefault();
-      }
+      });
     });
   }
 
@@ -234,7 +250,7 @@ function releaseEditor(collectionId, data) {
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this page. It is already part of another collection.");
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
             } else {
               handleApiError(response);
             }

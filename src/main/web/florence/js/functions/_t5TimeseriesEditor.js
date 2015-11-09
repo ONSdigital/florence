@@ -188,7 +188,7 @@ function timeseriesEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     if (Florence.globalVars.welsh) {
-      alert('You cannot perform this operation in Welsh.');
+      sweetAlert('You cannot perform this operation in Welsh.');
     } else {
       save();
       updateContent(collectionId, data.uri, JSON.stringify(data));
@@ -198,7 +198,7 @@ function timeseriesEditor(collectionId, data) {
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     if (Florence.globalVars.welsh) {
-      alert('You cannot perform this operation in Welsh.');
+      sweetAlert('You cannot perform this operation in Welsh.');
     } else {
       save();
       saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));

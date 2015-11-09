@@ -26,7 +26,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         submitFormHandler();
         return true;
       } else {
-        alert("This is not a valid place to create this page.");
+        sweetAlert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
       }
     },
@@ -75,7 +75,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       } else if (!Florence.globalVars.welsh){
         newUri = makeUrl(parentUrl, pageNameTrimmed);
       } else {
-        alert('You can not perform that operation in Welsh.');
+        sweetAlert('You can not perform that operation in Welsh.');
       }
       var safeNewUri = checkPathSlashes(newUri);
       if (releaseDate && (pageType === 'static_qmi')) {
@@ -91,7 +91,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       }
 
       if (pageName.length < 5) {
-        alert("This is not a valid file name");
+        sweetAlert("This is not a valid file name");
       } else {
         checkSaveContent(collectionId, safeNewUri, pageData);
       }
@@ -229,6 +229,6 @@ function pageTypeDataT7(pageType) {
       type: pageType
     };
   } else {
-    alert('Unsupported page type. This is not a static page');
+    sweetAlert('Unsupported page type', 'This is not a static page', "info");
   }
 }

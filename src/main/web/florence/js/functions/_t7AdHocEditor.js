@@ -71,7 +71,7 @@ function adHocEditor(collectionId, data) {
         autoSaveMetadata(collectionId, data);
       }, 3000);
     } else {
-      alert('This needs to be a number');
+      sweetAlert('This needs to be a number');
     }
   });
   $("#keywordsTag").tagit({
