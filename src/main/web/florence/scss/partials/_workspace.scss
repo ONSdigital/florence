@@ -860,7 +860,6 @@
 
   &__inner {
     background-color: $quill-gray;
-    height: 558px;
     width: 100%;
     margin-top: 0;
     margin-right: auto;
@@ -873,23 +872,23 @@
   &__editor {
     box-sizing: border-box;
     width: 80%;
-    height: $lineheight * 30;
     float: left;
     padding-left: 18.5%;
-    padding-top: 8%;
+    padding-top: 75px;
   }
 
   &__footer {
-    height: 63px;
+    height: $lineheight * 3;
     width: 100%;
-    padding-top: 4.4%;
+    padding-top: $lineheight * 2;
     position: absolute;
     bottom: 0;
     right: 0;
     background-color: $pickled-bluewood;
 
     &-div {
-      padding-left: 16.66%;
+      padding-left: $col--2;
+      height: 0;
     }
 
     button {
