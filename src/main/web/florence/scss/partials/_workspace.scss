@@ -856,3 +856,68 @@
 
 }
 
+.collection-editor {
+
+  &__inner {
+    background-color: $quill-gray;
+    height: 558px;
+    width: 100%;
+    margin-top: 0;
+    margin-right: auto;
+    margin-left: auto;
+    overflow: hidden;
+    position: absolute;
+    z-index: 900;
+  }
+
+  &__editor {
+    box-sizing: border-box;
+    width: 80%;
+    height: $lineheight * 30;
+    float: left;
+    padding-left: 18.5%;
+    padding-top: 8%;
+  }
+
+  &__footer {
+    height: 63px;
+    width: 100%;
+    padding-top: 4.4%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: $pickled-bluewood;
+
+    &-div {
+      padding-left: 16.66%;
+    }
+
+    button {
+      margin-top: -10px;
+    }
+  }
+
+  form {
+    margin-top: 0;
+  }
+
+  input, select {
+    margin-top: 0;
+    width: $col--12 - .4%;
+    background-color: $white;
+  }
+
+  label {
+    display: inline-block;
+    width: $col--6 - .4%;
+    margin-top: -5px;
+    margin-bottom: 4px;
+
+    input, select {
+      width: 100%;
+    }
+  }
+
+}
+
+
