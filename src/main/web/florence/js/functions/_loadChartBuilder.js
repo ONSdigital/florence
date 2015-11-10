@@ -134,7 +134,7 @@ function loadChartBuilder(pageData, onSave, chart) {
   // Builds, parses, and renders our chart in the chart editor
   function renderChart() {
     chart = buildChartObject();
-    var preview = $('#preview-chart');
+    var preview = $('#chart');
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
     renderChartObject('chart', chart, chartHeight, chartWidth);
