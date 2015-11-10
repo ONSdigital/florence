@@ -2,6 +2,11 @@ function datasetEditor(collectionId, data) {
 
   var newFiles = [];
   var setActiveTab, getActiveTab;
+  var parentUrl = getParentPage(data.uri);
+
+  //Add parent link onto page
+  loadParentLink(collectionId, parentUrl);
+
 
   $(".edit-accordion").on('accordionactivate', function () {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -10,51 +15,9 @@ function datasetEditor(collectionId, data) {
     }
   });
 
-
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition();
-
-  //Add parent link onto page
-  var parentUri = getParentPage(data.uri);
-  getPageDataTitle(collectionId, parentUri,
-    function (response) {
-      var parentTitle = response.title;
-      $('.child-page__title').append(parentTitle);
-    },
-    function () {
-      sweetAlert("Error", "Could not find parent that this is a sub page of", "error");
-    }
-  );
-
-  //Add link back to parent page
-  $('.child-page').append("<a class='child-page__link'>Back to parent page</a>");
-
-  //Take user to parent edit screen on link click
-  $('.child-page__link').click(function () {
-    //If there are edits check whether user wants to continue
-    if (Florence.Editor.isDirty) {
-      swal ({
-        title: "Warning",
-        text: "You have unsaved changes. Are you sure you want to continue?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Continue",
-        cancelButtonText: "Cancel"
-      }, function (result) {
-        if (result === true) {
-          Florence.Editor.isDirty = false;
-          //Return to parent if user confirms it
-          updateContent(collectionId, data.uri, JSON.stringify(data), parentUri);
-          return true;
-        }
-      });
-    } else {
-      //Return to parent without saving
-      createWorkspace(parentUri, collectionId, 'edit');
-    }
-  });
-
 
   // Save
   var editNav = $('.edit-nav');
@@ -91,4 +54,3 @@ function datasetEditor(collectionId, data) {
     data.section = {markdown: $('#one-markdown').val()};
   }
 }
-

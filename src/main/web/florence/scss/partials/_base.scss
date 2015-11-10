@@ -735,6 +735,16 @@ button {
     border: 0;
   }
 
+  // Temporarily commented until we know whether we're using this - still needs works as well
+  //.iframe--disabled {
+  //  width: 100%;
+  //  height: 100%;
+  //  background-color: $ship-gray;
+  //  opacity: 0.5;
+  //  position: relative;
+  //  z-index: 10000;
+  //}
+
   label {
     height: ($lineheight / 3) * 4;
     box-sizing: border-box;

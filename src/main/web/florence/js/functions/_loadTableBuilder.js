@@ -1,8 +1,10 @@
 function loadTableBuilder(pageData, onSave, table) {
 
+  var tableExists = table;
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
-  var uploadedNotSaved = {uploaded: false, saved: false};
+  var previewTable;
+
   $('body').append(html);
 
   if (table) {
@@ -11,11 +13,10 @@ function loadTableBuilder(pageData, onSave, table) {
 
   $('#upload-table-form').submit(function (event) {
     var formData = new FormData($(this)[0]);
-    var table = buildJsonObjectFromForm();
-    var path = table.uri;
+    previewTable = buildJsonObjectFromForm(previewTable);
+    var path = previewTable.uri;
     var xlsPath = path + ".xls";
     var htmlPath = path + ".html";
-
 
     // send xls file to zebedee
     $.ajax({
@@ -50,7 +51,6 @@ function loadTableBuilder(pageData, onSave, table) {
         processData: false,
         success: function () {
           renderTable(path);
-          uploadedNotSaved.uploaded = true;
         }
       });
     }
@@ -59,23 +59,19 @@ function loadTableBuilder(pageData, onSave, table) {
   });
 
   function renderTable(path) {
-    var uri = path + "/table";
-    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + uri + '"></iframe>';
+    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + path + '"></iframe>';
     console.log(iframeMarkup);
-    $('#table').html(iframeMarkup);
-
-    document.getElementById('preview-frame').height = "500px";
-    document.getElementById('preview-frame').width = "100%";
+    $('#preview-table').html(iframeMarkup);
   }
 
   $('.btn-table-builder-cancel').on('click', function () {
-    console.log("got here");
+
     $('.table-builder').stop().fadeOut(200).remove();
-    if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
-      //delete any files associated with the table.
-      //add table.json to file
-      table.files.push({"type":"json","filename": table.filename + '.json'});
-      $(table.files).each(function (index, file) {
+
+    // delete the preview table
+    if (previewTable) {
+      previewTable.files.push({"type": "json", "filename": previewTable.filename + '.json'});
+      $(previewTable.files).each(function (index, file) {
         var fileToDelete = pageUrl + '/' + file.filename;
         deleteContent(Florence.collection.id, fileToDelete,
           onSuccess = function () {
@@ -87,17 +83,16 @@ function loadTableBuilder(pageData, onSave, table) {
 
   function saveTableJson() {
 
-    table = buildJsonObjectFromForm();
-    var tableJson = table.uri + ".json";
+    previewTable = buildJsonObjectFromForm(previewTable);
+    var tableJson = previewTable.uri + ".json";
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
       type: 'POST',
-      data: JSON.stringify(table),
+      data: JSON.stringify(previewTable),
       processData: false,
       contentType: 'application/json',
       success: function () {
-        addTableToPageJson(table);
       }
     });
   }
@@ -122,8 +117,29 @@ function loadTableBuilder(pageData, onSave, table) {
 
   $('.btn-table-builder-create').on('click', function () {
 
-    saveTableJson();
-    uploadedNotSaved.saved = true;
+    // if uploaded = true rename the preview table
+
+    saveTableJson(); // save the latest json
+
+    // if a table exists, rename the preview to its name
+    if (tableExists) {
+      previewTable.files.push({"type": "json", "filename": previewTable.filename + '.json'});
+      $(previewTable.files).each(function (index, file) {
+
+        var fromFile = pageUrl + '/' + file.filename;
+        var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
+        console.log("moving... table file: " + fromFile + " to: " + toFile);
+        moveContent(Florence.collection.id, fromFile, toFile,
+          onSuccess = function () {
+            console.log("Moved table file: " + fromFile + " to: " + toFile);
+          });
+      });
+    } else { // just keep the preview files
+      table = previewTable;
+      addTableToPageJson(table);
+    }
+
+
     if (onSave) {
       onSave(table.filename, '<ons-table path="' + table.uri + '" />');
     }
@@ -131,7 +147,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
   });
 
-  function buildJsonObjectFromForm() {
+  function buildJsonObjectFromForm(table) {
     if (!table) {
       table = {};
     }
