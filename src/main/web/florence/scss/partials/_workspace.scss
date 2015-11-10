@@ -181,6 +181,11 @@
         float: left;
       }
 
+      //TODO Select all checkbox labels without specifying their ID.
+      //label + input[type="checkbox"] {
+      //  display: inline-block !important;
+      //}
+
       #natStat label {
         display: inline-block;
       }
@@ -190,6 +195,10 @@
       }
 
       #cancelled label {
+        display: inline-block;
+      }
+
+      #isIndex label {
         display: inline-block;
       }
 
