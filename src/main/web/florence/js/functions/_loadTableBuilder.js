@@ -59,9 +59,17 @@ function loadTableBuilder(pageData, onSave, table) {
   });
 
   function renderTable(path) {
-    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + path + '"></iframe>';
+    var iframeMarkup = '<iframe id="preview-frame" style="opacity:0" frameBorder ="0" scrolling = "yes" src="' + path + '"></iframe>';
     console.log(iframeMarkup);
     $('#preview-table').html(iframeMarkup);
+    var iframe = $('#preview-frame');
+    iframe.load(function(){
+      var contents = iframe.contents();
+      iframe.height(contents.find('html').height());
+      iframe.css("opacity", "1");
+      contents.find('body').css("background", "transparent");
+    });
+
   }
 
   $('.btn-table-builder-cancel').on('click', function () {
