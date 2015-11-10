@@ -5,6 +5,10 @@ function compendiumDataEditor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
 
+  //Add parent link onto page
+  loadParentLink(collectionId, parentUrl);
+
+
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
