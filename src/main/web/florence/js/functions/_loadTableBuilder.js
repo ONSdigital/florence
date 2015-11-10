@@ -65,9 +65,10 @@ function loadTableBuilder(pageData, onSave, table) {
     var iframe = $('#preview-frame');
     iframe.load(function(){
       var contents = iframe.contents();
+      contents.find('body').css("background", "transparent");
+      contents.find('body').css("width", "480px");
       iframe.height(contents.find('html').height());
       iframe.css("opacity", "1");
-      contents.find('body').css("background", "transparent");
     });
 
   }

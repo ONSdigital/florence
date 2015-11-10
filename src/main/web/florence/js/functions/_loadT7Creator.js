@@ -8,7 +8,7 @@
 
 function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
-  var pageName, pageNameTrimmed, newUri, pageData;
+  var pageName, pageNameTrimmed, newUri, pageData, isNumber;
   if (parentUrl === '/') {        //to check home page
     parentUrl = '';
   }
@@ -17,7 +17,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     url: parentUrlData,
     dataType: 'json',
     crossDomain: true,
-    success: function(checkData) {
+    success: function (checkData) {
       if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
         (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_methodology_download') && checkData.type === 'product_page') {
         submitFormHandler();
@@ -30,7 +30,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         loadCreateScreen(collectionId);
       }
     },
-    error: function() {
+    error: function () {
       console.log('No page data returned');
     }
   });
@@ -44,6 +44,23 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       );
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     }
+    else if (pageType === 'static_adhoc') {
+      $('.edition').append(
+        '<label for="releaseDate">Release date</label>' +
+        '<input id="releaseDate" type="text" placeholder="day month year" />' +
+        '<br>' +
+        '<label for="adhoc-reference">Reference</label>' +
+        '<input id="adhoc-reference" type="text" placeholder="Reference number" />'
+      );
+      $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+      $('#adhoc-reference').on('input', function () {
+        isNumber = $(this).val();
+        if (!isNumber.match(/^\d+$/)) {
+          sweetAlert('This needs to be a number');
+          $(this).val('');
+        }
+      });
+    }
     else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
       $('.edition').append(
         '<br>' +
@@ -53,11 +70,11 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     }
 
-    $('form').submit(function(e) {
+    $('form').submit(function (e) {
       e.preventDefault();
       //Check for reserved words
       if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-        alert ('That is not an accepted value for a title');
+        alert('That is not an accepted value for a title');
         $('#pagename').val('');
         return false;
       }
@@ -66,13 +83,15 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       pageData.description.title = pageName;
       pageNameTrimmed = pageName.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
       pageData.fileName = pageNameTrimmed;
+      pageData.description.reference = isNumber;
+      var adHocUrl = isNumber + pageNameTrimmed;
       if (pageType === 'static_qmi' && !Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, 'qmis', pageNameTrimmed);
       } else if (pageType === 'static_adhoc' && !Florence.globalVars.welsh) {
-        newUri = makeUrl(parentUrl, 'adhocs', pageNameTrimmed);
+        newUri = makeUrl(parentUrl, 'adhocs', adHocUrl);
       } else if ((pageType === 'static_methodology' || pageType === 'static_methodology_download') && !Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, 'methodologies', pageNameTrimmed);
-      } else if (!Florence.globalVars.welsh){
+      } else if (!Florence.globalVars.welsh) {
         newUri = makeUrl(parentUrl, pageNameTrimmed);
       } else {
         sweetAlert('You can not perform that operation in Welsh.');
@@ -112,7 +131,7 @@ function pageTypeDataT7(pageType) {
       "markdown": [],
       "downloads": [],
       type: pageType,
-      "links" : []
+      "links": []
     };
   } else if (pageType === "static_landing_page") {
     return {
@@ -149,8 +168,8 @@ function pageTypeDataT7(pageType) {
       "charts": [],
       "tables": [],
       "images": [],
-      "downloads":[],
-      "links" : [],
+      "downloads": [],
+      "links": [],
       "alerts": [],
       type: pageType
     };
@@ -171,7 +190,7 @@ function pageTypeDataT7(pageType) {
       "downloads": [],
       "relatedDocuments": [],
       "relatedDatasets": [],
-      "links" : [],
+      "links": [],
       "alerts": [],
       type: pageType
     };
@@ -198,7 +217,7 @@ function pageTypeDataT7(pageType) {
       "downloads": [],
       "relatedDocuments": [],
       "relatedDatasets": [],
-      "links" : [],
+      "links": [],
       type: pageType
     };
   } else if (pageType === "static_foi") {
@@ -211,7 +230,7 @@ function pageTypeDataT7(pageType) {
       },
       "downloads": [],
       "markdown": [],
-      "links" : [],
+      "links": [],
       type: pageType
     };
   } else if (pageType === "static_adhoc") {
@@ -225,7 +244,7 @@ function pageTypeDataT7(pageType) {
       },
       "downloads": [],
       "markdown": [],
-      "links" : [],
+      "links": [],
       type: pageType
     };
   } else {

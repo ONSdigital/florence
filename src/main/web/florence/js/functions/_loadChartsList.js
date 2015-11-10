@@ -53,29 +53,31 @@ function initialiseChartList(data, collectionId) {
         closeOnConfirm: false
       }, function(result) {
         if (result === true) {
-          swal({
-            title: "Deleted",
-            text: "This chart has been deleted",
-            type: "success",
-            timer: 2000
-          });
+
           $("#chart_" + index).remove();
-          deleteContent(collectionId, chartJson + '.json',
-            onSuccess = function () {
-              data.charts = _(data.charts).filter(function (item) {
-                return item.filename !== chart.filename
+
+          data.charts = _(data.charts).filter(function (item) {
+            return item.filename !== chart.filename
+          });
+          postContent(collectionId, basePath, JSON.stringify(data),
+            success = function () {
+              deleteContent(collectionId, chartJson + '.json', onSuccess = function () {}, onError = function() {});
+              Florence.Editor.isDirty = false;
+              swal({
+                title: "Deleted",
+                text: "This chart has been deleted",
+                type: "success",
+                timer: 2000
               });
-              postContent(collectionId, basePath, JSON.stringify(data),
-                success = function () {
-                  Florence.Editor.isDirty = false;
-                  refreshChartList(data, collectionId);
-                },
-                error = function (response) {
-                  handleApiError(response);
-                }
-              );
+              refreshChartList(data, collectionId);
+            },
+            error = function (response) {
+              handleApiError(response);
             }
           );
+
+
+
         }
       });
     });
