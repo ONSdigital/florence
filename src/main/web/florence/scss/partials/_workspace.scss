@@ -674,6 +674,11 @@
     }
   }
 
+  #chart {
+    width: 600px;
+    overflow: auto;
+  }
+
 }
 
 .table-builder {
@@ -763,6 +768,14 @@
     input, select {
       width: 100%;
     }
+  }
+
+  iframe {
+    width: 800px;
+    min-width: 300px;
+    height: 500px;
+    resize: horizontal;
+    overflow: auto;
   }
 
 }
