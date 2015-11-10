@@ -2,7 +2,7 @@ function setupFlorence() {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
   Handlebars.registerPartial("editNav", templates.editNav);
-  Handlebars.registerPartial("editNavCompendium", templates.editNavCompendium);
+  Handlebars.registerPartial("editNavChild", templates.editNavChild);
   Handlebars.registerPartial("selectorHour", templates.selectorHour);
   Handlebars.registerPartial("selectorMinute", templates.selectorMinute);
   Handlebars.registerHelper('select', function( value, options ){
