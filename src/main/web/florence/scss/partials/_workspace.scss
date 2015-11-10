@@ -930,19 +930,19 @@
     border-radius: 4px;
   }
 
-  input, select, textarea {
+  input, textarea {
     margin-top: 0;
+    margin-bottom: 7px;
     width: $col--12 - .4%;
     background-color: $white;
   }
 
   label {
     display: inline-block;
-    width: $col--6 - .4%;
     margin-top: -5px;
-    margin-bottom: 4px;
+    margin-bottom: 7px;
 
-    input, select, textarea {
+    input, textarea {
       width: 100%;
     }
   }
