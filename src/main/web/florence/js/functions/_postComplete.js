@@ -1,8 +1,12 @@
-function saveAndCompleteContent(collectionId, path, content) {
+function saveAndCompleteContent(collectionId, path, content, redirectToPath) {
   postContent(collectionId, path, content,
     success = function () {
       Florence.Editor.isDirty = false;
-      completeContent(collectionId, path);
+      if (redirectToPath) {
+        completeContent(collectionId, path, redirectToPath);
+      } else {
+        completeContent(collectionId, path);
+      }
     },
     error = function (response) {
       if (response.status === 400) {
@@ -14,7 +18,8 @@ function saveAndCompleteContent(collectionId, path, content) {
     });
 }
 
-function completeContent(collectionId, path) {
+function completeContent(collectionId, path, redirectToPath) {
+  var redirect = redirectToPath;
   var safePath = checkPathSlashes(path);
   if (safePath === '/') {
     safePath = '';          // edge case for home
@@ -32,7 +37,12 @@ function completeContent(collectionId, path) {
     contentType: 'application/json',
     type: 'POST',
     success: function () {
-      viewCollections(collectionId);
+      if (redirect) {
+        createWorkspace(redirect, collectionId, 'edit');
+        return;
+      } else {
+        viewCollections(collectionId);
+      }
     },
     error: function (response) {
       handleApiError(response);
