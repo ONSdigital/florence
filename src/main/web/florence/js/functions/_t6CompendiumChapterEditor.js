@@ -173,26 +173,26 @@ function compendiumChapterEditor(collectionId, data) {
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
-  editNav.on('click', '#save', function () {
+  editNav.on('click', '.btn-edit-save', function () {
     save();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editNav.on('click', '#save-and-exit', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
-  });
+  //editNav.on('click', '#save-and-exit', function () {
+  //  save();
+  //  updateContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
+  //});
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
   });
 
 
