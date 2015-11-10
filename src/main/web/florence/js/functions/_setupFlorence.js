@@ -2,7 +2,6 @@ function setupFlorence() {
   window.templates = Handlebars.templates;
   Handlebars.registerPartial("browseNode", templates.browseNode);
   Handlebars.registerPartial("editNav", templates.editNav);
-  Handlebars.registerPartial("editNavCompendium", templates.editNavCompendium);
   Handlebars.registerHelper('select', function( value, options ){
     var $el = $('<select />').html( options.fn(this) );
     $el.find('[value="' + value + '"]').attr({'selected':'selected'});
