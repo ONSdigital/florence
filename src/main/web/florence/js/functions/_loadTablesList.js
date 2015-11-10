@@ -50,33 +50,35 @@ function initialiseTablesList(data, collectionId) {
               onError = function (error) {
               });
           });
-          // delete the table json file
-          deleteContent(collectionId, tableJson + '.json',
-            onSuccess = function () {
-              // remove the table from the page json when its deleted
-              data.tables = _(data.tables).filter(function (item) {
-                return item.filename !== table.filename
+
+          // remove the table from the page json when its deleted
+          data.tables = _(data.tables).filter(function (item) {
+            return item.filename !== table.filename
+          });
+          // save the updated page json
+          postContent(collectionId, basePath, JSON.stringify(data),
+            success = function () {
+
+              // delete the table json file
+              deleteContent(collectionId, tableJson + '.json',onSuccess = function () {}, onError = function (error) {});
+
+              Florence.Editor.isDirty = false;
+              refreshTablesList(data, collectionId);
+
+              swal({
+                title: "Deleted",
+                text: "This table has been deleted",
+                type: "success",
+                timer: 2000
               });
-
-              // save the updated page json
-              postContent(collectionId, basePath, JSON.stringify(data),
-                success = function () {
-                  Florence.Editor.isDirty = false;
-                  refreshTablesList(data, collectionId);
-
-                  swal({
-                    title: "Deleted",
-                    text: "This table has been deleted",
-                    type: "success",
-                    timer: 2000
-                  });
-                },
-                error = function (response) {
-                  handleApiError(response);
-                }
-              );
+            },
+            error = function (response) {
+              if (response.status !== 404)
+                handleApiError(response);
             }
           );
+
+
         }
       });
     });
