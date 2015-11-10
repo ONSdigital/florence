@@ -59,13 +59,9 @@ function loadTableBuilder(pageData, onSave, table) {
   });
 
   function renderTable(path) {
-    var uri = path + "/table";
-    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + uri + '"></iframe>';
+    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + path + '"></iframe>';
     console.log(iframeMarkup);
-    $('#table').html(iframeMarkup);
-
-    document.getElementById('preview-frame').height = "500px";
-    document.getElementById('preview-frame').width = "100%";
+    $('#preview-table').html(iframeMarkup);
   }
 
   $('.btn-table-builder-cancel').on('click', function () {
