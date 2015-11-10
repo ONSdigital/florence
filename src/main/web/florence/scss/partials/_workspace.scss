@@ -181,6 +181,11 @@
         float: left;
       }
 
+      //TODO Select all checkbox labels without specifying their ID.
+      //label + input[type="checkbox"] {
+      //  display: inline-block !important;
+      //}
+
       #natStat label {
         display: inline-block;
       }
@@ -190,6 +195,10 @@
       }
 
       #cancelled label {
+        display: inline-block;
+      }
+
+      #isIndex label {
         display: inline-block;
       }
 
@@ -674,6 +683,11 @@
     }
   }
 
+  #chart {
+    width: 600px;
+    overflow: auto;
+  }
+
 }
 
 .table-builder {
@@ -763,6 +777,14 @@
     input, select {
       width: 100%;
     }
+  }
+
+  iframe {
+    width: 800px;
+    min-width: 300px;
+    height: 500px;
+    resize: horizontal;
+    overflow: auto;
   }
 
 }
@@ -908,19 +930,19 @@
     border-radius: 4px;
   }
 
-  input, select, textarea {
+  input, textarea {
     margin-top: 0;
+    margin-bottom: 7px;
     width: $col--12 - .4%;
     background-color: $white;
   }
 
   label {
     display: inline-block;
-    width: $col--6 - .4%;
     margin-top: -5px;
-    margin-bottom: 4px;
+    margin-bottom: 7px;
 
-    input, select, textarea {
+    input, textarea {
       width: 100%;
     }
   }

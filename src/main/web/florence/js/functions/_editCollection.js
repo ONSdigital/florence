@@ -4,28 +4,42 @@ function editCollection (collection) {
   $('.section-head').after(html);
   $('.collection-selected .btn-collection-edit').off();
 
-  console.log(collection);
-
-  //functionality to be added here
   $('#collection-editor-name').on('input', function () {
     collection.name = $('#collection-editor-name').val();
-    console.log(collection);
   });
 
   if (!collection.publishDate) {
     $('#collection-editor-date').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       collection.publishDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-      console.log(collection);
     });
   } else {
     dateTmp = collection.publishDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#collection-editor-date').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       collection.publishDate = new Date($('#collection-editor-date').datepicker('getDate')).toISOString();
-      console.log(collection);
     });
   }
 
+  //initial value
+  if (collection.type === "manual") {
+    $('.block').hide();
+  } else {
+    $('.block').show();
+  }
+
+  $('input[type=radio]').click(function () {
+    if ($(this).val() === 'manualCollection') {
+      collection.type = "manual";
+      $('.block').hide();
+    } else if ($(this).val() === 'scheduledCollection') {
+      collection.type = "scheduled";
+      $('.block').show();
+    }
+  });
+
+  //More functionality to be added here
+  // When scheduled, do we change all the dates in the files in the collection?
+  //
 
   //Save
   $('.btn-collection-editor-save').click(function () {
@@ -43,7 +57,6 @@ function editCollection (collection) {
   });
 
   setCollectionEditorHeight();
-
 }
 
   function setCollectionEditorHeight(){
