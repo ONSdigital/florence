@@ -5,16 +5,13 @@ function createCollection() {
   var publishType = $('input[name="publishType"]:checked').val();
   var scheduleType = $('input[name="scheduleType"]:checked').val();
 
-  console.log('publish type: ' + publishType);
-  console.log('schedule type: ' + scheduleType);
-
   if (publishType === 'scheduled') {
     publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
     var toIsoDate = $('#date').datepicker("getDate");
     collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
   } else {
     collectionDate  = null;
-  };
+  }
 
   if (scheduleType === 'release' && publishType === 'scheduled') {
     if(!Florence.CreateCollection.selectedRelease) {
@@ -24,7 +21,7 @@ function createCollection() {
     releaseUri  = Florence.CreateCollection.selectedRelease.uri;
   } else {
     releaseUri  = null;
-  };
+  }
 
   // inline tests
   if (collectionId === '') {
@@ -64,9 +61,7 @@ function createCollection() {
 }
 
 function isValidDate(d) {
-  if (!isNaN(d.getTime()))
-    {return false;}
-  else
-    {return true;}
+  if (!isNaN(d.getTime())) { return false; }
+  return true;
 }
 
