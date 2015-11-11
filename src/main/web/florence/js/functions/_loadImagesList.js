@@ -29,7 +29,7 @@ function initialiseImagesList(data, collectionId) {
     });
 
     $("#image-delete_" + index).click(function () {
-      swal ({
+      swal({
         title: "Warning",
         text: "Are you sure you want to delete this image?",
         type: "warning",
@@ -37,50 +37,57 @@ function initialiseImagesList(data, collectionId) {
         confirmButtonText: "Delete",
         cancelButtonText: "Cancel",
         closeOnConfirm: false
-      }, function(result) {
+      }, function (result) {
         if (result === true) {
-          swal({
-            title: "Deleted",
-            text: "This image has been deleted",
-            type: "success",
-            timer: 2000
-          });
 
           $("#image_" + index).remove();
           // delete any files associated with the image.
-
           getPageResource(collectionId, imageJson,
             onSuccess = function (imageData) {
-              if(imageData.files) {
+              if (imageData.files) {
                 _.each(imageData.files, function (file) {
                   var fileUri = basePath + '/' + file.filename;
-                  console.log('deleting ' + fileUri);
-                  deleteContent(collectionId, fileUri);
+                  //console.log('deleting ' + fileUri);
+                  deleteContent(collectionId, fileUri, function () {
+                  }, function () {
+                  });
                 });
               } else {
-                console.log('deleting ' + image.uri);
+                //console.log('deleting ' + image.uri);
                 deleteContent(collectionId, image.uri);
               }
             });
 
-          // delete the image json file
-          deleteContent(collectionId, imageJson,
-            onSuccess = function () {
-              // remove the image from the page json when its deleted
-              data.images = _(data.images).filter(function (item) {
-                return item.filename !== image.filename;
+          // remove the image from the page json when its deleted
+          data.images = _(data.images).filter(function (item) {
+            return item.filename !== image.filename;
+          });
+
+          // save the updated page json
+          postContent(collectionId, basePath, JSON.stringify(data),
+            success = function () {
+              Florence.Editor.isDirty = false;
+
+              swal({
+                title: "Deleted",
+                text: "This image has been deleted",
+                type: "success",
+                timer: 2000
               });
 
-              // save the updated page json
-              postContent(collectionId, basePath, JSON.stringify(data),
-                success = function () {
-                  Florence.Editor.isDirty = false;
-                  refreshImagesList(data, collectionId);
+              refreshImagesList(data, collectionId);
+
+              // delete the image json file
+              deleteContent(collectionId, imageJson,
+                onSuccess = function () {
                 },
                 error = function (response) {
-                  handleApiError(response);
-                }
-              );
+                  if (response.status !== 404)
+                    handleApiError(response);
+                });
+            },
+            error = function (response) {
+              handleApiError(response);
             }
           );
         }

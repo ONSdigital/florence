@@ -60,7 +60,7 @@ function initialiseTablesList(data, collectionId) {
             success = function () {
 
               // delete the table json file
-              deleteContent(collectionId, tableJson + '.json',onSuccess = function () {}, onError = function (error) {});
+              deleteContent(collectionId, tableJson + '.json', onSuccess = function () {}, onError = function (error) {});
 
               Florence.Editor.isDirty = false;
               refreshTablesList(data, collectionId);
