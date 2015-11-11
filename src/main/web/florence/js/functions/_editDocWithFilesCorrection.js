@@ -69,8 +69,15 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
           });
           uploadedNotSaved.saved = true;
           $("#add-" + idField).parents('.edit-section__content').remove('#sortable-' + idField)
-            .find('.text-center').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
-          saveDocWithFilesCorrection(collectionId, data.uri, data, field, idField);
+            .find('.text-center').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');  //check .after()
+          // Enter a notice
+          var editedSectionValue = '';
+          var saveContent = function (updatedContent) {
+            data[field][data[field].length - 1].correctionNotice = updatedContent;
+            saveDocWithFilesCorrection(collectionId, data.uri, data, field, idField);
+          };
+          loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
+          //saveDocWithFilesCorrection(collectionId, data.uri, data, field, idField);
         }, function (response) {
           if (response.status === 409) {
             //Revert to condition before error
@@ -81,7 +88,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
                 deleteContent(collectionId, fileToDelete);
               });
             }
-            alert("You can add only one " + idField + " before publishing.");
+            sweetAlert("You can add only one " + idField + " before publishing.");
             refreshDocWithFilesCorrection(collectionId, data, field, idField);
           }
           else if (response.status === 404) {
@@ -94,7 +101,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
               });
             }
             data.downloads = uploadedNotSaved.files;
-            alert("You can only add " + idField + "s to content that has been published.");
+            sweetAlert("You can only add " + idField + "s to content that has been published.");
             refreshDocWithFilesCorrection(collectionId, data, field, idField);
           }
           else {
@@ -188,7 +195,6 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
             data.downloads[index].file = fileNameNoSpace;
           },
           error: function (response) {
-            console.log("Error in uploading this file");
             handleApiError(response);
           }
         });
@@ -251,7 +257,8 @@ function initialiseDocWithFilesCorrection(collectionId, data, field, idField) {
           });
         }, function (response) {
           if (response.status === 404) {
-            alert("You cannot delete a " + idField + " that has been published.");
+            sweetAlert("You cannot delete a " + idField + " that has been published.");
+
           }
           else {
             handleApiError(response);
