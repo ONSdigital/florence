@@ -1,4 +1,4 @@
-function loadParentLink(collectionId,parentUrl) {
+function loadParentLink(collectionId, data, parentUrl) {
 
   getPageDataTitle(collectionId, parentUrl,
       function (response) {

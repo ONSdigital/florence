@@ -5,7 +5,7 @@ function datasetEditor(collectionId, data) {
   var parentUrl = getParentPage(data.uri);
 
   //Add parent link onto page
-  loadParentLink(collectionId, parentUrl);
+  loadParentLink(collectionId, data, parentUrl);
 
 
   $(".edit-accordion").on('accordionactivate', function () {
