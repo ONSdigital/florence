@@ -6,7 +6,7 @@ function compendiumDataEditor(collectionId, data) {
   var timeoutId;
 
   //Add parent link onto page
-  loadParentLink(collectionId, parentUrl);
+  loadParentLink(collectionId, data, parentUrl);
 
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
