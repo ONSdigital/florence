@@ -33,6 +33,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedArticles', 'articles');
     editRelated (collectionId, pageData, templateData, 'datasets', 'datasets');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     accordion();
     t3Editor(collectionId, pageData);
   }
@@ -55,6 +56,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
@@ -81,6 +83,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
@@ -105,6 +108,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFile(collectionId, pageData, 'downloads', 'file');
     editLink (collectionId, pageData, 'links', 'link');
@@ -123,6 +127,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedData', 'timeseries');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     timeseriesEditor(collectionId, pageData);
@@ -134,6 +139,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
@@ -156,6 +162,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
@@ -169,6 +176,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     addFileWithDetails (collectionId, pageData, 'downloads', 'file');
     editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
     accordion();
@@ -263,6 +271,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+    editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();

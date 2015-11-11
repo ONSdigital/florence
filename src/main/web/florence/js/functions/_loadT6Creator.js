@@ -227,6 +227,7 @@ function submitNoForm (parentUrl, title) {
         "relatedDocuments": [],
         "relatedData": [],
         "relatedMethodology": [],
+        "relatedMethodologyArticle": [],
         "topics": [],
         "alerts": [],
         type: pageType
@@ -256,6 +257,7 @@ function submitNoForm (parentUrl, title) {
         "relatedDocuments": [],
         "relatedData": [],
         "relatedMethodology": [],
+        "relatedMethodologyArticle": [],
         "externalLinks": [],
         "charts": [],
         "tables": [],
@@ -287,6 +289,7 @@ function submitNoForm (parentUrl, title) {
         "versions": [], //{date, uri, correctionNotice}
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "relatedMethodologyArticle": [],
         type: pageType
       };
     }
