@@ -24,18 +24,18 @@ function editCollection (collection) {
 
   //initial value
   if (collection.type === "manual") {
-    $('.block').hide();
+    $('#collection-editor-date-block').hide();
   } else {
-    $('.block').show();
+    $('#collection-editor-date-block').show();
   }
 
   $('input[type=radio]').click(function () {
     if ($(this).val() === 'manualCollection') {
       collection.type = "manual";
-      $('.block').hide();
+      $('#collection-editor-date-block').hide();
     } else if ($(this).val() === 'scheduledCollection') {
       collection.type = "scheduled";
-      $('.block').show();
+      $('#collection-editor-date-block').show();
     }
   });
 
