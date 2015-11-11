@@ -1,7 +1,7 @@
 function ArticleDownloadEditor(collectionId, data) {
 
 //  var index = data.release;
-  var newFiles = [], newData = [], newLinks = [], newRelatedMethodology = [], newDocuments = [];
+  var newFiles = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -195,14 +195,22 @@ function ArticleDownloadEditor(collectionId, data) {
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
-    // Related methodology
-    var orderRelatedMethodology = $("#sortable-qmi").sortable('toArray');
-    $(orderRelatedMethodology).each(function (indexM, nameM) {
+    // Related qmi
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedQmi[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
+    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    $(orderRelatedMethodology).each(function (indexM, nameM) {
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
 }
 

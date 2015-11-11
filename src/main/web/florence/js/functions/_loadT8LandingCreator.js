@@ -109,6 +109,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         "relatedDatasets": [],
         "relatedDocuments": [],
         "relatedMethodology": [],
+        "relatedMethodologyArticle": [],
         "topics": [],
         "alerts": [],
         type: pageType

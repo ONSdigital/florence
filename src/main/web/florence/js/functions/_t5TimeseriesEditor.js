@@ -1,6 +1,6 @@
 function timeseriesEditor(collectionId, data) {
 
-  var newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
+  var newDocument = [], newRelated = [], newTimeseries = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -238,13 +238,21 @@ function timeseriesEditor(collectionId, data) {
     });
     data.relatedDatasets = newRelated;
     // Related qmi
-    var orderUsedIn = $("#sortable-qmi").sortable('toArray');
-    $(orderUsedIn).each(function (indexM, nameM) {
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: safeUri};
+      newRelatedQmi[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
+    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    $(orderRelatedMethodology).each(function (indexM, nameM) {
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
 }
 
