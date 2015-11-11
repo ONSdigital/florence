@@ -1,6 +1,4 @@
 function loadTableBuilder(pageData, onSave, table) {
-
-  var tableExists = table;
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
   var previewTable;
@@ -28,17 +26,18 @@ function loadTableBuilder(pageData, onSave, table) {
       contentType: false,
       processData: false,
       success: function () {
-        createTableHtml();
+        createTableHtml(previewTable);
       }
     });
 
-    function createTableHtml() {
+    function createTableHtml(previewTable) {
       $.ajax({
         url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
         type: 'POST',
         success: function (html) {
-          saveTableJson();
-          saveTableHtml(html);
+          saveTableJson(previewTable, success = function () {
+            saveTableHtml(html);
+          });
         }
       });
     }
@@ -50,6 +49,8 @@ function loadTableBuilder(pageData, onSave, table) {
         data: data,
         processData: false,
         success: function () {
+          previewTable.files.push({type: 'download-xls', filename: previewTable.filename + '.xls'});
+          previewTable.files.push({type: 'html', filename: previewTable.filename + '.html'});
           renderTable(path);
         }
       });
@@ -63,7 +64,7 @@ function loadTableBuilder(pageData, onSave, table) {
     console.log(iframeMarkup);
     $('#preview-table').html(iframeMarkup);
     var iframe = $('#preview-frame');
-    iframe.load(function(){
+    iframe.load(function () {
       var contents = iframe.contents();
       contents.find('body').css("background", "transparent");
       contents.find('body').css("width", "480px");
@@ -79,7 +80,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
     // delete the preview table
     if (previewTable) {
-      previewTable.files.push({"type": "json", "filename": previewTable.filename + '.json'});
+      deleteContent(Florence.collection.id, previewTable.uri + ".json");
       $(previewTable.files).each(function (index, file) {
         var fileToDelete = pageUrl + '/' + file.filename;
         deleteContent(Florence.collection.id, fileToDelete,
@@ -90,18 +91,21 @@ function loadTableBuilder(pageData, onSave, table) {
     }
   });
 
-  function saveTableJson() {
 
-    previewTable = buildJsonObjectFromForm(previewTable);
-    var tableJson = previewTable.uri + ".json";
+  function saveTableJson(table, success) {
+
+    var tableJson = table.uri + ".json";
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
       type: 'POST',
-      data: JSON.stringify(previewTable),
+      data: JSON.stringify(table),
       processData: false,
       contentType: 'application/json',
       success: function () {
+        if (success) {
+          success();
+        }
       }
     });
   }
@@ -127,14 +131,13 @@ function loadTableBuilder(pageData, onSave, table) {
   $('.btn-table-builder-create').on('click', function () {
 
     // if uploaded = true rename the preview table
-
-    saveTableJson(); // save the latest json
+    previewTable = buildJsonObjectFromForm(previewTable);
 
     // if a table exists, rename the preview to its name
-    if (tableExists) {
-      previewTable.files.push({"type": "json", "filename": previewTable.filename + '.json'});
-      $(previewTable.files).each(function (index, file) {
+    if (table) {
+      table = mapJsonValues(previewTable, table);
 
+      $(previewTable.files).each(function (index, file) {
         var fromFile = pageUrl + '/' + file.filename;
         var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
         console.log("moving... table file: " + fromFile + " to: " + toFile);
@@ -143,18 +146,43 @@ function loadTableBuilder(pageData, onSave, table) {
             console.log("Moved table file: " + fromFile + " to: " + toFile);
           });
       });
+      deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
     } else { // just keep the preview files
       table = previewTable;
       addTableToPageJson(table);
     }
 
-
-    if (onSave) {
-      onSave(table.filename, '<ons-table path="' + table.uri + '" />');
-    }
-    $('.table-builder').stop().fadeOut(200).remove();
-
+    saveTableJson(table, success=function() {
+      if (onSave) {
+        onSave(table.filename, '<ons-table path="' + table.uri + '" />');
+      }
+      $('.table-builder').stop().fadeOut(200).remove();
+    });
   });
+
+  function mapJsonValues(from, to) {
+    to = buildJsonObjectFromForm(to);
+
+    $(from.files).each(function (fromIndex, fromFile) {
+      var fileExistsInImage = false;
+
+      $(to.files).each(function (toIndex, toFile) {
+        if (fromFile.type == toFile.type) {
+          fileExistsInImage = true;
+          toFile.fileName = fromFile.fileName;
+          toFile.fileType = fromFile.fileType;
+        }
+      });
+
+      if(!fileExistsInImage) {
+        to.files.push(fromFile);
+      }
+
+    });
+
+    return to;
+  }
+
 
   function buildJsonObjectFromForm(table) {
     if (!table) {
@@ -171,9 +199,9 @@ function loadTableBuilder(pageData, onSave, table) {
       table.title = '[Title]';
     }
 
-    table.files = [];
-    table.files.push({type: 'download-xls', filename: table.filename + '.xls'});
-    table.files.push({type: 'html', filename: table.filename + '.html'});
+    if (!table.files) {
+      table.files = [];
+    }
 
     return table;
   }
