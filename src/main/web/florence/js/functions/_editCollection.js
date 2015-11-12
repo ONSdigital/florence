@@ -46,48 +46,41 @@ function editCollection (collection) {
   //Save
   $('.btn-collection-editor-save').click(function () {
     //save date and time to collection
-    sweetAlert("Work in progress", "Please, be patient.");
+    //sweetAlert("Work in progress", "Please, be patient.");
     editPublishTime  = parseInt($('#collection-editor-hour').val()) + parseInt($('#collection-editor-min').val());
-    newCollectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + editPublishTime).toISOString();
+    collection.publishDate = new Date(parseInt(new Date(toIsoDate).getTime()) + editPublishTime).toISOString();
 
-    //to be done
-
-    // inline tests
-
-    //if (collectionId === '') {
-    //  sweetAlert('This is not a valid collection name', "A collection name can't be empty");
-    //  return true;
-    //} if (collectionId.match(/\./)) {
-    //  sweetAlert('This is not a valid collection name', "You can't use fullstops");
-    //  return true;
-    //} if ((publishType === 'scheduled') && (scheduleType === 'custom')  && (isValidDate(new Date(collectionDate)))) {
-    //  sweetAlert('This is not a valid date');
-    //  return true;
-    //} if ((publishType === 'scheduled') && (scheduleType === 'custom') && (Date.parse(collectionDate) < new Date())) {
-    //  sweetAlert('This is not a valid date');
-    //  return true;
-    //} else {
-    //  // Create the collection
-    //  $.ajax({
-    //    url: "/zebedee/collection",
-    //    dataType: 'json',
-    //    contentType: 'application/json',
-    //    type: 'POST',
-    //    data: JSON.stringify({name: collectionId, type: publishType, publishDate: collectionDate, releaseUri: releaseUri}),
-    //    success: function (collection) {
-    //      Florence.setActiveCollection(collection);
-    //      createWorkspace('', collection.id, 'browse');
-    //    },
-    //    error: function (response) {
-    //      if(response.status === 409) {
-    //        sweetAlert("Error", response.responseJSON.message, "error");
-    //      }
-    //      else {
-    //        handleApiError(response);
-    //      }
-    //    }
-    //  });
-    //}
+    if (collection.name === '') {
+      sweetAlert('This is not a valid collection name', "A collection name can't be empty");
+      return true;
+    } if (collection.name.match(/\./)) {
+      sweetAlert('This is not a valid collection name', "You can't use fullstops");
+      return true;
+    } if ((collection.publishType === 'scheduled') && (Date.parse(collection.publishDate) < new Date())) {
+      sweetAlert('This is not a valid date');
+      return true;
+    } else {
+      // Update the collection
+      $.ajax({
+        url: "/zebedee/collection/" + collection.id,
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'PUT',
+        data: JSON.stringify(collection),
+        success: function (updatedCollection) {
+          Florence.setActiveCollection(updatedCollection);
+          createWorkspace('', updatedCollection.id, 'browse');
+        },
+        error: function (response) {
+          if(response.status === 409) {
+            sweetAlert("Error", response.responseJSON.message, "error");
+          }
+          else {
+            handleApiError(response);
+          }
+        }
+      });
+    }
   });
 
   //Cancel
