@@ -36,7 +36,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
       },
       // if the page does not exist, create it
       error = function() {
-        postContent(collectionId, safeNewUri, JSON.stringify(pageData),
+        putContent(collectionId, safeNewUri, JSON.stringify(pageData),
           success = function () {
             updateContent(collectionId, data.uri, JSON.stringify(data));
           },

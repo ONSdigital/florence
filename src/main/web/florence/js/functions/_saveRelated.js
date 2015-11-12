@@ -1,5 +1,5 @@
 function saveRelated (collectionId, path, data, templateData, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     success = function (response) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;

@@ -270,7 +270,7 @@ function initialiseDocWithFilesCorrection(collectionId, data, field, idField) {
 }
 
 function saveDocWithFilesCorrection(collectionId, path, data, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
       refreshDocWithFilesCorrection(collectionId, data, field, idField);

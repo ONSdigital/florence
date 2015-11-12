@@ -135,7 +135,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
           },
           // if the page does not exist, create it
           error = function() {
-            postContent(collectionId, safeNewUri, JSON.stringify(pageData),
+            putContent(collectionId, safeNewUri, JSON.stringify(pageData),
               success = function (message) {
                 console.log("Updating completed " + message);
                 if (pageData.type === 'compendium_landing_page') {
@@ -185,7 +185,7 @@ function submitNoForm (parentUrl, title) {
       },
       // if the page does not exist, create it
       error = function() {
-        postContent(collectionId, safeNewUri, JSON.stringify(pageData),
+        putContent(collectionId, safeNewUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
             updateParentLink (safeNewUri);
@@ -311,7 +311,7 @@ function submitNoForm (parentUrl, title) {
       sweetAlert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
-    postContent(collectionId, parentUrl, JSON.stringify(parentData),
+    putContent(collectionId, parentUrl, JSON.stringify(parentData),
       success = function (message) {
         viewWorkspace(childUri, collectionId, 'edit');
         refreshPreview(childUri);

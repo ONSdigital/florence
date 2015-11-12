@@ -1,4 +1,4 @@
-function postContent(collectionId, path, content, success, error) {
+function putContent(collectionId, path, content, success, error) {
   var safePath = checkPathSlashes(path);
   if (safePath === '/') {
     safePath = '';          // edge case for home
@@ -17,7 +17,7 @@ function postContent(collectionId, path, content, success, error) {
     url: url,
     dataType: 'json',
     contentType: 'application/json',
-    type: 'POST',
+    type: 'PUT',
     data: content,
     success: function (response) {
       success(response);

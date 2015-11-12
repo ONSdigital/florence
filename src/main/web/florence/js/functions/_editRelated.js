@@ -77,7 +77,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             $(this).parent().remove();
             data[field].splice(index, 1);
             templateData[field].splice(index, 1);
-            postContent(collectionId, data.uri, JSON.stringify(data),
+            putContent(collectionId, data.uri, JSON.stringify(data),
               success = function () {
                 Florence.Editor.isDirty = false;
                 refreshPreview(data.uri);

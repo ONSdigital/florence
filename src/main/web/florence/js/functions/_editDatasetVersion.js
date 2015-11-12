@@ -294,7 +294,7 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
 }
 
 function saveDatasetVersion(collectionId, path, data, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
       refreshDatasetVersion(collectionId, data, field, idField);

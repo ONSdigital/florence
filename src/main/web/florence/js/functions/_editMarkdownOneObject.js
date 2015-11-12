@@ -56,7 +56,7 @@ function editMarkdownOneObject (collectionId, data, field, title) {
 }
 
 function saveMarkdownOne (collectionId, path, data, field) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     success = function () {
       Florence.Editor.isDirty = false;
       editMarkdownOneObject (collectionId, data, field);
