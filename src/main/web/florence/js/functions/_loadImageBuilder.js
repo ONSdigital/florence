@@ -85,7 +85,7 @@ function loadImageBuilder(pageData, onSave, image) {
     }
 
     if(!/\.csv$|.xls$|.xlsx$|/.test(file)) {
-      sweetAlert('The data file upload is limited to CSV, XLS, or XLSX.');
+      sweetAlert('The data file upload is limited to CSV, XLS, or XLSX.', '', 'info');
       return;
     }
 
