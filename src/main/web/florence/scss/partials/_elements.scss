@@ -71,7 +71,7 @@ button {
 
 form {
 	position: relative;
-	margin-top: - $lineheight;
+	//margin-top: - $lineheight; //Only needed on forms in collection/user workspace. Was breaking all other forms
 }
 
 ::-webkit-input-placeholder {
