@@ -4,7 +4,7 @@
  * @param data
  */
 function autoSaveMetadata(collectionId, data) {
-  postContent(collectionId, data.uri, JSON.stringify(data),
+  putContent(collectionId, data.uri, JSON.stringify(data),
     success = function () {
       Florence.Editor.isDirty = false;
     },

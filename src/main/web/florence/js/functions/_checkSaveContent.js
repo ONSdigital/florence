@@ -22,7 +22,7 @@ function checkSaveContent(collectionId, uri, data) {
   );
 
   function save(collectionId, uri, data) {
-    postContent(collectionId, uri, JSON.stringify(data),
+    putContent(collectionId, uri, JSON.stringify(data),
       success = function (message) {
         console.log("Updating completed " + message);
         createWorkspace(uri, collectionId, 'edit');
