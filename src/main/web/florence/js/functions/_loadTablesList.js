@@ -56,7 +56,7 @@ function initialiseTablesList(data, collectionId) {
             return item.filename !== table.filename
           });
           // save the updated page json
-          postContent(collectionId, basePath, JSON.stringify(data),
+          putContent(collectionId, basePath, JSON.stringify(data),
             success = function () {
 
               // delete the table json file

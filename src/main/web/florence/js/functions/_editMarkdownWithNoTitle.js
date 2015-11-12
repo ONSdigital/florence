@@ -58,7 +58,7 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
 }
 
 function saveMarkdownNoTitle (collectionId, path, data, field, idField) {
-    postContent(collectionId, path, JSON.stringify(data),
+    putContent(collectionId, path, JSON.stringify(data),
         success = function () {
             Florence.Editor.isDirty = false;
             editMarkdownWithNoTitle(collectionId, data, field, idField);

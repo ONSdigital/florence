@@ -80,7 +80,7 @@ function editLink (collectionId, data, field, idField) {
 }
 
 function saveLink (collectionId, path, data, field, idField) {
-    postContent(collectionId, path, JSON.stringify(data),
+    putContent(collectionId, path, JSON.stringify(data),
         success = function (response) {
             Florence.Editor.isDirty = false;
             editLink (collectionId, data, field, idField);
