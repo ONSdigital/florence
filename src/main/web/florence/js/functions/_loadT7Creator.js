@@ -112,7 +112,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       if (pageName.length < 5) {
         sweetAlert("This is not a valid file name");
       } else {
-        checkSaveContent(collectionId, safeNewUri, pageData);
+        saveContent(collectionId, safeNewUri, pageData);
       }
     });
   }
