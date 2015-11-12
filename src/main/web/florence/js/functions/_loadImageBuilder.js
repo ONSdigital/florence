@@ -6,16 +6,12 @@
  * @param image - The existing image object if an existing image is being edited.
  */
 function loadImageBuilder(pageData, onSave, image) {
-
-  var image = image;
   var pageUrl = pageData.uri;
+  var previewImage;
 
   // render the template for the image builder screen
   var html = templates.imageBuilder(image);
   $('body').append(html);
-
-  // Holds state for the image builder screen with regards to what actions have been taken.
-  var uploadedNotSaved = {uploadedImage: false, uploadedData: false, saved: false, image: "", data: ""};
 
   // The files uploaded as part of the image creation are stored in an array on the image object.
   // These keys identify the different types of files that can be added.
@@ -24,9 +20,8 @@ function loadImageBuilder(pageData, onSave, image) {
 
   // if we are passing an existing image to the builder, go ahead and show it.
   if (image) {
-    renderImage(getImageUri());
+    renderImage(getImageUri(image));
     renderText();
-    uploadedNotSaved.saved = true;
   }
 
   // If any text fields on the form are changed, update them.
@@ -46,27 +41,25 @@ function loadImageBuilder(pageData, onSave, image) {
       return;
     }
 
-    if(!/\.png|.jpeg$|.jpg$|/.test(file)) {
+    if (!/\.png|.jpeg$|.jpg$|/.test(file)) {
       sweetAlert('The data file upload is limited to PNG and JPEG.', "", "info");
       return;
     }
 
     var fileExtension = file.name.split('.').pop();
-    var image = buildJsonObjectFromForm();
-    var imagePath = image.uri + '.' + fileExtension;
-    var imageFileName = image.filename + '.' + fileExtension;
-    var fileExists = getExistingFileName(image, imageFileKey);
+    previewImage = buildJsonObjectFromForm(previewImage);
+    var imagePath = previewImage.uri + '.' + fileExtension;
+    var imageFileName = previewImage.filename + '.' + fileExtension;
+    var fileExists = getExistingFileName(previewImage, imageFileKey);
 
     uploadFile(
       imagePath,
       formData,
       success = function () {
         if (!fileExists) {
-          image.files.push({type: imageFileKey, filename: imageFileName, fileType: fileExtension});
+          previewImage.files.push({type: imageFileKey, filename: imageFileName, fileType: fileExtension});
         }
-        renderImage(getImageUri());
-        uploadedNotSaved.uploadedImage = true;
-        uploadedNotSaved.image = imagePath;
+        renderImage(getImageUri(previewImage));
       });
 
     return false;
@@ -84,65 +77,118 @@ function loadImageBuilder(pageData, onSave, image) {
       return;
     }
 
-    if(!/\.csv$|.xls$|.xlsx$|/.test(file)) {
-      sweetAlert('The data file upload is limited to CSV, XLS, or XLSX.', '', 'info');
+    if (!/\.csv$|.xls$|.xlsx$|/.test(file)) {
+      sweetAlert('The data file upload is limited to CSV, XLS, or XLSX.');
       return;
     }
 
     var fileExtension = file.name.split('.').pop();
-    var image = buildJsonObjectFromForm();
-    var filePath = image.uri + '.' + fileExtension;
-    var fileName = image.filename + '.' + fileExtension;
-    var fileExists = getExistingFileName(image, dataFileKey);
-
+    previewImage = buildJsonObjectFromForm(previewImage);
+    var filePath = previewImage.uri + '.' + fileExtension;
+    var fileName = previewImage.filename + '.' + fileExtension;
+    var fileExists = getExistingFileName(previewImage, dataFileKey);
 
     uploadFile(
       filePath,
       formData,
       success = function () {
         if (!fileExists) {
-          image.files.push({type: dataFileKey, filename: fileName, fileType: fileExtension});
+          swal({
+            title: "Upload complete",
+            text: "Upload complete",
+            type: "success",
+            timer: 2000
+          });
+          previewImage.files.push({type: dataFileKey, filename: fileName, fileType: fileExtension});
         }
-        renderImage(getImageUri());
-        uploadedNotSaved.uploadedData = true;
-        uploadedNotSaved.data = filePath;
       });
 
     return false;
   });
 
+
+  function mapImageJsonValues(from, to) {
+    to = buildJsonObjectFromForm(to);
+
+    $(from.files).each(function (fromIndex, fromFile) {
+      var fileExistsInImage = false;
+
+      $(to.files).each(function (toIndex, toFile) {
+        if (fromFile.type == toFile.type) {
+          fileExistsInImage = true;
+          toFile.fileName = fromFile.fileName;
+          toFile.fileType = fromFile.fileType;
+        }
+      });
+
+      if(!fileExistsInImage) {
+        to.files.push(fromFile);
+      }
+    });
+
+    return to;
+  }
+
   $('.btn-image-builder-create').on('click', function () {
 
-    var image = buildJsonObjectFromForm();
+    previewImage = buildJsonObjectFromForm(previewImage);
 
-    if (!image.title) {
+    if (!previewImage.title) {
       sweetAlert("Please enter a title for the image.");
       return;
     }
 
-    var imageFileName = getExistingFileName(image, imageFileKey);
-
+    var imageFileName = getExistingFileName(previewImage, imageFileKey);
+    if (!imageFileName && image)
+      imageFileName = getExistingFileName(image, imageFileKey);
     if (!imageFileName) {
       sweetAlert("Please upload an image");
       return;
     }
 
-    saveImageJson(image);
+    // if there is an image that exists already, overwrite it.
+    if (image) {
 
-    closeImageBuilderScreen();
+      // map preview image values onto image
+      image = mapImageJsonValues(previewImage, image);
 
+      $(previewImage.files).each(function (index, file) {
+        var fromFile = pageUrl + '/' + file.filename;
+        var toFile = pageUrl + '/' + file.filename.replace(previewImage.filename, image.filename);
+        if (fromFile != toFile){
+          console.log("moving... table file: " + fromFile + " to: " + toFile);
+          moveContent(Florence.collection.id, fromFile, toFile,
+            onSuccess = function () {
+              console.log("Moved table file: " + fromFile + " to: " + toFile);
+            });
+        }
+      });
+    } else { // just use the preview files
+      image = previewImage;
+      addImageToPageJson(image);
+    }
+
+    saveImageJson(image, success=function() {
+      if (onSave) {
+        onSave(image.filename, '<ons-image path="' + image.filename + '" />', pageData);
+      }
+      closeImageBuilderScreen();
+    });
   });
 
   $('.btn-image-builder-cancel').on('click', function () {
 
     closeImageBuilderScreen();
 
-    if (uploadedNotSaved.uploadedImage === true && uploadedNotSaved.saved === false) {
-      deleteContent(Florence.collection.id, uploadedNotSaved.image);
-    }
+    if (previewImage) {
+      $(previewImage.files).each(function (index, file) {
 
-    if (uploadedNotSaved.uploadedData === true && uploadedNotSaved.saved === false) {
-      deleteContent(Florence.collection.id, uploadedNotSaved.data);
+        var fileToDelete = pageUrl + '/' + file.filename;
+        deleteContent(Florence.collection.id, fileToDelete,
+          onSuccess = function () {
+            console.log("deleted image file: " + fileToDelete);
+          });
+      });
     }
   });
 
@@ -214,11 +260,11 @@ function loadImageBuilder(pageData, onSave, image) {
     });
   }
 
-  function getImageUri() {
-    return pageData.uri + '/' + getImageFilename();
+  function getImageUri(image) {
+    return pageData.uri + '/' + getImageFilename(image);
   }
 
-  function getImageFilename() {
+  function getImageFilename(image) {
     return getExistingFileName(image, imageFileKey)
   }
 
@@ -233,7 +279,7 @@ function loadImageBuilder(pageData, onSave, image) {
     return result;
   }
 
-  function saveImageJson(image) {
+  function saveImageJson(image, success, error) {
     var noExtension = image.uri.match(/^(.+?)(\.[^.]*$|$)/);
     var imageJson = noExtension[1] + ".json";
 
@@ -243,12 +289,15 @@ function loadImageBuilder(pageData, onSave, image) {
       data: JSON.stringify(image),
       processData: false,
       contentType: 'application/json',
-      success: function () {
-        addImageToPageJson(image);
-        uploadedNotSaved.saved = true;
-
-        if (onSave) {
-          onSave(image.filename, '<ons-image path="' + image.filename + '" />', pageData);
+      success: function (response) {
+        if (success)
+          success(response);
+      },
+      error: function (response) {
+        if (error) {
+          error(response);
+        } else {
+          handleApiError(response);
         }
       }
     });
@@ -272,7 +321,7 @@ function loadImageBuilder(pageData, onSave, image) {
     pageData.images.push({title: image.title, filename: image.filename, uri: image.uri});
   }
 
-  function buildJsonObjectFromForm() {
+  function buildJsonObjectFromForm(image) {
     if (!image) {
       image = {};
     }
@@ -288,7 +337,7 @@ function loadImageBuilder(pageData, onSave, image) {
     image.altText = $('#image-alt-text').val();
 
     if (!image.files) {
-      image.files = [];
+        image.files = [];
     }
 
     return image;
