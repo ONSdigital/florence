@@ -65,7 +65,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var jsonPath = chart.uri + ".json";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
-      type: 'PUT',
+      type: 'POST',
       data: JSON.stringify(chart),
       processData: false,
       contentType: 'application/json',
@@ -484,7 +484,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var pngUri = pageUrl + "/" + chart.filename + suffix + ".png";
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + pngUri,
-      type: 'PUT',
+      type: 'POST',
       data: new Blob([array], {
         type: 'image/png'
       }),
