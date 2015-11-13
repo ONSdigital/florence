@@ -19,7 +19,7 @@ function loadTableBuilder(pageData, onSave, table) {
     // send xls file to zebedee
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + xlsPath,
-      type: 'POST',
+      type: 'PUT',
       data: formData,
       async: false,
       cache: false,
@@ -45,7 +45,7 @@ function loadTableBuilder(pageData, onSave, table) {
     function saveTableHtml(data) {
       $.ajax({
         url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath,
-        type: 'POST',
+        type: 'PUT',
         data: data,
         processData: false,
         success: function () {
@@ -98,7 +98,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson,
-      type: 'POST',
+      type: 'PUT',
       data: JSON.stringify(table),
       processData: false,
       contentType: 'application/json',
