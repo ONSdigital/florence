@@ -1,9 +1,13 @@
 function compendiumDataEditor(collectionId, data) {
 
-  var newFiles = [], newRelatedDocuments = [], newRelatedData = [], newRelatedMethodology = [];
+  var newFiles = [], newRelatedDocuments = [], newRelatedData = [], newRelatedQmi = [], newRelatedMethodology = [];
   var parentUrl = getParentPage(data.uri);
   var setActiveTab, getActiveTab;
   var timeoutId;
+
+  //Add parent link onto page
+  loadParentLink(collectionId, data, parentUrl);
+
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -106,7 +110,7 @@ function compendiumDataEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -173,22 +177,22 @@ function compendiumDataEditor(collectionId, data) {
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-  editNav.on('click', '#save-and-exit', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
-  });
+  //editNav.on('click', '#save-and-exit', function () {
+  //  save();
+  //  updateContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
+  //});
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     //pageData = $('.fl-editor__headline').val();
     save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
   });
 
   function save() {
@@ -217,14 +221,22 @@ function compendiumDataEditor(collectionId, data) {
       newRelatedData[indexDt] = {uri: safeUri};
     });
     data.relatedDatasets = newRelatedData;
-    // Related methodology
+    // Related qmi
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedQmi[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
 }
 

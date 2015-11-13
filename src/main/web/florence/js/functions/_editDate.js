@@ -53,7 +53,7 @@ function initialiseNoteMarkdown(collectionId, data, templateData, field, idField
 }
 
 function saveNoteMarkdown(collectionId, path, data, templateData, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     success = function () {
       Florence.Editor.isDirty = false;
       refreshNoteMarkdown(collectionId, data, templateData, field, idField);
@@ -61,7 +61,7 @@ function saveNoteMarkdown(collectionId, path, data, templateData, field, idField
     },
     error = function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);

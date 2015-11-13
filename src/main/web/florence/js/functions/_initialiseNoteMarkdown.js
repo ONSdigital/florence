@@ -4,7 +4,7 @@ function initialiseLastNoteMarkdown(collectionId, data, field, field2) {
   var editedSectionValue = '';
   var saveContent = function (updatedContent) {
     data[field][lastIndex][field2] = updatedContent;
-    postContent(collectionId, data.uri, JSON.stringify(data),
+    putContent(collectionId, data.uri, JSON.stringify(data),
       success = function () {
         Florence.Editor.isDirty = false;
         loadPageDataIntoEditor(data.uri, collectionId);
@@ -12,7 +12,7 @@ function initialiseLastNoteMarkdown(collectionId, data, field, field2) {
       },
       error = function (response) {
         if (response.status === 400) {
-          alert("Cannot edit this page. It is already part of another collection.");
+          sweetAlert("Cannot edit this page", "It is already part of another collection.");
         }
         else {
           handleApiError(response);

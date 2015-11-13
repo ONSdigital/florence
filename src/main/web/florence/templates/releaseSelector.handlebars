@@ -1,0 +1,30 @@
+<div class="release-select overlay">
+  <div class="table-builder__inner release-select__inner">
+
+    <div class="release-select__header">
+        <h1 class="release-select__heading">Select a calendar entry</h1>
+        <div class="release-select-search">
+          <input id="release-search-input" class="release-select-search__input" type="text" placeholder="Search for a release">
+          {{!--<button class="btn-release-search">Search</button>--}}
+        </div>
+    </div>
+    <div class="release-select__body">
+        <table class="release-select-table">
+          <thead>
+          <tr>
+            <th scope="col">Calendar entry</th>
+            <th scope="col">Calendar entry date</th>
+          </tr>
+          </thead>
+          <tbody id="release-list">
+            {{!--data populated after return from ajax request--}}
+          </tbody>
+        </table>
+    </div>
+
+    <div class="release-select__footer">
+        <button class="btn-release-selector-cancel">Cancel</button>
+    </div>
+
+  </div>
+</div>

@@ -13,9 +13,10 @@ function staticPageEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
 
-  $("#metadata-q").remove();
-  $("#metadata-f").remove();
   $("#metadata-ad").remove();
+  $("#metadata-f").remove();
+  $("#metadata-md").remove();
+  $("#metadata-q").remove();
   $("#contact-p").remove();
   $("#natStat").remove();
   $("#survey-p").remove();
@@ -51,7 +52,7 @@ function staticPageEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);

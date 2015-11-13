@@ -54,13 +54,21 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
       $('.nav--workspace > li').click(function () {
         menu = '';
         if (Florence.Editor.isDirty) {
-          var result = confirm("You have unsaved changes. Are you sure you want to continue");
-          if (result === true) {
-            Florence.Editor.isDirty = false;
-            processMenuClick(this);
-          } else {
-            return false;
-          }
+          swal({
+            title: "Warning",
+            text: "You have unsaved changes. Are you sure you want to continue?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Continue",
+            cancelButtonText: "Cancel"
+          }, function(result) {
+            if (result === true) {
+              Florence.Editor.isDirty = false;
+              processMenuClick(this);
+            } else {
+              return false;
+            }
+          });
         } else {
           processMenuClick(this);
         }

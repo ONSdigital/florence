@@ -1,12 +1,16 @@
-function saveAndReviewContent(collectionId, path, content) {
-  postContent(collectionId, path, content,
+function saveAndReviewContent(collectionId, path, content, redirectToPath) {
+  putContent(collectionId, path, content,
     success = function (response) {
       Florence.Editor.isDirty = false;
-      postReview(collectionId, path);
+      if (redirectToPath) {
+        postReview(collectionId, path, redirectToPath);
+      } else {
+        postReview(collectionId, path);
+      }
     },
     error = function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);
@@ -14,7 +18,8 @@ function saveAndReviewContent(collectionId, path, content) {
     });
 }
 
-function postReview(collectionId, path) {
+function postReview(collectionId, path, redirectToPath) {
+  var redirect = redirectToPath;
   var safePath = checkPathSlashes(path);
   if (safePath === '/') {
     safePath = '';          // edge case for home
@@ -32,7 +37,12 @@ function postReview(collectionId, path) {
     contentType: 'application/json',
     type: 'POST',
     success: function () {
-      viewCollections(collectionId);
+      if (redirect) {
+        createWorkspace(redirect, collectionId, 'edit');
+        return;
+      } else {
+        viewCollections(collectionId);
+      }
     },
     error: function () {
       console.log('Error');

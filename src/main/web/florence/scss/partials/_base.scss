@@ -222,7 +222,7 @@ $panel-height-2-top-nav: 756px;
       position: absolute;
       left: 0;
       top: -5px;
-      background: transparent url(../img/sprite.png) no-repeat -8px 0;
+      background: transparent url(../img/sprite.png) no-repeat -7px 0;
       background-size: 32px auto;
       display: block;
       font-size: 9px;
@@ -251,24 +251,14 @@ $panel-height-2-top-nav: 756px;
         content: 'AR';
       }
     }
+    &--article_download {
+      &:after {
+        content: 'AP';
+      }
+    }
     &--bulletin {
       &:after {
         content: 'SB';
-      }
-    }
-    &--dataset {
-      &:after {
-        content: 'DA';
-      }
-    }
-    &--timeseries_dataset {
-      &:after {
-        content: 'DB';
-      }
-    }
-    &--reference_tables {
-      &:after {
-        content: 'RF';
       }
     }
     &--timeseries {
@@ -296,11 +286,6 @@ $panel-height-2-top-nav: 756px;
         content: 'SL';
       }
     }
-    &--static_article {
-      &:after {
-        content: 'SA';
-      }
-    }
     &--static_page {
       &:after {
         content: 'SP';
@@ -324,6 +309,26 @@ $panel-height-2-top-nav: 756px;
     &--static_methodology {
       &:after {
         content: 'ME';
+      }
+    }
+    &--static_methodology_download {
+      &:after {
+        content: 'MP';
+      }
+    }
+    &--dataset_landing_page {
+      &:after {
+        content: 'DA';
+      }
+    }
+    &--dataset {
+      &:after {
+        content: 'DS';
+      }
+    }
+    &--timeseries_dataset {
+      &:after {
+        content: 'DB';
       }
     }
     &--release {
@@ -689,6 +694,20 @@ button {
     background-color: $astral;
     margin-left: 0;
   }
+  &.btn-release-selector-cancel {
+    color: $emperor;
+    background-color: $concrete;
+  }
+
+  &.btn-release-search {
+    float: right;
+    margin: 21px 20px 21px 0px;
+  }
+
+  &.btn-select-release {
+    color: $concrete;
+    background-color: $astral;
+  }
 
 }
 
@@ -776,6 +795,45 @@ button {
   &-btn-mobile {
     display: none;
   }
+
+  .iframe-nav {
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: $lineheight * 4;
+    width: 100%;
+    padding-top: $lineheight / 2;
+    padding-bottom: $lineheight / 2;
+    background: $pickled-bluewood;
+
+    button {
+      margin-top: $lineheight / 2;
+    }
+
+    .btn-browse-get {
+      color: $concrete;
+      background-color: $astral;
+    }
+
+    .latest {
+
+      &__label {
+        background-color: inherit;
+        width: auto;
+        margin-top: $lineheight;
+      }
+
+      &__checkbox {
+        margin-left: 124px;
+        position: relative;
+        top: 3px;
+      }
+
+    }
+
+  }
+
 }
 
 .login-wrapper {
@@ -806,6 +864,28 @@ input[type="checkbox"] {
 }
 
 #latest-container {
+  width: 47%;
+  //height: 41px;
+  float: left;
+  //margin-bottom: $gutter;
+
+  label {
+    margin: 0;
+    margin-bottom: $gutter;
+    padding: 1rem 0;;
+    height: $lineheight;
+    float: right;
+  }
+
+  input[type="checkbox"] {
+    margin-left: $gutter;
+    float: right;
+    width: auto;
+  }
+
+}
+
+#correction-container {
   width: 47%;
   //height: 41px;
   float: left;
