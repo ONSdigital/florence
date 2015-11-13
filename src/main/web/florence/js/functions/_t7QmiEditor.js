@@ -1,6 +1,6 @@
 function qmiEditor(collectionId, data) {
 
-  var newFiles = [];
+  var newFiles = [], newDocument = [], newDataset = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -15,9 +15,10 @@ function qmiEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  $("#metadata-s").remove();
-  $("#metadata-f").remove();
   $("#metadata-ad").remove();
+  $("#metadata-f").remove();
+  $("#metadata-md").remove();
+  $("#metadata-s").remove();
   $("#summary-p").remove();
   $(".release-date").remove();
   $("#reference-p").remove();
@@ -125,7 +126,7 @@ function qmiEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -190,6 +191,22 @@ function qmiEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexD, nameD) {
+      var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocument[indexD] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocument;
+    // Related dataset
+    var orderDataset = $("#sortable-dataset").sortable('toArray');
+    $(orderDataset).each(function (indexData, nameData) {
+      var uri = data.relatedDatasets[parseInt(nameData)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDataset[indexData] = {uri: safeUri};
+    });
+    data.relatedDatasets = newDataset;
   }
 }
 

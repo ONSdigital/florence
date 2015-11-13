@@ -33,18 +33,31 @@ function viewCollectionDetails(collectionId) {
       && collection.complete.length === 0
       && collection.reviewed.length === 0) {
         deleteButton.show().click(function () {
-          var result = confirm("Are you sure you want to delete this collection?");
-          if (result === true) {
-            deleteCollection(collectionId,
-            function () {
-            alert('Collection deleted');
-            viewCollections();
-            },
-            function (error) {
-              viewCollectionDetails(collectionId);
-              alert(error + ' File has not been deleted. Contact an administrator');
-            })
-          } else {}
+          swal ({
+            title: "Warning",
+            text: "Are you sure you want to delete this collection?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Continue",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: false
+          }, function(result) {
+            if (result === true) {
+              deleteCollection(collectionId,
+              function () {
+              swal ({
+                title: "Collection deleted",
+                type: "success",
+                timer: 2000
+              })
+              viewCollections();
+              },
+              function (error) {
+                viewCollectionDetails(collectionId);
+                sweetAlert('File has not been deleted. Contact an administrator', error, "error");
+              })
+            } else {}
+          });
         });
       } else {
         deleteButton.hide();
@@ -69,6 +82,11 @@ function viewCollectionDetails(collectionId) {
       // You can't approve collections unless there is nothing left to be reviewed
       approve.hide();
     }
+
+    //edit collection
+    $('.collection-selected .btn-collection-edit').click(function () {
+     editCollection(collection);
+    });
 
     //page-list
     $('.page-item').click(function () {
@@ -102,26 +120,44 @@ function viewCollectionDetails(collectionId) {
     $('.page-delete').click(function () {
       var path = $(this).attr('data-path');
       var language = $(this).attr('data-language');
-      if (path.match(/\/bulletins\//) || path.match(/\/articles\//)) {
-        var result = confirm("This will delete the English and Welsh content of this page, if any. Are you sure you" +
-          " want to delete this page from the collection?");
-      } else if (language === 'cy') {
-        var result = confirm("Are you sure you want to delete this page from the collection?");
-      } else {
-        var result = confirm("This will delete the English and Welsh content of this page, if any. Are you sure you" +
-          " want to delete this page from the collection?");
-      }
-      if (result === true) {
-        if (language === 'cy' && !(path.match(/\/bulletins\//) || path.match(/\/articles\//))) {
-          path = path + '/data_cy.json';
-        }
-        deleteContent(collectionId, path, function() {
-            viewCollectionDetails(collectionId);
-            alert('File deleted');
-          }, function(error) {
-            handleApiError(error);
+
+      //Shows relevant alert text - SweetAlert doesn't return a true or false in same way that confirm() does so have to write each alert with delete function called after it
+      function deleteAlert(text) {
+        swal ({
+          title: "Warning",
+          text: text,
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+          closeOnConfirm: false
+        }, function(result) {
+          if (result === true) {
+            if (language === 'cy' && !(path.match(/\/bulletins\//) || path.match(/\/articles\//))) {
+              path = path + '/data_cy.json';
+            }
+            deleteContent(collectionId, path, function() {
+              viewCollectionDetails(collectionId);
+              swal({
+                title: "Page deleted",
+                text: "This page has been deleted",
+                type: "success",
+                timer: 2000
+              });
+                }, function(error) {
+                  handleApiError(error);
+                }
+            );
           }
-        );
+        });
+      }
+
+      if (path.match(/\/bulletins\//) || path.match(/\/articles\//)) {
+        deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
+      } else if (language === 'cy') {
+        deleteAlert("Are you sure you want to delete this page from the collection?");
+      } else {
+        deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
       }
     });
 

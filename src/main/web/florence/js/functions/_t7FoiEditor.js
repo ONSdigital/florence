@@ -15,9 +15,10 @@ function foiEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  $("#metadata-s").remove();
-  $("#metadata-q").remove();
   $("#metadata-ad").remove();
+  $("#metadata-md").remove();
+  $("#metadata-q").remove();
+  $("#metadata-s").remove();
   $("#summary-p").remove();
   $("#contact-p").remove();
   $("#natStat").remove();
@@ -68,7 +69,7 @@ function foiEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);

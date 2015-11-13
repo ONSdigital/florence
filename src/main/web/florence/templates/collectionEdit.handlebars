@@ -1,0 +1,41 @@
+<div class="collection-editor">
+  <div class="collection-editor__inner">
+
+    <div class="collection-editor__editor">
+      <textarea class="auto-size" type="text" id="collection-editor-name" placeholder="Enter new name">{{name}}</textarea>
+      <div class="select-wrap">
+        <select id="editor-team">
+          <option selected disabled="disabled">Edit the team the collection can be previewed by</option>
+          <option value="Team1">Team 1</option>
+          <option value="Team2">Team 2</option>
+          <option value="Team3">Team 3</option>
+        </select>
+      </div>
+      <input type="radio" id="collection-editor-scheduled" name="publishType" value="scheduledCollection" required
+             {{#ifCond type '===' 'scheduled'}}checked{{/ifCond}} ><label for="collection-editor-scheduled">Scheduled publish</label>
+      <input type="radio" id="collection-editor-manual" name="publishType" value="manualCollection" required {{#ifCond
+      type '===' 'manual'}}checked{{/ifCond}}><label for="collection-editor-manual">Manual publish</label>
+      <div id="collection-editor-date-block" class="block">
+        <input type="text" id="collection-editor-date" placeholder="dd/mm/yyyy" value="{{publishDate}}"/>
+        <div class="select-wrap select-wrap--small">
+          <select id="collection-editor-hour">
+            {{> selectorHour}}
+          </select>
+        </div>
+        <div class="select-wrap select-wrap--small">
+          <select id="collection-editor-min">
+            {{> selectorMinute}}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="collection-editor__footer">
+      <div class="collection-editor__footer-div">
+        <button class="btn-collection-editor-save">Save changes</button>
+        <button class="btn-collection-editor-cancel">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

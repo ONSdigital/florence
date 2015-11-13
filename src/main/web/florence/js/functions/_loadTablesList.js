@@ -29,52 +29,58 @@ function initialiseTablesList(data, collectionId) {
     });
 
     $("#table-delete_" + table.filename).click(function () {
-      var result = confirm("Are you sure you want to delete this table?");
-      if (result === true) {
-        $("#table_" + index).remove();
-        // delete any files associated with the table.
-        var extraFiles = [table.filename + '.html', table.filename + '.xls'];
-        _(extraFiles).each(function (file) {
-          var fileToDelete = basePath + '/' + file;
-          deleteContent(collectionId, fileToDelete,
-            onSuccess = function () {
-            },
-            onError = function (error) {
-              handleApiError(error);
-            });
-
-          // delete any files associated with the table.   //get the info from json
-          //_(table.files).each(function (file) {
-          //  var fileToDelete = basePath + '/' + file.filename;
-          //  deleteContent(collectionId, fileToDelete,
-          //    onSuccess = function () {
-          //      console.log("deleted table file: " + fileToDelete)
-          //    });
-          //});
-
-
-          // delete the table json file
-          deleteContent(collectionId, tableJson + '.json',
-            onSuccess = function () {
-              // remove the table from the page json when its deleted
-              data.tables = _(data.tables).filter(function (item) {
-                return item.filename !== table.filename
+      swal({
+        title: "Warning",
+        text: "Are you sure you want to delete this table?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function (result) {
+        if (result === true) {
+          $("#table_" + index).remove();
+          // delete any files associated with the table.
+          var extraFiles = [table.filename + '.html', table.filename + '.xls'];
+          _(extraFiles).each(function (file) {
+            var fileToDelete = basePath + '/' + file;
+            deleteContent(collectionId, fileToDelete,
+              onSuccess = function () {
+              },
+              onError = function (error) {
               });
+          });
 
-              // save the updated page json
-              postContent(collectionId, basePath, JSON.stringify(data),
-                success = function () {
-                  Florence.Editor.isDirty = false;
-                  refreshTablesList(data, collectionId);
-                },
-                error = function (response) {
-                  handleApiError(response);
-                }
-              );
+          // remove the table from the page json when its deleted
+          data.tables = _(data.tables).filter(function (item) {
+            return item.filename !== table.filename
+          });
+          // save the updated page json
+          putContent(collectionId, basePath, JSON.stringify(data),
+            success = function () {
+
+              // delete the table json file
+              deleteContent(collectionId, tableJson + '.json', onSuccess = function () {}, onError = function (error) {});
+
+              Florence.Editor.isDirty = false;
+              refreshTablesList(data, collectionId);
+
+              swal({
+                title: "Deleted",
+                text: "This table has been deleted",
+                type: "success",
+                timer: 2000
+              });
+            },
+            error = function (response) {
+              if (response.status !== 404)
+                handleApiError(response);
             }
           );
-        });
-      }
+
+
+        }
+      });
     });
   });
 }

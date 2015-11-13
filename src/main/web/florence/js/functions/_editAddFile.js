@@ -8,69 +8,80 @@
 
 function addFile(collectionId, data, field, idField) {
   var list = data[field];
-  var downloadExtensions;
-  var dataTemplate = {list: list, idField: idField};
+  var downloadExtensions, supplementary;
+  if (field === 'supplementaryFiles') {
+    supplementary = 'supplementary ';
+  } else {
+    supplementary = '';
+  }
+  var dataTemplate = {list: list, idField: idField, supplementary: supplementary};
   var html = templates.editorDownloads(dataTemplate);
   $('#' + idField).replaceWith(html);
   var uriUpload;
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
-  // Edit
+  //Edit saved from editor
+
+  // Delete
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
   } else {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var result = confirm("Are you sure you want to delete this file?");
-        if (result === true) {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position;
-          $(this).parent().remove();
-          $.ajax({
-            url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-            type: "DELETE",
-            success: function (res) {
-              console.log(res);
-            },
-            error: function (res) {
-              console.log(res);
-            }
-          });
-          data[field].splice(index, 1);
-          updateContent(collectionId, data.uri, JSON.stringify(data));
-        }
-      });
-      // Edit
-      $('#' + idField + '-edit_' + index).click(function () {
-        var editedSectionValue = {
-          "markdown": $('#' + idField + '-title_' + index).val()
-        };
-        var saveContent = function (updatedContent) {
-          data[field][index].markdown = updatedContent;
-          updateContent(collectionId, data.uri, JSON.stringify(data));
-        };
-        loadMarkdownEditor(editedSectionValue, saveContent, data);
+        swal ({
+          title: "Warning",
+          text: "Are you sure you want to delete this file?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+          closeOnConfirm: false
+        }, function(result) {
+          if (result === true) {
+            swal({
+              title: "Deleted",
+              text: "This alert has been deleted",
+              type: "success",
+              timer: 2000
+            });
+            var position = $(".workspace-edit").scrollTop();
+            Florence.globalVars.pagePos = position;
+            $(this).parent().remove();
+            $.ajax({
+              url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
+              type: "DELETE",
+              success: function (res) {
+                console.log(res);
+              },
+              error: function (res) {
+                console.log(res);
+              }
+            });
+            data[field].splice(index, 1);
+            updateContent(collectionId, data.uri, JSON.stringify(data));
+          }
+        });
       });
     });
   }
 
   //Add
-  if (data.type === 'dataset') {
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
-  } else if (data.type === 'timeseries_dataset') {
-    downloadExtensions = /\.csdb$/;
-  } else if (data.type === 'static_adhoc') {
+  if (data.type === 'static_adhoc') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_qmi') {
+    downloadExtensions = /\.pdf$/;
+  } else if (data.type === 'article_download' || data.type === 'static_methodology_download') {
     downloadExtensions = /\.pdf$/;
   } else if (data.type === 'static_foi') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_page') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+  } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
+    downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else {
-    alert('This file type is not valid. Contact an administrator to add this type of file in this document');
+    sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
   }
 
   $('#add-' + idField).one('click', function () {
@@ -106,7 +117,7 @@ function addFile(collectionId, data, field, idField) {
 
         var file = this[0].files[0];
         if(!file) {
-          alert('Please select a file to upload.');
+          sweetAlert("Please select a file to upload");
           return;
         }
 
@@ -119,7 +130,7 @@ function addFile(collectionId, data, field, idField) {
         if (data[field] && data[field].length > 0) {
           $(data[field]).each(function (i, filesUploaded) {
             if (filesUploaded.file == safeUriUpload) {
-              alert('This file already exists');
+              sweetAlert('This file already exists');
               $('#' + lastIndex).remove();
               addFile(collectionId, data, field, idField);
               return;
@@ -132,7 +143,7 @@ function addFile(collectionId, data, field, idField) {
             formdata.append("name", file);
           }
         } else {
-          alert('This file type is not supported');
+          sweetAlert("This file type is not supported");
           $('#' + lastIndex).remove();
           addFile(collectionId, data, field, idField);
           return;
@@ -151,7 +162,7 @@ function addFile(collectionId, data, field, idField) {
               if (!data[field]) {
                 data[field] = [];
               }
-              data[field].push({title: '', file: safeUriUpload});
+              data[field].push({title: '', file: fileNameNoSpace});
               updateContent(collectionId, data.uri, JSON.stringify(data));
             }
           });

@@ -1,6 +1,6 @@
 function articleEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newArticle = [], newRelated = [], newLinks = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -105,7 +105,7 @@ function articleEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -203,7 +203,7 @@ function articleEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-    // Related articles
+    // Related articles TO BE DELETED
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
       var uri = data.relatedArticles[parseInt(nameA)].uri;
@@ -211,14 +211,22 @@ function articleEditor(collectionId, data) {
       newArticle[indexA] = {uri: safeUri};
     });
     data.relatedArticles = newArticle;
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexDoc, nameDoc) {
+      var uri = data.relatedDocuments[parseInt(nameDoc)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocuments[indexDoc] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocuments;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
       var safeUri = checkPathSlashes(uri);
-      newRelated[indexD] = {uri: safeUri};
+      newData[indexD] = {uri: safeUri};
     });
-    data.relatedData = newRelated;
+    data.relatedData = newData;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {
@@ -227,14 +235,22 @@ function articleEditor(collectionId, data) {
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
-    // Related methodology
+    // Related qmi
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedQmi[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
 }
 
