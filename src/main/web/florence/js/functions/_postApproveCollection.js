@@ -19,7 +19,7 @@ function postApproveCollection(collectionId) {
     error: function (response) {
       $('.over').remove();
       if (response.status === 409) {
-        alert("Cannot approve this collection. It contains files that have not been approved.");
+        sweetAlert("Cannot approve this collection", "It contains files that have not been approved.");
       }
       else {
         handleApiError(response);

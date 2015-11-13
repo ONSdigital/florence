@@ -1,7 +1,7 @@
 function bulletinEditor(collectionId, data) {
 
 //  var index = data.release;
-  var newSections = [], newTabs = [], newBulletin = [], newRelated = [], newLinks = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newBulletin = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -131,7 +131,7 @@ function bulletinEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -161,32 +161,6 @@ function bulletinEditor(collectionId, data) {
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
     }, 3000);
-  });
-
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // Save
@@ -227,7 +201,7 @@ function bulletinEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
-    // Related bulletins
+    // Related bulletins TO BE DELETED
     var orderBulletin = $("#sortable-bulletin").sortable('toArray');
     $(orderBulletin).each(function (indexB, nameB) {
       var uri = data.relatedBulletins[parseInt(nameB)].uri;
@@ -235,14 +209,22 @@ function bulletinEditor(collectionId, data) {
       newBulletin[indexB] = {uri: safeUri};
     });
     data.relatedBulletins = newBulletin;
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexDoc, nameDoc) {
+      var uri = data.relatedDocuments[parseInt(nameDoc)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocuments[indexDoc] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocuments;
     // Related data
     var orderData = $("#sortable-data").sortable('toArray');
     $(orderData).each(function (indexD, nameD) {
       var uri = data.relatedData[parseInt(nameD)].uri;
       var safeUri = checkPathSlashes(uri);
-      newRelated[indexD] = {uri: safeUri};
+      newData[indexD] = {uri: safeUri};
     });
-    data.relatedData = newRelated;
+    data.relatedData = newData;
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {
@@ -251,14 +233,22 @@ function bulletinEditor(collectionId, data) {
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
-    // Related methodology
+    // qmi
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedQmi[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
 }
 

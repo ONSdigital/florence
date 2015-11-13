@@ -1,0 +1,12 @@
+<div id="{{idField}}-section">
+  {{#each list}}
+      <div id="{{@index}}" class="edit-section__item">
+        <div id="correction-edition_{{@index}}" correction-url="{{this.uri}}">{{this.label}}</div>
+        <input id="correction-date_{{@index}}" type="text" placeholder="Day month year"
+               value="{{this.updateDate}}"/>
+        <textarea style="display: none;" id="correction-markdown_{{@index}}">{{this.correctionNotice}}</textarea>
+        <button class="btn-markdown-edit" id="correction-edit_{{@index}}">Edit notice</button>
+        <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
+      </div>
+  {{/each}}
+</div>

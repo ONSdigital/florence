@@ -15,9 +15,10 @@ function adHocEditor(collectionId, data) {
   accordion(getActiveTab);
   getLastPosition();
 
-  $("#metadata-s").remove();
   $("#metadata-f").remove();
+  $("#metadata-md").remove();
   $("#metadata-q").remove();
+  $("#metadata-s").remove();
   $("#summary-p").remove();
   $("#contact-p").remove();
   $("#natStat").remove();
@@ -70,7 +71,7 @@ function adHocEditor(collectionId, data) {
         autoSaveMetadata(collectionId, data);
       }, 3000);
     } else {
-      alert('This needs to be a number');
+      sweetAlert('This needs to be a number');
     }
   });
   $("#keywordsTag").tagit({
@@ -80,7 +81,7 @@ function adHocEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);

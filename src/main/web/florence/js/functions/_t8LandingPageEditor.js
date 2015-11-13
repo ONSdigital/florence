@@ -1,6 +1,6 @@
-function referenceTableEditor(collectionId, data) {
+function datasetLandingEditor(collectionId, data) {
 
-  var newFiles = [], newRelatedDocuments = [], newRelatedMethodology = [];
+  var newDatasets = [], newRelatedDocuments = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -14,6 +14,8 @@ function referenceTableEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition();
+
+  resolveTitleT8(collectionId, data, 'datasets');
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -105,7 +107,7 @@ function referenceTableEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -137,32 +139,6 @@ function referenceTableEditor(collectionId, data) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  });
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -186,15 +162,13 @@ function referenceTableEditor(collectionId, data) {
   });
 
   function save() {
-    // Files are uploaded. Save metadata
-    var orderFile = $("#sortable-file").sortable('toArray');
-    $(orderFile).each(function (indexF, nameF) {
-      var title = $('#file-title_' + nameF).val();
-      var fileDescription = $("#file-summary_" + nameF).val();
-      var file = data.downloads[parseInt(nameF)].file;
-      newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
+    // Datasets are uploaded. Save metadata
+    var orderDataset = $("#sortable-edition").sortable('toArray');
+    $(orderDataset).each(function (indexF, nameF) {
+      var file = data.datasets[parseInt(nameF)].uri;
+      newDatasets[indexF] = {uri: file};
     });
-    data.downloads = newFiles;
+    data.datasets = newDatasets;
     // Used in links
     var orderUsedIn = $("#sortable-document").sortable('toArray');
     $(orderUsedIn).each(function (indexU, nameU) {
@@ -203,14 +177,99 @@ function referenceTableEditor(collectionId, data) {
       newRelatedDocuments[indexU] = {uri: safeUri};
     });
     data.relatedDocuments = newRelatedDocuments;
-    // Related methodology
+    // Related qmi
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedQmi[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
+}
+
+function resolveTitleT8(collectionId, data, field) {
+  var ajaxRequest = [];
+  var templateData = $.extend(true, {}, data);
+  $(templateData[field]).each(function (index, path) {
+    templateData[field][index].description = {};
+    var eachUri = path.uri;
+    var dfd = $.Deferred();
+    getPageDataTitle(collectionId, eachUri,
+      success = function (response) {
+        templateData[field][index].description.edition = response.edition;
+        templateData[field][index].uri = eachUri;
+        dfd.resolve();
+      },
+      error = function () {
+        sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
+        dfd.resolve();
+      }
+    );
+    ajaxRequest.push(dfd);
+  });
+
+  $.when.apply($, ajaxRequest).then(function () {
+    var dataTemplate = templateData[field];
+    var html = templates.workEditT8LandingDatasetList(dataTemplate);
+    $('#edition').replaceWith(html);
+    addEditionEditButton(collectionId, templateData);
+  });
+}
+
+function addEditionEditButton(collectionId, templateData) {
+  // Load dataset to edit
+  $(templateData.datasets).each(function (index) {
+    //open document
+    var selectedEdition = $("#edition_" + index).attr('edition-url');
+    $("#edition-edit_" + index).click(function () {
+      createWorkspace(selectedEdition, collectionId, 'edit');
+    });
+
+    $('#edition-edit-label_' + index).click(function () {
+      getPageData(collectionId, selectedEdition,
+        success = function (response) {
+          var pageData = response;
+          var editedSectionValue = pageData.description.edition;
+          var saveContent = function (updatedContent) {
+            pageData.description.edition = updatedContent;
+            putContent(collectionId, pageData.uri, JSON.stringify(pageData),
+              success = function (message) {
+                console.log("Updating completed " + message);
+                viewWorkspace(pageData.uri, collectionId, 'edit');
+                refreshPreview(pageData.uri);
+              },
+              error = function (message) {
+                if (message.status === 400) {
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                }
+                else {
+                  handleApiError(message);
+                }
+              }
+            )
+          };
+          loadMarkdownEditor(editedSectionValue, saveContent, pageData);
+        },
+        error = function (message) {
+          handleApiError(message);
+        }
+      )
+    });
+  });
+
+  function sortableSections() {
+    $("#sortable-edition").sortable();
+  }
+
+  sortableSections();
 }
 

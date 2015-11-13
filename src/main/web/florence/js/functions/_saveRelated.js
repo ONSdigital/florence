@@ -1,5 +1,5 @@
 function saveRelated (collectionId, path, data, templateData, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     success = function (response) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
@@ -10,7 +10,7 @@ function saveRelated (collectionId, path, data, templateData, field, idField) {
     },
     error = function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);

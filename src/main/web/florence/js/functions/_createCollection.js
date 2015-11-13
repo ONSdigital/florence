@@ -5,35 +5,36 @@ function createCollection() {
   var publishType = $('input[name="publishType"]:checked').val();
   var scheduleType = $('input[name="scheduleType"]:checked').val();
 
-  console.log('publish type: ' + publishType);
-  console.log('schedule type: ' + scheduleType);
-
   if (publishType === 'scheduled') {
     publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
     var toIsoDate = $('#date').datepicker("getDate");
     collectionDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
   } else {
     collectionDate  = null;
-  };
+  }
 
   if (scheduleType === 'release' && publishType === 'scheduled') {
-    releaseUri  = $('#collection-release').val();
+    if(!Florence.CreateCollection.selectedRelease) {
+      sweetAlert('Please select a release');
+      return true;
+    }
+    releaseUri  = Florence.CreateCollection.selectedRelease.uri;
   } else {
     releaseUri  = null;
-  };
+  }
 
   // inline tests
   if (collectionId === '') {
-    alert('This is not a valid collection name');
+    sweetAlert('This is not a valid collection name', "A collection name can't be empty");
     return true;
   } if (collectionId.match(/\./)) {
-    alert('This is not a valid collection name. You can not use dots');
+    sweetAlert('This is not a valid collection name', "You can't use fullstops");
     return true;
   } if ((publishType === 'scheduled') && (scheduleType === 'custom')  && (isValidDate(new Date(collectionDate)))) {
-    alert('This is not a valid date');
+    sweetAlert('This is not a valid date');
     return true;
   } if ((publishType === 'scheduled') && (scheduleType === 'custom') && (Date.parse(collectionDate) < new Date())) {
-    alert('This is not a valid date');
+    sweetAlert('This is not a valid date');
     return true;
   } else {
     // Create the collection
@@ -49,7 +50,7 @@ function createCollection() {
       },
       error: function (response) {
         if(response.status === 409) {
-          alert(response.responseJSON.message);
+          sweetAlert("Error", response.responseJSON.message, "error");
         }
         else {
           handleApiError(response);
@@ -60,9 +61,7 @@ function createCollection() {
 }
 
 function isValidDate(d) {
-  if (!isNaN(d.getTime()))
-    {return false;}
-  else
-    {return true;}
+  if (!isNaN(d.getTime())) { return false; }
+  return true;
 }
 

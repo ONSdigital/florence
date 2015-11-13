@@ -46,15 +46,23 @@ function releaseEditor(collectionId, data) {
     });
   } else {
     $('.release-date').on('change', function () {
-      var result = confirm('You will need to add an explanation for this change. Are you sure you want to proceed?');
-      if (result === true) {
-        saveOldDate(collectionId, data, dateTmp);
-        var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
-        var toIsoDate = $('#releaseDate').datepicker("getDate");
-        data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
-      } else {
-        e.preventDefault();
-      }
+      swal ({
+        title: "Warning",
+        text: "You will need to add an explanation for this change. Are you sure you want to proceed?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        cancelButtonText: "Cancel"
+      }, function(result){
+        if (result === true) {
+          saveOldDate(collectionId, data, dateTmp);
+          var publishTime  = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
+          var toIsoDate = $('#releaseDate').datepicker("getDate");
+          data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
+        } else {
+          $('#releaseDate').val(dateTmpFormatted);
+        }
+      });
     });
   }
 
@@ -139,10 +147,11 @@ function releaseEditor(collectionId, data) {
   $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
     data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
     if (data.description.cancelled) {
-      var editedSectionValue = '';
+      var editedSectionValue = {};
+      editedSectionValue.title = "Please enter the reason for the cancellation";
       var saveContent = function (updatedContent) {
         data.description.cancellationNotice = [updatedContent];
-        postContent(collectionId, data.uri, JSON.stringify(data),
+        putContent(collectionId, data.uri, JSON.stringify(data),
           success = function () {
             Florence.Editor.isDirty = false;
             loadPageDataIntoEditor(data.uri, collectionId);
@@ -150,7 +159,7 @@ function releaseEditor(collectionId, data) {
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this page. It is already part of another collection.");
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
             }
             else {
               handleApiError(response);
@@ -170,27 +179,35 @@ function releaseEditor(collectionId, data) {
 
   if (data.description.finalised) {
     $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function (e) {
-      alert('You cannot change this field once it is finalised.');
+      sweetAlert('You cannot change this field once it is finalised.');
       e.preventDefault();
     });
   } else {
     $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function () {
-      var result = confirm("You will not be able to reverse this operation. Are you sure you want to proceed?");
-      if (result) {
-        data.description.finalised = $("#finalised input[type='checkbox']").prop('checked') ? true : false;
-        if (data.description.finalised) {
-          // remove provisional date
-          data.description.provisionalDate = "";
-          $('.provisional-date').remove();
-          $('#finalised').remove();
+      swal ({
+        title: "Warning",
+        text: "You will not be able reset the date to provisional once you've done this. Are you sure you want to proceed?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        cancelButtonText: "Cancel"
+      }, function(result){
+        if (result) {
+          data.description.finalised = $("#finalised input[type='checkbox']").prop('checked') ? true : false;
+          if (data.description.finalised) {
+            // remove provisional date
+            data.description.provisionalDate = "";
+            $('.provisional-date').remove();
+            $('#finalised').remove();
+          }
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(function () {
+            autoSaveMetadata(collectionId, data);
+          }, 3000);
+        } else {
+          $("#finalised input[type='checkbox']").prop('checked', false);
         }
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-          autoSaveMetadata(collectionId, data);
-        }, 3000);
-      } else {
-        e.preventDefault();
-      }
+      });
     });
   }
 
@@ -226,14 +243,14 @@ function releaseEditor(collectionId, data) {
     $.when.apply($, pageDataRequests).then(function () {
       processPreview(data, pages);
       if (noSave) {
-        postContent(collectionId, data.uri, JSON.stringify(data),
+        putContent(collectionId, data.uri, JSON.stringify(data),
           success = function () {
             Florence.Editor.isDirty = false;
             refreshPreview(data.uri);
           },
           error = function (response) {
             if (response.status === 400) {
-              alert("Cannot edit this page. It is already part of another collection.");
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
             } else {
               handleApiError(response);
             }
@@ -253,7 +270,7 @@ function releaseEditor(collectionId, data) {
       if (page.type === 'article' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
         data.relatedDocuments.push({uri: page.uri});
         console.log(page.uri);
-      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+      } else if (page.type === 'dataset_landing_page') {
         data.relatedDatasets.push({uri: page.uri});
       }
     });
@@ -261,7 +278,7 @@ function releaseEditor(collectionId, data) {
       if (page.type === 'article' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
         data.relatedDocuments.push({uri: page.uri});
         console.log(page.uri);
-      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+      } else if (page.type === 'dataset_landing_page') {
         data.relatedDatasets.push({uri: page.uri});
       }
     });
@@ -269,7 +286,7 @@ function releaseEditor(collectionId, data) {
       if (page.type === 'article' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
         data.relatedDocuments.push({uri: page.uri});
         console.log(page.uri);
-      } else if (page.type === 'dataset' || page.type === 'timeseries_dataset') {
+      } else if (page.type === 'dataset_landing_page') {
         data.relatedDatasets.push({uri: page.uri});
       }
     });
