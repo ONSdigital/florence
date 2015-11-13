@@ -246,7 +246,7 @@ function loadImageBuilder(pageData, onSave, image) {
   function uploadFile(path, formData, success) {
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + path,
-      type: 'POST',
+      type: 'PUT',
       data: formData,
       async: false,
       cache: false,
@@ -285,7 +285,7 @@ function loadImageBuilder(pageData, onSave, image) {
 
     $.ajax({
       url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imageJson,
-      type: 'POST',
+      type: 'PUT',
       data: JSON.stringify(image),
       processData: false,
       contentType: 'application/json',
