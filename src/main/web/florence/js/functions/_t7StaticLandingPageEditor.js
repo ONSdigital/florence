@@ -38,7 +38,7 @@ function staticLandingPageEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -76,7 +76,7 @@ function staticLandingPageEditor(collectionId, data) {
           var uriCheck = getPathNameTrimLast();
           var uriChecked = checkPathSlashes(uriCheck);
           data.sections[index].uri = uriChecked;
-          postContent(collectionId, data.uri, JSON.stringify(data),
+          putContent(collectionId, data.uri, JSON.stringify(data),
             success = function (response) {
               console.log("Updating completed " + response);
               Florence.Editor.isDirty = false;
@@ -87,7 +87,7 @@ function staticLandingPageEditor(collectionId, data) {
             },
             error = function (response) {
               if (response.status === 400) {
-                alert("Cannot edit this page. It is already part of another collection.");
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
               }
               else {
                 handleApiError(response);
@@ -153,13 +153,21 @@ function staticLandingPageEditor(collectionId, data) {
 
   //Add new content
   $("#add-section").one('click', function () {
-    var result = confirm('If you do not come back to this page, you will loose any unsaved changes');
-    if (result === true) {
-      data.sections.push({uri: "", title: "", summary: ""});
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    } else {
-      loadPageDataIntoEditor(data.uri, collectionId);
-    }
+    swal ({
+      title: "Warning",
+      text: "If you do not come back to this page, you will lose any unsaved changes",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Continue",
+      cancelButtonText: "Cancel"
+    }, function(result) {
+      if (result === true) {
+        data.sections.push({uri: "", title: "", summary: ""});
+        updateContent(collectionId, data.uri, JSON.stringify(data));
+      } else {
+        loadPageDataIntoEditor(data.uri, collectionId);
+      }
+    });
   });
 
   function sortableContent() {

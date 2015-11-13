@@ -585,12 +585,14 @@ else
             text = text.replace(/(?:\^)(?=\S)(\S*)(?:\^)/g, "<sup>$1</sup>");
             return text;
         }
+        this._DoSuperscript = _DoSuperscript;
 
         function _DoSubscript(text) {
             // sub
             text = text.replace(/(?:~T)(?=\S)(\S*)(?:~T)/g, "<sub>$1</sub>");
             return text;
         }
+        this._DoSubscript = _DoSubscript;
 
         function _DoAnchors(text) {
             

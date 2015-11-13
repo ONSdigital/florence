@@ -35,29 +35,44 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
 
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        var result = confirm("Are you sure you want to delete this link?");
-        if (result === true) {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position;
-          $(this).parent().remove();
-          data[field].splice(index, 1);
-          templateData[field].splice(index, 1);
-          postContent(collectionId, data.uri, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              refreshPreview(data.uri);
-              refreshTopics(collectionId, data, templateData, field, idField)
-            },
-            error = function (response) {
-              if (response.status === 400) {
-                alert("Cannot edit this page. It is already part of another collection.");
+        swal ({
+          title: "Warning",
+          text: "Are you sure you want to delete this link?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+          closeOnConfirm: false
+        }, function(result){
+          if (result === true) {
+            swal({
+              title: "Deleted",
+              text: "This " + idField + " has been deleted",
+              type: "success",
+              timer: 2000
+            });
+            var position = $(".workspace-edit").scrollTop();
+            Florence.globalVars.pagePos = position;
+            $(this).parent().remove();
+            data[field].splice(index, 1);
+            templateData[field].splice(index, 1);
+            putContent(collectionId, data.uri, JSON.stringify(data),
+              success = function () {
+                Florence.Editor.isDirty = false;
+                refreshPreview(data.uri);
+                refreshTopics(collectionId, data, templateData, field, idField)
+              },
+              error = function (response) {
+                if (response.status === 400) {
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                }
+                else {
+                  handleApiError(response);
+                }
               }
-              else {
-                handleApiError(response);
-              }
-            }
-          );
-        }
+            );
+          }
+        });
       });
     });
   }
@@ -66,79 +81,87 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
   $('#add-' + idField).off().one('click', function () {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position;
-    var result = confirm('If you do not come back to this page, you will loose any unsaved changes');
-    if (result === true) {
-      var iframeEvent = document.getElementById('iframe').contentWindow;
-      iframeEvent.removeEventListener('click', Florence.Handler, true);
-      createWorkspace(data.uri, collectionId, '', true);
+    swal ({
+      title: "Warning",
+      text: "If you do not come back to this page, you will lose any unsaved changes",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Continue",
+      cancelButtonText: "Cancel"
+    }, function (result) {
+      if (result === true) {
+        var iframeEvent = document.getElementById('iframe').contentWindow;
+        iframeEvent.removeEventListener('click', Florence.Handler, true);
+        createWorkspace(data.uri, collectionId, '', true);
 
-      $('#sortable-' + idField).append(
-        '<div id="' + editTopics['lastIndex' + field] + '" class="edit-section__sortable-item">' +
-        '  <textarea id="' + idField + '-uri_' + editTopics['lastIndex' + field] + '" placeholder="Go to the related' +
-        ' product page and click Get or paste the link and click Get"></textarea>' +
-        '  <div id="latest-container"></div>' +
-        '  <button class="btn-page-get" id="' + idField + '-get_' + editTopics['lastIndex' + field] + '">Get</button>' +
-        '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editTopics['lastIndex' + field] + '">Cancel</button>' +
-        '</div>').trigger('create');
+        $('#sortable-' + idField).append(
+            '<div id="' + editTopics['lastIndex' + field] + '" class="edit-section__sortable-item">' +
+            '  <textarea id="' + idField + '-uri_' + editTopics['lastIndex' + field] + '" placeholder="Go to the related' +
+            ' product page and click Get or paste the link and click Get"></textarea>' +
+            '  <div id="latest-container"></div>' +
+            '  <button class="btn-page-get" id="' + idField + '-get_' + editTopics['lastIndex' + field] + '">Get</button>' +
+            '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editTopics['lastIndex' + field] + '">Cancel</button>' +
+            '</div>').trigger('create');
 
-      $(function () {
-        $('#' + idField + '-uri_' + editTopics['lastIndex' + field]).tooltip({
-          items: '#' + idField + '-uri_' + editTopics['lastIndex' + field],
-          content: 'Go to the related product page and click Get or paste the link and click Get',
-          show: "slideDown", // show immediately
-          open: function (event, ui) {
-            ui.tooltip.hover(
-              function () {
-                $(this).fadeTo("slow", 0.5);
-              });
-          }
+        $(function () {
+          $('#' + idField + '-uri_' + editTopics['lastIndex' + field]).tooltip({
+            items: '#' + idField + '-uri_' + editTopics['lastIndex' + field],
+            content: 'Go to the related product page and click Get or paste the link and click Get',
+            show: "slideDown", // show immediately
+            open: function (event, ui) {
+              ui.tooltip.hover(
+                  function () {
+                    $(this).fadeTo("slow", 0.5);
+                  });
+            }
+          });
         });
-      });
 
-      $('#' + idField + '-cancel_' + editTopics['lastIndex' + field]).one('click', function () {
-        createWorkspace(data.uri, collectionId, 'edit');
-      });
+        $('#' + idField + '-cancel_' + editTopics['lastIndex' + field]).one('click', function () {
+          createWorkspace(data.uri, collectionId, 'edit');
+        });
 
-      $('#' + idField + '-get_' + editTopics['lastIndex' + field]).one('click', function () {
-        var pastedUrl = $('#' + idField + '-uri_' + editTopics['lastIndex' + field]).val();
-        if (!pastedUrl) {
-          var baseUrl = getPathNameTrimLast();
-        } else {
-          var baseUrl = checkPathParsed(pastedUrl);
-        }
-        var dataUrlData = baseUrl + "/data";
+        $('#' + idField + '-get_' + editTopics['lastIndex' + field]).one('click', function () {
+          var pastedUrl = $('#' + idField + '-uri_' + editTopics['lastIndex' + field]).val();
+          if (!pastedUrl) {
+            var baseUrl = getPathNameTrimLast();
+          } else {
+            var baseUrl = checkPathParsed(pastedUrl);
+          }
+          var dataUrlData = baseUrl + "/data";
 
-        $.ajax({
-          url: dataUrlData,
-          dataType: 'json',
-          crossDomain: true,
-          success: function (result) {
-            if (result.type === 'product_page') {
-              if (!data[field]) {
-                data[field] = [];
-                templateData[field] = [];
+          $.ajax({
+            url: dataUrlData,
+            dataType: 'json',
+            crossDomain: true,
+            success: function (result) {
+              if (result.type === 'product_page') {
+                if (!data[field]) {
+                  data[field] = [];
+                  templateData[field] = [];
+                }
               }
+
+              else {
+                sweetAlert("This is not a valid document");
+                createWorkspace(data.uri, collectionId, 'edit');
+                return;
+              }
+
+              data[field].push({uri: result.uri});
+              templateData[field].push({uri: result.uri});
+              saveTopics(collectionId, data.uri, data, templateData, field, idField);
+
+            },
+            error: function () {
+              console.log('No page data returned');
             }
-
-            else {
-              alert("This is not a valid document");
-              createWorkspace(data.uri, collectionId, 'edit');
-              return;
-            }
-
-            data[field].push({uri: result.uri});
-            templateData[field].push({uri: result.uri});
-            saveTopics(collectionId, data.uri, data, templateData, field, idField);
-
-          },
-          error: function () {
-            console.log('No page data returned');
-          }
+          });
         });
-      });
-    } else {
-      initialiseTopics(collectionId, data, templateData, field, idField);
-    }
+      } else {
+        initialiseTopics(collectionId, data, templateData, field, idField);
+      }
+    });
   });
 
   function sortable() {
@@ -160,7 +183,7 @@ function resolveTopicTitle(collectionId, data, templateData, field, idField) {
         dfd.resolve();
       },
       error = function () {
-        alert(field + ' address: ' + eachUri + ' is not found.');
+        sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
         dfd.resolve();
       }
     );
@@ -173,7 +196,7 @@ function resolveTopicTitle(collectionId, data, templateData, field, idField) {
 }
 
 function saveTopics (collectionId, path, data, templateData, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     success = function (response) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;
@@ -184,7 +207,7 @@ function saveTopics (collectionId, path, data, templateData, field, idField) {
     },
     error = function (response) {
       if (response.status === 400) {
-        alert("Cannot edit this page. It is already part of another collection.");
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
       }
       else {
         handleApiError(response);

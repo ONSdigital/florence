@@ -1,6 +1,6 @@
 function methodologyEditor(collectionId, data) {
 
-  var newSections = [];
+  var newSections = [], newTabs = [], newDocuments = [], newDatasets = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -24,6 +24,30 @@ function methodologyEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
+  //if (!Florence.collection.date) {                        //overwrite scheduled collection date
+  if (!data.description.releaseDate) {
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  } else {
+    //dateTmp = $('#releaseDate').val();
+    dateTmp = data.description.releaseDate;
+    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  }
+  //} else {
+  //    $('.release-date').hide();
+  //}
   if (!data.description.contact) {
     data.description.contact = {};
   }
@@ -66,7 +90,7 @@ function methodologyEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -111,6 +135,30 @@ function methodologyEditor(collectionId, data) {
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
+    // Tabs
+    var orderTab = $("#sortable-tab").sortable('toArray');
+    $(orderTab).each(function (indexT, nameT) {
+      var markdown = data.accordion[parseInt(nameT)].markdown;
+      var title = $('#tab-title_' + nameT).val();
+      newTabs[indexT] = {title: title, markdown: markdown};
+    });
+    data.accordion = newTabs;
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexD, nameD) {
+      var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocuments[indexD] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocuments;
+    // Related dataset
+    var orderDataset = $("#sortable-dataset").sortable('toArray');
+    $(orderDataset).each(function (indexData, nameData) {
+      var uri = data.relatedDatasets[parseInt(nameData)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDatasets[indexData] = {uri: safeUri};
+    });
+    data.relatedDatasets = newDatasets;
   }
 }
 

@@ -8,9 +8,9 @@
 
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
-  var pageType, pageTitle, uriSection, pageTitleTrimmed, releaseDateManual,
+  var pageType, pageTitle, uriSection, pageTitleTrimmed, pageEditionTrimmed, releaseDateManual,
     isInheriting, newUri, pageData, natStat, contactName, contactEmail,
-    contactTel, keyWords, metaDescr, relatedData, summary;
+    contactTel, keyWords, metaDescr, relatedData, summary, relatedMethodology;
   var parentUrlData = parentUrl + "/data";
   $.ajax({
     url: parentUrlData,
@@ -21,7 +21,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         var checkedUrl = checkPathSlashes(checkData.uri);
         submitFormHandler(checkedUrl);
         return true;
-      } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article')) {
+      } if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article') || (checkData.type === 'article_download' && pageType === 'article_download')) {
         var checkedUrl = checkPathSlashes(checkData.uri);
         var safeParentUrl = getParentPage(checkedUrl);
         natStat = checkData.description.nationalStatistic;
@@ -32,6 +32,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         keyWords = checkData.description.keywords;
         summary = checkData.description.summary;
         metaDescr = checkData.description.metaDescription;
+        relatedMethodology = checkData.relatedMethodology;
         if (checkData.type === 'bulletin' && pageType === 'bulletin') {
           relatedData = checkData.relatedData;
         }
@@ -39,7 +40,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         submitFormHandler (safeParentUrl, pageTitle, isInheriting);
         return true;
       } else {
-        alert("This is not a valid place to create this page.");
+        sweetAlert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
       }
     },
@@ -69,6 +70,17 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
 
     $('form').submit(function (e) {
       releaseDateManual = $('#releaseDate').val();
+      //Check for reserved words
+      if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for a title');
+        $('#pagename').val('');
+        return false;
+      }
+      if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for an edition');
+        $('#edition').val('');
+        return false;
+      }
       pageData = pageTypeDataT4(pageType);
       pageData.description.edition = $('#edition').val();
       if (title) {
@@ -77,12 +89,21 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageTitle = $('#pagename').val();
       }
       pageData.description.title = pageTitle;
-      uriSection = pageType + "s";
+      if (pageType === 'article_download') {
+       uriSection = 'articles';
+      } else {
+        uriSection = pageType + "s";
+      }
       pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-      if (releaseDateManual) {                                                          //Manual collections
+      if (pageData.description.edition) {
+        pageEditionTrimmed = pageData.description.edition.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+        var releaseUri = pageEditionTrimmed;
+      }
+
+      if (!pageData.description.edition && releaseDateManual) {                          //Manual collections
         date = $.datepicker.parseDate("dd MM yy", releaseDateManual);
         releaseUri = $.datepicker.formatDate('yy-mm-dd', date);
-      } else {
+      } else if (!pageData.description.edition && !releaseDateManual) {
         releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
       }
 
@@ -98,6 +119,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.contact.telephone = contactTel;
         pageData.description.keywords = keyWords;
         pageData.description.metaDescription = metaDescr;
+        pageData.relatedMethodology = relatedMethodology;
         if (pageType === 'bulletin') {
           pageData.description.summary = summary;
           pageData.relatedData = relatedData;
@@ -109,17 +131,17 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       var safeNewUri = checkPathSlashes(newUri);
 
       if (pageType === 'bulletin' && !pageData.description.edition) {
-        alert('Edition can not be empty');
+        sweetAlert('Edition can not be empty');
         return true;
       } if (!pageData.description.releaseDate) {
-        alert('Release date can not be empty');
+        sweetAlert('Release date can not be empty');
         return true;
       } if (pageTitle.length < 5) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         return true;
       }
       else {
-        checkSaveContent(collectionId, safeNewUri, pageData);
+        saveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
     });
@@ -130,21 +152,21 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     if (pageType === "bulletin") {
       return {
         "description": {
-          "headline1": "",
-          "headline2": "",
-          "headline3": "",
-          "nationalStatistic": false,
+          "title": "",
+          "edition": "",
+          "summary": "",
+          "releaseDate": "",
+          "nextRelease": "",
           "contact": {
             "name": "",
             "email": "",
             "telephone": ""
           },
-          "title": "",
-          "summary": "",
+          "nationalStatistic": false,
+          "headline1": "",
+          "headline2": "",
+          "headline3": "",
           "keywords": [],
-          "edition": "",
-          "releaseDate": "",
-          "nextRelease": "",
           "metaDescription": "",
         },
         "sections": [],
@@ -152,12 +174,14 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         "relatedDocuments": [],
         "relatedData": [],
         "relatedMethodology": [],
+        "relatedMethodologyArticle": [],
         "topics": [],
         "links": [],
         "charts": [],
         "tables": [],
         "images": [],
-        "correction": [],
+        "alerts": [],
+        "versions": [],
         type: pageType
       };
     }
@@ -165,38 +189,73 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
     else if (pageType === "article") {
       return {
         "description": {
+          "title": "",
           "edition": "",
+          "_abstract": "",
+          "releaseDate": "",
           "nextRelease": "",
           "contact": {
             "name": "",
             "email": "",
             "telephone": ""
           },
-          "_abstract": "",
-          "authors": [],
+          "nationalStatistic": false,
           "keywords": [],
           "metaDescription": "",
-          "nationalStatistic": false,
-          "title": "",
-          "releaseDate": "",
         },
         "sections": [],
         "accordion": [],
         "relatedDocuments": [],
         "relatedData": [],
         "relatedMethodology": [],
+        "relatedMethodologyArticle": [],
         "topics": [],
         "links": [],
         "charts": [],
         "tables": [],
         "images": [],
-        "correction": [],
+        "alerts": [],
+        "versions": [],
+        type: pageType
+      };
+    }
+
+    else if (pageType === "article_download") {
+      return {
+        "description": {
+          "title": "",
+          "_abstract": "",
+          "edition": "",
+          "releaseDate": "",
+          "nextRelease": "",
+          "contact": {
+            "name": "",
+            "email": "",
+            "telephone": ""
+          },
+          "nationalStatistic": false,
+          "keywords": [],
+          "metaDescription": ""
+        },
+        "markdown": [],
+        "downloads": [],
+        "relatedDocuments": [],
+        "relatedData": [],
+        "relatedMethodology": [],
+        "relatedMethodologyArticle": [],
+        "topics": [],
+        "links": [],
+        "charts": [],
+        "tables": [],
+        "images": [],
+        "alerts": [],
+        "versions": [],
         type: pageType
       };
     }
 
     else {
-      alert('Unsupported page type. This is not an article or a bulletin');
+      sweetAlert('Unsupported page type. This is not an article or a bulletin');
     }
   }
 }

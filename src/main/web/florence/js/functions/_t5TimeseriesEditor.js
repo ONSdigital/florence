@@ -1,6 +1,6 @@
 function timeseriesEditor(collectionId, data) {
 
-  var newDocument = [], newRelated = [], newTimeseries = [], newRelatedMethodology = [];
+  var newDocument = [], newRelated = [], newTimeseries = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
@@ -106,7 +106,7 @@ function timeseriesEditor(collectionId, data) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -131,13 +131,30 @@ function timeseriesEditor(collectionId, data) {
     }
   };
 
-  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  $("#metadata-list #natStat input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    data.description.nationalStatistic = $("#metadata-list #natStat input[type='checkbox']").prop('checked') ? true : false;
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
+
+  var isIndexStatus = function () {
+    if (data.description.isIndex === true) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  $("#metadata-list #isIndex input[type='checkbox']").prop('checked', isIndexStatus).click(function () {
+    data.description.isIndex = $("#metadata-list #isIndex input[type='checkbox']").prop('checked') ? true : false;
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      autoSaveMetadata(collectionId, data);
+    }, 3000);
+  });
+
 
   // Correction section
   // Load
@@ -171,7 +188,7 @@ function timeseriesEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     if (Florence.globalVars.welsh) {
-      alert('You cannot perform this operation in Welsh.');
+      sweetAlert('You cannot perform this operation in Welsh.');
     } else {
       save();
       updateContent(collectionId, data.uri, JSON.stringify(data));
@@ -181,7 +198,7 @@ function timeseriesEditor(collectionId, data) {
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     if (Florence.globalVars.welsh) {
-      alert('You cannot perform this operation in Welsh.');
+      sweetAlert('You cannot perform this operation in Welsh.');
     } else {
       save();
       saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
@@ -220,14 +237,22 @@ function timeseriesEditor(collectionId, data) {
       newRelated[indexD] = {uri: safeUri};
     });
     data.relatedDatasets = newRelated;
-    // Related methodology
-    var orderUsedIn = $("#sortable-methodology").sortable('toArray');
-    $(orderUsedIn).each(function (indexM, nameM) {
+    // Related qmi
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
       var uri = data.relatedMethodology[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
-      newRelatedMethodology[parseInt(indexM)] = {uri: safeUri};
+      newRelatedQmi[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
+    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
+    $(orderRelatedMethodology).each(function (indexM, nameM) {
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedMethodology[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
 }
 

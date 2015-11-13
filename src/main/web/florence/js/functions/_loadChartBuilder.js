@@ -7,61 +7,45 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   if (chart) {
     $('#chart-data').val(toTsv(chart));
-    refreshBarLineSection();
+    refreshExtraOptions();
   }
 
   renderText();
   renderChart();
 
-  function refreshBarLineSection() {
-    var data = editBarline(chart);
-    var html = templates.chartEditBarlines(data);
-    $('#barline').html(html);
-  }
-
-  function editBarline(chart) {
-    var data = {
-      stacking: isShowStackingOptions(chart.chartType),
-      options: []
-    };
-    var series = chart.series;
-
-    if (isShowExtraOptions(chart.chartType)) { // if we have a bar line we want to populate the entries for each series
-      if (chart.chartTypes) { // if we have existing types use them
-        var type = _.values(chart.chartTypes);
-        $.each(chart.series, function(index) {
-          data.options.push({
-            series: series[index],
-            type: type[index],
-            isChecked: (function() {
-              var checked = _.indexOf(chart.groups[0], series[index]);
-              return checked >= 0;
-            })()
-          });
-        });
-      } else { // if we have no existing types, default them
-        $.each(chart.series, function(index) {
-          data.options.push({
-            series: series[index],
-            type: '',
-            isChecked: false
-          });
-        });
-      }
+  function refreshExtraOptions() {
+    var template = getExtraOptionsTemplate(chart.chartType);
+    if(template) {
+      var html = template(chart);
+      $('#extras').html(html);
+    } else {
+      $('#extras').empty();
     }
-    return data;
   }
 
+  function getExtraOptionsTemplate(chartType) {
+    switch(chartType) {
+      case 'barline':
+      case 'rotated-barline':
+        return templates.chartEditBarlineExtras;
+      case 'dual-axis':
+        return templates.chartEditDualAxisExtras;
+      case 'line':
+        return templates.chartEditLineChartExtras;
+      default:
+        return;
+    }
+  }
 
   $('.refresh-chart').on('input', function() {
     chart = buildChartObject();
-    refreshBarLineSection();
+    refreshExtraOptions();
     renderChart();
   });
 
-  $('.refresh-chart').on('change', ':checkbox',  function() {
+  $('.refresh-chart').on('change', ':checkbox', function() {
     chart = buildChartObject();
-    refreshBarLineSection();
+    refreshExtraOptions();
     renderChart();
   });
 
@@ -86,10 +70,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       processData: false,
       contentType: 'application/json',
       success: function(res) {
-        //generatePng('#chart', '#hiddenCanvas');
-        //renderDownloadChart();
-        //generatePng('#hiddenSvgForDownload', '#hiddenCanvasForDownload', '-download');
-
+        
         if (!pageData.charts) {
           pageData.charts = []
         }
@@ -118,31 +99,42 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   //Renders html outside actual chart area (title, subtitle, source, notes etc.)
   function renderText() {
-
-    $('#chart-title-preview').html($('#chart-title').val());
-    $('#chart-subtitle-preview').html($('#chart-subtitle').val());
+    var title = doSuperscriptAndSubscript($('#chart-title').val());
+    var subtitle = doSuperscriptAndSubscript($('#chart-subtitle').val());
     $('#chart-source-preview').html($('#chart-source').val());
-    var chartNotes = $('#chart-notes').val();
-
-    if (chartNotes) {
-      if (typeof Markdown !== 'undefined') {
-        var converter = new Markdown.getSanitizingConverter();
-        Markdown.Extra.init(converter, {
-          extensions: "all"
-        });
-        var notes = converter.makeHtml(chartNotes);
-        $('#chart-notes-preview').html(notes);
-      }
-    } else {
-      $('#chart-notes-preview').empty();
-    }
+    $('#chart-title-preview').html(title);
+    $('#chart-subtitle-preview').html(subtitle);
+    $('#chart-notes-preview').html(toMarkdown($('#chart-notes').val()));
   }
 
+  function toMarkdown(text) {
+    if (text && isMarkdownAvailable) {
+      var converter = new Markdown.getSanitizingConverter();
+      Markdown.Extra.init(converter, {
+        extensions: "all"
+      });
+      return converter.makeHtml(text)
+    }
+    return '';
+  }
+
+  function isMarkdownAvailable() {
+    return typeof Markdown !== 'undefined'
+  }
+
+  function doSuperscriptAndSubscript(text) {
+    if (text && isMarkdownAvailable) {
+      var converter = new Markdown.Converter();
+      return converter._DoSubscript(converter._DoSuperscript(text));
+    }
+    return text;
+
+  }
 
   // Builds, parses, and renders our chart in the chart editor
   function renderChart() {
     chart = buildChartObject();
-    var preview = $('#preview-chart');
+    var preview = $('#chart');
     var chartHeight = preview.width() * chart.aspectRatio;
     var chartWidth = preview.width();
     renderChartObject('chart', chart, chartHeight, chartWidth);
@@ -176,6 +168,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     chart.notes = $('#chart-notes').val();
     chart.altText = $('#chart-alt-text').val();
+    chart.xAxisLabel = $('#chart-x-axis-label').val();
+    chart.startFromZero=$('#start-from-zero').prop('checked');
 
     if (chart.title === '') {
       chart.title = '[Title]'
@@ -188,7 +182,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     chart.aspectRatio = $('#aspect-ratio').val();
 
-    if (isShowExtraOptions(chart.chartType)) {
+    if (isShowBarLineSelection(chart.chartType)) {
       var types = {};
       var groups = [];
       var group = [];
@@ -197,7 +191,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         types[seriesData[index]] = $('#types_' + index).val() || 'bar';
       });
       (function() {
-        $('#barline input:checkbox:checked').each(function() {
+        $('#extras input:checkbox:checked').each(function() {
           group.push($(this).val());
         });
         groups.push(group);
@@ -220,13 +214,8 @@ function loadChartBuilder(pageData, onSave, chart) {
   }
 
   //Determines if selected chart type is barline or rotated bar line
-  function isShowExtraOptions(chartType) {
+  function isShowBarLineSelection(chartType) {
     return (chartType === 'barline' || chartType === "rotated-barline" || chartType === "dual-axis");
-  }
-
-  //Determines if selected chart type is barline or rotated bar line
-  function isShowStackingOptions(chartType) {
-    return (chartType === 'barline' || chartType === "rotated-barline");
   }
 
   function parseChartObject(chart) {
@@ -258,14 +247,15 @@ function loadChartBuilder(pageData, onSave, chart) {
         },
         function() {
           var chartConfig = window["chart-" + chart.filename];
-          console.debug("Refreshing the chart");
+          console.debug("Refreshing the chart, config:", chartConfig);
           if (chartConfig) {
             chartConfig.chart.renderTo = "chart";
             new Highcharts.Chart(chartConfig);
-            delete window["chart-" + chart.filename];//clear data from window object after rendering
+            delete window["chart-" + chart.filename]; //clear data from window object after rendering
           }
         }, "script")
-      .fail(function() {
+      .fail(function(data,err) {
+        console.error(err);
         console.log("Failed reading chart configuration from server", chart);
         $("#chart").empty();
       });

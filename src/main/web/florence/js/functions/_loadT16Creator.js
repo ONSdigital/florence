@@ -20,7 +20,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
         submitFormHandler();
         return true;
       } else {
-        alert("This is not a valid place to create this page.");
+        sweetAlert("This is not a valid place to create this page.");
         loadCreateScreen(collectionId);
       }
     },
@@ -33,7 +33,8 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
     $('.edition').append(
       '<label for="releaseDate">Release date</label>' +
       '<input id="releaseDate" type="text" placeholder="day month year" />' +
-      '<select id="hour" style="width: 50%;" class="selectbg--small">' +
+      '<div class="select-wrap select-wrap--half">' +
+      '<select id="hour">' +
       '  <option value="0">00</option>' +
       '  <option value="3600000">01</option>' +
       '  <option value="7200000">02</option>' +
@@ -59,15 +60,25 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
       '  <option value="79200000">22</option>' +
       '  <option value="82800000">23</option>' +
       '</select>' +
-      '<select id="min" style="width: 50%;" class="selectbg--small">' +
+      '</div>' +
+      '<div class="select-wrap select-wrap--half">' +
+      '<select id="min">' +
       '  <option value="0">00</option>' +
       '  <option value="1800000" selected="selected">30</option>' +
-      '</select>'
+      '</select>' +
+      '</div>'
     );
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
 
     //Submits inherited and added information to JSON
     $('form').submit(function (e) {
+      //Check for reserved words
+      if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
+        alert ('That is not an accepted value for a title');
+        $('#pagename').val('');
+        return false;
+      }
+
       pageData = pageTypeDataT16(pageType);
       var publishTime  = parseInt($('#hour').val()) + parseInt($('#min').val());
       var toIsoDate = $('#releaseDate').datepicker("getDate");
@@ -81,15 +92,15 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
       safeNewUri = checkPathSlashes(newUri);
 
       if (!pageData.description.releaseDate) {
-        alert('Release date can not be empty');
+        sweetAlert('Release date can not be empty');
         return true;
       }
       if (pageTitle.length < 5) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         return true;
       } else {
         Florence.globalVars.pagePath = safeNewUri;
-        checkSaveContent(collectionId, safeNewUri, pageData);
+        saveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
     });

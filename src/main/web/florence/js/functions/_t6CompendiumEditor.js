@@ -1,7 +1,7 @@
 function compendiumEditor(collectionId, data, templateData) {
 
 //  var index = data.release;
-  var newChapters = [], newRelatedMethodology = [];
+  var newChapters = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [], newData = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
   var timeoutId;
@@ -118,7 +118,7 @@ function compendiumEditor(collectionId, data, templateData) {
     singleFieldNode: $('#keywords')
   });
   $('#keywords').on('change', function () {
-    data.description.keywords = $('#keywords').val().split(', ');
+    data.description.keywords = $('#keywords').val().split(',');
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -182,7 +182,7 @@ function compendiumEditor(collectionId, data, templateData) {
     $('#sortable-chapter').append(
       '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
       '<textarea class="auto-size" id="new-chapter-title" placeholder="Type title here and click add"></textarea>' +
-      '<button class="btn-markdown-edit" id="chapter-add">Start editing chapter</button>' +
+      '<button class="btn-markdown-edit" id="chapter-add">Edit chapter</button>' +
       '</div>');
     $('#new-chapter-title').on('input', function () {
       $(this).textareaAutoSize();
@@ -190,39 +190,39 @@ function compendiumEditor(collectionId, data, templateData) {
     });
     $('#chapter-add').on('click', function () {
       if (chapterTitle.length < 5) {
-        alert("This is not a valid file title");
+        sweetAlert("This is not a valid file title");
         return true;
       } else {
-        loadT6Creator(collectionId, data.description.releaseDate, 'compendium_chapter', data.uri, chapterTitle)
+        loadT6Creator(collectionId, data.description.releaseDate, 'compendium_chapter', data.uri, chapterTitle);
       }
     });
   });
 
   //Add new table (only one per compendium)
   if (!data.datasets || data.datasets.length === 0) {
-    $("#add-data").one('click', function () {
+    $("#add-compendium-data").one('click', function () {
       var tableTitle;
-      $('#sortable-data').append(
-        '<div id="' + lastIndexDataset + '" class="edit-section__sortable-item">' +
-        '<textarea class="auto-size" id="new-data-title" placeholder="Type title here and click add"></textarea>' +
-        '<button class="btn-markdown-edit" id="data-add">Start editing data</button>' +
+      $('#sortable-compendium-data').append(
+        '<div id="' + lastIndexDataset + '" class="edit-section__item">' +
+        '<textarea class="auto-size" id="new-compendium-data-title" placeholder="Type title here and click add"></textarea>' +
+        '<button class="btn-markdown-edit" id="compendium-data-add">Edit data</button>' +
         '</div>');
-      $('#new-data-title').on('input', function () {
+      $('#new-compendium-data-title').on('input', function () {
         $(this).textareaAutoSize();
         tableTitle = $(this).val();
       });
-      $('#data-add').on('click', function () {
+      $('#compendium-data-add').on('click', function () {
         if (tableTitle.length < 5) {
-          alert("This is not a valid file title");
+          sweetAlert("This is not a valid file title");
           return true;
         } else {
-          loadT6Creator(collectionId, data.description.releaseDate, 'compendium_data', data.uri, tableTitle)
+          loadT6Creator(collectionId, data.description.releaseDate, 'compendium_data', data.uri, tableTitle);
         }
       });
     });
   } else {
-    $('#add-data').hide().one('click', function () {
-      alert('At the moment you can have one section here.');
+    $('#add-compendium-data').hide().one('click', function () {
+      sweetAlert('At the moment you can have one section here.');
     });
   }
 
@@ -257,14 +257,38 @@ function compendiumEditor(collectionId, data, templateData) {
       newChapters[indexC] = {uri: safeUri};
     });
     data.chapters = newChapters;
-    // Related methodology
+    // Related documents
+    var orderDocument = $("#sortable-document").sortable('toArray');
+    $(orderDocument).each(function (indexD, nameD) {
+      var uri = data.relatedDocuments[parseInt(nameD)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newDocuments[indexD] = {uri: safeUri};
+    });
+    data.relatedDocuments = newDocuments;
+    // Related data
+    var orderData = $("#sortable-data").sortable('toArray');
+    $(orderData).each(function (indexDat, nameDat) {
+      var uri = data.relatedData[parseInt(nameDat)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newData[indexDat] = {uri: safeUri};
+    });
+    data.relatedData = newData;
+    // Related qmi
+    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
+    $(orderRelatedQmi).each(function (indexM, nameM) {
+      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var safeUri = checkPathSlashes(uri);
+      newRelatedQmi[indexM] = {uri: safeUri};
+    });
+    data.relatedMethodology = newRelatedQmi;
+    // methodology
     var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
     $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
+      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
       var safeUri = checkPathSlashes(uri);
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
-    data.relatedMethodology = newRelatedMethodology;
+    data.relatedMethodologyArticle = newRelatedMethodology;
   }
 }
 
@@ -280,7 +304,7 @@ function resolveTitleT6(collectionId, data, templateData, field) {
         dfd.resolve();
       },
       error = function () {
-        alert(field + ' address: ' + eachUri + ' is not found.');
+        sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
         dfd.resolve();
       }
     );
@@ -319,30 +343,45 @@ function editChapters(collectionId, data) {
 
     // Delete
     $("#chapter-delete_" + index).click(function () {
-      var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
-      if (result === true) {
-        var selectedChapter = $("#chapter-title_" + index).attr('data-url');
-        var path = data.uri;
-        $("#" + index).remove();
-        data.chapters.splice(index, 1);
-        postContent(collectionId, path, JSON.stringify(data),
-          success = function () {
-            Florence.Editor.isDirty = false;
-            deleteContent(collectionId, selectedChapter, function () {
-              refreshPreview(path);
-              loadPageDataIntoEditor(path, collectionId);
-            }, error);
-          },
-          error = function (response) {
-            if (response.status === 400) {
-              alert("Cannot edit this page. It is already part of another collection.");
+      swal ({
+        title: "Warning",
+        text: "You are going to delete the chapter this link refers to. Are you sure you want to proceed?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result) {
+        if (result === true) {
+          var selectedChapter = $("#chapter-title_" + index).attr('data-url');
+          var path = data.uri;
+          $("#" + index).remove();
+          data.chapters.splice(index, 1);
+          putContent(collectionId, path, JSON.stringify(data),
+            success = function () {
+              swal({
+                title: "Deleted",
+                text: "This file has been deleted",
+                type: "success",
+                timer: 2000
+              });
+              Florence.Editor.isDirty = false;
+              deleteContent(collectionId, selectedChapter, function () {
+                refreshPreview(path);
+                loadPageDataIntoEditor(path, collectionId);
+              }, error);
+            },
+            error = function (response) {
+              if (response.status === 400) {
+                sweetAlert("Cannot edit this page", "It is already part of another collection.");
+              }
+              else {
+                handleApiError(response);
+              }
             }
-            else {
-              handleApiError(response);
-            }
-          }
-        );
-      }
+          );
+        }
+      });
     });
   });
 
@@ -360,39 +399,55 @@ function editData(collectionId, data) {
     lastIndexDataset = 0;
   } else {
     $(data.datasets).each(function (index) {
-      $("#data-edit_" + index).click(function () {
+      $("#compendium-data-edit_" + index).click(function () {
         //open document
-        var selectedData = $("#data-title_" + index).attr('data-url');
+        var selectedData = $("#compendium-data-title_" + index).attr('data-url');
         refreshPreview(selectedData);
         viewWorkspace(selectedData, collectionId, 'edit');
       });
 
       // Delete
-      $("#data-delete_" + index).click(function () {
-        var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
-        if (result === true) {
-          var selectedData = $("#data-title_" + index).attr('data-url');
-          var path = data.uri;
-          $("#" + index).remove();
-          data.datasets.splice(index, 1);
-          postContent(collectionId, path, JSON.stringify(data),
-            success = function () {
-              Florence.Editor.isDirty = false;
-              deleteContent(collectionId, selectedData, function () {
-                refreshPreview(path);
-                loadPageDataIntoEditor(path, collectionId);
-              }, error);
-            },
-            error = function (response) {
-              if (response.status === 400) {
-                alert("Cannot edit this page. It is already part of another collection.");
+      $("#compendium-data-delete_" + index).click(function () {
+        //var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
+        swal ({
+          title: "Warning",
+          text: "You are going to delete the chapter this link refers to. Are you sure you want to proceed?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+          closeOnConfirm: false
+        }, function(result) {
+          if (result === true) {
+            var selectedData = $("#compendium-data-title_" + index).attr('data-url');
+            var path = data.uri;
+            $("#" + index).remove();
+            data.datasets.splice(index, 1);
+            putContent(collectionId, path, JSON.stringify(data),
+              success = function () {
+                swal({
+                  title: "Deleted",
+                  text: "This file has been deleted",
+                  type: "success",
+                  timer: 2000
+                });
+                Florence.Editor.isDirty = false;
+                deleteContent(collectionId, selectedData, function () {
+                  refreshPreview(path);
+                  loadPageDataIntoEditor(path, collectionId);
+                }, error);
+              },
+              error = function (response) {
+                if (response.status === 400) {
+                    sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                }
+                else {
+                  handleApiError(response);
+                }
               }
-              else {
-                handleApiError(response);
-              }
-            }
-          );
-        }
+            );
+          }
+        });
       });
     });
   }
