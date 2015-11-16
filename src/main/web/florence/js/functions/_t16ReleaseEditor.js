@@ -151,7 +151,7 @@ function releaseEditor(collectionId, data) {
       editedSectionValue.title = "Please enter the reason for the cancellation";
       var saveContent = function (updatedContent) {
         data.description.cancellationNotice = [updatedContent];
-        postContent(collectionId, data.uri, JSON.stringify(data),
+        putContent(collectionId, data.uri, JSON.stringify(data),
           success = function () {
             Florence.Editor.isDirty = false;
             loadPageDataIntoEditor(data.uri, collectionId);
@@ -243,7 +243,7 @@ function releaseEditor(collectionId, data) {
     $.when.apply($, pageDataRequests).then(function () {
       processPreview(data, pages);
       if (noSave) {
-        postContent(collectionId, data.uri, JSON.stringify(data),
+        putContent(collectionId, data.uri, JSON.stringify(data),
           success = function () {
             Florence.Editor.isDirty = false;
             refreshPreview(data.uri);

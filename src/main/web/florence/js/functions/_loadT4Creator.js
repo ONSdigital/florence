@@ -141,7 +141,7 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
         return true;
       }
       else {
-        checkSaveContent(collectionId, safeNewUri, pageData);
+        saveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
     });

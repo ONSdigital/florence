@@ -129,34 +129,26 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         return true;
       }
       else {
-        getPageData(collectionId, safeNewUri,
-          success = function() {
-            sweetAlert('This page already exists');
+        putContent(collectionId, safeNewUri, JSON.stringify(pageData),
+          success = function (message) {
+            console.log("Updating completed " + message);
+            if (pageData.type === 'compendium_landing_page') {
+              viewWorkspace(safeNewUri, collectionId, 'edit');
+              refreshPreview(safeNewUri);
+              return true;
+            }
+            else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
+              updateParentLink (safeNewUri);
+              return true;
+            }
           },
-          // if the page does not exist, create it
-          error = function() {
-            postContent(collectionId, safeNewUri, JSON.stringify(pageData),
-              success = function (message) {
-                console.log("Updating completed " + message);
-                if (pageData.type === 'compendium_landing_page') {
-                  viewWorkspace(safeNewUri, collectionId, 'edit');
-                  refreshPreview(safeNewUri);
-                  return true;
-                }
-                else if ((pageType === 'compendium_chapter') || (pageType === 'compendium_data')) {
-                  updateParentLink (safeNewUri);
-                  return true;
-                }
-              },
-              error = function (response) {
-                if (response.status === 400) {
-                  sweetAlert("Cannot edit this page. It is already part of another collection.");
-                }
-                else {
-                  handleApiError(response);
-                }
-              }
-            )
+          error = function (response) {
+            if (response.status === 409) {
+              sweetAlert("Cannot create this page", "It already exists.");
+            }
+            else {
+              handleApiError(response);
+            }
           }
         );
       }
@@ -185,7 +177,7 @@ function submitNoForm (parentUrl, title) {
       },
       // if the page does not exist, create it
       error = function() {
-        postContent(collectionId, safeNewUri, JSON.stringify(pageData),
+        putContent(collectionId, safeNewUri, JSON.stringify(pageData),
           success = function (message) {
             console.log("Updating completed " + message);
             updateParentLink (safeNewUri);
@@ -311,7 +303,7 @@ function submitNoForm (parentUrl, title) {
       sweetAlert('Oops! Something went the wrong way.');
       loadCreateScreen(collectionId);
     }
-    postContent(collectionId, parentUrl, JSON.stringify(parentData),
+    putContent(collectionId, parentUrl, JSON.stringify(parentData),
       success = function (message) {
         viewWorkspace(childUri, collectionId, 'edit');
         refreshPreview(childUri);

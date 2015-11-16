@@ -76,7 +76,7 @@ function staticLandingPageEditor(collectionId, data) {
           var uriCheck = getPathNameTrimLast();
           var uriChecked = checkPathSlashes(uriCheck);
           data.sections[index].uri = uriChecked;
-          postContent(collectionId, data.uri, JSON.stringify(data),
+          putContent(collectionId, data.uri, JSON.stringify(data),
             success = function (response) {
               console.log("Updating completed " + response);
               Florence.Editor.isDirty = false;

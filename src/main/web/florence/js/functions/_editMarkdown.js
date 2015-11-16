@@ -87,7 +87,7 @@ function initialiseMarkdown(collectionId, data, field, idField) {
 }
 
 function saveMarkdown (collectionId, path, data, field, idField) {
-    postContent(collectionId, path, JSON.stringify(data),
+    putContent(collectionId, path, JSON.stringify(data),
         success = function () {
             Florence.Editor.isDirty = false;
             refreshMarkdown (collectionId, data, field, idField);

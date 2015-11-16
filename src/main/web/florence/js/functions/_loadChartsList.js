@@ -28,7 +28,7 @@ function initialiseChartList(data, collectionId) {
           loadChartBuilder(data, function () {
             refreshPreview();
 
-            postContent(collectionId, basePath, JSON.stringify(data),
+            putContent(collectionId, basePath, JSON.stringify(data),
               success = function () {
                 Florence.Editor.isDirty = false;
                 refreshPreview();
@@ -59,7 +59,7 @@ function initialiseChartList(data, collectionId) {
           data.charts = _(data.charts).filter(function (item) {
             return item.filename !== chart.filename
           });
-          postContent(collectionId, basePath, JSON.stringify(data),
+          putContent(collectionId, basePath, JSON.stringify(data),
             success = function () {
               deleteContent(collectionId, chartJson + '.json', onSuccess = function () {}, onError = function() {});
               Florence.Editor.isDirty = false;

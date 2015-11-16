@@ -56,7 +56,7 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
             $(this).parent().remove();
             data[field].splice(index, 1);
             templateData[field].splice(index, 1);
-            postContent(collectionId, data.uri, JSON.stringify(data),
+            putContent(collectionId, data.uri, JSON.stringify(data),
               success = function () {
                 Florence.Editor.isDirty = false;
                 refreshPreview(data.uri);
@@ -196,7 +196,7 @@ function resolveTopicTitle(collectionId, data, templateData, field, idField) {
 }
 
 function saveTopics (collectionId, path, data, templateData, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     success = function (response) {
       console.log("Updating completed " + response);
       Florence.Editor.isDirty = false;

@@ -1,6 +1,6 @@
 function updateContent(collectionId, path, content, redirectToPath) {
   var redirect = redirectToPath;
-  postContent(collectionId, path, content,
+  putContent(collectionId, path, content,
     success = function () {
       Florence.Editor.isDirty = false;
       if (redirect) {
