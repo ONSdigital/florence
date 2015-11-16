@@ -97,39 +97,18 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     });
   }
 
-  //TODO - Refactor new add UI code
-
   //Add
   $('#add-' + idField).off().one('click', function () {
-    var latestCheck;
+    var hasLatest = {hasLatest : false}; //Set to true if 'latest' checkbox should show
+    var latestCheck; //Populated with true/false later to check state of checkbox
     var position = $(".workspace-edit").scrollTop();
-    var hasLatest = ''; //Empty variable for adding latest checkbox markup
 
     if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights') {
-    $('#latest-container').append('<label for="latest">Link to latest' +
-        '<input id="latest" type="checkbox" value="value" checked/></label>');
-    hasLatest = "<label for='latest' class='latest__label'>Latest release</label>" +
-                "<input id='latest' class='latest__checkbox' type='checkbox' value='value' checked='checked'>";
+    hasLatest = {hasLatest : true};
   }
 
     Florence.globalVars.pagePos = position;
-    var modal = "<div class='modal'>" +
-                "<div class='modal-box'>" +
-                "<div class='uri-input'>" +
-                "<label for='uri-input' class='uri-input__label'>Add/edit by URL</label>" +
-                hasLatest +
-                "<input id='uri-input' placeholder='Enter URL' type='text' class='uri-input__input'>" +
-                "</div>" +
-                "<div class='uri-browse'>" +
-                "<p class='uri-browse__label'>Or browse to find the page</p>" +
-                "<button class='btn-uri-browse'>Browse</button>" +
-                "</div>" +
-                "<div class='modal-nav'>" +
-                "<button class='btn-uri-get'>Save</button>" +
-                "<button class='btn-uri-cancel'>Cancel</button>" +
-                "</div>" +
-                "</div>" +
-                "</div>"
+    var modal = templates.relatedModal(hasLatest);
     $('.workspace-menu').append(modal);
 
     //Modal click events
@@ -151,12 +130,17 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       createWorkspace(data.uri, collectionId, '', true);
       $('.modal').remove();
 
-      var iframeNav = "<div class='iframe-nav'>" +
-                      "<button class='btn-browse-get'>Use this page</button>" +
-                      "<button class='btn-browse-cancel'>Cancel</button>" +
-                      hasLatest +
-                      "</div>"
-      $(iframeNav).hide().appendTo('.browser').fadeIn(500);
+      //Disable the editor
+      $('body').append(
+          "<div class='col col--5 panel disabled'></div>"
+      );
+
+      //Add buttons to iframe window
+      var iframeNav = templates.iframeNav(hasLatest);
+      $(iframeNav).hide().appendTo('.browser').fadeIn(600);
+
+      //Take iframe window to homepage/root
+       $('#iframe').attr('src', '/');
 
       $('.btn-browse-cancel').off().one('click', function () {
         createWorkspace(data.uri, collectionId, 'edit');
@@ -164,7 +148,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
         $('.disabled').remove();
       });
 
-      //Remove added markup if user navigate away from editor screen
+      //Remove added markup if user navigates away from editor screen
       $('a:not(.btn-browse-get)').click(function (){
         $('.iframe-nav').remove();
         $('.disabled').remove();
@@ -177,11 +161,6 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
         $('.disabled').remove();
         getPage(collectionId, data, templateData, field, idField, latestCheck, dataUrl);
       });
-
-      //Disable the editor
-      $('body').append(
-          "<div class='col col--5 panel disabled'></div>"
-      );
     });
   });
 
