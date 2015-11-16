@@ -5,7 +5,7 @@
  * @param data
  */
 function saveContent(collectionId, uri, data) {
-  postContent(collectionId, uri, JSON.stringify(data), true,
+  postContent(collectionId, uri, JSON.stringify(data), false,
     success = function (message) {
       console.log("Updating completed " + message);
       createWorkspace(uri, collectionId, 'edit');
