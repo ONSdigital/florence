@@ -1,0 +1,20 @@
+<div class='modal'>
+  <div class='modal-box'>
+    <div class='uri-input'>
+      <label for='uri-input' class='uri-input__label'>Add/edit by URL</label>
+      {{#if hasLatest}}
+        <label for='latest' class='latest__label'>Latest release</label>
+        <input id='latest' class='latest__checkbox' type='checkbox' value='value' checked='checked'>
+      {{/if}}
+      <input id='uri-input' placeholder='Enter URL' type='text' class='uri-input__input'>
+    </div>
+    <div class='uri-browse'>
+      <p class='uri-browse__label'>Or browse to find the page</p>
+      <button class='btn-uri-browse'>Browse</button>
+    </div>
+    <div class='modal-nav'>
+      <button class='btn-uri-get'>Save</button>
+      <button class='btn-uri-cancel'>Cancel</button>
+    </div>
+  </div>
+</div>
