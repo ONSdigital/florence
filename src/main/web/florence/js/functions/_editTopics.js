@@ -79,88 +79,58 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
 
   //Add
   $('#add-' + idField).off().one('click', function () {
+    var hasLatest; //Latest markup doesn't need to show in handlebars template
     var position = $(".workspace-edit").scrollTop();
+
     Florence.globalVars.pagePos = position;
-    swal ({
-      title: "Warning",
-      text: "If you do not come back to this page, you will lose any unsaved changes",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Continue",
-      cancelButtonText: "Cancel"
-    }, function (result) {
-      if (result === true) {
-        var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.removeEventListener('click', Florence.Handler, true);
-        createWorkspace(data.uri, collectionId, '', true);
+    var modal = templates.relatedModal(hasLatest);
+    $('.workspace-menu').append(modal);
 
-        $('#sortable-' + idField).append(
-            '<div id="' + editTopics['lastIndex' + field] + '" class="edit-section__sortable-item">' +
-            '  <textarea id="' + idField + '-uri_' + editTopics['lastIndex' + field] + '" placeholder="Go to the related' +
-            ' product page and click Get or paste the link and click Get"></textarea>' +
-            '  <div id="latest-container"></div>' +
-            '  <button class="btn-page-get" id="' + idField + '-get_' + editTopics['lastIndex' + field] + '">Get</button>' +
-            '  <button class="btn-page-cancel" id="' + idField + '-cancel_' + editTopics['lastIndex' + field] + '">Cancel</button>' +
-            '</div>').trigger('create');
+    //Modal click events
+    $('.btn-uri-cancel').off().one('click', function () {
+      createWorkspace(data.uri, collectionId, 'edit');
+    });
 
-        $(function () {
-          $('#' + idField + '-uri_' + editTopics['lastIndex' + field]).tooltip({
-            items: '#' + idField + '-uri_' + editTopics['lastIndex' + field],
-            content: 'Go to the related product page and click Get or paste the link and click Get',
-            show: "slideDown", // show immediately
-            open: function (event, ui) {
-              ui.tooltip.hover(
-                  function () {
-                    $(this).fadeTo("slow", 0.5);
-                  });
-            }
-          });
-        });
+    $('.btn-uri-get').off().one('click', function () {
+      var pastedUrl = $('#uri-input').val();
+      var dataUrl = checkPathParsed(pastedUrl);
+      getTopic(collectionId, data, templateData, field, idField, dataUrl);
+      $('.modal').remove();
+    });
 
-        $('#' + idField + '-cancel_' + editTopics['lastIndex' + field]).one('click', function () {
-          createWorkspace(data.uri, collectionId, 'edit');
-        });
+    $('.btn-uri-browse').off().one('click', function () {
+      var iframeEvent = document.getElementById('iframe').contentWindow;
+      iframeEvent.removeEventListener('click', Florence.Handler, true);
+      createWorkspace(data.uri, collectionId, '', true);
+      $('.modal').remove();
 
-        $('#' + idField + '-get_' + editTopics['lastIndex' + field]).one('click', function () {
-          var pastedUrl = $('#' + idField + '-uri_' + editTopics['lastIndex' + field]).val();
-          if (!pastedUrl) {
-            var baseUrl = getPathNameTrimLast();
-          } else {
-            var baseUrl = checkPathParsed(pastedUrl);
-          }
-          var dataUrlData = baseUrl + "/data";
+      //Disable the editor
+      $('body').append(
+          "<div class='col col--5 panel disabled'></div>"
+      );
 
-          $.ajax({
-            url: dataUrlData,
-            dataType: 'json',
-            crossDomain: true,
-            success: function (result) {
-              if (result.type === 'product_page') {
-                if (!data[field]) {
-                  data[field] = [];
-                  templateData[field] = [];
-                }
-              }
+      //Add buttons to iframe window
+      var iframeNav = templates.iframeNav(hasLatest);
+      $(iframeNav).hide().appendTo('.browser').fadeIn(500);
 
-              else {
-                sweetAlert("This is not a valid document");
-                createWorkspace(data.uri, collectionId, 'edit');
-                return;
-              }
+      $('.btn-browse-cancel').off().one('click', function () {
+        createWorkspace(data.uri, collectionId, 'edit');
+        $('.iframe-nav').remove();
+        $('.disabled').remove();
+      });
 
-              data[field].push({uri: result.uri});
-              templateData[field].push({uri: result.uri});
-              saveTopics(collectionId, data.uri, data, templateData, field, idField);
+      //Remove added markup if user navigates away from editor screen
+      $('a:not(.btn-browse-get)').click(function (){
+        $('.iframe-nav').remove();
+        $('.disabled').remove();
+      });
 
-            },
-            error: function () {
-              console.log('No page data returned');
-            }
-          });
-        });
-      } else {
-        initialiseTopics(collectionId, data, templateData, field, idField);
-      }
+      $('.btn-browse-get').off().one('click', function () {
+        var dataUrl = getPathNameTrimLast();
+        $('.iframe-nav').remove();
+        $('.disabled').remove();
+        getTopic(collectionId, data, templateData, field, idField, dataUrl);
+      });
     });
   });
 
@@ -169,6 +139,38 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
   }
   sortable();
 
+}
+
+function getTopic(collectionId, data, templateData, field, idField, dataUrl) {
+  var dataUrlData = dataUrl + "/data";
+
+    $.ajax({
+      url: dataUrlData,
+      dataType: 'json',
+      crossDomain: true,
+      success: function (result) {
+        if (result.type === 'product_page') {
+          if (!data[field]) {
+            data[field] = [];
+            templateData[field] = [];
+          }
+        }
+
+        else {
+          sweetAlert("This is not a valid document");
+          createWorkspace(data.uri, collectionId, 'edit');
+          return;
+        }
+
+        data[field].push({uri: result.uri});
+        templateData[field].push({uri: result.uri});
+        saveTopics(collectionId, data.uri, data, templateData, field, idField);
+
+      },
+      error: function () {
+        console.log('No page data returned');
+      }
+    });
 }
 
 function resolveTopicTitle(collectionId, data, templateData, field, idField) {
