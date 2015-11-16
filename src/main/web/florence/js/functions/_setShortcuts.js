@@ -7,6 +7,7 @@ function setShortcuts(field) {
       var outputValue = [inputValue.slice(0, start), "^", inputValue.slice(start, end), "^", inputValue.slice(end)].join('');
       $(field).val(outputValue);
       ev.stopImmediatePropagation();
+      ev.preventDefault();
     });
     $(field).on('keyup', null, 'ctrl+q', function (ev) {
       var inputValue = $(field).val();

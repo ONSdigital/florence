@@ -221,11 +221,11 @@ function resolveTitleT8(collectionId, data, field) {
     var dataTemplate = templateData[field];
     var html = templates.workEditT8LandingDatasetList(dataTemplate);
     $('#edition').replaceWith(html);
-    addEditionEditButton(collectionId, templateData);
+    addEditionEditButton(collectionId, data, templateData);
   });
 }
 
-function addEditionEditButton(collectionId, templateData) {
+function addEditionEditButton(collectionId, data, templateData) {
   // Load dataset to edit
   $(templateData.datasets).each(function (index) {
     //open document
@@ -263,6 +263,43 @@ function addEditionEditButton(collectionId, templateData) {
           handleApiError(message);
         }
       )
+    });
+
+    // Delete (assuming datasets in makeEditSection)
+    $('#edition-delete_' + index).click(function () {
+      swal({
+        title: "Warning",
+        text: "Are you sure you want to delete this edition?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function (result) {
+        if (result === true) {
+          swal({
+            title: "Deleted",
+            text: "This edition has been deleted",
+            type: "success",
+            timer: 2000
+          });
+          var position = $(".workspace-edit").scrollTop();
+          Florence.globalVars.pagePos = position;
+          $('#edition-delete_' + index).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data.datasets[index].uri,
+            type: "DELETE",
+            success: function (res) {
+              console.log(res);
+            },
+            error: function (res) {
+              console.log(res);
+            }
+          });
+          data.datasets.splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
+      });
     });
   });
 
