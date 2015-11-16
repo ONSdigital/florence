@@ -1,33 +1,17 @@
 function putContent(collectionId, path, content, success, error) {
-  var safePath = checkPathSlashes(path);
-  if (safePath === '/') {
-    safePath = '';          // edge case for home
-  }
-
-  if (Florence.globalVars.welsh) {
-    var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data_cy.json";
-    var toAddLang = JSON.parse(content);
-    toAddLang.description.language = 'cy';
-    content = JSON.stringify(toAddLang);
-  } else {
-    var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json";
-  }
-
-  $.ajax({
-    url: url,
-    dataType: 'json',
-    contentType: 'application/json',
-    type: 'POST',
-    data: content,
-    success: function (response) {
-      success(response);
+  postContent(collectionId, path, content, true,
+    onSuccess = function () {
+      if(success) {
+        success();
+      }
     },
-    error: function (response) {
+    onError = function (response) {
       if (error) {
-        error(response);
-      } else {
+        error();
+      }
+      else {
         handleApiError(response);
       }
     }
-  });
+  );
 }
