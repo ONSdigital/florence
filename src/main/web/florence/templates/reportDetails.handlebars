@@ -10,7 +10,17 @@
   red; font-weight: 700;"
   {{/ifCond}}>{{duration}}</span> ms
   </p>
+  
   <p>Started at: {{starting}}</p>
+  
+  {{success.verifiedCount}}
+  {{#ifCond verifiedCount '>' 0}}
+  <p style="color: green; font-weight: 700;">Verified {{verifiedCount}} file(s) successfully </p>
+  {{/ifCond}}
+  
+  {{#ifCond verifyFailedCount '>' 0}}
+  <p style="color: red; font-weight: 700;">Verification failed for {{verifyFailedCount}}  file(s)</p>
+  {{/ifCond}}
 
 </div>
 
@@ -51,7 +61,7 @@
             </thead>
             <tbody>
             {{#each success.transaction.uriInfos}}
-              <tr>
+              <tr {{#ifCond verificationStatus '===' 'failed'}} style="color: red;" {{/ifCond}}  >
                 <td class="file-name">{{uri}}</td>
                 <td class="file-size">{{size}}</td>
                 <td class="file-duration">{{duration}}</td>
