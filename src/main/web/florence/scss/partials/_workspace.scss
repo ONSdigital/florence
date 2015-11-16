@@ -160,7 +160,7 @@
       margin: $lineheight $gutter;
       overflow: hidden;
       position: relative;
-      padding-bottom: $lineheight;
+      //padding-bottom: $lineheight;
 
       textarea {
         // width: 100%;
@@ -229,9 +229,10 @@
       &__head {
         outline: none;
         cursor: pointer;
+        padding-bottom: $lineheight;
 
         &.ui-accordion-header-active {
-          cursor: auto;
+          //cursor: auto;
           &:before {
             border-top: 0px solid transparent;
             border-bottom: 10px solid $quill-gray;
@@ -256,7 +257,9 @@
       }
 
       &__content {
-        padding-top: $lineheight;
+        padding: $lineheight 0;
+        background-color: $slate-gray;
+        border: 3px solid $pickled-bluewood;
         // display: none;
 
         .select-wrap {
