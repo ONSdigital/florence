@@ -43,7 +43,7 @@ function loadCreator (parentUrl, collectionId, type) {
         loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
       }
       else {
-        alert('Page type not recognised. Contact an administrator');
+        sweetAlert("Error", 'Page type not recognised. Contact an administrator', "error");
       }
     });
   }
