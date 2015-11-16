@@ -241,7 +241,7 @@ function addEditionEditButton(collectionId, templateData) {
           var editedSectionValue = pageData.description.edition;
           var saveContent = function (updatedContent) {
             pageData.description.edition = updatedContent;
-            postContent(collectionId, pageData.uri, JSON.stringify(pageData),
+            putContent(collectionId, pageData.uri, JSON.stringify(pageData),
               success = function (message) {
                 console.log("Updating completed " + message);
                 viewWorkspace(pageData.uri, collectionId, 'edit');

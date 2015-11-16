@@ -77,7 +77,7 @@ function loadT8Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         return true;
       }
       else {
-        checkSaveContent(collectionId, safeNewUri, pageData);
+        saveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
     });

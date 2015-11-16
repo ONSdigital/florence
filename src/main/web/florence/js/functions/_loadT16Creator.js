@@ -100,7 +100,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
         return true;
       } else {
         Florence.globalVars.pagePath = safeNewUri;
-        checkSaveContent(collectionId, safeNewUri, pageData);
+        saveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
     });

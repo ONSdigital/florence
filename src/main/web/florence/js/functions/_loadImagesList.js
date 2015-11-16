@@ -64,7 +64,7 @@ function initialiseImagesList(data, collectionId) {
           });
 
           // save the updated page json
-          postContent(collectionId, basePath, JSON.stringify(data),
+          putContent(collectionId, basePath, JSON.stringify(data),
             success = function () {
               Florence.Editor.isDirty = false;
 

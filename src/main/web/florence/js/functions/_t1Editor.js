@@ -166,7 +166,7 @@ function resolveTitleT1(collectionId, data, templateData, field) {
                         theme: {uri: getTheme(sectionData.uri)},
                         statistics: {uri: sectionData.uri}
                       });
-                    postContent(collectionId, '', JSON.stringify(data),
+                    putContent(collectionId, '', JSON.stringify(data),
                       success = function (response) {
                         console.log("Updating completed " + response);
                         Florence.Editor.isDirty = false;

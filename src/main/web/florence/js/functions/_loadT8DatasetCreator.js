@@ -29,26 +29,17 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
 
     var safeNewUri = checkPathSlashes(newUri);
 
-    // check if the page exists
-    getPageData(collectionId, safeNewUri,
-      success = function() {
-        sweetAlert('This page already exists');
+    putContent(collectionId, safeNewUri, JSON.stringify(pageData),
+      success = function () {
+        updateContent(collectionId, data.uri, JSON.stringify(data));
       },
-      // if the page does not exist, create it
-      error = function() {
-        postContent(collectionId, safeNewUri, JSON.stringify(pageData),
-          success = function () {
-            updateContent(collectionId, data.uri, JSON.stringify(data));
-          },
-          error = function (response) {
-            if (response.status === 400) {
-              sweetAlert("Cannot edit this page", "It is already part of another collection.");
-            }
-            else {
-              handleApiError(response);
-            }
-          }
-        );
+      error = function (response) {
+        if (response.status === 409) {
+          sweetAlert("Cannot create this page", "It already exists.");
+        }
+        else {
+          handleApiError(response);
+        }
       }
     );
   }

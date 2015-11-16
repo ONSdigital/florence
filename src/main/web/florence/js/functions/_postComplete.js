@@ -1,5 +1,5 @@
 function saveAndCompleteContent(collectionId, path, content, redirectToPath) {
-  postContent(collectionId, path, content,
+  putContent(collectionId, path, content,
     success = function () {
       Florence.Editor.isDirty = false;
       if (redirectToPath) {

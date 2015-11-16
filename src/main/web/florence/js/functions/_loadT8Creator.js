@@ -70,7 +70,7 @@
 //        return true;
 //      }
 //       else {
-//        checkSaveContent(collectionId, safeNewUri, pageData);
+//        saveContent(collectionId, safeNewUri, pageData);
 //      }
 //      e.preventDefault();
 //    });

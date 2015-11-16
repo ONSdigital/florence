@@ -357,7 +357,7 @@ function editChapters(collectionId, data) {
           var path = data.uri;
           $("#" + index).remove();
           data.chapters.splice(index, 1);
-          postContent(collectionId, path, JSON.stringify(data),
+          putContent(collectionId, path, JSON.stringify(data),
             success = function () {
               swal({
                 title: "Deleted",
@@ -423,7 +423,7 @@ function editData(collectionId, data) {
             var path = data.uri;
             $("#" + index).remove();
             data.datasets.splice(index, 1);
-            postContent(collectionId, path, JSON.stringify(data),
+            putContent(collectionId, path, JSON.stringify(data),
               success = function () {
                 swal({
                   title: "Deleted",

@@ -104,7 +104,7 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
 }
 
 function saveCorrection(collectionId, path, data, templateData, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
       refreshCorrection(collectionId, data, templateData, field, idField);

@@ -113,7 +113,7 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
 }
 
 function saveAlert(collectionId, path, data, templateData, field, idField) {
-  postContent(collectionId, path, JSON.stringify(data),
+  putContent(collectionId, path, JSON.stringify(data),
     success = function () {
       Florence.Editor.isDirty = false;
       refreshAlert(collectionId, data, templateData, field, idField);
