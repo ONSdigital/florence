@@ -97,6 +97,8 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
     });
   }
 
+  //TODO - Refactor new add UI code
+
   //Add
   $('#add-' + idField).off().one('click', function () {
     var latestCheck;
@@ -148,15 +150,22 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       iframeEvent.removeEventListener('click', Florence.Handler, true);
       createWorkspace(data.uri, collectionId, '', true);
       $('.modal').remove();
-      $('.browser').append(
-          "<div class='iframe-nav'>" +
-          "<button class='btn-browse-get'>Use this page</button>" +
-          "<button class='btn-browse-cancel'>Cancel</button>" +
-          hasLatest +
-          "</div>");
+
+      var iframeNav = "<div class='iframe-nav'>" +
+                      "<button class='btn-browse-get'>Use this page</button>" +
+                      "<button class='btn-browse-cancel'>Cancel</button>" +
+                      hasLatest +
+                      "</div>"
+      $(iframeNav).hide().appendTo('.browser').fadeIn(500);
 
       $('.btn-browse-cancel').off().one('click', function () {
         createWorkspace(data.uri, collectionId, 'edit');
+        $('.iframe-nav').remove();
+        $('.disabled').remove();
+      });
+
+      //Remove added markup if user navigate away from editor screen
+      $('a:not(.btn-browse-get)').click(function (){
         $('.iframe-nav').remove();
         $('.disabled').remove();
       });
