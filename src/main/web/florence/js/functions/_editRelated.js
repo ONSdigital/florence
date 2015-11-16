@@ -137,7 +137,10 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
       //Add buttons to iframe window
       var iframeNav = templates.iframeNav(hasLatest);
-      $(iframeNav).hide().appendTo('.browser').fadeIn(500);
+      $(iframeNav).hide().appendTo('.browser').fadeIn(600);
+
+      //Take iframe window to homepage/root
+       $('#iframe').attr('src', '/');
 
       $('.btn-browse-cancel').off().one('click', function () {
         createWorkspace(data.uri, collectionId, 'edit');
