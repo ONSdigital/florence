@@ -15,7 +15,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   function refreshExtraOptions() {
     var template = getExtraOptionsTemplate(chart.chartType);
-    if(template) {
+    if (template) {
       var html = template(chart);
       $('#extras').html(html);
     } else {
@@ -24,7 +24,7 @@ function loadChartBuilder(pageData, onSave, chart) {
   }
 
   function getExtraOptionsTemplate(chartType) {
-    switch(chartType) {
+    switch (chartType) {
       case 'barline':
       case 'rotated-barline':
         return templates.chartEditBarlineExtras;
@@ -37,28 +37,28 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
   }
 
-  $('.refresh-chart').on('input', function() {
+  $('.refresh-chart').on('input', function () {
     chart = buildChartObject();
     refreshExtraOptions();
     renderChart();
   });
 
-  $('.refresh-chart').on('change', ':checkbox', function() {
+  $('.refresh-chart').on('change', ':checkbox', function () {
     chart = buildChartObject();
     refreshExtraOptions();
     renderChart();
   });
 
 
-  $('.refresh-text').on('input', function() {
+  $('.refresh-text').on('input', function () {
     renderText();
   });
 
-  $('.btn-chart-builder-cancel').on('click', function() {
+  $('.btn-chart-builder-cancel').on('click', function () {
     $('.chart-builder').stop().fadeOut(200).remove();
   });
 
-  $('.btn-chart-builder-create').on('click', function() {
+  $('.btn-chart-builder-create').on('click', function () {
 
     chart = buildChartObject();
 
@@ -69,13 +69,13 @@ function loadChartBuilder(pageData, onSave, chart) {
       data: JSON.stringify(chart),
       processData: false,
       contentType: 'application/json',
-      success: function(res) {
-        
+      success: function (res) {
+
         if (!pageData.charts) {
           pageData.charts = []
         }
 
-        existingChart = _.find(pageData.charts, function(existingChart) {
+        existingChart = _.find(pageData.charts, function (existingChart) {
           return existingChart.filename === chart.filename
         });
 
@@ -96,6 +96,9 @@ function loadChartBuilder(pageData, onSave, chart) {
       }
     });
   });
+
+  setShortcuts('#chart-title');
+  setShortcuts('#chart-subtitle');
 
   //Renders html outside actual chart area (title, subtitle, source, notes etc.)
   function renderText() {
@@ -169,7 +172,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.notes = $('#chart-notes').val();
     chart.altText = $('#chart-alt-text').val();
     chart.xAxisLabel = $('#chart-x-axis-label').val();
-    chart.startFromZero=$('#start-from-zero').prop('checked');
+    chart.startFromZero = $('#start-from-zero').prop('checked');
 
     if (chart.title === '') {
       chart.title = '[Title]'
@@ -187,11 +190,11 @@ function loadChartBuilder(pageData, onSave, chart) {
       var groups = [];
       var group = [];
       var seriesData = chart.series;
-      $.each(seriesData, function(index) {
+      $.each(seriesData, function (index) {
         types[seriesData[index]] = $('#types_' + index).val() || 'bar';
       });
-      (function() {
-        $('#extras input:checkbox:checked').each(function() {
+      (function () {
+        $('#extras input:checkbox:checked').each(function () {
           group.push($(this).val());
         });
         groups.push(group);
@@ -227,7 +230,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
       // We create data specific to time
       timeData = [];
-      _.each(timeSeries, function(time) {
+      _.each(timeSeries, function (time) {
         var item = chart.data[time['row']];
         item.date = time['date'];
         item.label = time['label'];
@@ -242,19 +245,19 @@ function loadChartBuilder(pageData, onSave, chart) {
   function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
     var jqxhr = $.post("/chartconfig", {
-          data: JSON.stringify(chart),
-          width: chartWidth
-        },
-        function() {
-          var chartConfig = window["chart-" + chart.filename];
-          console.debug("Refreshing the chart, config:", chartConfig);
-          if (chartConfig) {
-            chartConfig.chart.renderTo = "chart";
-            new Highcharts.Chart(chartConfig);
-            delete window["chart-" + chart.filename]; //clear data from window object after rendering
-          }
-        }, "script")
-      .fail(function(data,err) {
+        data: JSON.stringify(chart),
+        width: chartWidth
+      },
+      function () {
+        var chartConfig = window["chart-" + chart.filename];
+        console.debug("Refreshing the chart, config:", chartConfig);
+        if (chartConfig) {
+          chartConfig.chart.renderTo = "chart";
+          new Highcharts.Chart(chartConfig);
+          delete window["chart-" + chart.filename]; //clear data from window object after rendering
+        }
+      }, "script")
+      .fail(function (data, err) {
         console.error(err);
         console.log("Failed reading chart configuration from server", chart);
         $("#chart").empty();
@@ -392,7 +395,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var result = [];
     var rowNumber = 0;
 
-    _.each(axis, function(tryTimeString) {
+    _.each(axis, function (tryTimeString) {
       var time = convertTimeString(tryTimeString);
       if (time) {
         time.row = rowNumber;
@@ -490,7 +493,7 @@ function loadChartBuilder(pageData, onSave, chart) {
       }),
       contentType: "image/png",
       processData: false,
-      success: function(res) {
+      success: function (res) {
         //console.log('png uploaded!');
       }
     });
