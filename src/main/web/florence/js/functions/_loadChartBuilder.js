@@ -99,6 +99,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
   setShortcuts('#chart-title');
   setShortcuts('#chart-subtitle');
+  setShortcuts('#chart-data');
+  setShortcuts('#chart-x-axis-label');
+  setShortcuts('#chart-notes');
 
   //Renders html outside actual chart area (title, subtitle, source, notes etc.)
   function renderText() {

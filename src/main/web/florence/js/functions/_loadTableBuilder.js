@@ -60,7 +60,6 @@ function loadTableBuilder(pageData, onSave, table) {
   });
 
   setShortcuts('#table-title');
-  setShortcuts('#table-subtitle');
 
   function renderTable(path) {
     var iframeMarkup = '<iframe id="preview-frame" style="opacity:0" frameBorder ="0" scrolling = "yes" src="' + path + '"></iframe>';
