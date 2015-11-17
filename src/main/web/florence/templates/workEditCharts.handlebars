@@ -5,14 +5,16 @@
     <p>Edit existing charts</p>
   </div>
   <div class="edit-section__content">
-    <div id="chart-list" class="edit-section__sortable">
-        {{#each this.charts}}
-          <div id="chart_{{filename}}" class="edit-section__item">
-              <div class="edit-section__item__title">{{title}}</div>
-              <button class="btn-markdown-edit" id="chart-edit_{{filename}}">Edit</button>
-              <button class="btn-page-delete" id="chart-delete_{{filename}}">Delete</button>
-          </div>
-        {{/each}}
-    </div>
+      <div id="chart-list" class="edit-section__sortable">
+          {{#each this.charts}}
+              <div id="chart_{{filename}}" class="edit-section__item">
+                  <div class="edit-section__title">{{title}}</div>
+                  <div class="edit-section__buttons">
+                      <button class="btn-markdown-edit" id="chart-edit_{{filename}}">Edit</button>
+                      <button class="btn-page-delete" id="chart-delete_{{filename}}">Delete</button>
+                  </div>
+              </div>
+          {{/each}}
+      </div>
   </div>
 </div>
