@@ -7,7 +7,7 @@
         <div id="sortable-{{idField}}" class="edit-section__sortable">
             {{#each list}}
                 <div id="{{@index}}" class="edit-section__sortable-item">
-                    <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
+                    <div class="edit-section__sortable-item--counter float-left">{{plus @index 1}}. </div>
                     <textarea class="auto-size" id="{{../idField}}-uri_{{@index}}" placeholder="Paste link here and
                     click edit to add content">{{uri}}</textarea>
                     <textarea style="display: none;" id="{{../idField}}-markdown_{{@index}}">{{title}}</textarea>
