@@ -13,14 +13,20 @@
   
   <p>Started at: {{starting}}</p>
   
-  {{success.verifiedCount}}
-  {{#ifCond verifiedCount '>' 0}}
-  <p style="color: green; font-weight: 700;">Verified {{verifiedCount}} file(s) successfully </p>
-  {{/ifCond}}
   
   {{#ifCond verifyFailedCount '>' 0}}
   <p style="color: red; font-weight: 700;">Verification failed for {{verifyFailedCount}}  file(s)</p>
   {{/ifCond}}
+
+  {{#ifCond verifiedCount '>' 0}}
+  <p style="color: green; font-weight: 700;">Verified {{verifiedCount}} file(s) successfully </p>
+  {{/ifCond}}
+  
+
+  {{#ifCond verifyInprogressCount '>' 0}}
+  <p style="color: yellow; font-weight: 700;">Verifying {{verifyInprogressCount}} file(s) </p>
+  {{/ifCond}}
+  
 
 </div>
 
@@ -61,7 +67,7 @@
             </thead>
             <tbody>
             {{#each success.transaction.uriInfos}}
-              <tr {{#ifCond verificationStatus '===' 'failed'}} style="color: red;" {{/ifCond}}  >
+              <tr {{#ifCond verificationStatus '===' 'failed'}} style="color: red;" {{/ifCond}}  {{#ifCond verificationStatus '===' 'verified'}} style="color: green;" {{/ifCond}} >
                 <td class="file-name">{{uri}}</td>
                 <td class="file-size">{{size}}</td>
                 <td class="file-duration">{{duration}}</td>
