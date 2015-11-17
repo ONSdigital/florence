@@ -277,7 +277,7 @@
 
       &__sortable-item {
         display: flex;
-        //flex-wrap: wrap;
+        flex-wrap: wrap;
         align-items: center;
         padding: $lineheight $gutter;
         position: relative;
