@@ -2,6 +2,7 @@ function staticLandingPageEditor(collectionId, data) {
 
   var newSections = [], newLinks = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -183,23 +184,20 @@ function staticLandingPageEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
 
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
@@ -222,6 +220,8 @@ function staticLandingPageEditor(collectionId, data) {
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 

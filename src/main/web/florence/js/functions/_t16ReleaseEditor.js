@@ -1,6 +1,7 @@
 function releaseEditor(collectionId, data) {
   var setActiveTab, getActiveTab;
   var timeoutId;
+  var renameUri = false;
   var pageDataRequests = [];
   var pages = {};
 
@@ -18,7 +19,8 @@ function releaseEditor(collectionId, data) {
   processCollection(collectionId, 'noSave');
 
   $("#title").on('input', function () {
-    $data.description.title = $(this).val();
+    renameUri = true;
+    data.description.title = $(this).val();
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
@@ -300,17 +302,21 @@ function releaseEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
+
+  function save(onSave) {
+    checkRenameUri(collectionId, data, renameUri, onSave);
+  }
 }
 

@@ -2,6 +2,7 @@ function datasetLandingEditor(collectionId, data) {
 
   var newDatasets = [], newRelatedDocuments = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -19,6 +20,9 @@ function datasetLandingEditor(collectionId, data) {
 
   // Metadata edition and saving
   $("#title").on('input', function () {
+    //renameUri = true;
+    // todo Change all children dataset links with new title uri
+
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
     clearTimeout(timeoutId);
@@ -144,24 +148,20 @@ function datasetLandingEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Datasets are uploaded. Save metadata
     var orderDataset = $("#sortable-edition").sortable('toArray');
     $(orderDataset).each(function (indexF, nameF) {
@@ -193,6 +193,8 @@ function datasetLandingEditor(collectionId, data) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 

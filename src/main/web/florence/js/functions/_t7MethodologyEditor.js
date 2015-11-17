@@ -2,6 +2,7 @@ function methodologyEditor(collectionId, data) {
 
   var newSections = [], newTabs = [], newDocuments = [], newDatasets = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -17,6 +18,7 @@ function methodologyEditor(collectionId, data) {
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
     clearTimeout(timeoutId);
@@ -110,23 +112,20 @@ function methodologyEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
@@ -159,6 +158,8 @@ function methodologyEditor(collectionId, data) {
       newDatasets[indexData] = {uri: safeUri};
     });
     data.relatedDatasets = newDatasets;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 

@@ -3,6 +3,7 @@ function bulletinEditor(collectionId, data) {
 //  var index = data.release;
   var newSections = [], newTabs = [], newBulletin = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -18,6 +19,7 @@ function bulletinEditor(collectionId, data) {
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
     clearTimeout(timeoutId);
@@ -26,6 +28,7 @@ function bulletinEditor(collectionId, data) {
     }, 3000);
   });
   $("#edition").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
     clearTimeout(timeoutId);
@@ -168,23 +171,20 @@ function bulletinEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
@@ -249,6 +249,8 @@ function bulletinEditor(collectionId, data) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 
