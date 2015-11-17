@@ -160,7 +160,9 @@ function compendiumEditor(collectionId, data, templateData) {
     $('#sortable-chapter').append(
       '<div id="' + lastIndexChapter + '" class="edit-section__sortable-item">' +
       '<textarea class="auto-size" id="new-chapter-title" placeholder="Type title here and click add"></textarea>' +
+      '<div class="edit-section__buttons">' +
       '<button class="btn-markdown-edit" id="chapter-add">Edit chapter</button>' +
+      '</div>' +
       '</div>');
     $('#new-chapter-title').on('input', function () {
       $(this).textareaAutoSize();
@@ -183,7 +185,9 @@ function compendiumEditor(collectionId, data, templateData) {
       $('#sortable-compendium-data').append(
         '<div id="' + lastIndexDataset + '" class="edit-section__item">' +
         '<textarea class="auto-size" id="new-compendium-data-title" placeholder="Type title here and click add"></textarea>' +
+        '<div class="edit-section__buttons">' +
         '<button class="btn-markdown-edit" id="compendium-data-add">Edit data</button>' +
+        '</div>' +
         '</div>');
       $('#new-compendium-data-title').on('input', function () {
         $(this).textareaAutoSize();

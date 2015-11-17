@@ -165,11 +165,17 @@
       textarea {
         // width: 100%;
         font-size: 12px;
+        margin: 0;
+        //width: 50%;
+        height: $lineheight * 2;
         // line-height: $lineheight - 3;
       }
 
       input {
         border: 3px solid #fff;
+        margin: 0;
+        padding: 7px 5px;
+        width: auto;
       }
 
       label {
@@ -179,27 +185,6 @@
 
       input[type="file"] {
         float: left;
-      }
-
-      //TODO Select all checkbox labels without specifying their ID.
-      //label + input[type="checkbox"] {
-      //  display: inline-block !important;
-      //}
-
-      #natStat label {
-        display: inline-block;
-      }
-
-      #migrated label {
-        display: inline-block;
-      }
-
-      #cancelled label {
-        display: inline-block;
-      }
-
-      #isIndex label {
-        display: inline-block;
       }
 
       // &.active {
@@ -264,8 +249,12 @@
 
         .select-wrap {
           //background-color: white;
-          margin-left: 20px;
+          margin: 0px 20px 21px 20px;
           //width: 44%;
+        }
+
+        p {
+          margin: 0 0 0 $lineheight;
         }
 
         &--correction {
@@ -286,10 +275,19 @@
         }
       }
 
+      &__file-name {
+        margin: 10.5px 0 0 32px;
+      }
+
       &__sortable-item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
         padding: $lineheight $gutter;
         position: relative;
-        text-align: right;
+        color: $mirage;
+        //text-align: left;
+        //text-align: right;
         word-wrap: break-word;
         background-color: $cadet-blue;
         padding-top: $lineheight / 2;
@@ -314,8 +312,8 @@
           background-size: 30px auto;
         }
 
-        &-counter {
-          margin: 10.5px 0 0 10px;
+        &--counter {
+          margin: 0 ($lineheight / 2) 0 ($lineheight / 2);
           color: $scarpa-flow;
           font-weight: bold;
           font-size: 16px;
@@ -325,13 +323,29 @@
         input {
           margin: 0;
           width: 50%;
+          border: 3px solid $scarpa-flow;
+        }
+
+        .correction-alert {
+
+          margin: ($lineheight / 2) 0 0 auto;
+
+          label {
+            width: auto;
+          }
+
+          input {
+            margin-left: $lineheight / 2;
+            width: auto;
+            display: inline-block;
+          }
         }
 
         textarea {
           width: 50%;
           border: 3px solid $scarpa-flow;
           // min-height: ($lineheight * 2) !important;
-          margin: 0 0 0 10px;
+          margin: 0;
           // line-height: $lineheight - 3;
           padding: 7px 5px;
           float: left;
@@ -340,40 +354,90 @@
 
         button {
           margin: 0 0 0 5px;
+          margin-left: auto;
         }
       }
 
       &__item {
+        color: $mirage;
+        display: flex;
+        align-items: center;
+        text-align: left;
         padding: $lineheight $gutter;
         position: relative;
-        text-align: right;
+        //text-align: right;
         background-color: $cadet-blue;
         padding-top: $lineheight / 2;
         padding-bottom: $lineheight / 2;
-        padding-right: $gutter;
+        //padding-right: $gutter;
         padding-left: $gutter - ($gutter / 2);
         margin-bottom: $lineheight / 2;
         margin-right: $gutter;
         margin-left: $gutter;
         overflow: hidden;
 
-        &__title {
-          width: 50%;
-          border: 3px solid $scarpa-flow;
-          border-radius: 4px;
-          margin: 0 0 0 10px;
-          padding: 7px 5px;
-          float: left;
-          background-color: $white;
-          color: $black;
-          text-align: left;
-          height: auto;
-          font-size: 12px
-        }
-
         button {
           margin: 0 0 0 5px;
+          //margin-left: auto;
         }
+      }
+
+      &__title {
+        width: 50%;
+        margin: 0;
+        padding: 7px 5px;
+        float: left;
+        color: $mirage;
+        text-align: left;
+        height: auto;
+        font-size: 14px
+      }
+
+      &__buttons {
+        margin-left: auto;
+      }
+    }
+
+    #metadata-list {
+
+      textarea {
+        margin-bottom: $lineheight;
+        width: 100%;
+      }
+
+      input {
+        margin-bottom: $lineheight;
+        display: block;
+      }
+
+      //TODO Select all checkbox labels without specifying their ID.
+      //label + input[type="checkbox"] {
+      //  display: inline-block !important;
+      //}
+
+      #natStat label,
+      #natStat input {
+        display: inline-block;
+      }
+
+      #finalised label,
+      #finalised input {
+        display: inline-block;
+      }
+
+      #migrated label,
+      #migrated input {
+        display: inline-block;
+      }
+
+      #cancelled label,
+      #cancelled input {
+        display: inline-block;
+      }
+
+      #isIndex label,
+      #isIndex input {
+        display: inline-block;
       }
     }
   }
