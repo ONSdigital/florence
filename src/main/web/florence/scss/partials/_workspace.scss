@@ -253,6 +253,10 @@
           //width: 44%;
         }
 
+        p {
+          margin: 0 0 0 $lineheight;
+        }
+
         &--correction {
 
           textarea {
@@ -322,6 +326,21 @@
           border: 3px solid $scarpa-flow;
         }
 
+        .correction-alert {
+
+          margin: ($lineheight / 2) 0 0 auto;
+
+          label {
+            width: auto;
+          }
+
+          input {
+            margin-left: $lineheight / 2;
+            width: auto;
+            display: inline-block;
+          }
+        }
+
         textarea {
           width: 50%;
           border: 3px solid $scarpa-flow;
@@ -365,7 +384,7 @@
 
       &__title {
         width: 50%;
-        margin: 0 0 0 10px;
+        margin: 0;
         padding: 7px 5px;
         float: left;
         color: $mirage;
@@ -420,7 +439,6 @@
       #isIndex input {
         display: inline-block;
       }
-
     }
   }
 }

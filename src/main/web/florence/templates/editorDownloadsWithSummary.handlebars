@@ -13,8 +13,10 @@
                     <textarea style="display: none;" id="file-summary_{{@index}}">{{fileDescription}}</textarea>
                     <br>
                     <div id="file-filename_show_{{@index}}">{{file}}</div>
-                    <button class="btn-markdown-edit" id="file-edit_{{@index}}">Edit description</button>
-                    <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
+                    <div class="edit-section__buttons">
+                        <button class="btn-markdown-edit" id="file-edit_{{@index}}">Edit description</button>
+                        <button class="btn-page-delete" id="file-delete_{{@index}}">Delete</button>
+                    </div>
                 </div>
             {{/each}}
         </div>
