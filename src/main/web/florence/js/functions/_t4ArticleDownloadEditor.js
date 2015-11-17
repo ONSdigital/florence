@@ -3,6 +3,7 @@ function ArticleDownloadEditor(collectionId, data) {
 //  var index = data.release;
   var newFiles = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {

@@ -4,6 +4,7 @@ function compendiumEditor(collectionId, data, templateData) {
   var newChapters = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [], newData = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -22,6 +23,8 @@ function compendiumEditor(collectionId, data, templateData) {
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {
+    //renameUri = true;
+    // todo change all chapters and dataset uri with new title
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
     clearTimeout(timeoutId);
@@ -30,6 +33,7 @@ function compendiumEditor(collectionId, data, templateData) {
     }, 3000);
   });
   $("#edition").on('input', function () {
+    //renameUri = true;
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
     clearTimeout(timeoutId);
@@ -150,32 +154,6 @@ function compendiumEditor(collectionId, data, templateData) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  });
-
   //Add new chapter
   $("#add-chapter").one('click', function () {
     var chapterTitle;
@@ -231,24 +209,20 @@ function compendiumEditor(collectionId, data, templateData) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Chapters
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function (indexC, nameC) {
@@ -289,6 +263,8 @@ function compendiumEditor(collectionId, data, templateData) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 
