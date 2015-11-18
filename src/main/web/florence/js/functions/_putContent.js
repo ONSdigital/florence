@@ -17,7 +17,7 @@ function putContent(collectionId, path, content, success, error) {
     url: url,
     dataType: 'json',
     contentType: 'application/json',
-    type: 'PUT',
+    type: 'POST',
     data: content,
     success: function (response) {
       success(response);

@@ -1,6 +1,6 @@
 function articleEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var timeoutId;
 
