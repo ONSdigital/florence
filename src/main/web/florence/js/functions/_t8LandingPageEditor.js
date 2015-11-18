@@ -20,15 +20,9 @@ function datasetLandingEditor(collectionId, data) {
 
   // Metadata edition and saving
   $("#title").on('input', function () {
-    //renameUri = true;
-    // todo Change all children dataset links with new title uri
-
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
@@ -206,12 +200,12 @@ function resolveTitleT8(collectionId, data, field) {
     var eachUri = path.uri;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
-      success = function (response) {
+      function (response) {
         templateData[field][index].description.edition = response.edition;
         templateData[field][index].uri = eachUri;
         dfd.resolve();
       },
-      error = function () {
+      function () {
         sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
         dfd.resolve();
       }
@@ -238,18 +232,29 @@ function addEditionEditButton(collectionId, data, templateData) {
 
     $('#edition-edit-label_' + index).click(function () {
       getPageData(collectionId, selectedEdition,
-        success = function (response) {
-          var pageData = response;
+        function (pageData) {
           var editedSectionValue = pageData.description.edition;
           var saveContent = function (updatedContent) {
             pageData.description.edition = updatedContent;
+            var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
             putContent(collectionId, pageData.uri, JSON.stringify(pageData),
-              success = function (message) {
-                console.log("Updating completed " + message);
-                viewWorkspace(pageData.uri, collectionId, 'edit');
-                refreshPreview(pageData.uri);
+              function () {
+                //save children changes and move
+                checkRenameUri(collectionId, pageData, true, updateContent);
+                //update dataset uri in parent and save
+                data.datasets[index].uri = data.uri + "/" + childTitle;
+                putContent(collectionId, data.uri, JSON.stringify(data),
+                  function () {},
+                  function (response) {
+                    if (response.status === 409) {
+                      sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                    } else {
+                      handleApiError(response);
+                    }
+                  }
+                );
               },
-              error = function (message) {
+              function (message) {
                 if (message.status === 400) {
                   sweetAlert("Cannot edit this page", "It is already part of another collection.");
                 }
@@ -257,17 +262,17 @@ function addEditionEditButton(collectionId, data, templateData) {
                   handleApiError(message);
                 }
               }
-            )
+            );
           };
           loadMarkdownEditor(editedSectionValue, saveContent, pageData);
         },
-        error = function (message) {
+        function (message) {
           handleApiError(message);
         }
-      )
+      );
     });
 
-    // Delete (assuming datasets in makeEditSection)
+    // Delete (assuming datasets in makeEditSection - not dynamic fields here)
     $('#edition-delete_' + index).click(function () {
       swal({
         title: "Warning",

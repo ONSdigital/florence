@@ -22,19 +22,11 @@ function bulletinEditor(collectionId, data) {
     renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#edition").on('input', function () {
     renameUri = true;
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   //if (!Florence.collection.date) {                        //overwrite scheduled collection date
   if (!data.description.releaseDate) {

@@ -17,12 +17,9 @@ function staticLandingPageEditor(collectionId, data) {
 
   // Metadata edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();

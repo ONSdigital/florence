@@ -6,7 +6,7 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Change url",
-      cancelButtonText: "Save without changing url",
+      cancelButtonText: "Cancel",
       closeOnConfirm: true
     }, function (result) {
       if (result === true) {
@@ -15,11 +15,16 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
           var titleNoSpace = data.description.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
           var editionNoSpace = data.description.edition.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
           var tmpNewUri = data.uri.split("/");
-          var tmpArray = tmpNewUri.splice([tmpNewUri.length-2], 2, titleNoSpace, editionNoSpace);
+          tmpNewUri.splice([tmpNewUri.length - 2], 2, titleNoSpace, editionNoSpace);
           var newUri = tmpNewUri.join("/");
+          //is it a compendium? Rename children array
+          if (data.type === 'compendium_landing_page') {
+            if (data.chapters) {data.chapters = renameCompendiumChildren(data.chapters, titleNoSpace, editionNoSpace); }
+            if (data.datasets) {data.datasets = renameCompendiumChildren(data.datasets, titleNoSpace, editionNoSpace); }
+          }
           onSave(collectionId, data.uri, JSON.stringify(data));
           moveContent(collectionId, data.uri, newUri,
-            onSuccess = function () {
+          onSuccess = function () {
               refreshPreview(newUri);
               loadPageDataIntoEditor(newUri, collectionId);
             }
@@ -30,7 +35,7 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
           var titleNoSpace = data.description.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
           var referenceNoSpace = data.description.reference.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
           var tmpNewUri = data.uri.split("/");
-          var tmpArray = tmpNewUri.splice([tmpNewUri.length-1], 1, referenceNoSpace + titleNoSpace);
+          tmpNewUri.splice([tmpNewUri.length - 1], 1, referenceNoSpace + titleNoSpace);
           var newUri = tmpNewUri.join("/");
           onSave(collectionId, data.uri, JSON.stringify(data));
           moveContent(collectionId, data.uri, newUri,
@@ -43,11 +48,15 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
         } else {
           var titleNoSpace = data.description.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
           var tmpNewUri = data.uri.split("/");
-          var tmpArray = tmpNewUri.splice([tmpNewUri.length-1], 1, titleNoSpace);
+          tmpNewUri.splice([tmpNewUri.length-1], 1, titleNoSpace);
           var newUri = tmpNewUri.join("/");
+          //if it is a dataset rename children array
+          if (data.type === 'dataset_landing_page') {
+            if (data.datasets) {data.datasets = renameDatasetChildren(data.datasets, titleNoSpace); }
+          }
           onSave(collectionId, data.uri, JSON.stringify(data));
           moveContent(collectionId, data.uri, newUri,
-            onSuccess = function () {
+          onSuccess = function () {
               refreshPreview(newUri);
               loadPageDataIntoEditor(newUri, collectionId);
             }
@@ -55,7 +64,8 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
           console.log(newUri);
         }
       } else {
-        onSave(collectionId, data.uri, JSON.stringify(data));
+        refreshPreview(data.uri);
+        loadPageDataIntoEditor(data.uri, collectionId);
       }
     });
   } else {

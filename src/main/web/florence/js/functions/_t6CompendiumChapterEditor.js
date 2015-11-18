@@ -23,11 +23,7 @@ function compendiumChapterEditor(collectionId, data) {
   // Metadata edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
+    sweetAlert("Cannot remame this page here", "Go back to parent page and use the rename function there");
   });
   $("#headline").on('input', function () {
     $(this).textareaAutoSize();

@@ -35,10 +35,6 @@ function adHocEditor(collectionId, data) {
     renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   //if (!Florence.collection.date) {                    //overwrite scheduled collection date
   if (!data.description.releaseDate) {
@@ -69,10 +65,6 @@ function adHocEditor(collectionId, data) {
     var isNumber = $(this).val();
     if (isNumber.match(/^\d+$/)) {
       data.description.reference = isNumber;
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
     } else {
       sweetAlert('This needs to be a number');
     }
