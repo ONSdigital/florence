@@ -21,10 +21,6 @@ function releaseEditor(collectionId, data) {
   $("#title").on('input', function () {
     renameUri = true;
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#provisionalDate").on('input', function () {
     data.description.provisionalDate = $(this).val();

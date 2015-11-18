@@ -35,10 +35,6 @@ function methodologyDownloadEditor(collectionId, data) {
     renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};

@@ -29,11 +29,6 @@ function qmiEditor(collectionId, data) {
     renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      // Runs 3 second (3000 ms) after the last change
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
