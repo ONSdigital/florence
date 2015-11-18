@@ -631,12 +631,13 @@ button {
   }
 
   &.btn-add-section {
-    color: $pickled-bluewood;
+    color: $mirage;
     background-color: $cadet-blue;
     opacity: 0.5;
 
     &:hover {
       opacity: 1;
+      color: $pickled-bluewood;
     }
   }
 
