@@ -155,33 +155,6 @@ function timeseriesEditor(collectionId, data) {
     }, 3000);
   });
 
-
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  });
-
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.

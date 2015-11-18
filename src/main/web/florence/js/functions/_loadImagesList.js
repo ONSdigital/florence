@@ -25,7 +25,8 @@ function initialiseImagesList(data, collectionId) {
             //refreshPreview();
             refreshImagesList(data, collectionId);
           }, imageData);
-        })
+        }
+      );
     });
 
     $("#image-delete_" + index).click(function () {
