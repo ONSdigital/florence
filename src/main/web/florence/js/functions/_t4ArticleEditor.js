@@ -133,30 +133,37 @@ function articleEditor(collectionId, data) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
+  $('#add-chart').click(function () {
+    loadChartBuilder(data, function () {
+      refreshPreview();
 
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
+      putContent(collectionId, data.uri, JSON.stringify(data),
+        success = function () {
+          Florence.Editor.isDirty = false;
+          refreshPreview();
+          refreshChartList(data, collectionId);
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      );
     });
   });
 
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+  $('#add-table').click(function () {
+    loadTableBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshPreview();
+      refreshTablesList(data, collectionId);
+    });
+  });
+
+  $('#add-image').click(function () {
+    loadImageBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      //refreshPreview();
+      refreshImagesList(data, collectionId);
+    });
   });
 
   // Save

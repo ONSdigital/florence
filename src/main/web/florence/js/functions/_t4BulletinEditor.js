@@ -158,6 +158,40 @@ function bulletinEditor(collectionId, data) {
     }, 3000);
   });
 
+  $('#add-chart').click(function () {
+    loadChartBuilder(data, function () {
+      refreshPreview();
+
+      putContent(collectionId, data.uri, JSON.stringify(data),
+        success = function () {
+          Florence.Editor.isDirty = false;
+          refreshPreview();
+          refreshChartList(data, collectionId);
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      );
+    });
+  });
+
+  $('#add-table').click(function () {
+    loadTableBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshPreview();
+      refreshTablesList(data, collectionId);
+    });
+  });
+
+  $('#add-image').click(function () {
+    loadImageBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      //refreshPreview();
+      refreshImagesList(data, collectionId);
+    });
+  });
+
+
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
