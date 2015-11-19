@@ -17,6 +17,10 @@ function initialiseTablesList(data, collectionId) {
     var tablePath = basePath + '/' + table.filename;
     var tableJson = tablePath;
 
+    $("#table-copy_" + table.filename).click(function () {
+      copyToClipboard('#table-to-be-copied_' + index);
+    });
+
     $("#table-edit_" + table.filename).click(function () {
       getPageData(collectionId, tableJson,
         onSuccess = function (tableData) {

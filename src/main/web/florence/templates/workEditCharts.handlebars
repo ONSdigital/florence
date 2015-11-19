@@ -9,7 +9,9 @@
       {{#each this.charts}}
         <div id="chart_{{filename}}" class="edit-section__item">
           <div class="edit-section__title">{{title}}</div>
+          <div id="chart-to-be-copied_{{@index}}" style="display: none">&ltons-chart path="{{filename}}" /&gt</div>
           <div class="edit-section__buttons">
+            <button class="btn-markdown-edit" id="chart-copy_{{filename}}">Copy</button>
             <button class="btn-markdown-edit" id="chart-edit_{{filename}}">Edit</button>
             <button class="btn-page-delete" id="chart-delete_{{filename}}">Delete</button>
           </div>
