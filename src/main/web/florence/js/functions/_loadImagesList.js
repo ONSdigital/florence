@@ -17,6 +17,10 @@ function initialiseImagesList(data, collectionId) {
     var noExtension = image.uri.match(/^(.+?)(\.[^.]*$|$)/);
     var imageJson = noExtension[1] + '.json';
 
+    $("#image-copy_" + image.filename).click(function () {
+      copyToClipboard('#image-to-be-copied_' + index);
+    });
+
     $("#image-edit_" + index).click(function () {
       getPageResource(collectionId, imageJson,
         onSuccess = function (imageData) {

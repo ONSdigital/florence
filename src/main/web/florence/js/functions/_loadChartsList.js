@@ -21,6 +21,10 @@ function initialiseChartList(data, collectionId) {
     var chartPath = basePath + '/' + chart.filename;
     var chartJson = chartPath;
 
+    $("#chart-copy_" + chart.filename).click(function () {
+      copyToClipboard('#chart-to-be-copied_' + index);
+    });
+
     $("#chart-edit_" + chart.filename).click(function () {
       getPageData(collectionId, chartJson,
         onSuccess = function (chartData) {
@@ -43,7 +47,7 @@ function initialiseChartList(data, collectionId) {
     });
 
     $("#chart-delete_" + chart.filename).click(function () {
-      swal ({
+      swal({
         title: "Warning",
         text: "Are you sure you want to delete this chart?",
         type: "warning",
@@ -51,7 +55,7 @@ function initialiseChartList(data, collectionId) {
         confirmButtonText: "Delete",
         cancelButtonText: "Cancel",
         closeOnConfirm: false
-      }, function(result) {
+      }, function (result) {
         if (result === true) {
 
           $("#chart_" + index).remove();
@@ -61,7 +65,9 @@ function initialiseChartList(data, collectionId) {
           });
           putContent(collectionId, basePath, JSON.stringify(data),
             success = function () {
-              deleteContent(collectionId, chartJson + '.json', onSuccess = function () {}, onError = function() {});
+              deleteContent(collectionId, chartJson + '.json', onSuccess = function () {
+              }, onError = function () {
+              });
               Florence.Editor.isDirty = false;
               swal({
                 title: "Deleted",
@@ -77,9 +83,18 @@ function initialiseChartList(data, collectionId) {
           );
 
 
-
         }
       });
     });
   });
 }
+
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+}
+
+
