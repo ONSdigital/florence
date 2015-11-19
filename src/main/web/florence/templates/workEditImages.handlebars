@@ -5,9 +5,9 @@
     <p>Edit existing images</p>
   </div>
   <div class="edit-section__content">
-    <div id="image-list" class="edit-section__sorimage">
+    <div id="image-list" class="edit-section__sortable">
       {{#each this.images}}
-        <div id="image_{{@index}}" class="edit-section__item">
+        <div id="image_{{@index}}" class="edit-section__sortable-item">
           <div class="edit-section__title">{{title}}</div>
           <div id="image-to-be-copied_{{@index}}" style="display: none">&ltons-image path="{{filename}}" /&gt</div>
           <div class="edit-section__buttons">

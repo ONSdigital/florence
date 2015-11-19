@@ -124,7 +124,7 @@ function methodologyEditor(collectionId, data) {
     loadTableBuilder(data, function () {
       Florence.Editor.isDirty = false;
       refreshPreview();
-      refreshTablesList(data, collectionId);
+      refreshTablesList(collectionId, data);
     });
   });
 
@@ -132,7 +132,7 @@ function methodologyEditor(collectionId, data) {
     loadImageBuilder(data, function () {
       Florence.Editor.isDirty = false;
       //refreshPreview();
-      refreshImagesList(data, collectionId);
+      refreshImagesList(collectionId, data);
     });
   });
 

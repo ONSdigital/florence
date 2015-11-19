@@ -92,7 +92,7 @@ function saveMarkdown (collectionId, path, data, field, idField) {
             Florence.Editor.isDirty = false;
             refreshMarkdown (collectionId, data, field, idField);
             refreshChartList(data, collectionId);
-            refreshTablesList(data, collectionId);
+            refreshTablesList(collectionId, data);
         },
         error = function (response) {
             if (response.status === 400) {

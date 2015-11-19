@@ -160,7 +160,7 @@ function compendiumChapterEditor(collectionId, data) {
     loadTableBuilder(data, function () {
       Florence.Editor.isDirty = false;
       refreshPreview();
-      refreshTablesList(data, collectionId);
+      refreshTablesList(collectionId, data);
     });
   });
 
@@ -168,7 +168,7 @@ function compendiumChapterEditor(collectionId, data) {
     loadImageBuilder(data, function () {
       Florence.Editor.isDirty = false;
       //refreshPreview();
-      refreshImagesList(data, collectionId);
+      refreshImagesList(collectionId, data);
     });
   });
 
