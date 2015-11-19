@@ -225,7 +225,8 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
     });
     if (idField === 'correction') {
       $('#' + idField + '-edit_' + index).click(function () {
-        var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
+        var markdown = $('#' + idField + '-markdown_' + index).val();
+        var editedSectionValue = {title: 'Correction notice', markdown: markdown};
         var saveContent = function (updatedContent) {
           data[field][index].correctionNotice = updatedContent;
           saveDatasetVersion(collectionId, data.uri, data, field, idField);
@@ -234,7 +235,8 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
       });
     }
     $('#' + idField + '-edit-label_' + index).click(function () {
-      var editedSectionValue = $('#' + idField + '-markdown-label_' + index).val();
+      var markdown = $('#' + idField + '-markdown-label_' + index).val();
+      var editedSectionValue = {title: 'Label content', markdown: markdown};
       var saveContent = function (updatedContent) {
         data[field][index].label = updatedContent;
         saveDatasetVersion(collectionId, data.uri, data, field, idField);
