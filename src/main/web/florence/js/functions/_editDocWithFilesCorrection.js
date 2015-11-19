@@ -71,7 +71,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
           $("#add-" + idField).parents('.edit-section__content').remove('#sortable-' + idField)
             .find('.text-center').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');  //check .after()
           // Enter a notice
-          var editedSectionValue = '';
+          var editedSectionValue = {title: 'Enter correction notice', markdown: ''};
           var saveContent = function (updatedContent) {
             data[field][data[field].length - 1].correctionNotice = updatedContent;
             saveDocWithFilesCorrection(collectionId, data.uri, data, field, idField);
@@ -222,7 +222,8 @@ function initialiseDocWithFilesCorrection(collectionId, data, field, idField) {
     });
     if (idField === 'correction') {
       $('#' + idField + '-edit_' + index).click(function () {
-        var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
+        var markdown = $('#' + idField + '-markdown_' + index).val();
+        var editedSectionValue = {title: 'Correction notice', markdown: markdown};
         var saveContent = function (updatedContent) {
           data[field][index].correctionNotice = updatedContent;
           saveDocWithFilesCorrection(collectionId, data.uri, data, field, idField);
