@@ -42,13 +42,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT4Bulletin(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
-      loadChartsList(pageData, collectionId);
+      loadChartsList(collectionId, pageData);
     }
     if (pageData.tables) {
-      loadTablesList(pageData, collectionId);
+      loadTablesList(collectionId, pageData);
     }
     if (pageData.images) {
-      loadImagesList(pageData, collectionId);
+      loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
@@ -69,13 +69,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT4Article(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
-      loadChartsList(pageData, collectionId);
+      loadChartsList(collectionId, pageData);
     }
     if (pageData.tables) {
-      loadTablesList(pageData, collectionId);
+      loadTablesList(collectionId, pageData);
     }
     if (pageData.images) {
-      loadImagesList(pageData, collectionId);
+      loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
@@ -96,13 +96,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT4ArticleDownload(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
-      loadChartsList(pageData, collectionId);
+      loadChartsList(collectionId, pageData);
     }
     if (pageData.tables) {
-      loadTablesList(pageData, collectionId);
+      loadTablesList(collectionId, pageData);
     }
     if (pageData.images) {
-      loadImagesList(pageData, collectionId);
+      loadImagesList(collectionId, pageData);
     }
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -150,13 +150,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT4Compendium(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
-      loadChartsList(pageData, collectionId);
+      loadChartsList(collectionId, pageData);
     }
     if (pageData.tables) {
-      loadTablesList(pageData, collectionId);
+      loadTablesList(collectionId, pageData);
     }
     if (pageData.images) {
-      loadImagesList(pageData, collectionId);
+      loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
@@ -234,13 +234,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT4Methodology(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
-      loadChartsList(pageData, collectionId);
+      loadChartsList(collectionId, pageData);
     }
     if (pageData.tables) {
-      loadTablesList(pageData, collectionId);
+      loadTablesList(collectionId, pageData);
     }
     if (pageData.images) {
-      loadImagesList(pageData, collectionId);
+      loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');

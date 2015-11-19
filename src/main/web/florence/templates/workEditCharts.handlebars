@@ -4,16 +4,16 @@
 
     <p>Edit existing charts</p>
   </div>
-  <div class="edit-section__content">
-    <div id="chart-list" class="edit-section__sortable">
+  <div id="chart-list" class="edit-section__content">
+    <div id="sortable-chart" class="edit-section__sortable">
       {{#each this.charts}}
-        <div id="chart_{{filename}}" class="edit-section__sortable-item">
+        <div id="{{@index}}" class="edit-section__sortable-item">
           <div class="edit-section__title">{{title}}</div>
           <div id="chart-to-be-copied_{{@index}}" style="display: none">&ltons-chart path="{{filename}}" /&gt</div>
           <div class="edit-section__buttons">
-            <button class="btn-markdown-edit" id="chart-copy_{{filename}}">Copy</button>
-            <button class="btn-markdown-edit" id="chart-edit_{{filename}}">Edit</button>
-            <button class="btn-page-delete" id="chart-delete_{{filename}}">Delete</button>
+            <button class="btn-markdown-edit" id="chart-copy_{{@index}}">Copy</button>
+            <button class="btn-markdown-edit" id="chart-edit_{{@index}}">Edit</button>
+            <button class="btn-page-delete" id="chart-delete_{{@index}}">Delete</button>
           </div>
         </div>
       {{/each}}

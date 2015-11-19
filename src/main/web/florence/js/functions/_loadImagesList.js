@@ -1,23 +1,23 @@
-function loadImagesList(data, collectionId) {
+function loadImagesList(collectionId, data) {
   var html = templates.workEditImages(data);
   $('#images').replaceWith(html);
-  initialiseImagesList(data, collectionId);
+  initialiseImagesList(collectionId, data);
 }
 
-function refreshImagesList(data, collectionId) {
+function refreshImagesList(collectionId, data) {
   var html = templates.workEditImages(data);
   $('#image-list').replaceWith($(html).find('#image-list'));
-  initialiseImagesList(data, collectionId);
+  initialiseImagesList(collectionId, data);
 }
 
-function initialiseImagesList(data, collectionId) {
+function initialiseImagesList(collectionId, data) {
 
   $(data.images).each(function (index, image) {
     var basePath = data.uri;
     var noExtension = image.uri.match(/^(.+?)(\.[^.]*$|$)/);
     var imageJson = noExtension[1] + '.json';
 
-    $("#image-copy_" + image.filename).click(function () {
+    $("#image-copy_" + index).click(function () {
       copyToClipboard('#image-to-be-copied_' + index);
     });
 
@@ -27,7 +27,7 @@ function initialiseImagesList(data, collectionId) {
           loadImageBuilder(data, function () {
             Florence.Editor.isDirty = false;
             //refreshPreview();
-            refreshImagesList(data, collectionId);
+            refreshImagesList(collectionId, data);
           }, imageData);
         }
       );
@@ -44,8 +44,7 @@ function initialiseImagesList(data, collectionId) {
         closeOnConfirm: false
       }, function (result) {
         if (result === true) {
-
-          $("#image_" + index).remove();
+          $(this).parent().remove();
           // delete any files associated with the image.
           getPageResource(collectionId, imageJson,
             onSuccess = function (imageData) {
@@ -80,7 +79,7 @@ function initialiseImagesList(data, collectionId) {
                 timer: 2000
               });
 
-              refreshImagesList(data, collectionId);
+              refreshImagesList(collectionId, data);
 
               // delete the image json file
               deleteContent(collectionId, imageJson,
@@ -99,4 +98,9 @@ function initialiseImagesList(data, collectionId) {
       });
     });
   });
+  // Make sections sortable
+  function sortable() {
+    $('#sortable-image').sortable();
+  }
+  sortable();
 }

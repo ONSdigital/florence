@@ -160,7 +160,7 @@ function compendiumChapterEditor(collectionId, data) {
     loadTableBuilder(data, function () {
       Florence.Editor.isDirty = false;
       refreshPreview();
-      refreshTablesList(collectionId, data);
+      refreshTablesList(data, collectionId);
     });
   });
 
