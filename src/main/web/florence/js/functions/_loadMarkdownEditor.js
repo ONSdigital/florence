@@ -12,10 +12,12 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     var html = templates.markdownEditorNoTitle(content);
     $('body').append(html);
     $('.markdown-editor').stop().fadeIn(200);
+    $('#wmd-input').focus();
   } else {
     var html = templates.markdownEditor(content);
     $('body').append(html);
     $('.markdown-editor').stop().fadeIn(200);
+    $('#wmd-input').focus();
   }
 
   markdownEditor();
