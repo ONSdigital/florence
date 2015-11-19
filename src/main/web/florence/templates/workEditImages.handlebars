@@ -4,14 +4,14 @@
 
     <p>Edit existing images</p>
   </div>
-  <div class="edit-section__content">
-    <div id="image-list" class="edit-section__sortable">
+  <div id="image-list" class="edit-section__content">
+    <div id="sortable-image" class="edit-section__sortable">
       {{#each this.images}}
-        <div id="image_{{@index}}" class="edit-section__sortable-item">
+        <div id="{{@index}}" class="edit-section__sortable-item">
           <div class="edit-section__title">{{title}}</div>
           <div id="image-to-be-copied_{{@index}}" style="display: none">&ltons-image path="{{filename}}" /&gt</div>
           <div class="edit-section__buttons">
-            <button class="btn-markdown-edit" id="image-copy_{{filename}}">Copy</button>
+            <button class="btn-markdown-edit" id="image-copy_{{@index}}">Copy</button>
             <button class="btn-markdown-edit" id="image-edit_{{@index}}">Edit</button>
             <button class="btn-page-delete" id="image-delete_{{@index}}">Delete</button>
           </div>

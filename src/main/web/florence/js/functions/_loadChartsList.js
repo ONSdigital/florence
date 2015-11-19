@@ -1,19 +1,19 @@
 // fully load the charts list from scratch
-function loadChartsList(data, collectionId) {
+function loadChartsList(collectionId, data) {
   var html = templates.workEditCharts(data);
   $('#charts').replaceWith(html);
-  initialiseChartList(data, collectionId);
+  initialiseChartList(collectionId, data);
 }
 
 // refresh only the list of charts - leaving the container div that accordion works from.
-function refreshChartList(data, collectionId) {
+function refreshChartList(collectionId, data) {
   var html = templates.workEditCharts(data);
   $('#chart-list').replaceWith($(html).find('#chart-list'));
-  initialiseChartList(data, collectionId);
+  initialiseChartList(collectionId, data);
 }
 
 // do all the wiring up of buttons etc once the template has been rendered.
-function initialiseChartList(data, collectionId) {
+function initialiseChartList(collectionId, data) {
 
   $(data.charts).each(function (index, chart) {
 
@@ -21,11 +21,11 @@ function initialiseChartList(data, collectionId) {
     var chartPath = basePath + '/' + chart.filename;
     var chartJson = chartPath;
 
-    $("#chart-copy_" + chart.filename).click(function () {
+    $("#chart-copy_" + index).click(function () {
       copyToClipboard('#chart-to-be-copied_' + index);
     });
 
-    $("#chart-edit_" + chart.filename).click(function () {
+    $("#chart-edit_" + index).click(function () {
       getPageData(collectionId, chartJson,
         onSuccess = function (chartData) {
 
@@ -36,7 +36,7 @@ function initialiseChartList(data, collectionId) {
               success = function () {
                 Florence.Editor.isDirty = false;
                 refreshPreview();
-                refreshChartList(data, collectionId);
+                refreshChartList(collectionId, data);
               },
               error = function (response) {
                 handleApiError(response);
@@ -46,7 +46,7 @@ function initialiseChartList(data, collectionId) {
         })
     });
 
-    $("#chart-delete_" + chart.filename).click(function () {
+    $("#chart-delete_" + index).click(function () {
       swal({
         title: "Warning",
         text: "Are you sure you want to delete this chart?",
@@ -57,9 +57,7 @@ function initialiseChartList(data, collectionId) {
         closeOnConfirm: false
       }, function (result) {
         if (result === true) {
-
-          $("#chart_" + index).remove();
-
+          $(this).parent().remove();
           data.charts = _(data.charts).filter(function (item) {
             return item.filename !== chart.filename
           });
@@ -75,18 +73,21 @@ function initialiseChartList(data, collectionId) {
                 type: "success",
                 timer: 2000
               });
-              refreshChartList(data, collectionId);
+              refreshChartList(collectionId, data);
             },
             error = function (response) {
               handleApiError(response);
             }
           );
-
-
         }
       });
     });
   });
+  // Make sections sortable
+  function sortable() {
+    $('#sortable-chart').sortable();
+  }
+  sortable();
 }
 
 function copyToClipboard(element) {
