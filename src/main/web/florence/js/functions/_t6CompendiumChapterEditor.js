@@ -1,6 +1,6 @@
 function compendiumChapterEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newRelatedDocuments = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newRelatedDocuments = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
   var parentUrl = getParentPage(data.uri);
   var setActiveTab, getActiveTab;
   var timeoutId;
@@ -147,7 +147,7 @@ function compendiumChapterEditor(collectionId, data) {
         success = function () {
           Florence.Editor.isDirty = false;
           refreshPreview();
-          refreshChartList(data, collectionId);
+          refreshChartList(collectionId, data);
         },
         error = function (response) {
           handleApiError(response);
@@ -160,7 +160,7 @@ function compendiumChapterEditor(collectionId, data) {
     loadTableBuilder(data, function () {
       Florence.Editor.isDirty = false;
       refreshPreview();
-      refreshTablesList(data, collectionId);
+      refreshTablesList(collectionId, data);
     });
   });
 
@@ -216,6 +216,36 @@ function compendiumChapterEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
+    // charts
+    var orderChart = $("#sortable-chart").sortable('toArray');
+    $(orderChart).each(function (indexCh, nameCh) {
+      var uri = data.charts[parseInt(nameCh)].uri;
+      var title = data.charts[parseInt(nameCh)].title;
+      var filename = data.charts[parseInt(nameCh)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.charts = newChart;
+    // tables
+    var orderTable = $("#sortable-table").sortable('toArray');
+    $(orderTable).each(function (indexTable, nameTable) {
+      var uri = data.tables[parseInt(nameTable)].uri;
+      var title = data.tables[parseInt(nameTable)].title;
+      var filename = data.tables[parseInt(nameTable)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.tables = newTable;
+    // images
+    var orderImage = $("#sortable-image").sortable('toArray');
+    $(orderImage).each(function (indexImage, nameImage) {
+      var uri = data.images[parseInt(nameImage)].uri;
+      var title = data.images[parseInt(nameImage)].title;
+      var filename = data.images[parseInt(nameImage)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.images = newImage;
     // Related documents
     var orderArticle = $("#sortable-document").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {

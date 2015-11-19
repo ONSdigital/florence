@@ -142,7 +142,7 @@ function ArticleDownloadEditor(collectionId, data) {
         success = function () {
           Florence.Editor.isDirty = false;
           refreshPreview();
-          refreshChartList(data, collectionId);
+          refreshChartList(collectionId, data);
         },
         error = function (response) {
           handleApiError(response);
@@ -155,7 +155,7 @@ function ArticleDownloadEditor(collectionId, data) {
     loadTableBuilder(data, function () {
       Florence.Editor.isDirty = false;
       refreshPreview();
-      refreshTablesList(data, collectionId);
+      refreshTablesList(collectionId, data);
     });
   });
 
