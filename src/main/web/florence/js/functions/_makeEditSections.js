@@ -128,6 +128,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
     editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+    editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     timeseriesEditor(collectionId, pageData);
