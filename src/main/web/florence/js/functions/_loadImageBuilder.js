@@ -196,6 +196,9 @@ function loadImageBuilder(pageData, onSave, image) {
     $('.image-builder').stop().fadeOut(200).remove();
   }
 
+  setShortcuts('#image-title');
+  setShortcuts('#image-subtitle');
+
   function renderText() {
     var title = doSuperscriptAndSubscript($('#image-title').val());
     var subtitle = doSuperscriptAndSubscript($('#image-subtitle').val());

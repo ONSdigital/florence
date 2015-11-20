@@ -1,4 +1,4 @@
-function postContent(collectionId, path, content, success, error) {
+function postContent(collectionId, path, content, overwriteExisting, success, error) {
   var safePath = checkPathSlashes(path);
   if (safePath === '/') {
     safePath = '';          // edge case for home
@@ -12,6 +12,8 @@ function postContent(collectionId, path, content, success, error) {
   } else {
     var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json";
   }
+
+  var url = url + '&overwriteExisting=' + overwriteExisting;
 
   $.ajax({
     url: url,
