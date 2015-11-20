@@ -3,7 +3,7 @@
  * @param collectionId
  * @param data
  * @param field - JSON data key
- * @param idField - HTML id for the template
+ * @param idField - HTML id for the template (has to be 'edition')
  */
 
 function addDataset(collectionId, data, field, idField) {
