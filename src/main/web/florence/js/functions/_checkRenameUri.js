@@ -22,11 +22,10 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
             if (data.chapters) {data.chapters = renameCompendiumChildren(data.chapters, titleNoSpace, editionNoSpace); }
             if (data.datasets) {data.datasets = renameCompendiumChildren(data.datasets, titleNoSpace, editionNoSpace); }
           }
-          onSave(collectionId, data.uri, JSON.stringify(data));
           moveContent(collectionId, data.uri, newUri,
           onSuccess = function () {
-              refreshPreview(newUri);
-              loadPageDataIntoEditor(newUri, collectionId);
+            Florence.globalVars.pagePath = newUri;
+            onSave(collectionId, newUri, JSON.stringify(data));
             }
           );
           console.log(newUri);
@@ -37,11 +36,10 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
           var tmpNewUri = data.uri.split("/");
           tmpNewUri.splice([tmpNewUri.length - 1], 1, referenceNoSpace + titleNoSpace);
           var newUri = tmpNewUri.join("/");
-          onSave(collectionId, data.uri, JSON.stringify(data));
           moveContent(collectionId, data.uri, newUri,
             onSuccess = function () {
-              refreshPreview(newUri);
-              loadPageDataIntoEditor(newUri, collectionId);
+              Florence.globalVars.pagePath = newUri;
+              onSave(collectionId, newUri, JSON.stringify(data));
             }
           );
           console.log(newUri);
@@ -54,11 +52,10 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
           if (data.type === 'dataset_landing_page') {
             if (data.datasets) {data.datasets = renameDatasetChildren(data.datasets, titleNoSpace); }
           }
-          onSave(collectionId, data.uri, JSON.stringify(data));
           moveContent(collectionId, data.uri, newUri,
           onSuccess = function () {
-              refreshPreview(newUri);
-              loadPageDataIntoEditor(newUri, collectionId);
+            Florence.globalVars.pagePath = newUri;
+            onSave(collectionId, newUri, JSON.stringify(data));
             }
           );
           console.log(newUri);
