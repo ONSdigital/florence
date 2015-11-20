@@ -12,10 +12,12 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     var html = templates.markdownEditorNoTitle(content);
     $('body').append(html);
     $('.markdown-editor').stop().fadeIn(200);
+    $('#wmd-input').focus();
   } else {
     var html = templates.markdownEditor(content);
     $('body').append(html);
     $('.markdown-editor').stop().fadeIn(200);
+    $('#wmd-input').focus();
   }
 
   markdownEditor();
@@ -74,7 +76,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
   $(".btn-markdown-editor-image").click(function(){
     loadImageBuilder(pageData, function(name, markdown, pageData) {
       onInsertSave(name, markdown);
-      refreshImagesList(pageData, Florence.collection.id)
+      refreshImagesList(Florence.collection.id, pageData)
     });
   });
 

@@ -1,6 +1,6 @@
 function compendiumChapterEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newRelatedDocuments = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newRelatedDocuments = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
   var parentUrl = getParentPage(data.uri);
   var setActiveTab, getActiveTab;
   var timeoutId;
@@ -23,11 +23,7 @@ function compendiumChapterEditor(collectionId, data) {
   // Metadata edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
+    sweetAlert("Cannot remame this page here", "Go back to parent page and use the rename function there");
   });
   $("#headline").on('input', function () {
     $(this).textareaAutoSize();
@@ -143,30 +139,37 @@ function compendiumChapterEditor(collectionId, data) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
+  $('#add-chart').click(function () {
+    loadChartBuilder(data, function () {
+      refreshPreview();
 
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
+      putContent(collectionId, data.uri, JSON.stringify(data),
+        success = function () {
+          Florence.Editor.isDirty = false;
+          refreshPreview();
+          refreshChartList(collectionId, data);
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      );
     });
   });
 
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+  $('#add-table').click(function () {
+    loadTableBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshPreview();
+      refreshTablesList(collectionId, data);
+    });
+  });
+
+  $('#add-image').click(function () {
+    loadImageBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      //refreshPreview();
+      refreshImagesList(collectionId, data);
+    });
   });
 
   // Save
@@ -213,6 +216,36 @@ function compendiumChapterEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
+    // charts
+    var orderChart = $("#sortable-chart").sortable('toArray');
+    $(orderChart).each(function (indexCh, nameCh) {
+      var uri = data.charts[parseInt(nameCh)].uri;
+      var title = data.charts[parseInt(nameCh)].title;
+      var filename = data.charts[parseInt(nameCh)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.charts = newChart;
+    // tables
+    var orderTable = $("#sortable-table").sortable('toArray');
+    $(orderTable).each(function (indexTable, nameTable) {
+      var uri = data.tables[parseInt(nameTable)].uri;
+      var title = data.tables[parseInt(nameTable)].title;
+      var filename = data.tables[parseInt(nameTable)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.tables = newTable;
+    // images
+    var orderImage = $("#sortable-image").sortable('toArray');
+    $(orderImage).each(function (indexImage, nameImage) {
+      var uri = data.images[parseInt(nameImage)].uri;
+      var title = data.images[parseInt(nameImage)].title;
+      var filename = data.images[parseInt(nameImage)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.images = newImage;
     // Related documents
     var orderArticle = $("#sortable-document").sortable('toArray');
     $(orderArticle).each(function (indexB, nameB) {

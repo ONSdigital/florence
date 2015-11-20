@@ -1,8 +1,9 @@
 function ArticleDownloadEditor(collectionId, data) {
 
 //  var index = data.release;
-  var newFiles = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [];
+  var newFiles = [], newChart = [], newTable = [], newImage = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -18,20 +19,14 @@ function ArticleDownloadEditor(collectionId, data) {
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#edition").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   //if (!Florence.collection.date) {                        //overwrite scheduled collection date
   if (!data.description.releaseDate) {
@@ -139,30 +134,90 @@ function ArticleDownloadEditor(collectionId, data) {
     }, 3000);
   });
 
+  $('#add-chart').click(function () {
+    loadChartBuilder(data, function () {
+      refreshPreview();
+
+      putContent(collectionId, data.uri, JSON.stringify(data),
+        success = function () {
+          Florence.Editor.isDirty = false;
+          refreshPreview();
+          refreshChartList(collectionId, data);
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      );
+    });
+  });
+
+  $('#add-table').click(function () {
+    loadTableBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshPreview();
+      refreshTablesList(collectionId, data);
+    });
+  });
+
+  $('#add-image').click(function () {
+    loadImageBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      //refreshPreview();
+      refreshImagesList(collectionId, data);
+    });
+  });
+
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Sections
     data.markdown = [$('#content-markdown').val()];
+    // charts
+    var orderChart = $("#sortable-chart").sortable('toArray');
+    $(orderChart).each(function (indexCh, nameCh) {
+      var uri = data.charts[parseInt(nameCh)].uri;
+      var title = data.charts[parseInt(nameCh)].title;
+      var filename = data.charts[parseInt(nameCh)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.charts = newChart;
+    // tables
+    var orderTable = $("#sortable-table").sortable('toArray');
+    $(orderTable).each(function (indexTable, nameTable) {
+      var uri = data.tables[parseInt(nameTable)].uri;
+      var title = data.tables[parseInt(nameTable)].title;
+      var filename = data.tables[parseInt(nameTable)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.tables = newTable;
+    // images
+    var orderImage = $("#sortable-image").sortable('toArray');
+    $(orderImage).each(function (indexImage, nameImage) {
+      var uri = data.images[parseInt(nameImage)].uri;
+      var title = data.images[parseInt(nameImage)].title;
+      var filename = data.images[parseInt(nameImage)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.images = newImage;
     // Related documents
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {
@@ -211,6 +266,8 @@ function ArticleDownloadEditor(collectionId, data) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 

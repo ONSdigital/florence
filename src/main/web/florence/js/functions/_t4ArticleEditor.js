@@ -1,7 +1,8 @@
 function articleEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -17,20 +18,14 @@ function articleEditor(collectionId, data) {
 
   // Metadata edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#edition").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
 
   if (!data.description.releaseDate) {
@@ -138,30 +133,37 @@ function articleEditor(collectionId, data) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
+  $('#add-chart').click(function () {
+    loadChartBuilder(data, function () {
+      refreshPreview();
 
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
+      putContent(collectionId, data.uri, JSON.stringify(data),
+        success = function () {
+          Florence.Editor.isDirty = false;
+          refreshPreview();
+          refreshChartList(collectionId, data);
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      );
     });
   });
 
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+  $('#add-table').click(function () {
+    loadTableBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshPreview();
+      refreshTablesList(collectionId, data);
+    });
+  });
+
+  $('#add-image').click(function () {
+    loadImageBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      //refreshPreview();
+      refreshImagesList(collectionId, data);
+    });
   });
 
   // Save
@@ -169,24 +171,20 @@ function articleEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
@@ -203,6 +201,36 @@ function articleEditor(collectionId, data) {
       newTabs[indexT] = {title: title, markdown: markdown};
     });
     data.accordion = newTabs;
+    // charts
+    var orderChart = $("#sortable-chart").sortable('toArray');
+    $(orderChart).each(function (indexCh, nameCh) {
+      var uri = data.charts[parseInt(nameCh)].uri;
+      var title = data.charts[parseInt(nameCh)].title;
+      var filename = data.charts[parseInt(nameCh)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.charts = newChart;
+    // tables
+    var orderTable = $("#sortable-table").sortable('toArray');
+    $(orderTable).each(function (indexTable, nameTable) {
+      var uri = data.tables[parseInt(nameTable)].uri;
+      var title = data.tables[parseInt(nameTable)].title;
+      var filename = data.tables[parseInt(nameTable)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.tables = newTable;
+    // images
+    var orderImage = $("#sortable-image").sortable('toArray');
+    $(orderImage).each(function (indexImage, nameImage) {
+      var uri = data.images[parseInt(nameImage)].uri;
+      var title = data.images[parseInt(nameImage)].title;
+      var filename = data.images[parseInt(nameImage)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.images = newImage;
     // Related articles TO BE DELETED
     var orderArticle = $("#sortable-article").sortable('toArray');
     $(orderArticle).each(function (indexA, nameA) {
@@ -251,6 +279,8 @@ function articleEditor(collectionId, data) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 

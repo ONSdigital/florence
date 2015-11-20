@@ -55,7 +55,6 @@ function setupFlorence() {
   Handlebars.registerHelper('createdBy', function(array) {
     if(array) {
       var event = getCollectionCreatedEvent(array);
-      console.log(event);
       if (event) {
         return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
       } else {

@@ -16,8 +16,8 @@ function editCollection (collection) {
     });
   } else {
     dateTmp = collection.publishDate;
-    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#collection-editor-date').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    toIsoDate = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#collection-editor-date').val(toIsoDate).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       toIsoDate = $('#collection-editor-date').datepicker("getDate");
     });
   }
@@ -46,18 +46,19 @@ function editCollection (collection) {
   //Save
   $('.btn-collection-editor-save').click(function () {
     //save date and time to collection
-    //sweetAlert("Work in progress", "Please, be patient.");
-    editPublishTime  = parseInt($('#collection-editor-hour').val()) + parseInt($('#collection-editor-min').val());
-    collection.publishDate = new Date(parseInt(new Date(toIsoDate).getTime()) + editPublishTime).toISOString();
-
+    if (collection.type === 'scheduled') {
+      editPublishTime = parseInt($('#collection-editor-hour').val()) + parseInt($('#collection-editor-min').val());
+      collection.publishDate = new Date(parseInt(new Date(toIsoDate).getTime()) + editPublishTime).toISOString();
+    } else {}
+    //check validity
     if (collection.name === '') {
       sweetAlert('This is not a valid collection name', "A collection name can't be empty");
       return true;
     } if (collection.name.match(/\./)) {
       sweetAlert('This is not a valid collection name', "You can't use fullstops");
       return true;
-    } if ((collection.publishType === 'scheduled') && (Date.parse(collection.publishDate) < new Date())) {
-      sweetAlert('This is not a valid date');
+    } if ((collection.type === 'scheduled') && (Date.parse(collection.publishDate) < new Date())) {
+      sweetAlert('This is not a valid date. Date cannot be in the past');
       return true;
     } else {
       // Update the collection
