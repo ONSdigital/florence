@@ -7,7 +7,7 @@ function putContent(collectionId, path, content, success, error) {
     },
     onError = function (response) {
       if (error) {
-        error();
+        error(response);
       }
       else {
         handleApiError(response);
