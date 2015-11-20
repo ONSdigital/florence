@@ -225,12 +225,13 @@ function addEditionEditButton(collectionId, data, templateData) {
   // Load dataset to edit
   $(templateData.datasets).each(function (index) {
     //open document
-    var selectedEdition = $("#edition_" + index).attr('edition-url');
     $("#edition-edit_" + index).click(function () {
+      var selectedEdition = data.datasets[index].uri;
       createWorkspace(selectedEdition, collectionId, 'edit');
     });
 
     $('#edition-edit-label_' + index).click(function () {
+      var selectedEdition = data.datasets[index].uri;
       getPageData(collectionId, selectedEdition,
         function (pageData) {
           var markdown = pageData.description.edition;

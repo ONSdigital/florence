@@ -306,13 +306,13 @@ function editChapters(collectionId, data) {
     lastIndexChapter = index + 1;
 
     //open document
-    var selectedChapter = $("#chapter-title_" + index).attr('data-url');
     $("#chapter-edit_" + index).click(function () {
-      //refreshPreview(selectedChapter);
+      var selectedChapter = data.chapters[index].uri;
       createWorkspace(selectedChapter, collectionId, 'edit');
     });
 
     $('#chapter-edit-label_' + index).click(function () {
+      var selectedChapter = data.chapters[index].uri;
       getPageData(collectionId, selectedChapter,
         function (pageData) {
           var markdown = pageData.description.title;
@@ -368,7 +368,7 @@ function editChapters(collectionId, data) {
         closeOnConfirm: false
       }, function (result) {
         if (result === true) {
-          var selectedChapter = $("#chapter-title_" + index).attr('data-url');
+          var selectedChapter = data.chapters[index].uri;
           var path = data.uri;
           $("#" + index).remove();
           data.chapters.splice(index, 1);
@@ -415,7 +415,7 @@ function editData(collectionId, data) {
   } else {
     $(data.datasets).each(function (index) {
       //open document
-      var selectedData = $("#compendium-data-title_" + index).attr('data-url');
+      var selectedData = data.datasets[index].uri;
       $("#compendium-data-edit_" + index).click(function () {
         refreshPreview(selectedData);
         viewWorkspace(selectedData, collectionId, 'edit');
@@ -479,7 +479,7 @@ function editData(collectionId, data) {
           closeOnConfirm: false
         }, function (result) {
           if (result === true) {
-            var selectedData = $("#compendium-data-title_" + index).attr('data-url');
+            var selectedData = data.datasets[index].uri;
             var path = data.uri;
             $("#" + index).remove();
             data.datasets.splice(index, 1);

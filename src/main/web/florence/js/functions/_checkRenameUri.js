@@ -12,10 +12,17 @@ function checkRenameUri (collectionId, data, renameUri, onSave) {
       if (result === true) {
         // Does it have edition?
         if (data.description.edition) {
-          var titleNoSpace = data.description.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+          //Special case dataset editions. They have edition but not title
+          if (data.description.title) {
+            var titleNoSpace = data.description.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+          }
           var editionNoSpace = data.description.edition.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
           var tmpNewUri = data.uri.split("/");
-          tmpNewUri.splice([tmpNewUri.length - 2], 2, titleNoSpace, editionNoSpace);
+          if (data.type === 'dataset') {
+            tmpNewUri.splice([tmpNewUri.length - 1], 1, editionNoSpace);
+          } else {
+            tmpNewUri.splice([tmpNewUri.length - 2], 2, titleNoSpace, editionNoSpace);
+          }
           var newUri = tmpNewUri.join("/");
           //is it a compendium? Rename children array
           if (data.type === 'compendium_landing_page') {
