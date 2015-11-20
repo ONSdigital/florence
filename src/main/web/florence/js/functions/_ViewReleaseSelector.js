@@ -15,8 +15,6 @@ function viewReleaseSelector() {
 
   $('#release-search-input').on('input', function () {
     var searchText = $(this).val();
-    console.log('yo');
-    console.log(releases);
     populateReleasesList(releases, searchText)
   });
 
@@ -103,7 +101,7 @@ function viewReleaseSelector() {
       return release.description.releaseDate
     }))
       .each(function (release) {
-        if (!filter || (release.description.title.indexOf(filter) > -1)) {
+        if (!filter || (release.description.title.toUpperCase().indexOf(filter.toUpperCase()) > -1)) {
           var date = StringUtils.formatIsoFullDateString(release.description.releaseDate);
           releaseList.append('<tr data-id="' + release.description.title + '" data-uri="' + release.uri + '"><td>' + release.description.title + '</td><td>' + date + '</td></tr>');
         }
