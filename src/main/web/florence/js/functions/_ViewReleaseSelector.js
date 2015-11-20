@@ -7,10 +7,6 @@ function viewReleaseSelector() {
   $('body').append(html);
 
   var releases = [];
-
-  // todo: remove past releases once release calendar migration is complete.
-  // currently loading both past and future releases into the list while migrating
-  PopulateReleasesForUri("/releasecalendar/data", releases);
   PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
 
   $('.btn-release-selector-cancel').on('click', function () {
