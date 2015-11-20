@@ -315,7 +315,8 @@ function editChapters(collectionId, data) {
     $('#chapter-edit-label_' + index).click(function () {
       getPageData(collectionId, selectedChapter,
         function (pageData) {
-          var editedSectionValue = pageData.description.title;
+          var markdown = pageData.description.title;
+          var editedSectionValue = {title: 'Compendium chapter title', markdown: markdown};
           var saveContent = function (updatedContent) {
             pageData.description.title = updatedContent;
             var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -423,7 +424,8 @@ function editData(collectionId, data) {
       $('#compendium-data-edit-label_' + index).click(function () {
         getPageData(collectionId, selectedData,
           function (pageData) {
-            var editedSectionValue = pageData.description.title;
+            var markdown = pageData.description.title;
+            var editedSectionValue = {title: 'Compendium dataset title', markdown: markdown};
             var saveContent = function (updatedContent) {
               pageData.description.title = updatedContent;
               var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();

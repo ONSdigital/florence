@@ -233,7 +233,8 @@ function addEditionEditButton(collectionId, data, templateData) {
     $('#edition-edit-label_' + index).click(function () {
       getPageData(collectionId, selectedEdition,
         function (pageData) {
-          var editedSectionValue = pageData.description.edition;
+          var markdown = pageData.description.edition;
+          var editedSectionValue = {title: 'Edition title', markdown: markdown};
           var saveContent = function (updatedContent) {
             pageData.description.edition = updatedContent;
             var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
