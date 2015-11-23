@@ -45,7 +45,8 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
       templateData[field][index].date = new Date($('#date_' + index).datepicker('getDate')).toISOString();
     });
     $('#' + idField + '-edit_' + index).click(function () {
-      var editedSectionValue = data[field][index].markdown;
+      var editedSectionValue = {title: 'Alert notice', markdown: data[field][index].markdown};
+      //var editedSectionValue = data[field][index].markdown;
       var saveContent = function (updatedContent) {
         data[field][index].markdown = updatedContent;
         templateData[field][index].markdown = updatedContent;

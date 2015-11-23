@@ -2,6 +2,7 @@ function qmiEditor(collectionId, data) {
 
   var newFiles = [], newDocument = [], newDataset = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -25,13 +26,9 @@ function qmiEditor(collectionId, data) {
 
   // Metadata edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      // Runs 3 second (3000 ms) after the last change
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -163,24 +160,20 @@ function qmiEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Sections
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
@@ -207,6 +200,8 @@ function qmiEditor(collectionId, data) {
       newDataset[indexData] = {uri: safeUri};
     });
     data.relatedDatasets = newDataset;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 

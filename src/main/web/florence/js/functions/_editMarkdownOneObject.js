@@ -20,7 +20,8 @@ function editMarkdownOneObject (collectionId, data, field, title) {
   $('#one').replaceWith(html);
   // Load
   $('#one-edit').click(function() {
-    var editedSectionValue = $('#one-markdown').val();
+    var markdown = $('#one-markdown').val();
+    var editedSectionValue = {title: 'Content', markdown: markdown};
     var saveContent = function(updatedContent) {
       data[field].markdown = updatedContent;
       saveMarkdownOne (collectionId, data.uri, data, field);

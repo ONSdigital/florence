@@ -23,7 +23,13 @@ function editDocumentCorrection(collectionId, data, templateData, field, idField
       var tmpDate = (new Date()).toISOString();
       data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
-      saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+      // Enter a notice
+      var editedSectionValue = {title: 'Correction notice', markdown: ''};
+      var saveContent = function (updatedContent) {
+        data[field][data[field].length - 1].correctionNotice = updatedContent;
+        saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+      };
+      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
       $("#add-" + idField).remove();
     }, function (response) {
       if (response.status === 409) {
@@ -56,7 +62,8 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
       saveCorrection(collectionId, data.uri, data, templateData, field, idField);
     });
     $('#' + idField + '-edit_' + index).click(function () {
-      var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
+      var markdown = $('#' + idField + '-markdown_' + index).val();
+      var editedSectionValue = {title: 'Correction notice', markdown: markdown};
       var saveContent = function (updatedContent) {
         data[field][index].correctionNotice = updatedContent;
         templateData[field][index].correctionNotice = updatedContent;
