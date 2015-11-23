@@ -23,11 +23,7 @@ function compendiumDataEditor(collectionId, data) {
   // Metadata edition and saving
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
-    data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
+    sweetAlert("Cannot remame this page here", "Go back to parent page and use the rename function there");
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
@@ -140,32 +136,6 @@ function compendiumDataEditor(collectionId, data) {
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
     }, 3000);
-  });
-
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // Save

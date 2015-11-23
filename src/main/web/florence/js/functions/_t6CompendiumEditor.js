@@ -4,6 +4,7 @@ function compendiumEditor(collectionId, data, templateData) {
   var newChapters = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [], newData = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -22,20 +23,14 @@ function compendiumEditor(collectionId, data, templateData) {
 
   // Metadata load, edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#edition").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   //if (!Florence.collection.date) {                    //overwrite scheduled collection date
   if (!data.description.releaseDate) {
@@ -150,32 +145,6 @@ function compendiumEditor(collectionId, data, templateData) {
     }, 3000);
   });
 
-  // Correction section
-  // Load
-  $(data.correction).each(function (index, correction) {
-
-    $("#correction_text_" + index).on('input', function () {
-      $(this).textareaAutoSize();
-      data.correction[index].text = $(this).val();
-    });
-    $("#correction_date_" + index).val(correction.date).on('input', function () {
-      data.correction[index].date = $(this).val();
-    });
-
-    // Delete
-    $("#correction-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.correction.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
-    });
-  });
-
-  // New correction
-  $("#addCorrection").one('click', function () {
-    data.correction.push({text: "", date: ""});
-    updateContent(collectionId, data.uri, JSON.stringify(data));
-  });
-
   //Add new chapter
   $("#add-chapter").one('click', function () {
     var chapterTitle;
@@ -235,24 +204,20 @@ function compendiumEditor(collectionId, data, templateData) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Chapters
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function (indexC, nameC) {
@@ -293,6 +258,8 @@ function compendiumEditor(collectionId, data, templateData) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 
@@ -303,11 +270,11 @@ function resolveTitleT6(collectionId, data, templateData, field) {
     var eachUri = path.uri;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
-      success = function (response) {
+      function (response) {
         templateData[field][index].description.title = response.title;
         dfd.resolve();
       },
-      error = function () {
+      function () {
         sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
         dfd.resolve();
       }
@@ -338,16 +305,60 @@ function editChapters(collectionId, data) {
   $(data.chapters).each(function (index) {
     lastIndexChapter = index + 1;
 
+    //open document
     $("#chapter-edit_" + index).click(function () {
-      //open document
-      var selectedChapter = $("#chapter-title_" + index).attr('data-url');
-      //refreshPreview(selectedChapter);
+      var selectedChapter = data.chapters[index].uri;
       createWorkspace(selectedChapter, collectionId, 'edit');
+    });
+
+    $('#chapter-edit-label_' + index).click(function () {
+      var selectedChapter = data.chapters[index].uri;
+      getPageData(collectionId, selectedChapter,
+        function (pageData) {
+          var markdown = pageData.description.title;
+          var editedSectionValue = {title: 'Compendium chapter title', markdown: markdown};
+          var saveContent = function (updatedContent) {
+            pageData.description.title = updatedContent;
+            var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+            putContent(collectionId, pageData.uri, JSON.stringify(pageData),
+              function () {
+                //save children change and move
+                checkRenameUri(collectionId, pageData, true, updateContent);
+                //update dataset uri in parent and save
+                data.chapters[index].uri = data.uri + "/" + childTitle;
+                putContent(collectionId, data.uri, JSON.stringify(data),
+                  function () {
+                  },
+                  function (response) {
+                    if (response.status === 409) {
+                      sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                    } else {
+                      handleApiError(response);
+                    }
+                  }
+                );
+              },
+              function (message) {
+                if (message.status === 400) {
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                }
+                else {
+                  handleApiError(message);
+                }
+              }
+            );
+          };
+          loadMarkdownEditor(editedSectionValue, saveContent, pageData);
+        },
+        function (message) {
+          handleApiError(message);
+        }
+      );
     });
 
     // Delete
     $("#chapter-delete_" + index).click(function () {
-      swal ({
+      swal({
         title: "Warning",
         text: "You are going to delete the chapter this link refers to. Are you sure you want to proceed?",
         type: "warning",
@@ -355,14 +366,14 @@ function editChapters(collectionId, data) {
         confirmButtonText: "Continue",
         cancelButtonText: "Cancel",
         closeOnConfirm: false
-      }, function(result) {
+      }, function (result) {
         if (result === true) {
-          var selectedChapter = $("#chapter-title_" + index).attr('data-url');
+          var selectedChapter = data.chapters[index].uri;
           var path = data.uri;
           $("#" + index).remove();
           data.chapters.splice(index, 1);
           putContent(collectionId, path, JSON.stringify(data),
-            success = function () {
+            function () {
               swal({
                 title: "Deleted",
                 text: "This file has been deleted",
@@ -375,7 +386,7 @@ function editChapters(collectionId, data) {
                 loadPageDataIntoEditor(path, collectionId);
               }, error);
             },
-            error = function (response) {
+            function (response) {
               if (response.status === 400) {
                 sweetAlert("Cannot edit this page", "It is already part of another collection.");
               }
@@ -403,17 +414,62 @@ function editData(collectionId, data) {
     lastIndexDataset = 0;
   } else {
     $(data.datasets).each(function (index) {
+      //open document
+      var selectedData = data.datasets[index].uri;
       $("#compendium-data-edit_" + index).click(function () {
-        //open document
-        var selectedData = $("#compendium-data-title_" + index).attr('data-url');
         refreshPreview(selectedData);
         viewWorkspace(selectedData, collectionId, 'edit');
+      });
+
+      $('#compendium-data-edit-label_' + index).click(function () {
+        getPageData(collectionId, selectedData,
+          function (pageData) {
+            var markdown = pageData.description.title;
+            var editedSectionValue = {title: 'Compendium dataset title', markdown: markdown};
+            var saveContent = function (updatedContent) {
+              pageData.description.title = updatedContent;
+              var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+              putContent(collectionId, pageData.uri, JSON.stringify(pageData),
+                function () {
+                  //save children changes
+                  //move
+                  checkRenameUri(collectionId, pageData, true, updateContent);
+                  //update dataset uri in parent and save
+                  data.datasets[index].uri = data.uri + "/" + childTitle;
+                  putContent(collectionId, data.uri, JSON.stringify(data),
+                    function () {
+                    },
+                    function (response) {
+                      if (response.status === 409) {
+                        sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                      } else {
+                        handleApiError(response);
+                      }
+                    }
+                  );
+                },
+                function (message) {
+                  if (message.status === 400) {
+                    sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                  }
+                  else {
+                    handleApiError(message);
+                  }
+                }
+              );
+            };
+            loadMarkdownEditor(editedSectionValue, saveContent, pageData);
+          },
+          function (message) {
+            handleApiError(message);
+          }
+        );
       });
 
       // Delete
       $("#compendium-data-delete_" + index).click(function () {
         //var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
-        swal ({
+        swal({
           title: "Warning",
           text: "You are going to delete the chapter this link refers to. Are you sure you want to proceed?",
           type: "warning",
@@ -421,14 +477,14 @@ function editData(collectionId, data) {
           confirmButtonText: "Delete",
           cancelButtonText: "Cancel",
           closeOnConfirm: false
-        }, function(result) {
+        }, function (result) {
           if (result === true) {
-            var selectedData = $("#compendium-data-title_" + index).attr('data-url');
+            var selectedData = data.datasets[index].uri;
             var path = data.uri;
             $("#" + index).remove();
             data.datasets.splice(index, 1);
             putContent(collectionId, path, JSON.stringify(data),
-              success = function () {
+              function () {
                 swal({
                   title: "Deleted",
                   text: "This file has been deleted",
@@ -441,9 +497,9 @@ function editData(collectionId, data) {
                   loadPageDataIntoEditor(path, collectionId);
                 }, error);
               },
-              error = function (response) {
+              function (response) {
                 if (response.status === 400) {
-                    sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
                 }
                 else {
                   handleApiError(response);
