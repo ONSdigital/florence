@@ -135,7 +135,13 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
   });
 
   function sortable() {
-    $('#sortable-' + idField).sortable();
+    $('#sortable-' + idField).sortable({
+      stop: function(){
+        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
+          $(this).empty().append(index + 1);
+        });
+      }
+    });
   }
   sortable();
 
