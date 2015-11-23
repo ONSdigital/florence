@@ -5,21 +5,27 @@
     <div id="edit-chart" class="chart-builder__editor">
 
       <span class="refresh-text">
-        <input type="text" id="chart-title" placeholder="[Title]" value="{{title}}"/>
-        <input type="text" id="chart-subtitle" placeholder="[Subtitle]" value="{{subtitle}}"/>
-        <input type="text" id="chart-source" placeholder="[Source]" value="{{source}}"/>
+        <label for="chart-title">Title
+            <input type="text" id="chart-title" placeholder="[Title]" value="{{title}}"/>
+        </label>
+        <label for="chart-subtitle">Sub-title
+            <input type="text" id="chart-subtitle" placeholder="[Subtitle]" value="{{subtitle}}"/>
+        </label>
+        <label for="chart-source">Source
+            <input type="text" id="chart-source" placeholder="[Source]" value="{{source}}"/>
+        </label>
       </span>
-      <input type="text" id="chart-unit" class="refresh-chart" placeholder="[Unit]" value="{{unit}}"/>
+        <label for="chart-unit">Units
+            <input type="text" id="chart-unit" class="refresh-chart" placeholder="[Unit]" value="{{unit}}"/>
+        </label>
 
-      <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4" cols="120"></textarea>
-      <br/>
+        <label for="chart-data">Chart data</label>
+            <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4" cols="120"></textarea>
 
-      <!--<label>Alt text <br>-->
+      <label for="chart-alt-text">Alt text</label>
         <textarea id="chart-alt-text" class="refresh-text" placeholder="[Alt text]">{{altText}}</textarea>
-      <!--</label>-->
 
-      <label>Chart type <br>
-
+      <label>Chart type<br>
         <div class="select-wrap">
           <select id="chart-type" class="refresh-chart">
           {{#select chartType}}
@@ -42,7 +48,6 @@
       </label>
 
       <label>Aspect ratio<br>
-
         <div class="select-wrap">
           <select id="aspect-ratio" class="refresh-chart">
             {{#select aspectRatio}}
@@ -69,13 +74,11 @@
       </label>
 
 
-      <!--<label>X axis label<br>-->
-        <input type="text" id="chart-x-axis-label" style="width: 99.7%" class="refresh-chart" placeholder="[X axis label]"
-               value="{{xAxisLabel}}"/>
-      <!--</label>-->
+      <label for="chart-alt-text">X axis label</label>
+        <input type="text" id="chart-x-axis-label" style="width: 99.7%" class="refresh-chart" placeholder="[X axis label]" value="{{xAxisLabel}}"/>
 
-      <textarea id="chart-notes" class="refresh-text" placeholder="Add chart notes here" rows="4" cols="120">{{notes}}</textarea>
-      <br/>
+        <label for="chart-notes">Notes</label>
+        <textarea id="chart-notes" class="refresh-text" placeholder="Add chart notes here" rows="4" cols="120">{{notes}}</textarea>
     </div>
 
 

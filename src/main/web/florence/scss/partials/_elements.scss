@@ -132,7 +132,7 @@ select {
 	 border: 3px solid $scarpa-flow;
 	 border-radius: 4px;
 	 background-color: $white;
-	 margin: $lineheight 0;
+	 margin: 0 0 $lineheight 0;
 
  	&:before {
  		content: '';
