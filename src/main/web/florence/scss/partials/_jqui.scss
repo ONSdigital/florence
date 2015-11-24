@@ -1,8 +1,10 @@
 .ui-datepicker {
 
+  box-shadow: 0px 0px 10px 0px $black;
+
   &-header {
     background: $pickled-bluewood;
-    color: $white;
+    //color: $white;
     overflow: hidden;
     color: $cadet-blue;
   }
@@ -53,6 +55,13 @@
       background: $pickled-bluewood;
       color: $cadet-blue;
     }
+
+    //tbody {
+    //  border-right: 3px solid $ash;
+    //  border-bottom: 3px solid $ash;
+    //  border-left: 3px solid $ash;
+    //  display: block;
+    //}
 
     td {
       padding: 0;
