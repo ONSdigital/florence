@@ -121,7 +121,7 @@ select {
 	cursor: pointer;
 }
 
- .select-wrap {
+ .select-wrap, .ui_tpicker_hour, .ui_tpicker_minute  {
  	//padding: 0 38px 0 0;
 	 //float: left;
 	 position: relative;
@@ -155,6 +155,10 @@ select {
 		 width: 50%;
 	 }
  }
+
+.ui_tpicker_hour, .ui_tpicker_minute {
+	width: 194px;
+}
 
 input[type="radio"] {
 	position:absolute;
