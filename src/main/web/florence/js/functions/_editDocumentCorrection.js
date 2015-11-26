@@ -55,7 +55,13 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
   // Load
   $(data[field]).each(function (index) {
     dateTmp = data[field][index].updateDate;
-    var dateTmpCorr = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    // ORIGINAL TIME PICKER CODE
+    // var dateTmpCorr = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    // $('#correction-date_' + index).val(dateTmpCorr).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    //  data[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
+    //  templateData[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
+    //  saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+    // });
 
 
     var monthName = new Array();
@@ -73,7 +79,6 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
     monthName[11] = "December";
     //var n = monthName[theDateTime.getMonth()];
 
-
     theDateTime = new Date(dateTmp);
     theYear = theDateTime.getFullYear();
     theMonth = monthName[theDateTime.getMonth()];
@@ -84,43 +89,13 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
 
     var dateTimeInputString = theDay + ' ' + theMonth + ' ' + theYear + ' ' + theHours +':' + theMinutes;
 
-    //console.log(dateTimeInputString);
-
-
     function addLeadingZero(number){
       var number = '0' + number;
       number = number.slice(-2);
       return number;
     }
 
-
-
-
-    //$('#correction-date_' + index).val(dateTmpCorr).datetimepicker({dateFormat: 'dd MM yy', controlType: 'select', oneLine: true, timeFormat: 'HH:mm'}).on('change', function () {
-    //  data[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
-    //  templateData[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
-    //  saveCorrection(collectionId, data.uri, data, templateData, field, idField);
-    //});
-    //$('#correction-date_' + index).val(dateTmpCorr).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-    //  data[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
-    //  templateData[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
-    //  saveCorrection(collectionId, data.uri, data, templateData, field, idField);
-    //});
-
-    //$('#correction-date_' + index).val('')
-    //    .datetimepicker({
-    //        dateFormat: 'dd MM yy',
-    //        controlType: 'select',
-    //        oneLine: true,
-    //        timeFormat: 'HH:mm'
-    //      })
-    //    .datetimepicker('setDate', new Date(dateTmp));
-
-
-
-    $('#correction-date_' + index).val(dateTimeInputString);
-
-    $('#correction-date_' + index).datetimepicker({
+    $('#correction-date_' + index).val(dateTimeInputString).datetimepicker({
         dateFormat: 'dd MM yy',
         controlType: 'select',
         oneLine: true,
@@ -133,11 +108,9 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
     ///////////look at me
 
     $('body').on('click', '#done-button', function () {
-      //alert('save');
       data[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
       templateData[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
       saveCorrection(collectionId, data.uri, data, templateData, field, idField);
-      //console.log(data);
     });
 
 
