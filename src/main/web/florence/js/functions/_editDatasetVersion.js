@@ -150,10 +150,10 @@ function editDatasetVersion(collectionId, data, field, idField) {
                     uri: response,
                     label: versionLabel
                   });
+                  data.description.versionLabel = versionLabel; // only update the version label for versions not corrections.
                 }
                 data.downloads = [{file: fileNameNoSpace}];
                 data.description.releaseDate = tmpDate;
-                data.description.versionLabel = versionLabel;
                 uploadedNotSaved.saved = true;
                 $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
                 $("#" + idField + '-section').remove();
