@@ -27,7 +27,7 @@ function methodologyDownloadEditor(collectionId, data) {
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
-  $(".release-date").remove();
+  $(".lastRevised-p").remove();
   $("#reference-p").remove();
 
   // Metadata edition and saving
@@ -63,19 +63,19 @@ function methodologyDownloadEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
-  if (!data.description.lastRevised) {
-    $('#lastRevised').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.lastRevised = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+  if (!data.description.releaseDate) {
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       clearTimeout(timeoutId);
       timeoutId = setTimeout(function () {
         autoSaveMetadata(collectionId, data);
       }, 3000);
     });
   } else {
-    dateTmp = data.description.lastRevised;
+    dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#lastRevised').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.lastRevised = new Date($('#lastRevised').datepicker('getDate')).toISOString();
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       clearTimeout(timeoutId);
       timeoutId = setTimeout(function () {
         autoSaveMetadata(collectionId, data);
