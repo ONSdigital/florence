@@ -166,7 +166,13 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
   // Make sections sortable
   function sortable() {
-    $('#sortable-' + idField).sortable();
+    $('#sortable-' + idField).sortable({
+      stop: function(){
+        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
+          $(this).empty().append(index + 1);
+        });
+      }
+    });
   }
   sortable();
 }
