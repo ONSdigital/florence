@@ -20,7 +20,7 @@ function editTopics(collectionId, data, templateData, field, idField) {
 function refreshTopics(collectionId, data, templateData, field, idField) {
   var list = templateData[field];
   var dataTemplate = {list: list, idField: idField};
-  var html = templates.editorRelated(dataTemplate);
+  var html = templates.editorTopics(dataTemplate);
   $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
   initialiseTopics(collectionId, data, templateData, field, idField);
 }
