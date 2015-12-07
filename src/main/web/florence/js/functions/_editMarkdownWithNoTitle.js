@@ -21,7 +21,7 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   $('#' + idField).replaceWith(html);
   // Load
   $('#content-edit').click(function() {
-    var markdown = $('#one-markdown').val();
+    var markdown = $('#content-markdown').val();
     var editedSectionValue = {title: 'Content', markdown: markdown};
     var saveContent = function(updatedContent) {
       data[field] = [updatedContent];
