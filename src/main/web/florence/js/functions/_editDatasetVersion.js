@@ -51,6 +51,8 @@ function editDatasetVersion(collectionId, data, field, idField) {
   function addTheVersion() {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
+
+    // todo: Move this HTML into a handlebars template.
     $('#' + idField + '-section').append(
       '<div id="' + lastIndex + '" class="edit-section__item">' +
       '  <form id="UploadForm">' +
@@ -63,6 +65,13 @@ function editDatasetVersion(collectionId, data, field, idField) {
       '  <div id="response"></div>' +
       '  <ul id="list"></ul>' +
       '</div>');
+
+    // The label field is not used for corrections, just use existing version label.
+    if (idField === "correction") {
+      var $versionLabel = $('#UploadForm #label')
+      $versionLabel.text(uploadedNotSaved.oldLabel);
+      $versionLabel.hide();
+    }
 
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
