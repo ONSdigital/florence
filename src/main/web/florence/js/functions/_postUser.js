@@ -19,14 +19,14 @@ function postUser(name, email, password) {
   });
 
   /**
-   * Once the user is created do a seperate post to the zebedee API
+   * Once the user is created do a separate post to the zebedee API
    * to set the password.
    */
   function setPassword() {
     postPassword(
       success = function () {
         console.log('Password set');
-        setPermissions()
+        setPermissions();
       },
       error = null,
       email,
@@ -54,12 +54,13 @@ function postUser(name, email, password) {
    */
   function handleUserPostError(response) {
     if (response.status === 403 || response.status === 401) {
-      sweetAlert("You are not permitted to create users.")
+      sweetAlert("You are not permitted to create users.");
     }
     else if (response.status === 409) {
-      sweetAlert("Error", response.responseJSON.message, "error")
+      sweetAlert("Error", response.responseJSON.message, "error");
     } else {
       handleApiError(response);
     }
   }
 }
+

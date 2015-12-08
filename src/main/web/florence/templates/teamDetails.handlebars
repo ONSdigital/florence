@@ -1,0 +1,17 @@
+<div class="section-head">
+  <h2>{{name}}</h2>
+</div>
+
+<div class="section-content">
+  <ul class="page-list">
+    {{#each members}}
+      <li>{{email}}</li>
+    {{/each}}
+  </ul>
+</div>
+
+<nav class="section-nav">
+  <button class="btn-user-change-password btn-collection-work-on">Add/remove users</button>
+  <button class="btn-user-delete btn-page-delete">Delete team</button>
+  <button class="btn-user-cancel btn-collection-cancel">Cancel</button>
+</nav>

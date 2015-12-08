@@ -1,0 +1,32 @@
+<div class="release-select overlay">
+  <div class="table-builder__inner release-select__inner">
+
+    <div class="release-select__header">
+      <h1 class="release-select__heading">Team: {{name}}</h1>
+      <h2 class="release-select__heading">Drag to add or remove users</h2>
+    </div>
+    <div class="release-select__body">
+      <!--50% width-->
+      <ul id="user-list">
+        <h2>Users</h2>
+        <div class="release-select-search">
+          <input id="release-search-input" class="release-select-search__input" type="text" placeholder="Search for a user">
+        </div>
+        {{#each user}}
+        <li>{{email}}</li>
+        {{/each}}
+      </ul>
+
+      <!--50% width-->
+      <div id="team-list">
+        <h2>Team</h2>
+      </div>
+
+    </div>
+
+    <div class="release-select__footer">
+      <button class="btn-release-selector-cancel">Cancel</button>
+    </div>
+
+  </div>
+</div>
