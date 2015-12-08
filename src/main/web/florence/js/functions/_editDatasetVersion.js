@@ -51,6 +51,8 @@ function editDatasetVersion(collectionId, data, field, idField) {
   function addTheVersion() {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
+
+    // todo: Move this HTML into a handlebars template.
     $('#' + idField + '-section').append(
       '<div id="' + lastIndex + '" class="edit-section__item">' +
       '  <form id="UploadForm">' +
@@ -63,6 +65,13 @@ function editDatasetVersion(collectionId, data, field, idField) {
       '  <div id="response"></div>' +
       '  <ul id="list"></ul>' +
       '</div>');
+
+    // The label field is not used for corrections, just use existing version label.
+    if (idField === "correction") {
+      var $versionLabel = $('#UploadForm #label')
+      $versionLabel.text(uploadedNotSaved.oldLabel);
+      $versionLabel.hide();
+    }
 
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
@@ -115,11 +124,6 @@ function editDatasetVersion(collectionId, data, field, idField) {
         return;
       }
 
-      if (versionLabel.length < 4) {
-        sweetAlert("This is not a valid file title");
-        return;
-      }
-
       if (formdata) {
         $.ajax({
           url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
@@ -150,10 +154,10 @@ function editDatasetVersion(collectionId, data, field, idField) {
                     uri: response,
                     label: versionLabel
                   });
+                  data.description.versionLabel = versionLabel; // only update the version label for versions not corrections.
                 }
                 data.downloads = [{file: fileNameNoSpace}];
                 data.description.releaseDate = tmpDate;
-                data.description.versionLabel = versionLabel;
                 uploadedNotSaved.saved = true;
                 $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
                 $("#" + idField + '-section').remove();
@@ -225,7 +229,8 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
     });
     if (idField === 'correction') {
       $('#' + idField + '-edit_' + index).click(function () {
-        var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
+        var markdown = $('#' + idField + '-markdown_' + index).val();
+        var editedSectionValue = {title: 'Correction notice', markdown: markdown};
         var saveContent = function (updatedContent) {
           data[field][index].correctionNotice = updatedContent;
           saveDatasetVersion(collectionId, data.uri, data, field, idField);
@@ -234,9 +239,13 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
       });
     }
     $('#' + idField + '-edit-label_' + index).click(function () {
-      var editedSectionValue = $('#' + idField + '-markdown-label_' + index).val();
+      var markdown = data[field][index].label ? data[field][index].label : "";
+      var editedSectionValue = {title: 'Label content', markdown: markdown};
       var saveContent = function (updatedContent) {
         data[field][index].label = updatedContent;
+        if (index === data[field].length - 1) {
+          data.description.versionLabel = updatedContent;
+        }
         saveDatasetVersion(collectionId, data.uri, data, field, idField);
       };
       loadMarkdownEditor(editedSectionValue, saveContent, data);
