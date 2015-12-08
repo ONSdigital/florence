@@ -3,7 +3,7 @@
  * @param collectionId
  * @param data
  * @param field - JSON data key
- * @param idField - HTML id for the template
+ * @param idField - HTML id for the template (has to be 'edition')
  */
 
 function addDataset(collectionId, data, field, idField) {
@@ -141,7 +141,13 @@ function addDataset(collectionId, data, field, idField) {
   });
 
   function sortable() {
-    $('#sortable-' + idField).sortable();
+    $('#sortable-' + idField).sortable({
+      stop: function(){
+        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
+          $(this).empty().append(index + 1);
+        });
+      }
+    });
   }
 
   sortable();

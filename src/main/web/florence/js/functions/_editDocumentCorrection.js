@@ -23,7 +23,13 @@ function editDocumentCorrection(collectionId, data, templateData, field, idField
       var tmpDate = (new Date()).toISOString();
       data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
-      saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+      // Enter a notice
+      var editedSectionValue = {title: 'Correction notice', markdown: ''};
+      var saveContent = function (updatedContent) {
+        data[field][data[field].length - 1].correctionNotice = updatedContent;
+        saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+      };
+      loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
       $("#add-" + idField).remove();
     }, function (response) {
       if (response.status === 409) {
@@ -49,14 +55,69 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
   // Load
   $(data[field]).each(function (index) {
     dateTmp = data[field][index].updateDate;
-    var dateTmpCorr = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#correction-date_' + index).val(dateTmpCorr).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
-      templateData[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
+    // ORIGINAL TIME PICKER CODE
+    // var dateTmpCorr = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    // $('#correction-date_' + index).val(dateTmpCorr).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    //  data[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
+    //  templateData[field][index].updateDate = new Date($('#correction-date_' + index).datepicker('getDate')).toISOString();
+    //  saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+    // });
+
+
+    var monthName = new Array();
+    monthName[0] = "January";
+    monthName[1] = "February";
+    monthName[2] = "March";
+    monthName[3] = "April";
+    monthName[4] = "May";
+    monthName[5] = "June";
+    monthName[6] = "July";
+    monthName[7] = "August";
+    monthName[8] = "September";
+    monthName[9] = "October";
+    monthName[10] = "November";
+    monthName[11] = "December";
+    //var n = monthName[theDateTime.getMonth()];
+
+    theDateTime = new Date(dateTmp);
+    theYear = theDateTime.getFullYear();
+    theMonth = monthName[theDateTime.getMonth()];
+    theDay = addLeadingZero(theDateTime.getDate());
+    theHours = addLeadingZero(theDateTime.getHours());
+    theMinutes = addLeadingZero(theDateTime.getMinutes());
+    //console.log(theHours +':'+ theMinutes);
+
+    var dateTimeInputString = theDay + ' ' + theMonth + ' ' + theYear + ' ' + theHours +':' + theMinutes;
+
+    function addLeadingZero(number){
+      var number = '0' + number;
+      number = number.slice(-2);
+      return number;
+    }
+
+    $('#correction-date_' + index).val(dateTimeInputString).datetimepicker({
+        dateFormat: 'dd MM yy',
+        controlType: 'select',
+        oneLine: true,
+        timeFormat: 'HH:mm'
+      });
+    //$('#correction-date_' + index).datetimepicker('setDate', new Date(dateTmp));
+
+
+
+    ///////////look at me
+
+    $('body').on('click', '#done-button', function () {
+      data[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
+      templateData[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
       saveCorrection(collectionId, data.uri, data, templateData, field, idField);
     });
+
+
+
     $('#' + idField + '-edit_' + index).click(function () {
-      var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
+      var markdown = $('#' + idField + '-markdown_' + index).val();
+      var editedSectionValue = {title: 'Correction notice', markdown: markdown};
       var saveContent = function (updatedContent) {
         data[field][index].correctionNotice = updatedContent;
         templateData[field][index].correctionNotice = updatedContent;

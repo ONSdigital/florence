@@ -7,10 +7,6 @@ function viewReleaseSelector() {
   $('body').append(html);
 
   var releases = [];
-
-  // todo: remove past releases once release calendar migration is complete.
-  // currently loading both past and future releases into the list while migrating
-  PopulateReleasesForUri("/releasecalendar/data", releases);
   PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
 
   $('.btn-release-selector-cancel').on('click', function () {
@@ -19,8 +15,6 @@ function viewReleaseSelector() {
 
   $('#release-search-input').on('input', function () {
     var searchText = $(this).val();
-    console.log('yo');
-    console.log(releases);
     populateReleasesList(releases, searchText)
   });
 
@@ -46,14 +40,14 @@ function viewReleaseSelector() {
    */
   function populateRemainingReleasePages(data, releases, baseReleaseUri) {
     var pageSize = 10;
-    _(data.results).each(function (release) {
+    _(data.result.results).each(function (release) {
       releases.push(release);
     });
 
     // if there are more results than the existing page size, go get them.
-    if (data.numberOfResults > pageSize) {
+    if (data.result.numberOfResults > pageSize) {
 
-      var pagesToGet = Math.ceil((data.numberOfResults - pageSize) / pageSize);
+      var pagesToGet = Math.ceil((data.result.numberOfResults - pageSize) / pageSize);
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
       for (var i = 2; i < pagesToGet + 2; i++) {
@@ -82,7 +76,7 @@ function viewReleaseSelector() {
       url: baseReleaseUri + '&page=' + i,
       type: "get",
       success: function (data) {
-        _(data.results).each(function (release) {
+        _(data.result.results).each(function (release) {
           releases.push(release);
         });
         dfd.resolve();
@@ -107,7 +101,7 @@ function viewReleaseSelector() {
       return release.description.releaseDate
     }))
       .each(function (release) {
-        if (!filter || (release.description.title.indexOf(filter) > -1)) {
+        if (!filter || (release.description.title.toUpperCase().indexOf(filter.toUpperCase()) > -1)) {
           var date = StringUtils.formatIsoFullDateString(release.description.releaseDate);
           releaseList.append('<tr data-id="' + release.description.title + '" data-uri="' + release.uri + '"><td>' + release.description.title + '</td><td>' + date + '</td></tr>');
         }

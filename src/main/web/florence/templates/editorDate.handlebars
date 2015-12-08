@@ -7,10 +7,11 @@
     <div id="sortable-{{idField}}" class="edit-section__sortable">
       {{#each list}}
         <div id="{{@index}}" class="edit-section__item">
-          <div class="edit-section__sortable-item-counter float-left">{{plus @index 1}}</div>
           <div id="previousDate_{{@index}}">{{this.previousDate}}</div>
           <textarea style="display: none;" id="{{../idField}}-markdown_{{@index}}">{{this.changeNotice}}</textarea>
-          <button class="btn-markdown-edit" id="{{../idField}}-note_{{@index}}">Edit notice</button>
+          <div class="edit-section__buttons">
+            <button class="btn-markdown-edit" id="{{../idField}}-note_{{@index}}">Edit notice</button>
+          </div>
         </div>
       {{/each}}
     </div>

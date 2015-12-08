@@ -2,6 +2,7 @@ function methodologyDownloadEditor(collectionId, data) {
 
   var newFiles = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -26,17 +27,14 @@ function methodologyDownloadEditor(collectionId, data) {
   $("#compilation-p").remove();
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
-  $(".release-date").remove();
+  $(".lastRevised-p").remove();
   $("#reference-p").remove();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   if (!data.description.contact) {
     data.description.contact = {};
@@ -65,19 +63,19 @@ function methodologyDownloadEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
-  if (!data.description.lastRevised) {
-    $('#lastRevised').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.lastRevised = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+  if (!data.description.releaseDate) {
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
       clearTimeout(timeoutId);
       timeoutId = setTimeout(function () {
         autoSaveMetadata(collectionId, data);
       }, 3000);
     });
   } else {
-    dateTmp = data.description.lastRevised;
+    dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#lastRevised').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.lastRevised = new Date($('#lastRevised').datepicker('getDate')).toISOString();
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
       clearTimeout(timeoutId);
       timeoutId = setTimeout(function () {
         autoSaveMetadata(collectionId, data);
@@ -111,24 +109,20 @@ function methodologyDownloadEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Sections
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
@@ -139,6 +133,8 @@ function methodologyDownloadEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 

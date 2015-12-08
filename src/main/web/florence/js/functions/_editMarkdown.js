@@ -81,7 +81,13 @@ function initialiseMarkdown(collectionId, data, field, idField) {
   });
 
   function sortable() {
-    $('#sortable-' + idField).sortable();
+    $('#sortable-' + idField).sortable({
+      stop: function(){
+        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
+          $(this).empty().append(index + 1);
+        });
+      }
+    });
   }
   sortable();
 }
@@ -91,8 +97,8 @@ function saveMarkdown (collectionId, path, data, field, idField) {
         success = function () {
             Florence.Editor.isDirty = false;
             refreshMarkdown (collectionId, data, field, idField);
-            refreshChartList(data, collectionId);
-            refreshTablesList(data, collectionId);
+            refreshChartList(collectionId, data);
+            refreshTablesList(collectionId, data);
         },
         error = function (response) {
             if (response.status === 400) {

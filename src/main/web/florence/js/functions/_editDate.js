@@ -41,7 +41,8 @@ function initialiseNoteMarkdown(collectionId, data, templateData, field, idField
   // Load
   $(data[field]).each(function (index) {
     $('#' + idField + '-note_' + index).click(function () {
-      var editedSectionValue = $('#' + idField + '-markdown_' + index).val();
+      var markdown = $('#' + idField + '-markdown_' + index).val();
+      var editedSectionValue = {title: 'Note', markdown: markdown};
       var saveContent = function (updatedContent) {
         data[field][index].changeNotice = updatedContent;
         templateData[field][index].changeNotice = updatedContent;

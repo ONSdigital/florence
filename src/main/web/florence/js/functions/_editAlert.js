@@ -45,7 +45,8 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
       templateData[field][index].date = new Date($('#date_' + index).datepicker('getDate')).toISOString();
     });
     $('#' + idField + '-edit_' + index).click(function () {
-      var editedSectionValue = data[field][index].markdown;
+      var editedSectionValue = {title: 'Alert notice', markdown: data[field][index].markdown};
+      //var editedSectionValue = data[field][index].markdown;
       var saveContent = function (updatedContent) {
         data[field][index].markdown = updatedContent;
         templateData[field][index].markdown = updatedContent;
@@ -62,7 +63,7 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
     }
 
     if (data.type === 'dataset_landing_page' || data.type === 'compendium_landing_page') {
-      $('#correction-container_' + index).append('<label for="correction-alert' + index + '">Correction' +
+      $('#correction-container_' + index).append('<label for="correction-alert_' + index + '">Correction' +
         '<input id="correction-alert_' + index + '" type="checkbox" value="value" ' + correctionCheck + '/></label>');
     }
 
@@ -105,7 +106,13 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
     });
   });
   function sortable() {
-    $('#sortable-' + idField).sortable();
+    $('#sortable-' + idField).sortable({
+      stop: function(){
+        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
+          $(this).empty().append(index + 1);
+        });
+      }
+    });
   }
 
   sortable();

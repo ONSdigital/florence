@@ -9,7 +9,10 @@ function viewReportDetails(collection) {
     return end - start;
   })();
   var starting = StringUtils.formatIsoFullSec(success.transaction.startDate);
-  var details = {name: collection.name, date: collection.formattedDate, starting: starting, duration: duration, success: success};
+  var verifiedCount = collection.verifiedCount;
+  var verifyFailedCount = collection.verifyFailedCount;
+  var verifyInprogressCount = collection.verifyInprogressCount;
+  var details = {name: collection.name, verifiedCount: verifiedCount, verifyInprogressCount: verifyInprogressCount, verifyFailedCount:verifyFailedCount, date: collection.formattedDate, starting: starting, duration: duration, success: success};
 
   var reportDetails = templates.reportDetails(details);
   $('.publish-selected').html(reportDetails);
