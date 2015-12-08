@@ -21,8 +21,10 @@ function initialiseChartList(collectionId, data) {
     var chartPath = basePath + '/' + chart.filename;
     var chartJson = chartPath;
 
-    $("#chart-copy_" + index).click(function () {
-      copyToClipboard('#chart-to-be-copied_' + index);
+    var client = new ZeroClipboard($("#chart-copy_" + index));
+    client.on("copy", function (event) {
+      var clipboard = event.clipboardData;
+      clipboard.setData("text/plain", $('#chart-to-be-copied_' + index).text());
     });
 
     $("#chart-edit_" + index).click(function () {
@@ -87,6 +89,7 @@ function initialiseChartList(collectionId, data) {
   function sortable() {
     $('#sortable-chart').sortable();
   }
+
   sortable();
 }
 
