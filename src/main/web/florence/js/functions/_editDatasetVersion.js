@@ -124,11 +124,6 @@ function editDatasetVersion(collectionId, data, field, idField) {
         return;
       }
 
-      if (versionLabel.length < 4) {
-        sweetAlert("This is not a valid file title");
-        return;
-      }
-
       if (formdata) {
         $.ajax({
           url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
@@ -244,10 +239,13 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
       });
     }
     $('#' + idField + '-edit-label_' + index).click(function () {
-      var markdown = $('#' + idField + '-markdown-label_' + index).val();
+      var markdown = data[field][index].label ? data[field][index].label : "";
       var editedSectionValue = {title: 'Label content', markdown: markdown};
       var saveContent = function (updatedContent) {
         data[field][index].label = updatedContent;
+        if (index === data[field].length - 1) {
+          data.description.versionLabel = updatedContent;
+        }
         saveDatasetVersion(collectionId, data.uri, data, field, idField);
       };
       loadMarkdownEditor(editedSectionValue, saveContent, data);
