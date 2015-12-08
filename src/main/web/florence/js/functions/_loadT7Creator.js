@@ -36,15 +36,15 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler() {
-    if (pageType === 'static_qmi' || pageType === 'static_methodology' || pageType === 'static_methodology_download') {
+    if (pageType === 'static_qmi' || pageType === 'static_methodology') {
       $('.edition').append(
         '<br>' +
         '<label for="releaseDate">Last revised</label>' +
         '<input id="releaseDate" type="text" placeholder="day month year" />'
       );
+
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
-    }
-    else if (pageType === 'static_adhoc') {
+    } else if (pageType === 'static_adhoc') {
       $('.edition').append(
         '<label for="releaseDate">Release date</label>' +
         '<input id="releaseDate" type="text" placeholder="day month year" />' +
@@ -103,7 +103,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       } else if (releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
         date = new Date(releaseDate);
         pageData.description.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
-      } else if (!releaseDate && (pageType === 'static_qmi' || pageType === 'static_methodology' || pageType === 'static_methodology_download')) {
+      } else if (!releaseDate && (pageType === 'static_qmi' || pageType === 'static_methodology')) {
         pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
       } else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
@@ -182,7 +182,7 @@ function pageTypeDataT7(pageType) {
           "email": "",
           "phone": ""
         },
-        "lastRevised": "",
+        "releaseDate": "",
         "keywords": [],
         "metaDescription": ""
       },

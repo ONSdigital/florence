@@ -2,6 +2,7 @@ function datasetLandingEditor(collectionId, data) {
 
   var newDatasets = [], newRelatedDocuments = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -19,12 +20,9 @@ function datasetLandingEditor(collectionId, data) {
 
   // Metadata edition and saving
   $("#title").on('input', function () {
+    renameUri = true;
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
@@ -144,24 +142,20 @@ function datasetLandingEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     // Datasets are uploaded. Save metadata
     var orderDataset = $("#sortable-edition").sortable('toArray');
     $(orderDataset).each(function (indexF, nameF) {
@@ -193,6 +187,8 @@ function datasetLandingEditor(collectionId, data) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
 
@@ -204,12 +200,12 @@ function resolveTitleT8(collectionId, data, field) {
     var eachUri = path.uri;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
-      success = function (response) {
+      function (response) {
         templateData[field][index].description.edition = response.edition;
         templateData[field][index].uri = eachUri;
         dfd.resolve();
       },
-      error = function () {
+      function () {
         sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
         dfd.resolve();
       }
@@ -221,33 +217,46 @@ function resolveTitleT8(collectionId, data, field) {
     var dataTemplate = templateData[field];
     var html = templates.workEditT8LandingDatasetList(dataTemplate);
     $('#edition').replaceWith(html);
-    addEditionEditButton(collectionId, templateData);
+    addEditionEditButton(collectionId, data, templateData);
   });
 }
 
-function addEditionEditButton(collectionId, templateData) {
+function addEditionEditButton(collectionId, data, templateData) {
   // Load dataset to edit
   $(templateData.datasets).each(function (index) {
     //open document
-    var selectedEdition = $("#edition_" + index).attr('edition-url');
     $("#edition-edit_" + index).click(function () {
+      var selectedEdition = data.datasets[index].uri;
       createWorkspace(selectedEdition, collectionId, 'edit');
     });
 
     $('#edition-edit-label_' + index).click(function () {
+      var selectedEdition = data.datasets[index].uri;
       getPageData(collectionId, selectedEdition,
-        success = function (response) {
-          var pageData = response;
-          var editedSectionValue = pageData.description.edition;
+        function (pageData) {
+          var markdown = pageData.description.edition;
+          var editedSectionValue = {title: 'Edition title', markdown: markdown};
           var saveContent = function (updatedContent) {
             pageData.description.edition = updatedContent;
+            var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
             putContent(collectionId, pageData.uri, JSON.stringify(pageData),
-              success = function (message) {
-                console.log("Updating completed " + message);
-                viewWorkspace(pageData.uri, collectionId, 'edit');
-                refreshPreview(pageData.uri);
+              function () {
+                //save children changes and move
+                checkRenameUri(collectionId, pageData, true, updateContent);
+                //update dataset uri in parent and save
+                data.datasets[index].uri = data.uri + "/" + childTitle;
+                putContent(collectionId, data.uri, JSON.stringify(data),
+                  function () {},
+                  function (response) {
+                    if (response.status === 409) {
+                      sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                    } else {
+                      handleApiError(response);
+                    }
+                  }
+                );
               },
-              error = function (message) {
+              function (message) {
                 if (message.status === 400) {
                   sweetAlert("Cannot edit this page", "It is already part of another collection.");
                 }
@@ -255,14 +264,51 @@ function addEditionEditButton(collectionId, templateData) {
                   handleApiError(message);
                 }
               }
-            )
+            );
           };
           loadMarkdownEditor(editedSectionValue, saveContent, pageData);
         },
-        error = function (message) {
+        function (message) {
           handleApiError(message);
         }
-      )
+      );
+    });
+
+    // Delete (assuming datasets in makeEditSection - not dynamic fields here)
+    $('#edition-delete_' + index).click(function () {
+      swal({
+        title: "Warning",
+        text: "Are you sure you want to delete this edition?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function (result) {
+        if (result === true) {
+          swal({
+            title: "Deleted",
+            text: "This edition has been deleted",
+            type: "success",
+            timer: 2000
+          });
+          var position = $(".workspace-edit").scrollTop();
+          Florence.globalVars.pagePos = position;
+          $('#edition-delete_' + index).parent().remove();
+          $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + data.datasets[index].uri,
+            type: "DELETE",
+            success: function (res) {
+              console.log(res);
+            },
+            error: function (res) {
+              console.log(res);
+            }
+          });
+          data.datasets.splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
+      });
     });
   });
 

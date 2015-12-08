@@ -4,15 +4,22 @@
 
     <p>Edit existing tables</p>
   </div>
-  <div class="edit-section__content">
-    <div id="table-list" class="edit-section__sortable">
-        {{#each this.tables}}
-          <div id="table_{{filename}}" class="edit-section__item">
-            <div class="edit-section__item__title">{{title}}</div>
-            <button class="btn-markdown-edit" id="table-edit_{{filename}}">Edit</button>
-            <button class="btn-page-delete" id="table-delete_{{filename}}">Delete</button>
+  <div id="table-list" class="edit-section__content">
+    <div id="sortable-table" class="edit-section__sortable">
+      {{#each this.tables}}
+        <div id="{{@index}}" class="edit-section__sortable-item">
+          <div class="edit-section__title">{{title}}</div>
+          <div id="table-to-be-copied_{{@index}}" style="display: none">&ltons-table path="{{filename}}" /&gt</div>
+          <div class="edit-section__buttons">
+            <button class="btn-markdown-edit" id="table-copy_{{@index}}">Copy</button>
+            <button class="btn-markdown-edit" id="table-edit_{{@index}}">Edit</button>
+            <button class="btn-page-delete" id="table-delete_{{@index}}">Delete</button>
           </div>
-        {{/each}}
+        </div>
+      {{/each}}
+    </div>
+    <div class="text-center">
+      <button class="btn-add-section" id="add-table">Add table</button>
     </div>
   </div>
 </div>
