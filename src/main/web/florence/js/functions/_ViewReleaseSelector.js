@@ -40,14 +40,14 @@ function viewReleaseSelector() {
    */
   function populateRemainingReleasePages(data, releases, baseReleaseUri) {
     var pageSize = 10;
-    _(data.results).each(function (release) {
+    _(data.result.results).each(function (release) {
       releases.push(release);
     });
 
     // if there are more results than the existing page size, go get them.
-    if (data.numberOfResults > pageSize) {
+    if (data.result.numberOfResults > pageSize) {
 
-      var pagesToGet = Math.ceil((data.numberOfResults - pageSize) / pageSize);
+      var pagesToGet = Math.ceil((data.result.numberOfResults - pageSize) / pageSize);
       var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
 
       for (var i = 2; i < pagesToGet + 2; i++) {
@@ -76,7 +76,7 @@ function viewReleaseSelector() {
       url: baseReleaseUri + '&page=' + i,
       type: "get",
       success: function (data) {
-        _(data.results).each(function (release) {
+        _(data.result.results).each(function (release) {
           releases.push(release);
         });
         dfd.resolve();
