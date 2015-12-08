@@ -84,7 +84,7 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
     theMonth = monthName[theDateTime.getMonth()];
     theDay = addLeadingZero(theDateTime.getDate());
     theHours = addLeadingZero(theDateTime.getHours());
-    theMinutes = theDateTime.getMinutes();
+    theMinutes = addLeadingZero(theDateTime.getMinutes());
     //console.log(theHours +':'+ theMinutes);
 
     var dateTimeInputString = theDay + ' ' + theMonth + ' ' + theYear + ' ' + theHours +':' + theMinutes;
