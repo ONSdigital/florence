@@ -5,13 +5,13 @@
 <div class="section-content">
   <ul class="page-list">
     {{#each members}}
-      <li>{{email}}</li>
+      <li>{{this}}</li>
     {{/each}}
   </ul>
 </div>
 
 <nav class="section-nav">
-  <button class="btn-user-change-password btn-collection-work-on">Add/remove users</button>
-  <button class="btn-user-delete btn-page-delete">Delete team</button>
-  <button class="btn-user-cancel btn-collection-cancel">Cancel</button>
+  <button class="btn-team-edit-members btn-collection-work-on">Add/remove members</button>
+  <button class="btn-team-delete btn-page-delete">Delete team</button>
+  <button class="btn-team-cancel btn-collection-cancel">Cancel</button>
 </nav>
