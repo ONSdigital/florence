@@ -1,15 +1,16 @@
 function postTeam(name) {
 
+  var encodedName = encodeURIComponent(name);
   $.ajax({
-    url: "/zebedee/teams" + name,
-    //dataType: 'json',
-    //contentType: 'application/json',
+    url: "/zebedee/teams/" + encodedName,
+    dataType: 'json',
+    contentType: 'application/json',
     type: 'POST',
-    //data: JSON.stringify({
-    //  name: name
-    //}),
+    data: JSON.stringify({
+      name: encodedName
+    }),
     success: function () {
-      console.log('Team created');
+      viewTeams();
     },
     error: function (response) {
       handleUserPostError(response);
@@ -33,16 +34,17 @@ function postTeam(name) {
 }
 
 function postTeamMember(name, email) {
+  var encodedName = encodeURIComponent(name);
   $.ajax({
-    url: "/zebedee/teams" + name + "?email=" + email,
-    //dataType: 'json',
-    //contentType: 'application/json',
+    url: "/zebedee/teams/" + encodedName + "?email=" + email,
+    dataType: 'json',
+    contentType: 'application/json',
     type: 'POST',
-    //data: JSON.stringify({
-    //  name: name
-    //}),
+    data: JSON.stringify({
+      name: email
+    }),
     success: function () {
-      console.log('Team member added');
+      console.log('Team member added: ' + email);
     },
     error: function (response) {
       handleUserPostError(response);

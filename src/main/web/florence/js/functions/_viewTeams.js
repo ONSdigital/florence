@@ -15,17 +15,11 @@ function viewTeams() {
     var teamsHtml = templates.teamList(data);
     $('.section').html(teamsHtml);
 
-    //if (collectionId) {
-    //  $('.collections-select-table tr[data-id="' + collectionId + '"]')
-    //    .addClass('selected');
-    //  viewCollectionDetails(collectionId);
-    //}
-
     $('.collections-select-table tbody tr').click(function () {
       $('.collections-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
       var teamId = $(this).attr('data-id');
-      viewUserDetails(teamId);
+      viewTeamDetails(teamId);
     });
 
     $('.form-create-team').submit(function (e) {
@@ -38,7 +32,7 @@ function viewTeams() {
         return;
       }
 
-      postTeam(name);
+      postTeam(teamName);
     });
   }
 }
