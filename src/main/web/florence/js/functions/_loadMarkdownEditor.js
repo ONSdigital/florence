@@ -80,6 +80,13 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     });
   });
 
+  $(".btn-markdown-editor-embed").click(function() {
+    console.log("embed");
+    loadEmbedIframe(function(markdown) {
+      onInsertSave('', markdown);
+    });
+  });
+
   $("#wmd-input").on('click', function () {
     markDownEditorSetLines();
   });
@@ -141,6 +148,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
 function markdownEditor() {
 
+
   var converter = new Markdown.getSanitizingConverter();
 
   // output chart tag as text instead of the actual tag.
@@ -160,6 +168,8 @@ function markdownEditor() {
     });
     return newText;
   });
+
+  //TODO output interactive tag as text in preview
 
   Markdown.Extra.init(converter, {
     extensions: "all"
