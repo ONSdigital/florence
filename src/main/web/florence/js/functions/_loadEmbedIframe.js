@@ -7,16 +7,20 @@ function loadEmbedIframe(onSave) {
 
     // variables
     var modal = $(".modal");
-    var iframeId = Math.floor(Math.random()*99999) + 10000;
 
+    // modal functions
     function closeModal() {
         modal.remove();
     }
-
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
-        onSave('<ons-interactive url="' + embedUrl + '" id="interactive-' + iframeId + '" />');
-        modal.remove();
+        if (!embedUrl) {
+            console.log("No url added");
+            sweetAlert('URL field is empty', 'Please add a url and save again');
+        } else {
+            onSave('<ons-interactive url="' + embedUrl + '" />');
+            modal.remove();
+        }
     }
 
     // bind events

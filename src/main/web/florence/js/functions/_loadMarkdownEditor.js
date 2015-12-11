@@ -169,7 +169,14 @@ function markdownEditor() {
     return newText;
   });
 
-  //TODO output interactive tag as text in preview
+  // output table tag as text instead of the actual tag.
+  converter.hooks.chain("preBlockGamut", function (text) {
+    var newText = text.replace(/(<ons-interactive\surl="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+      var path = $(match).attr('url');
+      return '[interactive url="' + path + '" ]';
+    });
+    return newText;
+  });
 
   Markdown.Extra.init(converter, {
     extensions: "all"
