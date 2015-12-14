@@ -3,7 +3,7 @@ function editCollection (collection) {
   getTeams(
     success = function (teams) {
       var editPublishTime, toIsoDate;
-      var editTeamOption = [] //collection.teams;
+      var editTeamOption = []; //collection.teams;
       var collDetails = $('.section-content').detach();
       var html = templates.collectionEdit({collection: collection, teams: teams.teams});
       $('.section-head').after(html);

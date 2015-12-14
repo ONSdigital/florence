@@ -1,4 +1,4 @@
-function postUser(name, email, password) {
+function postUser(name, email, password, isEditor) {
 
   $.ajax({
     url: "/zebedee/users",
@@ -45,7 +45,7 @@ function postUser(name, email, password) {
       error = null,
       email = email,
       admin = false,
-      editor = true);
+      editor = isEditor);
   }
 
   /**

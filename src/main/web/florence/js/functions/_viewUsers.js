@@ -13,19 +13,25 @@ function viewUsers(view) {
   function populateUsersTable(data) {
 
     var usersHtml = templates.userList(data);
+    var isEditor = false;
     $('.section').html(usersHtml);
 
-    //if (collectionId) {
-    //  $('.collections-select-table tr[data-id="' + collectionId + '"]')
-    //    .addClass('selected');
-    //  viewCollectionDetails(collectionId);
-    //}
 
     $('.collections-select-table tbody tr').click(function () {
       $('.collections-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
       var userId = $(this).attr('data-id');
       viewUserDetails(userId);
+    });
+
+    $('.radioBtnDiv').change(function () {
+      if($('input:checked').val() === 'publisher') {
+        isEditor = true;
+        alert(isEditor);
+      } else {
+        isEditor = false;
+        alert(isEditor);
+      }
     });
 
     $('.form-create-user').submit(function (e) {
@@ -49,8 +55,7 @@ function viewUsers(view) {
         sweetAlert("Please enter the users password.");
         return;
       }
-
-      postUser(username, email, password);
+      postUser(username, email, password, isEditor);
     });
   }
 }
