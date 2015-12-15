@@ -27,10 +27,8 @@ function viewUsers(view) {
     $('.radioBtnDiv').change(function () {
       if($('input:checked').val() === 'publisher') {
         isEditor = true;
-        alert(isEditor);
       } else {
         isEditor = false;
-        alert(isEditor);
       }
     });
 
@@ -56,6 +54,7 @@ function viewUsers(view) {
         return;
       }
       postUser(username, email, password, isEditor);
+      viewUsers();
     });
   }
 }
