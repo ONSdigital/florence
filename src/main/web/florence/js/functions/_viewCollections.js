@@ -61,7 +61,6 @@ function viewCollections(collectionId) {
     });
 
     $("#team-tag").tagit({
-      availableTags: result.data.teams,  //collection.teams;
       singleField: true,
       singleFieldNode: $('#team-input')
     });
