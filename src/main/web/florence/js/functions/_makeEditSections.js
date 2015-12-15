@@ -52,7 +52,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
-    editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
+    editRelated (collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');   //2b deleted
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
@@ -79,7 +79,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
-    editRelated (collectionId, pageData, templateData, 'relatedArticles', 'article');
+    editRelated (collectionId, pageData, templateData, 'relatedArticles', 'article');   //2b deleted
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedData', 'data');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
@@ -247,6 +247,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    //editTopics (collectionId, pageData, templateData, 'topics', 'topics');  //ready 2b used
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     methodologyEditor(collectionId, pageData);
