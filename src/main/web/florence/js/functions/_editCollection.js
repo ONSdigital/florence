@@ -3,7 +3,7 @@ function editCollection (collection) {
   getTeams(
     success = function (teams) {
       var editPublishTime, toIsoDate;
-      var editTeamOption = []; //collection.teams;
+      var collectionTeam = []; //collection.teams;
       var collDetails = $('.section-content').detach();
       var html = templates.collectionEdit({collection: collection, teams: teams.teams});
       $('.section-head').after(html);
@@ -14,7 +14,7 @@ function editCollection (collection) {
       });
 
       $("#editor-team-tag").tagit({
-        availableTags: editTeamOption,
+        availableTags: collection.teams,
         singleField: true,
         singleFieldNode: $('#editor-team-input')
       });
@@ -26,8 +26,7 @@ function editCollection (collection) {
       });
 
       $('#editor-team-input').change(function () {
-        teams = $('#editor-team-input').val().split(',');   //2b passed 2 the collection
-        console.log(teams);
+        collection.teams = $('#editor-team-input').val().split(',');   //2b passed 2 the collection
       });
 
       if (!collection.publishDate) {

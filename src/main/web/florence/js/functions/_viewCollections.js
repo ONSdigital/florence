@@ -61,7 +61,7 @@ function viewCollections(collectionId) {
     });
 
     $("#team-tag").tagit({
-      //availableTags: teamOption,    //for the edition
+      availableTags: result.data.teams,  //collection.teams;
       singleField: true,
       singleFieldNode: $('#team-input')
     });
@@ -73,8 +73,7 @@ function viewCollections(collectionId) {
     });
 
     $('#team-input').change(function () {
-      teams = $('#team-input').val().split(',');   //2b passed 2 the collection
-      console.log(teams);
+      teams = $('#team-input').val().split(',');
     });
 
     $('form input[type=radio]').click(function () {
@@ -97,7 +96,7 @@ function viewCollections(collectionId) {
         return [false];
       }
       return [true];
-    }
+    };
 
 
     $(function () {
@@ -118,7 +117,7 @@ function viewCollections(collectionId) {
 
     $('.form-create-collection').submit(function (e) {
       e.preventDefault();
-      createCollection();
+      createCollection(teams);
     });
   });
 }
