@@ -12,6 +12,13 @@ function refreshImagesList(collectionId, data) {
 
 function initialiseImagesList(collectionId, data) {
 
+  $('#add-image').click(function () {
+    loadImageBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshImagesList(collectionId, data);
+    });
+  });
+
   $(data.images).each(function (index, image) {
     var basePath = data.uri;
     var noExtension = image.uri.match(/^(.+?)(\.[^.]*$|$)/);
