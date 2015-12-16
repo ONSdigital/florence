@@ -227,6 +227,7 @@ function addEditionEditButton(collectionId, data, templateData) {
     //open document
     $("#edition-edit_" + index).click(function () {
       var selectedEdition = data.datasets[index].uri;
+      Florence.globalVars.activeTab = '';
       createWorkspace(selectedEdition, collectionId, 'edit');
     });
 
