@@ -109,7 +109,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
       }
 
-      if (pageName.length < 5) {
+      if (pageName.length < 4) {
         sweetAlert("This is not a valid file name");
       } else {
         saveContent(collectionId, safeNewUri, pageData);
