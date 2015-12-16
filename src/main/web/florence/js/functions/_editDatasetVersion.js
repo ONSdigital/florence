@@ -229,7 +229,7 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
     });
     if (idField === 'correction') {
       $('#' + idField + '-edit_' + index).click(function () {
-        var markdown = $('#' + idField + '-markdown_' + index).val();
+        var markdown = data[field][index].correctionNotice;
         var editedSectionValue = {title: 'Correction notice', markdown: markdown};
         var saveContent = function (updatedContent) {
           data[field][index].correctionNotice = updatedContent;
