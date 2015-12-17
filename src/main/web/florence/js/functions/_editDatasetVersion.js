@@ -139,25 +139,24 @@ function editDatasetVersion(collectionId, data, field, idField) {
             // create the new version/correction
             saveNewCorrection(collectionId, data.uri,
               function (response) {
-                var tmpDate = (new Date()).toISOString();           // it could use releaseDate
+                var tmpDate = Florence.collection.date ? Florence.collection.date : (new Date()).toISOString();
                 if (idField === "correction") {
                   data[field].push({
                     correctionNotice: " ",
-                    updateDate: data.description.releaseDate,
+                    updateDate: tmpDate,
                     uri: response,
                     label: versionLabel
                   });
                 } else {
                   data[field].push({
                     correctionNotice: "",
-                    updateDate: data.description.releaseDate,
+                    updateDate: tmpDate,
                     uri: response,
                     label: versionLabel
                   });
                   data.description.versionLabel = versionLabel; // only update the version label for versions not corrections.
                 }
                 data.downloads = [{file: fileNameNoSpace}];
-                data.description.releaseDate = tmpDate;
                 uploadedNotSaved.saved = true;
                 $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
                 $("#" + idField + '-section').remove();
