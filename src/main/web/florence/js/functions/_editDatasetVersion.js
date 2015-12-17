@@ -139,7 +139,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
             // create the new version/correction
             saveNewCorrection(collectionId, data.uri,
               function (response) {
-                var tmpDate = Florence.collection.date ? Florence.collection.date : (new Date()).toISOString();
+                var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
                 if (idField === "correction") {
                   data[field].push({
                     correctionNotice: " ",
@@ -147,6 +147,17 @@ function editDatasetVersion(collectionId, data, field, idField) {
                     uri: response,
                     label: versionLabel
                   });
+                  // Enter a notice
+                  var editedSectionValue = {title: 'Correction notice', markdown: ''};
+                  var saveContent = function (updatedContent) {
+                    data[field][data[field].length - 1].correctionNotice = updatedContent;
+                    data.downloads = [{file: fileNameNoSpace}];
+                    uploadedNotSaved.saved = true;
+                    $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+                    $("#" + idField + '-section').remove();
+                    saveDatasetVersion(collectionId, data.uri, data, field, idField);
+                  };
+                  loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
                 } else {
                   data[field].push({
                     correctionNotice: "",
@@ -155,12 +166,12 @@ function editDatasetVersion(collectionId, data, field, idField) {
                     label: versionLabel
                   });
                   data.description.versionLabel = versionLabel; // only update the version label for versions not corrections.
+                  data.downloads = [{file: fileNameNoSpace}];
+                  uploadedNotSaved.saved = true;
+                  $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+                  $("#" + idField + '-section').remove();
+                  saveDatasetVersion(collectionId, data.uri, data, field, idField);
                 }
-                data.downloads = [{file: fileNameNoSpace}];
-                uploadedNotSaved.saved = true;
-                $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
-                $("#" + idField + '-section').remove();
-                saveDatasetVersion(collectionId, data.uri, data, field, idField);
               }, function (response) {
                 if (response.status === 409) {
                   sweetAlert("You can add only one " + idField + " before publishing.");
