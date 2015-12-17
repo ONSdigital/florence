@@ -20,7 +20,7 @@ function editDocumentCorrection(collectionId, data, templateData, field, idField
       templateData[field] = [];
     }
     saveNewCorrection(collectionId, data.uri, function (response) {
-      var tmpDate = (new Date()).toISOString();
+      var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
       data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       // Enter a notice
