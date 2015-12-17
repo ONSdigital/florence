@@ -279,12 +279,12 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
             timer: 2000
           });
           var pathToDelete = data.uri;
-          var fileToDelete = pathToDelete + data.downloads[0].file;  //Saves always the latest
-          var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
+          var fileToDelete = pathToDelete + '/' + data.downloads[0].file;  //Saves always the latest
+          var uriToDelete = $('#' + idField + '-edition_' + index).attr(idField + '-url');
           deleteUnpublishedVersion(collectionId, uriToDelete, function () {
             var position = $(".workspace-edit").scrollTop();
             Florence.globalVars.pagePos = position;
-            $(this).parent().remove();
+            $('#' + idField + '-delete_' + index).parent().remove();
             // delete uploaded file
             deleteContent(collectionId, fileToDelete, function () {
               console.log("File deleted");
