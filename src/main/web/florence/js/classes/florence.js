@@ -39,7 +39,7 @@ Florence.Authentication = {
     return Florence.Authentication.accessToken() !== '';
   },
   loggedInEmail: function () {
-    return localStorage.getItem("loggedInAs")
+    return localStorage.getItem("loggedInAs");
   }
 };
 
