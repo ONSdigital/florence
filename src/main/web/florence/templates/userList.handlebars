@@ -8,7 +8,7 @@
     </tr>
     </thead>
     <tbody>
-    {{#each this}}
+    {{#each data}}
       <tr data-id="{{email}}">
         <td headers="username" class="collection-name">{{name}}</td>
         <td headers="password" class="collection-name">{{email}}</td>
@@ -25,10 +25,16 @@
     <input id="create-user-email" type="text" placeholder="Email" autocomplete="off"/>
     <input id="create-user-password" type="password" placeholder="Password" autocomplete="off"/>
     <div class="radioBtnDiv">
+      {{#if permission.admin}}
+      <input type="radio" id="admin-type" name="type" value="admin" required><label
+        for="admin-type">Administrator</label>
       <input type="radio" id="publisher-type" name="type" value="publisher" required><label
         for="publisher-type">Publisher</label>
+      {{/if}}
+      {{#if permission.editor}}
       <input type="radio" id="viewer-type" name="type" value="viewer" checked><label
         for="viewer-type">Viewer</label>
+      {{/if}}
       <br>
     </div>
     <button class="btn-collection-create">Create user</button>
