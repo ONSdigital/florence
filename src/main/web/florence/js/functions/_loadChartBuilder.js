@@ -90,7 +90,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         if (onSave) {
-          onSave(chart.filename, '<ons-chart path="' + chart.uri + '" />');
+          onSave(chart.filename, '<ons-chart path="' + chart.filename + '" />');
         }
         $('.chart-builder').stop().fadeOut(200).remove();
       }
