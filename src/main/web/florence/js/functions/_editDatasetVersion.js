@@ -230,13 +230,65 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
   var dataTemplate = {list: list, idField: idField, correction: correction};
   var html = templates.workEditT8VersionList(dataTemplate);
   $('#sortable-' + idField).replaceWith(html);
-  $(data[field]).each(function (index) {
-    dateTmp = data[field][index].updateDate;
-    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#' + idField + '-date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data[field][index].updateDate = new Date($('#' + idField + '-date_' + index).datepicker('getDate')).toISOString();
-      saveDatasetVersion(collectionId, data.uri, data, field, idField);
+
+    $(data[field]).each(function (index) {
+    //dateTmp = data[field][index].updateDate;
+    //var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    //$('#' + idField + '-date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    //  data[field][index].updateDate = new Date($('#' + idField + '-date_' + index).datepicker('getDate')).toISOString();
+    //  saveDatasetVersion(collectionId, data.uri, data, field, idField);
+    //});
+
+      dateTmp = data[field][index].updateDate;
+
+      var monthName = new Array();
+      monthName[0] = "January";
+      monthName[1] = "February";
+      monthName[2] = "March";
+      monthName[3] = "April";
+      monthName[4] = "May";
+      monthName[5] = "June";
+      monthName[6] = "July";
+      monthName[7] = "August";
+      monthName[8] = "September";
+      monthName[9] = "October";
+      monthName[10] = "November";
+      monthName[11] = "December";
+      //var n = monthName[theDateTime.getMonth()];
+
+      theDateTime = new Date(dateTmp);
+      theYear = theDateTime.getFullYear();
+      theMonth = monthName[theDateTime.getMonth()];
+      theDay = addLeadingZero(theDateTime.getDate());
+      theHours = addLeadingZero(theDateTime.getHours());
+      theMinutes = addLeadingZero(theDateTime.getMinutes());
+      //console.log(theHours +':'+ theMinutes);
+
+      var dateTimeInputString = theDay + ' ' + theMonth + ' ' + theYear + ' ' + theHours +':' + theMinutes;
+
+      function addLeadingZero(number){
+        var number = '0' + number;
+        number = number.slice(-2);
+        return number;
+      }
+
+    $('#' + idField + '-date_' + index).val(dateTimeInputString).datetimepicker({
+        dateFormat: 'dd MM yy',
+        controlType: 'select',
+        oneLine: true,
+        timeFormat: 'HH:mm',
+        onClose: function () {
+          function isDonePressed() {
+            return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+          }
+          if (isDonePressed()){
+            data[field][index].updateDate = new Date($('#' + idField + '-date_' + index).datetimepicker('getDate')).toISOString();
+            console.log("Run save " + index);
+            saveDatasetVersion(collectionId, data.uri, data, field, idField);
+          }
+        }
     });
+
     if (idField === 'correction') {
       $('#' + idField + '-edit_' + index).click(function () {
         var markdown = data[field][index].correctionNotice;
@@ -310,9 +362,11 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
       });
     });
   });
-}
+
+ }
 
 function saveDatasetVersion(collectionId, path, data, field, idField) {
+
   putContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;
