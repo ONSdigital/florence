@@ -26,7 +26,6 @@ function staticPageEditor(collectionId, data) {
   $("#geoCoverage-p").remove();
   $("#sampleSize-p").remove();
   $(".lastRevised-p").remove();
-  $(".release-date").remove();
   $("#reference-p").remove();
 
   // Metadata edition and saving
@@ -43,6 +42,25 @@ function staticPageEditor(collectionId, data) {
       autoSaveMetadata(collectionId, data);
     }, 3000);
   });
+  if (!data.description.releaseDate) {
+    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  } else {
+    dateTmp = data.description.releaseDate;
+    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+      data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function () {
+        autoSaveMetadata(collectionId, data);
+      }, 3000);
+    });
+  }
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
     singleField: true,
