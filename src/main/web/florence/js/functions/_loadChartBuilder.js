@@ -97,11 +97,11 @@ function loadChartBuilder(pageData, onSave, chart) {
     });
   });
 
-  setShortcuts('#chart-title');
-  setShortcuts('#chart-subtitle');
-  setShortcuts('#chart-data');
-  setShortcuts('#chart-x-axis-label');
-  setShortcuts('#chart-notes');
+  setShortcuts('#chart-title',renderText);
+  setShortcuts('#chart-subtitle',renderText);
+  setShortcuts('#chart-data',renderChart);
+  setShortcuts('#chart-x-axis-label',renderChart);
+  setShortcuts('#chart-notes',renderText);
 
   //Renders html outside actual chart area (title, subtitle, source, notes etc.)
   function renderText() {
