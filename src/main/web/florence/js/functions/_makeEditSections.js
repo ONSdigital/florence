@@ -197,9 +197,31 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
+    editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
     editLink (collectionId, pageData, 'links', 'link');
     accordion();
     staticPageEditor(collectionId, pageData);
+  }
+
+  else if (pageData.type === 'static_article') {
+    var html = templates.workEditT4Methodology(templateData);
+    $('.workspace-menu').html(html);
+    if (pageData.charts) {
+      loadChartsList(collectionId, pageData);
+    }
+    if (pageData.tables) {
+      loadTablesList(collectionId, pageData);
+    }
+    if (pageData.images) {
+      loadImagesList(collectionId, pageData);
+    }
+    editMarkdown (collectionId, pageData, 'sections', 'section');
+    editMarkdown (collectionId, pageData, 'accordion', 'tab');
+    editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
+    editLink (collectionId, pageData, 'links', 'link');
+    editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
+    accordion();
+    staticArticleEditor(collectionId, pageData);
   }
 
   else if (pageData.type === 'static_qmi') {
