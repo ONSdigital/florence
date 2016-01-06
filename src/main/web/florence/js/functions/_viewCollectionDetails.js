@@ -49,7 +49,7 @@ function viewCollectionDetails(collectionId) {
                 title: "Collection deleted",
                 type: "success",
                 timer: 2000
-              })
+              });
               viewCollections();
               },
               function (error) {
@@ -67,15 +67,13 @@ function viewCollectionDetails(collectionId) {
     if (collection.inProgress.length === 0
       && collection.complete.length === 0
       && collection.reviewed.length > 0) {
-      approve.show().click(function () {
-        $('.js').prepend(
-          "<div class='over'>" +
-          "<div class='hourglass'>" +
-          "<div class='top'></div>" +
-          "<div class='bottom'></div>" +
-          "</div>" +
-          "</div>");
+      approve.show().one('click', function () {
         postApproveCollection(collection.id);
+        swal ({
+          title: "Collection approval in progress. It can take some time. You will be redirected soon.",
+          type: "success",
+          timer: 5000
+        });
       });
     }
     else {
