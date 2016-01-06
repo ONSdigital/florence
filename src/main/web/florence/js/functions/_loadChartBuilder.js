@@ -32,6 +32,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         return templates.chartEditDualAxisExtras;
       case 'line':
         return templates.chartEditLineChartExtras;
+      case 'bar':
+      case 'rotated':
+        return templates.chartEditBarChartExtras;
       default:
         return;
     }
@@ -176,6 +179,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.altText = $('#chart-alt-text').val();
     chart.xAxisLabel = $('#chart-x-axis-label').val();
     chart.startFromZero = $('#start-from-zero').prop('checked');
+    chart.finishAtHundred = $('#finish-at-hundred').prop('checked');
 
     if (chart.title === '') {
       chart.title = '[Title]'
