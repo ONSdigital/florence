@@ -39,6 +39,8 @@ function createRelatedTemplate(idField, list) {
     dataTemplate = {list: list, idField: idField, idPlural: 'QMIs'};
   } else if (idField === 'methodology') {
     dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
+  } else if (idField === 'anchor') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'internal links'};
   } else {
     dataTemplate = {list: list, idField: idField};
   }
@@ -63,7 +65,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
           confirmButtonText: "Delete",
           cancelButtonText: "Cancel",
           closeOnConfirm: false
-        }, function(result) {
+        }, function (result) {
           if (result === true) {
             swal({
               title: "Deleted",
@@ -84,7 +86,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
               },
               error = function (response) {
                 if (response.status === 400) {
-                    sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
                 }
                 else {
                   handleApiError(response);
@@ -99,13 +101,13 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
   //Add
   $('#add-' + idField).off().one('click', function () {
-    var hasLatest = {hasLatest : false}; //Set to true if 'latest' checkbox should show
+    var hasLatest = {hasLatest: false}; //Set to true if 'latest' checkbox should show
     var latestCheck; //Populated with true/false later to check state of checkbox
     var position = $(".workspace-edit").scrollTop();
 
     if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights') {
-    hasLatest = {hasLatest : true};
-  }
+      hasLatest = {hasLatest: true};
+    }
 
     Florence.globalVars.pagePos = position;
     var modal = templates.relatedModal(hasLatest);
@@ -132,7 +134,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
       //Disable the editor
       $('body').append(
-          "<div class='col col--5 panel disabled'></div>"
+        "<div class='col col--5 panel disabled'></div>"
       );
 
       //Add buttons to iframe window
@@ -140,7 +142,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       $(iframeNav).hide().appendTo('.browser').fadeIn(600);
 
       //Take iframe window to homepage/root
-       $('#iframe').attr('src', '/');
+      $('#iframe').attr('src', '/');
 
       $('.btn-browse-cancel').off().one('click', function () {
         createWorkspace(data.uri, collectionId, 'edit');
@@ -149,7 +151,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
       });
 
       //Remove added markup if user navigates away from editor screen
-      $('a:not(.btn-browse-get)').click(function (){
+      $('a:not(.btn-browse-get)').click(function () {
         $('.iframe-nav').remove();
         $('.disabled').remove();
       });
@@ -167,13 +169,14 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
   // Make sections sortable
   function sortable() {
     $('#sortable-' + idField).sortable({
-      stop: function(){
-        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
+      stop: function () {
+        $('#' + idField + ' .edit-section__sortable-item--counter').each(function (index) {
           $(this).empty().append(index + 1);
         });
       }
     });
   }
+
   sortable();
 }
 
@@ -258,6 +261,13 @@ function getPage(collectionId, data, templateData, field, idField, latestCheck, 
       }
 
       else if (field === 'highlightedLinks' && (result.type === 'bulletin')) {
+        if (!data[field]) {
+          data[field] = [];
+          templateData[field] = [];
+        }
+      }
+
+      else if (field === 'anchors') {
         if (!data[field]) {
           data[field] = [];
           templateData[field] = [];
