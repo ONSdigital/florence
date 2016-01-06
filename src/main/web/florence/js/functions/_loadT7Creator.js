@@ -22,7 +22,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_methodology_download') && checkData.type === 'product_page') {
         submitFormHandler();
         return true;
-      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page') && checkData.type.match(/static_.+/)) {
+      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_article' || pageType === 'static_landing_page') && checkData.type.match(/static_.+/)) {
         submitFormHandler();
         return true;
       } else {
@@ -106,7 +106,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       } else if (!releaseDate && (pageType === 'static_qmi')) {
         pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
       } else if (!releaseDate) {
-        pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+        pageData.description.releaseDate = new Date().toISOString();
       }
 
       if (pageName.length < 4) {
