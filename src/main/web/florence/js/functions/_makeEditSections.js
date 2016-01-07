@@ -204,7 +204,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   }
 
   else if (pageData.type === 'static_article') {
-    var html = templates.workEditT4Methodology(templateData);
+    var html = templates.workEditT7StaticArticle(templateData);
     $('.workspace-menu').html(html);
     if (pageData.charts) {
       loadChartsList(collectionId, pageData);
@@ -216,7 +216,6 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
       loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
-    editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
     editLink (collectionId, pageData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');

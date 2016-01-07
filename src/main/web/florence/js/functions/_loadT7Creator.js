@@ -156,22 +156,13 @@ function pageTypeDataT7(pageType) {
         "title": "",
         "summary": "",
         "releaseDate": "",
-        "contact": {
-          "name": "",
-          "email": "",
-          "telephone": ""
-        },
         "keywords": [],
         "metaDescription": ""
       },
       "sections": [],
-      "accordion": [],
-      //"relatedDocuments": [],
-      //"relatedDatasets": [],
       "charts": [],
       "tables": [],
       "images": [],
-      "downloads": [],
       "anchors": [],
       "links": [],
       "alerts": [],
