@@ -3,6 +3,7 @@ FROM onsdigital/java-node-component
 # Add the build artifacts
 WORKDIR /usr/src
 ADD git_commit_id /usr/src/
+ADD ./target/dependency/newrelic /usr/src/target/dependency/newrelic
 ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
 ADD ./target/web /usr/src/target/web
 
