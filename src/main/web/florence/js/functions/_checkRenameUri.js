@@ -37,9 +37,11 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
             onSuccess = function () {
               Florence.globalVars.pagePath = newUri;
               onSave(collectionId, newUri, JSON.stringify(data));
+            },
+            onError = function () {
+              onSave(collectionId, data.uri, JSON.stringify(data));
             }
           );
-          console.log(newUri);
           // is it an adHoc?
         } else if (data.type === 'static_adhoc') {
           var titleNoSpace = data.description.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -51,9 +53,11 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
             onSuccess = function () {
               Florence.globalVars.pagePath = newUri;
               onSave(collectionId, newUri, JSON.stringify(data));
+            },
+            onError = function () {
+              onSave(collectionId, data.uri, JSON.stringify(data));
             }
           );
-          console.log(newUri);
         } else {
           var titleNoSpace = data.description.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
           var tmpNewUri = data.uri.split("/");
@@ -75,9 +79,11 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
             onSuccess = function () {
               Florence.globalVars.pagePath = newUri;
               onSave(collectionId, newUri, JSON.stringify(data));
+            },
+            onError = function () {
+              onSave(collectionId, data.uri, JSON.stringify(data));
             }
           );
-          console.log(newUri);
         }
       } else {
         refreshPreview(data.uri);
