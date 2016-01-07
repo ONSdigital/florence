@@ -156,6 +156,7 @@ function datasetLandingEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    clearTimeout(timeoutId);
     // Datasets are uploaded. Save metadata
     var orderDataset = $("#sortable-edition").sortable('toArray');
     $(orderDataset).each(function (indexF, nameF) {

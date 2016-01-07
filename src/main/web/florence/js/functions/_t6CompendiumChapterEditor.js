@@ -167,6 +167,7 @@ function compendiumChapterEditor(collectionId, data) {
 
 
   function save() {
+    clearTimeout(timeoutId);
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {

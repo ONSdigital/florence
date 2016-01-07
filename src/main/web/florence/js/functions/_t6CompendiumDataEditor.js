@@ -166,6 +166,7 @@ function compendiumDataEditor(collectionId, data) {
   });
 
   function save() {
+    clearTimeout(timeoutId);
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function (indexF, nameF) {
