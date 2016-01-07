@@ -46,33 +46,6 @@ function staticArticleEditor(collectionId, data) {
   //} else {
   //    $('.release-date').hide();
   //}
-  if (!data.description.contact) {
-    data.description.contact = {};
-  }
-  $("#contactName").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.contact.name = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-  $("#contactEmail").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.contact.email = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
-  $("#contactTelephone").on('input', function () {
-    $(this).textareaAutoSize();
-    data.description.contact.telephone = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
-  });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
@@ -131,14 +104,6 @@ function staticArticleEditor(collectionId, data) {
       newSections[indexS] = {title: title, markdown: markdown};
     });
     data.sections = newSections;
-    // Tabs
-    var orderTab = $("#sortable-tab").sortable('toArray');
-    $(orderTab).each(function (indexT, nameT) {
-      var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab-title_' + nameT).val();
-      newTabs[indexT] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {
