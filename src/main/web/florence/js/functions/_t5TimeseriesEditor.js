@@ -186,6 +186,7 @@ function timeseriesEditor(collectionId, data) {
 
 
   function save() {
+    clearTimeout(timeoutId);
     // Related documents
     var orderDocument = $("#sortable-document").sortable('toArray');
     $(orderDocument).each(function (indexD, nameD) {

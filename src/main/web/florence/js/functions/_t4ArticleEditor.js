@@ -67,7 +67,7 @@ function articleEditor(collectionId, data) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function () {
       autoSaveMetadata(collectionId, data);
-    }, 3000);
+    }, 10000);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
@@ -152,6 +152,7 @@ function articleEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    clearTimeout(timeoutId);
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {

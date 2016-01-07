@@ -78,6 +78,7 @@ function t3Editor(collectionId, data) {
   });
 
   function save() {
+    clearTimeout(timeoutId);
     // Timeseries
     var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
     $(orderTimeseries).each(function (indexT, titleT) {

@@ -177,6 +177,7 @@ function bulletinEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    clearTimeout(timeoutId);
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {
