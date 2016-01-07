@@ -73,6 +73,10 @@ function viewCollections(collectionId) {
 
     $('#team-input').change(function () {
       teams = $('#team-input').val().split(',');
+      //After creating the array tagit leaves an empty string if all elements are removed
+      if (teams.length === 1 && teams[0] === "") {
+        teams = [];
+      }
     });
 
     $('form input[type=radio]').click(function () {
