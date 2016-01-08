@@ -216,8 +216,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
       loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
-    editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
-    editLink (collectionId, pageData, 'links', 'link');
+    //editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
+    editIntLinks (collectionId, pageData, templateData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     staticArticleEditor(collectionId, pageData);

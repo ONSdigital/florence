@@ -137,9 +137,14 @@ function staticArticleEditor(collectionId, data) {
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {
-      var displayText = $('#link-markdown_' + nameL).val();
-      var link = $('#link-uri_' + nameL).val();
-      newLinks[indexL] = {uri: link, title: displayText};
+      if (data.links[parseInt(nameL)].title) {
+        var name = data.links[parseInt(nameL)].title;
+        var link = data.links[parseInt(nameL)].uri;
+        newLinks[indexL] = {uri: link, title: name};
+      } else {
+        var link = data.links[parseInt(nameL)].uri;
+        newLinks[indexL] = {uri: link};
+      }
     });
     data.links = newLinks;
     // Internal links

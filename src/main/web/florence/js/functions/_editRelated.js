@@ -39,8 +39,8 @@ function createRelatedTemplate(idField, list) {
     dataTemplate = {list: list, idField: idField, idPlural: 'QMIs'};
   } else if (idField === 'methodology') {
     dataTemplate = {list: list, idField: idField, idPlural: 'methodologies'};
-  } else if (idField === 'anchor') {
-    dataTemplate = {list: list, idField: idField, idPlural: 'internal links'};
+  } else if (idField === 'link') {
+    dataTemplate = {list: list, idField: idField, idPlural: 'links'};
   } else {
     dataTemplate = {list: list, idField: idField};
   }
@@ -267,7 +267,7 @@ function getPage(collectionId, data, templateData, field, idField, latestCheck, 
         }
       }
 
-      else if (field === 'anchors') {
+      else if (field === 'links') {
         if (!data[field]) {
           data[field] = [];
           templateData[field] = [];
