@@ -68,7 +68,9 @@ function editLink (collectionId, data, field, idField) {
       //TODO This function breaking when adding related link
       console.log(data);
       console.log(data[field]);
-
+    if (!data[field]) {
+      data[field] = [];
+    }
     data[field].push({uri:"", title:""});
     saveLink (collectionId, data.uri, data, field, idField);
   });
