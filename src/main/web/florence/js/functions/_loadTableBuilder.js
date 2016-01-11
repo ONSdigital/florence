@@ -156,7 +156,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
     saveTableJson(table, success=function() {
       if (onSave) {
-        onSave(table.filename, '<ons-table path="' + table.uri + '" />');
+        onSave(table.filename, '<ons-table path="' + table.filename + '" />');
       }
       $('.table-builder').stop().fadeOut(200).remove();
     });

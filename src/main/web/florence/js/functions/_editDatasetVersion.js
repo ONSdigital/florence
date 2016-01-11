@@ -139,29 +139,39 @@ function editDatasetVersion(collectionId, data, field, idField) {
             // create the new version/correction
             saveNewCorrection(collectionId, data.uri,
               function (response) {
-                var tmpDate = (new Date()).toISOString();           // it could use releaseDate
+                var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
                 if (idField === "correction") {
                   data[field].push({
                     correctionNotice: " ",
-                    updateDate: data.description.releaseDate,
+                    updateDate: tmpDate,
                     uri: response,
                     label: versionLabel
                   });
+                  // Enter a notice
+                  var editedSectionValue = {title: 'Correction notice', markdown: ''};
+                  var saveContent = function (updatedContent) {
+                    data[field][data[field].length - 1].correctionNotice = updatedContent;
+                    data.downloads = [{file: fileNameNoSpace}];
+                    uploadedNotSaved.saved = true;
+                    $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+                    $("#" + idField + '-section').remove();
+                    saveDatasetVersion(collectionId, data.uri, data, field, idField);
+                  };
+                  loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
                 } else {
                   data[field].push({
                     correctionNotice: "",
-                    updateDate: data.description.releaseDate,
+                    updateDate: tmpDate,
                     uri: response,
                     label: versionLabel
                   });
                   data.description.versionLabel = versionLabel; // only update the version label for versions not corrections.
+                  data.downloads = [{file: fileNameNoSpace}];
+                  uploadedNotSaved.saved = true;
+                  $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+                  $("#" + idField + '-section').remove();
+                  saveDatasetVersion(collectionId, data.uri, data, field, idField);
                 }
-                data.downloads = [{file: fileNameNoSpace}];
-                data.description.releaseDate = tmpDate;
-                uploadedNotSaved.saved = true;
-                $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
-                $("#" + idField + '-section').remove();
-                saveDatasetVersion(collectionId, data.uri, data, field, idField);
               }, function (response) {
                 if (response.status === 409) {
                   sweetAlert("You can add only one " + idField + " before publishing.");
@@ -220,16 +230,68 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
   var dataTemplate = {list: list, idField: idField, correction: correction};
   var html = templates.workEditT8VersionList(dataTemplate);
   $('#sortable-' + idField).replaceWith(html);
-  $(data[field]).each(function (index) {
-    dateTmp = data[field][index].updateDate;
-    var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#' + idField + '-date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data[field][index].updateDate = new Date($('#' + idField + '-date_' + index).datepicker('getDate')).toISOString();
-      saveDatasetVersion(collectionId, data.uri, data, field, idField);
+
+    $(data[field]).each(function (index) {
+    //dateTmp = data[field][index].updateDate;
+    //var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
+    //$('#' + idField + '-date_' + index).val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    //  data[field][index].updateDate = new Date($('#' + idField + '-date_' + index).datepicker('getDate')).toISOString();
+    //  saveDatasetVersion(collectionId, data.uri, data, field, idField);
+    //});
+
+      dateTmp = data[field][index].updateDate;
+
+      var monthName = new Array();
+      monthName[0] = "January";
+      monthName[1] = "February";
+      monthName[2] = "March";
+      monthName[3] = "April";
+      monthName[4] = "May";
+      monthName[5] = "June";
+      monthName[6] = "July";
+      monthName[7] = "August";
+      monthName[8] = "September";
+      monthName[9] = "October";
+      monthName[10] = "November";
+      monthName[11] = "December";
+      //var n = monthName[theDateTime.getMonth()];
+
+      theDateTime = new Date(dateTmp);
+      theYear = theDateTime.getFullYear();
+      theMonth = monthName[theDateTime.getMonth()];
+      theDay = addLeadingZero(theDateTime.getDate());
+      theHours = addLeadingZero(theDateTime.getHours());
+      theMinutes = addLeadingZero(theDateTime.getMinutes());
+      //console.log(theHours +':'+ theMinutes);
+
+      var dateTimeInputString = theDay + ' ' + theMonth + ' ' + theYear + ' ' + theHours +':' + theMinutes;
+
+      function addLeadingZero(number){
+        var number = '0' + number;
+        number = number.slice(-2);
+        return number;
+      }
+
+    $('#' + idField + '-date_' + index).val(dateTimeInputString).datetimepicker({
+        dateFormat: 'dd MM yy',
+        controlType: 'select',
+        oneLine: true,
+        timeFormat: 'HH:mm',
+        onClose: function () {
+          function isDonePressed() {
+            return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+          }
+          if (isDonePressed()){
+            data[field][index].updateDate = new Date($('#' + idField + '-date_' + index).datetimepicker('getDate')).toISOString();
+            console.log("Run save " + index);
+            saveDatasetVersion(collectionId, data.uri, data, field, idField);
+          }
+        }
     });
+
     if (idField === 'correction') {
       $('#' + idField + '-edit_' + index).click(function () {
-        var markdown = $('#' + idField + '-markdown_' + index).val();
+        var markdown = data[field][index].correctionNotice;
         var editedSectionValue = {title: 'Correction notice', markdown: markdown};
         var saveContent = function (updatedContent) {
           data[field][index].correctionNotice = updatedContent;
@@ -269,12 +331,12 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
             timer: 2000
           });
           var pathToDelete = data.uri;
-          var fileToDelete = pathToDelete + data.downloads[0].file;  //Saves always the latest
-          var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
+          var fileToDelete = pathToDelete + '/' + data.downloads[0].file;  //Saves always the latest
+          var uriToDelete = $('#' + idField + '-edition_' + index).attr(idField + '-url');
           deleteUnpublishedVersion(collectionId, uriToDelete, function () {
             var position = $(".workspace-edit").scrollTop();
             Florence.globalVars.pagePos = position;
-            $(this).parent().remove();
+            $('#' + idField + '-delete_' + index).parent().remove();
             // delete uploaded file
             deleteContent(collectionId, fileToDelete, function () {
               console.log("File deleted");
@@ -300,9 +362,11 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
       });
     });
   });
-}
+
+ }
 
 function saveDatasetVersion(collectionId, path, data, field, idField) {
+
   putContent(collectionId, path, JSON.stringify(data),
     function () {
       Florence.Editor.isDirty = false;

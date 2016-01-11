@@ -8,7 +8,7 @@
     </tr>
     </thead>
     <tbody>
-    {{#each this}}
+    {{#each response}}
       <tr data-id="{{id}}">
         <td headers="collection-name" class="collection-name">{{name}}</td>
         <td headers="collection-date" class="collection-date">{{date}}</td>
@@ -25,13 +25,15 @@
     <input id="collectionname" type="text" placeholder="Collection name"/>
     <label for="team" class="hidden">Select the team the collection can be previewed by</label>
     <div class="select-wrap">
-        <select id="team">
+      <select id="team">
         <option selected disabled="disabled">Select the team the collection can be previewed by</option>
-        <option value="Team1">Team 1</option>
-        <option value="Team2">Team 2</option>
-        <option value="Team3">Team 3</option>
+        {{#each teams}}
+          <option value="{{name}}">{{name}}</option>
+        {{/each}}
       </select>
     </div>
+    <ul id="team-tag"></ul>
+    <input type="text" class="hidden" id="team-input">
     <input type="radio" id="scheduledpublish" name="publishType" value="scheduled" checked><label
       for="scheduledpublish">Scheduled publish</label>
     <input type="radio" id="manualpublish" name="publishType" value="manual" required><label for="manualpublish">Manual

@@ -312,6 +312,7 @@ function releaseEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    clearTimeout(timeoutId);
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }

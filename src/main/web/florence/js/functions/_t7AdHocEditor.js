@@ -110,6 +110,7 @@ function adHocEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    clearTimeout(timeoutId);
     // Sections
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
