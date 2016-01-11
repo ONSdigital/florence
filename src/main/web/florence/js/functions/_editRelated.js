@@ -158,7 +158,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
       $('.btn-browse-get').off().one('click', function () {
         var dataUrl = getPathNameTrimLast();
-        var latestCheck = $('input[id="latest"]').prop('checked');
+        latestCheck = $('input[id="latest"]').prop('checked');
         $('.iframe-nav').remove();
         $('.disabled').remove();
         getPage(collectionId, data, templateData, field, idField, latestCheck, dataUrl);
