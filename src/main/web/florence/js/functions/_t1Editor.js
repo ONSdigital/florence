@@ -83,6 +83,7 @@ function t1Editor(collectionId, data, templateData) {
   });
 
   function save() {
+    clearTimeout(timeoutId);
     // sections
     var orderSections = $("#sortable-section").sortable('toArray');
     $(orderSections).each(function (indexS, nameS) {

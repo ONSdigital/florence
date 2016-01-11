@@ -12,6 +12,14 @@ function refreshTablesList(collectionId, data) {
 
 function initialiseTablesList(collectionId, data) {
 
+  $('#add-table').click(function () {
+    loadTableBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshPreview();
+      refreshTablesList(collectionId, data);
+    });
+  });
+
   $(data.tables).each(function (index, table) {
     var basePath = data.uri;
     var tablePath = basePath + '/' + table.filename;

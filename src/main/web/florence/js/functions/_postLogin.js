@@ -19,7 +19,21 @@ function postLogin(email, password) {
       document.cookie = "access_token=" + response + ";path=/";
       localStorage.setItem("loggedInAs", email);
       Florence.refreshAdminMenu();
-      viewController();
+      getUserPermission(
+        function (permission) {
+          if (permission.admin || permission.editor) {
+            viewController();
+          } else {
+            logout();
+            sweetAlert("You do not have the permissions to enter here. Please contact an administrator");
+          }
+        },
+        function (error) {
+          logout();
+          sweetAlert("There is a problem with permissions. Please contact an administrator");
+        },
+        email
+      );
     },
     error: function (response) {
       if (response.status === 417) {

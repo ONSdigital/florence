@@ -29,8 +29,17 @@
             <artifactId>resource-utils</artifactId>
             <version>1.1.2</version>
         </dependency>
-    </dependencies>
 
+        <!-- New Relic -->
+        <dependency>
+            <groupId>com.newrelic.agent.java</groupId>
+            <artifactId>newrelic-java</artifactId>
+            <version>3.24.0</version>
+            <type>zip</type>
+            <scope>runtime</scope>
+        </dependency>
+
+    </dependencies>
 
     <build>
         <plugins>
@@ -85,6 +94,17 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <!-- Default output folder is ${project.build.directory}/dependency -->
+                    </execution>
+                    <execution>
+                        <id>unpack-newrelic</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>com.newrelic.agent.java</includeGroupIds>
+                            <includeArtifactIds>newrelic-java</includeArtifactIds>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
