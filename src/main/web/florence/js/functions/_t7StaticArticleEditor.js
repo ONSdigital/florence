@@ -148,12 +148,12 @@ function staticArticleEditor(collectionId, data) {
     });
     data.links = newLinks;
     // Internal links
-    var orderAnchor = $("#sortable-anchor").sortable('toArray');
-    $(orderAnchor).each(function (indexA, nameA) {
-      var anchor = data.anchors[parseInt(nameA)].uri;
-      newAnchors[indexA] = {uri: anchor};
-    });
-    data.anchors = newAnchors;
+    //var orderAnchor = $("#sortable-anchor").sortable('toArray');
+    //$(orderAnchor).each(function (indexA, nameA) {
+    //  var anchor = data.anchors[parseInt(nameA)].uri;
+    //  newAnchors[indexA] = {uri: anchor};
+    //});
+    //data.anchors = newAnchors;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
