@@ -197,8 +197,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
-    editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
-    editLink (collectionId, pageData, 'links', 'link');
+    //editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
+    editIntLinks (collectionId, pageData, templateData, 'links', 'link');
+    //editLink (collectionId, pageData, 'links', 'link');
     accordion();
     staticPageEditor(collectionId, pageData);
   }
@@ -216,8 +217,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
       loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
-    editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
-    editLink (collectionId, pageData, 'links', 'link');
+    //editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
+    editIntLinks (collectionId, pageData, templateData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     staticArticleEditor(collectionId, pageData);
@@ -335,12 +336,12 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else {
 
     var workspace_menu_sub_edit =
-      '<section class="workspace-edit">' +
-      '  <p style="font-size:20px; color:red;">Page: ' + pageData.type + ' is not supported.</p>' +
-      '  <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
-      '  <nav class="edit-nav">' +
-      '  </nav>' +
-      '</section>';
+        '<section class="workspace-edit">' +
+        '  <p style="font-size:20px; color:red;">Page: ' + pageData.type + ' is not supported.</p>' +
+        '  <textarea class="fl-editor__headline" name="fl-editor__headline" style="height: 728px" cols="104"></textarea>' +
+        '  <nav class="edit-nav">' +
+        '  </nav>' +
+        '</section>';
 
     $('.workspace-menu').html(workspace_menu_sub_edit);
     $('.fl-editor__headline').val(JSON.stringify(pageData, null, 2));
@@ -379,16 +380,16 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
 
 function refreshEditNavigation() {
   getCollection(Florence.collection.id,
-    success = function (collection) {
-      var pagePath = getPathName();
-      var pageFile = pagePath + '/data.json';
-      var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
-      var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail());
+      success = function (collection) {
+        var pagePath = getPathName();
+        var pageFile = pagePath + '/data.json';
+        var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
+        var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail());
 
-      var editNav = templates.editNav({isPageComplete: isPageComplete});
-      $('.edit-nav').html(editNav);
-    },
-    error = function (response) {
-      handleApiError(response);
-    })
+        var editNav = templates.editNav({isPageComplete: isPageComplete});
+        $('.edit-nav').html(editNav);
+      },
+      error = function (response) {
+        handleApiError(response);
+      })
 }
