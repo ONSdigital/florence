@@ -353,19 +353,19 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
 
     editNav.on('click', '.btn-edit-save', function () {
       var pageDataToSave = $('.fl-editor__headline').val();
-      updateContent(collectionId, pageData.uri, pageDataToSave);
+      updateContent(collectionId, pageData.uri, JSON.parse(pageDataToSave));
     });
 
     // complete
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
       var pageDataToSave = $('.fl-editor__headline').val();
-      saveAndCompleteContent(collectionId, pageData.uri, pageDataToSave);
+      saveAndCompleteContent(collectionId, pageData.uri, JSON.parse(pageDataToSave));
     });
 
     // review
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
       var pageDataToSave = $('.fl-editor__headline').val();
-      saveAndReviewContent(collectionId, pageData.uri, pageDataToSave);
+      saveAndReviewContent(collectionId, pageData.uri, JSON.parse(pageDataToSave));
     });
   }
 
