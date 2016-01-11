@@ -79,19 +79,19 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
             data[field].splice(index, 1);
             templateData[field].splice(index, 1);
             putContent(collectionId, data.uri, JSON.stringify(data),
-              success = function () {
-                Florence.Editor.isDirty = false;
-                refreshPreview(data.uri);
-                refreshRelated(collectionId, data, templateData, field, idField);
-              },
-              error = function (response) {
-                if (response.status === 400) {
-                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                success = function () {
+                  Florence.Editor.isDirty = false;
+                  refreshPreview(data.uri);
+                  refreshRelated(collectionId, data, templateData, field, idField);
+                },
+                error = function (response) {
+                  if (response.status === 400) {
+                    sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                  }
+                  else {
+                    handleApiError(response);
+                  }
                 }
-                else {
-                  handleApiError(response);
-                }
-              }
             );
           }
         });
@@ -134,7 +134,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
 
       //Disable the editor
       $('body').append(
-        "<div class='col col--5 panel disabled'></div>"
+          "<div class='col col--5 panel disabled'></div>"
       );
 
       //Add buttons to iframe window
@@ -299,17 +299,17 @@ function resolveTitle(collectionId, data, templateData, field, idField) {
     var latest = eachUri.match(/\/latest\/?$/) ? true : false;
     var dfd = $.Deferred();
     getPageDataTitle(collectionId, eachUri,
-      success = function (response) {
-        templateData[field][index].description.title = latest ? '(Latest) ' + response.title : response.title;
-        if (response.edition) {
-          templateData[field][index].description.edition = response.edition;
+        success = function (response) {
+          templateData[field][index].description.title = latest ? '(Latest) ' + response.title : response.title;
+          if (response.edition) {
+            templateData[field][index].description.edition = response.edition;
+          }
+          dfd.resolve();
+        },
+        error = function () {
+          sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
+          dfd.resolve();
         }
-        dfd.resolve();
-      },
-      error = function () {
-        sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
-        dfd.resolve();
-      }
     );
     ajaxRequest.push(dfd);
   });
