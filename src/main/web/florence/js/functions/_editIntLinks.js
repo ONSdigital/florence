@@ -8,7 +8,6 @@
  */
 
 function editIntLinks(collectionId, data, templateData, field, idField) {
-  initialiseLinks(collectionId, data, templateData, field, idField);
   $(data[field]).each(function (index, path) {
     if (!this.title) {
       templateData[field][index] = (function () {
@@ -23,7 +22,7 @@ function editIntLinks(collectionId, data, templateData, field, idField) {
   var dataTemplate = createRelatedTemplate(idField, list);
   var html = templates.editorRelated(dataTemplate);
   $('#' + idField).replaceWith(html);
-  refreshLinks(collectionId, data, templateData, field, idField); // BEING COMMENTED OUT BROKE ADD BUTTON
+  initialiseLinks(collectionId, data, templateData, field, idField);
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 }
 
