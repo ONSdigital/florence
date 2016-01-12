@@ -104,13 +104,17 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
         createWorkspace(data.uri, collectionId, 'edit');
       });
 
-      $('.btn-uri-get').off().one('click', function () {
+      $('.btn-uri-get').off().click(function () {
         var pastedUrl = $('#uri-input').val();
-        var dataUrl = checkPathParsed(pastedUrl);
-        data[field].push({uri: dataUrl});
-        templateData[field].push({uri: dataUrl});
-        saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
-        $('.modal').remove();
+        if (pastedUrl === "") {
+          sweetAlert("This field cannot be empty. Please paste a valid url address");
+        } else {
+          var dataUrl = checkPathSlashes(pastedUrl);
+          data[field].push({uri: dataUrl});
+          templateData[field].push({uri: dataUrl});
+          saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
+          $('.modal').remove();
+        }
       });
 
       $('.btn-uri-browse').off().one('click', function () {
@@ -145,6 +149,9 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
 
         $('.btn-browse-get').off().one('click', function () {
           var dataUrl = getPathNameTrimLast();
+          if (dataUrl === "") {   //special case for home page
+            dataUrl = "/";
+          }
           var latestUrl;
           //if you wanted to add latest automatically uncomment these lines
           //if (dataUrl.match(/\/articles\//) || dataUrl.match(/\/bulletins\//)) {
@@ -172,12 +179,12 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
           //    saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
           //  });
           //} else {
-            latestUrl = dataUrl;
-            $('.iframe-nav').remove();
-            $('.disabled').remove();
-            data[field].push({uri: latestUrl});
-            templateData[field].push({uri: latestUrl});
-            saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
+          latestUrl = dataUrl;
+          $('.iframe-nav').remove();
+          $('.disabled').remove();
+          data[field].push({uri: latestUrl});
+          templateData[field].push({uri: latestUrl});
+          saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
           //}
         });
       });
