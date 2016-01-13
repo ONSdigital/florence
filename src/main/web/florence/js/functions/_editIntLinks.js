@@ -7,7 +7,7 @@
  * @param idField - HTML id for the template
  */
 
-function editIntLinks(collectionId, data, templateData, field, idField) {
+function editIntAndExtLinks(collectionId, data, templateData, field, idField) {
   $(data[field]).each(function (index, path) {
     if (!this.title) {
       templateData[field][index] = (function () {
@@ -264,7 +264,6 @@ function saveExternalLink(collectionId, path, data, templateData, field, idField
   putContent(collectionId, path, JSON.stringify(data),
     success = function (response) {
       Florence.Editor.isDirty = false;
-      //editIntLinks(collectionId, data, templateData, field, idField);
       refreshLinks(collectionId, data, templateData, field, idField);
       createWorkspace(data.uri, collectionId, 'edit');
     },
