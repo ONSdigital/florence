@@ -22,7 +22,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_methodology_download') && checkData.type === 'product_page') {
         submitFormHandler();
         return true;
-      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_landing_page') && checkData.type.match(/static_.+/)) {
+      } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_article' || pageType === 'static_landing_page') && checkData.type.match(/static_.+/)) {
         submitFormHandler();
         return true;
       } else {
@@ -100,13 +100,13 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       if (releaseDate && (pageType === 'static_qmi')) {
         date = new Date(releaseDate);
         pageData.description.lastRevised = $.datepicker.formatDate('dd/mm/yy', date);
-      } else if (releaseDate && (pageType !== 'static_page' || pageType !== 'static_landing_page')) {
+      } else if (releaseDate) {
         date = new Date(releaseDate);
         pageData.description.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
-      } else if (!releaseDate && (pageType === 'static_qmi' || pageType === 'static_methodology')) {
+      } else if (!releaseDate && (pageType === 'static_qmi')) {
         pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
-      } else if (!releaseDate && !(pageType === 'static_page' || pageType === 'static_landing_page')) {
-        pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+      } else if (!releaseDate) {
+        pageData.description.releaseDate = new Date().toISOString();
       }
 
       if (pageName.length < 4) {
@@ -125,12 +125,14 @@ function pageTypeDataT7(pageType) {
       "description": {
         "title": "",
         "summary": "",
+        "releaseDate": "",
         "keywords": [],
         "metaDescription": ""
       },
       "markdown": [],
       "downloads": [],
       type: pageType,
+      "anchors": [],
       "links": []
     };
   } else if (pageType === "static_landing_page") {
@@ -138,6 +140,7 @@ function pageTypeDataT7(pageType) {
       "description": {
         "title": "",
         "summary": "",
+        "releaseDate": "",
         "keywords": [],
         "metaDescription": "",
       },
@@ -147,7 +150,25 @@ function pageTypeDataT7(pageType) {
       "links": []
     };
   }
-  else if (pageType === "static_methodology") {
+  else if (pageType === "static_article") {
+    return {
+      "description": {
+        "title": "",
+        "summary": "",
+        "releaseDate": "",
+        "keywords": [],
+        "metaDescription": ""
+      },
+      "sections": [],
+      "charts": [],
+      "tables": [],
+      "images": [],
+      "anchors": [],
+      "links": [],
+      "alerts": [],
+      type: pageType
+    };
+  } else if (pageType === "static_methodology") {
     return {
       "description": {
         "title": "",
@@ -165,6 +186,8 @@ function pageTypeDataT7(pageType) {
       "accordion": [],
       "relatedDocuments": [],
       "relatedDatasets": [],
+      "relatedMethodology": [],
+      "relatedMethodologyArticle": [],
       "charts": [],
       "tables": [],
       "images": [],
@@ -190,6 +213,8 @@ function pageTypeDataT7(pageType) {
       "downloads": [],
       "relatedDocuments": [],
       "relatedDatasets": [],
+      "relatedMethodology": [],
+      "relatedMethodologyArticle": [],
       "links": [],
       "alerts": [],
       type: pageType
@@ -217,6 +242,8 @@ function pageTypeDataT7(pageType) {
       "downloads": [],
       "relatedDocuments": [],
       "relatedDatasets": [],
+      "relatedMethodology": [],
+      "relatedMethodologyArticle": [],
       "links": [],
       type: pageType
     };

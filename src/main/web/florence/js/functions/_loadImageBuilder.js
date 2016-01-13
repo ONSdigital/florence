@@ -30,7 +30,6 @@ function loadImageBuilder(pageData, onSave, image) {
   });
 
   $('#upload-image-form').submit(function (event) {
-    $(this).find(':submit').attr('disabled', 'disabled');
     event.preventDefault();
     event.stopImmediatePropagation();
 

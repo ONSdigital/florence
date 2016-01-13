@@ -1,20 +1,35 @@
 function viewCollections(collectionId) {
 
-  $.ajax({
-    url: "/zebedee/collections",
-    type: "get",
-    success: function (data) {
-      populateCollectionTable(data);
-    },
-    error: function (jqxhr) {
-      handleApiError(jqxhr);
-    }
-  });
+  var result = {};
+  var pageDataRequests = []; // list of promises - one for each ajax request.
+  pageDataRequests.push(
+    $.ajax({
+      url: "/zebedee/collections",
+      type: "get",
+      success: function (data) {
+        result.data = data;
+      },
+      error: function (jqxhr) {
+        handleApiError(jqxhr);
+      }
+    })
+  );
+  pageDataRequests.push(
+    getTeams(
+      success = function (team) {
+        result.team = team;
+      },
+      error = function (response) {
+        handleApiError(response);
+      }
+    )
+  );
 
-  var response = [];
+  $.when.apply($, pageDataRequests).then(function () {
 
-  function populateCollectionTable(data) {
-    $.each(data, function (i, collection) {
+    var response = [], teams = [];
+
+    $.each(result.data, function (i, collection) {
       if (!collection.approvedStatus) {
         if (!collection.publishDate) {
           date = '[manual collection]';
@@ -29,7 +44,7 @@ function viewCollections(collectionId) {
       }
     });
 
-    var collectionsHtml = templates.collectionList(response);
+    var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams});
     $('.section').html(collectionsHtml);
 
     if (collectionId) {
@@ -43,6 +58,25 @@ function viewCollections(collectionId) {
       $(this).addClass('selected');
       var collectionId = $(this).attr('data-id');
       viewCollectionDetails(collectionId);
+    });
+
+    $("#team-tag").tagit({
+      singleField: true,
+      singleFieldNode: $('#team-input')
+    });
+
+    $('.ui-autocomplete-input').hide();
+
+    $('select#team').change(function () {
+      $('#team-tag').tagit('createTag', $("#team option:selected").text());
+    });
+
+    $('#team-input').change(function () {
+      teams = $('#team-input').val().split(',');
+      //After creating the array tagit leaves an empty string if all elements are removed
+      if (teams.length === 1 && teams[0] === "") {
+        teams = [];
+      }
     });
 
     $('form input[type=radio]').click(function () {
@@ -65,7 +99,7 @@ function viewCollections(collectionId) {
         return [false];
       }
       return [true];
-    }
+    };
 
 
     $(function () {
@@ -86,7 +120,7 @@ function viewCollections(collectionId) {
 
     $('.form-create-collection').submit(function (e) {
       e.preventDefault();
-      createCollection();
+      createCollection(teams);
     });
-  }
+  });
 }

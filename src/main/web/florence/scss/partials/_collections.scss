@@ -218,7 +218,93 @@
   }
 
   &__body {
-    padding: 0 20px 84px 20px;
+    padding: 0 16px 0 24px;
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 63px;
+    background: $ship-gray;
+  }
+}
+
+.team-select {
+  &__header {
+    background: #343B59;
+    margin-top: -21px;
+    color: #B2B6C4;
+  }
+
+  &__heading {
+    margin-top: 21px;
+    margin-bottom: 0;
+
+  }
+
+  &__sub-heading {
+    margin-top: 0;
+    padding-left: 24px;
+  }
+
+  &__left-column {
+    float: left;
+    border: 1px solid;
+    border-radius: 2px;
+    margin: 64px 0 0 -4px;
+
+    h2 {
+      margin-top: 0;
+    }
+  }
+
+  &__right-column {
+    float: right;
+    border: 1px solid;
+    border-radius: 2px;
+    margin: 64px -4px 0 0;
+
+    h2 {
+      margin-top: 0;
+    }
+  }
+
+  &-search{
+    float: right;
+    margin-top: -56px;
+    width: 320px;
+
+    &__input {
+      width: 300px;
+      float: left;
+    }
+  }
+
+  &__body {
+    margin-top: -56px;
+    padding: 0 20px 0 20px;
+    display: block;
+  }
+
+  ul {
+    overflow-y: scroll;
+    margin: 16px -8px 0 0;
+    height: 400px;
+    width: 99%;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  input {
+    box-sizing: border-box;
+    border: 3px solid #58585B;
+    border-radius: 4px;
+    margin: 24px 0 0 0;
+    padding: 7px 20px;
   }
 
   &__footer {

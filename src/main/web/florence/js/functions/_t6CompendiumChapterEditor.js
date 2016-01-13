@@ -139,40 +139,7 @@ function compendiumChapterEditor(collectionId, data) {
     }, 3000);
   });
 
-  $('#add-chart').click(function () {
-    loadChartBuilder(data, function () {
-      refreshPreview();
-
-      putContent(collectionId, data.uri, JSON.stringify(data),
-        success = function () {
-          Florence.Editor.isDirty = false;
-          refreshPreview();
-          refreshChartList(collectionId, data);
-        },
-        error = function (response) {
-          handleApiError(response);
-        }
-      );
-    });
-  });
-
-  $('#add-table').click(function () {
-    loadTableBuilder(data, function () {
-      Florence.Editor.isDirty = false;
-      refreshPreview();
-      refreshTablesList(collectionId, data);
-    });
-  });
-
-  $('#add-image').click(function () {
-    loadImageBuilder(data, function () {
-      Florence.Editor.isDirty = false;
-      //refreshPreview();
-      refreshImagesList(collectionId, data);
-    });
-  });
-
-  // Save
+ // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
 
@@ -200,6 +167,7 @@ function compendiumChapterEditor(collectionId, data) {
 
 
   function save() {
+    clearTimeout(timeoutId);
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {

@@ -65,10 +65,12 @@ function editLink (collectionId, data, field, idField) {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 300;
 
-      //TODO This function breaking when adding related link
-      console.log(data);
-      console.log(data[field]);
-
+    //TODO This function breaking when adding related link
+    console.log(data);
+    console.log(data[field]);
+    if (!data[field]) {
+      data[field] = [];
+    }
     data[field].push({uri:"", title:""});
     saveLink (collectionId, data.uri, data, field, idField);
   });
@@ -86,18 +88,18 @@ function editLink (collectionId, data, field, idField) {
 }
 
 function saveLink (collectionId, path, data, field, idField) {
-    putContent(collectionId, path, JSON.stringify(data),
-        success = function (response) {
-            Florence.Editor.isDirty = false;
-            editLink (collectionId, data, field, idField);
-        },
-        error = function (response) {
-            if (response.status === 400) {
-                sweetAlert("Cannot edit this page", "It is already part of another collection.");
-            }
-            else {
-                handleApiError(response);
-            }
+  putContent(collectionId, path, JSON.stringify(data),
+      success = function (response) {
+        Florence.Editor.isDirty = false;
+        editLink (collectionId, data, field, idField);
+      },
+      error = function (response) {
+        if (response.status === 400) {
+          sweetAlert("Cannot edit this page", "It is already part of another collection.");
         }
-    );
+        else {
+          handleApiError(response);
+        }
+      }
+  );
 }
