@@ -195,9 +195,19 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_page') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
+    //  VV--------------- uncomment these lines if you need charts ---------------VV
+    //if (pageData.charts) {
+    //  loadChartsList(collectionId, pageData);
+    //}
+    //  ^^--------------- uncomment these lines if you need charts ---------------^^
+    if (pageData.tables) {
+      loadTablesList(collectionId, pageData);
+    }
+    if (pageData.images) {
+      loadImagesList(collectionId, pageData);
+    }
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
-    //editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
     editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
     accordion();
     staticPageEditor(collectionId, pageData);
