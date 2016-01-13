@@ -134,7 +134,7 @@ function staticArticleEditor(collectionId, data) {
       newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
     });
     data.images = newImage;
-    // External links
+    // links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {
       if (data.links[parseInt(nameL)].title) {
@@ -147,13 +147,6 @@ function staticArticleEditor(collectionId, data) {
       }
     });
     data.links = newLinks;
-    // Internal links
-    //var orderAnchor = $("#sortable-anchor").sortable('toArray');
-    //$(orderAnchor).each(function (indexA, nameA) {
-    //  var anchor = data.anchors[parseInt(nameA)].uri;
-    //  newAnchors[indexA] = {uri: anchor};
-    //});
-    //data.anchors = newAnchors;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
