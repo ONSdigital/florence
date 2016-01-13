@@ -127,6 +127,8 @@ function setupFlorence() {
       $(".nav--admin__item--collections").addClass('selected');
     } else if (menuItem.hasClass("nav--admin__item--users")) {
       viewController('users');
+    } else if (menuItem.hasClass("nav--admin__item--teams")) {
+      viewController('teams');
     } else if (menuItem.hasClass("nav--admin__item--publish")) {
       viewController('publish');
     } else if (menuItem.hasClass("nav--admin__item--reports")) {

@@ -1,0 +1,31 @@
+<section class="panel col col--6 collection-select">
+  <h1 class="text-align-center">Select a team</h1>
+  <table class="collections-select-table">
+    <thead>
+    <tr>
+      <th id="collection-name" scope="col">Name</th>
+      <!--<th id="collection-name" scope="col">Email</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    {{#each teams}}
+      <tr data-id="{{name}}">
+        <td headers="name" class="collection-name">{{name}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+</section>
+<section class="panel col col--6 collection-create">
+  <h1 class="text-align-center">Create a team</h1>
+
+  <form autocomplete="off" method="post" action="" class="form-create-team" >
+    <input id="create-team-name" type="text" placeholder="Name" autocomplete="off" />
+
+    <button class="btn-collection-create">Create team</button>
+  </form>
+
+</section>
+<section class="panel col col--6 collection-selected">
+
+</section>

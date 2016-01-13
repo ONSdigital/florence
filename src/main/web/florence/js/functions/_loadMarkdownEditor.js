@@ -80,6 +80,13 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     });
   });
 
+  $(".btn-markdown-editor-embed").click(function() {
+    console.log("embed");
+    loadEmbedIframe(function(markdown) {
+      onInsertSave('', markdown);
+    });
+  });
+
   $("#wmd-input").on('click', function () {
     markDownEditorSetLines();
   });
@@ -141,6 +148,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
 function markdownEditor() {
 
+
   var converter = new Markdown.getSanitizingConverter();
 
   // output chart tag as text instead of the actual tag.
@@ -157,6 +165,15 @@ function markdownEditor() {
     var newText = text.replace(/(<ons-table\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
       var path = $(match).attr('path');
       return '[table path="' + path + '" ]';
+    });
+    return newText;
+  });
+
+  // output table tag as text instead of the actual tag.
+  converter.hooks.chain("preBlockGamut", function (text) {
+    var newText = text.replace(/(<ons-interactive\surl="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+      var path = $(match).attr('url');
+      return '[interactive url="' + path + '" ]';
     });
     return newText;
   });

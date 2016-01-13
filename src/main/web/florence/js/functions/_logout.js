@@ -3,6 +3,7 @@
  */
 function logout() {
   delete_cookie('access_token');
+  delete_cookie('collection');
   localStorage.setItem("loggedInAs", "");
   Florence.refreshAdminMenu();
   viewController();

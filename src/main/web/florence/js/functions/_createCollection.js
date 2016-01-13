@@ -1,4 +1,4 @@
-function createCollection() {
+function createCollection(teams) {
 
   var publishTime, collectionId, collectionDate, releaseUri;
   collectionId = $('#collectionname').val();
@@ -43,7 +43,7 @@ function createCollection() {
       dataType: 'json',
       contentType: 'application/json',
       type: 'POST',
-      data: JSON.stringify({name: collectionId, type: publishType, publishDate: collectionDate, releaseUri: releaseUri}),
+      data: JSON.stringify({name: collectionId, type: publishType, publishDate: collectionDate, teams: teams, releaseUri: releaseUri}),
       success: function (collection) {
         Florence.setActiveCollection(collection);
         createWorkspace('', collection.id, 'browse');

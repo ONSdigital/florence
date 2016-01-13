@@ -218,6 +218,7 @@ function compendiumEditor(collectionId, data, templateData) {
   });
 
   function save(onSave) {
+    clearTimeout(timeoutId);
     // Chapters
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function (indexC, nameC) {

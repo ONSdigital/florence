@@ -10,9 +10,9 @@ function addFile(collectionId, data, field, idField) {
   var list = data[field];
   var downloadExtensions, supplementary;
   if (field === 'supplementaryFiles') {
-    supplementary = 'supplementary ';
+    supplementary = true;
   } else {
-    supplementary = '';
+    supplementary = false;
   }
   var dataTemplate = {list: list, idField: idField, supplementary: supplementary};
   var html = templates.editorDownloads(dataTemplate);

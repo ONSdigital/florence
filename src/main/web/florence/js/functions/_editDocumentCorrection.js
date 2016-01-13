@@ -20,7 +20,7 @@ function editDocumentCorrection(collectionId, data, templateData, field, idField
       templateData[field] = [];
     }
     saveNewCorrection(collectionId, data.uri, function (response) {
-      var tmpDate = (new Date()).toISOString();
+      var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
       data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       // Enter a notice
@@ -99,7 +99,18 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
         dateFormat: 'dd MM yy',
         controlType: 'select',
         oneLine: true,
-        timeFormat: 'HH:mm'
+        timeFormat: 'HH:mm',
+        onClose: function () {
+          function isDonePressed() {
+            return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+          }
+          if (isDonePressed()){
+            data[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
+            templateData[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
+            console.log("Run save " + index);
+            saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+          }
+        }
       });
     //$('#correction-date_' + index).datetimepicker('setDate', new Date(dateTmp));
 
@@ -107,11 +118,11 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
 
     ///////////look at me
 
-    $('body').on('click', '#done-button', function () {
-      data[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
-      templateData[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
-      saveCorrection(collectionId, data.uri, data, templateData, field, idField);
-    });
+    //$('body').on('click', '#done-button', function () {
+    //  data[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
+    //  templateData[field][index].updateDate = new Date($('#correction-date_' + index).datetimepicker('getDate')).toISOString();
+    //  saveCorrection(collectionId, data.uri, data, templateData, field, idField);
+    //});
 
 
 

@@ -75,6 +75,7 @@ function t2Editor(collectionId, data) {
   });
 
   function save() {
+    clearTimeout(timeoutId);
     // Highligths
     var orderHighlights = $("#sortable-highlights").sortable('toArray');
     $(orderHighlights).each(function (indexH, titleH) {
