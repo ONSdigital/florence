@@ -1,6 +1,6 @@
 function staticPageEditor(collectionId, data) {
 
-  var newLinks = [], newFiles = [], newTable = [], newImage = [];
+  var newLinks = [], newFiles = [], newChart = [], newTable = [], newImage = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
   var timeoutId;
@@ -114,18 +114,16 @@ function staticPageEditor(collectionId, data) {
     });
     data.downloads = newFiles;
     var orderTable = $("#sortable-table").sortable('toArray');
-    //  VV--------------- uncomment these lines if you need charts ---------------VV
-    //// charts
-    //var orderChart = $("#sortable-chart").sortable('toArray');
-    //$(orderChart).each(function (indexCh, nameCh) {
-    //  var uri = data.charts[parseInt(nameCh)].uri;
-    //  var title = data.charts[parseInt(nameCh)].title;
-    //  var filename = data.charts[parseInt(nameCh)].filename;
-    //  var safeUri = checkPathSlashes(uri);
-    //  newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
-    //});
-    //data.charts = newChart;
-    //  ^^--------------- uncomment these lines if you need charts ---------------^^
+    // charts
+    var orderChart = $("#sortable-chart").sortable('toArray');
+    $(orderChart).each(function (indexCh, nameCh) {
+      var uri = data.charts[parseInt(nameCh)].uri;
+      var title = data.charts[parseInt(nameCh)].title;
+      var filename = data.charts[parseInt(nameCh)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.charts = newChart;
     // tables
     $(orderTable).each(function (indexTable, nameTable) {
       var uri = data.tables[parseInt(nameTable)].uri;

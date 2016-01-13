@@ -203,9 +203,11 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     if (pageData.tables) {
       loadTablesList(collectionId, pageData);
     }
-    if (pageData.images) {
-      loadImagesList(collectionId, pageData);
-    }
+    //  VV--------------- uncomment these lines if you need images ---------------VV
+    //if (pageData.images) {
+    //  loadImagesList(collectionId, pageData);
+    //}
+    //  ^^--------------- uncomment these lines if you need images ---------------^^
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
     editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
