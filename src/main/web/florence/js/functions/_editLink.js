@@ -6,7 +6,7 @@
  * @param idField - HTML id for the template
  */
 
-function editLink (collectionId, data, field, idField) {
+function editExtLink (collectionId, data, field, idField) {
   var list = data[field];
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorLinks(dataTemplate);
@@ -17,8 +17,8 @@ function editLink (collectionId, data, field, idField) {
 
     $('#' + idField +'-edit_'+index).click(function() {
       var editedSectionValue = {
-        "title": $('#' + idField +'-uri_' + index).val(),
-        "markdown": $('#' + idField + '-markdown_' + index).val()
+        "title": data[field][index].uri,
+        "markdown": data[field][index].title
       };
 
       var saveContent = function(updatedContent) {
@@ -65,14 +65,32 @@ function editLink (collectionId, data, field, idField) {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 300;
 
-    //TODO This function breaking when adding related link
-    console.log(data);
-    console.log(data[field]);
     if (!data[field]) {
       data[field] = [];
     }
-    data[field].push({uri:"", title:""});
-    saveLink (collectionId, data.uri, data, field, idField);
+    var modal = templates.linkExternalModal;
+    var uri, title;
+    $('.workspace-menu').append(modal);
+    $('#uri-input').change(function () {
+      uri = $('#uri-input').val();
+    });
+    $('#uri-title').change(function () {
+      title = $('#uri-title').val();
+    });
+    $('.btn-uri-get').off().click(function () {
+      if (!title) {
+        sweetAlert('You need to enter a title to continue');
+      }
+      else {
+        data[field].push({uri: uri, title: title});
+        saveLink(collectionId, data.uri, data, field, idField);
+        $('.modal').remove();
+      }
+    });
+    $('.btn-uri-cancel').off().click(function () {
+      //createWorkspace(data.uri, collectionId, 'edit');
+      $('.modal').remove();
+    });
   });
 
   function sortable() {
@@ -91,7 +109,8 @@ function saveLink (collectionId, path, data, field, idField) {
   putContent(collectionId, path, JSON.stringify(data),
       success = function (response) {
         Florence.Editor.isDirty = false;
-        editLink (collectionId, data, field, idField);
+        editExtLink (collectionId, data, field, idField);
+        refreshPreview(data.uri);
       },
       error = function (response) {
         if (response.status === 400) {
