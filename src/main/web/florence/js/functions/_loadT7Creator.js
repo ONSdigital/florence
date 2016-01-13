@@ -130,6 +130,9 @@ function pageTypeDataT7(pageType) {
         "metaDescription": ""
       },
       "markdown": [],
+      "charts": [],
+      "tables": [],
+      "images": [],
       "downloads": [],
       type: pageType,
       "anchors": [],
