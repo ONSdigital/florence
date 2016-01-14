@@ -17,7 +17,8 @@ function viewUsers(view) {
   );
 
   function populateUsersTable(data, permission) {
-    var dataTemplate = {data: data, permission: permission};
+    var orderedUsers = _.sortBy(data, 'name');
+    var dataTemplate = {data: orderedUsers, permission: permission};
     var usersHtml = templates.userList(dataTemplate);
     var isAdmin = false;
     var isEditor = false;
