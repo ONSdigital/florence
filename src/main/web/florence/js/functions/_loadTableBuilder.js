@@ -44,7 +44,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
     function saveTableHtml(data) {
       $.ajax({
-        url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath,
+        url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath + "&validateJson=false", // do not validate json as its html content.
         type: 'POST',
         data: data,
         processData: false,
