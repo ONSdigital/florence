@@ -263,7 +263,11 @@ function loadImageBuilder(pageData, onSave, image) {
   }
 
   function getImageUri(image) {
-    return pageData.uri + '/' + getImageFilename(image);
+    if (pageUrl === '/') {
+      return '/' + getImageFilename(image);
+    } else {
+      return pageData.uri + '/' + getImageFilename(image);
+    }
   }
 
   function getImageFilename(image) {
@@ -332,7 +336,11 @@ function loadImageBuilder(pageData, onSave, image) {
     // give the image a unique ID if it does not already have one.
     image.filename = image.filename ? image.filename : StringUtils.randomId();
     image.title = $('#image-title').val();
-    image.uri = pageUrl + "/" + image.filename;
+    if (pageUrl === '/') {
+      image.uri = "/" + image.filename;
+    } else {
+      image.uri = pageUrl + "/" + image.filename;
+    }
     image.subtitle = $('#image-subtitle').val();
     image.source = $('#image-source').val();
     image.notes = $('#image-notes').val();
