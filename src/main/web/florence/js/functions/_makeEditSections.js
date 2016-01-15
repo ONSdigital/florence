@@ -17,6 +17,17 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
   }
 
+  else if (pageData.type === 'home_page_census') {
+    var html = templates.workEditT1Census(templateData);
+    $('.workspace-menu').html(html);
+    if (pageData.images) {
+      loadImagesList(collectionId, pageData);
+    }
+    editBlocks(collectionId, pageData, templateData, 'sections', 'block');
+    accordion();
+    t1EditorCensus(collectionId, pageData, templateData);   //templateData used to resolve section titles
+  }
+
   else if (pageData.type === 'taxonomy_landing_page') {
     var html = templates.workEditT2(templateData);
     $('.workspace-menu').html(html);

@@ -239,3 +239,39 @@
   display: block;
   left: 90px;
 }
+
+/* select with custom icons */
+
+.ui-selectmenu-menu .ui-menu.customicons .ui-menu-item {
+  padding: 0.5em 0 0.5em 3em;
+}
+
+.ui-selectmenu-menu .ui-menu.customicons .ui-menu-item .ui-icon {
+  height: 24px;
+  width: 24px;
+  top: 0.1em;
+}
+
+.ui-icon.icon11 {
+  background: url(../img/favicon11.ico) 0 0 no-repeat;
+}
+
+.ui-icon.icon12 {
+  background: url(../img/favicon12.ico) 0 0 no-repeat;
+}
+
+.ui-icon.icon21 {
+  background: url(../img/favicon21.ico) 0 0 no-repeat;
+}
+
+.ui-icon.icon22 {
+  background: url(../img/favicon22.ico) 0 0 no-repeat;
+}
+
+.ui-icon.icon23 {
+  background: url(../img/favicon23.ico) 0 0 no-repeat;
+}
+
+.ui-icon.icon24 {
+  background: url(../img/favicon24.ico) 0 0 no-repeat;
+}
