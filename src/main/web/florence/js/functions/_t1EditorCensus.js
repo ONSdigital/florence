@@ -68,7 +68,6 @@ function t1EditorCensus(collectionId, data, templateData) {
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    //pageData = $('.fl-editor__headline').val();
     save();
     saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
@@ -84,10 +83,20 @@ function t1EditorCensus(collectionId, data, templateData) {
     // Blocks
     var orderBlocks = $("#sortable-block").sortable('toArray');
     $(orderBlocks).each(function (indexB, titleB) {
-      var uri = data.sections[parseInt(titleB)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newBlocks[indexB] = {uri: safeUri};
-    });
+        if (!data.sections[parseInt(titleB)].title) {
+          var uri = data.sections[parseInt(titleB)].uri;
+          var size = data.sections[parseInt(titleB)].size;
+          var safeUri = checkPathSlashes(uri);
+          newBlocks[indexB] = {uri: safeUri, size: size};
+        } else {
+          var uri = data.sections[parseInt(titleB)].uri;
+          var title = data.sections[parseInt(titleB)].title;
+          var size = data.sections[parseInt(titleB)].size;
+          var image = data.sections[parseInt(titleB)].image;
+          var text = data.sections[parseInt(titleB)].text;
+          newBlocks[indexB] = {uri: uri, title: title, text: text, image: image, size: size};
+        }
+      });
     data.sections = newBlocks;
     // images
     var orderImage = $("#sortable-image").sortable('toArray');
@@ -102,6 +111,4 @@ function t1EditorCensus(collectionId, data, templateData) {
   }
 
 }
-
-// add a save function to sort
 
