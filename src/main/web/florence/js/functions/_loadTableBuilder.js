@@ -136,25 +136,27 @@ function loadTableBuilder(pageData, onSave, table) {
     previewTable = buildJsonObjectFromForm(previewTable);
 
     // if a table exists, rename the preview to its name
-    if (table) {
-      table = mapJsonValues(previewTable, table);
-
-      $(previewTable.files).each(function (index, file) {
-        var fromFile = pageUrl + '/' + file.filename;
-        var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
-        console.log("moving... table file: " + fromFile + " to: " + toFile);
-        moveContent(Florence.collection.id, fromFile, toFile,
-          onSuccess = function () {
-            console.log("Moved table file: " + fromFile + " to: " + toFile);
-          });
-      });
-      deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
-    } else { // just keep the preview files
-      table = previewTable;
-      addTableToPageJson(table);
-    }
 
     saveTableJson(table, success=function() {
+
+      if (table) {
+        table = mapJsonValues(previewTable, table);
+
+        $(previewTable.files).each(function (index, file) {
+          var fromFile = pageUrl + '/' + file.filename;
+          var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
+          console.log("moving... table file: " + fromFile + " to: " + toFile);
+          renameContent(Florence.collection.id, fromFile, toFile,
+            onSuccess = function () {
+              console.log("Moved table file: " + fromFile + " to: " + toFile);
+            });
+        });
+        deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
+      } else { // just keep the preview files
+        table = previewTable;
+        addTableToPageJson(table);
+      }
+
       if (onSave) {
         onSave(table.filename, '<ons-table path="' + table.filename + '" />');
       }
