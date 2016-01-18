@@ -57,7 +57,7 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
             if (dataUrl === "") {    //special case for home page
               dataUrl = "/";
             }
-            checkValidStats(collectionId, data, templateData, field, idField, dataUrl);
+            checkValidStats(collectionId, data, templateData, field, idField, dataUrl, index);
             $('.modal').remove();
           }
         });
@@ -72,21 +72,26 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
         //menuselect("uri-size");
 
         $('#uri-input').change(function () {
-          uri = $('#uri-input').val();
+          $this.uri = $('#uri-input').val();
         });
         $('#uri-title').change(function () {
-          title = $('#uri-title').val();
+          $this.title = $('#uri-title').val();
         });
         $("#uri-text").change(function () {
           $(this).textareaAutoSize();
-          text = $('#uri-text').val();
+          $this.text = $('#uri-text').val();
         });
+
+        var imageIdx = _.findIndex(images, function(item) {return item.uri === $this.image;});
+        $('#uri-image').val(imageIdx.toString()).prop('selected', 'true');
+
+        $
         $('#uri-image').change(function () {
           var index = parseInt($('#uri-image').val());
           if (index === -1) {
-            image = '';
+            $this.image = '';
           } else {
-            image = images[index].uri;
+            $this.image = images[index].uri;
           }
         });
         // No size changes at the moment
@@ -100,11 +105,11 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
         });
 
         $('.btn-uri-get').off().click(function () {
-          if (!($this.title) || !title) {
+          if (!($this.title || title)) {
             sweetAlert('You need to enter a title to continue');
             return false;
           } else {
-            data[field].push({uri: uri, title: title, text: text, image: image, size: size});
+            data[field][index] = {uri: $this.uri, title: $this.title, text: $this.text, image: $this.image, size: $this.size};
             saveBlocks(collectionId, data.uri, data, templateData, field, idField);
             $('.modal').remove();
           }
@@ -298,7 +303,8 @@ function saveBlocks(collectionId, path, data, templateData, field, idField) {
     success = function (response) {
       Florence.Editor.isDirty = false;
       refreshBlocks(collectionId, data, templateData, field, idField);
-      createWorkspace(data.uri, collectionId, 'edit');
+      //createWorkspace(data.uri, collectionId, 'edit');
+      refreshPreview(data.uri);
     },
     error = function (response) {
       if (response.status === 400) {
@@ -311,7 +317,7 @@ function saveBlocks(collectionId, path, data, templateData, field, idField) {
   );
 }
 
-function checkValidStats(collectionId, data, templateData, field, idField, dataUrl, size) {
+function checkValidStats(collectionId, data, templateData, field, idField, dataUrl, index) {
   var dataUrlData = dataUrl + "/data";
   $.ajax({
     url: dataUrlData,
@@ -330,8 +336,13 @@ function checkValidStats(collectionId, data, templateData, field, idField, dataU
         return;
       }
 
-      data[field].push({uri: dataUrl, size: size});
-      templateData[field].push({uri: dataUrl, size: size});
+      if (index) {
+        data[field][index] = {uri: dataUrl, size: size};
+        templateData[field][index] = {uri: dataUrl, size: size};
+      } else {
+        data[field].push({uri: dataUrl, size: size});
+        templateData[field].push({uri: dataUrl, size: size});
+      }
       saveBlocks(collectionId, data.uri, data, templateData, field, idField);
 
     },
