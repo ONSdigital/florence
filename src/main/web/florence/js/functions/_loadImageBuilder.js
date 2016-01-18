@@ -120,7 +120,7 @@ function loadImageBuilder(pageData, onSave, image) {
         }
       });
 
-      if(!fileExistsInImage) {
+      if (!fileExistsInImage) {
         to.files.push(fromFile);
       }
     });
@@ -145,29 +145,33 @@ function loadImageBuilder(pageData, onSave, image) {
       return;
     }
 
-    // if there is an image that exists already, overwrite it.
+    var imageExists = false;
     if (image) {
-
+      imageExists = true;
       // map preview image values onto image
       image = mapImageJsonValues(previewImage, image);
-
-      $(previewImage.files).each(function (index, file) {
-        var fromFile = pageUrl + '/' + file.filename;
-        var toFile = pageUrl + '/' + file.filename.replace(previewImage.filename, image.filename);
-        if (fromFile != toFile){
-          console.log("moving... table file: " + fromFile + " to: " + toFile);
-          moveContent(Florence.collection.id, fromFile, toFile,
-            onSuccess = function () {
-              console.log("Moved table file: " + fromFile + " to: " + toFile);
-            });
-        }
-      });
     } else { // just use the preview files
       image = previewImage;
       addImageToPageJson(image);
     }
 
-    saveImageJson(image, success=function() {
+    saveImageJson(image, success = function () {
+
+      // if there is an image that exists already, overwrite it.
+      if (imageExists) {
+        $(previewImage.files).each(function (index, file) {
+          var fromFile = pageUrl + '/' + file.filename;
+          var toFile = pageUrl + '/' + file.filename.replace(previewImage.filename, image.filename);
+          if (fromFile != toFile) {
+            console.log("moving... table file: " + fromFile + " to: " + toFile);
+            renameContent(Florence.collection.id, fromFile, toFile,
+              onSuccess = function () {
+                console.log("Moved table file: " + fromFile + " to: " + toFile);
+              });
+          }
+        });
+      }
+
       if (onSave) {
         onSave(image.filename, '<ons-image path="' + image.filename + '" />', pageData);
       }
@@ -339,7 +343,7 @@ function loadImageBuilder(pageData, onSave, image) {
     image.altText = $('#image-alt-text').val();
 
     if (!image.files) {
-        image.files = [];
+      image.files = [];
     }
 
     return image;
