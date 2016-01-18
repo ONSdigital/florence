@@ -108,7 +108,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
 
       document.getElementById("response").innerHTML = "Uploading . . .";
 
-      var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
       uriUpload = data.uri + '/' + fileNameNoSpace;
       var safeUriUpload = checkPathSlashes(uriUpload);
 
