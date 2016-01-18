@@ -44,7 +44,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
     function saveTableHtml(data) {
       $.ajax({
-        url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath,
+        url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath + "&validateJson=false", // do not validate json as its html content.
         type: 'POST',
         data: data,
         processData: false,
@@ -135,26 +135,31 @@ function loadTableBuilder(pageData, onSave, table) {
     // if uploaded = true rename the preview table
     previewTable = buildJsonObjectFromForm(previewTable);
 
-    // if a table exists, rename the preview to its name
+    var tableExists = false;
     if (table) {
+      tableExists = true;
       table = mapJsonValues(previewTable, table);
-
-      $(previewTable.files).each(function (index, file) {
-        var fromFile = pageUrl + '/' + file.filename;
-        var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
-        console.log("moving... table file: " + fromFile + " to: " + toFile);
-        moveContent(Florence.collection.id, fromFile, toFile,
-          onSuccess = function () {
-            console.log("Moved table file: " + fromFile + " to: " + toFile);
-          });
-      });
-      deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
     } else { // just keep the preview files
       table = previewTable;
       addTableToPageJson(table);
     }
 
     saveTableJson(table, success=function() {
+
+      if (tableExists) {
+        // if a table exists, rename the preview to its name
+        $(previewTable.files).each(function (index, file) {
+          var fromFile = pageUrl + '/' + file.filename;
+          var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
+          console.log("moving... table file: " + fromFile + " to: " + toFile);
+          renameContent(Florence.collection.id, fromFile, toFile,
+            onSuccess = function () {
+              console.log("Moved table file: " + fromFile + " to: " + toFile);
+            });
+        });
+        deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
+      }
+
       if (onSave) {
         onSave(table.filename, '<ons-table path="' + table.filename + '" />');
       }
