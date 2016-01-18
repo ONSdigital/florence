@@ -10,11 +10,16 @@ function addFile(collectionId, data, field, idField) {
   var list = data[field];
   var downloadExtensions, supplementary;
   if (field === 'supplementaryFiles') {
-    supplementary = true;
+    var header = 'Supplementary files';
+    var button = 'supplementary file';
+  } else if (field === 'pdfTable') {
+    var header = 'PDF Table';
+    var button = 'pdf';
   } else {
-    supplementary = false;
+    var header = 'Upload files';
+    var button = 'file';
   }
-  var dataTemplate = {list: list, idField: idField, supplementary: supplementary};
+  var dataTemplate = {list: list, idField: idField, header: header, button: button};
   var html = templates.editorDownloads(dataTemplate);
   $('#' + idField).replaceWith(html);
   var uriUpload;
@@ -30,7 +35,7 @@ function addFile(collectionId, data, field, idField) {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        swal ({
+        swal({
           title: "Warning",
           text: "Are you sure you want to delete this file?",
           type: "warning",
@@ -38,7 +43,7 @@ function addFile(collectionId, data, field, idField) {
           confirmButtonText: "Delete",
           cancelButtonText: "Cancel",
           closeOnConfirm: false
-        }, function(result) {
+        }, function (result) {
           if (result === true) {
             swal({
               title: "Deleted",
@@ -80,11 +85,17 @@ function addFile(collectionId, data, field, idField) {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+  } else if (data.type === 'article' || data.type === 'bulletin') {
+    downloadExtensions = /\.pdf$/;
   } else {
     sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
   }
 
   $('#add-' + idField).one('click', function () {
+    if ((data.type === 'article' || data.type === 'bulletin') && data[field].length > 0) {
+      sweetAlert("You can upload only one file here", "info");
+      return false;
+    } else {
       var position = $(".workspace-edit").scrollTop();
       Florence.globalVars.pagePos = position + 200;
       $('#sortable-' + idField).append(
@@ -116,7 +127,7 @@ function addFile(collectionId, data, field, idField) {
         }
 
         var file = this[0].files[0];
-        if(!file) {
+        if (!file) {
           sweetAlert("Please select a file to upload");
           return;
         }
@@ -169,7 +180,7 @@ function addFile(collectionId, data, field, idField) {
         }
       });
     }
-  );
+  });
 
   $(function () {
     $('.add-tooltip').tooltip({
@@ -187,8 +198,8 @@ function addFile(collectionId, data, field, idField) {
 
   function sortable() {
     $('#sortable-' + idField).sortable({
-      stop: function(){
-        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
+      stop: function () {
+        $('#' + idField + ' .edit-section__sortable-item--counter').each(function (index) {
           $(this).empty().append(index + 1);
         });
       }

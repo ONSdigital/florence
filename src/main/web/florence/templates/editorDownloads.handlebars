@@ -1,10 +1,6 @@
 <div class="edit-section" id="{{idField}}">
   <div class="edit-section__head">
-    {{#if supplementary}}
-      <h1>Supplementary files</h1>
-    {{else}}
-      <h1>Upload files</h1>
-    {{/if}}
+    <h1>{{header}}</h1>
     <p>Title | Name</p>
   </div>
   <div class="edit-section__content">
@@ -23,7 +19,7 @@
       {{/each}}
     </div>
     <div class="text-center">
-      <button class="btn-add-section" id="add-{{idField}}">Add file</button>
+      <button class="btn-add-section" id="add-{{idField}}">Add {{button}}</button>
     </div>
   </div>
 </div>
