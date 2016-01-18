@@ -135,13 +135,19 @@ function loadTableBuilder(pageData, onSave, table) {
     // if uploaded = true rename the preview table
     previewTable = buildJsonObjectFromForm(previewTable);
 
-    // if a table exists, rename the preview to its name
+    var tableExists = false;
+    if (table) {
+      tableExists = true;
+      table = mapJsonValues(previewTable, table);
+    } else { // just keep the preview files
+      table = previewTable;
+      addTableToPageJson(table);
+    }
 
     saveTableJson(table, success=function() {
 
-      if (table) {
-        table = mapJsonValues(previewTable, table);
-
+      if (tableExists) {
+        // if a table exists, rename the preview to its name
         $(previewTable.files).each(function (index, file) {
           var fromFile = pageUrl + '/' + file.filename;
           var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
@@ -152,9 +158,6 @@ function loadTableBuilder(pageData, onSave, table) {
             });
         });
         deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
-      } else { // just keep the preview files
-        table = previewTable;
-        addTableToPageJson(table);
       }
 
       if (onSave) {
