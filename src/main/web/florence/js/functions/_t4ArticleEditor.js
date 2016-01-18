@@ -1,6 +1,6 @@
 function articleEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
+  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newArticle = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
   var timeoutId;
@@ -247,6 +247,14 @@ function articleEditor(collectionId, data) {
       newRelatedMethodology[indexM] = {uri: safeUri};
     });
     data.relatedMethodologyArticle = newRelatedMethodology;
+    // Files are uploaded. Save metadata
+    var orderFile = $("#sortable-pdf").sortable('toArray');
+    $(orderFile).each(function (indexF, nameF) {
+      var title = $('#pdf-title_' + nameF).val();
+      var file = data.pdfTable[parseInt(nameF)].file;
+      newFiles[indexF] = {title: title, file: file};
+    });
+    data.pdfTable = newFiles;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
