@@ -24,7 +24,7 @@ function editDocumentCorrection(collectionId, data, templateData, field, idField
       data[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       templateData[field].push({correctionNotice: "", updateDate: tmpDate, uri: response});
       // Enter a notice
-      var editedSectionValue = {title: 'Correction notice', markdown: ''};
+      var editedSectionValue = {title: 'Correction notice', markdown: data[field].correctionNotice};
       var saveContent = function (updatedContent) {
         data[field][data[field].length - 1].correctionNotice = updatedContent;
         saveCorrection(collectionId, data.uri, data, templateData, field, idField);
@@ -127,7 +127,7 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
 
 
     $('#' + idField + '-edit_' + index).click(function () {
-      var markdown = $('#' + idField + '-markdown_' + index).val();
+      var markdown = data[field][index].correctionNotice;
       var editedSectionValue = {title: 'Correction notice', markdown: markdown};
       var saveContent = function (updatedContent) {
         data[field][index].correctionNotice = updatedContent;
