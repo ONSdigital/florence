@@ -90,10 +90,11 @@ function addDataset(collectionId, data, field, idField) {
 
       if (data[field] && data[field].length > 0) {
         $(data[field]).each(function (i, filesUploaded) {
-          if (filesUploaded.file == safeUriUpload) {
+          if (filesUploaded.file === safeUriUpload || filesUploaded.file === fileNameNoSpace) {
             sweetAlert('This file already exists');
             $('#' + lastIndex).remove();
             addDataset(collectionId, pageData, 'datasets', 'edition');
+            formdata = false;   // if not present the existing file was being overwritten
             return;
           }
         });
