@@ -13,6 +13,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   if (pageData.type === 'home_page') {
     var html = templates.workEditT1(templateData);
     $('.workspace-menu').html(html);
+    editServiceMessage(collectionId, pageData);
     accordion();
     t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
   }
