@@ -3,7 +3,7 @@ function viewTeams() {
   getTeams(
     success = function (data) {
       //console.log(data);
-      populateTeamsTable(data);
+      populateTeamsTable(data.teams);
     },
     error = function (jqxhr) {
       handleApiError(jqxhr);
@@ -11,8 +11,8 @@ function viewTeams() {
   );
 
   function populateTeamsTable(data) {
-
-    var teamsHtml = templates.teamList(data);
+    var teams = _.sortBy(data, function (d) {return d.name.toLowerCase()});
+    var teamsHtml = templates.teamList(teams);
     $('.section').html(teamsHtml);
 
     $('.collections-select-table tbody tr').click(function () {
