@@ -165,7 +165,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
 
       document.getElementById("response").innerHTML = "Uploading . . .";
 
-      var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
+      var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
 
       if (!!file.name.match(downloadExtensions)) {
         showUploadedItem(fileNameNoSpace);

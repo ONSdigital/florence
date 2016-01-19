@@ -116,7 +116,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
       document.getElementById("response").innerHTML = "Uploading . . .";
 
       var file = this[0].files[0];
-      var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
+      var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
       uriUpload = fileNameNoSpace;    //make file path relative
 
       if (data[field].length > 0) {

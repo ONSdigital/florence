@@ -69,6 +69,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
     editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
+    addFile(collectionId, pageData, 'pdfTable', 'pdf');
     editExtLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
@@ -96,6 +97,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
     editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
+    addFile(collectionId, pageData, 'pdfTable', 'pdf');
     editExtLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
