@@ -26,48 +26,14 @@ function addFile(collectionId, data, field, idField) {
 
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
-  //Edit saved from editor
-
-  // Delete
+  //Edit
   if (!data[field] || data[field].length === 0) {
     var lastIndex = 0;
   } else {
     $(data[field]).each(function (index) {
       // Delete
       $('#' + idField + '-delete_' + index).click(function () {
-        swal({
-          title: "Warning",
-          text: "Are you sure you want to delete this file?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Delete",
-          cancelButtonText: "Cancel",
-          closeOnConfirm: false
-        }, function (result) {
-          if (result === true) {
-            swal({
-              title: "Deleted",
-              text: "This alert has been deleted",
-              type: "success",
-              timer: 2000
-            });
-            var position = $(".workspace-edit").scrollTop();
-            Florence.globalVars.pagePos = position;
-            $(this).parent().remove();
-            $.ajax({
-              url: "/zebedee/content/" + collectionId + "?uri=" + data[field][index].file,
-              type: "DELETE",
-              success: function (res) {
-                console.log(res);
-              },
-              error: function (res) {
-                console.log(res);
-              }
-            });
-            data[field].splice(index, 1);
-            updateContent(collectionId, data.uri, JSON.stringify(data));
-          }
-        });
+        fileDelete(collectionId, data, field, index);
       });
     });
   }
@@ -92,13 +58,13 @@ function addFile(collectionId, data, field, idField) {
   }
 
   $('#add-' + idField).one('click', function () {
-    if (!data[field]) {
-      data[field] = [];
-      uploadFile(collectionId, data, field, idField, lastIndex, downloadExtensions, addFile);
-    } else if ((data.type === 'article' || data.type === 'bulletin') && data[field].length > 0) {
+    if ((data.type === 'article' || data.type === 'bulletin') && (data[field] && data[field].length > 0)) {
       sweetAlert("You can upload only one file here");
       return false;
     } else {
+      if (!data[field]) {
+        data[field] = [];
+      }
       uploadFile(collectionId, data, field, idField, lastIndex, downloadExtensions, addFile);
     }
   });
