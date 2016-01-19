@@ -126,21 +126,9 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
     Florence.globalVars.pagePos = position + 200;
     var html = templates.uploadFileForm(index);
     $('#correction-filename_show_' + index).append(html);
-    //$('#correction-filename_show_' + index).append(
-    //  '<div id="file-added_' + index + '" class="edit-section__item">' +
-    //  '  <form id="UploadForm">' +
-    //  '    <input type="file" title="Select a file and click Submit" name="files">' +
-    //  '    <br>' +
-    //  '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
-    //  '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
-    //  '  </form>' +
-    //  '  <div id="response"></div>' +
-    //  '  <ul id="list"></ul>' +
-    //  '</div>');
 
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
-      //$('#file-added_' + index).remove();
       $('#' + index).remove();
       if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
         data.downloads[index].file = uploadedNotSaved.files[index].file;
@@ -193,7 +181,6 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
           success: function () {
             document.getElementById("response").innerHTML = "File uploaded successfully";
             uploadedNotSaved.uploaded = true;
-            //$('#file-added_' + index).remove();
             $('#' + index).remove();
             $('#correction-filename_show_' + index).replaceWith('<p id="correction-filename_show_' + index + '">' + fileNameNoSpace + '</p>');
             data.downloads[index].file = fileNameNoSpace;
