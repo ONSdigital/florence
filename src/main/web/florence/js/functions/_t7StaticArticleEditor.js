@@ -1,6 +1,6 @@
 function staticArticleEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newLinks = [], newAnchors = [];
+  var newSections = [], newChart = [], newTable = [], newImage = [], newLinks = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
   var timeoutId;
@@ -134,6 +134,14 @@ function staticArticleEditor(collectionId, data) {
       newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
     });
     data.images = newImage;
+    // Files are uploaded. Save metadata
+    var orderFile = $("#sortable-file").sortable('toArray');
+    $(orderFile).each(function (indexF, nameF) {
+      var title = $('#file-title_' + nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
+      newFiles[indexF] = {title: title, file: file};
+    });
+    data.downloads = newFiles;
     // links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {
