@@ -32,6 +32,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         return templates.chartEditDualAxisExtras;
       case 'line':
         return templates.chartEditLineChartExtras;
+      case 'bar':
+      case 'rotated':
+        return templates.chartEditBarChartExtras;
       default:
         return;
     }
@@ -90,18 +93,18 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         if (onSave) {
-          onSave(chart.filename, '<ons-chart path="' + chart.uri + '" />');
+          onSave(chart.filename, '<ons-chart path="' + chart.filename + '" />');
         }
         $('.chart-builder').stop().fadeOut(200).remove();
       }
     });
   });
 
-  setShortcuts('#chart-title');
-  setShortcuts('#chart-subtitle');
-  setShortcuts('#chart-data');
-  setShortcuts('#chart-x-axis-label');
-  setShortcuts('#chart-notes');
+  setShortcuts('#chart-title',renderText);
+  setShortcuts('#chart-subtitle',renderText);
+  setShortcuts('#chart-data',renderChart);
+  setShortcuts('#chart-x-axis-label',renderChart);
+  setShortcuts('#chart-notes',renderText);
 
   //Renders html outside actual chart area (title, subtitle, source, notes etc.)
   function renderText() {
@@ -176,6 +179,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.altText = $('#chart-alt-text').val();
     chart.xAxisLabel = $('#chart-x-axis-label').val();
     chart.startFromZero = $('#start-from-zero').prop('checked');
+    chart.finishAtHundred = $('#finish-at-hundred').prop('checked');
 
     if (chart.title === '') {
       chart.title = '[Title]'

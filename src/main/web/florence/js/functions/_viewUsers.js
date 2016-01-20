@@ -1,31 +1,47 @@
 function viewUsers(view) {
-
+  var loggedUser = localStorage.getItem('loggedInAs');
   getUsers(
     success = function (data) {
-      //console.log(data);
-      populateUsersTable(data);
+      //based on user permission will show the options to create different users
+      getUserPermission(
+        function (permission) {
+          populateUsersTable(data, permission);
+        },
+        function (error) {handleApiError(error);},
+        loggedUser
+      );
     },
     error = function (jqxhr) {
       handleApiError(jqxhr);
     }
   );
 
-  function populateUsersTable(data) {
-
-    var usersHtml = templates.userList(data);
+  function populateUsersTable(data, permission) {
+    var dataTemplate = {data: data, permission: permission};
+    var usersHtml = templates.userList(dataTemplate);
+    var isAdmin = false;
+    var isEditor = false;
     $('.section').html(usersHtml);
 
-    //if (collectionId) {
-    //  $('.collections-select-table tr[data-id="' + collectionId + '"]')
-    //    .addClass('selected');
-    //  viewCollectionDetails(collectionId);
-    //}
 
     $('.collections-select-table tbody tr').click(function () {
       $('.collections-select-table tbody tr').removeClass('selected');
       $(this).addClass('selected');
       var userId = $(this).attr('data-id');
       viewUserDetails(userId);
+    });
+
+    $('.radioBtnDiv').change(function () {
+      if ($('input:checked').val() === 'admin') {
+        isAdmin = true;
+        isEditor = true;
+      }
+      else if ($('input:checked').val() === 'publisher') {
+        isEditor = true;
+      }
+      else {
+        isEditor = false;
+      }
     });
 
     $('.form-create-user').submit(function (e) {
@@ -49,8 +65,8 @@ function viewUsers(view) {
         sweetAlert("Please enter the users password.");
         return;
       }
-
-      postUser(username, email, password);
+      postUser(username, email, password, isAdmin, isEditor);
+      viewUsers();
     });
   }
 }

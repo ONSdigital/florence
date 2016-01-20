@@ -1,0 +1,39 @@
+<div class="team-select overlay">
+  <div class="table-builder__inner team-select__inner">
+
+    <div class="team-select__header">
+      <h1 class="team-select__heading">Team: {{team.name}}</h1>
+
+      <h3 class="team-select__sub-heading">Drag to add or remove users</h3>
+    </div>
+    <div class="team-select__body">
+      <!--50% width-->
+      <div class="col--6 team-select__left-column">
+        <h2>Users</h2>
+        <div class="team-select-search">
+          <input id="team-search-input" class="team-select-search__input" type="text" placeholder="Search for a user">
+        </div>
+        <ul class="user-list">
+          {{#each user}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <!--50% width-->
+      <div class="col--6 team-select__right-column">
+        <h2>Team members</h2>
+        <ul class="team-list">
+          {{#each team.members}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+
+    <div class="team-select__footer">
+      <button class="btn-team-selector-cancel">Done</button>
+    </div>
+
+  </div>
+</div>

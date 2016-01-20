@@ -291,6 +291,11 @@ $panel-height-2-top-nav: 756px;
         content: 'SP';
       }
     }
+    &--static_article {
+      &:after {
+        content: 'SA';
+      }
+    }
     &--static_qmi {
       &:after {
         content: 'QM';
@@ -706,6 +711,11 @@ button {
   }
 
   &.btn-select-release {
+    color: $concrete;
+    background-color: $astral;
+  }
+
+  &.btn-embed-save {
     color: $concrete;
     background-color: $astral;
   }

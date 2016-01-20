@@ -15,7 +15,7 @@ function viewReleaseSelector() {
 
   $('#release-search-input').on('input', function () {
     var searchText = $(this).val();
-    populateReleasesList(releases, searchText)
+    populateReleasesList(releases, searchText);
   });
 
   function PopulateReleasesForUri(baseReleaseUri, releases) {
