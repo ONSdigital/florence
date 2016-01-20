@@ -113,7 +113,6 @@ function staticPageEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
-    var orderTable = $("#sortable-table").sortable('toArray');
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {
