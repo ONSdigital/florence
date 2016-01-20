@@ -236,6 +236,11 @@ $panel-height-2-top-nav: 756px;
         content: 'HO';
       }
     }
+    &--home_page_census {
+      &:after {
+        content: 'CS';
+      }
+    }
     &--taxonomy_landing_page {
       &:after {
         content: 'LP';
