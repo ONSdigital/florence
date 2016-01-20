@@ -101,7 +101,7 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
 
       //Modal click events
       $('.btn-uri-cancel').off().one('click', function () {
-        createWorkspace(data.uri, collectionId, 'edit');
+        $('.modal').remove();
       });
 
       $('.btn-uri-get').off().click(function () {
@@ -219,12 +219,12 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
         }
       });
       $('.btn-uri-cancel').off().click(function () {
-        createWorkspace(data.uri, collectionId, 'edit');
+        $('.modal').remove();
       });
     });
     //They cancel
     $('.btn-uri-cancel').off().click(function () {
-      createWorkspace(data.uri, collectionId, 'edit');
+      $('.modal').remove();
     });
   });
 
