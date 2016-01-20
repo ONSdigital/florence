@@ -33,15 +33,10 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
       if (!$this.title) {
         // This is data
         var modal = templates.blockNewsModal($this);
-        var pastedUrl, size;
+        var pastedUrl;
         $('.modal').remove();
         $('.workspace-menu').append(modal);
         $('.modal-news').remove();
-        //menuselect("uri-size");
-        // No size changes at the moment
-        //$('#uri-size').change(function () {
-        //  size = $('#uri-size').val();
-        //});
 
         //Modal click events
         $('.btn-uri-cancel').off().one('click', function () {
@@ -66,7 +61,7 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
         var images = data.images;
         var dataTemplate = {block: $this, images: images};
         var modal = templates.blockNewsModal(dataTemplate);
-        var uri, title, text, image, size;
+        var uri, title, text, image;
         $('.modal').remove();
         $('.workspace-menu').append(modal);
         //menuselect("uri-size");
@@ -94,10 +89,6 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
             $this.image = images[index].uri;
           }
         });
-        // No size changes at the moment
-        //$('#uri-size').change(function () {
-        //  size = $('#uri-size').val();
-        //});
 
         //Modal click events
         $('.btn-uri-cancel').off().click(function () {
@@ -109,7 +100,7 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
             sweetAlert('You need to enter a title to continue');
             return false;
           } else {
-            data[field][index] = {uri: $this.uri, title: $this.title, text: $this.text, image: $this.image, size: $this.size};
+            data[field][index] = {uri: $this.uri, title: $this.title, text: $this.text, image: $this.image};
             saveBlocks(collectionId, data.uri, data, templateData, field, idField);
             $('.modal').remove();
           }
@@ -173,23 +164,16 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
         data[field] = [];
       }
 
-      //Florence.globalVars.pagePos = position;
       var modal = templates.blockNewsModal;
-      var pastedUrl, size;
+      var pastedUrl;
       $('.modal').remove();
       $('.workspace-menu').append(modal);
       $('.modal-news').remove();
-      //menuselect("uri-size");
 
       //Modal click events
       $('.btn-uri-cancel').off().one('click', function () {
         createWorkspace(data.uri, collectionId, 'edit');
       });
-
-      // No size changes at the moment
-      //$('#uri-size').change(function () {
-      //  size = $('#uri-size').val();
-      //});
 
       $('.btn-uri-get').off().click(function () {
         pastedUrl = $('#uri-input').val();
@@ -212,11 +196,11 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
         data[field] = [];
       }
       var images = data.images;
-      var modal = templates.blockNewsModal(images);
-      var uri, title, text, image, size;
+      var dataTemplate = {block: {}, images: images};
+      var modal = templates.blockNewsModal(dataTemplate);
+      var uri, title, text, image;
       $('.modal').remove();
       $('.workspace-menu').append(modal);
-      //menuselect("uri-size");
 
       $('#uri-input').change(function () {
         uri = $('#uri-input').val();
@@ -230,31 +214,32 @@ function initialiseBlocks(collectionId, data, templateData, field, idField) {
       });
       $('#uri-image').change(function () {
         var index = parseInt($('#uri-image').val());
-        image = images[index].uri;
+        if (index === -1) {
+          $this.image = '';
+        } else {
+          $this.image = images[index].uri;
+        }
       });
-      // No size changes at the moment
-      //$('#uri-size').change(function () {
-      //  size = $('#uri-size').val();
-      //});
 
       $('.btn-uri-get').off().click(function () {
         if (!title) {
           sweetAlert('You need to enter a title to continue');
         }
         else {
-          data[field].push({uri: uri, title: title, text: text, image: image, size: size});
+          data[field].push({uri: uri, title: title, text: text, image: image});
+          templateData[field].push({uri: uri, title: title, text: text, image: image});
           saveBlocks(collectionId, data.uri, data, templateData, field, idField);
           $('.modal').remove();
         }
       });
       $('.btn-uri-cancel').off().click(function () {
-        createWorkspace(data.uri, collectionId, 'edit');
+        $('.modal').remove();
       });
     });
 
     //They cancel
     $('.btn-uri-cancel').off().click(function () {
-      createWorkspace(data.uri, collectionId, 'edit');
+      $('.modal').remove();
     });
   });
 
@@ -279,7 +264,6 @@ function resolveStatsTitle(collectionId, data, templateData, field, idField) {
     if (!this.title) {
       getPageDataTitle(collectionId, path.uri,
         function (response) {
-          //templateData[field][index] = {};
           templateData[field][index] = response;
           dfd.resolve();
         },
@@ -302,8 +286,7 @@ function saveBlocks(collectionId, path, data, templateData, field, idField) {
   putContent(collectionId, path, JSON.stringify(data),
     success = function (response) {
       Florence.Editor.isDirty = false;
-      refreshBlocks(collectionId, data, templateData, field, idField);
-      //createWorkspace(data.uri, collectionId, 'edit');
+      resolveStatsTitle(collectionId, data, templateData, field, idField);
       refreshPreview(data.uri);
     },
     error = function (response) {
@@ -337,11 +320,11 @@ function checkValidStats(collectionId, data, templateData, field, idField, dataU
       }
 
       if (index) {
-        data[field][index] = {uri: dataUrl, size: size};
-        templateData[field][index] = {uri: dataUrl, size: size};
+        data[field][index] = {uri: dataUrl};
+        templateData[field][index] = {uri: dataUrl};
       } else {
-        data[field].push({uri: dataUrl, size: size});
-        templateData[field].push({uri: dataUrl, size: size});
+        data[field].push({uri: dataUrl});
+        templateData[field].push({uri: dataUrl});
       }
       saveBlocks(collectionId, data.uri, data, templateData, field, idField);
 
