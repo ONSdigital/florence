@@ -2,6 +2,7 @@ function t1EditorCensus(collectionId, data, templateData) {
 
   var newBlocks = [], newImage = [];
   var setActiveTab, getActiveTab;
+  var renameUri = false;
   var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -15,18 +16,12 @@ function t1EditorCensus(collectionId, data, templateData) {
   accordion(getActiveTab);
 
   // Metadata edition and saving
-  if (Florence.globalVars.welsh) {
-    $("#title").on('input', function () {
-      $(this).textareaAutoSize();
-      data.description.title = $(this).val();
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
-    });
-  } else {
-    $(".title").remove();
-  }
+  $("#title").on('input', function () {
+    renameUri = true;
+    $(this).textareaAutoSize();
+    data.description.title = $(this).val();
+  });
+
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
@@ -62,41 +57,38 @@ function t1EditorCensus(collectionId, data, templateData) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
-    updateContent(collectionId, data.uri, JSON.stringify(data));
+    save(updateContent);
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    save();
-    saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndCompleteContent);
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
-    saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
+    save(saveAndReviewContent);
   });
 
-  function save() {
+  function save(onSave) {
     clearTimeout(timeoutId);
     // Blocks
     var orderBlocks = $("#sortable-block").sortable('toArray');
     $(orderBlocks).each(function (indexB, titleB) {
-        if (!data.sections[parseInt(titleB)].title) {
-          var uri = data.sections[parseInt(titleB)].uri;
-          var size = data.sections[parseInt(titleB)].size;
-          var safeUri = checkPathSlashes(uri);
-          newBlocks[indexB] = {uri: safeUri, size: size};
-        } else {
-          var uri = data.sections[parseInt(titleB)].uri;
-          var title = data.sections[parseInt(titleB)].title;
-          var size = data.sections[parseInt(titleB)].size;
-          var image = data.sections[parseInt(titleB)].image;
-          var text = data.sections[parseInt(titleB)].text;
-          newBlocks[indexB] = {uri: uri, title: title, text: text, image: image, size: size};
-        }
-      });
+      if (!data.sections[parseInt(titleB)].title) {
+        var uri = data.sections[parseInt(titleB)].uri;
+        var size = data.sections[parseInt(titleB)].size;
+        var safeUri = checkPathSlashes(uri);
+        newBlocks[indexB] = {uri: safeUri, size: size};
+      } else {
+        var uri = data.sections[parseInt(titleB)].uri;
+        var title = data.sections[parseInt(titleB)].title;
+        var size = data.sections[parseInt(titleB)].size;
+        var image = data.sections[parseInt(titleB)].image;
+        var text = data.sections[parseInt(titleB)].text;
+        newBlocks[indexB] = {uri: uri, title: title, text: text, image: image, size: size};
+      }
+    });
     data.sections = newBlocks;
     // images
     var orderImage = $("#sortable-image").sortable('toArray');
@@ -108,6 +100,8 @@ function t1EditorCensus(collectionId, data, templateData) {
       newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
     });
     data.images = newImage;
+
+    checkRenameUri(collectionId, data, renameUri, onSave);
   }
 
 }
