@@ -243,6 +243,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
     editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
+    addFile(collectionId, pageData, 'downloads', 'file');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     staticArticleEditor(collectionId, pageData);

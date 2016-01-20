@@ -49,6 +49,8 @@ function addFile(collectionId, data, field, idField) {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_page') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+  } else if (data.type === 'static_article') {
+    downloadExtensions = /\.xls$|.pdf$/;
   } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'article' || data.type === 'bulletin') {
