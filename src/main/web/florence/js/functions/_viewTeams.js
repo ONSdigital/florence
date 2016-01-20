@@ -2,7 +2,6 @@ function viewTeams() {
 
   getTeams(
     success = function (data) {
-      //console.log(data);
       populateTeamsTable(data.teams);
     },
     error = function (jqxhr) {
@@ -28,7 +27,7 @@ function viewTeams() {
       var teamName = $('#create-team-name').val();
 
       if (teamName.length < 1) {
-        sweetAlert("Please enter the users name.");
+        sweetAlert("Please enter a user name.");
         return;
       }
 
