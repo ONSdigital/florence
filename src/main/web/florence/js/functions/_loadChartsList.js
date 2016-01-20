@@ -15,6 +15,23 @@ function refreshChartList(collectionId, data) {
 // do all the wiring up of buttons etc once the template has been rendered.
 function initialiseChartList(collectionId, data) {
 
+  $('#add-chart').click(function () {
+    loadChartBuilder(data, function () {
+      refreshPreview();
+
+      putContent(collectionId, data.uri, JSON.stringify(data),
+        success = function () {
+          Florence.Editor.isDirty = false;
+          refreshPreview();
+          refreshChartList(collectionId, data);
+        },
+        error = function (response) {
+          handleApiError(response);
+        }
+      );
+    });
+  });
+
   $(data.charts).each(function (index, chart) {
 
     var basePath = data.uri;
@@ -91,14 +108,6 @@ function initialiseChartList(collectionId, data) {
   }
 
   sortable();
-}
-
-function copyToClipboard(element) {
-  var $temp = $("<input>");
-  $("body").append($temp);
-  $temp.val($(element).text()).select();
-  document.execCommand("copy");
-  $temp.remove();
 }
 
 

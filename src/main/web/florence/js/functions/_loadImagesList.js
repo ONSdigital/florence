@@ -12,13 +12,22 @@ function refreshImagesList(collectionId, data) {
 
 function initialiseImagesList(collectionId, data) {
 
+  $('#add-image').click(function () {
+    loadImageBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshImagesList(collectionId, data);
+    });
+  });
+
   $(data.images).each(function (index, image) {
     var basePath = data.uri;
     var noExtension = image.uri.match(/^(.+?)(\.[^.]*$|$)/);
     var imageJson = noExtension[1] + '.json';
 
-    $("#image-copy_" + index).click(function () {
-      copyToClipboard('#image-to-be-copied_' + index);
+    var client = new ZeroClipboard($("#image-copy_" + index));
+    client.on("copy", function (event) {
+      var clipboard = event.clipboardData;
+      clipboard.setData("text/plain", $('#image-to-be-copied_' + index).text());
     });
 
     $("#image-edit_" + index).click(function () {

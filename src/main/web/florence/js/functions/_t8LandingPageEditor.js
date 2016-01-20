@@ -156,6 +156,7 @@ function datasetLandingEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    clearTimeout(timeoutId);
     // Datasets are uploaded. Save metadata
     var orderDataset = $("#sortable-edition").sortable('toArray');
     $(orderDataset).each(function (indexF, nameF) {
@@ -227,6 +228,7 @@ function addEditionEditButton(collectionId, data, templateData) {
     //open document
     $("#edition-edit_" + index).click(function () {
       var selectedEdition = data.datasets[index].uri;
+      Florence.globalVars.activeTab = '';
       createWorkspace(selectedEdition, collectionId, 'edit');
     });
 

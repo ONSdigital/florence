@@ -12,13 +12,23 @@ function refreshTablesList(collectionId, data) {
 
 function initialiseTablesList(collectionId, data) {
 
+  $('#add-table').click(function () {
+    loadTableBuilder(data, function () {
+      Florence.Editor.isDirty = false;
+      refreshPreview();
+      refreshTablesList(collectionId, data);
+    });
+  });
+
   $(data.tables).each(function (index, table) {
     var basePath = data.uri;
     var tablePath = basePath + '/' + table.filename;
     var tableJson = tablePath;
 
-    $("#table-copy_" + index).click(function () {
-      copyToClipboard('#table-to-be-copied_' + index);
+    var client = new ZeroClipboard($("#table-copy_" + index));
+    client.on("copy", function (event) {
+      var clipboard = event.clipboardData;
+      clipboard.setData("text/plain", $('#table-to-be-copied_' + index).text());
     });
 
     $("#table-edit_" + index).click(function () {
