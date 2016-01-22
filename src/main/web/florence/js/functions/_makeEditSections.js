@@ -11,23 +11,72 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   templateData.isPageComplete = isPageComplete;
 
   if (pageData.type === 'home_page') {
-    var html = templates.workEditT1(templateData);
-    $('.workspace-menu').html(html);
-    editServiceMessage(collectionId, pageData);
-    accordion();
-    t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
+    var email = localStorage.getItem('loggedInAs');   // get user permissions
+    getUserPermission(
+      function (permission) {
+        if (permission.admin) {
+          var html = templates.workEditT1(templateData);
+          $('.workspace-menu').html(html);
+          editServiceMessage(collectionId, pageData);
+          accordion();
+          t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
+        } else {
+          $('.workspace-menu').html("<section class='panel workspace-edit'><div class='edit-section'>" +
+            "<div class='edit-section__head'><h1>You cannot edit this page. Please contact an administrator</h1></div></div></section>");
+        }
+      },
+      function (error) {
+        sweetAlert("There is a problem with permissions. Please contact an administrator");
+      },
+      email
+    );
   }
 
+  // Original code
+  //if (pageData.type === 'home_page') {
+  //  var html = templates.workEditT1(templateData);
+  //  $('.workspace-menu').html(html);
+  //  editServiceMessage(collectionId, pageData);
+  //  accordion();
+  //  t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
+  //}
+
   else if (pageData.type === 'home_page_census') {
-    var html = templates.workEditT1Census(templateData);
-    $('.workspace-menu').html(html);
-    if (pageData.images) {
-      loadImagesList(collectionId, pageData);
-    }
-    editBlocks(collectionId, pageData, templateData, 'sections', 'block');
-    accordion();
-    t1EditorCensus(collectionId, pageData, templateData);   //templateData used to resolve section titles
+    var email = localStorage.getItem('loggedInAs');   // get user permissions
+    getUserPermission(
+      function (permission) {
+        if (permission.admin) {
+          var html = templates.workEditT1Census(templateData);
+          $('.workspace-menu').html(html);
+          if (pageData.images) {
+            loadImagesList(collectionId, pageData);
+          }
+          editBlocks(collectionId, pageData, templateData, 'sections', 'block');
+          accordion();
+          t1EditorCensus(collectionId, pageData, templateData);   //templateData used to resolve section titles
+        } else {
+          $('.workspace-menu').html("<section class='panel workspace-edit'><div class='edit-section'>" +
+            "<div class='edit-section__head'><h1>You cannot edit this page. Please contact an administrator</h1></div></div></section>");
+        }
+      },
+      function (error) {
+        sweetAlert("There is a problem with permissions. Please contact an administrator");
+      },
+      email
+    );
   }
+
+  // Original code
+  //else if (pageData.type === 'home_page_census') {
+  //  var html = templates.workEditT1Census(templateData);
+  //  $('.workspace-menu').html(html);
+  //  if (pageData.images) {
+  //    loadImagesList(collectionId, pageData);
+  //  }
+  //  editBlocks(collectionId, pageData, templateData, 'sections', 'block');
+  //  accordion();
+  //  t1EditorCensus(collectionId, pageData, templateData);   //templateData used to resolve section titles
+  //}
 
   else if (pageData.type === 'taxonomy_landing_page') {
     var html = templates.workEditT2(templateData);
