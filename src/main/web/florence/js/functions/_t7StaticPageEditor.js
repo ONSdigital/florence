@@ -124,6 +124,7 @@ function staticPageEditor(collectionId, data) {
     });
     data.charts = newChart;
     // tables
+    var orderTable = $("#sortable-table").sortable('toArray');
     $(orderTable).each(function (indexTable, nameTable) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
