@@ -19,7 +19,8 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
     crossDomain: true,
     success: function (checkData) {
       if (pageType === 'static_landing_page' && checkData.type === 'home_page' ||
-        (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_methodology_download') && checkData.type === 'product_page') {
+          (pageType === 'static_qmi' || pageType === 'static_adhoc' || pageType === 'static_methodology' || pageType === 'static_methodology_download') && checkData.type === 'product_page' ||
+          (pageType === 'static_landing_page' || pageType === 'static_page' || pageType === 'static_article') && checkData.type === 'home_page_census') {
         submitFormHandler();
         return true;
       } else if ((pageType === 'static_foi' || pageType === 'static_page' || pageType === 'static_article' || pageType === 'static_landing_page') && checkData.type.match(/static_.+/)) {
@@ -74,7 +75,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       e.preventDefault();
       //Check for reserved words
       if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-        alert('That is not an accepted value for a title');
+        sweetAlert('That is not an accepted value for a title');
         $('#pagename').val('');
         return false;
       }
@@ -130,6 +131,9 @@ function pageTypeDataT7(pageType) {
         "metaDescription": ""
       },
       "markdown": [],
+      "charts": [],
+      "tables": [],
+      "images": [],
       "downloads": [],
       type: pageType,
       "anchors": [],

@@ -11,11 +11,72 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   templateData.isPageComplete = isPageComplete;
 
   if (pageData.type === 'home_page') {
-    var html = templates.workEditT1(templateData);
-    $('.workspace-menu').html(html);
-    accordion();
-    t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
+    var email = localStorage.getItem('loggedInAs');   // get user permissions
+    getUserPermission(
+      function (permission) {
+        if (permission.admin) {
+          var html = templates.workEditT1(templateData);
+          $('.workspace-menu').html(html);
+          editServiceMessage(collectionId, pageData);
+          accordion();
+          t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
+        } else {
+          $('.workspace-menu').html("<section class='panel workspace-edit'><div class='edit-section'>" +
+            "<div class='edit-section__head'><h1>You cannot edit this page. Please contact an administrator</h1></div></div></section>");
+        }
+      },
+      function (error) {
+        sweetAlert("There is a problem with permissions. Please contact an administrator");
+      },
+      email
+    );
   }
+
+  // Original code
+  //if (pageData.type === 'home_page') {
+  //  var html = templates.workEditT1(templateData);
+  //  $('.workspace-menu').html(html);
+  //  editServiceMessage(collectionId, pageData);
+  //  accordion();
+  //  t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
+  //}
+
+  else if (pageData.type === 'home_page_census') {
+    var email = localStorage.getItem('loggedInAs');   // get user permissions
+    getUserPermission(
+      function (permission) {
+        if (permission.admin) {
+          var html = templates.workEditT1Census(templateData);
+          $('.workspace-menu').html(html);
+          if (pageData.images) {
+            loadImagesList(collectionId, pageData);
+          }
+          editBlocks(collectionId, pageData, templateData, 'sections', 'block');
+          accordion();
+          t1EditorCensus(collectionId, pageData, templateData);   //templateData used to resolve section titles
+        } else {
+          $('.workspace-menu').html("<section class='panel workspace-edit'><div class='edit-section'>" +
+            "<div class='edit-section__head'><h1>You cannot edit this page. Please contact an administrator</h1></div></div></section>");
+        }
+      },
+      function (error) {
+        sweetAlert("There is a problem with permissions. Please contact an administrator");
+      },
+      email
+    );
+  }
+
+  // Original code
+  //else if (pageData.type === 'home_page_census') {
+  //  var html = templates.workEditT1Census(templateData);
+  //  $('.workspace-menu').html(html);
+  //  if (pageData.images) {
+  //    loadImagesList(collectionId, pageData);
+  //  }
+  //  editBlocks(collectionId, pageData, templateData, 'sections', 'block');
+  //  accordion();
+  //  t1EditorCensus(collectionId, pageData, templateData);   //templateData used to resolve section titles
+  //}
 
   else if (pageData.type === 'taxonomy_landing_page') {
     var html = templates.workEditT2(templateData);
@@ -58,7 +119,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
     editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
-    editLink (collectionId, pageData, 'links', 'link');
+    addFile(collectionId, pageData, 'pdfTable', 'pdf');
+    editExtLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
@@ -85,7 +147,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
     editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
-    editLink (collectionId, pageData, 'links', 'link');
+    addFile(collectionId, pageData, 'pdfTable', 'pdf');
+    editExtLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
@@ -111,7 +174,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
     editTopics (collectionId, pageData, templateData, 'topics', 'topics');
     addFile(collectionId, pageData, 'downloads', 'file');
-    editLink (collectionId, pageData, 'links', 'link');
+    editExtLink (collectionId, pageData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
     accordion();
@@ -164,7 +227,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
     editRelated (collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
-    editLink (collectionId, pageData, 'links', 'link');
+    editExtLink (collectionId, pageData, 'links', 'link');
     editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
@@ -195,11 +258,22 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
   else if (pageData.type === 'static_page') {
     var html = templates.workEditT7(templateData);
     $('.workspace-menu').html(html);
+    //  VV--------------- uncomment these lines if you need charts ---------------VV
+    //if (pageData.charts) {
+    //  loadChartsList(collectionId, pageData);
+    //}
+    //  ^^--------------- uncomment these lines if you need charts ---------------^^
+    if (pageData.tables) {
+      loadTablesList(collectionId, pageData);
+    }
+    //  VV--------------- uncomment these lines if you need images ---------------VV
+    //if (pageData.images) {
+    //  loadImagesList(collectionId, pageData);
+    //}
+    //  ^^--------------- uncomment these lines if you need images ---------------^^
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
-    //editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
-    editIntLinks (collectionId, pageData, templateData, 'links', 'link');
-    //editLink (collectionId, pageData, 'links', 'link');
+    editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
     accordion();
     staticPageEditor(collectionId, pageData);
   }
@@ -217,8 +291,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
       loadImagesList(collectionId, pageData);
     }
     editMarkdown (collectionId, pageData, 'sections', 'section');
-    //editRelated (collectionId, pageData, templateData, 'anchors', 'anchor');
-    editIntLinks (collectionId, pageData, templateData, 'links', 'link');
+    editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
+    addFile(collectionId, pageData, 'downloads', 'file');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     staticArticleEditor(collectionId, pageData);

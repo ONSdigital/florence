@@ -75,11 +75,11 @@ function loadChartBuilder(pageData, onSave, chart) {
       success: function (res) {
 
         if (!pageData.charts) {
-          pageData.charts = []
+          pageData.charts = [];
         }
 
         existingChart = _.find(pageData.charts, function (existingChart) {
-          return existingChart.filename === chart.filename
+          return existingChart.filename === chart.filename;
         });
 
         if (existingChart) {

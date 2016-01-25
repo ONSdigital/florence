@@ -174,7 +174,7 @@ function staticLandingPageEditor(collectionId, data) {
 
   sortableContent();
 
-  editLink(collectionId, data, 'links', 'link');
+  editExtLink(collectionId, data, 'links', 'link');
 
   // Save
   var editNav = $('.edit-nav');

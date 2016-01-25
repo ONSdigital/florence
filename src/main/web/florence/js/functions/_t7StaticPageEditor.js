@@ -1,6 +1,6 @@
 function staticPageEditor(collectionId, data) {
 
-  var newLinks = [], newFiles = [];
+  var newLinks = [], newFiles = [], newChart = [], newTable = [], newImage = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
   var timeoutId;
@@ -113,16 +113,37 @@ function staticPageEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
-     //External links
-    //var orderLink = $("#sortable-link").sortable('toArray');
-    //$(orderLink).each(function (indexL, nameL) {
-    //  var displayText = $('#link-markdown_' + nameL).val();
-    //  var link = $('#link-uri_' + nameL).val();
-    //  newLinks[indexL] = {uri: link, title: displayText};
-    //});
-    //data.links = newLinks;
-
-    // External links
+    // charts
+    var orderChart = $("#sortable-chart").sortable('toArray');
+    $(orderChart).each(function (indexCh, nameCh) {
+      var uri = data.charts[parseInt(nameCh)].uri;
+      var title = data.charts[parseInt(nameCh)].title;
+      var filename = data.charts[parseInt(nameCh)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.charts = newChart;
+    // tables
+    var orderTable = $("#sortable-table").sortable('toArray');
+    $(orderTable).each(function (indexTable, nameTable) {
+      var uri = data.tables[parseInt(nameTable)].uri;
+      var title = data.tables[parseInt(nameTable)].title;
+      var filename = data.tables[parseInt(nameTable)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.tables = newTable;
+    // images
+    var orderImage = $("#sortable-image").sortable('toArray');
+    $(orderImage).each(function (indexImage, nameImage) {
+      var uri = data.images[parseInt(nameImage)].uri;
+      var title = data.images[parseInt(nameImage)].title;
+      var filename = data.images[parseInt(nameImage)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.images = newImage;
+    // links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {
       if (data.links[parseInt(nameL)].title) {

@@ -2,93 +2,127 @@
 * This file is used for SCSS that you write knowing that it need refactoring - the shame file should be emptied regularly
 */
 
-
 //Modal styling - probably need some refactoring but mainly needs correct location in sass files
 .modal {
+  display: block;
+
+  &:before {
+    content: "";
     display: block;
+    opacity: 0.7;
+    background-color: $black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
 
-    &:before {
-        content: "";
-        display: block;
-        opacity: 0.7;
-        background-color: $black;
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 1000;
+  &-box {
+    background: #fefefe;
+    margin-left: -250px;
+    position: fixed;
+    left: 50%;
+    top: 20%;
+    z-index: 1001;
+    width: 500px;
+    height: $lineheight * 17;
+  }
+
+  &-box_t1 {
+    background: #fefefe;
+    margin-left: -250px;
+    position: fixed;
+    left: 50%;
+    top: 12%;
+    z-index: 1001;
+    width: 500px;
+    height: auto;
+  }
+
+  &-nav {
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    height: $lineheight * 4;
+    width: 100%;
+    padding-top: $lineheight / 2;
+    padding-bottom: $lineheight / 2;
+    background: $gray-chateau;
+  }
+
+  &-nav_t1 {
+    box-sizing: border-box;
+    position: absolute;
+    height: $lineheight * 4;
+    width: 100%;
+    padding-top: $lineheight / 2;
+    padding-bottom: $lineheight / 2;
+    background: $gray-chateau;
+  }
+
+  .uri-input {
+    margin: ($lineheight * 2) $lineheight $lineheight $lineheight;
+
+    &__label {
+      margin: $lineheight 0;
     }
 
-    &-box {
-        background: #fefefe;
-        margin-left: -250px;
-        position: fixed;
-        left: 50%;
-        top: 20%;
-        z-index: 1001;
-        width: 500px;
-        height: $lineheight * 17;
+  }
+
+  .uri-textarea {
+    margin: $lineheight 0 0 0;
+    box-sizing: border-box;
+    border: 3px solid #58585B;
+    border-radius: 4px;
+  }
+
+  .select-wrap {
+    margin: $lineheight 0 $lineheight  0;
+  }
+
+  .uri-browse {
+
+    &__label {
+      display: inline-block;
     }
 
-    &-nav {
-        box-sizing: border-box;
-        position: absolute;
-        bottom: 0;
-        height: $lineheight * 4;
-        width: 100%;
-        padding-top: $lineheight / 2;
-        padding-bottom: $lineheight / 2;
-        background: $gray-chateau;
+    button {
+      display: inline-block;
+      margin-left: 0;
     }
 
-    .uri-input {
-        margin: ($lineheight * 2) $lineheight $lineheight $lineheight;
+  }
 
-        &__label {
-            margin: $lineheight 0;
-        }
+  .btn-uri-browse,
+  .btn-uri-get {
+    color: $concrete;
+    background-color: $astral;
+  }
 
+  .latest {
+
+    &__label {
+      margin-left: $lineheight;
     }
 
-    .uri-browse {
-
-        &__label {
-            display: inline-block;
-        }
-
-        button {
-            display: inline-block;
-            margin-left: 0;
-        }
-
+    &__checkbox {
+      margin: 0 0 0 ($lineheight / 2);
     }
 
-    .btn-uri-browse,
-    .btn-uri-get {
-        color: $concrete;
-        background-color: $astral;
-    }
+  }
 
-    .latest {
-
-        &__label {
-            margin-left: $lineheight;
-        }
-
-        &__checkbox {
-            margin: 0 0 0 ($lineheight / 2);
-        }
-
-    }
-
-    .btn-wrap {
-        margin-left: $lineheight;
-    }
+  .btn-wrap {
+    margin-left: $lineheight;
+  }
 
 }
 
 .disabled {
-    opacity: 0.7;
-    background-color: $black;
-    top: 63px;
-    position: absolute;
-    z-index: 10;
+  opacity: 0.7;
+  background-color: $black;
+  top: 63px;
+  position: absolute;
+  z-index: 10;
 }

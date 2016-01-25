@@ -260,7 +260,7 @@ function getPage(collectionId, data, templateData, field, idField, latestCheck, 
         }
       }
 
-      else if (field === 'highlightedLinks' && (result.type === 'bulletin')) {
+      else if (field === 'highlightedLinks' && (result.type === 'article' || result.type === 'article_download' || result.type === 'bulletin' || result.type === 'compendium_landing_page')) {
         if (!data[field]) {
           data[field] = [];
           templateData[field] = [];

@@ -17,7 +17,8 @@ function viewUsers(view) {
   );
 
   function populateUsersTable(data, permission) {
-    var dataTemplate = {data: data, permission: permission};
+    var orderedUsers = _.sortBy(data, 'name');
+    var dataTemplate = {data: orderedUsers, permission: permission};
     var usersHtml = templates.userList(dataTemplate);
     var isAdmin = false;
     var isEditor = false;
@@ -52,17 +53,17 @@ function viewUsers(view) {
       var password = $('#create-user-password').val();
 
       if (username.length < 1) {
-        sweetAlert("Please enter the users name.");
+        sweetAlert("Please enter a user name.");
         return;
       }
 
       if (email.length < 1) {
-        sweetAlert("Please enter the users name.");
+        sweetAlert("Please enter a user name.");
         return;
       }
 
       if (password.length < 1) {
-        sweetAlert("Please enter the users password.");
+        sweetAlert("Please enter a password.");
         return;
       }
       postUser(username, email, password, isAdmin, isEditor);
