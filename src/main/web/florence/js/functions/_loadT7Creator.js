@@ -75,7 +75,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
       e.preventDefault();
       //Check for reserved words
       if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-        alert('That is not an accepted value for a title');
+        sweetAlert('That is not an accepted value for a title');
         $('#pagename').val('');
         return false;
       }
