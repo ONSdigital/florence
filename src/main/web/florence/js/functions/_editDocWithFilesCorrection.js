@@ -124,21 +124,12 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
   function fileCorrection(index) {
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
-    $('#correction-filename_show_' + index).append(
-      '<div id="file-added_' + index + '" class="edit-section__item">' +
-      '  <form id="UploadForm">' +
-      '    <input type="file" title="Select a file and click Submit" name="files">' +
-      '    <br>' +
-      '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
-      '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
-      '  </form>' +
-      '  <div id="response"></div>' +
-      '  <ul id="list"></ul>' +
-      '</div>');
+    var html = templates.uploadFileForm(index);
+    $('#correction-filename_show_' + index).append(html);
 
     $('#file-cancel').one('click', function (e) {
       e.preventDefault();
-      $('#file-added_' + index).remove();
+      $('#' + index).remove();
       if (uploadedNotSaved.uploaded === true && uploadedNotSaved.saved === false) {
         data.downloads[index].file = uploadedNotSaved.files[index].file;
         var fileToDelete = data.uri + '/' + uploadedNotSaved.files[index].file;
@@ -165,7 +156,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
 
       document.getElementById("response").innerHTML = "Uploading . . .";
 
-      var fileNameNoSpace = file.name.replace(/\s*/g, "").toLowerCase();
+      var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
 
       if (!!file.name.match(downloadExtensions)) {
         showUploadedItem(fileNameNoSpace);
@@ -190,7 +181,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
           success: function () {
             document.getElementById("response").innerHTML = "File uploaded successfully";
             uploadedNotSaved.uploaded = true;
-            $('#file-added_' + index).remove();
+            $('#' + index).remove();
             $('#correction-filename_show_' + index).replaceWith('<p id="correction-filename_show_' + index + '">' + fileNameNoSpace + '</p>');
             data.downloads[index].file = fileNameNoSpace;
           },
@@ -239,7 +230,7 @@ function initialiseDocWithFilesCorrection(collectionId, data, field, idField) {
       if (result === true) {
         var pathToDelete = data.uri;
         var filesToDelete = data.downloads;  //Delete all files in directory
-        var uriToDelete = $(this).parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
+        var uriToDelete = $(this).parent().parent().children('#' + idField + '-edition_' + index).attr(idField + '-url');
         deleteUnpublishedVersion(collectionId, uriToDelete, function () {
           var position = $(".workspace-edit").scrollTop();
           Florence.globalVars.pagePos = position;

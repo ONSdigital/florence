@@ -8,9 +8,9 @@
     </tr>
     </thead>
     <tbody>
-    {{#each teams}}
+    {{#each this}}
       <tr data-id="{{name}}">
-        <td headers="name" class="collection-name">{{name}}</td>
+        <td headers="name" class="collection-name">{{this.name}}</td>
       </tr>
     {{/each}}
     </tbody>

@@ -12,9 +12,16 @@
 </head>
 <body>
 <script type="text/x-mathjax-config">
+    //MathJax.Hub.Config();
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-  });
+  config: ["MMLorHTML.js"],
+  jax: ["input/TeX","output/HTML-CSS", "output/PreviewHTML"],
+  extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js"],
+  TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+  },
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
 </script>
 
 <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -33,7 +40,10 @@
 <script type="text/javascript" src="js/third-party/autosize.js"></script>
 
 <script type="text/javascript" src="js/third-party/sweetalert.min.js"></script>
-<script type="text/javascript" src="js/third-party/MathJax.js"></script>
+<script type="text/javascript" src="js/third-party/mathjax/MathJax.js"></script>
+<!--<script type="text/javascript"-->
+        <!--src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">-->
+<!--</script>-->
 <script type="text/javascript" src="js/third-party/tag-it.js"></script>
 <script type="text/javascript" src="js/third-party/ZeroClipboard.min.js"></script>
 

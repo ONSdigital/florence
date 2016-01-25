@@ -7,7 +7,7 @@
  * @param idField - HTML id for the template
  */
 
-function editIntLinks(collectionId, data, templateData, field, idField) {
+function editIntAndExtLinks(collectionId, data, templateData, field, idField) {
   $(data[field]).each(function (index, path) {
     if (!this.title) {
       templateData[field][index] = (function () {
@@ -101,16 +101,23 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
 
       //Modal click events
       $('.btn-uri-cancel').off().one('click', function () {
-        createWorkspace(data.uri, collectionId, 'edit');
+        $('.modal').remove();
       });
 
-      $('.btn-uri-get').off().one('click', function () {
+      $('.btn-uri-get').off().click(function () {
         var pastedUrl = $('#uri-input').val();
-        var dataUrl = checkPathParsed(pastedUrl);
-        data[field].push({uri: dataUrl});
-        templateData[field].push({uri: dataUrl});
-        saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
-        $('.modal').remove();
+        if (pastedUrl === "") {
+          sweetAlert("This field cannot be empty. Please paste a valid url address");
+        } else {
+          var dataUrl = checkPathParsed(pastedUrl);
+          if (dataUrl === "") {    //special case for home page
+            dataUrl = "/";
+          }
+          data[field].push({uri: dataUrl});
+          templateData[field].push({uri: dataUrl});
+          saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
+          $('.modal').remove();
+        }
       });
 
       $('.btn-uri-browse').off().one('click', function () {
@@ -145,40 +152,43 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
 
         $('.btn-browse-get').off().one('click', function () {
           var dataUrl = getPathNameTrimLast();
+          if (dataUrl === "") {   //special case for home page
+            dataUrl = "/";
+          }
           var latestUrl;
           //if you wanted to add latest automatically uncomment these lines
-          //if (dataUrl.match(/\/articles\//) || dataUrl.match(/\/bulletins\//)) {
-          //  swal({
-          //    title: "Warning",
-          //    text: "Would you like to link to the latest document?",
-          //    type: "warning",
-          //    showCancelButton: true,
-          //    confirmButtonText: "Yes",
-          //    cancelButtonText: "No",
-          //    closeOnConfirm: true
-          //  }, function (result) {
-          //    if (result === true) {
-          //      var tempUrl = dataUrl.split('/');
-          //      tempUrl.pop();
-          //      tempUrl.push('latest');
-          //      latestUrl = tempUrl.join('/');
-          //    } else {
-          //      latestUrl = dataUrl;
-          //    }
-          //    $('.iframe-nav').remove();
-          //    $('.disabled').remove();
-          //    data[field].push({uri: latestUrl});
-          //    templateData[field].push({uri: latestUrl});
-          //    saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
-          //  });
-          //} else {
-            latestUrl = dataUrl;
-            $('.iframe-nav').remove();
-            $('.disabled').remove();
-            data[field].push({uri: latestUrl});
-            templateData[field].push({uri: latestUrl});
-            saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
-          //}
+          if (dataUrl.match(/\/articles\//) || dataUrl.match(/\/bulletins\//)) {
+            swal({
+              title: "Warning",
+              text: "Would you like to always show the latest release of this document?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Yes",
+              cancelButtonText: "No",
+              closeOnConfirm: true
+            }, function (result) {
+              if (result === true) {
+                var tempUrl = dataUrl.split('/');
+                tempUrl.pop();
+                tempUrl.push('latest');
+                latestUrl = tempUrl.join('/');
+              } else {
+                latestUrl = dataUrl;
+              }
+              $('.iframe-nav').remove();
+              $('.disabled').remove();
+              data[field].push({uri: latestUrl});
+              templateData[field].push({uri: latestUrl});
+              saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
+            });
+          } else {
+          latestUrl = dataUrl;
+          $('.iframe-nav').remove();
+          $('.disabled').remove();
+          data[field].push({uri: latestUrl});
+          templateData[field].push({uri: latestUrl});
+          saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
+          }
         });
       });
     });
@@ -209,12 +219,12 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
         }
       });
       $('.btn-uri-cancel').off().click(function () {
-        createWorkspace(data.uri, collectionId, 'edit');
+        $('.modal').remove();
       });
     });
     //They cancel
     $('.btn-uri-cancel').off().click(function () {
-      createWorkspace(data.uri, collectionId, 'edit');
+      $('.modal').remove();
     });
   });
 
@@ -254,7 +264,6 @@ function saveExternalLink(collectionId, path, data, templateData, field, idField
   putContent(collectionId, path, JSON.stringify(data),
     success = function (response) {
       Florence.Editor.isDirty = false;
-      //editIntLinks(collectionId, data, templateData, field, idField);
       refreshLinks(collectionId, data, templateData, field, idField);
       createWorkspace(data.uri, collectionId, 'edit');
     },
