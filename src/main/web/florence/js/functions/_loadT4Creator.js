@@ -8,6 +8,7 @@
 
 function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   var releaseDate = null;             //overwrite scheduled collection date
+  var conditions = true;
   var pageType, pageTitle, uriSection, pageTitleTrimmed, pageEditionTrimmed, releaseDateManual,
     isInheriting, newUri, pageData, natStat, contactName, contactEmail,
     contactTel, keyWords, metaDescr, relatedData, summary, relatedMethodology;
@@ -52,14 +53,17 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
   function submitFormHandler (parentUrl, title, isInheriting) {
 
     $('.edition').append(
-      '<label for="edition">Edition</label>' +
-      '<input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />'
+      '<div id="edition-div">' +
+      '  <label for="edition">Edition</label>' +
+      '  <input id="edition" type="text" placeholder="August 2010, Q3 2015, 1978, etc." />' +
+      '</div>'
     );
     if (!releaseDate) {
       $('.edition').append(
-        '<br>' +
-        '<label for="releaseDate">Release date</label>' +
-        '<input id="releaseDate" type="text" placeholder="day month year" />'
+        '<div id="release-div">' +
+        '  <label for="releaseDate">Release date</label>' +
+        '  <input id="releaseDate" type="text" placeholder="day month year" />' +
+        '</div>'
       );
       $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
     }
@@ -72,12 +76,12 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
       releaseDateManual = $('#releaseDate').val();
       //Check for reserved words
       if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-        alert ('That is not an accepted value for a title');
+        sweetAlert ('That is not an accepted value for a title');
         $('#pagename').val('');
         return false;
       }
       if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
-        alert ('That is not an accepted value for an edition');
+        sweetAlert ('That is not an accepted value for an edition');
         $('#edition').val('');
         return false;
       }
@@ -132,15 +136,30 @@ function loadT4Creator (collectionId, releaseDate, pageType, parentUrl) {
 
       if (pageType === 'bulletin' && !pageData.description.edition) {
         sweetAlert('Edition can not be empty');
-        return true;
+        $('.select-wrap').remove();
+        $('#edition-div').remove();
+        $('#release-div').remove();
+        loadT4Creator (collectionId, releaseDate, pageType, parentUrl);
+        e.preventDefault();
+        conditions = false;
       } if (!pageData.description.releaseDate) {
         sweetAlert('Release date can not be empty');
-        return true;
+        $('.select-wrap').remove();
+        $('#edition-div').remove();
+        $('#release-div').remove();
+        loadT4Creator (collectionId, releaseDate, pageType, parentUrl);
+        e.preventDefault();
+        conditions = false;
       } if (pageTitle.length < 5) {
         sweetAlert("This is not a valid file title");
-        return true;
+        $('.select-wrap').remove();
+        $('#edition-div').remove();
+        $('#release-div').remove();
+        loadT4Creator (collectionId, releaseDate, pageType, parentUrl);
+        e.preventDefault();
+        conditions = false;
       }
-      else {
+      else if (conditions) {
         saveContent(collectionId, safeNewUri, pageData);
       }
       e.preventDefault();
