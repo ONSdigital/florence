@@ -212,7 +212,7 @@ function staticLandingPageEditor(collectionId, data) {
     // External links
     var orderLink = $("#sortable-link").sortable('toArray');
     $(orderLink).each(function (indexL, nameL) {
-      var displayText = $('#link-markdown_' + nameL).val();
+      var displayText = data.links[parseInt(nameL)].title;
       var link = $('#link-uri_' + nameL).val();
       newLinks[indexL] = {uri: link, title: displayText};
     });
