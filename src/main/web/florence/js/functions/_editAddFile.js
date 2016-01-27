@@ -50,7 +50,7 @@ function addFile(collectionId, data, field, idField) {
   } else if (data.type === 'static_page') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_article') {
-    downloadExtensions = /\.xls$|.pdf$/;
+    downloadExtensions = /\.xls$|.pdf$|.zip$/;
   } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'article' || data.type === 'bulletin') {
