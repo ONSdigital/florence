@@ -1,5 +1,5 @@
 function checkRenameUri(collectionId, data, renameUri, onSave) {
-  if (renameUri) {
+  if (renameUri && !data.description.language) {   // It will not change welsh url
     swal({
       title: "Warning",
       text: "You have changed the title or edition and this could change the uri. Are you sure you want to proceed?",
