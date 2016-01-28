@@ -28,6 +28,7 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
             onSuccess = function () {
               Florence.globalVars.pagePath = newUri;
               //is it a compendium? Rename children array
+              //take this out if moveContent in Zebedee works
               if (data.type === 'compendium_landing_page') {
                 if (data.chapters) {
                   data.chapters = renameCompendiumChildren(data.chapters, titleNoSpace, editionNoSpace);
@@ -73,6 +74,7 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
             onSuccess = function () {
               Florence.globalVars.pagePath = newUri;
               //if it is a dataset rename children array
+              //take this out if moveContent in Zebedee works
               if (data.type === 'dataset_landing_page') {
                 if (data.datasets) {
                   data.datasets = renameDatasetChildren(data.datasets, titleNoSpace);
