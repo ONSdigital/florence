@@ -24,18 +24,18 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
             tmpNewUri.splice([tmpNewUri.length - 2], 2, titleNoSpace, editionNoSpace);
           }
           var newUri = tmpNewUri.join("/");
-          //is it a compendium? Rename children array
-          if (data.type === 'compendium_landing_page') {
-            if (data.chapters) {
-              data.chapters = renameCompendiumChildren(data.chapters, titleNoSpace, editionNoSpace);
-            }
-            if (data.datasets) {
-              data.datasets = renameCompendiumChildren(data.datasets, titleNoSpace, editionNoSpace);
-            }
-          }
           moveContent(collectionId, data.uri, newUri,
             onSuccess = function () {
               Florence.globalVars.pagePath = newUri;
+              //is it a compendium? Rename children array
+              if (data.type === 'compendium_landing_page') {
+                if (data.chapters) {
+                  data.chapters = renameCompendiumChildren(data.chapters, titleNoSpace, editionNoSpace);
+                }
+                if (data.datasets) {
+                  data.datasets = renameCompendiumChildren(data.datasets, titleNoSpace, editionNoSpace);
+                }
+              }
               onSave(collectionId, newUri, JSON.stringify(data));
             },
             onError = function () {
@@ -69,15 +69,15 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
             tmpNewUri.splice([tmpNewUri.length - 1], 1, titleNoSpace);
           }
           var newUri = tmpNewUri.join("/");
-          //if it is a dataset rename children array
-          if (data.type === 'dataset_landing_page') {
-            if (data.datasets) {
-              data.datasets = renameDatasetChildren(data.datasets, titleNoSpace);
-            }
-          }
           moveContent(collectionId, data.uri, newUri,
             onSuccess = function () {
               Florence.globalVars.pagePath = newUri;
+              //if it is a dataset rename children array
+              if (data.type === 'dataset_landing_page') {
+                if (data.datasets) {
+                  data.datasets = renameDatasetChildren(data.datasets, titleNoSpace);
+                }
+              }
               onSave(collectionId, newUri, JSON.stringify(data));
             },
             onError = function () {
