@@ -27,7 +27,13 @@ function viewReports() {
 
     $(filteredCollections).each(function (n, coll) {
       if(coll.publishResults && coll.publishResults.length > 0) {
-        var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
+
+        if(coll.publishStartDate) {
+          var date = coll.publishStartDate;
+        } else {
+          var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
+        }
+
         filteredCollections[n].formattedDate = StringUtils.formatIsoFull(date);
       }
     });

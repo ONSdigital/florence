@@ -1,18 +1,42 @@
 function viewReportDetails(collection) {
 
-  if(!collection.publishResults || collection.publishResults.length === 0) { return; }
+  if (!collection.publishResults || collection.publishResults.length === 0) {
+    return;
+  }
 
   var success = collection.publishResults[collection.publishResults.length - 1];
   var duration = (function () {
-    var start = new Date(success.transaction.startDate);
-    var end = new Date(success.transaction.endDate);
+
+    if (collection.publishStartDate && collection.publishEndDate) {
+      var start = new Date(collection.publishStartDate);
+      var end = new Date(collection.publishEndDate);
+    } else {
+      var start = new Date(success.transaction.startDate);
+      var end = new Date(success.transaction.endDate);
+    }
     return end - start;
   })();
-  var starting = StringUtils.formatIsoFullSec(success.transaction.startDate);
+
+
+  if (collection.publishStartDate) {
+    var starting = StringUtils.formatIsoFullSec(collection.publishStartDate);
+  } else {
+    var starting = StringUtils.formatIsoFullSec(success.transaction.startDate);
+  }
+
   var verifiedCount = collection.verifiedCount;
   var verifyFailedCount = collection.verifyFailedCount;
   var verifyInprogressCount = collection.verifyInprogressCount;
-  var details = {name: collection.name, verifiedCount: verifiedCount, verifyInprogressCount: verifyInprogressCount, verifyFailedCount:verifyFailedCount, date: collection.formattedDate, starting: starting, duration: duration, success: success};
+  var details = {
+    name: collection.name,
+    verifiedCount: verifiedCount,
+    verifyInprogressCount: verifyInprogressCount,
+    verifyFailedCount: verifyFailedCount,
+    date: collection.formattedDate,
+    starting: starting,
+    duration: duration,
+    success: success
+  };
 
   var reportDetails = templates.reportDetails(details);
   $('.publish-selected').html(reportDetails);
@@ -24,8 +48,8 @@ function viewReportDetails(collection) {
   });
 
   // order table
-  $('th').click(function() {
-    var table = $(this).parents('table').eq(0);
+  $('th').click(function () {
+    var table = $(this).parents('table').eq(0);
     var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()));
     this.asc = !this.asc;
     if (!this.asc) {
@@ -37,9 +61,9 @@ function viewReportDetails(collection) {
   });
 
   function comparer(index) {
-    return function(a, b) {
+    return function (a, b) {
       var valA = getCellValue(a, index), valB = getCellValue(b, index);
-      return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB);
+      return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB);
     }
   }
 
