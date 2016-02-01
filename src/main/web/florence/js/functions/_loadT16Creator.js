@@ -21,7 +21,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
         return true;
       } else {
         sweetAlert("This is not a valid place to create this page.");
-        loadCreateScreen(collectionId);
+        loadCreateScreen(parentUrl, collectionId);
       }
     },
     error: function () {
