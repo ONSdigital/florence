@@ -1,6 +1,7 @@
 function methodologyEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newDocuments = [], newDatasets = [];
+  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newDocuments = [], newDatasets = [],
+    newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
   var timeoutId;
@@ -185,6 +186,14 @@ function methodologyEditor(collectionId, data) {
       newDatasets[indexData] = {uri: safeUri};
     });
     data.relatedDatasets = newDatasets;
+    // Files are uploaded. Save metadata
+    var orderFile = $("#sortable-file").sortable('toArray');
+    $(orderFile).each(function (indexF, nameF) {
+      var title = $('#file-title_' + nameF).val();
+      var file = data.downloads[parseInt(nameF)].file;
+      newFiles[indexF] = {title: title, file: file};
+    });
+    data.downloads = newFiles;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
