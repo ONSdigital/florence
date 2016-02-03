@@ -343,6 +343,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    addFile(collectionId, pageData, 'downloads', 'file');
     editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
     //editTopics (collectionId, pageData, templateData, 'topics', 'topics');  //ready 2b used
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
@@ -355,6 +356,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
+    addFile(collectionId, pageData, 'pdfDownloads', 'pdfFile');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
     editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
