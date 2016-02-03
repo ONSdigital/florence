@@ -343,6 +343,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
     //editTopics (collectionId, pageData, templateData, 'topics', 'topics');  //ready 2b used
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
@@ -356,6 +357,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     addFile(collectionId, pageData, 'downloads', 'file');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     methodologyDownloadEditor(collectionId, pageData);
