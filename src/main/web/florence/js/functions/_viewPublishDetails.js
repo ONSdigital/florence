@@ -60,7 +60,8 @@ function viewPublishDetails(collections) {
       if (result.date !== manual) {
         swal({
             title: "Are you sure?",
-            text: "This collection will not be published on: " + result.date,
+            text: "If unlocked, this collection will not be published on " + result.date + " unless it is approved" +
+            " again",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#6d272b",
