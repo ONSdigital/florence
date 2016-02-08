@@ -19,7 +19,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
   //Add
   if (data.type === 'timeseries_dataset') {
-    downloadExtensions = /\.csdb$/;
+    downloadExtensions = /\.csdb$|\.csv$/;
   } else if (data.type === 'dataset') {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
   }
@@ -109,6 +109,9 @@ function editDatasetVersion(collectionId, data, field, idField) {
       document.getElementById("response").innerHTML = "Uploading . . .";
 
       var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
+      if (file.name.match(/\.csv$/)) {
+        fileNameNoSpace = 'upload-' + fileNameNoSpace;
+      }
       uriUpload = data.uri + '/' + fileNameNoSpace;
       var safeUriUpload = checkPathSlashes(uriUpload);
 
