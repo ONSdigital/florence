@@ -20,7 +20,7 @@ function addDataset(collectionId, data, field, idField) {
 
   //Add
   if (data.timeseries) {
-    downloadExtensions = /\.csdb$/;
+    downloadExtensions = /\.csdb$|\.csv$/;
     pageType = 'timeseries_dataset';
   } else {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
@@ -85,6 +85,9 @@ function addDataset(collectionId, data, field, idField) {
       document.getElementById("response").innerHTML = "Uploading . . .";
 
       var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
+      if (file.name.match(/\.csv$/)) {
+        fileNameNoSpace = 'upload-' + fileNameNoSpace;
+      }
       uriUpload = data.uri + '/' + pageTitleTrimmed + '/' + fileNameNoSpace;
       var safeUriUpload = checkPathSlashes(uriUpload);
 
