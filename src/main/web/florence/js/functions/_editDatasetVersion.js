@@ -60,7 +60,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
       '    <input type="file" title="Select a file and click Submit" name="files">' +
       '    <div style="display: inline-block; padding: 8px 0 0 0; margin-left: -5px;">' +
       '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
-      '    <button class="btn-page-create" id="no-file">Auto CSDB</button>' +
+      '    <button class="btn-page-create" id="no-file" style="margin-left: 8px;">Auto CSDB</button>' +
       '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
       '    </div>' +
       '  </form>' +
