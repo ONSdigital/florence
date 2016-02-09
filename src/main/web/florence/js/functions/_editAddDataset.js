@@ -151,19 +151,23 @@ function addDataset(collectionId, data, field, idField) {
         e.preventDefault();
         e.stopImmediatePropagation();
 
-        if (data.description.datasetId) {
-          // on success save parent and child data
-          var pageTitle = $('#edition').val();
-          var pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-          var fileNameNoSpace = data.description.datasetId + '.csdb';
+        if (data.timeseries) {    // not necessary but for extra security
+          if (data.description.datasetId) {   // check for an id to link the csdb to
+            // on success save parent and child data
+            var pageTitle = $('#edition').val();
+            var pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+            var fileNameNoSpace = data.description.datasetId + '.csdb';
 
-          var versionLabel = $('#version').val();
-          data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
-          // create the dataset if there is not any
-          loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
+            var versionLabel = $('#version').val();
+            data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
+            // create the dataset if there is not any
+            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
+          } else {
+            sweetAlert("Warning!", "You need to add a dataset Id to match the CSDB.", "error");
+            $('#' + lastIndex).remove();
+          }
         } else {
-          sweetAlert("Warning!", "You need to add a dataset Id to match the CSDB.", "error");
-          $('#' + lastIndex).remove();
+          sweetAlert("Oops!", "It looks like this is not a timeseries dataset.", "error");
         }
       });
     } else {
