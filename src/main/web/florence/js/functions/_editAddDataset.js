@@ -29,7 +29,7 @@ function addDataset(collectionId, data, field, idField) {
 
   $('#add-' + idField).one('click', function () {
     // check that a timeseries dataset has max one file
-    if (data.timeseries && (data[field] && data[field].length < 1)) {
+    if (data.timeseries && (data[field] && data[field].length < 1) || !data.timeseries) {
       var position = $(".workspace-edit").scrollTop();
       Florence.globalVars.pagePos = position + 200;
       $('#sortable-' + idField).append(
@@ -47,6 +47,10 @@ function addDataset(collectionId, data, field, idField) {
         '  <div id="response"></div>' +
         '  <ul id="list"></ul>' +
         '</div>');
+
+      if (!data.timeseries) {
+        $('#no-file').remove();
+      }
 
       $('#file-cancel').one('click', function (e) {
         e.preventDefault();
