@@ -32,22 +32,22 @@ function addDataset(collectionId, data, field, idField) {
     if (data.timeseries && (data[field] && data[field].length < 1) || !data.timeseries) {
       var position = $(".workspace-edit").scrollTop();
       Florence.globalVars.pagePos = position + 200;
+
       $('#sortable-' + idField).append(
         '<div id="' + lastIndex + '" class="edit-section__item">' +
         '  <form id="UploadForm">' +
         '    <textarea class="auto-size" placeholder="Period (E.g. 2015, August to December 2010, etc." type="text" id="edition"></textarea>' +
         '    <textarea class="auto-size" placeholder="Label (E.g. Final, Revised, etc.)" type="text" id="version"></textarea>' +
         '    <input type="file" title="Select a file and click Submit" name="files">' +
-        '    <div style="display: inline-block; padding: 8px 0 0 0; margin-left: -5px;">' +
+        '    <div class="dataset-buttons">' +
         '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
-        '    <button class="btn-page-create" id="no-file" style="margin-left: 8px;">Auto CSDB</button>' +
         '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
+        '    <button class="btn-dataset-autocsdb" id="no-file">Auto CSDB</button>' +
         '    </div>' +
         '  </form>' +
         '  <div id="response"></div>' +
         '  <ul id="list"></ul>' +
         '</div>');
-
       if (!data.timeseries) {
         $('#no-file').remove();
       }
@@ -123,7 +123,7 @@ function addDataset(collectionId, data, field, idField) {
           return;
         }
 
-        if (pageTitle.length < 4) {
+        if (pageTitle.length < 4 || pageTitle.toLowerCase() === 'data') {
           sweetAlert("This is not a valid file title");
           return;
         }
@@ -163,12 +163,24 @@ function addDataset(collectionId, data, field, idField) {
             var fileNameNoSpace = data.description.datasetId + '.csdb';
 
             var versionLabel = $('#version').val();
-            data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
-            // create the dataset if there is not any
-            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
+            if (pageTitleTrimmed < 4 && pageTitleTrimmed !== 'data') {
+              sweetAlert("This is not a valid file title");
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              $('#' + lastIndex).remove();
+              addDataset(collectionId, data, field, idField);
+              return;
+            } else {
+              data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
+              // create the dataset if there is not any
+              loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
+            }
           } else {
             sweetAlert("Warning!", "You need to add a dataset Id to match the CSDB.", "error");
+            e.preventDefault();
+            e.stopImmediatePropagation();
             $('#' + lastIndex).remove();
+            addDataset(collectionId, data, field, idField);
           }
         } else {
           sweetAlert("Oops!", "It looks like this is not a timeseries dataset.", "error");
