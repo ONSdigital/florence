@@ -106,6 +106,9 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         pageData.description.releaseDate = $.datepicker.formatDate('dd/mm/yy', date);
       } else if (!releaseDate && (pageType === 'static_qmi')) {
         pageData.description.lastRevised = new Date($('#releaseDate').val()).toISOString();
+        //} else if (!releaseDate && (pageType === 'static_page' || pageType === 'static_article')) {
+        //  pageData.description.releaseDate = "1970-01-01T00:00:00.000Z";  // zebedee throws a JsonSyntaxException
+        // if no date is present
       } else if (!releaseDate) {
         pageData.description.releaseDate = new Date().toISOString();
       }
