@@ -163,13 +163,12 @@ function addDataset(collectionId, data, field, idField) {
             var fileNameNoSpace = data.description.datasetId + '.csdb';
 
             var versionLabel = $('#version').val();
-            if (pageTitleTrimmed < 4 && pageTitleTrimmed !== 'data') {
+            if (pageTitleTrimmed.length < 4 || pageTitleTrimmed === 'data') {
               sweetAlert("This is not a valid file title");
               e.preventDefault();
               e.stopImmediatePropagation();
               $('#' + lastIndex).remove();
               addDataset(collectionId, data, field, idField);
-              return;
             } else {
               data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
               // create the dataset if there is not any
