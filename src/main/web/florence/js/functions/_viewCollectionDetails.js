@@ -115,7 +115,7 @@ function viewCollectionDetails(collectionId) {
       );
     });
 
-    $('.page-delete').click(function () {
+    $('#content-delete').click(function () {
       var path = $(this).attr('data-path');
       var language = $(this).attr('data-language');
 
@@ -131,7 +131,8 @@ function viewCollectionDetails(collectionId) {
           closeOnConfirm: false
         }, function(result) {
           if (result === true) {
-            if (language === 'cy' && !(path.match(/\/bulletins\//) || path.match(/\/articles\//))) {
+            //if (language === 'cy' && !(path.match(/\/bulletins\//) || path.match(/\/articles\//))) {
+            if (language === 'cy') {
               path = path + '/data_cy.json';
             }
             deleteContent(collectionId, path, function() {
@@ -150,13 +151,13 @@ function viewCollectionDetails(collectionId) {
         });
       }
 
-      if (path.match(/\/bulletins\//) || path.match(/\/articles\//)) {
-        deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
-      } else if (language === 'cy') {
+      //if (path.match(/\/bulletins\//) || path.match(/\/articles\//)) {
+      //  deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
+      //} else if (language === 'cy') {
         deleteAlert("Are you sure you want to delete this page from the collection?");
-      } else {
-        deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
-      }
+      //} else {
+      //  deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
+      //}
     });
 
     $('.collection-selected .btn-collection-cancel').click(function () {

@@ -158,16 +158,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.type = "chart";
     chart.title = $('#chart-title').val();
     chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-
-    if (Florence.globalVars.welsh) {
-      if (pageUrl.match(/\/cy\/?$/)) {
-        chart.uri = pageUrl + "/" + chart.filename;
-      } else {
-        chart.uri = pageUrl + "/cy/" + chart.filename;
-      }
-    } else {
-      chart.uri = pageUrl + "/" + chart.filename;
-    }
+    chart.uri = pageUrl + "/" + chart.filename;
     chart.subtitle = $('#chart-subtitle').val();
     chart.unit = $('#chart-unit').val();
     chart.source = $('#chart-source').val();
