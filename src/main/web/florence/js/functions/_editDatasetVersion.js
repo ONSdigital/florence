@@ -58,10 +58,10 @@ function editDatasetVersion(collectionId, data, field, idField) {
       '  <form id="UploadForm">' +
       '    <textarea class="auto-size" type="text" placeholder="Add a label here (E.g. Revised, Final, etc" id="label"></textarea>' +
       '    <input type="file" title="Select a file and click Submit" name="files">' +
-      '    <div style="display: inline-block; padding: 8px 0 0 0; margin-left: -5px;">' +
+      '    <div class="dataset-buttons">' +
       '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
-      '    <button class="btn-page-create" id="no-file" style="margin-left: 8px;">Auto CSDB</button>' +
       '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
+      '    <button class="btn-dataset-autocsdb" id="no-file">Auto CSDB</button>' +
       '    </div>' +
       '  </form>' +
       '  <div id="response"></div>' +

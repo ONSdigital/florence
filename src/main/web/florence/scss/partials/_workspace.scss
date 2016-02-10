@@ -703,6 +703,20 @@
   }
 }
 
+.dataset-buttons {
+  display: inline-block;
+  padding: 8px 0 0 0;
+  margin-left: -5px;
+  width: 100%;
+}
+
+.btn-dataset-autocsdb {
+  color: #F2F2F2;
+  background-color: #49725D;
+  float: right;
+  margin-right: -5px !important;
+}
+
 .chart-builder {
 
   &__inner {
