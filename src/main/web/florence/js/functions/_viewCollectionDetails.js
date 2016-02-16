@@ -115,7 +115,7 @@ function viewCollectionDetails(collectionId) {
       );
     });
 
-    $('#content-delete').click(function () {
+    $('.page-delete').click(function () {
       var path = $(this).attr('data-path');
       var language = $(this).attr('data-language');
 

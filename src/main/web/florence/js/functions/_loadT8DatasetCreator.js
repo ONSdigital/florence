@@ -24,7 +24,7 @@ function loadT8EditionCreator (collectionId, data, pageType, pageEdition, downlo
       newUri = makeUrl(parentUrl, pageEditionTrimmed);
     } else {
       sweetAlert('Oops! Something went the wrong.');
-      loadCreateScreen(collectionId);
+      loadCreateScreen(parentUrl, collectionId);
     }
 
     var safeNewUri = checkPathSlashes(newUri);

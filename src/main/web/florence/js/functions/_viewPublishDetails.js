@@ -15,7 +15,12 @@ function viewPublishDetails(collections) {
       getCollectionDetails(collectionId,
         success = function (response) {
           if (result.date === manual) {
-            result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed, pageType: 'manual'});
+            result.collectionDetails.push({
+              id: response.id,
+              name: response.name,
+              pageDetails: response.reviewed,
+              pageType: 'manual'
+            });
           } else {
             result.collectionDetails.push({id: response.id, name: response.name, pageDetails: response.reviewed});
           }
@@ -28,9 +33,9 @@ function viewPublishDetails(collections) {
   });
 
   if (onlyOne < 2) {
-    result.subtitle = 'The following collection has been approved'
+    result.subtitle = 'The following collection has been approved';
   } else {
-    result.subtitle = 'The following collections have been approved'
+    result.subtitle = 'The following collections have been approved';
   }
 
   $.when.apply($, pageDataRequests).then(function () {
@@ -45,20 +50,30 @@ function viewPublishDetails(collections) {
     });
 
     $('.btn-collection-publish').click(function () {
-      $('.js').prepend(
-        "<div class='over'>" +
-        "<div class='hourglass'>" +
-        "<div class='top'></div>" +
-        "<div class='bottom'></div>" +
-        "</div>" +
-        "</div>");
       var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
       publish(collection);
     });
 
     $('.btn-collection-unlock').click(function () {
       var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
-      unlock(collection);
+
+      if (result.date !== manual) {
+        swal({
+            title: "Are you sure?",
+            text: "If unlocked, this collection will not be published on " + result.date + " unless it is approved" +
+            " again",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#6d272b",
+            confirmButtonText: "Yes, unlock it!",
+            closeOnConfirm: false
+          },
+          function () {
+            unlock(collection);
+          });
+      } else {
+        unlock(collection);
+      }
     });
 
     //page-list

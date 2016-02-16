@@ -343,6 +343,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     editMarkdown (collectionId, pageData, 'accordion', 'tab');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    addFile(collectionId, pageData, 'downloads', 'file');
+    editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
     //editTopics (collectionId, pageData, templateData, 'topics', 'topics');  //ready 2b used
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
@@ -354,8 +356,10 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     $('.workspace-menu').html(html);
     editMarkdownWithNoTitle (collectionId, pageData, 'markdown', 'content');
     addFile(collectionId, pageData, 'downloads', 'file');
+    addFile(collectionId, pageData, 'pdfDownloads', 'pdfFile');
     editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
     editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+    editIntAndExtLinks (collectionId, pageData, templateData, 'links', 'link');
     editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
     accordion();
     methodologyDownloadEditor(collectionId, pageData);
@@ -380,8 +384,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     var html = templates.workEditT8(templateData);
     $('.workspace-menu').html(html);
     editDatasetVersion(collectionId, pageData, 'versions', 'version');
-    addFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
     editDatasetVersion(collectionId, pageData, 'versions', 'correction');
+    addFile (collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
     accordion();
     datasetEditor(collectionId, pageData);
   }

@@ -12,6 +12,9 @@ function addFile(collectionId, data, field, idField) {
   if (field === 'supplementaryFiles') {
     header = 'Supplementary files';
     button = 'supplementary file';
+  } else if (field === 'pdfDownloads') {
+    header = 'Upload methodology PDF file';
+    button = 'pdf';
   } else if (field === 'pdfTable') {
     header = 'PDF Table';
     button = 'pdf';
@@ -43,8 +46,12 @@ function addFile(collectionId, data, field, idField) {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_qmi') {
     downloadExtensions = /\.pdf$/;
-  } else if (data.type === 'article_download' || data.type === 'static_methodology_download') {
+  } else if (data.type === 'article_download' || (data.type === 'static_methodology_download' && field === 'pdfDownloads')) {
     downloadExtensions = /\.pdf$/;
+  } else if (data.type === 'static_methodology_download' && field === 'downloads') {
+    downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.zip$/;
+  } else if (data.type === 'static_methodology') {
+    downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.pdf$|.zip$/;
   } else if (data.type === 'static_foi') {
     downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
   } else if (data.type === 'static_page') {

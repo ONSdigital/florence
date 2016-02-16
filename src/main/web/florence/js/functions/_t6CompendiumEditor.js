@@ -325,10 +325,10 @@ function editChapters(collectionId, data) {
               function () {
                 //save children change and move
                 checkRenameUri(collectionId, pageData, true, updateContent);
-                //update dataset uri in parent and save
-                data.chapters[index].uri = data.uri + "/" + childTitle;
                 putContent(collectionId, data.uri, JSON.stringify(data),
                   function () {
+                    // on success update dataset uri in parent and save
+                    data.chapters[index].uri = data.uri + "/" + childTitle;
                   },
                   function (response) {
                     if (response.status === 409) {
@@ -435,10 +435,10 @@ function editData(collectionId, data) {
                   //save children changes
                   //move
                   checkRenameUri(collectionId, pageData, true, updateContent);
-                  //update dataset uri in parent and save
-                  data.datasets[index].uri = data.uri + "/" + childTitle;
                   putContent(collectionId, data.uri, JSON.stringify(data),
                     function () {
+                      // on success update dataset uri in parent and save
+                      data.datasets[index].uri = data.uri + "/" + childTitle;
                     },
                     function (response) {
                       if (response.status === 409) {
