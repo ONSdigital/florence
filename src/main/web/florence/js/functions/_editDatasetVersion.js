@@ -19,7 +19,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
   //Add
   if (data.type === 'timeseries_dataset') {
-    downloadExtensions = /\.csdb$/;
+    downloadExtensions = /\.csdb$|\.csv$/;
   } else if (data.type === 'dataset') {
     downloadExtensions = /\.csv$|.xls$|.zip$/;
   }
@@ -58,17 +58,23 @@ function editDatasetVersion(collectionId, data, field, idField) {
       '  <form id="UploadForm">' +
       '    <textarea class="auto-size" type="text" placeholder="Add a label here (E.g. Revised, Final, etc" id="label"></textarea>' +
       '    <input type="file" title="Select a file and click Submit" name="files">' +
-      '    <br>' +
+      '    <div class="dataset-buttons">' +
       '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
       '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
+      '    <button class="btn-dataset-autocsdb" id="no-file">Auto CSDB</button>' +
+      '    </div>' +
       '  </form>' +
       '  <div id="response"></div>' +
       '  <ul id="list"></ul>' +
       '</div>');
 
+    if (data.type === 'dataset') {
+      $('#no-file').remove();
+    }
+
     // The label field is not used for corrections, just use existing version label.
     if (idField === "correction") {
-      var $versionLabel = $('#UploadForm #label')
+      var $versionLabel = $('#UploadForm #label');
       $versionLabel.text(uploadedNotSaved.oldLabel);
       $versionLabel.hide();
     }
@@ -109,6 +115,9 @@ function editDatasetVersion(collectionId, data, field, idField) {
       document.getElementById("response").innerHTML = "Uploading . . .";
 
       var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
+      if (file.name.match(/\.csv$/)) {
+        fileNameNoSpace = 'upload-' + fileNameNoSpace;
+      }
       uriUpload = data.uri + '/' + fileNameNoSpace;
       var safeUriUpload = checkPathSlashes(uriUpload);
 
@@ -192,6 +201,68 @@ function editDatasetVersion(collectionId, data, field, idField) {
             handleApiError(response);
           }
         });
+      }
+    });
+
+    $('#no-file').one('click', function (e) {
+      e.preventDefault();
+      // extra security check
+      if (data.type === 'timeseries_dataset') {
+        var versionLabel = $('#UploadForm #label').val();
+        uploadedNotSaved.uploaded = false;
+
+        // create the new version/correction
+        saveNewCorrection(collectionId, data.uri,
+          function (response) {
+            var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
+            if (idField === "correction") {
+              data[field].push({
+                correctionNotice: " ",
+                updateDate: tmpDate,
+                uri: response,
+                label: versionLabel
+              });
+              // Enter a notice
+              var editedSectionValue = {title: 'Correction notice', markdown: ''};
+              var saveContent = function (updatedContent) {
+                data[field][data[field].length - 1].correctionNotice = updatedContent;
+                //data.downloads = [{file: fileNameNoSpace}];    // not necessary as zebedee will have a CSDB file
+                uploadedNotSaved.saved = true;
+                $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+                $("#" + idField + '-section').remove();
+                saveDatasetVersion(collectionId, data.uri, data, field, idField);
+              };
+              loadMarkdownEditor(editedSectionValue, saveContent, data, 'notEmpty');
+            } else {
+              data[field].push({
+                correctionNotice: "",
+                updateDate: tmpDate,
+                uri: response,
+                label: versionLabel
+              });
+              data.description.versionLabel = versionLabel; // only update the version label for versions not corrections.
+              //data.downloads = [{file: fileNameNoSpace}];    // not necessary as zebedee will have a CSDB file
+              uploadedNotSaved.saved = true;
+              $("#" + idField).find('.edit-section__content').prepend('<div id="sortable-' + idField + '" class="edit-section__sortable">');
+              $("#" + idField + '-section').remove();
+              saveDatasetVersion(collectionId, data.uri, data, field, idField);
+            }
+          }, function (response) {
+            if (response.status === 409) {
+              sweetAlert("You can add only one " + idField + " before publishing.");
+              deleteContent(collectionId, uploadedNotSaved.fileUrl);
+            }
+            else if (response.status === 404) {
+              sweetAlert("You can only add " + idField + "s to content that has been published.");
+              deleteContent(collectionId, uploadedNotSaved.fileUrl);
+            }
+            else {
+              handleApiError(response);
+            }
+          }
+        );
+      } else {
+        sweetAlert("Oops!", "It looks like this is not a timeseries dataset.", "error");
       }
     });
   }
@@ -341,7 +412,12 @@ function initialiseDatasetVersion(collectionId, data, templateData, field, idFie
             deleteContent(collectionId, fileToDelete, function () {
               console.log("File deleted");
             }, function (error) {
-              handleApiError(error);
+              if (error.status === 404) {
+                sweetAlert("There was no CSDB file to delete or this "  + idField + " has been already published.");
+              }
+              else {
+                handleApiError(error);
+              }
             });
             // delete modified data.json and revert to pubished
             deleteContent(collectionId, pathToDelete, function () {

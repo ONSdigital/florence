@@ -1,6 +1,6 @@
 function methodologyDownloadEditor(collectionId, data) {
 
-  var newFiles = [];
+  var newFiles = [], newPdfFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
   var timeoutId;
@@ -134,6 +134,14 @@ function methodologyDownloadEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
+    // PDF files are uploaded. Save metadata
+    var orderPdfFile = $("#sortable-pdfFile").sortable('toArray');
+    $(orderPdfFile).each(function (indexP, nameP) {
+      var pdfTitle = $('#pdfFile-title_' + nameP).val();
+      var pdfFile = data.pdfDownloads[parseInt(nameP)].file;
+      newPdfFiles[indexP] = {title: pdfTitle, file: pdfFile};
+    });
+    data.pdfDownloads = newPdfFiles;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }

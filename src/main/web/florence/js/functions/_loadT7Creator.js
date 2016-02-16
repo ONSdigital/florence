@@ -28,7 +28,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         return true;
       } else {
         sweetAlert("This is not a valid place to create this page.");
-        loadCreateScreen(collectionId);
+        loadCreateScreen(parentUrl, collectionId);
       }
     },
     error: function () {
@@ -37,7 +37,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
   });
 
   function submitFormHandler() {
-    if (pageType === 'static_qmi' || pageType === 'static_methodology') {
+    if (pageType === 'static_qmi') {
       $('.edition').append(
         '<br>' +
         '<label for="releaseDate">Last revised</label>' +
@@ -110,11 +110,16 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         //  pageData.description.releaseDate = "1970-01-01T00:00:00.000Z";  // zebedee throws a JsonSyntaxException
         // if no date is present
       } else if (!releaseDate) {
-        pageData.description.releaseDate = new Date().toISOString();
+        if ($('#releaseDate').val()) {
+          pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+        } else {
+          pageData.description.releaseDate = new Date().toISOString();
+        }
       }
 
       if (pageName.length < 4) {
         sweetAlert("This is not a valid file name");
+        loadCreateScreen(parentUrl, collectionId);
       } else {
         saveContent(collectionId, safeNewUri, pageData);
       }

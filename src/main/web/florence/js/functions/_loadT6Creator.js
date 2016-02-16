@@ -37,7 +37,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
         return true;
       } else {
         sweetAlert("This is not a valid place to create this page.");
-        loadCreateScreen(collectionId);
+        loadCreateScreen(parentUrl, collectionId);
       }
     },
     error: function () {
@@ -107,7 +107,7 @@ function loadT6Creator (collectionId, releaseDate, pageType, parentUrl, pageTitl
       }
       else {
         sweetAlert('Oops! Something went the wrong.', "", "error");
-        loadCreateScreen(collectionId);
+        loadCreateScreen(parentUrl, collectionId);
       }
       var safeNewUri = checkPathSlashes(newUri);
 
@@ -165,7 +165,7 @@ function submitNoForm (parentUrl, title) {
       newUri = makeUrl(parentUrl, pageTitleTrimmed);
     } else {
       sweetAlert('Oops! Something went the wrong way.');
-      loadCreateScreen(collectionId);
+      loadCreateScreen(parentUrl, collectionId);
     }
 
   var safeNewUri = checkPathSlashes(newUri);
@@ -301,7 +301,7 @@ function submitNoForm (parentUrl, title) {
     else
     {
       sweetAlert('Oops! Something went the wrong way.');
-      loadCreateScreen(collectionId);
+      loadCreateScreen(parentUrl, collectionId);
     }
     putContent(collectionId, parentUrl, JSON.stringify(parentData),
       success = function (message) {

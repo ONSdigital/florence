@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
@@ -21,6 +22,9 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import static com.github.onsdigital.florence.configuration.Configuration.getBabbageUrl;
+import static com.github.onsdigital.florence.configuration.Configuration.getZebedeeUrl;
+
 /**
  * Routes all traffic to Babbage, Unless it is recognised as a florence file being requested.
  */
@@ -30,7 +34,7 @@ public class Proxy implements Filter {
     private static final String florenceToken = "/florence";
     private static final String zebedeeToken = "/zebedee";
 
-    private static final String babbageBaseUrl = Configuration.getBabbageUrl();
+    private static final String babbageBaseUrl = getBabbageUrl();
     private static final String zebedeeBaseUrl = Configuration.getZebedeeUrl();
 
     private static final List<String> florencePaths = Arrays.asList("");
@@ -105,10 +109,23 @@ public class Proxy implements Filter {
 
             try {
                 HttpEntity responseEntity = proxyResponse.getEntity();
-
+                int proxyResponseStatus = proxyResponse.getStatusLine().getStatusCode();
                 // copy headers from the response
                 for (Header header : proxyResponse.getAllHeaders()) {
-                    response.setHeader(header.getName(), header.getValue());
+                    //Overwrite redirect locations to babbage and zebedee to Florence
+                    String value = header.getValue();
+                    if (proxyResponseStatus == HttpStatus.SC_MOVED_PERMANENTLY
+                            || proxyResponseStatus == HttpStatus.SC_MOVED_TEMPORARILY) {
+                        if (header.getName().equals("Location")) {
+                            if (value.startsWith(getBabbageUrl())) {
+                                value = StringUtils.removeStart(value, getBabbageUrl());
+                            } else if (value.startsWith(getZebedeeUrl())) {
+                                value = StringUtils.removeStart(value, getZebedeeUrl());
+                                value = zebedeeToken + value;
+                            }
+                        }
+                    }
+                    response.setHeader(header.getName(), value);
                 }
 
                 response.setStatus(proxyResponse.getStatusLine().getStatusCode());

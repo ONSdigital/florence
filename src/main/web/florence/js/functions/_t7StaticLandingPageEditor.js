@@ -114,9 +114,27 @@ function staticLandingPageEditor(collectionId, data) {
 
     // Delete
     $("#section-delete_" + index).click(function () {
-      $("#" + index).remove();
-      data.sections.splice(index, 1);
-      updateContent(collectionId, data.uri, JSON.stringify(data));
+      swal ({
+        title: "Warning",
+        text: "Are you sure you want to delete?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false
+      }, function(result) {
+        if (result === true) {
+          $("#" + index).remove();
+          data.sections.splice(index, 1);
+          updateContent(collectionId, data.uri, JSON.stringify(data));
+          swal({
+            title: "Deleted",
+            text: "This section has been deleted",
+            type: "success",
+            timer: 2000
+          });
+        }
+      });
     });
 
       // Tooltips
