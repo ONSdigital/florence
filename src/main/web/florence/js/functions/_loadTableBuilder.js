@@ -5,6 +5,17 @@ function loadTableBuilder(pageData, onSave, table) {
 
   $('body').append(html);
 
+  var firstLineTitle;
+  var checkBoxStatus = function () {
+    if (!table || !table.firstLineTitle || table.firstLineTitle === "false" || table.firstLineTitle === false) {
+      return false;
+    }
+    return true;
+  };
+  $("#isTitle input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
+    firstLineTitle = $("#isTitle input[type='checkbox']").prop('checked') ? true : false;
+  });
+
   if (table) {
     renderTable(table.uri);
   }
@@ -32,7 +43,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
     function createTableHtml(previewTable) {
       $.ajax({
-        url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
+        url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath + "&firstLineTitle=" + previewTable.firstLineTitle + "&headerRows=" + previewTable.headerRows,
         type: 'POST',
         success: function (html) {
           saveTableJson(previewTable, success = function () {
@@ -114,7 +125,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
   function addTableToPageJson(table) {
     if (!pageData.tables) {
-      pageData.tables = []
+      pageData.tables = [];
     } else {
 
       var existingTable = _.find(pageData.tables, function (existingTable) {
@@ -199,6 +210,8 @@ function loadTableBuilder(pageData, onSave, table) {
     table.type = 'table';
     table.title = $('#table-title').val();
     table.filename = table.filename ? table.filename : StringUtils.randomId();
+    table.firstLineTitle = $("#isTitle input[type='checkbox']").prop('checked') ? true : false;
+    table.headerRows = $('#table-headers').val();
 
     table.uri = pageUrl + "/" + table.filename;
 
