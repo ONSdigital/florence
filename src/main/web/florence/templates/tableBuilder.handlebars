@@ -4,11 +4,11 @@
     <div id="edit-table" class="table-builder__editor">
       <form id="upload-table-form">
         <input type="text" id="table-title" placeholder="[Title]" value="{{title}}"/>
-        <div id="isTitle">
-          <label for="isTitle">First line title?</label>
-          <input class="latest__checkbox" style="width: 30%;" type="checkbox" name="isTitle" checked="{{firstLineTitle}}" />
-        </div>
-        <input type="text" id="table-headers" placeholder="Header rows" value="{{headerRows}}"/>
+        {{!--<div id="isTitle">--}}
+          {{!--<label for="isTitle">First line title?</label>--}}
+          {{!--<input class="latest__checkbox" style="width: 30%;" type="checkbox" name="isTitle" checked="{{firstLineTitle}}" />--}}
+        {{!--</div>--}}
+        {{!--<input type="text" id="table-headers" placeholder="Header rows" value="{{headerRows}}"/>--}}
         <input type="file" name="files" id="files">
         <input type="submit" value="Submit">
       </form>
