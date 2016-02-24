@@ -80,8 +80,9 @@ function editExtLink (collectionId, data, field, idField) {
     $('.btn-uri-get').off().click(function () {
       if (!title) {
         sweetAlert('You need to enter a title to continue');
-      }
-      else {
+      } else if (uri.match(/\s/g)){
+        sweetAlert('Your link cannot contain spaces');
+      } else {
         data[field].push({uri: uri, title: title});
         saveLink(collectionId, data.uri, data, field, idField);
         $('.modal').remove();
