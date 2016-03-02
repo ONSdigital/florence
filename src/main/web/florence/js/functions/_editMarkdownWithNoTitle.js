@@ -5,7 +5,7 @@
  * @param field - JSON data key
  */
 
-function editMarkdownWithNoTitle (collectionId, data, field, idField) {
+function editMarkdownWithNoTitle(collectionId, data, field, idField) {
   var list = data[field];
 
   var dataTemplate;
@@ -20,10 +20,10 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   var html = templates.editorContentNoTitle(dataTemplate);
   $('#' + idField).replaceWith(html);
   // Load
-  $('#content-edit').click(function() {
+  $('#content-edit').click(function () {
     var markdown = $('#content-markdown').val();
     var editedSectionValue = {title: 'Content', markdown: markdown};
-    var saveContent = function(updatedContent) {
+    var saveContent = function (updatedContent) {
       data[field] = [updatedContent];
       saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
     };
@@ -31,8 +31,8 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
   });
 
   // Delete
-  $('#content-delete').click(function() {
-    swal ({
+  $('#content-delete').click(function () {
+    swal({
       title: "Warning",
       text: "Are you sure you want to delete?",
       type: "warning",
@@ -40,7 +40,7 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
       confirmButtonText: "Delete",
       cancelButtonText: "Cancel",
       closeOnConfirm: false
-    }, function(result){
+    }, function (result) {
       if (result === true) {
         $(this).parent().remove();
         data[field] = [];
@@ -57,20 +57,22 @@ function editMarkdownWithNoTitle (collectionId, data, field, idField) {
 
 }
 
-function saveMarkdownNoTitle (collectionId, path, data, field, idField) {
-    putContent(collectionId, path, JSON.stringify(data),
-        success = function () {
-            Florence.Editor.isDirty = false;
-            editMarkdownWithNoTitle(collectionId, data, field, idField);
-        },
-        error = function (response) {
-            if (response.status === 400) {
-                sweetAlert("Cannot edit this page", "It is already part of another collection.");
-            }
-            else {
-                handleApiError(response);
-            }
-        }
-    );
+function saveMarkdownNoTitle(collectionId, path, data, field, idField) {
+  putContent(collectionId, path, JSON.stringify(data),
+    success = function () {
+      Florence.Editor.isDirty = false;
+      editMarkdownWithNoTitle(collectionId, data, field, idField);
+      refreshChartList(collectionId, data);
+      refreshTablesList(collectionId, data);
+    },
+    error = function (response) {
+      if (response.status === 400) {
+        sweetAlert("Cannot edit this page", "It is already part of another collection.");
+      }
+      else {
+        handleApiError(response);
+      }
+    }
+  );
 }
 
