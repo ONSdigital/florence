@@ -131,6 +131,7 @@ function pageTypeDataT16(pageType) {
         "relatedDocuments": [],
         "relatedMethodology": [],
         "relatedMethodologyArticle": [],
+        "links": [],
         type: pageType,
         "dateChanges": []
     };
