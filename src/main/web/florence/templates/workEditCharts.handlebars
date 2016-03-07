@@ -9,7 +9,7 @@
             {{#each this.charts}}
                 <div id="{{@index}}" class="edit-section__sortable-item">
                     <div class="edit-section__title">{{title}}</div>
-                    <input id="copy-chart-markdown_{{@index}}" style="position:absolute;left:-99999px;" value="&lt;ons-chart path=&#34;{{uri}}&#34; /&gt;">
+                    <input id="copy-chart-markdown_{{@index}}" style="position:absolute;left:-99999px;" value="&lt;ons-chart path=&#34;{{filename}}&#34; /&gt;">
                     <div class="edit-section__buttons">
                         <button class="btn-markdown-edit chart-copy" id="chart-copy_{{@index}}">
                             Copy
