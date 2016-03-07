@@ -4,125 +4,153 @@
 
 //Modal styling - probably need some refactoring but mainly needs correct location in sass files
 .modal {
-  display: block;
-
-  &:before {
-    content: "";
     display: block;
-    opacity: 0.7;
-    background-color: $black;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-  }
 
-  &-box {
-    background: #fefefe;
-    margin-left: -250px;
-    position: fixed;
-    left: 50%;
-    top: 20%;
-    z-index: 1001;
-    width: 500px;
-    height: $lineheight * 17;
-  }
-
-  &-box_t1 {
-    background: #fefefe;
-    margin-left: -250px;
-    position: fixed;
-    left: 50%;
-    top: 12%;
-    z-index: 1001;
-    width: 500px;
-    height: auto;
-  }
-
-  &-nav {
-    box-sizing: border-box;
-    position: absolute;
-    bottom: 0;
-    height: $lineheight * 4;
-    width: 100%;
-    padding-top: $lineheight / 2;
-    padding-bottom: $lineheight / 2;
-    background: $gray-chateau;
-  }
-
-  &-nav_t1 {
-    box-sizing: border-box;
-    position: absolute;
-    height: $lineheight * 4;
-    width: 100%;
-    padding-top: $lineheight / 2;
-    padding-bottom: $lineheight / 2;
-    background: $gray-chateau;
-  }
-
-  .uri-input {
-    margin: ($lineheight * 2) $lineheight $lineheight $lineheight;
-
-    &__label {
-      margin: $lineheight 0;
+    &:before {
+        content: "";
+        display: block;
+        opacity: 0.7;
+        background-color: $black;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1000;
     }
 
-  }
-
-  .uri-textarea {
-    margin: $lineheight 0 0 0;
-    box-sizing: border-box;
-    border: 3px solid #58585B;
-    border-radius: 4px;
-  }
-
-  .select-wrap {
-    margin: $lineheight 0 $lineheight  0;
-  }
-
-  .uri-browse {
-
-    &__label {
-      display: inline-block;
+    &-box {
+        background: #fefefe;
+        margin-left: -250px;
+        position: fixed;
+        left: 50%;
+        top: 20%;
+        z-index: 1001;
+        width: 500px;
+        height: $lineheight * 17;
     }
 
-    button {
-      display: inline-block;
-      margin-left: 0;
+    &-box_t1 {
+        background: #fefefe;
+        margin-left: -250px;
+        position: fixed;
+        left: 50%;
+        top: 12%;
+        z-index: 1001;
+        width: 500px;
+        height: auto;
     }
 
-  }
-
-  .btn-uri-browse,
-  .btn-uri-get {
-    color: $concrete;
-    background-color: $astral;
-  }
-
-  .latest {
-
-    &__label {
-      margin-left: $lineheight;
+    &-nav {
+        box-sizing: border-box;
+        position: absolute;
+        bottom: 0;
+        height: $lineheight * 4;
+        width: 100%;
+        padding-top: $lineheight / 2;
+        padding-bottom: $lineheight / 2;
+        background: $gray-chateau;
     }
 
-    &__checkbox {
-      margin: 0 0 0 ($lineheight / 2);
+    &-nav_t1 {
+        box-sizing: border-box;
+        position: absolute;
+        height: $lineheight * 4;
+        width: 100%;
+        padding-top: $lineheight / 2;
+        padding-bottom: $lineheight / 2;
+        background: $gray-chateau;
     }
 
-  }
+    .uri-input {
+        margin: ($lineheight * 2) $lineheight $lineheight $lineheight;
 
-  .btn-wrap {
-    margin-left: $lineheight;
-  }
+        &__label {
+            margin: $lineheight 0;
+        }
+
+    }
+
+    .uri-textarea {
+        margin: $lineheight 0 0 0;
+        box-sizing: border-box;
+        border: 3px solid #58585B;
+        border-radius: 4px;
+    }
+
+    .select-wrap {
+        margin: $lineheight 0 $lineheight 0;
+    }
+
+    .uri-browse {
+
+        &__label {
+            display: inline-block;
+        }
+
+        button {
+            display: inline-block;
+            margin-left: 0;
+        }
+
+    }
+
+    .btn-uri-browse,
+    .btn-uri-get {
+        color: $concrete;
+        background-color: $astral;
+    }
+
+    .latest {
+
+        &__label {
+            margin-left: $lineheight;
+        }
+
+        &__checkbox {
+            margin: 0 0 0 ($lineheight / 2);
+        }
+
+    }
+
+    .btn-wrap {
+        margin-left: $lineheight;
+    }
 
 }
 
 .disabled {
-  opacity: 0.7;
-  background-color: $black;
-  top: 63px;
-  position: absolute;
-  z-index: 10;
+    opacity: 0.7;
+    background-color: $black;
+    top: 63px;
+    position: absolute;
+    z-index: 10;
+}
+
+// 'Tick' on chart/table copy function
+.tick-animation {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    top: 15%;
+    left: 31%;
+}
+.circ {
+    opacity: 0;
+    stroke-dasharray: 130;
+    stroke-dashoffset: 130;
+    -webkit-transition: all 1s;
+    transition: all 1s;
+}
+
+.tick {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    -webkit-transition: stroke-dashoffset 1s 0.5s ease-out;
+    transition: stroke-dashoffset 1s 0.5s ease-out;
+}
+
+.drawn + svg .path {
+    opacity: 1;
+    stroke-dashoffset: 0;
 }
