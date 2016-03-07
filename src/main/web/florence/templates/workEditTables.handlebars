@@ -1,25 +1,27 @@
 <div class="edit-section" id="tables">
-  <div class="edit-section__head">
-    <h1>Tables</h1>
+    <div class="edit-section__head">
+        <h1>Tables</h1>
 
-    <p>Edit existing tables</p>
-  </div>
-  <div id="table-list" class="edit-section__content">
-    <div id="sortable-table" class="edit-section__sortable">
-      {{#each this.tables}}
-        <div id="{{@index}}" class="edit-section__sortable-item">
-          <div class="edit-section__title">{{title}}</div>
-          <div id="table-to-be-copied_{{@index}}" style="display: none">&ltons-table path="{{filename}}" /&gt</div>
-          <div class="edit-section__buttons">
-            <button class="btn-markdown-edit" id="table-copy_{{@index}}">Copy</button>
-            <button class="btn-markdown-edit" id="table-edit_{{@index}}">Edit</button>
-            <button class="btn-page-delete" id="table-delete_{{@index}}">Delete</button>
-          </div>
+        <p>Edit existing tables</p>
+    </div>
+    <div id="table-list" class="edit-section__content">
+        <div id="sortable-table" class="edit-section__sortable">
+            {{#each this.tables}}
+                <div id="{{@index}}" class="edit-section__sortable-item">
+                    <div class="edit-section__title">{{title}}</div>
+                    <input id="copy-table-markdown_{{@index}}" style="position:absolute;left:-99999px;" value="&lt;ons-table path=&#34;{{uri}}&#34; /&gt;">
+                    <div class="edit-section__buttons">
+                        <button class="btn-markdown-edit" id="table-copy_{{@index}}" data-clipboard-target="#copy-table-markdown_{{@index}}">
+                            Copy
+                        </button>
+                        <button class="btn-markdown-edit" id="table-edit_{{@index}}">Edit</button>
+                        <button class="btn-page-delete" id="table-delete_{{@index}}">Delete</button>
+                    </div>
+                </div>
+            {{/each}}
         </div>
-      {{/each}}
+        <div class="text-center">
+            <button class="btn-add-section" id="add-table">Add table</button>
+        </div>
     </div>
-    <div class="text-center">
-      <button class="btn-add-section" id="add-table">Add table</button>
-    </div>
-  </div>
 </div>
