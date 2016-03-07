@@ -18,38 +18,33 @@ var clipboard = null;
 function initialiseClipboard() {
     var i;
 
-    // Control clipboard so it only binds buttons once
-    function copyController () {
-
-        // Remove any existing clipboard variables
-        if (clipboard != null) {
-            console.log("Destroy clipboard");
-            clipboard.destroy();
-        }
-
-        console.log("Initialise clipboard");
-        // Fire normal clipboard initialisation
-        clipboard = new Clipboard('.chart-copy', {
-            target: function(trigger) {
-                i = $(trigger).closest('.edit-section__sortable-item').attr('id');
-                return document.getElementById('copy-chart-markdown_' + i);
-            }
-        });
-        clipboard.on('success', function(e) {
-            toggleTick(i, "show");
-            setTimeout(function() {
-                toggleTick(i, "hide")
-            }, 2000);
-            console.log('Trigger: ', e.trigger);
-            console.log('Text: ', e.text);
-            e.clearSelection();
-        });
-        clipboard.on('error', function(e) {
-            console.log("Error copying chart markdown");
-            console.error('Action:', e.action);
-            console.error('Trigger:', e.trigger);
-        });
+    // Remove any existing clipboard variables
+    if (clipboard != null) {
+        console.log("Destroy clipboard");
+        clipboard.destroy();
     }
+
+    // Fire normal clipboard initialisation
+    clipboard = new Clipboard('.chart-copy', {
+        target: function(trigger) {
+            i = $(trigger).closest('.edit-section__sortable-item').attr('id');
+            return document.getElementById('copy-chart-markdown_' + i);
+        }
+    });
+    clipboard.on('success', function(e) {
+        toggleTick(i, "show");
+        setTimeout(function() {
+            toggleTick(i, "hide")
+        }, 2000);
+        console.log('Trigger: ', e.trigger);
+        console.log('Text: ', e.text);
+        e.clearSelection();
+    });
+    clipboard.on('error', function(e) {
+        console.log("Error copying chart markdown");
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+    });
 
     // Switch 'done' tick on and off
     function toggleTick(i, state) {
@@ -62,44 +57,6 @@ function initialiseClipboard() {
             setTimeout(showBtnText, 1600);
         }
     }
-
-    copyController();
-
-
-    // Controller so clipboard isn't bound multiple times to same element
-    //var previousClipboard = null;
-    //function clipboardController () {
-    //    if (previousClipboard != null) {
-    //        previousClipboard.destroy();
-    //    }
-    //}
-    //
-    //var i = index;
-    //var clipboard = new Clipboard("#chart-copy_" + index);
-    //function toggleTick(state) {
-    //    if (state == "show") {
-    //        $("#chart-copy_" + i).attr("style", "color:transparent;");
-    //    }
-    //    $(".trigger_" + i).toggleClass("drawn");
-    //    if (state == "hide") {
-    //        function showBtnText () { $("#chart-copy_" + i).removeAttr("style");}
-    //        setTimeout(showBtnText, 1600);
-    //    }
-    //}
-    //clipboard.on('success', function(e) {
-    //    toggleTick("show");
-    //    setTimeout(function() {
-    //        toggleTick("hide")
-    //    }, 2000);
-    //    e.clearSelection();
-    //});
-    //clipboard.on('error', function(e) {
-    //    console.log("Error copying chart markdown");
-    //    console.error('Action:', e.action);
-    //    console.error('Trigger:', e.trigger);
-    //});
-
-
 }
 
 // do all the wiring up of buttons etc once the template has been rendered.
