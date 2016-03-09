@@ -11,52 +11,7 @@ function refreshChartList(collectionId, data) {
     var html = templates.workEditCharts(data);
     $('#chart-list').replaceWith($(html).find('#chart-list'));
     initialiseChartList(collectionId, data);
-}
-
-// Copy chart markdown to clipboard (clipboard.js plugin)
-var clipboard = null;
-function initialiseClipboard() {
-    var i;
-
-    // Remove any existing clipboard variables
-    if (clipboard != null) {
-        console.log("Destroy clipboard");
-        clipboard.destroy();
-    }
-
-    // Fire normal clipboard initialisation
-    clipboard = new Clipboard('.chart-copy', {
-        target: function(trigger) {
-            i = $(trigger).closest('.edit-section__sortable-item').attr('id');
-            return document.getElementById('copy-chart-markdown_' + i);
-        }
-    });
-    clipboard.on('success', function(e) {
-        toggleTick(i, "show");
-        setTimeout(function() {
-            toggleTick(i, "hide")
-        }, 2000);
-        console.log('Trigger: ', e.trigger);
-        console.log('Text: ', e.text);
-        e.clearSelection();
-    });
-    clipboard.on('error', function(e) {
-        console.log("Error copying chart markdown");
-        console.error('Action:', e.action);
-        console.error('Trigger:', e.trigger);
-    });
-
-    // Switch 'done' tick on and off
-    function toggleTick(i, state) {
-        if (state == "show") {
-            $("#chart-copy_" + i).attr("style", "color:transparent;");
-        }
-        $(".trigger_" + i).toggleClass("drawn");
-        if (state == "hide") {
-            function showBtnText () { $("#chart-copy_" + i).removeAttr("style");}
-            setTimeout(showBtnText, 1600);
-        }
-    }
+    initialiseClipboard();
 }
 
 // do all the wiring up of buttons etc once the template has been rendered.
