@@ -2,12 +2,14 @@ function loadTablesList(collectionId, data) {
     var html = templates.workEditTables(data);
     $('#tables').replaceWith(html);
     initialiseTablesList(collectionId, data);
+    initialiseClipboard();
 }
 
 function refreshTablesList(collectionId, data) {
     var html = templates.workEditTables(data);
     $('#table-list').replaceWith($(html).find('#table-list'));
     initialiseTablesList(collectionId, data);
+    initialiseClipboard();
 }
 
 function initialiseTablesList(collectionId, data) {
@@ -24,21 +26,6 @@ function initialiseTablesList(collectionId, data) {
         var basePath = data.uri;
         var tablePath = basePath + '/' + table.filename;
         var tableJson = tablePath;
-
-        var clipboard = new Clipboard("#table-copy_" + index);
-        var copyTick = templates.tickAnimation;
-        clipboard.on('success', function(e) {
-            console.info('Action:', e.action);
-            console.info('Text:', e.text);
-            console.info('Trigger:', e.trigger);
-
-            e.clearSelection();
-        });
-        clipboard.on('error', function(e) {
-            console.error('Action:', e.action);
-            console.error('Trigger:', e.trigger);
-        });
-
 
         $("#table-edit_" + index).click(function () {
             getPageData(collectionId, tableJson,

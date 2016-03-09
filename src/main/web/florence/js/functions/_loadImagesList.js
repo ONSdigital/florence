@@ -2,12 +2,14 @@ function loadImagesList(collectionId, data) {
     var html = templates.workEditImages(data);
     $('#images').replaceWith(html);
     initialiseImagesList(collectionId, data);
+    initialiseClipboard();
 }
 
 function refreshImagesList(collectionId, data) {
     var html = templates.workEditImages(data);
     $('#image-list').replaceWith($(html).find('#image-list'));
     initialiseImagesList(collectionId, data);
+    initialiseClipboard();
 }
 
 function initialiseImagesList(collectionId, data) {
@@ -23,12 +25,6 @@ function initialiseImagesList(collectionId, data) {
         var basePath = data.uri;
         var noExtension = image.uri.match(/^(.+?)(\.[^.]*$|$)/);
         var imageJson = noExtension[1] + '.json';
-
-        //var client = new ZeroClipboard($("#image-copy_" + index));
-        //client.on("copy", function (event) {
-        //  var clipboard = event.clipboardData;
-        //  clipboard.setData("text/plain", $('#image-to-be-copied_' + index).text());
-        //});
 
         $("#image-edit_" + index).click(function () {
             getPageResource(collectionId, imageJson,
