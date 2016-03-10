@@ -39,7 +39,7 @@ function postLogin(email, password) {
       if (response.status === 417) {
         viewChangePassword(email, true);
       } else {
-        handleApiError(response);
+        handleLoginApiError(response);
       }
     }
   });
