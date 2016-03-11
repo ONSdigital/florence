@@ -1,4 +1,10 @@
 <ul class="nav nav--admin">
+    <li id="network-status" class="nav--admin__item nav--admin__item--status icon-status">
+        <div class="icon-status--very-poor"></div>
+        <div class="icon-status--poor"></div>
+        <div class="icon-status--ok"></div>
+        <div class="icon-status--good"></div>
+    </li>
   {{#if this.Authentication.isAuthenticated}}
     {{#if this.collection.name}}
       <li id="working-on" class="nav--admin__item nav--admin__item--collection selected"><a href="#">Working on: {{this.collection.name}}</a></li>
