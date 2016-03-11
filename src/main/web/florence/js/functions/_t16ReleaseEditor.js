@@ -239,23 +239,25 @@ function releaseEditor(collectionId, data) {
             )
         );
         $.when.apply($, pageDataRequests).then(function () {
-            processPreview(data, pages);
-            if (noSave) {
-                putContent(collectionId, data.uri, JSON.stringify(data),
-                    success = function () {
-                        Florence.Editor.isDirty = false;
-                        refreshPreview(data.uri);
-                    },
-                    error = function (response) {
-                        if (response.status === 400) {
-                            sweetAlert("Cannot edit this page", "It is already part of another collection.");
-                        } else {
-                            handleApiError(response);
-                        }
-                    }
-                );
-            } else {
-                updateContent(collectionId, data.uri, JSON.stringify(data));
+            if(pages.releaseUri && pages.releaseUri == data.uri) {
+                processPreview(data, pages);
+                if (noSave) {
+                    putContent(collectionId, data.uri, JSON.stringify(data),
+                      success = function () {
+                          Florence.Editor.isDirty = false;
+                          refreshPreview(data.uri);
+                      },
+                      error = function (response) {
+                          if (response.status === 400) {
+                              sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                          } else {
+                              handleApiError(response);
+                          }
+                      }
+                    );
+                } else {
+                    updateContent(collectionId, data.uri, JSON.stringify(data));
+                }
             }
         });
     }
