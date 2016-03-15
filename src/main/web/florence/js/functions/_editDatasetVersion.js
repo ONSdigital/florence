@@ -61,7 +61,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
       '    <div class="dataset-buttons">' +
       '    <button type="submit" form="UploadForm" value="submit">Submit</button>' +
       '    <button class="btn-page-cancel" id="file-cancel">Cancel</button>' +
-      '    <button class="btn-dataset-autocsdb" id="no-file">Auto CSDB</button>' +
+      //'    <button class="btn-dataset-autocsdb" id="no-file">Auto CSDB</button>' +
       '    </div>' +
       '  </form>' +
       '  <div id="response"></div>' +
