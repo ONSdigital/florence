@@ -9,7 +9,7 @@ function handleApiError(response) {
         return;
 
     if (response.status === 403 || response.status === 401) {
-        sweetAlert('You are not logged in', 'Please refresh Florence and log back in.');
+        //sweetAlert('You are not logged in', 'Please refresh Florence and log back in.');
         logout();
     } else if (response.status === 504) {
         sweetAlert('This task is taking longer than expected', "It will continue to run in the background.", "info");
