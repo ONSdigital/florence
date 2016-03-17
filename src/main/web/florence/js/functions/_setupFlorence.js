@@ -142,7 +142,55 @@ function setupFlorence() {
     }
   }
 
-  //var interval = setTimeout(ping, 60000);
-  //ping();
+  var lastPingTime;
+  var pingTimes = [];
+
+  function doPing() {
+    var start = new Date().getTime();
+    $.ajax({
+      url: "/zebedee/ping",
+      dataType: 'json',
+      contentType: 'application/json',
+      type: 'POST',
+      data: JSON.stringify({
+        lastPingTime: lastPingTime
+      }),
+      success: function (response) {
+
+        var end = new Date().getTime();
+        var time = end - start;
+
+        lastPingTime = time;
+        pingTimes.push(time);
+        if(pingTimes.length > 5)
+          pingTimes.shift();
+
+        var sum = 0;
+        for(var i = 0; i < pingTimes.length; ++i) {
+          sum += pingTimes[i];
+        }
+
+        var averagePingTime = sum / pingTimes.length;
+
+        networkStatus(lastPingTime);
+
+        if(averagePingTime < 100) {
+          console.log("ping time: pretty good! " + time + " average: " + averagePingTime + " " + pingTimes);
+        } else if(averagePingTime < 300) {
+          console.log("ping time: not so good! " + time + " average: " + averagePingTime + " " + pingTimes);
+        } else {
+          console.log("ping time: really bad! " + time);
+        }
+
+        pingTimer = setTimeout(function() {
+          doPing();
+        }, 10000);
+      }
+    });
+  }
+
+  var pingTimer = setTimeout(function() {
+    doPing();
+  }, 10000);
 }
 
