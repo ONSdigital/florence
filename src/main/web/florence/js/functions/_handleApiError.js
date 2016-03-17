@@ -5,21 +5,43 @@
  */
 function handleApiError(response) {
 
-  if(!response || response.status === 200)
-    return;
+    if (!response || response.status === 200)
+        return;
 
-  if(response.status === 403 || response.status === 401) {
-    logout();
-  } else if (response.status === 504) {
-    sweetAlert('This task is taking longer than expected', "It will continue to run in the background.", "info");
-  } else {
-    var message = 'An error has occurred, please contact an administrator.';
+    if (response.status === 403 || response.status === 401) {
+        //sweetAlert('You are not logged in', 'Please refresh Florence and log back in.');
+        logout();
+    } else if (response.status === 504) {
+        sweetAlert('This task is taking longer than expected', "It will continue to run in the background.", "info");
+    } else {
+        var message = 'An error has occurred, please contact an administrator.';
 
-    if(response.responseJSON) {
-      message = message + ' ' + response.responseJSON.message;
+        if (response.responseJSON) {
+            message = response.responseJSON.message;
+        }
+
+        console.log(message);
+        sweetAlert("Error", message, "error");
     }
+}
 
-    console.log(message);
-    sweetAlert("Error", message, "error");
-  }
+/* Unique error handling for the login screen */
+function handleLoginApiError(response) {
+
+    if (!response || response.status === 200)
+        return;
+
+    if (response.status === 403 || response.status === 401) {
+        sweetAlert('Incorrect login details', 'These login credentials were not recognised. Please try again.', 'error');
+        logout();
+    } else {
+        var message = 'An error has occurred, please contact an administrator.';
+
+        if (response.responseJSON) {
+            message = response.responseJSON.message;
+        }
+
+        console.log(message);
+        sweetAlert("Error", message, "error");
+    }
 }
