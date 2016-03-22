@@ -121,7 +121,7 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
 
     putContent(collectionId, data.uri, JSON.stringify(data), function () {
       moveContent(collectionId, data.uri, newUri, function () {
-        getPageData(collectionId, newUri, function (pageData) { // get the updated data after doing the move.
+          getPageData(collectionId, newUri, function (pageData) { // get the updated data after doing the move.
             data = pageData;
 
             Florence.globalVars.pagePath = newUri;
@@ -133,11 +133,11 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
               }
             }
             onSave(collectionId, newUri, JSON.stringify(data));
-          },
-          onError = function () {
-            onSave(collectionId, data.uri, JSON.stringify(data));
           });
-      });
+        },
+        onError = function () {
+          onSave(collectionId, data.uri, JSON.stringify(data));
+        });
     });
   }
 }
