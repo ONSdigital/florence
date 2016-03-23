@@ -14,7 +14,8 @@ function editCollection (collection) {
 
       $("#editor-team-tag").tagit({
         singleField: true,
-        singleFieldNode: $('#editor-team-input')
+        singleFieldNode: $('#editor-team-input'),
+        singleFieldDelimiter:("$$")
       });
 
       $(collection.teams).each(function (i, team) {
@@ -28,7 +29,7 @@ function editCollection (collection) {
       });
 
       $('#editor-team-input').change(function () {
-        collection.teams = $('#editor-team-input').val().split(',');
+        collection.teams = $('#editor-team-input').val().split('$$');
         //After creating the array tagit leaves an empty string if all elements are removed
         if (teams.length === 1 && teams[0] === "") {
           teams = [];
