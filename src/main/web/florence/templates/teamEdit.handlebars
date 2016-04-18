@@ -14,7 +14,7 @@
                 </div>
                 <ul class="user-list">
                     {{#each user}}
-                        <li>{{this}} <button class="btn-team-list btn-team-add">Add</button></li>
+                        <li>{{this}} <button class="btn-team-list btn-team-add" data-email="{{this}}">Add</button></li>
                     {{/each}}
                 </ul>
             </div>
@@ -24,7 +24,7 @@
                 <h2>Team members</h2>
                 <ul class="team-list">
                     {{#each team.members}}
-                        <li>{{this}} <button class="btn-team-list btn-team-remove">Remove</button></li>
+                        <li>{{this}} <button class="btn-team-list btn-team-remove" data-email="{{this}}">Remove</button></li>
                     {{/each}}
                 </ul>
             </div>

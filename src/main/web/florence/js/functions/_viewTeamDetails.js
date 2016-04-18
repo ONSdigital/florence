@@ -58,7 +58,9 @@ function populateMembers(team) {
     getUsers(
         function (users) {
             userArray = _.pluck(users, "email");
+            //console.log("UA: " + userArray);
             userNotInTeam = _.difference(userArray, team.members);
+            //console.log("UNIT: " + userNotInTeam);
             var teamsHtml = templates.teamEdit({team: team, user: userNotInTeam});
             $('.section').append(teamsHtml);
 
@@ -72,7 +74,31 @@ function populateMembers(team) {
                 viewTeamDetails(team.name);
             });
 
-            dragAndDrop();
+            $('.user-list').on('click', '.btn-team-add', function() {
+                console.log('you clicked add');
+                var $this = $(this),
+                    $li = $this.parent('li'),
+                    $email = $this.data('email');
+                $li.remove();
+                moveUser($email, true)
+                postTeamMember(team.name, $email);
+                userNotInTeam = _.difference(userNotInTeam, [$email]);
+
+            });
+
+
+            $('.team-list').on('click', '.btn-team-remove', function() {
+                console.log('you clicked remove');
+                var $this = $(this),
+                    $li = $this.parent('li'),
+                    $email = $this.data('email');
+                $li.remove();
+                moveUser($email, false)
+                deleteTeamMember(team.name, $email);
+                userNotInTeam.push($email);
+            });
+
+            //dragAndDrop();
         },
         function (jqxhr) {
             handleApiError(jqxhr);
@@ -92,45 +118,67 @@ function populateMembers(team) {
         }))
             .each(function (user) {
                 if (!filter || (user.toUpperCase().indexOf(filter.toUpperCase()) > -1)) {
-                    userList.append('<li class="ui-draggable ui-draggable-handle">' + user + '</li>');
+                    userList.append('<li >' + user + ' <button class="btn-team-list btn-team-add" data-email="' + user + '">Add</button></li>');
                 }
             });
-        dragAndDrop();
+        //dragAndDrop();
     }
 
-    function dragAndDrop() {
-        $('.user-list > li').draggable({
-            appendTo: 'document',
-            helper: 'clone',
-            cursor: 'move'
-        });
+    //function dragAndDrop() {
+    //    $('.user-list > li').draggable({
+    //        appendTo: 'document',
+    //        helper: 'clone',
+    //        cursor: 'move'
+    //    });
+    //
+    //    $('.team-list > li').draggable({
+    //        appendTo: 'document',
+    //        helper: 'clone',
+    //        cursor: 'move'
+    //    });
+    //
+    //    $('.user-list').droppable({
+    //        accept: ".team-list > li",
+    //        drop: function (event, ui) {
+    //            var targetElem = $(this).attr("id");
+    //            $(this).addClass("ui-state-highlight");
+    //            $(ui.draggable).appendTo(this);
+    //            deleteTeamMember(team.name, ui.draggable[0].firstChild.textContent);
+    //            userNotInTeam.push(ui.draggable[0].firstChild.textContent);
+    //        }
+    //    });
+    //
+    //    $('.team-list').droppable({
+    //        accept: ".user-list > li",
+    //        drop: function (event, ui) {
+    //            var targetElem = $(this).attr("id");
+    //            $(this).addClass("ui-state-highlight");
+    //            $(ui.draggable).appendTo(this);
+    //            postTeamMember(team.name, ui.draggable[0].firstChild.textContent);
+    //            userNotInTeam = _.difference(userNotInTeam, [ui.draggable[0].firstChild.textContent]);
+    //        }
+    //    });
+    //};
 
-        $('.team-list > li').draggable({
-            appendTo: 'document',
-            helper: 'clone',
-            cursor: 'move'
-        });
+    /**
+     * Handle moving list items between lsits.
+     * @param user - email string
+     * @param beingAdded - true or false
+     */
+    function moveUser(user, beingAdded) {
+        if (beingAdded) {
+            button = '<button class="btn-team-list btn-team-remove" data-email="' + user + '">Remove</button>';
+        } else {
+            button = '<button class="btn-team-list btn-team-add" data-email="' + user + '">Add</button>';
+        }
+        var str = '<li>' + user + ' ' + button + '</li>';
 
-        $('.user-list').droppable({
-            accept: ".team-list > li",
-            drop: function (event, ui) {
-                var targetElem = $(this).attr("id");
-                $(this).addClass("ui-state-highlight");
-                $(ui.draggable).appendTo(this);
-                deleteTeamMember(team.name, ui.draggable[0].firstChild.textContent);
-                userNotInTeam.push(ui.draggable[0].firstChild.textContent);
-            }
-        });
-
-        $('.team-list').droppable({
-            accept: ".user-list > li",
-            drop: function (event, ui) {
-                var targetElem = $(this).attr("id");
-                $(this).addClass("ui-state-highlight");
-                $(ui.draggable).appendTo(this);
-                postTeamMember(team.name, ui.draggable[0].firstChild.textContent);
-                userNotInTeam = _.difference(userNotInTeam, [ui.draggable[0].firstChild.textContent]);
-            }
-        });
-    };
+        if (beingAdded) {
+            $('.team-list').prepend(str);
+        } else {
+            $('.user-list').prepend(str);
+        }
+    }
 }
+
+
