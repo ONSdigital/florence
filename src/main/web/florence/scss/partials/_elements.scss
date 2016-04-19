@@ -55,7 +55,8 @@ button {
 	position: relative;
 	border-radius: 4px;
 
-	&:hover {
+	&:hover,
+	&:focus {
 		&:after {
 			content: '';
 			width: 100%;
@@ -70,7 +71,7 @@ button {
 }
 
 form {
-	position: relative;
+	//position: relative; // Commented out to test where it is needed. Break all forms at the moment.
 	//margin-top: - $lineheight; //Only needed on forms in collection/user workspace. Was breaking all other forms
 }
 
@@ -101,6 +102,13 @@ input {
 	margin: $lineheight 0;
 	padding: 7px $gutter;
 
+}
+
+// Focus styling
+input[type="text"]:focus,
+textarea:focus {
+	border: 3px solid #ffbf47 !important;
+	border-radius: 4px;
 }
 
 select {
