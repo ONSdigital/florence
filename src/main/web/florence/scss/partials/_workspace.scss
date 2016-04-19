@@ -803,6 +803,11 @@
         overflow: auto;
     }
 
+    #chart-alt-text {
+        height: auto;
+        min-height: $lineheight * 2;
+    }
+
 }
 
 .table-builder {
