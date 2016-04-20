@@ -4,66 +4,106 @@
  */
 function viewUserDetails(email) {
 
-  getUsers(
-    success = function (user) {
-      populateUserDetails(user, email);
-    },
-    error = function (response) {
-      handleApiError(response);
-    },
-    email
-  );
+    getUsers(
+        success = function (user) {
+            populateUserDetails(user, email);
+        },
+        error = function (response) {
+            handleApiError(response);
+        },
+        email
+    );
 
-  function populateUserDetails(user, email) {
+    var isAdmin, isEditor;
+    function populateUserDetails(user, email) {
+        getUserPermission(
+            function (permission) {
+                isAdmin = permission.admin;
+                isEditor = permission.editor;
 
-    var html = window.templates.userDetails(user);
-    $('.collection-selected').html(html).animate({right: "0%"}, 500);
+                addPermissionToJSON(user);
 
-    $('.btn-user-change-password').click(function () {
-      var currentPasswordRequired = false;
+                var html = window.templates.userDetails(user);
+                $('.collection-selected').html(html).animate({right: "0%"}, 500);
 
-      if(email == Florence.Authentication.loggedInEmail()) {
-        currentPasswordRequired = true;
-      }
 
-      viewChangePassword(email, currentPasswordRequired);
-    });
+                $('.btn-user-change-password').click(function () {
+                    var currentPasswordRequired = false;
 
-    $('.btn-user-delete').click(function () {
-      swal ({
-        title: "Confirm deletion",
-        text: "Please enter the email address of the user you want to delete",
-        type: "input",
-        inputPlaceHolder: "Email address",
-        showCancelButton: true,
-        closeOnConfirm: false,
-        confirmButtonText: "Delete",
-        animation: "slide-from-top"
-      }, function(result) {
-        console.log(result);
-        if (result) {
-          if (result === email) {
-            swal ({
-              title: "User deleted",
-              text: "This user has been deleted",
-              type: "success",
-              timer: 2000
-            });
-            deleteUser(email);
-          } else {
-            sweetAlert("Oops!", 'The email you entered did not match the user you want to delete.')
-          }
-        }
-      });
-    });
+                    if (email == Florence.Authentication.loggedInEmail()) {
+                        currentPasswordRequired = true;
+                    }
 
-    $('.collection-selected .btn-collection-cancel').click(function () {
-      $('.collection-selected').stop().animate({right: "-50%"}, 500);
-      $('.collections-select-table tbody tr').removeClass('selected');
-      // Wait until the animation ends
-      setTimeout(function () {
-        //viewController('users');
-      }, 500);
-    });
-  }
+                    viewChangePassword(email, currentPasswordRequired);
+                });
+
+                $('.btn-user-delete').click(function () {
+                    swal({
+                        title: "Confirm deletion",
+                        text: "Please enter the email address of the user you want to delete",
+                        type: "input",
+                        inputPlaceHolder: "Email address",
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        confirmButtonText: "Delete",
+                        animation: "slide-from-top"
+                    }, function (result) {
+                        console.log(result);
+                        if (result) {
+                            if (result === email) {
+                                swal({
+                                    title: "User deleted",
+                                    text: "This user has been deleted",
+                                    type: "success",
+                                    timer: 2000
+                                });
+                                deleteUser(email);
+                            } else {
+                                sweetAlert("Oops!", 'The email you entered did not match the user you want to delete.')
+                            }
+                        }
+                    });
+                });
+
+                $('.collection-selected .btn-collection-cancel').click(function () {
+                    $('.collection-selected').stop().animate({right: "-50%"}, 500);
+                    $('.collections-select-table tbody tr').removeClass('selected');
+                    // Wait until the animation ends
+                    setTimeout(function () {
+                        //viewController('users');
+                    }, 500);
+                });
+
+
+                //console.log('a: ' + isAdmin + ' e: ' + isEditor);
+            },
+            function (error) {handleApiError(error);},
+            email
+        );
+
+    }
+
+    /*
+     * Add permissions object to JSON so accessible to handlebars template
+     * @param user - JSON object
+     */
+    function addPermissionToJSON (user) {
+        user['permission'] = permissionStr(isAdmin, isEditor);
+    }
+
+
+    /*
+     * Logic to work out user role
+     * @param isAdmin - true/false
+     * @param isEditor - true/false
+     * @return the user's role as string
+     */
+    function permissionStr (isAdmin, isEditor) {
+        var permissionStr;
+        if (!isAdmin && !isEditor) {permissionStr = 'viewer';}
+        if (isEditor) {permissionStr = 'publisher';}
+        if (isAdmin) {permissionStr = "admin";}
+
+        return permissionStr;
+    }
 }

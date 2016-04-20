@@ -13,57 +13,63 @@ function setupFlorence() {
     });
     Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
 
-        switch (operator) {
-            case '==':
-                return (v1 == v2) ? options.fn(this) : options.inverse(this);
-            case '===':
-                return (v1 === v2) ? options.fn(this) : options.inverse(this);
-            case '<':
-                return (v1 < v2) ? options.fn(this) : options.inverse(this);
-            case '<=':
-                return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-            case '>':
-                return (v1 > v2) ? options.fn(this) : options.inverse(this);
-            case '>=':
-                return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-            case '&&':
-                return (v1 && v2) ? options.fn(this) : options.inverse(this);
-            case '||':
-                return (v1 || v2) ? options.fn(this) : options.inverse(this);
-            default:
-                return options.inverse(this);
-        }
-    });
-    //Check if array contains element
-    Handlebars.registerHelper('ifContains', function (elem, list, options) {
-        if (list.indexOf(elem) > -1) {
-            return options.fn(this);
-        }
+    switch (operator) {
+      case '==':
+        return (v1 == v2) ? options.fn(this) : options.inverse(this);
+      case '===':
+        return (v1 === v2) ? options.fn(this) : options.inverse(this);
+      case '<':
+        return (v1 < v2) ? options.fn(this) : options.inverse(this);
+      case '<=':
+        return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+      case '>':
+        return (v1 > v2) ? options.fn(this) : options.inverse(this);
+      case '>=':
+        return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+      case '&&':
+        return (v1 && v2) ? options.fn(this) : options.inverse(this);
+      case '||':
+        return (v1 || v2) ? options.fn(this) : options.inverse(this);
+      default:
         return options.inverse(this);
-    });
-    // Add two values together. Primary usage was '@index + 1' to create numbered lists
-    Handlebars.registerHelper('plus', function (value1, value2) {
-        return value1 + value2;
-    });
-    // Add two values together. Primary usage was '@index + 1' to create numbered lists
-    Handlebars.registerHelper('lastEditedBy', function (array) {
-        if (array) {
-            var event = array[array.length - 1];
-            return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
-        }
-        return '';
-    });
-    Handlebars.registerHelper('createdBy', function (array) {
-        if (array) {
-            var event = getCollectionCreatedEvent(array);
-            if (event) {
-                return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
-            } else {
-                return "";
-            }
-        }
+    }
+  });
+  //Check if array contains element
+  Handlebars.registerHelper('ifContains', function(elem, list, options) {
+    if(list.indexOf(elem) > -1) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
+  // Add two values together. Primary usage was '@index + 1' to create numbered lists
+  Handlebars.registerHelper('plus', function(value1, value2) {
+    return value1 + value2;
+  });
+  // Add two values together. Primary usage was '@index + 1' to create numbered lists
+  Handlebars.registerHelper('lastEditedBy', function(array) {
+    if(array) {
+      var event = array[array.length - 1];
+      return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+    }
+    return '';
+  });
+  Handlebars.registerHelper('createdBy', function(array) {
+    if(array) {
+      var event = getCollectionCreatedEvent(array);
+      if (event) {
+        return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
+      } else {
         return "";
-    });
+      }
+    }
+    return "";
+  });
+  Handlebars.registerHelper('if_eq', function(a, b, opts) {
+    if(a == b)
+      return opts.fn(this);
+    else
+      return opts.inverse(this);
+  });
 
 
     Florence.globalVars.activeTab = false;
