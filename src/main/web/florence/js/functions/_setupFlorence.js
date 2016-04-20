@@ -49,7 +49,9 @@ function setupFlorence() {
   Handlebars.registerHelper('lastEditedBy', function(array) {
     if(array) {
       var event = array[array.length - 1];
-      return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+      if (event) {
+        return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+      }
     }
     return '';
   });
