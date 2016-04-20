@@ -73,6 +73,18 @@ function setupFlorence() {
       return opts.inverse(this);
   });
 
+  Handlebars.registerHelper('comma_separated_list', function(array) {
+    var asString = "";
+
+    if (array) {
+        array.forEach(function(item) {
+            asString = asString + item + ", ";
+        });
+        return asString.substring(0, asString.lastIndexOf(","));
+    }
+    return asString;
+  });
+
 
 
 

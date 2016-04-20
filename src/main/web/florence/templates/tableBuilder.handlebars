@@ -12,6 +12,13 @@
         <input type="file" name="files" id="files">
         <input type="submit" value="Submit">
       </form>
+
+        <form id="table-metadata-form" style="display: none; padding-top: 10px;">
+            <div><i>Submit row numbers (comma separated) below to manually exclude them from the generated HTML table.</i></div>
+            <div><b>Note:</b><i>Row indices start from 0.</i></div>
+            <input type="text" id="rows-excluded" placeholder="Example: 0, 1" value="{{#comma_separated_list excludeRows}}{{this}}{{/comma_separated_list}}"/>
+            <input type="submit" value="Apply">
+        </form>
     </div>
 
     <div id="preview-table" class="table-builder__preview">
