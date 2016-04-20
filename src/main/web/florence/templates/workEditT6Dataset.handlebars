@@ -1,11 +1,11 @@
 {{#each this}}
-  <div id="{{@index}}" class="edit-section__item">
-    <p id="compendium-data-title_{{@index}}">{{description.title}}</p>
+    <div id="{{@index}}" class="edit-section__item">
+        <p id="compendium-data-title_{{@index}}">{{description.title}}</p>
 
-    <div class="edit-section__buttons">
-      <button class="btn-markdown-edit" id="compendium-data-edit-label_{{@index}}">Rename</button>
-      <button class="btn-markdown-edit" id="compendium-data-edit_{{@index}}">Edit</button>
-      <button class="btn-page-delete" id="compendium-data-delete_{{@index}}">Delete</button>
+        <div class="edit-section__buttons">
+            <button class="btn-markdown-edit" id="compendium-data-edit-label_{{@index}}">Rename</button>
+            <button class="btn-markdown-edit" id="compendium-data-edit_{{@index}}">Edit</button>
+            <button class="btn-page-delete" id="compendium-data-delete_{{@index}}">Delete</button>
+        </div>
     </div>
-  </div>
 {{/each}}
