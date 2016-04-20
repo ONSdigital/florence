@@ -72,6 +72,11 @@
 
 .workspace {
 
+    &-menu {
+        background-color: $quill-gray;
+        height: 100%;
+    }
+
     &-nav {
         background-color: $pickled-bluewood;
     }

@@ -40,10 +40,10 @@ function createCollection(teams) {
         sweetAlert('This is not a valid date');
         return true;
     } else {
-        // Add loading icon
+
+        // Add loading icon to button
         var $createBtn = $('.btn-collection-create'),
             loadingHTML = $(templates.loadingAnimation()).css('top', '-3px');
-
         $createBtn
             .width($createBtn.width())
             .height($createBtn.height())

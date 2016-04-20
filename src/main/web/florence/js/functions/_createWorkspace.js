@@ -38,6 +38,10 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
         $('.section').html(workSpace);
 
+        // Set browse panel to full height to show loading icon
+        $('.loader').css('margin-top', '84px');
+        $('.workspace-menu').height($('.workspace-nav').height());
+
         document.getElementById('iframe').onload = function () {
             $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
             var iframeEvent = document.getElementById('iframe').contentWindow;
