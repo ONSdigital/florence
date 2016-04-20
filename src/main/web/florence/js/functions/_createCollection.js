@@ -42,13 +42,7 @@ function createCollection(teams) {
     } else {
 
         // Add loading icon to button
-        var $createBtn = $('.btn-collection-create'),
-            loadingHTML = $(templates.loadingAnimation()).css('top', '-3px');
-        $createBtn
-            .width($createBtn.width())
-            .height($createBtn.height())
-            .empty()
-            .append(loadingHTML);
+        loadingBtn($('.btn-collection-create'));
 
         // Create the collection
         $.ajax({
