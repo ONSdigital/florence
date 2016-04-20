@@ -235,40 +235,32 @@
 .team-select {
     &__header {
         background: #343B59;
-        margin-top: -21px;
         color: #B2B6C4;
+        padding: $lineheight 0;
     }
 
     &__heading {
-        margin-top: 21px;
+        margin-top: 0;
         margin-bottom: 0;
 
     }
 
-    &__sub-heading {
-        margin-top: 0;
-        padding-left: 24px;
-    }
-
     &__left-column {
         float: left;
-        border: 1px solid;
-        border-radius: 2px;
         margin: 64px 0 0 -4px;
+        border-right: 1px solid #888888;
 
         h2 {
-            margin-top: 0;
+            margin: 0 0 0 20px;
         }
     }
 
     &__right-column {
         float: right;
-        border: 1px solid;
-        border-radius: 2px;
         margin: 64px -4px 0 0;
 
         h2 {
-            margin-top: 0;
+            margin: 0 0 0 20px;
         }
     }
 
@@ -285,27 +277,51 @@
 
     &__body {
         margin-top: -56px;
-        padding: 0 20px 0 20px;
+        padding: 0;
         display: block;
     }
 
     ul {
         overflow-y: scroll;
-        margin: 16px -8px 0 0;
+        margin: 16px 20px 0 20px;
         height: 400px;
-        width: 99%;
     }
 
     li {
         list-style-type: none;
+        margin: 0;
+        padding: $lineheight;
+
+        &:nth-child(even) {
+            background-color: white;
+        }
+
+        &:hover {
+            background-color: #E5E5E5;
+        }
     }
 
     input {
         box-sizing: border-box;
         border: 3px solid #58585B;
         border-radius: 4px;
-        margin: 24px 0 0 0;
+        margin: 18px 0 0 0;
         padding: 7px 20px;
+    }
+
+    .btn-team-list {
+        margin: -8px 0 0 0;
+        padding: 8px 16px;
+        float: right;
+    }
+
+    .btn-team-add {
+        background-color: $como;
+        color: white;
+    }
+    .btn-team-remove {
+        background-color: $tawny-port;
+        color: white;
     }
 
     &__footer {
