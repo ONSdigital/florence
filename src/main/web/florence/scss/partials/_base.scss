@@ -776,6 +776,10 @@ button {
         background-color: $tawny-port;
     }
 
+    &--flush {
+        margin: 0;
+    }
+
     &:hover,
     &:focus {
         &:after {
