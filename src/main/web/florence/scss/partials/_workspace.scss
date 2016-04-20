@@ -104,7 +104,7 @@
             padding-top: $lineheight / 2;
             padding-left: $gutter;
             margin-top: $lineheight;
-            width: 25%;
+            width: 23%;
             position: absolute;
             height: $lineheight * 2;
             background-color: $scarpa-flow;
@@ -116,6 +116,7 @@
         input {
             margin-left: 25%;
             width: 75%;
+            //border-radius:
         }
 
         input.full {

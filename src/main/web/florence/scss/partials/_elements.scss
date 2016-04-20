@@ -108,8 +108,9 @@ input {
 input[type="text"]:focus,
 input[type="file"]:focus,
 input[type="password"]:focus,
+input[type="email"]:focus,
 textarea:focus {
-	border: 3px solid #ffbf47 !important;
+	border: 3px solid $focus !important;
 	border-radius: 4px;
 }
 
@@ -163,6 +164,21 @@ select {
 
 	 &--half {
 		 width: 50%;
+	 }
+
+	 &--focus {
+		 border-top: 3px solid $focus;
+		 border-bottom: 3px solid $focus;
+		 border-left: 3px solid $focus;
+		 border-right: 3px solid $scarpa-flow;
+
+		 &:before {
+			 border-left: 3px solid $focus;
+			 border-top: 1px solid $scarpa-flow;
+			 border-bottom: 1px solid $scarpa-flow;
+			 top: -3px;
+			 right: -3px;
+		 }
 	 }
  }
 
