@@ -190,6 +190,8 @@
 
             input[type="file"] {
                 float: left;
+                margin-bottom: $lineheight / 2;
+                border: 3px solid $scarpa-flow;
             }
 
             // &.active {
@@ -304,25 +306,26 @@
                 margin-left: $gutter;
                 overflow: hidden;
 
-                &:before {
-                    content: '';
-                    position: absolute;
-                    left: $gutter / 2;
-                    //top: 12px;
-                    top: $lineheight / 2;
-                    width: 30px;
-                    height: $lineheight * 2;
-                    cursor: move;
-                    background: transparent url(../img/sprite.png) no-repeat 0px -135px;
-                    background-size: 30px auto;
-                }
-
                 &--counter {
                     margin: 0 ($lineheight / 2) 0 ($lineheight / 2);
                     color: $scarpa-flow;
                     font-weight: bold;
                     font-size: 16px;
+                    position: relative;
 
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        //left: $gutter / 2;
+                        //top: 12px;
+                        left: -($gutter * 2);
+                        top: -10px;
+                        width: 30px;
+                        height: $lineheight * 2;
+                        cursor: move;
+                        background: transparent url(../img/sprite.png) no-repeat 0px -135px;
+                        background-size: 30px auto;
+                    }
                 }
 
                 input {
@@ -534,6 +537,11 @@
         font-size: 14px;
         line-height: $lineheight;
         width: 89%;
+
+        &:focus {
+            border: 0 !important;
+            outline: 0;
+        }
     }
 
     // .wmd-prompt-dialog {

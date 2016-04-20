@@ -101,11 +101,12 @@ input {
 	height: $lineheight * 2;
 	margin: $lineheight 0;
 	padding: 7px $gutter;
-
+	background: $white;
 }
 
 // Focus styling
 input[type="text"]:focus,
+input[type="file"]:focus,
 textarea:focus {
 	border: 3px solid #ffbf47 !important;
 	border-radius: 4px;
