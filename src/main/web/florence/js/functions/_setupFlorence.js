@@ -5,7 +5,8 @@ function setupFlorence() {
     Handlebars.registerPartial("editNavChild", templates.editNavChild);
     Handlebars.registerPartial("selectorHour", templates.selectorHour);
     Handlebars.registerPartial("selectorMinute", templates.selectorMinute);
-    Handlebars.registerPartial("tickAnimation", templates.selectorMinute);
+    Handlebars.registerPartial("tickAnimation", templates.tickAnimation);
+    Handlebars.registerPartial("loadingAnimation", templates.loadingAnimation);
     Handlebars.registerHelper('select', function (value, options) {
         var $el = $('<select />').html(options.fn(this));
         $el.find('[value="' + value + '"]').attr({'selected': 'selected'});
