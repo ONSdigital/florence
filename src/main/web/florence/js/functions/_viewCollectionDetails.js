@@ -31,7 +31,8 @@ function viewCollectionDetails(collectionId) {
     var deleteButton = $('#collection-delete');
     if (collection.inProgress.length === 0
       && collection.complete.length === 0
-      && collection.reviewed.length === 0) {
+      && collection.reviewed.length === 0
+      && collection.timeseriesImportFiles.length === 0) {
         deleteButton.show().click(function () {
           swal ({
             title: "Warning",
@@ -66,7 +67,8 @@ function viewCollectionDetails(collectionId) {
     var approve = $('.btn-collection-approve');
     if (collection.inProgress.length === 0
       && collection.complete.length === 0
-      && collection.reviewed.length > 0) {
+      && (collection.reviewed.length > 0
+      || collection.timeseriesImportFiles.length > 0)) {
       approve.show().one('click', function () {
         postApproveCollection(collection.id);
         swal ({
