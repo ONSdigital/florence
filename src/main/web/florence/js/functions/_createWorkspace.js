@@ -88,6 +88,8 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         } else if (menuItem.is('#edit')) {
           Florence.globalVars.pagePath = getPathName();
           loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
+        } else if (menuItem.is('#import')) {
+          loadImportScreen(Florence.collection.id);
         } else {
           loadBrowseScreen(collectionId);
         }
