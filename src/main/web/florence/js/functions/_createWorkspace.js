@@ -85,18 +85,20 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
             $('.nav--workspace li').removeClass('selected');
             menuItem.addClass('selected');
 
-            if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click');
-            } else if (menuItem.is('#create')) {
-                Florence.globalVars.pagePath = getPathName();
-                loadCreateScreen(Florence.globalVars.pagePath, collectionId);
-            } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPathName();
-                loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
-            } else {
-                loadBrowseScreen(collectionId);
-            }
+        if (menuItem.is('#browse')) {
+          loadBrowseScreen(collectionId, 'click');
+        } else if (menuItem.is('#create')) {
+          Florence.globalVars.pagePath = getPathName();
+          loadCreateScreen(Florence.globalVars.pagePath, collectionId);
+        } else if (menuItem.is('#edit')) {
+          Florence.globalVars.pagePath = getPathName();
+          loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
+        } else if (menuItem.is('#import')) {
+          loadImportScreen(Florence.collection.id);
+        } else {
+          loadBrowseScreen(collectionId);
         }
+      }
 
         $('#nav--workspace__welsh').on('click', function () {
             Florence.globalVars.welsh = Florence.globalVars.welsh === false ? true : false;
