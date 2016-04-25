@@ -9,7 +9,7 @@
   </ul>
 </nav>
 <div class="col col--4 workspace-menu">
-    {{> loadingAnimation size="large"}}
+    {{> loadingAnimation large=true}}
 </div>
 <section class="panel col col--7 workspace-browser">
     <div class="browser">
@@ -20,7 +20,7 @@
             <button class="browser-btn-mobile">Mobile</button>
         </div>
         <iframe id="iframe" src="{{this}}">
-            {{> loadingAnimation size="large"}}
+            {{> loadingAnimation large=true }}
         </iframe>
     </div>
 </section>

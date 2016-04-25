@@ -252,11 +252,18 @@
 .loader--large {
     border-width: 5px;
 }
-
 .loader--large,
 .loader--large:after {
     width: 42px;
     height: 42px;
+}
+
+// Dark loader animation
+.loader--dark {
+    border-left-color: $pickled-bluewood;
+    border-top-color: rgba(52,	59,	89, 0.2);
+    border-right-color: rgba(52, 59, 89, 0.2);
+    border-bottom-color: rgba(52, 59, 89, 0.2);
 }
 
 @-webkit-keyframes load8 {
