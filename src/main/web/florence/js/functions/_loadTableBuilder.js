@@ -2,30 +2,27 @@ function loadTableBuilder(pageData, onSave, table) {
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
   var previewTable;
+  var path;
+  var xlsPath;
+  var htmlPath;
+  var latestVersionUri;
 
   $('body').append(html);
 
-  //var firstLineTitle;
-  //var checkBoxStatus = function () {
-  //  if (!table || !table.firstLineTitle || table.firstLineTitle === "false" || table.firstLineTitle === false) {
-  //    return false;
-  //  }
-  //  return true;
-  //};
-  //$("#isTitle input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-  //  firstLineTitle = $("#isTitle input[type='checkbox']").prop('checked') ? true : false;
-  //});
-
   if (table) {
+    latestVersionUri = table.uri;
     renderTable(table.uri);
+     $('#table-metadata-form').show();
   }
 
+  /** Upload a XLS file **/
   $('#upload-table-form').submit(function (event) {
     var formData = new FormData($(this)[0]);
     previewTable = buildJsonObjectFromForm(previewTable);
-    var path = previewTable.uri;
-    var xlsPath = path + ".xls";
-    var htmlPath = path + ".html";
+    path = previewTable.uri;
+    xlsPath = path + ".xls";
+    htmlPath = path + ".html";
+    latestVersionUri = path;
 
     // send xls file to zebedee
     $.ajax({
@@ -40,35 +37,143 @@ function loadTableBuilder(pageData, onSave, table) {
         createTableHtml(previewTable);
       }
     });
-
-    function createTableHtml(previewTable) {
-      $.ajax({
-        url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath, // + "&firstLineTitle=" + previewTable.firstLineTitle + "&headerRows=" + previewTable.headerRows,
-        type: 'POST',
-        success: function (html) {
-          saveTableJson(previewTable, success = function () {
-            saveTableHtml(html);
-          });
-        }
-      });
-    }
-
-    function saveTableHtml(data) {
-      $.ajax({
-        url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath + "&validateJson=false", // do not validate json as its html content.
-        type: 'POST',
-        data: data,
-        processData: false,
-        success: function () {
-          previewTable.files.push({type: 'download-xls', filename: previewTable.filename + '.xls'});
-          previewTable.files.push({type: 'html', filename: previewTable.filename + '.html'});
-          renderTable(path);
-        }
-      });
-    }
-
     return false;
   });
+
+  /** Add exclusions to xls file. **/
+  $('#table-metadata-form').submit(function (event) {
+    event.preventDefault();
+    previewTable = buildJsonObjectFromForm(previewTable);
+    console.log("latestVersionUri: " + latestVersionUri);
+    var tableMetadataUrl = "/zebedee/tablemetadata/" + Florence.collection.id + "?currentUri=" + latestVersionUri + "&newUri=" + previewTable.uri + "&validateJson=false";
+
+    if ($("#rows-excluded").val()) {
+      tableMetadataUrl = tableMetadataUrl + "&rowsExcluded=" + $("#rows-excluded").val();
+    }
+
+    $.ajax({
+      url: tableMetadataUrl,
+      type: 'PUT',
+      data: null,
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function () {
+        updateExcludedRowsWithSavedValues(tableMetadataUrl);
+        $('#table-metadata-form').slideDown("slow");
+        addFilesToPreview();
+        renderTable(previewTable.uri);
+      },
+      error: function (response) {
+        updateExcludedRowsWithSavedValues();
+        handleApiError(response);
+      }
+    });
+  });
+
+  /** Delete / Cancel **/
+  $('.btn-table-builder-cancel').on('click', function () {
+    $('.table-builder').stop().fadeOut(200).remove();
+
+    // delete the preview table
+    if (previewTable) {
+      //deleteContent(Florence.collection.id, previewTable.uri + ".json");
+      $(previewTable.files).each(function (index, file) {
+        var fileToDelete = pageUrl + '/' + file.filename;
+        deleteContent(Florence.collection.id, fileToDelete,
+          onSuccess = function () {
+            console.log("deleted table file: " + fileToDelete);
+          });
+      });
+    }
+  });
+
+  /** Save **/
+  $('.btn-table-builder-create').on('click', function () {
+    // if uploaded = true rename the preview table
+    previewTable = buildJsonObjectFromForm(previewTable);
+    var tableExists = false;
+
+    if (table) {
+      tableExists = true;
+      table = mapJsonValues(previewTable, table);
+    } else { // just keep the preview files
+      table = previewTable;
+      addTableToPageJson(table);
+    }
+
+    saveTableJson(table, success=function() {
+      if (tableExists) {
+        console.log(previewTable.files);
+        // if a table exists, rename the preview to its name
+        $(previewTable.files).each(function (index, file) {
+          var fromFile = pageUrl + '/' + file.filename;
+          var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
+          console.log("moving... table file: " + fromFile + " to: " + toFile);
+          renameContent(Florence.collection.id, fromFile, toFile,
+            onSuccess = function () {
+              console.log("Moved table file: " + fromFile + " to: " + toFile);
+            });
+        });
+      }
+
+      if (onSave) {
+        onSave(table.filename, '<ons-table path="' + table.filename + '" />');
+      }
+      $('.table-builder').stop().fadeOut(200).remove();
+    });
+  });
+
+  /** Create HTML **/
+  function createTableHtml(previewTable) {
+    $.ajax({
+      url: "/zebedee/table/" + Florence.collection.id + "?uri=" + xlsPath,
+      type: 'POST',
+      success: function (html) {
+        saveTableJson(previewTable, success = function () {
+          saveTableHtml(html);
+        });
+      }
+    });
+  }
+
+  /** Save HTML **/
+  function saveTableHtml(data) {
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + htmlPath + "&validateJson=false", // do not validate json as its html content.
+      type: 'POST',
+      data: data,
+      processData: false,
+      success: function () {
+        addFilesToPreview();
+        renderTable(path);
+        $('#table-metadata-form').slideDown("slow");
+      }
+    });
+  }
+
+  function addFilesToPreview() {
+    previewTable.files.push({type: 'download-xls', filename: previewTable.filename + '.xls'});
+    previewTable.files.push({type: 'html', filename: previewTable.filename + '.html'});
+    previewTable.files.push({type: 'json', filename: previewTable.filename + '.json'});
+  }
+
+  function updateExcludedRowsWithSavedValues(tableMetadataUrl) {
+      $.ajax({
+        url: tableMetadataUrl + ".json",
+        type: 'GET',
+        dataType: 'json',
+        success: function (json) {
+          var currentValues = "";
+          json.excludeRows.forEach( function(item) {
+              currentValues = item + ", " + currentValues;
+          });
+          $("#rows-excluded").val("");
+          $("#rows-excluded").val(currentValues.substring(0, currentValues.lastIndexOf(",")));
+        }
+      });
+  }
 
   setShortcuts('#table-title');
 
@@ -86,23 +191,6 @@ function loadTableBuilder(pageData, onSave, table) {
     });
 
   }
-
-  $('.btn-table-builder-cancel').on('click', function () {
-
-    $('.table-builder').stop().fadeOut(200).remove();
-
-    // delete the preview table
-    if (previewTable) {
-      deleteContent(Florence.collection.id, previewTable.uri + ".json");
-      $(previewTable.files).each(function (index, file) {
-        var fileToDelete = pageUrl + '/' + file.filename;
-        deleteContent(Florence.collection.id, fileToDelete,
-          onSuccess = function () {
-            console.log("deleted table file: " + fileToDelete);
-          });
-      });
-    }
-  });
 
 
   function saveTableJson(table, success) {
@@ -141,43 +229,6 @@ function loadTableBuilder(pageData, onSave, table) {
     pageData.tables.push({title: table.title, filename: table.filename, uri: table.uri});
   }
 
-  $('.btn-table-builder-create').on('click', function () {
-
-    // if uploaded = true rename the preview table
-    previewTable = buildJsonObjectFromForm(previewTable);
-
-    var tableExists = false;
-    if (table) {
-      tableExists = true;
-      table = mapJsonValues(previewTable, table);
-    } else { // just keep the preview files
-      table = previewTable;
-      addTableToPageJson(table);
-    }
-
-    saveTableJson(table, success=function() {
-
-      if (tableExists) {
-        // if a table exists, rename the preview to its name
-        $(previewTable.files).each(function (index, file) {
-          var fromFile = pageUrl + '/' + file.filename;
-          var toFile = pageUrl + '/' + file.filename.replace(previewTable.filename, table.filename);
-          console.log("moving... table file: " + fromFile + " to: " + toFile);
-          renameContent(Florence.collection.id, fromFile, toFile,
-            onSuccess = function () {
-              console.log("Moved table file: " + fromFile + " to: " + toFile);
-            });
-        });
-        deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
-      }
-
-      if (onSave) {
-        onSave(table.filename, '<ons-table path="' + table.filename + '" />');
-      }
-      $('.table-builder').stop().fadeOut(200).remove();
-    });
-  });
-
   function mapJsonValues(from, to) {
     to = buildJsonObjectFromForm(to);
 
@@ -201,7 +252,6 @@ function loadTableBuilder(pageData, onSave, table) {
     return to;
   }
 
-
   function buildJsonObjectFromForm(table) {
     if (!table) {
       table = {};
@@ -210,8 +260,6 @@ function loadTableBuilder(pageData, onSave, table) {
     table.type = 'table';
     table.title = $('#table-title').val();
     table.filename = table.filename ? table.filename : StringUtils.randomId();
-    //table.firstLineTitle = $("#isTitle input[type='checkbox']").prop('checked') ? true : false;
-    //table.headerRows = $('#table-headers').val();
 
     table.uri = pageUrl + "/" + table.filename;
 
@@ -223,6 +271,14 @@ function loadTableBuilder(pageData, onSave, table) {
       table.files = [];
     }
 
+    table.excludeRows = [];
+
+    if ( $("#rows-excluded").val() ) {
+        var rowIds = $("#rows-excluded").val().split(",");
+        rowIds.forEach( function(item) {
+            table.excludeRows.push(item.trim());
+        });
+    }
     return table;
   }
 }
