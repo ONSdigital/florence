@@ -230,6 +230,14 @@
         height: 63px;
         background: $ship-gray;
     }
+
+    &__animation {
+        display: block;
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+        margin: 0 auto;
+    }
 }
 
 .team-select {
