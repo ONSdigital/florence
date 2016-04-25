@@ -121,7 +121,8 @@
         input {
             margin-left: 25%;
             width: 75%;
-            //border-radius:
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
         }
 
         input.full {
