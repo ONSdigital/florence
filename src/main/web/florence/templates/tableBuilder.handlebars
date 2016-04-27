@@ -14,11 +14,11 @@
       </form>
 
         <form id="table-modify-form" style="display: none; padding-top: 10px;">
-            <div><i>Submit row numbers (comma separated) below to manually modify the generated HTML table.</i></div>
-            <div><b>Note: </b><i>Row indices start from 0.</i></div>
-            <input type="text" id="rows-excluded" placeholder="[Exclude Rows]: 0, 1" value="{{#comma_separated_list modifications.rowsExcluded}}{{this}}{{/comma_separated_list}}"/>
-            <input type="text" id="header-rows"  placeholder="[Header Rows]: 0, 1" value="{{#comma_separated_list modifications.headerRows}}{{this}}{{/comma_separated_list}}"/>
-            <input type="text" id="header-columns"  placeholder="[Header Columns]: 0, 1" value="{{#comma_separated_list modifications.headerColumns}}{{this}}{{/comma_separated_list}}"/>
+            <div>Submit a comma separated list of row/column numbers to modify the generated HTML table.</div>
+            <div><b>Note: </b><i>Row indiices start from 0.</i></div>
+            <input type="text" pattern="^[\d, ]+$" id="rows-excluded" placeholder="[Exclude Rows]" value="{{#comma_separated_list modifications.rowsExcluded}}{{this}}{{/comma_separated_list}}"/>
+            <input type="text" pattern="^[\d, ]+$" id="header-rows" placeholder="[Table Header Rows]" value="{{#comma_separated_list modifications.headerRows}}{{this}}{{/comma_separated_list}}"/>
+            <input type="text" pattern="^[\d, ]+$" id="header-columns" placeholder="[Table Header Columns]" value="{{#comma_separated_list modifications.headerColumns}}{{this}}{{/comma_separated_list}}"/>
             <input type="submit" value="Preview Modifications">
         </form>
     </div>
