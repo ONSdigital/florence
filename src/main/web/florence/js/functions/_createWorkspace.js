@@ -43,26 +43,10 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         $('.workspace-menu').height($('.workspace-nav').height());
 
         document.getElementById('iframe').onload = function () {
-            // Update 'Preview URL' bar on load of the iframe for navigation around the preview
-            $('.browser-location').val(document.getElementById("iframe").contentWindow.location.href);
-            // loadBrowseScreen(collectionId, 'click');
-
-            // Allow click events inside the iframe
+            $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
             var iframeEvent = document.getElementById('iframe').contentWindow;
             iframeEvent.addEventListener('click', Florence.Handler, true);
         };
-
-        // Detect focus on iframe and bind onload event to update browse tree
-        focus();
-        var iframeListener = addEventListener('blur', function() {
-            if (document.activeElement === document.getElementById('iframe')) {
-                document.getElementById('iframe').onload = function () {
-                    loadBrowseScreen(collectionId, 'click');
-                }
-            }
-            removeEventListener('blur', iframeListener);
-        });
-
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -101,20 +85,20 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
             $('.nav--workspace li').removeClass('selected');
             menuItem.addClass('selected');
 
-            if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click');
-            } else if (menuItem.is('#create')) {
-                Florence.globalVars.pagePath = getPathName();
-                loadCreateScreen(Florence.globalVars.pagePath, collectionId);
-            } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPathName();
-                loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
-            } else if (menuItem.is('#import')) {
-                loadImportScreen(Florence.collection.id);
-            } else {
-                loadBrowseScreen(collectionId);
-            }
+        if (menuItem.is('#browse')) {
+          loadBrowseScreen(collectionId, 'click');
+        } else if (menuItem.is('#create')) {
+          Florence.globalVars.pagePath = getPathName();
+          loadCreateScreen(Florence.globalVars.pagePath, collectionId);
+        } else if (menuItem.is('#edit')) {
+          Florence.globalVars.pagePath = getPathName();
+          loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
+        } else if (menuItem.is('#import')) {
+          loadImportScreen(Florence.collection.id);
+        } else {
+          loadBrowseScreen(collectionId);
         }
+      }
 
         $('#nav--workspace__welsh').on('click', function () {
             Florence.globalVars.welsh = Florence.globalVars.welsh === false ? true : false;
@@ -148,21 +132,9 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         } else if (menu === 'browse') {
             $('.nav--workspace li').removeClass('selected');
             $("#browse").addClass('selected');
-            // loadBrowseScreen(collectionId, 'click');
-        // }
+            loadBrowseScreen(collectionId, 'click');
         }
+        //};
     }
-}
-
-function listenIframeLoad() {
-    document.getElementById('iframe').onload = function () {
-        // Update 'Preview URL' bar on load of the iframe for navigation around the preview
-        $('.browser-location').val(document.getElementById("iframe").contentWindow.location.href);
-        loadBrowseScreen(collectionId, 'click');
-
-        // Allow click events inside the iframe
-        var iframeEvent = document.getElementById('iframe').contentWindow;
-        iframeEvent.addEventListener('click', Florence.Handler, true);
-    };
 }
 
