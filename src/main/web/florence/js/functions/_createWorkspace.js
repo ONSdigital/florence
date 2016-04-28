@@ -154,6 +154,7 @@ function processPreviewLoad() {
         var iframe = $('#iframe'); //iframe element in DOM, check length later to ensure it's on the page before continuing
         if (event.data == "load" && iframe.length) {
             processPageChange(); // Update browse tree
+            browseScrollPos() // Update browse tree scroll position
             updateBrowserURL(); // Update browser preview URL
         }
     });
@@ -178,6 +179,21 @@ function processPageChange() {
             return false;
         }
     });
+}
+
+function browseScrollPos() {
+    // Update the scroll position of the browse tree if selected item off screen
+
+    var $selectedItem = $('.workspace-browse li.selected'),
+        $browseTree = $('.workspace-browse');
+
+    var selectedTop = parseInt($selectedItem.offset().top),
+        selectedBottom = selectedTop + parseInt($selectedItem.height()),
+        browseTop = parseInt($browseTree.offset().top),
+        browseBottom = browseTop + parseInt($browseTree.height());
+    if (selectedTop < browseTop || selectedBottom > browseBottom ) {
+        $browseTree.scrollTop(selectedTop);
+    }
 }
 
 function updateBrowserURL() {

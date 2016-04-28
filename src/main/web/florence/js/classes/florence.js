@@ -60,8 +60,6 @@ Florence.Handler = function (e) {
             e.preventDefault();
             return false;
         }
-    } else {
-        processPreviewLoad();
     }
 };
 
