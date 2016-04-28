@@ -42,11 +42,11 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         $('.loader').css('margin-top', '84px');
         $('.workspace-menu').height($('.workspace-nav').height());
 
-        document.getElementById('iframe').onload = function () {
-            $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
-            var iframeEvent = document.getElementById('iframe').contentWindow;
-            iframeEvent.addEventListener('click', Florence.Handler, true);
-        };
+        // Tasks bound to iframe onload event
+        onIframeLoad();
+
+        // Update preview URL correctly
+        updateBrowserURL();
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -136,5 +136,42 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         }
         //};
     }
+}
+
+function onIframeLoad() {
+    window.addEventListener( "message", function(event){
+        if (event.data == "load" && event.source != "undefined") {
+            processPageChange();
+            updateBrowserURL();
+        }
+    });
+
+    // document.getElementById('iframe').onload = function () {
+    //     // If browse tree still hasn't update by the time iframe is loaded then update it
+    //     processPageChange();
+    //
+    //     $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
+    //     var iframeEvent = document.getElementById('iframe').contentWindow;
+    //     iframeEvent.addEventListener('click', Florence.Handler, true);
+    // };
+}
+
+function processPageChange() {
+    checkForPageChanged(function (newUrl) {
+        var safeUrl = checkPathSlashes(newUrl);
+        Florence.globalVars.pagePath = safeUrl;
+        if ($('.workspace-edit').length) {
+            loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
+            return false;
+        }
+        else if ($('.workspace-browse').length) {
+            treeNodeSelect(safeUrl);
+            return false;
+        }
+    });
+}
+
+function updateBrowserURL() {
+    $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
 }
 
