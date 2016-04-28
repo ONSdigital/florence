@@ -60,16 +60,7 @@ Florence.Handler = function (e) {
 
   function processPreviewClick() {
     setTimeout(function () {
-      checkForPageChanged(function (newUrl) {
-        var safeUrl = checkPathSlashes(newUrl);
-        Florence.globalVars.pagePath = safeUrl;
-        if ($('.workspace-edit').length) {
-          loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
-        }
-        else if ($('.workspace-browse').length) {
-          treeNodeSelect(safeUrl);
-        }
-      });
+        processPageChange();
     }, 200);
   }
 };
