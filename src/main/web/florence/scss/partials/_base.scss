@@ -412,6 +412,8 @@ $panel-height-2-top-nav: 756px;
     }
 
     &-list {
+        position: relative;
+
         li {
             list-style: none;
             margin: $lineheight 0;
