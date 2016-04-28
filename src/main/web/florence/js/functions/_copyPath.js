@@ -16,7 +16,6 @@ function initialiseClipboard() {
     // Remove any existing clipboard variables
     if (clipboard != null) {
         console.log("Destroy clipboard");
-        clipboard.destroy();
     }
 
     // Fire clipboard initialisation
