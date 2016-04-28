@@ -19,13 +19,16 @@ function loadTableBuilder(pageData, onSave, table) {
     var formData = new FormData($(this)[0]);
     previewTable = buildJsonObjectFromForm(previewTable);
 
-    if (formData) {
+    if ( $("#files").val() ) {
+      console.log("has data");
       var errors = validateTableModifications(previewTable);
       if (!errors.exist()) {
         uploadFile(previewTable, formData);
       } else {
         errors.show();
       }
+    } else {
+        sweetAlert("Validation error", "Please select a .xls file to upload.");
     }
   });
 
