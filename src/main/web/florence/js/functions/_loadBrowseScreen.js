@@ -14,32 +14,33 @@ function loadBrowseScreen(collectionId, click) {
             //page-list
             $('.page-item').click(function () {
 
-                var uri = $(this).closest('li').attr('data-url');
+                var $this = $(this),
+                    uri = $this.closest('li').attr('data-url');
 
                 if (uri) {
                     var newURL = baseURL + uri;
 
                     $('.page-list li').removeClass('selected');
-                    $(this).parent('li').addClass('selected');
+                    $this.parent('li').addClass('selected');
 
                     $('.page-options').hide();
-                    $(this).next('.page-options').show();
+                    $this.next('.page-options').show();
 
                     //change iframe location
                     browserContent.location.href = newURL;
-                    Florence.globalVars.pagePath = uri;
-                    $('.browser-location').val(newURL);
+                    // Florence.globalVars.pagePath = uri;
+                    // $('.browser-location').val(newURL);
                 }
 
                 //page-list-tree
                 $('.tree-nav-holder ul').removeClass('active');
-                $(this).parents('ul').addClass('active');
-                $(this).closest('li').children('ul').addClass('active');
+                $this.parents('ul').addClass('active');
+                $this.closest('li').children('ul').addClass('active');
 
-                $(this).closest('li').find('.page-item--directory').removeClass('page-item--directory--selected');
-                if ($(this).hasClass('page-item--directory')) {
+                $this.closest('li').find('.page-item--directory').removeClass('page-item--directory--selected');
+                if ($this.hasClass('page-item--directory')) {
                     $('.page-item--directory').removeClass('page-item--directory--selected');
-                    $(this).addClass('page-item--directory--selected');
+                    $this.addClass('page-item--directory--selected');
                 }
             });
 
