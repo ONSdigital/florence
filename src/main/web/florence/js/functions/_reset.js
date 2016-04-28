@@ -2,7 +2,6 @@ function resetPage() {
     // Prevent default behaviour of all form submits throught Florence
     $(document).on('submit', 'form', function(e) {
         e.preventDefault();
-        console.log('Form submit stopped on: ', e);
     });
 
     // Fix for modal form submits not being detected
