@@ -154,7 +154,7 @@ function processPreviewLoad() {
         var iframe = $('#iframe'); //iframe element in DOM, check length later to ensure it's on the page before continuing
         if (event.data == "load" && iframe.length) {
             processPageChange(); // Update browse tree
-            browseScrollPos() // Update browse tree scroll position
+            browseScrollPos(); // Update browse tree scroll position
             updateBrowserURL(); // Update browser preview URL
         }
     });
@@ -183,6 +183,8 @@ function processPageChange() {
 
 function browseScrollPos() {
     // Update the scroll position of the browse tree if selected item off screen
+
+    console.log('scroll');
 
     var $selectedItem = $('.workspace-browse li.selected'),
         $browseTree = $('.workspace-browse');

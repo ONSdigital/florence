@@ -42,6 +42,9 @@ function loadBrowseScreen(collectionId, click) {
                     $('.page-item--directory').removeClass('page-item--directory--selected');
                     $this.addClass('page-item--directory--selected');
                 }
+
+                // Update browse tree scroll position
+                browseScrollPos();
             });
 
             if (click) {
