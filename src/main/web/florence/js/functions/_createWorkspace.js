@@ -140,20 +140,13 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
 
 function onIframeLoad() {
     window.addEventListener( "message", function(event){
-        if (event.data == "load" && event.source != "undefined") {
+        var iframe = $('#iframe'); //iframe element in DOM, check length later to ensure it's on the page before continuing
+        if (event.data == "load" && iframe.length) {
+            console.log(event);
             processPageChange();
             updateBrowserURL();
         }
     });
-
-    // document.getElementById('iframe').onload = function () {
-    //     // If browse tree still hasn't update by the time iframe is loaded then update it
-    //     processPageChange();
-    //
-    //     $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
-    //     var iframeEvent = document.getElementById('iframe').contentWindow;
-    //     iframeEvent.addEventListener('click', Florence.Handler, true);
-    // };
 }
 
 function processPageChange() {
