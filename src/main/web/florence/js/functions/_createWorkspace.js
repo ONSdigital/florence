@@ -38,14 +38,18 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
         var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
         $('.section').html(workSpace);
 
+        document.getElementById('iframe').onload = function () {
+            detectPreviewClick();
+        };
+
         // Set browse panel to full height to show loading icon
         $('.loader').css('margin-top', '84px');
         $('.workspace-menu').height($('.workspace-nav').height());
 
-        // Tasks bound to iframe onload event
-        onIframeLoad();
+        // Detect changes to preview and handle accordingly
+        processPreviewLoad();
 
-        // Update preview URL correctly
+        // Update preview URL on initial load of workspace
         updateBrowserURL();
 
         if (Florence.globalVars.welsh !== true) {
@@ -138,14 +142,26 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     }
 }
 
-function onIframeLoad() {
-    window.addEventListener( "message", function(event){
+
+function detectPreviewClick() {
+    // Detect whenever there is a clickon the preview and then passes onto global Florence.Handler to deal with click
+    var iframeEvent = document.getElementById('iframe').contentWindow;
+    iframeEvent.addEventListener('click', Florence.Handler, true);
+}
+
+function processPreviewLoad() {
+    onIframeLoad(function(event) {
         var iframe = $('#iframe'); //iframe element in DOM, check length later to ensure it's on the page before continuing
         if (event.data == "load" && iframe.length) {
-            console.log(event);
-            processPageChange();
-            updateBrowserURL();
+            processPageChange(); // Update browse tree
+            updateBrowserURL(); // Update browser preview URL
         }
+    });
+}
+
+function onIframeLoad(runFunction) {
+    window.addEventListener( "message", function(event){
+        runFunction(event);
     });
 }
 
