@@ -35,7 +35,8 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
   function doRename() {
     // Does it have edition?
     if (data.description.edition) {
-      moveContentWithEditionInUri();
+      // CH 29/04/2016 disabling the URI change of content with an edition as it breaks the link of previous editions
+      //moveContentWithEditionInUri();
     } else if (data.type === 'static_adhoc') {
       moveAdHoc();
     } else {
