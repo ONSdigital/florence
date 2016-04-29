@@ -7,7 +7,7 @@
  */
 function checkRenameUri(collectionId, data, renameUri, onSave) {
 
-  if (renameUri && !data.description.language) {   // It will not change welsh url
+  if (renameUri && !data.description.language && !data.description.edition) {   // It will not change welsh url + do not rename content with edition.
     askUserIfTheyAreSure();
   } else {
     onSave(collectionId, data.uri, JSON.stringify(data));
