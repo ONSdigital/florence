@@ -199,10 +199,11 @@ function browseScrollPos() {
     var selectedTop = $selectedItem.offset().top,
         selectedBottom = selectedTop + $selectedItem.height(),
         browseTop = $browseTree.offset().top,
-        browseBottom = browseTop + $browseTree.height();
+        browseBottom = browseTop + $browseTree.height(),
+        navHeight = $('.nav').height();
 
     if (selectedTop < browseTop || selectedBottom > browseBottom ) {
-        var newPos = selectedTop - 63;
+        var newPos = selectedTop - navHeight;
         $browseTree.scrollTop(newPos);
     }
 }
