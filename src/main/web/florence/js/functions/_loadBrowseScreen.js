@@ -5,15 +5,17 @@ function loadBrowseScreen(collectionId, click) {
         dataType: 'json',
         type: 'GET',
         success: function (response) {
+
             var browserContent = $('#iframe')[0].contentWindow;
             var baseURL = Florence.tredegarBaseUrl;
             var html = templates.workBrowse(response);
-            $('.workspace-menu').html(html);
+            var browseTree = document.getElementById('browse-tree');
+            browseTree.innerHTML = html;
+
             $('.workspace-browse').css("overflow", "scroll");
 
             //page-list
             $('.page-item').click(function () {
-
                 var $this = $(this),
                     uri = $this.closest('li').attr('data-url');
 
@@ -23,13 +25,8 @@ function loadBrowseScreen(collectionId, click) {
                     $('.page-list li').removeClass('selected');
                     $this.parent('li').addClass('selected');
 
-                    $('.page-options').hide();
-                    $this.next('.page-options').show();
-
                     //change iframe location
                     browserContent.location.href = newURL;
-                    // Florence.globalVars.pagePath = uri;
-                    // $('.browser-location').val(newURL);
                 }
 
                 //page-list-tree
@@ -50,7 +47,7 @@ function loadBrowseScreen(collectionId, click) {
             if (click) {
                 var url = getPathName();
                 if (url === "/blank") {
-                    setTimeout(treeNodeSelect('/'), 500);
+                    treeNodeSelect('/');
                 } else {
                     treeNodeSelect(url);
                 }
