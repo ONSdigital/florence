@@ -537,6 +537,10 @@ $panel-height-2-top-nav: 756px;
                     font-weight: 400;
                     border: 0;
 
+                    & > .page-options {
+                        display: block;
+                    }
+
                     /*works*/
                     /*&:after {
                         content: '';
