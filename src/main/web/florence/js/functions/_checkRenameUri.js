@@ -7,8 +7,8 @@
  */
 function checkRenameUri(collectionId, data, renameUri, onSave) {
 
-  if (renameUri && !data.description.language) {   // It will not change welsh url
-    askUserIfTheyAreSure();
+  if (renameUri && !data.description.language && !data.description.edition) {   // It will not change welsh url + do not rename content with edition.
+    doRename();// askUserIfTheyAreSure();
   } else {
     onSave(collectionId, data.uri, JSON.stringify(data));
   }
@@ -35,7 +35,8 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
   function doRename() {
     // Does it have edition?
     if (data.description.edition) {
-      moveContentWithEditionInUri();
+      // CH 29/04/2016 disabling the URI change of content with an edition as it breaks the link of previous editions
+      //moveContentWithEditionInUri();
     } else if (data.type === 'static_adhoc') {
       moveAdHoc();
     } else {
