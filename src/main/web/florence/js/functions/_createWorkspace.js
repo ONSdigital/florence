@@ -142,59 +142,68 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
     }
 }
 
-
+// Bind click event to iframe element and run global Florence.Handler
 function detectPreviewClick() {
-    // Detect whenever there is a clickon the preview and then passes onto global Florence.Handler to deal with click
     var iframeEvent = document.getElementById('iframe').contentWindow;
     iframeEvent.addEventListener('click', Florence.Handler, true);
 }
 
+// Full collection of functions to run on iframe load
 function processPreviewLoad() {
     onIframeLoad(function(event) {
-        var iframe = $('#iframe'); //iframe element in DOM, check length later to ensure it's on the page before continuing
-        if (event.data == "load" && iframe.length) {
+        var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
+            $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
+
+        if (event.data == "load" && $iframe.length) {
             processPageChange(); // Update browse tree
-            browseScrollPos(); // Update browse tree scroll position
             updateBrowserURL(); // Update browser preview URL
+
+            if ($browse.hasClass('selected')) {
+                browseScrollPos(); // Update browse tree scroll position
+            }
         }
     });
 }
 
+// Reusable iframe startload event - uses message sent up form babbage on window.load
 function onIframeLoad(runFunction) {
     window.addEventListener( "message", function(event){
         runFunction(event);
     });
 }
 
+// Check whether page URL is different and then load editor or update browse tree
 function processPageChange() {
     checkForPageChanged(function (newUrl) {
-        var safeUrl = checkPathSlashes(newUrl);
+        var safeUrl = checkPathSlashes(newUrl),
+            selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
         Florence.globalVars.pagePath = safeUrl;
+
         if ($('.workspace-edit').length) {
             loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
             return false;
         }
-        else if ($('.workspace-browse').length) {
+        else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
+            // Only update browse tree of on 'browse' tab and preview and active node don't already match
             treeNodeSelect(safeUrl);
             return false;
         }
     });
 }
 
+// Update the scroll position of the browse tree if selected item off screen
 function browseScrollPos() {
-    // Update the scroll position of the browse tree if selected item off screen
-
-    console.log('scroll');
-
     var $selectedItem = $('.workspace-browse li.selected'),
         $browseTree = $('.workspace-browse');
 
-    var selectedTop = parseInt($selectedItem.offset().top),
-        selectedBottom = selectedTop + parseInt($selectedItem.height()),
-        browseTop = parseInt($browseTree.offset().top),
-        browseBottom = browseTop + parseInt($browseTree.height());
+    var selectedTop = $selectedItem.offset().top,
+        selectedBottom = selectedTop + $selectedItem.height(),
+        browseTop = $browseTree.offset().top,
+        browseBottom = browseTop + $browseTree.height();
+
     if (selectedTop < browseTop || selectedBottom > browseBottom ) {
-        $browseTree.scrollTop(selectedTop);
+        var newPos = selectedTop - 63;
+        $browseTree.scrollTop(newPos);
     }
 }
 
