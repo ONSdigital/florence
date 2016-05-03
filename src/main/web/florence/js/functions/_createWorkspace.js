@@ -89,20 +89,20 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
             $('.nav--workspace li').removeClass('selected');
             menuItem.addClass('selected');
 
-        if (menuItem.is('#browse')) {
-          loadBrowseScreen(collectionId, 'click');
-        } else if (menuItem.is('#create')) {
-          Florence.globalVars.pagePath = getPathName();
-          loadCreateScreen(Florence.globalVars.pagePath, collectionId);
-        } else if (menuItem.is('#edit')) {
-          Florence.globalVars.pagePath = getPathName();
-          loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
-        } else if (menuItem.is('#import')) {
-          loadImportScreen(Florence.collection.id);
-        } else {
-          loadBrowseScreen(collectionId);
+            if (menuItem.is('#browse')) {
+                loadBrowseScreen(collectionId, 'click');
+            } else if (menuItem.is('#create')) {
+                Florence.globalVars.pagePath = getPathName();
+                loadCreateScreen(Florence.globalVars.pagePath, collectionId);
+            } else if (menuItem.is('#edit')) {
+                Florence.globalVars.pagePath = getPathName();
+                loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
+            } else if (menuItem.is('#import')) {
+                loadImportScreen(Florence.collection.id);
+            } else {
+                loadBrowseScreen(collectionId);
+            }
         }
-      }
 
         $('#nav--workspace__welsh').on('click', function () {
             Florence.globalVars.welsh = Florence.globalVars.welsh === false ? true : false;
@@ -150,7 +150,7 @@ function detectPreviewClick() {
 
 // Full collection of functions to run on iframe load
 function processPreviewLoad() {
-    onIframeLoad(function(event) {
+    onIframeLoad(function (event) {
         var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
             $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
 
@@ -167,7 +167,7 @@ function processPreviewLoad() {
 
 // Reusable iframe startload event - uses message sent up form babbage on window.load
 function onIframeLoad(runFunction) {
-    window.addEventListener( "message", function(event){
+    window.addEventListener("message", function (event) {
         runFunction(event);
     });
 }
@@ -202,7 +202,7 @@ function browseScrollPos() {
         browseBottom = browseTop + $browseTree.height(),
         navHeight = $('.nav').height();
 
-    if (selectedTop < browseTop || selectedBottom > browseBottom ) {
+    if (selectedTop < browseTop || selectedBottom > browseBottom) {
         var newPos = selectedTop - navHeight;
         $browseTree.scrollTop(newPos);
     }
