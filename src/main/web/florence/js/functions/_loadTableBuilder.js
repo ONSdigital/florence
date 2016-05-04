@@ -5,7 +5,7 @@ function loadTableBuilder(pageData, onSave, table) {
   var path;
   var xlsPath;
   var htmlPath;
-  var masterTable = table;
+  var currentTable = table;
 
   $('body').append(html);
 
@@ -20,7 +20,6 @@ function loadTableBuilder(pageData, onSave, table) {
     previewTable = buildJsonObjectFromForm(previewTable);
 
     if ( $("#files").val() ) {
-      console.log("has data");
       var errors = validateTableModifications(previewTable);
       if (!errors.exist()) {
         uploadFile(previewTable, formData);
@@ -51,6 +50,7 @@ function loadTableBuilder(pageData, onSave, table) {
         createTableHtml(previewTable);
       }
     });
+    currentTable = previewTable;
     $('#table-modify-form').show();
     return false;
   }
@@ -174,7 +174,7 @@ function loadTableBuilder(pageData, onSave, table) {
 
   /** Post the modify table form. **/
   function postModifyTableForm(tableData) {
-    var currentUri = masterTable ? masterTable.uri : tableData.uri;
+    var currentUri = currentTable ? currentTable.uri : tableData.uri;
     var tableMetadataUrl = "/zebedee/modifytable/" + Florence.collection.id + "?currentUri=" + currentUri + "&newUri=" + tableData.uri + "&validateJson=false";
 
     $.ajax({
