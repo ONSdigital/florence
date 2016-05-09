@@ -1,7 +1,8 @@
 .nav {
     &--workspace {
         background-color: transparent;
-        height: auto;
+        height: 100%;
+        //height: auto;
         text-align: left;
 
         li {
@@ -41,6 +42,14 @@
                     border-bottom: 10px solid transparent;
                     border-right: 10px solid $quill-gray;
                 }
+            }
+        }
+
+        &__import {
+            position: absolute;
+            top: ($lineheight * 23);
+            &:after {
+                display: none;
             }
         }
 
