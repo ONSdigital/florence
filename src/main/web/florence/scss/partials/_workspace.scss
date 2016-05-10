@@ -1,7 +1,8 @@
 .nav {
     &--workspace {
         background-color: transparent;
-        height: auto;
+        height: 100%;
+        //height: auto;
         text-align: left;
 
         li {
@@ -44,6 +45,14 @@
             }
         }
 
+        &__import {
+            position: absolute;
+            top: ($lineheight * 23);
+            &:after {
+                display: none;
+            }
+        }
+
         &__browse {
             &:after {
                 background-position: 0px -97px !important;
@@ -72,6 +81,11 @@
 
 .workspace {
 
+    &-menu {
+        background-color: $quill-gray;
+        height: 100%;
+    }
+
     &-nav {
         background-color: $pickled-bluewood;
     }
@@ -96,6 +110,7 @@
         form {
             margin-top: 0;
             padding: 0 $gutter;
+            position: relative;
         }
 
         label {
@@ -103,7 +118,7 @@
             padding-top: $lineheight / 2;
             padding-left: $gutter;
             margin-top: $lineheight;
-            width: 25%;
+            width: 23.3%;
             position: absolute;
             height: $lineheight * 2;
             background-color: $scarpa-flow;
@@ -115,6 +130,8 @@
         input {
             margin-left: 25%;
             width: 75%;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
         }
 
         input.full {
@@ -141,6 +158,10 @@
 
         p {
             margin-top: 0;
+        }
+
+        .edit-form {
+            position: unset;
         }
 
         .edit-nav {
@@ -185,6 +206,8 @@
 
             input[type="file"] {
                 float: left;
+                margin-bottom: $lineheight / 2;
+                border: 3px solid $scarpa-flow;
             }
 
             // &.active {
@@ -299,25 +322,26 @@
                 margin-left: $gutter;
                 overflow: hidden;
 
-                &:before {
-                    content: '';
-                    position: absolute;
-                    left: $gutter / 2;
-                    //top: 12px;
-                    top: $lineheight / 2;
-                    width: 30px;
-                    height: $lineheight * 2;
-                    cursor: move;
-                    background: transparent url(../img/sprite.png) no-repeat 0px -135px;
-                    background-size: 30px auto;
-                }
-
                 &--counter {
                     margin: 0 ($lineheight / 2) 0 ($lineheight / 2);
                     color: $scarpa-flow;
                     font-weight: bold;
                     font-size: 16px;
+                    position: relative;
 
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        //left: $gutter / 2;
+                        //top: 12px;
+                        left: -($gutter * 2);
+                        top: -10px;
+                        width: 30px;
+                        height: $lineheight * 2;
+                        cursor: move;
+                        background: transparent url(../img/sprite.png) no-repeat 0px -135px;
+                        background-size: 30px auto;
+                    }
                 }
 
                 input {
@@ -529,6 +553,11 @@
         font-size: 14px;
         line-height: $lineheight;
         width: 89%;
+
+        &:focus {
+            border: 0 !important;
+            outline: 0;
+        }
     }
 
     // .wmd-prompt-dialog {
@@ -796,6 +825,11 @@
     #chart {
         width: 600px;
         overflow: auto;
+    }
+
+    #chart-alt-text {
+        height: auto;
+        min-height: $lineheight * 2;
     }
 
 }
@@ -1113,5 +1147,23 @@
 
     }
 }
+
+//.team-select {
+//    &__header {
+//        padding: $lineheight 0;
+//    }
+//
+//    .user-list {
+//
+//        li {
+//            margin: 0;
+//            padding: $lineheight;
+//
+//            &:nth-child(even) {
+//                background-color: white;
+//            }
+//        }
+//    }
+//}
 
 

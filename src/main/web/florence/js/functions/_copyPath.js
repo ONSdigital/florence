@@ -13,12 +13,6 @@ function initialiseClipboard() {
         }
     });
 
-    // Remove any existing clipboard variables
-    if (clipboard != null) {
-        console.log("Destroy clipboard");
-        clipboard.destroy();
-    }
-
     // Fire clipboard initialisation
     clipboard = new Clipboard('.copy-markdown', {
         target: function(trigger) {
@@ -31,8 +25,6 @@ function initialiseClipboard() {
         setTimeout(function() {
             toggleTick(i, "hide")
         }, 2000);
-        console.log('Trigger: ', e.trigger);
-        console.log('Text: ', e.text);
         e.clearSelection();
     });
     clipboard.on('error', function(e) {

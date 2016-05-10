@@ -68,7 +68,13 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
             '</select>' +
             '</div>'
         );
-        $('#releaseDate').datepicker({dateFormat: 'dd MM yy'});
+        // $('#releaseDate').datepicker({
+        //     dateFormat: 'dd MM yy',
+        //     onSelect: function() {
+        //         $('select#hour').focus();
+        //     }
+        // });
+        creatorDatePicker();
 
         //Submits inherited and added information to JSON
         $('form').submit(function (e) {

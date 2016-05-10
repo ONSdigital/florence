@@ -5,19 +5,22 @@
     <li class="nav--workspace__browse selected" id="browse"><a href="#">Browse</a></li>
     <li class="nav--workspace__create" id="create"><a href="#">Create</a></li>
     <li class="nav--workspace__edit" id="edit"><a href="#">Edit</a></li>
+    <li class="nav--workspace__import" id="import"><a href="#">Import</a></li>
   </ul>
 </nav>
-<div class="col col--4 workspace-menu">
-    <p style="color: #f5f6f7">Loading ...</p>
+<div class="col col--4 workspace-menu" id="browse-tree">
+    {{> loadingAnimation large=true}}
 </div>
 <section class="panel col col--7 workspace-browser">
-  <div class="browser">
-    <div class="addressbar">
-      <button class="browser-btn-back">&lt;</button>
-      <button class="browser-btn-forward">&gt;</button>
-      <label for="browser-location" class="browser-location-label">Preview URL</label><input id="browser-location" class="browser-location" type="text" value="">
-      <button class="browser-btn-mobile">Mobile</button>
+    <div class="browser">
+        <div class="addressbar">
+            <button class="browser-btn-back">&lt;</button>
+            <button class="browser-btn-forward">&gt;</button>
+            <label for="browser-location" class="browser-location-label">Preview URL</label><input id="browser-location" class="browser-location" type="text" value="">
+            <button class="browser-btn-mobile">Mobile</button>
+        </div>
+        <iframe id="iframe" src="{{this}}">
+            {{> loadingAnimation large=true }}
+        </iframe>
     </div>
-    <iframe id="iframe" src="{{this}}"></iframe>
-  </div>
 </section>
