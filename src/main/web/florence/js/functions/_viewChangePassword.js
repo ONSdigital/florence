@@ -11,6 +11,8 @@ function viewChangePassword(email, authenticate) {
   
   $('body').append(templates.changePassword(viewModel));
 
+  $('.change-password-overlay__inner input:first').focus(); // Put focus on first input
+
   $('#update-password').on('click', function () {
     var oldPassword = $('#password-old').val();
     var newPassword = $('#password-new').val();
