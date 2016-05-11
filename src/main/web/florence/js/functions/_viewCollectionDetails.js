@@ -174,7 +174,7 @@ function viewCollectionDetails(collectionId) {
 
         $('.btn-collection-work-on').click(function () {
             Florence.globalVars.welsh = false;
-            createWorkspace('', collectionId, 'browse');
+            createWorkspace('', collectionId, 'browse', collection);
         });
 
         setCollectionDetailsHeight();

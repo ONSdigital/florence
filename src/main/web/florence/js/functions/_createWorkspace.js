@@ -7,7 +7,7 @@
  * @returns {boolean}
  */
 
-function createWorkspace(path, collectionId, menu, stopEventListener) {
+function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
     var safePath = '';
     $("#working-on").on('click', function () {
     }); // add event listener to mainNav
@@ -118,7 +118,7 @@ function createWorkspace(path, collectionId, menu, stopEventListener) {
             Florence.globalVars.pagePath = dest;
             $('.nav--workspace li').removeClass('selected');
             $("#create").addClass('selected');
-            loadCreateScreen(Florence.globalVars.pagePath, collectionId, type);
+            loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
 
         $('.workspace-menu').on('click', '.btn-browse-edit', function () {

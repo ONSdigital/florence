@@ -22,7 +22,8 @@ function loadCreator(parentUrl, collectionId, type) {
     } else if (type === 'compendium_landing_page') {
         $('#pagetype').val(type).change();
         loadT6Creator(collectionId, releaseDate, type, parentUrl);
-    } else {
+    }
+    else {
         $('select').off().change(function () {
             pageType = $(this).val();
             $('.edition').empty();
@@ -41,6 +42,9 @@ function loadCreator(parentUrl, collectionId, type) {
             }
             else if (pageType === 'release') {
                 loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
+            }
+            else if (pageType === 'visualisation') {
+                loadVisualisationCreator(collectionId, pageType, parentUrl);
             }
             else {
                 sweetAlert("Error", 'Page type not recognised. Contact an administrator', "error");
