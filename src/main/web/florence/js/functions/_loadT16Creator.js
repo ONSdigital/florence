@@ -78,13 +78,10 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
 
         //Submits inherited and added information to JSON
         $('form').submit(function (e) {
-            //Check for reserved words
-            if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for a title');
-                $('#pagename').val('');
+            var nameValid = validatePageName();
+            if (!nameValid) {
                 return false;
             }
-
             pageData = pageTypeDataT16(pageType);
             var publishTime = parseInt($('#hour').val()) + parseInt($('#min').val());
             var toIsoDate = $('#releaseDate').datepicker("getDate");

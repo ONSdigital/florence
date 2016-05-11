@@ -65,17 +65,14 @@ function loadT6Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
 
         $('form').submit(function (e) {
             releaseDateManual = $('#releaseDate').val();
-            //Check for reserved words
-            if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for a title');
-                $('#pagename').val('');
+
+            // Input validation
+            var nameValid = validatePageName();
+            var editionValid = validatePageName('#edition');
+            if (!nameValid || !editionValid) {
                 return false;
             }
-            if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for an edition');
-                $('#edition').val('');
-                return false;
-            }
+
             if (pageType === 'compendium_landing_page') {
                 pageData.description.edition = $('#edition').val();
             }

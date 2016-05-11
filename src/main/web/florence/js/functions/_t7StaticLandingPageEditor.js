@@ -69,7 +69,7 @@ function staticLandingPageEditor(collectionId, data) {
       $('#section-get_' + index).click(function () {
         var iframeEvent = document.getElementById('iframe').contentWindow;
         iframeEvent.removeEventListener('click', Florence.Handler, true);
-        createWorkspace(data.uri, collectionId, '', true);
+        createWorkspace(data.uri, collectionId, '', null, true);
         $('#section-get_' + index).html('Copy link').off().one('click', function () {
           var uriCheck = getPathNameTrimLast();
           var uriChecked = checkPathSlashes(uriCheck);

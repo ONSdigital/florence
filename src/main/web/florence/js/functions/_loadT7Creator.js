@@ -71,10 +71,8 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
 
         $('form').submit(function (e) {
             e.preventDefault();
-            //Check for reserved words
-            if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for a title');
-                $('#pagename').val('');
+            var nameValid = validatePageName();
+            if (!nameValid) {
                 return false;
             }
             pageData = pageTypeDataT7(pageType);

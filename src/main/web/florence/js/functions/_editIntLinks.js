@@ -124,7 +124,7 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
             $('.btn-uri-browse').off().one('click', function () {
                 var iframeEvent = document.getElementById('iframe').contentWindow;
                 iframeEvent.removeEventListener('click', Florence.Handler, true);
-                createWorkspace(data.uri, collectionId, '', true);
+                createWorkspace(data.uri, collectionId, '', null , true);
                 $('.modal').remove();
 
                 //Disable the editor

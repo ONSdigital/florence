@@ -46,10 +46,8 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
         }
 
         $('form').submit(function (e) {
-            //Check for reserved words
-            if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for a title');
-                $('#pagename').val('');
+            var nameValid = validatePageName();
+            if (!nameValid) {
                 return false;
             }
 
