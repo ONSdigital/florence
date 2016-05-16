@@ -107,7 +107,6 @@ function loadTableBuilder(pageData, onSave, table) {
     previewTable.files = [];
     previewTable.files.push({type: 'download-xls', filename: previewTable.filename + '.xls'});
     previewTable.files.push({type: 'html', filename: previewTable.filename + '.html'});
-    previewTable.files.push({type: 'json', filename: previewTable.filename + '.json'});
   }
 
   function renderTable(path) {
@@ -233,6 +232,8 @@ function loadTableBuilder(pageData, onSave, table) {
             console.log("deleted table file: " + fileToDelete);
           });
       });
+
+      deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
     }
   });
 
@@ -267,6 +268,7 @@ function loadTableBuilder(pageData, onSave, table) {
               console.log("Moved table file: " + fromFile + " to: " + toFile);
             });
         });
+        deleteContent(Florence.collection.id, previewTable.uri + ".json", function(){}, function(){});
       }
 
       if (onSave) {
