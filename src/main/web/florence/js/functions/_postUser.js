@@ -1,4 +1,4 @@
-function postUser(name, email, password, isAdmin, isEditor) {
+function postUser(name, email, password, isAdmin, isEditor, isDataVisPublisher) {
 
     var html = templates.loadingAnimation({dark: true, large: true});
     sweetAlert({
@@ -53,7 +53,9 @@ function postUser(name, email, password, isAdmin, isEditor) {
             error = null,
             email = email,
             admin = isAdmin,
-            editor = isEditor);
+            editor = isEditor,
+            dataVisPublisher = isDataVisPublisher
+            );
     }
 
     /**

@@ -1,5 +1,7 @@
 function editCollection (collection) {
 
+  collection.publisherType = localStorage.getItem("PublisherType");
+
   getTeams(
     success = function (teams) {
       var editPublishTime, toIsoDate;
