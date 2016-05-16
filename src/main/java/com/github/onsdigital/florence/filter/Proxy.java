@@ -7,7 +7,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -21,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 
 import static com.github.onsdigital.florence.configuration.Configuration.getBabbageUrl;
 import static com.github.onsdigital.florence.configuration.Configuration.getZebedeeUrl;
@@ -33,6 +39,7 @@ public class Proxy implements Filter {
 
     private static final String florenceToken = "/florence";
     private static final String zebedeeToken = "/zebedee";
+    private static final String X_REQUEST_ID_KEY = "X-Request-Id";
 
     private static final String babbageBaseUrl = getBabbageUrl();
     private static final String zebedeeBaseUrl = Configuration.getZebedeeUrl();
@@ -79,6 +86,7 @@ public class Proxy implements Filter {
                     break;
             }
 
+            addRequestIdHeader(request, proxyRequest);
             CloseableHttpClient httpClient = HttpClients.custom().disableRedirectHandling().build();
 
             // copy the request headers.
@@ -150,5 +158,10 @@ public class Proxy implements Filter {
         }
 
         return false;
+    }
+
+    private void addRequestIdHeader(HttpServletRequest request, HttpRequestBase proxyRequest) {
+        proxyRequest.setHeader(X_REQUEST_ID_KEY,
+                request.getHeader(X_REQUEST_ID_KEY) == null ? UUID.randomUUID().toString() : request.getHeader(X_REQUEST_ID_KEY));
     }
 }
