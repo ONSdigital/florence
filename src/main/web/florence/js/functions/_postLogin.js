@@ -22,6 +22,7 @@ function postLogin(email, password) {
             getUserPermission(
                 function (permission) {
                     if (permission.admin || permission.editor) {
+                        getPublisherType();
                         viewController();
                     } else {
                         logout();
@@ -44,4 +45,20 @@ function postLogin(email, password) {
         }
     });
     return true;
+}
+
+function getPublisherType() {
+    $.ajax({
+        url: "/zebedee/publishertype",
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'GET',
+        success: function (json) {
+            console.log("PublisherType: " + json.publisherType);
+            localStorage.setItem("PublisherType", json.publisherType);
+        },
+        error: function(json) {
+            console.log("Error!");
+        }
+    });
 }

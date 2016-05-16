@@ -55,6 +55,7 @@ function createCollection(teams) {
                 type: publishType,
                 publishDate: collectionDate,
                 teams: teams,
+                publisherType: localStorage.getItem("PublisherType"),
                 releaseUri: releaseUri
             }),
             success: function (collection) {

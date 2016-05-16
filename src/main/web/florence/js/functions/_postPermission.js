@@ -7,7 +7,7 @@
  * @param admin - boolean true if the user should be given admin permissions
  * @param editor - boolean true if the user should be given editor permissions
  */
-function postPermission(success, error, email, admin, editor) {
+function postPermission(success, error, email, admin, editor, dataVisPublisher) {
   $.ajax({
     url: "/zebedee/permission",
     dataType: 'json',
@@ -16,6 +16,7 @@ function postPermission(success, error, email, admin, editor) {
     data: JSON.stringify({
       email: email,
       admin: admin,
+      dataVisPublisher: dataVisPublisher,
       editor: editor
     }),
     success: function () {
