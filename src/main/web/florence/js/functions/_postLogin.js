@@ -49,13 +49,12 @@ function postLogin(email, password) {
 
 function getPublisherType() {
     $.ajax({
-        url: "/zebedee/publishertype",
+        url: "/zebedee/collectionowner",
         dataType: 'json',
         contentType: 'application/json',
         type: 'GET',
         success: function (json) {
-            console.log("PublisherType: " + json.publisherType);
-            localStorage.setItem("PublisherType", json.publisherType);
+            localStorage.setItem("collectionOwner", json.collectionOwner);
         },
         error: function(json) {
             console.log("Error!");
