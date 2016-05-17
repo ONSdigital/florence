@@ -42,7 +42,9 @@ function loadVisualisationCreator(collectionId, pageType, parentUrl) {
 
             // Update page title and UID
             pageTitle = $('#pagename').val();
+            pageData.description.title = pageTitle;
             pageId = $('#visualisation-uid').val();
+            pageData.uid = pageId;
 
             // Save the new page
             uriSection = "visualisations";
@@ -58,9 +60,12 @@ function loadVisualisationCreator(collectionId, pageType, parentUrl) {
 
 function pageTypeDataVisualisation(pageType) {
     return {
-        title: "",
+        description: {
+            title: ""
+        },
         uid: "",
-        type: pageType
+        type: pageType,
+        fileUri: ""
     };
 }
 
