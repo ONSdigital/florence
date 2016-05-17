@@ -32,15 +32,6 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         );
     }
 
-    // Original code
-    //if (pageData.type === 'home_page') {
-    //  var html = templates.workEditT1(templateData);
-    //  $('.workspace-menu').html(html);
-    //  editServiceMessage(collectionId, pageData);
-    //  accordion();
-    //  t1Editor(collectionId, pageData, templateData);   //templateData used to resolve section titles
-    //}
-
     else if (pageData.type === 'home_page_census') {
         var email = localStorage.getItem('loggedInAs');   // get user permissions
         getUserPermission(
@@ -65,18 +56,6 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
             email
         );
     }
-
-    // Original code
-    //else if (pageData.type === 'home_page_census') {
-    //  var html = templates.workEditT1Census(templateData);
-    //  $('.workspace-menu').html(html);
-    //  if (pageData.images) {
-    //    loadImagesList(collectionId, pageData);
-    //  }
-    //  editBlocks(collectionId, pageData, templateData, 'sections', 'block');
-    //  accordion();
-    //  t1EditorCensus(collectionId, pageData, templateData);   //templateData used to resolve section titles
-    //}
 
     else if (pageData.type === 'taxonomy_landing_page') {
         var html = templates.workEditT2(templateData);
@@ -410,6 +389,14 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         //editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');
         accordion();
         releaseEditor(collectionId, pageData, templateData);
+    }
+
+    else if (pageData.type === 'visualisation') {
+        var html = templates.workEditVisualisation(templateData);
+        $('.workspace-menu').html(html);
+        // addFile(collectionId, pageData, 'fileUri', 'visualisation');
+        accordion();
+        visualisationEditor(collectionId, pageData, templateData);
     }
 
     else {

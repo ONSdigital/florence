@@ -1,0 +1,40 @@
+<section class="panel workspace-edit">
+    <div class="edit-accordion">
+        <div class="edit-section">
+            <div class="edit-section__head">
+                <h1>Metadata</h1>
+
+                <p id="metadata-d">Title | Unique ID</p>
+            </div>
+            <div class="edit-section__content">
+                <div id="metadata-list">
+                    <label for="title">Title
+                        <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
+                    </label>
+                    <label for="uid">
+                        <textarea name="uid" id="uid">{{this.uid}}</textarea>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="edit-section">
+            <div class="edit-section__head">
+                <h1>Visualisation</h1>
+                <p>File upload</p>
+            </div>
+            <div class="edit-section__content">
+                <div id="visualisation">
+                    <label for="upload-vis">Upload ZIP file
+                        <input class="input__file" type="file" id="upload-vis">
+                    </label>
+                    <button class="btn btn--secondary btn--inline-block">Submit</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <nav class="edit-nav">
+        {{> editNav}}
+    </nav>
+</section>
