@@ -110,7 +110,7 @@ function viewCollectionDetails(collectionId) {
             }
             getPageDataDescription(collectionId, safePath,
                 success = function () {
-                    createWorkspace(safePath, collectionId, 'edit');
+                    createWorkspace(safePath, collectionId, 'edit', collection);
                 },
                 error = function (response) {
                     handleApiError(response);
