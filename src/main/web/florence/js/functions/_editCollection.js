@@ -1,6 +1,6 @@
 function editCollection (collection) {
 
-  collection.collectionOwner = localStorage.getItem("collectionOwner");
+  collection.collectionOwner = localStorage.getItem("userPublisherType");
 
   getTeams(
     success = function (teams) {
