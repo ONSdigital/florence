@@ -7,18 +7,18 @@
     },
     "devDependencies": {
         "cat": "latest",
-        "watch-run": "latest",
+        "onchange": "latest",
         "handlebars": "~3.0.1",
         "node-sass": "latest"
     },
     "scripts": {
-        "watch-js": "npm run build-js && watch-run -p 'js/classes/*.js,js/functions/*.js' npm run build-js ",
+        "watch-js": "npm run build-js && onchange 'js/classes/*.js' 'js/functions/*.js' -v -- npm run build-js ",
         "build-js": "cat js/classes/*.js js/functions/*.js > assets/js/main.js",
-        "watch-templates": "npm run build-templates && watch-run -p 'templates/*.handlebars' npm run build-templates ",
+        "watch-templates": "npm run build-templates && onchange 'templates/*.handlebars' -v -- npm run build-templates ",
         "build-templates": "handlebars templates/*.handlebars --output assets/js/templates.js",
-        "watch-css": "npm run build-css && watch-run -p 'scss/partials/*.scss' npm run build-css ",
+        "watch-css": "npm run build-css && onchange 'scss/partials/*.scss' -v -- npm run build-css ",
         "build-css": "node-sass --output-style compressed scss/style.scss assets/css/style.min.css",
-        "watch": "npm run watch-js && npm run watch-templates && npm run watch-css",
+        "watch": "npm run watch-js & npm run watch-templates & npm run watch-css",
         "postinstall": "npm run build-js & npm run build-templates & npm run build-css"
     }
 }
