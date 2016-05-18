@@ -23,4 +23,6 @@ src/main/web/florece/js/npm-debug.log
 npm-debug.log*
 
 # Dev project files
-src/main/web/florence/assets/*
+src/main/web/florence/assets/css/*
+src/main/web/florence/assets/js/main.js
+src/main/web/florence/assets/js/templates.js
