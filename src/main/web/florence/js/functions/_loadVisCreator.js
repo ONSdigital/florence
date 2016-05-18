@@ -5,7 +5,7 @@
  */
 
 function loadVisualisationCreator(collectionId, pageType, parentUrl) {
-    var pageType, pageData, pageTitle, pageId, newUri, safeNewUri, uriSection, pageTitleTrimmed;
+    var pageType, pageData, pageTitle, pageId, newUri, safeNewUri, uriSection, pageIdTrimmed;
     var parentUrlData = "/data";
     $.ajax({
         url: parentUrlData,
@@ -47,9 +47,9 @@ function loadVisualisationCreator(collectionId, pageType, parentUrl) {
             pageData.uid = pageId;
 
             // Save the new page
-            uriSection = "visualisations";
-            pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-            newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
+            uriSection = "visualisations/_pages";
+            pageIdTrimmed = pageId.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+            newUri = makeUrl(parentUrl, uriSection, pageIdTrimmed);
             safeNewUri = checkPathSlashes(newUri);
             Florence.globalVars.pagePath = safeNewUri;
             saveContent(collectionId, safeNewUri, pageData);
