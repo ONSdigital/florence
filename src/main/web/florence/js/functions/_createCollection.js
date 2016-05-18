@@ -60,7 +60,7 @@ function createCollection(teams) {
             }),
             success: function (collection) {
                 Florence.setActiveCollection(collection);
-                createWorkspace('', collection.id, 'browse');
+                createWorkspace('', collection.id, 'browse', collection);
             },
             error: function (response) {
                 if (response.status === 409) {
