@@ -18,10 +18,20 @@ function postLogin(email, password) {
         success: function (response) {
             document.cookie = "access_token=" + response + ";path=/";
             localStorage.setItem("loggedInAs", email);
-            Florence.refreshAdminMenu();
             getUserPermission(
                 function (permission) {
+                    // Store in localStorage permission type
+                    if (permission.admin) {
+                        localStorage.setItem("userType", "admin");
+                    } else if (permission.editor && !permission.dataVisPublisher) {
+                        localStorage.setItem("userType", "publisher");
+                    } else if (permission.editor && permission.dataVisPublisher) {
+                        localStorage.setItem("userType", "dataVisPublisher");
+                    }
+
+                    // Only allow access to editors and admin
                     if (permission.admin || permission.editor) {
+                        Florence.refreshAdminMenu();
                         getPublisherType();
                         viewController();
                     } else {
