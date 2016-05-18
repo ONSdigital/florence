@@ -46,6 +46,9 @@ Florence.Authentication = {
     },
     loggedInEmail: function () {
         return localStorage.getItem("loggedInAs");
+    },
+    userType: function() {
+        return localStorage.getItem("userType");
     }
 };
 
