@@ -12,6 +12,7 @@
                         <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
                     </label>
                     <label for="uid">
+                        Unique ID
                         <textarea name="uid" id="uid">{{this.uid}}</textarea>
                     </label>
                 </div>
@@ -25,10 +26,21 @@
             </div>
             <div class="edit-section__content">
                 <div id="visualisation">
-                    <label for="upload-vis">Upload ZIP file
-                        <input class="input__file" type="file" id="upload-vis">
-                    </label>
-                    <button class="btn btn--secondary btn--inline-block">Submit</button>
+                    {{#if this.fileUri}}
+                        <form id="edit-vis">
+                            <label for="disabled-vis">Existing ZIP
+                                <textarea class="input__disabled" id="disabled-vis" type="text" disabled>{{this.fileUri}}</textarea>
+                            </label>
+                            <button class="btn btn--secondary btn--inline-block">Update ZIP</button>
+                        </form>
+                    {{else}}
+                        <form id="upload-vis">
+                            <label for="input-vis">Upload new ZIP
+                                <input class="input__file" type="file" name="input-vis" id="input-vis">
+                            </label>
+                            <button class="btn btn--primary btn--inline-block" type="submit" value="upload-vis">Submit</button>
+                        </form>
+                    {{/if}}
                 </div>
             </div>
         </div>
