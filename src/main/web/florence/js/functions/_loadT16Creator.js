@@ -8,7 +8,7 @@
 
 function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
     var releaseDate = null;             //overwrite scheduled collection date
-    var pageType, pageTitle, uriSection, pageTitleTrimmed;
+    var pageType, pageTitle, uriSection, pageTitleTrimmed, newUri, pageData, safeNewUri;
     var parentUrlData = "/data"; //home page
     $.ajax({
         url: parentUrlData,
@@ -91,7 +91,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
             pageData.description.title = pageTitle;
             uriSection = "releases";
             pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-            newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
+            newUri = makeUrl(uriSection, pageTitleTrimmed);
             safeNewUri = checkPathSlashes(newUri);
 
             if (!pageData.description.releaseDate) {

@@ -5,14 +5,14 @@
  */
 
 function loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData) {
-    var pageType, pageData, pageTitle, pageId, newUri, safeNewUri, uriSection, pageIdTrimmed;
+    var pageData, pageTitle, pageId, newUri, safeNewUri, uriSection, pageIdTrimmed;
     var parentUrlData = "/data";
     $.ajax({
         url: parentUrlData,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {
-            //Checks page is built in correct location TODO switch homepage to check for visualisation directory
+            //Checks page is being built in root - the directory is not recognised, so we're looking for the home_page page type
             if (checkData.type === 'home_page') {
                 submitFormHandler();
                 return true;
@@ -48,7 +48,8 @@ function loadVisualisationCreator(collectionId, pageType, parentUrl, collectionD
 
             // Save the new page
             pageIdTrimmed = pageId.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-            newUri = makeUrl(parentUrl, pageIdTrimmed);
+            uriSection = "visualisations";
+            newUri = makeUrl(uriSection, pageIdTrimmed);
             safeNewUri = checkPathSlashes(newUri);
             Florence.globalVars.pagePath = safeNewUri;
             saveContent(collectionId, safeNewUri, pageData, collectionData);
