@@ -4,11 +4,12 @@
  * @param uri
  * @param data
  */
-function saveContent(collectionId, uri, data) {
+function saveContent(collectionId, uri, data, collectionData) {
     postContent(collectionId, uri, JSON.stringify(data), false,
         success = function (message) {
             console.log("Updating completed " + message);
-            createWorkspace(uri, collectionId, 'edit');
+            console.log(data);
+            createWorkspace(uri, collectionId, 'edit', collectionData);
         },
         error = function (response) {
             if (response.status === 409) {

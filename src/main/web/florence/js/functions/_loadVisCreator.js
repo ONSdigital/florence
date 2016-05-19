@@ -4,7 +4,7 @@
  * @param parentUrl
  */
 
-function loadVisualisationCreator(collectionId, pageType, parentUrl) {
+function loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData) {
     var pageType, pageData, pageTitle, pageId, newUri, safeNewUri, uriSection, pageIdTrimmed;
     var parentUrlData = "/data";
     $.ajax({
@@ -51,7 +51,7 @@ function loadVisualisationCreator(collectionId, pageType, parentUrl) {
             newUri = makeUrl(parentUrl, pageIdTrimmed);
             safeNewUri = checkPathSlashes(newUri);
             Florence.globalVars.pagePath = safeNewUri;
-            saveContent(collectionId, safeNewUri, pageData);
+            saveContent(collectionId, safeNewUri, pageData, collectionData);
         });
 
     }

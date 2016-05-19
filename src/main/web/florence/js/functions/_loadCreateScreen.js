@@ -8,6 +8,6 @@ function loadCreateScreen(parentUrl, collectionId, type, collectionData) {
     }
 
     $('.workspace-menu').html(html);
-    loadCreator(parentUrl, collectionId, type);
+    loadCreator(parentUrl, collectionId, type, collectionData);
     $('#pagetype').focus();
 }

@@ -1,4 +1,4 @@
-function loadCreator(parentUrl, collectionId, type) {
+function loadCreator(parentUrl, collectionId, type, collectionData) {
     var pageType, releaseDate;
 
     getCollection(collectionId,
@@ -44,7 +44,7 @@ function loadCreator(parentUrl, collectionId, type) {
                 loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
             }
             else if (pageType === 'visualisation') {
-                loadVisualisationCreator(collectionId, pageType, parentUrl);
+                loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData);
             }
             else {
                 sweetAlert("Error", 'Page type not recognised. Contact an administrator', "error");
