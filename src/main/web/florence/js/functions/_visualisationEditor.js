@@ -4,7 +4,7 @@
  * @param data
  */
 
-function visualisationEditor(collectionId, data) {
+function visualisationEditor(collectionId, data, collectionData) {
     var renameUri = false,
         $title = $('#title'),
         $uid = $('#uid'),
