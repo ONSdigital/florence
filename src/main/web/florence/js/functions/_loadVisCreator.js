@@ -47,9 +47,8 @@ function loadVisualisationCreator(collectionId, pageType, parentUrl) {
             pageData.uid = pageId;
 
             // Save the new page
-            uriSection = "visualisations/_pages";
             pageIdTrimmed = pageId.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-            newUri = makeUrl(parentUrl, uriSection, pageIdTrimmed);
+            newUri = makeUrl(parentUrl, pageIdTrimmed);
             safeNewUri = checkPathSlashes(newUri);
             Florence.globalVars.pagePath = safeNewUri;
             saveContent(collectionId, safeNewUri, pageData);

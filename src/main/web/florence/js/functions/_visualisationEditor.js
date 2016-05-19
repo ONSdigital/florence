@@ -76,11 +76,12 @@ function visualisationEditor(collectionId, data) {
             } else {
                 var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
                 var uniqueIdNoSpace = data.uid.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
-                var uriUpload = "/visualisations/" + uniqueIdNoSpace + "/" + fileNameNoSpace;
+                var contentUri = "/visualisations/" + uniqueIdNoSpace + "/content";
+                var uriUpload = contentUri + "/" + fileNameNoSpace;
                 var safeUriUpload = checkPathSlashes(uriUpload);
 
-                uploadFile(
-                    safeUriUpload, formdata,
+                deleteAndUploadFile(
+                    safeUriUpload, contentUri, formdata,
                     success = function() {
                         data.fileUri = uriUpload; // Update fileUri ready for save
                         unpackZip(safeUriUpload);
@@ -90,6 +91,23 @@ function visualisationEditor(collectionId, data) {
             }
 
         });
+    }
+
+    function deleteAndUploadFile(path, contentUri, formData, success) {
+         $.ajax({
+           url: "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + contentUri,
+           type: 'DELETE',
+           async: false,
+           cache: false,
+           contentType: false,
+           processData: false,
+           success: function (response) {
+                uploadFile(path, formData, success);
+           },
+           error: function(response) {
+                handleApiError(response);
+           }
+         });
     }
 
     function uploadFile(path, formData, success) {
@@ -114,7 +132,7 @@ function visualisationEditor(collectionId, data) {
     function unpackZip(zipPath) {
         // Unpack contents of ZIP
         console.log("Unpack: " + zipPath);
-        var url = "/zebedee/UnzipDataVisualisation/" + Florence.collection.id + "?zipPath=" + zipPath;
+        var url = "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + zipPath;
 
         $.ajax({
             url: url,
