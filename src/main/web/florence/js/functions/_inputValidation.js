@@ -20,7 +20,7 @@ function validatePageName(customSelector) {
         bool = false;
     } else if ($inputSelector.val().length < 5 && !isCustomSelector) { // Check page name length is longer than 4 characters
         sweetAlert('A page name must have more than 4 characters');
-        bool = true;
+        bool = false;
     }
     else if (!$inputSelector.val()) { // Check inputs contains something
         sweetAlert('You must enter complete all fields');

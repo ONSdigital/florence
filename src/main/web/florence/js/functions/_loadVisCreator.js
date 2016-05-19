@@ -30,7 +30,7 @@ function loadVisualisationCreator(collectionId, pageType, parentUrl) {
         pageData = pageTypeDataVisualisation(pageType);
 
         // Prepend unique code field into create form
-        var codeInput = "<label for='visualisation-uid'>Unique ID</label><input type='text' id='visualisation-uid'>"
+        var codeInput = "<label for='visualisation-uid'>Unique ID</label><input placeholder='Eg DVC126' type='text' id='visualisation-uid'>";
         $('.edition').after(codeInput);
 
         $('form').submit(function(e) {
