@@ -90,7 +90,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             menuItem.addClass('selected');
 
             if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click');
+                loadBrowseScreen(collectionId, 'click', collectionData);
             } else if (menuItem.is('#create')) {
                 Florence.globalVars.pagePath = getPathName();
                 var type = false;
