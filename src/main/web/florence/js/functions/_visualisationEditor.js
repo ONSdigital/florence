@@ -39,23 +39,38 @@ function visualisationEditor(collectionId, data, collectionData) {
         // Set visualisation tab to active
         accordion(1);
     });
-    
+
     // Bind save buttons
     var editNav = $('.edit-nav');
     editNav.off(); // remove any existing event handlers.
 
     editNav.on('click', '.btn-edit-save', function () {
-        save(updateContent);
+        //updateContent(collectionId, data.uri, JSON.stringify(data), true);
+
+        putContent(collectionId, data.uri, JSON.stringify(data),
+          success = function () {
+              Florence.Editor.isDirty = false;
+              //refreshPreview(path);
+              loadPageDataIntoEditor(data.uri, collectionId);
+          },
+          error = function (response) {
+              if (response.status === 409) {
+                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
+              } else {
+                  handleApiError(response);
+              }
+          },
+          true
+        );
     });
 
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-        save(saveAndCompleteContent);
+        saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), true);
     });
 
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-        save(saveAndReviewContent);
+        saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), true);
     });
-
 
     function bindZipSubmit() {
         // Upload ZIP file
