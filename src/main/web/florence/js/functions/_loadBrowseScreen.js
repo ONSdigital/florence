@@ -1,10 +1,13 @@
-function loadBrowseScreen(collectionId, click) {
+function loadBrowseScreen(collectionId, click, collectionData) {
 
     return $.ajax({
         url: "/zebedee/collectionBrowseTree/" + collectionId, // url: "/navigation",
         dataType: 'json',
         type: 'GET',
         success: function (response) {
+
+            var collectionOwner = collectionData.collectionOwner;
+            response['collectionOwner'] = collectionOwner;
 
             var browserContent = $('#iframe')[0].contentWindow;
             var baseURL = Florence.tredegarBaseUrl;

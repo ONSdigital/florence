@@ -122,6 +122,13 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
 
+        $('.workspace-menu').on('click', '.btn-browse-create-datavis', function () {
+            var dest = '/visualisations';
+            var type = 'visualisation';
+            Florence.globalVars.pagePath = dest;
+            loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
+        });
+
         $('.workspace-menu').on('click', '.btn-browse-edit', function () {
             var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
             Florence.globalVars.pagePath = dest;
