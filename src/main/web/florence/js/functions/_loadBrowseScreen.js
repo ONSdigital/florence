@@ -45,7 +45,9 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
                 // Update browse tree scroll position
                 browseScrollPos();
+
             });
+
 
             if (click) {
                 var url = getPathName();
@@ -56,12 +58,28 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 }
             } else {
                 treeNodeSelect('/');
+
             }
+
+            openVisDirectoryOnLoad();
 
         },
         error: function (response) {
             handleApiError(response);
         }
     });
+
+}
+
+function openVisDirectoryOnLoad() {
+    var userType = localStorage.getItem('userPublisherType');
+    
+    if (userType == 'DATA_VISUALISATION') {
+        $('.page-list li').removeClass('selected');
+        var $this = $('.datavis-directory');
+        $this.parent('li').addClass('selected');
+        $this.siblings('ul').addClass('active');
+        $this.addClass('page-item--directory--selected');
+    }
 }
 
