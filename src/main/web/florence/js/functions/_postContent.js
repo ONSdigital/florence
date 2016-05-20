@@ -1,4 +1,14 @@
-function postContent(collectionId, path, content, overwriteExisting, success, error) {
+/**
+ * save content to zebedee, making it in progress in a collection.
+ * @param collectionId
+ * @param path
+ * @param content
+ * @param overwriteExisting - should the content be overwritten if it already exists?
+ * @param recursive - should we recurse the directory of the file and make all files under it in progress?
+ * @param success
+ * @param error
+ */
+function postContent(collectionId, path, content, overwriteExisting, recursive, success, error) {
     var safePath = checkPathSlashes(path);
     if (safePath === '/') {
         safePath = '';          // edge case for home
@@ -14,6 +24,7 @@ function postContent(collectionId, path, content, overwriteExisting, success, er
     }
 
     var url = url + '&overwriteExisting=' + overwriteExisting;
+    var url = url + '&recursive=' + recursive;
 
     $.ajax({
         url: url,

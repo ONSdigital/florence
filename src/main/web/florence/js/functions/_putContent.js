@@ -1,5 +1,5 @@
-function putContent(collectionId, path, content, success, error) {
-  postContent(collectionId, path, content, true,
+function putContent(collectionId, path, content, success, error, recursive) {
+  postContent(collectionId, path, content, true, recursive,
     onSuccess = function () {
       if(success) {
         success();

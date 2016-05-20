@@ -1,11 +1,11 @@
-function saveAndReviewContent(collectionId, path, content, redirectToPath) {
+function saveAndReviewContent(collectionId, path, content, recursive, redirectToPath) {
   putContent(collectionId, path, content,
     success = function (response) {
       Florence.Editor.isDirty = false;
       if (redirectToPath) {
-        postReview(collectionId, path, redirectToPath);
+        postReview(collectionId, path, recursive, redirectToPath);
       } else {
-        postReview(collectionId, path);
+        postReview(collectionId, path, recursive);
       }
     },
     error = function (response) {
@@ -18,7 +18,7 @@ function saveAndReviewContent(collectionId, path, content, redirectToPath) {
     });
 }
 
-function postReview(collectionId, path, redirectToPath) {
+function postReview(collectionId, path, recursive, redirectToPath) {
   var redirect = redirectToPath;
   var safePath = checkPathSlashes(path);
   if (safePath === '/') {
@@ -30,6 +30,9 @@ function postReview(collectionId, path, redirectToPath) {
   } else {
     var url = "/zebedee/review/" + collectionId + "?uri=" + safePath + "/data.json";
   }
+
+  var url = url + '&recursive=' + recursive;
+
   // Open the file for editing
   $.ajax({
     url: url,
