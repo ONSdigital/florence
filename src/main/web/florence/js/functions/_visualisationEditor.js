@@ -6,6 +6,7 @@
 
 function visualisationEditor(collectionId, data, collectionData) {
     var path = Florence.globalVars.pagePath,
+        $indexSelect = $('#filenames'),
         setActiveTab, getActiveTab;
 
     // Active tab
@@ -18,6 +19,11 @@ function visualisationEditor(collectionId, data, collectionData) {
     getActiveTab = Florence.globalVars.activeTab;
     accordion(getActiveTab);
     getLastPosition();
+
+    // Refresh preview with new URL if index page previously selected
+    if ($indexSelect.val()) {
+        refreshPreview(path + $indexSelect.val());
+    }
 
     // Submit new ZIP file
     bindZipSubmit();
@@ -38,12 +44,16 @@ function visualisationEditor(collectionId, data, collectionData) {
         accordion(1);
     });
 
+    // Listen to change of index page input and refresh preview to new index page
+    $indexSelect.change(function() {
+        refreshPreview(path + $indexSelect.val());
+    });
+
     // Bind save buttons
     var editNav = $('.edit-nav');
     editNav.off(); // remove any existing event handlers.
 
     editNav.on('click', '.btn-edit-save', function () {
-        //updateContent(collectionId, data.uri, JSON.stringify(data), true);
         var indexPage = $('#filenames').val();
         data['indexPage'] = indexPage;
         
@@ -58,6 +68,8 @@ function visualisationEditor(collectionId, data, collectionData) {
         saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), true);
     });
 
+
+    /* FUNCTIONS */
     function bindZipSubmit() {
         // Upload ZIP file
         $('#upload-vis').on('submit', function(e) {
@@ -161,7 +173,7 @@ function visualisationEditor(collectionId, data, collectionData) {
         putContent(collectionId, data.uri, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
-                refreshPreview(path);
+                refreshPreview(path + $indexSelect.val());
                 loadPageDataIntoEditor(data.uri, collectionId);
             },
             error = function (response) {
