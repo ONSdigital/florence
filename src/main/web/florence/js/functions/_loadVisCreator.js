@@ -65,7 +65,10 @@ function pageTypeDataVisualisation(pageType) {
         },
         uid: "",
         type: pageType,
-        fileUri: ""
+        fileUri: "",
+        filenames: [],
+        indexPage: ""
+
     };
 }
 
