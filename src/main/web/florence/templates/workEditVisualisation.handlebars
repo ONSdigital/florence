@@ -41,6 +41,19 @@
                             <button class="btn btn--primary btn--inline-block" type="submit" value="upload-vis">Submit</button>
                         </form>
                     {{/if}}
+                    {{#if this.filenames}}
+                        <label for="filenames">
+                            Select index page
+                            <div class="select-wrap flush">
+                                <select name="filenames" id="filenames">
+                                    {{#each filenames}}
+                                        <option value="{{this}}" {{#if_eq this ../../indexPage}}selected{{/if_eq}}>{{this}}</option>
+                                    {{/each}}
+                                </select>
+
+                            </div>
+                        </label>
+                    {{/if}}
                 </div>
             </div>
         </div>

@@ -46,6 +46,8 @@ function visualisationEditor(collectionId, data, collectionData) {
 
     editNav.on('click', '.btn-edit-save', function () {
         //updateContent(collectionId, data.uri, JSON.stringify(data), true);
+        var indexPage = $('#filenames').val();
+        data['indexPage'] = indexPage;
 
         putContent(collectionId, data.uri, JSON.stringify(data),
           success = function () {
