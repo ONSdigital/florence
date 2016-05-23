@@ -1,4 +1,9 @@
 function saveAndCompleteContent(collectionId, path, content, recursive, redirectToPath) {
+
+  if(!recursive) {
+    recursive = false;
+  }
+
   putContent(collectionId, path, content,
     success = function () {
       Florence.Editor.isDirty = false;
@@ -15,7 +20,8 @@ function saveAndCompleteContent(collectionId, path, content, recursive, redirect
       else {
         handleApiError(response);
       }
-    });
+    },
+    recursive);
 }
 
 function completeContent(collectionId, path, recursive, redirectToPath) {
