@@ -21,8 +21,12 @@ function visualisationEditor(collectionId, data, collectionData) {
     getLastPosition();
 
     // Refresh preview with new URL if index page previously selected
-    if ($indexSelect.val()) {
-        refreshPreview(path + $indexSelect.val());
+  function getPreviewUrl() {
+    return path + '/' + $indexSelect.val()
+  }
+
+  if ($indexSelect.val()) {
+        refreshPreview(getPreviewUrl());
     }
 
     // Submit new ZIP file
@@ -46,7 +50,7 @@ function visualisationEditor(collectionId, data, collectionData) {
 
     // Listen to change of index page input and refresh preview to new index page
     $indexSelect.change(function() {
-        refreshPreview(path + $indexSelect.val());
+        refreshPreview(getPreviewUrl());
     });
 
     // Bind save buttons
@@ -173,7 +177,7 @@ function visualisationEditor(collectionId, data, collectionData) {
         putContent(collectionId, data.uri, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
-                refreshPreview(path + $indexSelect.val());
+                refreshPreview(getPreviewUrl());
                 loadPageDataIntoEditor(data.uri, collectionId);
             },
             error = function (response) {
