@@ -1,4 +1,9 @@
 function saveAndReviewContent(collectionId, path, content, recursive, redirectToPath) {
+
+  if(!recursive) {
+    recursive = false;
+  }
+
   putContent(collectionId, path, content,
     success = function (response) {
       Florence.Editor.isDirty = false;
@@ -15,7 +20,8 @@ function saveAndReviewContent(collectionId, path, content, recursive, redirectTo
       else {
         handleApiError(response);
       }
-    });
+    },
+    recursive);
 }
 
 function postReview(collectionId, path, recursive, redirectToPath) {
