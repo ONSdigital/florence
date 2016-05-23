@@ -43,14 +43,20 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
             else if (pageType === 'release') {
                 loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
             }
-            else if (pageType === 'visualisation') {
-                loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData);
-            }
+            // else if (pageType === 'visualisation') {
+            //     loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData);
+            // }
             else {
                 sweetAlert("Error", 'Page type not recognised. Contact an administrator', "error");
             }
         });
     }
 
+    if ($('#pagetype').val() == 'visualisation') {
+        pageType = $('#pagetype').val();
+        loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData);
+    }
 }
+
+
 
