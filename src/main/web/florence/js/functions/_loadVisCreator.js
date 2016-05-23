@@ -65,7 +65,7 @@ function pageTypeDataVisualisation(pageType) {
         },
         uid: "",
         type: pageType,
-        fileUri: "",
+        zipTitle: "",
         filenames: [],
         indexPage: ""
 

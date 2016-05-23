@@ -5,9 +5,7 @@
  */
 
 function visualisationEditor(collectionId, data, collectionData) {
-    var renameUri = false,
-        $title = $('#title'),
-        $uid = $('#uid'),
+    var path = Florence.globalVars.pagePath,
         setActiveTab, getActiveTab;
 
     // Active tab
@@ -31,7 +29,7 @@ function visualisationEditor(collectionId, data, collectionData) {
 
         // Refresh visualisations tab but show 'submit ZIP' option
         var tempData = data;
-        tempData.fileUri = "";
+        tempData.zipTitle = "";
         var html = templates.workEditVisualisation(tempData);
         $('.workspace-menu').html(html);
         bindZipSubmit();
@@ -48,22 +46,8 @@ function visualisationEditor(collectionId, data, collectionData) {
         //updateContent(collectionId, data.uri, JSON.stringify(data), true);
         var indexPage = $('#filenames').val();
         data['indexPage'] = indexPage;
-
-        putContent(collectionId, data.uri, JSON.stringify(data),
-          success = function () {
-              Florence.Editor.isDirty = false;
-              //refreshPreview(path);
-              loadPageDataIntoEditor(data.uri, collectionId);
-          },
-          error = function (response) {
-              if (response.status === 409) {
-                  sweetAlert("Cannot edit this page", "It is already part of another collection.");
-              } else {
-                  handleApiError(response);
-              }
-          },
-          true
-        );
+        
+        save();
     });
 
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
@@ -100,9 +84,14 @@ function visualisationEditor(collectionId, data, collectionData) {
                 deleteAndUploadFile(
                     safeUriUpload, contentUri, formdata,
                     success = function() {
-                        data.fileUri = uriUpload; // Update fileUri ready for save
-                        unpackZip(safeUriUpload);
-                        save(updateContent);
+                        unpackZip(safeUriUpload,
+                            success = function() {
+
+                                // On unpack of Zip refresh the reload editor and preview
+                                refreshPreview(path);
+                                loadPageDataIntoEditor(path, collectionId);
+                            }
+                        );
                     }
                 )
             }
@@ -146,14 +135,13 @@ function visualisationEditor(collectionId, data, collectionData) {
         });
     }
 
-    function unpackZip(zipPath) {
+    function unpackZip(zipPath, success, error) {
         // Unpack contents of ZIP
         console.log("Unpack: " + zipPath);
         var url = "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + zipPath;
 
         $.ajax({
             url: url,
-            dataType: 'json',
             contentType: 'application/json',
             type: 'POST',
             success: function (response) {
@@ -169,19 +157,21 @@ function visualisationEditor(collectionId, data, collectionData) {
         });
     }
 
-    function save(onSave) {
-        // Stop the unique ID being editable
-        if (data.uid != $uid.val()) {
-            sweetAlert("A unique ID can't be edited after creation");
-            loadPageDataIntoEditor(data.uri, collectionId);
-        }
-
-        // Stop title from being editable
-        if (data.description.title != $title.val()) {
-            sweetAlert("The title can't be edited after creation");
-            loadPageDataIntoEditor(data.uri, collectionId);
-        }
-
-        checkRenameUri(collectionId, data, renameUri, onSave);
+    function save() {
+        putContent(collectionId, data.uri, JSON.stringify(data),
+            success = function () {
+                Florence.Editor.isDirty = false;
+                refreshPreview(path);
+                loadPageDataIntoEditor(data.uri, collectionId);
+            },
+            error = function (response) {
+                if (response.status === 409) {
+                    sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                } else {
+                    handleApiError(response);
+                }
+            },
+            true
+        );
     }
 }
