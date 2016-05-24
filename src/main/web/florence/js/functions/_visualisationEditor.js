@@ -113,7 +113,6 @@ function visualisationEditor(collectionId, data, collectionData) {
                             success = function () {
 
                                 // On unpack of Zip refresh the reload editor and preview
-                                refreshPreview(path);
                                 loadPageDataIntoEditor(path, collectionId);
                             }
                         );
