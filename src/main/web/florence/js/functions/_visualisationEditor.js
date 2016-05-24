@@ -104,6 +104,8 @@ function visualisationEditor(collectionId, data, collectionData) {
                 var uriUpload = contentUri + "/" + fileNameNoSpace;
                 var safeUriUpload = checkPathSlashes(uriUpload);
 
+                path = "/visualisations/" + uniqueIdNoSpace + "/";
+
                 deleteAndUploadFile(
                     safeUriUpload, contentUri, formdata,
                     success = function () {
