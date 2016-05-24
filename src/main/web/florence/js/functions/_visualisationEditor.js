@@ -5,7 +5,7 @@
  */
 
 function visualisationEditor(collectionId, data, collectionData) {
-    var path = Florence.globalVars.pagePath,
+    var path = data.uri,
         $indexSelect = $('#filenames'),
         setActiveTab, getActiveTab;
 
