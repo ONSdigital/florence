@@ -9,6 +9,13 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             var collectionOwner = collectionData.collectionOwner;
             response['collectionOwner'] = collectionOwner;
 
+            // Send visualisations back to visualisations folder by default on browse tree load
+            if (collectionOwner == "DATA_VISUALISATION") {
+                var visDirectory = "/visualisations";
+                refreshPreview(visDirectory);
+            }
+            
+
             var browserContent = $('#iframe')[0].contentWindow;
             var baseURL = Florence.tredegarBaseUrl;
             var html = templates.workBrowse(response);

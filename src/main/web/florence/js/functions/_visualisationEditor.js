@@ -10,7 +10,7 @@ function visualisationEditor(collectionId, data, collectionData) {
         setActiveTab, getActiveTab;
 
     // Active tab
-    $(".edit-accordion").on('accordionactivate', function() {
+    $(".edit-accordion").on('accordionactivate', function () {
         setActiveTab = $(".edit-accordion").accordion("option", "active");
         if (setActiveTab !== false) {
             Florence.globalVars.activeTab = setActiveTab;
@@ -20,20 +20,27 @@ function visualisationEditor(collectionId, data, collectionData) {
     accordion(getActiveTab);
     getLastPosition();
 
-    // Refresh preview with new URL if index page previously selected
-  function getPreviewUrl() {
-    return path + '/' + $indexSelect.val()
-  }
-
-  if ($indexSelect.val()) {
-        refreshPreview(getPreviewUrl());
+    // Refresh preview with new URL if index page previously selected (can't use refreshPreview function because it removes "/" from end or path by default)
+    function refreshVisPreview(url) {
+        var newUrl;
+        if (url) {
+            newUrl = Florence.tredegarBaseUrl + path + url;
+            Florence.globalVars.pagePath = path;
+        } else {
+            newUrl = Florence.tredegarBaseUrl + path + "/";
+        }
+        document.getElementById('iframe').contentWindow.location.href = newUrl;
+        $('.browser-location').val(newUrl);
+    }
+    if ($indexSelect.val()) {
+        refreshVisPreview();
     }
 
     // Submit new ZIP file
     bindZipSubmit();
 
     // Edit existing ZIP file
-    $('#edit-vis').on('submit', function(e) {
+    $('#edit-vis').on('submit', function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
 
@@ -48,9 +55,9 @@ function visualisationEditor(collectionId, data, collectionData) {
         accordion(1);
     });
 
-    // Listen to change of index page input and refresh preview to new index page
-    $indexSelect.change(function() {
-        refreshPreview(getPreviewUrl());
+    // Listen to change of index page input and refresh preview to show new index page
+    $indexSelect.change(function () {
+        refreshVisPreview($indexSelect.val());
     });
 
     // Bind save buttons
@@ -60,7 +67,7 @@ function visualisationEditor(collectionId, data, collectionData) {
     editNav.on('click', '.btn-edit-save', function () {
         var indexPage = $('#filenames').val();
         data['indexPage'] = indexPage;
-        
+
         save();
     });
 
@@ -76,7 +83,7 @@ function visualisationEditor(collectionId, data, collectionData) {
     /* FUNCTIONS */
     function bindZipSubmit() {
         // Upload ZIP file
-        $('#upload-vis').on('submit', function(e) {
+        $('#upload-vis').on('submit', function (e) {
             e.preventDefault();
             e.stopImmediatePropagation();
 
@@ -99,9 +106,9 @@ function visualisationEditor(collectionId, data, collectionData) {
 
                 deleteAndUploadFile(
                     safeUriUpload, contentUri, formdata,
-                    success = function() {
+                    success = function () {
                         unpackZip(safeUriUpload,
-                            success = function() {
+                            success = function () {
 
                                 // On unpack of Zip refresh the reload editor and preview
                                 refreshPreview(path);
@@ -116,20 +123,20 @@ function visualisationEditor(collectionId, data, collectionData) {
     }
 
     function deleteAndUploadFile(path, contentUri, formData, success) {
-         $.ajax({
-           url: "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + contentUri,
-           type: 'DELETE',
-           async: false,
-           cache: false,
-           contentType: false,
-           processData: false,
-           success: function (response) {
+        $.ajax({
+            url: "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + contentUri,
+            type: 'DELETE',
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
                 uploadFile(path, formData, success);
-           },
-           error: function(response) {
+            },
+            error: function (response) {
                 handleApiError(response);
-           }
-         });
+            }
+        });
     }
 
     function uploadFile(path, formData, success) {
@@ -145,7 +152,7 @@ function visualisationEditor(collectionId, data, collectionData) {
             success: function (response) {
                 success(response);
             },
-            error: function(response) {
+            error: function (response) {
                 handleApiError(response);
             }
         });
@@ -177,7 +184,7 @@ function visualisationEditor(collectionId, data, collectionData) {
         putContent(collectionId, data.uri, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
-                refreshPreview(getPreviewUrl());
+                refreshVisPreview();
                 loadPageDataIntoEditor(data.uri, collectionId);
             },
             error = function (response) {
