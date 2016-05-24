@@ -50,7 +50,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         processPreviewLoad();
 
         // Update preview URL on initial load of workspace
-        updateBrowserURL();
+        updateBrowserURL(path);
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -216,7 +216,12 @@ function browseScrollPos() {
     }
 }
 
-function updateBrowserURL() {
-    $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
+function updateBrowserURL(url) {
+    
+    if(!url) {
+        url =Florence.globalVars.pagePath;
+    }
+    
+    $('.browser-location').val(Florence.tredegarBaseUrl + url);
 }
 
