@@ -12,7 +12,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             // Send visualisations back to visualisations folder by default on browse tree load
             if (collectionOwner == "DATA_VISUALISATION") {
                 var visDirectory = "/visualisations";
-                refreshPreview(visDirectory);
+                treeNodeSelect(visDirectory);
             }
             
 
@@ -41,8 +41,9 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                     $this.parent('li').addClass('selected');
 
                     //change iframe location
-                    browserContent.location.href = newURL;
-                    
+                    //browserContent.location.href = ;
+                    document.getElementById('iframe').contentWindow.location.href = newURL;
+                    $('.browser-location').val(newURL);
                 }
 
                 //page-list-tree
