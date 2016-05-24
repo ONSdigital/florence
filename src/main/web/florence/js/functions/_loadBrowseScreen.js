@@ -25,11 +25,17 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 if (uri) {
                     var newURL = baseURL + uri;
 
+                    if (collectionOwner == 'DATA_VISUALISATION') {
+                        newURL += "/";
+                    }
+                    console.log(newURL);
+
                     $('.page-list li').removeClass('selected');
                     $this.parent('li').addClass('selected');
 
                     //change iframe location
                     browserContent.location.href = newURL;
+                    
                 }
 
                 //page-list-tree
