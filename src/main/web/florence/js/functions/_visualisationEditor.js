@@ -4,7 +4,7 @@
  * @param data
  */
 
-function visualisationEditor(collectionId, data, collectionData) {
+function visualisationEditor(collectionId, data) {
     var path = data.uri,
         $indexSelect = $('#filenames'),
         setActiveTab, getActiveTab;
@@ -101,7 +101,7 @@ function visualisationEditor(collectionId, data, collectionData) {
                 var uriUpload = contentUri + "/" + fileNameNoSpace;
                 var safeUriUpload = checkPathSlashes(uriUpload);
 
-                path = "/visualisations/" + uniqueIdNoSpace + "/";
+                path = "/visualisations/" + uniqueIdNoSpace;
 
                 deleteAndUploadFile(
                     safeUriUpload, contentUri, formdata,
