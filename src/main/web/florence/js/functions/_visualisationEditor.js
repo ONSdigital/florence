@@ -24,7 +24,7 @@ function visualisationEditor(collectionId, data, collectionData) {
     function refreshVisPreview(url) {
         var newUrl;
         if (url) {
-            newUrl = Florence.tredegarBaseUrl + path + url;
+            newUrl = Florence.tredegarBaseUrl + path  + "/" + url;
             Florence.globalVars.pagePath = path;
         } else {
             newUrl = Florence.tredegarBaseUrl + path + "/";
