@@ -1,6 +1,6 @@
 function editCollection (collection) {
 
-  collection.collectionOwner = localStorage.getItem("userPublisherType");
+  collection.collectionOwner = Florence.Authentication.userType();
 
   getTeams(
     success = function (teams) {
