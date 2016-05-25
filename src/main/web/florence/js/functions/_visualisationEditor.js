@@ -25,15 +25,12 @@ function visualisationEditor(collectionId, data, collectionData) {
         var newUrl;
         if (url) {
             newUrl = Florence.babbageBaseUrl + path  + "/" + url;
-            Florence.globalVars.pagePath = path;
+            // Florence.globalVars.pagePath = path;
         } else {
             newUrl = Florence.babbageBaseUrl + path + "/";
         }
         document.getElementById('iframe').contentWindow.location.href = newUrl;
         $('.browser-location').val(newUrl);
-    }
-    if ($indexSelect.val()) {
-        refreshVisPreview();
     }
 
     // Submit new ZIP file
