@@ -24,10 +24,10 @@ function visualisationEditor(collectionId, data, collectionData) {
     function refreshVisPreview(url) {
         var newUrl;
         if (url) {
-            newUrl = Florence.tredegarBaseUrl + path  + "/" + url;
+            newUrl = Florence.babbageBaseUrl + path  + "/" + url;
             Florence.globalVars.pagePath = path;
         } else {
-            newUrl = Florence.tredegarBaseUrl + path + "/";
+            newUrl = Florence.babbageBaseUrl + path + "/";
         }
         document.getElementById('iframe').contentWindow.location.href = newUrl;
         $('.browser-location').val(newUrl);
