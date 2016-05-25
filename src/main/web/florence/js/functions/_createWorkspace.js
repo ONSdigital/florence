@@ -35,7 +35,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         }
         Florence.refreshAdminMenu();
 
-        var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
+        var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
 
         document.getElementById('iframe').onload = function () {
@@ -222,6 +222,6 @@ function updateBrowserURL(url) {
         url =Florence.globalVars.pagePath;
     }
     
-    $('.browser-location').val(Florence.tredegarBaseUrl + url);
+    $('.browser-location').val(Florence.babbageBaseUrl + url);
 }
 
