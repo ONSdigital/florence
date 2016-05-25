@@ -86,7 +86,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 }
 
 function openVisDirectoryOnLoad() {
-    var userType = localStorage.getItem('userPublisherType');
+    var userType = Florence.Authentication.userType();
     
     if (userType == 'DATA_VISUALISATION') {
         $('.page-list li').removeClass('selected');
