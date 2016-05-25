@@ -17,7 +17,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             
 
             var browserContent = $('#iframe')[0].contentWindow;
-            var baseURL = Florence.tredegarBaseUrl;
+            var baseURL = Florence.babbageBaseUrl;
             var html = templates.workBrowse(response);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
