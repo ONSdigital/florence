@@ -55,11 +55,12 @@ function createCollection(teams) {
                 type: publishType,
                 publishDate: collectionDate,
                 teams: teams,
+                collectionOwner: Florence.Authentication.userType(),
                 releaseUri: releaseUri
             }),
             success: function (collection) {
                 Florence.setActiveCollection(collection);
-                createWorkspace('', collection.id, 'browse');
+                createWorkspace('', collection.id, 'browse', collection);
             },
             error: function (response) {
                 if (response.status === 409) {

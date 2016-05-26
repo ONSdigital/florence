@@ -74,18 +74,16 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
         }
 
         $('form').submit(function (e) {
+            e.preventDefault();
             releaseDateManual = $('#releaseDate').val();
-            //Check for reserved words
-            if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for a title');
-                $('#pagename').val('');
+
+            // Do input validation
+            var nameValid = validatePageName();
+            var editionValid = validatePageName('#edition');
+            if (!nameValid || !editionValid) {
                 return false;
             }
-            if ($('#edition').val().toLowerCase() === 'current' || $('#edition').val().toLowerCase() === 'latest' || $('#edition').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for an edition');
-                $('#edition').val('');
-                return false;
-            }
+
             pageData = pageTypeDataT4(pageType);
             pageData.description.edition = $('#edition').val();
             if (title) {
@@ -165,7 +163,6 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             else if (conditions) {
                 saveContent(collectionId, safeNewUri, pageData);
             }
-            e.preventDefault();
         });
     }
 

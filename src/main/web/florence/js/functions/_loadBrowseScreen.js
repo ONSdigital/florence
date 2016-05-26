@@ -1,4 +1,4 @@
-function loadBrowseScreen(collectionId, click) {
+function loadBrowseScreen(collectionId, click, collectionData) {
 
     return $.ajax({
         url: "/zebedee/collectionBrowseTree/" + collectionId, // url: "/navigation",
@@ -6,8 +6,18 @@ function loadBrowseScreen(collectionId, click) {
         type: 'GET',
         success: function (response) {
 
+            var collectionOwner = collectionData.collectionOwner;
+            response['collectionOwner'] = collectionOwner;
+
+            // Send visualisations back to visualisations folder by default on browse tree load
+            if (collectionOwner == "DATA_VISUALISATION") {
+                var visDirectory = "/visualisations";
+                treeNodeSelect(visDirectory);
+            }
+            
+
             var browserContent = $('#iframe')[0].contentWindow;
-            var baseURL = Florence.tredegarBaseUrl;
+            var baseURL = Florence.babbageBaseUrl;
             var html = templates.workBrowse(response);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
@@ -22,11 +32,18 @@ function loadBrowseScreen(collectionId, click) {
                 if (uri) {
                     var newURL = baseURL + uri;
 
+                    if (collectionOwner == 'DATA_VISUALISATION') {
+                        newURL += "/";
+                    }
+                    console.log(newURL);
+
                     $('.page-list li').removeClass('selected');
                     $this.parent('li').addClass('selected');
 
                     //change iframe location
-                    browserContent.location.href = newURL;
+                    //browserContent.location.href = ;
+                    document.getElementById('iframe').contentWindow.location.href = newURL;
+                    $('.browser-location').val(newURL);
                 }
 
                 //page-list-tree
@@ -42,7 +59,9 @@ function loadBrowseScreen(collectionId, click) {
 
                 // Update browse tree scroll position
                 browseScrollPos();
+
             });
+
 
             if (click) {
                 var url = getPathName();
@@ -53,12 +72,28 @@ function loadBrowseScreen(collectionId, click) {
                 }
             } else {
                 treeNodeSelect('/');
+
             }
+
+            openVisDirectoryOnLoad();
 
         },
         error: function (response) {
             handleApiError(response);
         }
     });
+
+}
+
+function openVisDirectoryOnLoad() {
+    var userType = Florence.Authentication.userType();
+    
+    if (userType == 'DATA_VISUALISATION') {
+        $('.page-list li').removeClass('selected');
+        var $this = $('.datavis-directory');
+        $this.parent('li').addClass('selected');
+        $this.siblings('ul').addClass('active');
+        $this.addClass('page-item--directory--selected');
+    }
 }
 

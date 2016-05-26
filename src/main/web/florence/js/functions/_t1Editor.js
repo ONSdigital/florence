@@ -137,7 +137,7 @@ function resolveTitleT1(collectionId, data, templateData, field) {
           if (result === true) {
             var iframeEvent = document.getElementById('iframe').contentWindow;
             iframeEvent.removeEventListener('click', Florence.Handler, true);
-            createWorkspace('/', collectionId, '', true);
+            createWorkspace('/', collectionId, '', null, true);
 
             $('#' + index).replaceWith(
               '<div id="' + index + '" class="edit-section__sortable-item">' +

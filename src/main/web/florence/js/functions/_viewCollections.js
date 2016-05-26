@@ -44,7 +44,11 @@ function viewCollections(collectionId) {
             }
         });
 
-        var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams});
+        var isDataVis = false;
+        if (Florence.Authentication.userType() === "DATA_VISUALISATION") {
+            isDataVis = true;
+        }
+        var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams, isDataVis: isDataVis});
         $('.section').html(collectionsHtml);
 
         if (collectionId) {

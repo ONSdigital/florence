@@ -22,7 +22,7 @@
                 top: $lineheight / 2;
                 width: 30px;
                 height: $lineheight * 2;
-                background: transparent url(../img/sprite.png);
+                background: transparent url(../../img/sprite.png);
                 background-size: 30px auto;
             }
 
@@ -118,7 +118,7 @@
             padding-top: $lineheight / 2;
             padding-left: $gutter;
             margin-top: $lineheight;
-            width: 23.3%;
+            width: 24%;
             position: absolute;
             height: $lineheight * 2;
             background-color: $scarpa-flow;
@@ -339,7 +339,7 @@
                         width: 30px;
                         height: $lineheight * 2;
                         cursor: move;
-                        background: transparent url(../img/sprite.png) no-repeat 0px -135px;
+                        background: transparent url(../../img/sprite.png) no-repeat 0px -135px;
                         background-size: 30px auto;
                     }
                 }
@@ -600,7 +600,7 @@
                 height: 30px;
                 display: block;
                 margin: 4px auto;
-                background: transparent url(../img/sprite.png) no-repeat 0px -180px;
+                background: transparent url(../../img/sprite.png) no-repeat 0px -180px;
                 background-size: 30px auto;
             }
         }
@@ -613,7 +613,7 @@
                 height: 30px;
                 display: block;
                 margin: 4px auto;
-                background: transparent url(../img/sprite.png) no-repeat 0px -221px;
+                background: transparent url(../../img/sprite.png) no-repeat 0px -221px;
                 background-size: 30px auto;
             }
         }
@@ -626,7 +626,7 @@
                 height: 30px;
                 display: block;
                 margin: 4px auto;
-                background: transparent url(../img/sprite.png) no-repeat 0px -262px;
+                background: transparent url(../../img/sprite.png) no-repeat 0px -262px;
                 background-size: 30px auto;
             }
         }
@@ -636,7 +636,7 @@
         float: left;
         width: 40px;
         height: 42px;
-        background: $pickled-bluewood url(../img/sprite.png) no-repeat 0px -475px;
+        background: $pickled-bluewood url(../../img/sprite.png) no-repeat 0px -475px;
         background-size: 30px auto;
         margin: 10.5px 0 0 20px;
 
@@ -649,7 +649,7 @@
         float: left;
         width: 40px;
         height: 42px;
-        background: $pickled-bluewood url(../img/sprite.png) no-repeat 0px -515px;
+        background: $pickled-bluewood url(../../img/sprite.png) no-repeat 0px -515px;
         background-size: 30px auto;
         margin: 10.5px 0 0 20px;
 
@@ -662,7 +662,7 @@
         float: left;
         width: 40px;
         height: 42px;
-        background: $pickled-bluewood url(../img/sprite.png) no-repeat 0px -653px;
+        background: $pickled-bluewood url(../../img/sprite.png) no-repeat 0px -653px;
         background-size: 30px auto;
         margin: 10.5px 0 0 20px;
 

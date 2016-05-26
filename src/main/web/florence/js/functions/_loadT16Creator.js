@@ -8,7 +8,7 @@
 
 function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
     var releaseDate = null;             //overwrite scheduled collection date
-    var pageType, pageTitle, uriSection, pageTitleTrimmed;
+    var pageType, pageTitle, uriSection, pageTitleTrimmed, newUri, pageData, safeNewUri;
     var parentUrlData = "/data"; //home page
     $.ajax({
         url: parentUrlData,
@@ -78,13 +78,10 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
 
         //Submits inherited and added information to JSON
         $('form').submit(function (e) {
-            //Check for reserved words
-            if ($('#pagename').val().toLowerCase() === 'current' || $('#pagename').val().toLowerCase() === 'latest' || $('#pagename').val().toLowerCase() === 'data') {
-                sweetAlert('That is not an accepted value for a title');
-                $('#pagename').val('');
+            var nameValid = validatePageName();
+            if (!nameValid) {
                 return false;
             }
-
             pageData = pageTypeDataT16(pageType);
             var publishTime = parseInt($('#hour').val()) + parseInt($('#min').val());
             var toIsoDate = $('#releaseDate').datepicker("getDate");
@@ -94,7 +91,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
             pageData.description.title = pageTitle;
             uriSection = "releases";
             pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
-            newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
+            newUri = makeUrl(uriSection, pageTitleTrimmed);
             safeNewUri = checkPathSlashes(newUri);
 
             if (!pageData.description.releaseDate) {

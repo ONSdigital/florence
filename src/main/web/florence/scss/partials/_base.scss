@@ -254,7 +254,7 @@ $panel-height-2-top-nav: 756px;
             position: absolute;
             left: 0;
             top: -5px;
-            background: transparent url(../img/sprite.png) no-repeat -7px 0;
+            background: transparent url(../../img/sprite.png) no-repeat -7px 0;
             background-size: 32px auto;
             display: block;
             font-size: 9px;
@@ -380,14 +380,14 @@ $panel-height-2-top-nav: 756px;
         }
         &--directory {
             &:after {
-                background: transparent url(../img/sprite.png) no-repeat -4px -418px;
+                background: transparent url(../../img/sprite.png) no-repeat -4px -418px;
                 background-size: 30px auto;
                 height: 15px;
             }
 
             &--selected {
                 &:after {
-                    background: transparent url(../img/sprite.png) no-repeat -4px -445px;
+                    background: transparent url(../../img/sprite.png) no-repeat -4px -445px;
                     background-size: 30px auto;
                     height: 15px;
                 }
@@ -673,6 +673,10 @@ button {
         color: $concrete;
         background-color: $como;
     }
+    &.btn-browse-create-datavis {
+        color: $concrete;
+        background-color: $como;
+    }
     &.btn-browse-delete {
         color: $concrete;
         background-color: $tawny-port;
@@ -767,6 +771,8 @@ button {
     text-decoration: none;
     position: relative;
 
+    // Colours
+
     &--primary {
         color: $concrete;
         background-color: $astral;
@@ -782,10 +788,6 @@ button {
         background-color: $tawny-port;
     }
 
-    &--flush {
-        margin: 0;
-    }
-
     &:hover,
     &:focus {
         &:after {
@@ -798,6 +800,29 @@ button {
             left: 0;
             border-radius: 4px;
         }
+    }
+
+    // Margin
+
+    &--flush {
+        margin: 0;
+    }
+
+    // Display
+
+    &--inline-block {
+        display: inline-block;
+    }
+}
+
+// Inputs - should eventually replace all the unique/specific classing being used
+.input {
+    &__file {
+        margin: 0 !important; // Reverts other default styling on file inputs in workspace
+        float: none !important; // Reverts other default styling on file inputs in workspace
+        padding: ($lineheight / 2) 0 !important; // Reverts other default styling on file inputs in workspace
+        color: $mine-shaft;
+        display: block;
     }
 }
 

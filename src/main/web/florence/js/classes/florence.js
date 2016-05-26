@@ -1,6 +1,6 @@
 // The florence object is used for storing application state.
 var Florence = Florence || {
-        tredegarBaseUrl: window.location.origin,
+        babbageBaseUrl: window.location.origin,
         refreshAdminMenu: function () {
             var mainNavHtml = templates.mainNav(Florence);
             $('.admin-nav').html(mainNavHtml);
@@ -46,6 +46,9 @@ Florence.Authentication = {
     },
     loggedInEmail: function () {
         return localStorage.getItem("loggedInAs");
+    },
+    userType: function() {
+        return localStorage.getItem("userType");
     }
 };
 

@@ -23,6 +23,7 @@ function viewUsers(view) {
         var dataTemplate = {data: orderedUsers, permission: permission};
         var usersHtml = templates.userList(dataTemplate);
         var isAdmin = false;
+        var isDataVisPublisher = false;
         var isEditor = false;
         $('.section').html(usersHtml);
 
@@ -41,6 +42,9 @@ function viewUsers(view) {
             }
             else if ($('input:checked').val() === 'publisher') {
                 isEditor = true;
+            }
+            else if ($('input:checked').val() === 'dataVisPublisher') {
+                isDataVisPublisher = true;
             }
             else {
                 isEditor = false;
@@ -68,7 +72,7 @@ function viewUsers(view) {
                 sweetAlert("Please enter a password.");
                 return;
             }
-            postUser(username, email, password, isAdmin, isEditor);
+            postUser(username, email, password, isAdmin, isEditor, isDataVisPublisher);
             viewUsers();
         });
     }

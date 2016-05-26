@@ -14,12 +14,13 @@ function viewUserDetails(email) {
         email
     );
 
-    var isAdmin, isEditor;
+    var isAdmin, isEditor, isVisPublisher;
     function populateUserDetails(user, email) {
         getUserPermission(
             function (permission) {
                 isAdmin = permission.admin;
                 isEditor = permission.editor;
+                isVisPublisher = permission.dataVisPublisher;
 
                 addPermissionToJSON(user);
 
@@ -88,7 +89,7 @@ function viewUserDetails(email) {
      * @param user - JSON object
      */
     function addPermissionToJSON (user) {
-        user['permission'] = permissionStr(isAdmin, isEditor);
+        user['permission'] = permissionStr(isAdmin, isEditor, isVisPublisher);
     }
 
 
@@ -98,10 +99,11 @@ function viewUserDetails(email) {
      * @param isEditor - true/false
      * @return the user's role as string
      */
-    function permissionStr (isAdmin, isEditor) {
+    function permissionStr (isAdmin, isEditor, isVisPublisher) {
         var permissionStr;
         if (!isAdmin && !isEditor) {permissionStr = 'viewer';}
-        if (isEditor) {permissionStr = 'publisher';}
+        if (isEditor && !isVisPublisher) {permissionStr = 'publisher';}
+        if (isEditor && isVisPublisher) {permissionStr = 'visualisation publisher';}
         if (isAdmin) {permissionStr = "admin";}
 
         return permissionStr;
