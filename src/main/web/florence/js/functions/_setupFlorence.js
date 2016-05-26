@@ -1,6 +1,7 @@
 function setupFlorence() {
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
+    Handlebars.registerPartial("browseNodeDataVis", templates.browseNodeDataVis);
     Handlebars.registerPartial("editNav", templates.editNav);
     Handlebars.registerPartial("editNavChild", templates.editNavChild);
     Handlebars.registerPartial("selectorHour", templates.selectorHour);
@@ -14,77 +15,85 @@ function setupFlorence() {
     });
     Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
 
-    switch (operator) {
-      case '==':
-        return (v1 == v2) ? options.fn(this) : options.inverse(this);
-      case '===':
-        return (v1 === v2) ? options.fn(this) : options.inverse(this);
-      case '<':
-        return (v1 < v2) ? options.fn(this) : options.inverse(this);
-      case '<=':
-        return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-      case '>':
-        return (v1 > v2) ? options.fn(this) : options.inverse(this);
-      case '>=':
-        return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-      case '&&':
-        return (v1 && v2) ? options.fn(this) : options.inverse(this);
-      case '||':
-        return (v1 || v2) ? options.fn(this) : options.inverse(this);
-      default:
+        switch (operator) {
+            case '==':
+                return (v1 == v2) ? options.fn(this) : options.inverse(this);
+            case '===':
+                return (v1 === v2) ? options.fn(this) : options.inverse(this);
+            case '<':
+                return (v1 < v2) ? options.fn(this) : options.inverse(this);
+            case '<=':
+                return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+            case '>':
+                return (v1 > v2) ? options.fn(this) : options.inverse(this);
+            case '>=':
+                return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+            case '&&':
+                return (v1 && v2) ? options.fn(this) : options.inverse(this);
+            case '||':
+                return (v1 || v2) ? options.fn(this) : options.inverse(this);
+            default:
+                return options.inverse(this);
+        }
+    });
+    //Check if array contains element
+    Handlebars.registerHelper('ifContains', function (elem, list, options) {
+        if (list.indexOf(elem) > -1) {
+            return options.fn(this);
+        }
         return options.inverse(this);
-    }
-  });
-  //Check if array contains element
-  Handlebars.registerHelper('ifContains', function(elem, list, options) {
-    if(list.indexOf(elem) > -1) {
-      return options.fn(this);
-    }
-    return options.inverse(this);
-  });
-  // Add two values together. Primary usage was '@index + 1' to create numbered lists
-  Handlebars.registerHelper('plus', function(value1, value2) {
-    return value1 + value2;
-  });
-  // Add two values together. Primary usage was '@index + 1' to create numbered lists
-  Handlebars.registerHelper('lastEditedBy', function(array) {
-    if(array) {
-      var event = array[array.length - 1];
-      if (event) {
-        return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
-      }
-    }
-    return '';
-  });
-  Handlebars.registerHelper('createdBy', function(array) {
-    if(array) {
-      var event = getCollectionCreatedEvent(array);
-      if (event) {
-        return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
-      } else {
+    });
+    // Add two values together. Primary usage was '@index + 1' to create numbered lists
+    Handlebars.registerHelper('plus', function (value1, value2) {
+        return value1 + value2;
+    });
+    // Add two values together. Primary usage was '@index + 1' to create numbered lists
+    Handlebars.registerHelper('lastEditedBy', function (array) {
+        if (array) {
+            var event = array[array.length - 1];
+            if (event) {
+                return 'Last edited ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email;
+            }
+        }
+        return '';
+    });
+    Handlebars.registerHelper('createdBy', function (array) {
+        if (array) {
+            var event = getCollectionCreatedEvent(array);
+            if (event) {
+                return 'Created ' + StringUtils.formatIsoDateString(new Date(event.date)) + " by " + event.email + '';
+            } else {
+                return "";
+            }
+        }
         return "";
-      }
-    }
-    return "";
-  });
-  Handlebars.registerHelper('if_eq', function(a, b, opts) {
-    if(a == b)
-      return opts.fn(this);
-    else
-      return opts.inverse(this);
-  });
+    });
+    // If two strings match
+    Handlebars.registerHelper('if_eq', function (a, b, opts) {
+        if (a == b)
+            return opts.fn(this);
+        else
+            return opts.inverse(this);
+    });
+    // If two strings don't match
+    Handlebars.registerHelper('if_ne', function (a, b, opts) {
+        if (a != b)
+            return opts.fn(this);
+        else
+            return opts.inverse(this);
+    });
 
-  Handlebars.registerHelper('comma_separated_list', function(array) {
-    var asString = "";
+    Handlebars.registerHelper('comma_separated_list', function (array) {
+        var asString = "";
 
-    if (array) {
-        array.forEach(function(item) {
-            asString = asString + item + ", ";
-        });
-        return asString.substring(0, asString.lastIndexOf(","));
-    }
-    return asString;
-  });
+        if (array) {
+            array.forEach(function (item) {
+                asString = asString + item + ", ";
+            });
+            return asString.substring(0, asString.lastIndexOf(","));
+        }
+        return asString;
+    });
 
 
     Florence.globalVars.activeTab = false;

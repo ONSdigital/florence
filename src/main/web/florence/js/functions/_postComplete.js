@@ -1,11 +1,16 @@
-function saveAndCompleteContent(collectionId, path, content, redirectToPath) {
+function saveAndCompleteContent(collectionId, path, content, recursive, redirectToPath) {
+
+  if(!recursive) {
+    recursive = false;
+  }
+
   putContent(collectionId, path, content,
     success = function () {
       Florence.Editor.isDirty = false;
       if (redirectToPath) {
-        completeContent(collectionId, path, redirectToPath);
+        completeContent(collectionId, path, recursive, redirectToPath);
       } else {
-        completeContent(collectionId, path);
+        completeContent(collectionId, path, recursive);
       }
     },
     error = function (response) {
@@ -15,10 +20,11 @@ function saveAndCompleteContent(collectionId, path, content, redirectToPath) {
       else {
         handleApiError(response);
       }
-    });
+    },
+    recursive);
 }
 
-function completeContent(collectionId, path, redirectToPath) {
+function completeContent(collectionId, path, recursive, redirectToPath) {
   var redirect = redirectToPath;
   var safePath = checkPathSlashes(path);
   if (safePath === '/') {
@@ -30,6 +36,9 @@ function completeContent(collectionId, path, redirectToPath) {
   } else {
     var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json";
   }
+
+  var url = url + '&recursive=' + recursive;
+
   // Update content
   $.ajax({
     url: url,

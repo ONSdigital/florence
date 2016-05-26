@@ -117,6 +117,7 @@ function loadTableBuilder(pageData, onSave, table) {
       var contents = iframe.contents();
       contents.find('body').css("background", "transparent");
       contents.find('body').css("width", "480px");
+      contents.find('.markdown-table-wrap').css('width', '700px');
       iframe.height(contents.find('html').height());
       iframe.css("opacity", "1");
     });

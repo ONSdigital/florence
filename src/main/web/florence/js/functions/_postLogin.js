@@ -18,11 +18,14 @@ function postLogin(email, password) {
         success: function (response) {
             document.cookie = "access_token=" + response + ";path=/";
             localStorage.setItem("loggedInAs", email);
-            Florence.refreshAdminMenu();
             getUserPermission(
                 function (permission) {
+                    // Only allow access to editors and admin
                     if (permission.admin || permission.editor) {
+                        getPublisherType(permission);
+                        Florence.refreshAdminMenu();
                         viewController();
+
                     } else {
                         logout();
                         sweetAlert("You do not have the permissions to enter here. Please contact an administrator");
@@ -44,4 +47,17 @@ function postLogin(email, password) {
         }
     });
     return true;
+}
+
+function getPublisherType(permission) {
+    // Store in localStorage publisher type
+    if (permission.admin) {
+        localStorage.setItem("userType", "ADMIN");
+    } else if (permission.editor && !permission.dataVisPublisher) {
+        localStorage.setItem("userType", "PUBLISHING_SUPPORT");
+    } else if (permission.editor && permission.dataVisPublisher) {
+        localStorage.setItem("userType", "DATA_VISUALISATION");
+    } else if (!permission.admin && !permission.editor && !permission.dataVisPublisher) {
+        localStorage.setItem("userType", "VIEWER");
+    }
 }

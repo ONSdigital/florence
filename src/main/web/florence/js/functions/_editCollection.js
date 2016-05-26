@@ -1,5 +1,7 @@
 function editCollection (collection) {
 
+  collection.collectionOwner = Florence.Authentication.userType();
+
   getTeams(
     success = function (teams) {
       var editPublishTime, toIsoDate;

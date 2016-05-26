@@ -110,7 +110,7 @@ function viewCollectionDetails(collectionId) {
             }
             getPageDataDescription(collectionId, safePath,
                 success = function () {
-                    createWorkspace(safePath, collectionId, 'edit');
+                    createWorkspace(safePath, collectionId, 'edit', collection);
                 },
                 error = function (response) {
                     handleApiError(response);
@@ -174,7 +174,7 @@ function viewCollectionDetails(collectionId) {
 
         $('.btn-collection-work-on').click(function () {
             Florence.globalVars.welsh = false;
-            createWorkspace('', collectionId, 'browse');
+            createWorkspace('', collectionId, 'browse', collection);
         });
 
         setCollectionDetailsHeight();
