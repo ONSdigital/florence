@@ -3,8 +3,8 @@
 @import "partials/reset";
 @import "partials/colour-palette";
 @import "partials/fonts";
-@import "elements/typography";
-@import "patterns/grid";
+@import "elements/typography"; // In new directory
+@import "patterns/grid"; // In new directory
 @import "partials/elements";
 @import "partials/base";
 @import "partials/utilities";
@@ -30,12 +30,31 @@
 // Patterns
 
 
+/* proposed structure:
+
+SCSS
+	Elements
+		buttons
+		tables
+		lists
+		inputs
+		type
 
 
+	Components
+		nav
+		iframe
+		utilities
+		icons
+		accordions
+		show/hide
+		tabs
+		tree
 
+	Patterns
+		slider
+		workspace
+		grid
+		screens
 
-
-
-
-
-
+*/
