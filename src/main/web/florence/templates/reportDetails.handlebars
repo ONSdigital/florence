@@ -26,18 +26,16 @@
     {{#ifCond verifyInprogressCount '>' 0}}
         <p style="color: yellow; font-weight: 700;">Verifying {{verifyInprogressCount}} file(s) </p>
     {{/ifCond}}
-
-
 </div>
 
 {{#if success.error}}
     <div class="section-content section-content--fullwidth">
-        <div class="collections-accordion">
+        <div class="collections-accordion js-accordion">
             <div class="collections-section">
-                <div class="collections-section__head">
+                <div class="collections-section__head js-accordion__title">
                     <h3 class="collection-name">Error list</h3>
                 </div>
-                <div class="collections-section__content">
+                <div class="collections-section__content js-accordion__content">
                     <ul class="page-list">
                         {{#each success.errors}}
                             <li>{{this}}</li>
@@ -49,15 +47,15 @@
     </div>
 {{else}}
     <div class="section-content section-content--fullwidth">
-        <div class="collections-accordion">
+        <div class="collections-accordion js-accordion">
             <div class="collections-section">
-                <div class="collections-section__head">
+                <div class="collections-section__head js-accordion__title">
                     <h3 class="collection-name">{{#ifCond success.transaction.uriInfos.length '>' '1'}} {{success.transaction.uriInfos.length}}
                         files published
                     {{/ifCond}} {{#ifCond success.transaction.uriInfos.length '<=' '1'}} {{success.transaction.uriInfos.length}}
                         file published {{/ifCond}}</h3>
                 </div>
-                <div class="collections-section__content">
+                <div class="collections-section__content js-accordion__content">
                     <table class="collections-report-table">
                         <thead>
                         <tr>

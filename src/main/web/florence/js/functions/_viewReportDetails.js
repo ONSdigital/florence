@@ -40,12 +40,13 @@ function viewReportDetails(collection) {
 
     var reportDetails = templates.reportDetails(details);
     $('.publish-selected').html(reportDetails);
-    $('.collections-accordion').accordion({
-        header: '.collections-section__head',
-        heightStyle: "content",
-        active: false,
-        collapsible: true
-    });
+    // $('.collections-accordion').accordion({
+    //     header: '.collections-section__head',
+    //     heightStyle: "content",
+    //     active: false,
+    //     collapsible: true
+    // });
+    bindAccordions();
 
     // order table
     $('th').click(function () {
