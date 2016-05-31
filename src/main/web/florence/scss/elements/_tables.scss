@@ -1,0 +1,90 @@
+.table {
+
+    /* Stripped down, basic table */
+    width: 100%;
+    border-spacing: 0;
+
+    th {
+        padding-top: $lineheight;
+        padding-bottom: $lineheight;
+        font-size: 16px;
+    }
+
+    td {
+        padding-top: ($lineheight / 2);
+        padding-bottom: ($lineheight / 2);
+    }
+
+    td, th {
+        text-align: left;
+        word-wrap: break-word;
+    }
+
+    /* Fully styled up table */
+    &--primary {
+        border: 3px solid $pickled-bluewood;
+        border-radius: 4px;
+        margin-top:-3px;
+
+        td {
+            padding-top: $lineheight;
+            padding-bottom: $lineheight;
+        }
+
+        td, th {
+            padding-right: $gutter;
+            padding-left: $gutter;
+        }
+
+        thead tr {
+            background-color: $pickled-bluewood;
+            color: $cadet-blue;
+        }
+
+        tbody {
+            tr {
+                cursor: pointer;
+            }
+
+            tr:nth-child(odd) {
+                background-color: $white;
+                &:hover {
+                    background-color: $quill-gray;
+                }
+            }
+
+            tr:nth-child(even) {
+                background-color: $iron;
+                &:hover {
+                    background-color: $quill-gray;
+                }
+            }
+
+            tr.selected {
+                background-color: $astral;
+                cursor: default;
+                &:hover {
+                    background-color: $astral;
+                }
+            }
+        }
+    }
+
+    /* Table in a slide-out section */
+    &--section {
+        table-layout: fixed;
+        padding: 0 $gutter;
+
+        & td:first-child, th:first-child {
+            width: 70%;
+            text-align: left;
+        }
+
+        td, th {
+            width: 15%;
+            text-align: right;
+            vertical-align: top;
+        }
+    }
+
+}
