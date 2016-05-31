@@ -9,8 +9,15 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             var collectionOwner = collectionData.collectionOwner;
             response['collectionOwner'] = collectionOwner;
 
+            // Send visualisations back to visualisations folder by default on browse tree load
+            if (collectionOwner == "DATA_VISUALISATION") {
+                var visDirectory = "/visualisations";
+                treeNodeSelect(visDirectory);
+            }
+            
+
             var browserContent = $('#iframe')[0].contentWindow;
-            var baseURL = Florence.tredegarBaseUrl;
+            var baseURL = Florence.babbageBaseUrl;
             var html = templates.workBrowse(response);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
@@ -25,11 +32,18 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 if (uri) {
                     var newURL = baseURL + uri;
 
+                    if (collectionOwner == 'DATA_VISUALISATION') {
+                        newURL += "/";
+                    }
+                    console.log(newURL);
+
                     $('.page-list li').removeClass('selected');
                     $this.parent('li').addClass('selected');
 
                     //change iframe location
-                    browserContent.location.href = newURL;
+                    //browserContent.location.href = ;
+                    document.getElementById('iframe').contentWindow.location.href = newURL;
+                    $('.browser-location').val(newURL);
                 }
 
                 //page-list-tree
@@ -72,7 +86,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 }
 
 function openVisDirectoryOnLoad() {
-    var userType = localStorage.getItem('userPublisherType');
+    var userType = Florence.Authentication.userType();
     
     if (userType == 'DATA_VISUALISATION') {
         $('.page-list li').removeClass('selected');

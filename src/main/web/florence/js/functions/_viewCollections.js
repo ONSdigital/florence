@@ -45,7 +45,7 @@ function viewCollections(collectionId) {
         });
 
         var isDataVis = false;
-        if (Florence.Authentication.userType() === "dataVisPublisher") {
+        if (Florence.Authentication.userType() === "DATA_VISUALISATION") {
             isDataVis = true;
         }
         var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams, isDataVis: isDataVis});
