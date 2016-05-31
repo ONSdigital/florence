@@ -35,7 +35,13 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         }
         Florence.refreshAdminMenu();
 
-        var workSpace = templates.workSpace(Florence.tredegarBaseUrl + safePath);
+        // If data visualisation load preview but ending with '/' so that vis loads correctly
+        if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
+            safePath += "/";
+            path += "/";
+        }
+
+        var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
 
         document.getElementById('iframe').onload = function () {
@@ -50,7 +56,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         processPreviewLoad();
 
         // Update preview URL on initial load of workspace
-        updateBrowserURL();
+        updateBrowserURL(path);
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -216,7 +222,12 @@ function browseScrollPos() {
     }
 }
 
-function updateBrowserURL() {
-    $('.browser-location').val(Florence.tredegarBaseUrl + Florence.globalVars.pagePath);
+function updateBrowserURL(url) {
+    
+    if(!url) {
+        url =Florence.globalVars.pagePath;
+    }
+    
+    $('.browser-location').val(Florence.babbageBaseUrl + url);
 }
 

@@ -55,7 +55,7 @@ function createCollection(teams) {
                 type: publishType,
                 publishDate: collectionDate,
                 teams: teams,
-                collectionOwner: localStorage.getItem("userPublisherType"),
+                collectionOwner: Florence.Authentication.userType(),
                 releaseUri: releaseUri
             }),
             success: function (collection) {

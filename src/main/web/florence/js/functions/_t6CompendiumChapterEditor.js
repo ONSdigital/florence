@@ -156,13 +156,13 @@ function compendiumChapterEditor(collectionId, data) {
     // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
         save();
-        saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
+        saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
         save();
-        saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
+        saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
     });
 
 

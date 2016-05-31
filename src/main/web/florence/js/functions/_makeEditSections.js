@@ -394,7 +394,6 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'visualisation') {
         var html = templates.workEditVisualisation(templateData);
         $('.workspace-menu').html(html);
-        // addFile(collectionId, pageData, 'fileUri', 'visualisation');
         accordion();
         visualisationEditor(collectionId, pageData, templateData);
     }
