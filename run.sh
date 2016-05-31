@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remote debug:
-export JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
+export JAVA_OPTS="-Xdebug -Xmx256m -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
 export PORT="8081"
 
 # File reloading:
