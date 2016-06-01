@@ -62,10 +62,12 @@ function viewReportDetails(collection) {
     $('.publish-selected').html(reportDetails);
     bindAccordions();
 
-    // TODO fix the table ordering
     // Bind table ordering functionality to publish times
     if (published) {
-        $('.publish-times-table th').click(function () {
+        var $publishTimeHeadings = $('.publish-times-table th');
+        $publishTimeHeadings.click(function () {
+
+            // Get table, reverse order and rebuild it
             var table = $(this).parents('table').eq(0);
             var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()));
             this.asc = !this.asc;
@@ -75,6 +77,16 @@ function viewReportDetails(collection) {
             for (var i = 0; i < rows.length; i++) {
                 table.append(rows[i]);
             }
+
+            /* TODO Get sorting arrows working - also code commented out in related SCSS */
+            // Update active classes to show sort direction in UI
+            $publishTimeHeadings.removeClass('active active--asc active--desc');
+            var tableDirection = "asc";
+            if (!this.asc) {
+                tableDirection = "desc";
+            }
+            var activeClass = "active active--" + tableDirection;
+            $(this).addClass(activeClass);
         });
 
         function comparer(index) {
