@@ -5,27 +5,45 @@ function viewReports() {
         type: "get",
         crossDomain: true,
         success: function (collections) {
-
-            populatePublishTable(collections);
+            getUnpublishedCollections(collections);
         },
         error: function (response) {
             handleApiError(response);
         }
     });
 
-    function populatePublishTable(collections) {
+    function getUnpublishedCollections(publishedCollections) {
+        $.ajax({
+            url: "/zebedee/collections",
+            type: "GET",
+            crossDomain: true,
+            success: function(response) {
+                var collections = [];
+                collections["published"] = publishedCollections;
+                collections["unpublished"] = response;
+                populateTable(collections);
+            },
+            error: function (response) {
+                handleApiError(response)
+            }
+        })
+    }
 
-        var filteredCollections = _.chain(collections)
+    function populateTable(collections) {
+        var collections = collections;
+
+        // Build published collections objects
+        var publishedCollections = _.chain(collections.published)
             .filter(function (collection) {
                 return collection.publishResults && collection.publishResults.length > 0;
             })
             .value();
 
-        $(filteredCollections).each(function (i) {
-            filteredCollections[i].order = i;
+        $(publishedCollections).each(function (i) {
+            publishedCollections[i].order = i;
         });
 
-        $(filteredCollections).each(function (n, coll) {
+        $(publishedCollections).each(function (n, coll) {
             if (coll.publishResults && coll.publishResults.length > 0) {
 
                 if (coll.publishStartDate) {
@@ -34,21 +52,36 @@ function viewReports() {
                     var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
                 }
 
-                filteredCollections[n].formattedDate = StringUtils.formatIsoFull(date);
+                publishedCollections[n].formattedDate = StringUtils.formatIsoFull(date);
             }
         });
 
-        var reportList = templates.reportList(filteredCollections);
+        collections["published"] = publishedCollections;
+
+        var reportList = templates.reportList(collections);
         $('.section').html(reportList);
 
-        $('.publish-select-table tbody tr').click(function () {
+        // Bind click on unpublished collection
+        $('.unpublished').click(function() {
             var i = $(this).attr('data-collections-order');
-            viewReportDetails(filteredCollections[i]);
+            viewReportDetails(collections.unpublished[i]);
 
+            selectTr($(this));
+        });
+
+        // Bind click on published collection
+        $('.published').click(function () {
+            var i = $(this).attr('data-collections-order');
+            viewReportDetails(collections.published[i]);
+
+            selectTr($(this));
+        });
+
+        function selectTr($this) {
             $('.publish-select-table tbody tr').removeClass('selected');
-            $(this).addClass('selected');
+            $this.addClass('selected');
             $('.publish-selected').animate({right: "0%"}, 800);
             $('.publish-select').animate({marginLeft: "0%"}, 500);
-        });
+        }
     }
 }

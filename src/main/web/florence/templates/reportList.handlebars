@@ -1,5 +1,5 @@
 <section class="panel col col--6 publish-select">
-    <h1 class="text-align-center">Select a published collection</h1>
+    <h1 class="text-align-center">Select a collection</h1>
     <table class="table table--primary publish-select-table">
         <thead>
         <tr>
@@ -8,12 +8,18 @@
         </tr>
         </thead>
         <tbody>
-        {{#each this}}
-            <tr data-collections-order="{{this.order}}">
-                <td class="collection-name">{{this.name}}</td>
-                <td class="collection-date">{{this.formattedDate}}</td>
-            </tr>
-        {{/each}}
+            {{#each this.unpublished}}
+                <tr data-collections-order="{{@index}}" class="unpublished">
+                    <td class="collection-name">{{this.name}}</td>
+                    <td class="collection-date">[NOT PUBLISHED]</td>
+                </tr>
+            {{/each}}
+            {{#each this.published}}
+                <tr data-collections-order="{{this.order}}" class="published">
+                    <td class="collection-name">{{this.name}}</td>
+                    <td class="collection-date">{{this.formattedDate}}</td>
+                </tr>
+            {{/each}}
         </tbody>
     </table>
 </section>
