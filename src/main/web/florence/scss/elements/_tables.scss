@@ -80,6 +80,35 @@
             text-align: left;
         }
 
+        th {
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* TODO Get sorting arrows working - also code commented out in related JS */
+        // Arrows to show table ordering
+        //th.active:before {
+        //    content: '';
+        //    position: absolute;
+        //    width: 0;
+        //    height: 0;
+        //    top: $lineheight;
+        //    //right: $col--2;
+        //    //right: -21px;
+        //    background-color: transparent;
+        //}
+        //th.active--asc:before {
+        //    border-top: 10px solid $emperor;
+        //    border-left: 10px solid transparent;
+        //    border-right:10px solid transparent;
+        //}
+        //th.active--desc:before {
+        //    border-top: 0 solid transparent;
+        //    border-bottom: 10px solid $emperor;
+        //    border-left: 10px solid transparent;
+        //    border-right:10px solid transparent;
+        //}
+
         td, th {
             width: 15%;
             text-align: right;
