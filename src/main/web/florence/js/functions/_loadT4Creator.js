@@ -68,6 +68,11 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             );
             creatorDatePicker();
         }
+        if(!isInheriting) {
+            $('.btn-page-create').before(
+                '<p class="create-publishing-error">Creating a publication here will create a new series.</p>'
+            )
+        }
         if (title) {
             pageTitle = title;
             $('#pagename').val(title);
