@@ -42,6 +42,10 @@
             border-left: 10px solid transparent;
             border-right:10px solid transparent;
         }
+
+        &:hover {
+            background-color: darken($gray-chateau, 10%);
+        }
     }
 
     &__content {
