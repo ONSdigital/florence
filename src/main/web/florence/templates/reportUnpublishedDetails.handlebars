@@ -20,10 +20,49 @@
                 <tbody>
                 {{#each events}}
                     <tr>
-                        <td>{{eventType}}</td>
+                        <td>
+                            {{!-- COLLECTION CREATED --}}
+                            {{#if_eq eventType "COLLECTION_CREATED"}}Collection created{{/if_eq}}
+
+                            {{!-- COLLECTION APPROVED --}}
+                            {{#if_eq eventType "COLLECTION_APPROVED"}}Collection approved{{/if_eq}}
+
+                            {{!-- COLLECTION DELETED--}}
+                            {{#if_eq eventType "COLLECTION_DELETED"}}Collection deleted{{/if_eq}}
+
+                            {{!-- COLLECTION UNLOCKED --}}
+                            {{#if_eq eventType "COLLECTION_UNLOCKED"}}Collection unlocked{{/if_eq}}
+
+                            {{!-- COLLECTION PUBLISHED --}}
+                            {{#if_eq eventType "COLLECTION_PUBLISHED"}}Collection published{{/if_eq}}
+
+                            {{!-- COLLECTION EDIT - CHANGED NAME --}}
+                            {{#if_eq eventType "COLLECTION_EDIT_CHANGED_NAME"}}Collection name changed{{/if_eq}}
+
+                            {{!-- COLLECTION EDIT - RESCHEDULED --}}
+                            {{#if_eq eventType "COLLECTION_EDIT_RESCHEDULED"}}Collection rescheduled{{/if_eq}}
+
+                            {{!-- COLLECTION EDIT - ADDED TEAM --}}
+                            {{#if_eq eventType "COLLECTION_EDIT_ADDED_TEAM"}}Team added to collection{{/if_eq}}
+
+                            {{!-- COLLECTION EDIT - REMOVED TEAM--}}
+                            {{#if_eq eventType "COLLECTION_EDIT_REMOVED_TEAM"}}Team removed from collection{{/if_eq}}
+
+                        </td>
                         <td>{{user}}</td>
                         <td>{{formattedDate}}</td>
                     </tr>
+                    <!--{{#if metaData}}-->
+                        <!--<tr>-->
+                            <!--<td>-->
+                                <!--<ul>-->
+                                    <!--{{#each metaData}}-->
+                                        <!--<li>{{this}}</li>-->
+                                    <!--{{/each}}-->
+                                <!--</ul>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                    <!--{{/if}}-->
                 {{/each}}
                 </tbody>
             </table>
