@@ -27,6 +27,7 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
         $('select').off().change(function () {
             pageType = $(this).val();
             $('.edition').empty();
+            $('.create-publishing-error').remove();
 
             if (pageType === 'bulletin' || pageType === 'article' || pageType === 'article_download') {
                 loadT4Creator(collectionId, releaseDate, pageType, parentUrl);
