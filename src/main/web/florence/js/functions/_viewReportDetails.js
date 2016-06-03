@@ -14,12 +14,6 @@ function viewReportDetails(collection, isPublished) {
                 events[i].formattedDate = StringUtils.formatIsoFull(formattedDate);
             });
 
-            // Detect if we're loading a published collection
-            // if (collection.publishEndDate || collection.publishStartDate || collection.publishResults) {
-            //     published = true;
-            // }
-
-
             if (isPublished) {
 
 
@@ -36,8 +30,7 @@ function viewReportDetails(collection, isPublished) {
                         var date = collection.publishEndDate;
                         collection.formattedDate = StringUtils.formatIsoFull(date);
 
-                        // // Load details with published data
-                        //
+                        // Load details with published data
                         if (!collection.publishResults || collection.publishResults.length === 0) {
                             return;
                         }
@@ -76,14 +69,11 @@ function viewReportDetails(collection, isPublished) {
                             success: success
                         };
 
-                        console.log(details);
-
                         reportDetails = templates.reportPublishedDetails(details);
 
                         $('.publish-selected').html(reportDetails);
                         bindAccordions();
-
-
+                        bindTableOrdering();
 
                     },
                     error: function (response) {
@@ -94,8 +84,8 @@ function viewReportDetails(collection, isPublished) {
 
 
             } else {
-                // Load details with unpublished data
 
+                // Load details with unpublished data
                 details = {
                     name: collection.name,
                     events: events
@@ -106,45 +96,6 @@ function viewReportDetails(collection, isPublished) {
             // Load handlebars into page and bind accordion events
             $('.publish-selected').html(reportDetails);
             bindAccordions();
-
-            // Bind table ordering functionality to publish times
-            if (published) {
-                var $publishTimeHeadings = $('.publish-times-table th');
-                $publishTimeHeadings.click(function () {
-
-                    // Get table, reverse order and rebuild it
-                    var table = $(this).parents('table').eq(0);
-                    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()));
-                    this.asc = !this.asc;
-                    if (!this.asc) {
-                        rows = rows.reverse();
-                    }
-                    for (var i = 0; i < rows.length; i++) {
-                        table.append(rows[i]);
-                    }
-
-                    /* TODO Get sorting arrows working - also code commented out in related SCSS */
-                    // Update active classes to show sort direction in UI
-                    $publishTimeHeadings.removeClass('active active--asc active--desc');
-                    var tableDirection = "asc";
-                    if (!this.asc) {
-                        tableDirection = "desc";
-                    }
-                    var activeClass = "active active--" + tableDirection;
-                    $(this).addClass(activeClass);
-                });
-
-                function comparer(index) {
-                    return function (a, b) {
-                        var valA = getCellValue(a, index), valB = getCellValue(b, index);
-                        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB);
-                    }
-                }
-
-                function getCellValue(row, index) {
-                    return $(row).children('td').eq(index).html()
-                }
-            }
 
             $('.publish-selected .btn-collection-cancel').click(function () {
                 $('.publish-selected').animate({right: "-50%"}, 500);
@@ -157,5 +108,45 @@ function viewReportDetails(collection, isPublished) {
             handleApiError(response);
         }
     });
+
+}
+
+function bindTableOrdering() {
+    // Bind table ordering functionality to publish times
+    var $publishTimeHeadings = $('.publish-times-table th');
+    $publishTimeHeadings.click(function () {
+
+        // Get table, reverse order and rebuild it
+        var table = $(this).parents('table').eq(0);
+        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()));
+        this.asc = !this.asc;
+        if (!this.asc) {
+            rows = rows.reverse();
+        }
+        for (var i = 0; i < rows.length; i++) {
+            table.append(rows[i]);
+        }
+
+        /* TODO Get sorting arrows working - also code commented out in related SCSS */
+        // Update active classes to show sort direction in UI
+        $publishTimeHeadings.removeClass('active active--asc active--desc');
+        var tableDirection = "asc";
+        if (!this.asc) {
+            tableDirection = "desc";
+        }
+        var activeClass = "active active--" + tableDirection;
+        $(this).addClass(activeClass);
+    });
+
+    function comparer(index) {
+        return function (a, b) {
+            var valA = getCellValue(a, index), valB = getCellValue(b, index);
+            return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB);
+        }
+    }
+
+    function getCellValue(row, index) {
+        return $(row).children('td').eq(index).html()
+    }
 
 }
