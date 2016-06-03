@@ -9,13 +9,13 @@
         </thead>
         <tbody>
             {{#each this.unpublished}}
-                <tr data-collections-order="{{@index}}" class="unpublished">
+                <tr data-collection-id="{{id}}" data-collections-order="{{@index}}" class="unpublished">
                     <td class="collection-name">{{this.name}}</td>
                     <td class="collection-date">[NOT PUBLISHED]</td>
                 </tr>
             {{/each}}
             {{#each this.published}}
-                <tr data-collections-order="{{this.order}}" class="published">
+                <tr data-collection-id="{{id}}" data-collections-order="{{this.order}}" class="published">
                     <td class="collection-name">{{this.name}}</td>
                     <td class="collection-date">{{this.formattedDate}}</td>
                 </tr>

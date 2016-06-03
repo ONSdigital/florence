@@ -12,44 +12,16 @@
             <table class="table table--section publish-times-table">
                 <thead>
                 <tr>
-                    <th>Action</th>
-                    <th>User</th>
-                    <th>Date/time</th>
+                    <th style="width:40%">Action</th>
+                    <th style="width:30%">User</th>
+                    <th style="width:30%">Date/time</th>
                 </tr>
                 </thead>
                 <tbody>
                 {{#each events}}
-                    <tr>
-                        <td>
-                            {{!-- COLLECTION CREATED --}}
-                            {{#if_eq eventType "COLLECTION_CREATED"}}Collection created{{/if_eq}}
-
-                            {{!-- COLLECTION APPROVED --}}
-                            {{#if_eq eventType "COLLECTION_APPROVED"}}Collection approved{{/if_eq}}
-
-                            {{!-- COLLECTION DELETED--}}
-                            {{#if_eq eventType "COLLECTION_DELETED"}}Collection deleted{{/if_eq}}
-
-                            {{!-- COLLECTION UNLOCKED --}}
-                            {{#if_eq eventType "COLLECTION_UNLOCKED"}}Collection unlocked{{/if_eq}}
-
-                            {{!-- COLLECTION PUBLISHED --}}
-                            {{#if_eq eventType "COLLECTION_PUBLISHED"}}Collection published{{/if_eq}}
-
-                            {{!-- COLLECTION EDIT - CHANGED NAME --}}
-                            {{#if_eq eventType "COLLECTION_EDIT_CHANGED_NAME"}}Collection name changed{{/if_eq}}
-
-                            {{!-- COLLECTION EDIT - RESCHEDULED --}}
-                            {{#if_eq eventType "COLLECTION_EDIT_RESCHEDULED"}}Collection rescheduled{{/if_eq}}
-
-                            {{!-- COLLECTION EDIT - ADDED TEAM --}}
-                            {{#if_eq eventType "COLLECTION_EDIT_ADDED_TEAM"}}Team added to collection{{/if_eq}}
-
-                            {{!-- COLLECTION EDIT - REMOVED TEAM--}}
-                            {{#if_eq eventType "COLLECTION_EDIT_REMOVED_TEAM"}}Team removed from collection{{/if_eq}}
-
-                        </td>
-                        <td>{{user}}</td>
+                    <tr data-event-type="{{eventDetails.type}}">
+                        <td>{{eventDetails.description}}</td>
+                        <td>{{eventDetails.user}}</td>
                         <td>{{formattedDate}}</td>
                     </tr>
                     <!--{{#if metaData}}-->
@@ -57,7 +29,7 @@
                             <!--<td>-->
                                 <!--<ul>-->
                                     <!--{{#each metaData}}-->
-                                        <!--<li>{{this}}</li>-->
+                                        <!--<li>{{@key}} ----- {{this}}</li>-->
                                     <!--{{/each}}-->
                                 <!--</ul>-->
                             <!--</td>-->

@@ -13,7 +13,7 @@
 
     <p>Started at: {{starting}}</p>
 
-
+    {{!--
     {{#ifCond verifyFailedCount '>' 0}}
         <p style="color: red; font-weight: 700;">Verification failed for {{verifyFailedCount}}  file(s)</p>
     {{/ifCond}}
@@ -26,6 +26,7 @@
     {{#ifCond verifyInprogressCount '>' 0}}
         <p style="color: yellow; font-weight: 700;">Verifying {{verifyInprogressCount}} file(s) </p>
     {{/ifCond}}
+    --}}
 </div>
 
 {{#if success.error}}
