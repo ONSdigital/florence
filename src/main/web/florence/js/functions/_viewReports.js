@@ -1,8 +1,8 @@
 function viewReports() {
 
     $.ajax({
-        url: "/zebedee/publishedcollections",
-        type: "get",
+        url: "/zebedee/publishedCollections",
+        type: "GET",
         crossDomain: true,
         success: function (collections) {
             getUnpublishedCollections(collections);
@@ -31,40 +31,54 @@ function viewReports() {
 
     function populateTable(collections) {
         var collections = collections;
+        //console.log(collections);
 
         // Build published collections objects
-        var publishedCollections = _.chain(collections.published)
-            .filter(function (collection) {
-                return collection.publishResults && collection.publishResults.length > 0;
-            })
-            .value();
+        // // var publishedCollections = _.chain(collections.published)
+        // //     .filter(function (collection) {
+        // //         return collection.publishResults && collection.publishResults.length > 0;
+        // //     })
+        // //     .value();
+        //
+        //
+        // console.log(publishedCollections);
+        // $(publishedCollections).each(function (n, coll) {
+        //     var date = publishedCollections[n].
+        //     if (coll.publishResults && coll.publishResults.length > 0) {
+        //
+        //         if (coll.publishStartDate) {
+        //             var date = coll.publishStartDate;
+        //         } else {
+        //             var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
+        //         }
+        //
+        //         publishedCollections[n].formattedDate = StringUtils.formatIsoFull(date);
+        //     }
+        // });
+        //
+        // collections["published"] = publishedCollections;
+
+        var publishedCollections = collections.published;
 
         $(publishedCollections).each(function (i) {
             publishedCollections[i].order = i;
         });
 
-        $(publishedCollections).each(function (n, coll) {
-            if (coll.publishResults && coll.publishResults.length > 0) {
-
-                if (coll.publishStartDate) {
-                    var date = coll.publishStartDate;
-                } else {
-                    var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
-                }
-
-                publishedCollections[n].formattedDate = StringUtils.formatIsoFull(date);
-            }
+        // Format the publishDate to user readable and add into JSON
+        $(publishedCollections).each(function (i) {
+            var formattedDate = collections["published"][i].publishDate;
+            collections["published"][i].formattedDate = StringUtils.formatIsoFull(formattedDate);
         });
 
-        collections["published"] = publishedCollections;
-
+        // Pass data to template 
         var reportList = templates.reportList(collections);
         $('.section').html(reportList);
 
         // Bind click on unpublished collection
         $('.unpublished').click(function() {
             var i = $(this).attr('data-collections-order');
-            viewReportDetails(collections.unpublished[i]);
+            var isPublished = false;
+            viewReportDetails(collections.unpublished[i], isPublished);
 
             selectTr($(this));
         });
@@ -72,7 +86,8 @@ function viewReports() {
         // Bind click on published collection
         $('.published').click(function () {
             var i = $(this).attr('data-collections-order');
-            viewReportDetails(collections.published[i]);
+            var isPublished = true;
+            viewReportDetails(collections.published[i], isPublished);
 
             selectTr($(this));
         });

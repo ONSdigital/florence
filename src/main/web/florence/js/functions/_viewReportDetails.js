@@ -1,75 +1,98 @@
-function viewReportDetails(collection) {
+function viewReportDetails(collection, isPublished) {
     var details, reportDetails, published, events;
 
     // get the event details
     $.ajax({
-        url: "/zebedee/collectionAudit/1234567890",
+        url: "/zebedee/collectionHistory/" + collection.id,
         type: "get",
         crossDomain: true,
         success: function (events) {
 
             // format eventDate to user readable date
             $(events).each(function (i) {
-                var formattedDate = events[i].eventDate;
+                var formattedDate = events[i].eventDetails.date;
                 events[i].formattedDate = StringUtils.formatIsoFull(formattedDate);
             });
 
             // Detect if we're loading a published collection
-            if (collection.publishEndDate || collection.publishStartDate || collection.publishResults) {
-                published = true;
-            }
+            // if (collection.publishEndDate || collection.publishStartDate || collection.publishResults) {
+            //     published = true;
+            // }
 
 
-            if (published) {
-
-                /*
-                //
-                // AJAX THE PUBLISHING TIMES
-                //
-                */
+            if (isPublished) {
 
 
-                // Load details with published data
+                $.ajax({
+                    url: "/zebedee/publishedCollections/" + collection.id,
+                    type: "GET",
+                    crossDomain: true,
+                    success: function (collection) {
 
-                if (!collection.publishResults || collection.publishResults.length === 0) {
-                    return;
-                }
+                        var collection = collection[0];
 
-                var success = collection.publishResults[collection.publishResults.length - 1];
-                var duration = (function () {
+                        //console.log(collection);
 
-                    if (collection.publishStartDate && collection.publishEndDate) {
-                        var start = new Date(collection.publishStartDate);
-                        var end = new Date(collection.publishEndDate);
-                    } else {
-                        var start = new Date(success.transaction.startDate);
-                        var end = new Date(success.transaction.endDate);
+                        var date = collection.publishEndDate;
+                        collection.formattedDate = StringUtils.formatIsoFull(date);
+
+                        // // Load details with published data
+                        //
+                        if (!collection.publishResults || collection.publishResults.length === 0) {
+                            return;
+                        }
+
+                        var success = collection.publishResults[collection.publishResults.length - 1];
+                        var duration = (function () {
+
+                            if (collection.publishStartDate && collection.publishEndDate) {
+                                var start = new Date(collection.publishStartDate);
+                                var end = new Date(collection.publishEndDate);
+                            } else {
+                                var start = new Date(success.transaction.startDate);
+                                var end = new Date(success.transaction.endDate);
+                            }
+                            return end - start;
+                        })();
+
+
+                        if (collection.publishStartDate) {
+                            var starting = StringUtils.formatIsoFullSec(collection.publishStartDate);
+                        } else {
+                            var starting = StringUtils.formatIsoFullSec(success.transaction.startDate);
+                        }
+
+                        // var verifiedCount = collection.verifiedCount;
+                        // var verifyFailedCount = collection.verifyFailedCount;
+                        // var verifyInprogressCount = collection.verifyInprogressCount;
+                        details = {
+                            name: collection.name,
+                            // verifiedCount: verifiedCount,
+                            // verifyInprogressCount: verifyInprogressCount,
+                            // verifyFailedCount: verifyFailedCount,
+                            date: collection.formattedDate,
+                            starting: starting,
+                            duration: duration,
+                            success: success
+                        };
+
+                        console.log(details);
+
+                        reportDetails = templates.reportPublishedDetails(details);
+
+                        $('.publish-selected').html(reportDetails);
+                        bindAccordions();
+
+
+
+                    },
+                    error: function (response) {
+                        handleApiError(response);
                     }
-                    return end - start;
-                })();
+                });
 
 
-                if (collection.publishStartDate) {
-                    var starting = StringUtils.formatIsoFullSec(collection.publishStartDate);
-                } else {
-                    var starting = StringUtils.formatIsoFullSec(success.transaction.startDate);
-                }
 
-                var verifiedCount = collection.verifiedCount;
-                var verifyFailedCount = collection.verifyFailedCount;
-                var verifyInprogressCount = collection.verifyInprogressCount;
-                details = {
-                    name: collection.name,
-                    verifiedCount: verifiedCount,
-                    verifyInprogressCount: verifyInprogressCount,
-                    verifyFailedCount: verifyFailedCount,
-                    date: collection.formattedDate,
-                    starting: starting,
-                    duration: duration,
-                    success: success
-                };
-
-                reportDetails = templates.reportPublishedDetails(details);
             } else {
                 // Load details with unpublished data
 
@@ -136,4 +159,3 @@ function viewReportDetails(collection) {
     });
 
 }
-
