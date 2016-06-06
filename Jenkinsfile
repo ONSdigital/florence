@@ -7,7 +7,7 @@ node {
     stage 'Build'
     def mvn = "${tool 'm3'}/bin/mvn"
     sh "${mvn} clean package dependency:copy-dependencies"
-    sh 'npm install --prefix ./src/main/web/florence'
+    sh 'npm install --no-bin-links --prefix ./src/main/web/florence'
 
     stage 'Image'
     sh 'git rev-parse --short HEAD > git_commit_id'
