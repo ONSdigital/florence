@@ -10,12 +10,12 @@
         </div>
         <div class="accordion__content js-accordion__content disable-animation">
             {{#if events}}
-                <table class="table table--section publish-times-table">
+                <table class="table table--section event-history-table">
                     <thead>
                     <tr>
-                        <th style="width:40%">Action</th>
+                        <th style="width:45%">Action</th>
                         <th style="width:30%">User</th>
-                        <th style="width:30%">Date/time</th>
+                        <th style="width:25%">Date/time</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -25,21 +25,21 @@
                             <td>{{eventDetails.user}}</td>
                             <td>{{formattedDate}}</td>
                         </tr>
-                        <!--{{#if metaData}}-->
-                            <!--<tr>-->
-                                <!--<td>-->
-                                    <!--<ul>-->
-                                        <!--{{#each metaData}}-->
-                                            <!--<li>{{@key}} ----- {{this}}</li>-->
-                                        <!--{{/each}}-->
-                                    <!--</ul>-->
-                                <!--</td>-->
-                            <!--</tr>-->
-                        <!--{{/if}}-->
+                        {{#if eventDetails.metaData}}
+                            <tr>
+                                <td>
+                                <ul class="event-meta">
+                                {{#each eventDetails.metaData}}
+                                    <li class="event-meta__item">{{@key}}: {{this}}</li>
+                                {{/each}}
+                                </ul>
+                                </td>
+                            </tr>
+                        {{/if}}
                     {{/each}}
                     </tbody>
                 </table>
-            {{else}} <p>Oops, something went twang :(</p>
+            {{else}} <p>Something went wrong - no events were returned.</p>
             {{/if}}
         </div>
     </div>
