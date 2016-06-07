@@ -305,3 +305,13 @@
         }
     }
 }
+
+.event-meta {
+
+    margin: 0;
+
+    &__item {
+        margin: 0 0 0 $lineheight;
+    }
+
+}
