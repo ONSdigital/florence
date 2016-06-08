@@ -9,6 +9,10 @@
  * @param error
  */
 function postContent(collectionId, path, content, overwriteExisting, recursive, success, error) {
+    // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
+    postToLocalStorage(collectionId, path, content);
+
+
     var safePath = checkPathSlashes(path);
     if (safePath === '/') {
         safePath = '';          // edge case for home
@@ -33,9 +37,11 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         type: 'POST',
         data: content,
         success: function (response) {
+            addLocalPostResponse(response);
             success(response);
         },
         error: function (response) {
+            addLocalPostResponse(response);
             if (error) {
                 error(response);
             } else {
@@ -43,4 +49,56 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
             }
         }
     });
+}
+
+function postToLocalStorage(collectionId, path, content) {
+    var newSaveTime = new Date();
+    var newId = "collectionId: " + collectionId;
+    var newPath = "path: " + path;
+    var newContent = "content: " + content;
+    
+    var localBackup = localStorage.getItem('localBackup');
+
+    if (localBackup == null) {
+        // If storage item doesn't exist yet initialise it with first save
+        localBackup = [
+            {
+                collectionId: newId,
+                content: newContent,
+                path: newPath,
+                saveTime: newSaveTime,
+                postResponse: ''
+            }
+        ]
+    } else {
+        // Parse string back into JSON for reading and writing
+        localBackup = JSON.parse(localBackup);
+
+        var backupLength = localBackup.length;
+
+        // Remove oldest entry if array is full
+        if (backupLength == 10) {
+            localBackup.pop();
+        }
+
+        // Add new entry to the top of the array
+        localBackup.unshift(
+            {
+                collectionId: newId,
+                content: newContent,
+                path: newPath,
+                saveTime: newSaveTime,
+                postResponse: ''
+            }
+        );
+    }
+
+    localBackup = JSON.stringify(localBackup);
+    localStorage.setItem('localBackup', localBackup);
+}
+
+function addLocalPostResponse(response) {
+    var localBackup = JSON.parse(localStorage.getItem('localBackup'));
+    localBackup[0].postResponse = response;
+    localStorage.setItem('localBackup', JSON.stringify(localBackup));
 }
