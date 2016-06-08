@@ -55,7 +55,9 @@ function postToLocalStorage(collectionId, path, content) {
     var newSaveTime = new Date();
     var newId = collectionId;
     var newPath = path;
-    var newContent = content;
+    var newContent = JSON.parse(content);
+
+    console.log(newContent);
     
     var localBackup = localStorage.getItem('localBackup');
 
