@@ -6,7 +6,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         type: 'GET',
         success: function (response) {
 
-            var collectionOwner = collectionData.collectionOwner;
+            var collectionOwner = localStorage.getItem('userType');
             response['collectionOwner'] = collectionOwner;
 
             // Send visualisations back to visualisations folder by default on browse tree load
