@@ -224,5 +224,17 @@ function setupFlorence() {
     // Reset default functions from certain elements - eg form submits
     resetPage();
 
+    // Log every click that will be changing the state or data in Florence
+    $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .nav--admin__item, .page-item', function(e) {
+        var clickEvent = {
+            time: new Date(),
+            trigger: e.target,
+            currentCollection: Florence.collection,
+            pagePath: Florence.globalVars.pagePath
+        };
+
+        console.log("Click event", clickEvent);
+    });
+
 }
 
