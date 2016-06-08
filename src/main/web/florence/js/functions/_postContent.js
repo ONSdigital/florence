@@ -53,9 +53,9 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
 
 function postToLocalStorage(collectionId, path, content) {
     var newSaveTime = new Date();
-    var newId = "collectionId: " + collectionId;
-    var newPath = "path: " + path;
-    var newContent = "content: " + content;
+    var newId = collectionId;
+    var newPath = path;
+    var newContent = content;
     
     var localBackup = localStorage.getItem('localBackup');
 
