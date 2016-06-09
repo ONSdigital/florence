@@ -446,7 +446,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
 function refreshEditNavigation() {
     getCollection(Florence.collection.id,
         success = function (collection) {
-            var pagePath = getPathName();
+            var pagePath = getPreviewUrl();
             var pageFile = pagePath + '/data.json';
             var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
             var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail());

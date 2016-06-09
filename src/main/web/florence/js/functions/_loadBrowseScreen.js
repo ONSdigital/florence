@@ -64,7 +64,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
 
             if (click) {
-                var url = getPathName();
+                var url = getPreviewUrl();
                 if (url === "/blank") {
                     treeNodeSelect('/');
                 } else {
