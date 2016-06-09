@@ -90,9 +90,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
-        editRelated(collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');   //2b deleted
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
+        editRelated(collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
         editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         editRelated(collectionId, pageData, templateData, 'relatedData', 'data');
         editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
@@ -118,8 +118,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         editRelated(collectionId, pageData, templateData, 'relatedArticles', 'article');   //2b deleted
         editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         editRelated(collectionId, pageData, templateData, 'relatedData', 'data');
@@ -201,8 +201,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
@@ -269,7 +269,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
         addFile(collectionId, pageData, 'downloads', 'file');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
@@ -318,8 +318,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         editRelated(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
         addFile(collectionId, pageData, 'downloads', 'file');
