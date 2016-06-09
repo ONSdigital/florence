@@ -27,7 +27,6 @@ function viewUserDetails(email) {
                 var html = window.templates.userDetails(user);
                 $('.collection-selected').html(html).animate({right: "0%"}, 500);
 
-
                 $('.btn-user-change-password').click(function () {
                     var currentPasswordRequired = false;
 
@@ -69,14 +68,7 @@ function viewUserDetails(email) {
                 $('.collection-selected .btn-collection-cancel').click(function () {
                     $('.collection-selected').stop().animate({right: "-50%"}, 500);
                     $('.collections-select-table tbody tr').removeClass('selected');
-                    // Wait until the animation ends
-                    setTimeout(function () {
-                        //viewController('users');
-                    }, 500);
                 });
-
-
-                //console.log('a: ' + isAdmin + ' e: ' + isEditor);
             },
             function (error) {handleApiError(error);},
             email
