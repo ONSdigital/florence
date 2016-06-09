@@ -98,11 +98,11 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             if (menuItem.is('#browse')) {
                 loadBrowseScreen(collectionId, 'click', collectionData);
             } else if (menuItem.is('#create')) {
-                Florence.globalVars.pagePath = getPathName();
+                Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPathName();
+                Florence.globalVars.pagePath = getPreviewUrl();
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
