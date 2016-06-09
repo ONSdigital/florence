@@ -3,7 +3,6 @@ function methodologyDownloadEditor(collectionId, data) {
   var newFiles = [], newPdfFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
-  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -42,44 +41,24 @@ function methodologyDownloadEditor(collectionId, data) {
   $("#contactName").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.name = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#contactEmail").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.email = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#contactTelephone").on('input', function () {
     $(this).textareaAutoSize();
     data.description.contact.telephone = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   if (!data.description.releaseDate) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
     });
   } else {
     dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
     });
   }
   $("#keywordsTag").tagit({
@@ -90,18 +69,10 @@ function methodologyDownloadEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(',');
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
 
   // Save
@@ -123,7 +94,6 @@ function methodologyDownloadEditor(collectionId, data) {
   });
 
   function save(onSave) {
-    clearTimeout(timeoutId);
     // Sections
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata

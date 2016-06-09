@@ -1,392 +1,62 @@
-// Pattern-library
-@import "pattern-library/main";
-
-
-//Partials
-@import "partials/grid";
-@import "partials/typography";
-
-
-// Third-party
-//@import "third-party/epiceditor/themes/base/epiceditor";
-//@import "third-party/epiceditor/themes/editor/epic-dark";
-//@import "third-party/epiceditor/themes/editor/epic-light";
-//@import "third-party/epiceditor/themes/preview/bartik";
-//@import "third-party/epiceditor/themes/preview/github";
-//@import "third-party/epiceditor/themes/preview/preview-dark";
-
-
-html{
-	height: 100%;
-}
-
-body {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-}
-
-a {
-  outline : none;
-}
-
-h1 {
-	text-align: center;
-}
-
-table {
-
-	@extend .col--12;
-
-	margin: 30px auto;
-
-	tr {
-		border: 1px solid #eee;
-
-		td {
-			padding: 10px;
-		}
-
-	}
-}
-
-/*.fl-container {
-	overflow: hidden;
-	height: 100%;
-	h1, h2, h3, h4, h5 {
-		margin: 0;
-	}
-}*/
-
-.fl-brand {
-	font-size: 12px;
-	font-style: italic;
-	margin: 0;
-	/*background: #1d2026 url(../img/flo-logo.png) no-repeat center 10px;
-	background-size: 100px auto;
-	height: 120px;
-	margin: -15px !important;*/
-}
-
-.fl-main-menu {
-	/*border-top: 1px solid #111010;*/
-	/*border-bottom: 1px solid #282b31;*/
-	border-top: 1px solid #1d2026;
-	padding: 0;
-	margin-left: -15px;
-	margin-right: -15px;
-	margin-top: 0;
-
-	&__item {
-		display: block;
-		list-style: none;
-		border-bottom: 1px solid #1d2026;
-		&--approve {
-			/*@extend .icon-edit;*/
-		}
-	}
-
-	&__link{
-	display: block;
-	padding: 20px 15px;
-	color: #6c727b;
-	text-decoration: none;
-	border-top: 1px solid transparent;
-
-		&:hover {
-			color: #d4d5d7;
-			text-decoration: none;
-		}
-
-		&:visited {
-			color: #d4d5d7;
-			text-decoration: none;
-		}
-
-		&--active {
-			background-color: #2a2f39;
-			-webkit-box-shadow: -7px 0px 7px 5px rgba(0,0,0,0.1);
-			-moz-box-shadow: -7px 0px 7px 5px rgba(0,0,0,0.1);
-			box-shadow: -7px 0px 7px 5px rgba(0,0,0,0.1);
-			color: #d4d5d7;
-			border-top: 1px solid #2c313c;
-			border-left: 4px solid #d4d5d7;
-			padding-left: 11px;
-		}
-	}
-
-}
-
-
-.fl-admin-menu {
-	margin: 0;
-	padding: 0;
-	float: right;
-	&__item {
-		display: inline-block;
-		border: 1px solid #999;
-	}
-	&__link {
-		display: block;
-		padding: 10px 15px;
-		height: 48px;
-	}
-}
-
-
-.fl-editor {
-	width: 100%;
-	height: 100%;
-	/*padding: 60px 15px;*/
-	padding: 0 15px 15px 15px;
-	/*margin: -15px;*/
-	border: 0px;
-	background-color: #272822;
-	color: #74cee7;
-
-	-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
-	-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
-	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
-	font-family: 'Source Code Pro';
-	font-size: 13px;
-	border-top: 0px solid #3d3d3a;
-
-	&__metadata {
-		// border-top: 1px solid #3d3d3a;
-		border-bottom: 1px solid #3d3d3a;
-		margin: 0 -15px;
-		padding: 15px;
-	}
-
-	&__correction {
-		// border-top: 1px solid #3d3d3a;
-		border-bottom: 1px solid #3d3d3a;
-		margin: 0 -15px 30px -15px;
-		padding: 15px;
-	}
-
-	&__headline {
-		width: 100%;
-		height: 100px;
-		-webkit-box-sizing: border-box;
-		box-sizing: border-box;
-		border-radius: 0px;
-		outline: none;
-		resize: none;
-	}
-}
-
-.fl-view {
-	height: 100%;
-	padding-top: 50px;
-}
-
-.fl-panel {
-	@extend .col;
-	height: 100%;
-	&--admin-bar {
-		@extend .col--12;
-		height: 50px;
-		overflow: hidden;
-		background: #222;
-		padding: 0 inherit 0 inherit;
-		position: fixed;
-	}
-	&--menu {
-		@extend .col--1;
-		padding: 50px 15px 15px 15px;
-		background-color: #232831;
-		color: #6c727b;
-		font-family: 'Lato', sans-serif;
-		font-weight: 300;
-		font-size: 14px;
-		-webkit-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
-		-moz-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
-		box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
-	}
-	&--menu-inactive {
-	}
-	&--sub-menu {
-		/*@extend .col--3;*/
-		// padding: 50px 0 0 0;
-		padding: 0;
-		@extend .col--4;
-		// display: none;
-		background-color: #3d3d3a;
-		color: #fff;
-		-webkit-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
-		-moz-box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
-		box-shadow: inset -5px 0px 5px 0px rgba(0,0,0,0.1);
-	}
-	&--editor {
-		@extend .col--12;
-		/*background-color: #3d3d3a;*/
-		padding: 0 0 50px 0;
-		overflow: hidden;
-		position: relative;
-
-		&__breadcrumb {
-			height: 100px;
-			overflow: hidden;
-			position: absolute;
-			top: 0;
-			width: 100%;
-			padding: 0px 15px;
-		}
-
-		&__nav {
-			height: 50px;
-			overflow: hidden;
-			position: absolute;
-			bottom: 0;
-			width: 100%;
-			/*background: #272822;*/
-			border-top: 1px solid #111;
-		}
-
-		&__publish-owner {
-			height: 35px;
-			width: 100%;
-			margin: 10px 0 5px 0;
-			padding: 5px;
-			font-family: 'Source Code Pro';
-			font-size: 13px;
-		}
-
-		&__publish-id {
-			height: 35px;
-			width: 100%;
-			margin: 5px 0;
-			padding: 5px;
-			font-family: 'Source Code Pro';
-			font-size: 13px;
-		}
-	}
-
-	&--preview {
-		@extend .col--11;
-		/*position: relative;*/
-		// padding: 50px 0 0 0;
-		padding: 0;
-		overflow-y: scroll;
-
-		&__inner {
-			position: relative;
-			overflow-y: scroll;
-			min-height: 100%;
-
-			&:before {
-				content: "";
-				width: 100%;
-				min-height: 100%;
-				background-color: rgba(0,0,0,0.75);
-				/*background-color: #000;
-				opacity: 0.75;*/
-				/*background: transparent url(../img/semi-transparent-bg.png) repeat 0 0;*/
-				position: absolute;
-				z-index: 10000;
-				top: 0;
-				left: 0;
-			}
-
-			&--active {
-
-				&:before {
-					display: none;
-			}
-		}
-		}
-
-		&__content {
-			padding: 0;
-			height: 100%;
-			width: 100%;
-			position: absolute;
-		}
-	}
-
-	&--collections {
-		@extend .col--7;
-		height: 100%;
-
-		&__not-selected{
-			float: none;
-			margin: 0 auto;
-		}
-
-	  	&__selected{
-		  background: #88b2ee;
-		}
-	}
-
-	&--collection-details {
-		@extend .col--5;
-		height: 100%;
-		background: #eee;
-	}
-
-}
-
-
-
-.fl-collections-heading {
-	// @extend .col--12;
-	// text-align: center;
-}
-
-.fl-collections-table {
-
-}
-
-
-
-/*--generic--*/
-.fl-button {
-	text-align: center;
-	display: block;
-	&--big{
-
-	}
-
-	&--center {
-		margin: 0 auto;
-	}
-}
-
-
-
-
-
-/*Hardcore overides!*/
-a.fl-main-menu__link:hover {
-	text-decoration: none !important;
-}
-
-a.fl-main-menu__link:active, a.fl-main-menu__link:focus {
-	color: #d4d5d7;
-	text-decoration: inherit;
-	outline: 0;
-}
-
-h1.fl-brand {
-	font-family: 'Lato', sans-serif;
-	font-weight: 300;
-	font-size: 14px;
-}
-
-.fl-panel--editor__publish-owner, .fl-panel--editor__publish-id {
-	padding: 5px !important;
-}
+/** To be refactored **/
 
+@import "partials/reset";
+@import "partials/colour-palette";
+@import "partials/fonts";
+@import "elements/typography"; // In new directory
+@import "patterns/grid"; // In new directory
+@import "partials/elements";
+@import "partials/base";
+@import "partials/utilities";
 
+//For code that needs refactoring - empty regularly
+@import "partials/shame";
 
+//Views
+@import "partials/collections";
+@import "partials/workspace";
+@import "partials/publish";
 
+//JQUI
+@import "partials/jqui";
 
 
+/** Use these directories for refactored SCSS **/
 
+// Elements
+@import "elements/tables";
 
+// Components
+@import "components/accordion";
 
+// Patterns
 
 
+/* proposed structure:
 
+SCSS
+	Elements
+		buttons
+		tables
+		lists
+		inputs
+		type
 
+
+	Components
+		nav
+		iframe
+		utilities
+		icons
+		accordions
+		show/hide
+		tabs
+		tree
+
+	Patterns
+		slider
+		workspace
+		grid
+		screens
+
+*/

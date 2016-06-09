@@ -31,6 +31,7 @@ function viewTeams() {
         return;
       }
 
+      teamName = teamName.trim();
       postTeam(teamName);
     });
   }

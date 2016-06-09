@@ -3,11 +3,9 @@ function compendiumDataEditor(collectionId, data) {
     var newFiles = [], newRelatedDocuments = [], newRelatedData = [], newRelatedQmi = [], newRelatedMethodology = [];
     var parentUrl = getParentPage(data.uri);
     var setActiveTab, getActiveTab;
-    var timeoutId;
 
     //Add parent link onto page
     loadParentLink(collectionId, data, parentUrl);
-
 
     $(".edit-accordion").on('accordionactivate', function (event, ui) {
         setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -28,29 +26,17 @@ function compendiumDataEditor(collectionId, data) {
     $("#summary").on('input', function () {
         $(this).textareaAutoSize();
         data.description.summary = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate) {
         $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
             data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(function () {
-                autoSaveMetadata(collectionId, data);
-            }, 3000);
         });
     } else {
         dateTmp = data.description.releaseDate;
         var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
         $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
             data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(function () {
-                autoSaveMetadata(collectionId, data);
-            }, 3000);
         });
     }
     //} else {
@@ -59,10 +45,6 @@ function compendiumDataEditor(collectionId, data) {
     $("#nextRelease").on('input', function () {
         $(this).textareaAutoSize();
         data.description.nextRelease = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     if (!data.description.contact) {
         data.description.contact = {};
@@ -70,34 +52,18 @@ function compendiumDataEditor(collectionId, data) {
     $("#contactName").on('input', function () {
         $(this).textareaAutoSize();
         data.description.contact.name = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     $("#contactEmail").on('input', function () {
         $(this).textareaAutoSize();
         data.description.contact.email = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     $("#contactTelephone").on('input', function () {
         $(this).textareaAutoSize();
         data.description.contact.telephone = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     $("#datasetId").on('input', function () {
         $(this).textareaAutoSize();
         data.description.datasetId = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     $("#keywordsTag").tagit({
         availableTags: data.description.keywords,
@@ -107,18 +73,10 @@ function compendiumDataEditor(collectionId, data) {
     });
     $('#keywords').on('change', function () {
         data.description.keywords = $('#keywords').val().split(',');
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     $("#metaDescription").on('input', function () {
         $(this).textareaAutoSize();
         data.description.metaDescription = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
 
     /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
@@ -132,10 +90,6 @@ function compendiumDataEditor(collectionId, data) {
     };
     $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
         data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
 
     // Save
@@ -166,7 +120,6 @@ function compendiumDataEditor(collectionId, data) {
     });
 
     function save() {
-        clearTimeout(timeoutId);
         // Files are uploaded. Save metadata
         var orderFile = $("#sortable-file").sortable('toArray');
         $(orderFile).each(function (indexF, nameF) {
