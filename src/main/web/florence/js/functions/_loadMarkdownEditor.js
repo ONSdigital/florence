@@ -31,13 +31,11 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     } else {
         $('.btn-markdown-editor-cancel').on('click', function () {
             $('.markdown-editor').stop().fadeOut(200).remove();
-            clearTimeout(timeoutId);
         });
     }
 
     $(".btn-markdown-editor-save").click(function () {
         onSave(markdown);
-        clearTimeout(timeoutId);
     });
 
     if (notEmpty) {
@@ -47,7 +45,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
                 sweetAlert('Please add some text', "This can't be left empty");
             } else {
                 onSave(markdown);
-                clearTimeout(timeoutId);
                 $('.markdown-editor').stop().fadeOut(200).remove();
             }
         });
@@ -55,7 +52,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         $(".btn-markdown-editor-exit").click(function () {
             var markdown = $('#wmd-input').val();
             onSave(markdown);
-            clearTimeout(timeoutId);
             $('.markdown-editor').stop().fadeOut(200).remove();
         });
     }
@@ -93,10 +89,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
     $("#wmd-input").on('keyup', function () {
         markDownEditorSetLines();
-    });
-
-    $("#wmd-input").on('input', function () {
-        autoSave(onSave);
     });
 
     // http://stackoverflow.com/questions/6140632/how-to-handle-tab-in-textarea
