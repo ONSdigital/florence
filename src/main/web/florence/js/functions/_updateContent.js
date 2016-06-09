@@ -1,10 +1,9 @@
 function updateContent(collectionId, path, content, redirectToPath) {
-    var redirect = redirectToPath;
     putContent(collectionId, path, content,
         success = function () {
             Florence.Editor.isDirty = false;
-            if (redirect) {
-                createWorkspace(redirect, collectionId, 'edit');
+            if (redirectToPath) {
+                createWorkspace(redirectToPath, collectionId, 'edit');
                 return;
             } else {
                 //createWorkspace(path, collectionId, 'edit');
