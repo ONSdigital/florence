@@ -25,6 +25,24 @@
                             <td>{{eventDetails.user}}</td>
                             <td>{{formattedDate}}</td>
                         </tr>
+                        {{#if uri}}
+                            <tr>
+                                <td>
+                                    <ul class="event-meta">
+                                        <li class="event-meta__item">URI: {{uri}}</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        {{/if}}
+                        {{#if exceptionText}}
+                            <tr>
+                                <td>
+                                    <ul class="event-meta">
+                                        <li class="event-meta__item">Error Text: {{exceptionText}}</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        {{/if}}
                         {{#if eventDetails.metaData}}
                             <tr>
                                 <td>
