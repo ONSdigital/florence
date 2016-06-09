@@ -180,7 +180,7 @@ function staticLandingPageEditor(collectionId, data) {
 
   sortableContent();
 
-  editExtLink(collectionId, data, 'links', 'link');
+  renderExternalLinkAccordionSection(collectionId, data, 'links', 'link');
 
   // Save
   var editNav = $('.edit-nav');
