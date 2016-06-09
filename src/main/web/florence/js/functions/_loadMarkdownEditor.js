@@ -148,7 +148,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
 function markdownEditor() {
 
-
     var converter = new Markdown.getSanitizingConverter();
 
     // output chart tag as text instead of the actual tag.
@@ -191,15 +190,5 @@ function markdownEditor() {
 
     editor.run();
     markDownEditorSetLines();
-}
-
-var timeoutId;
-function autoSave(onSave) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-        // Runs 5 second (5000 ms) after the last change
-        var markdown = $('#wmd-input').val();
-        onSave(markdown);
-    }, 5000);
 }
 
