@@ -5,7 +5,7 @@
  * @param isPageComplete - if present page has been approved
  */
 
-function makeEditSections(collectionId, pageData, isPageComplete) {
+function renderAccordionSections(collectionId, pageData, isPageComplete) {
 
     var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
     templateData.isPageComplete = isPageComplete;

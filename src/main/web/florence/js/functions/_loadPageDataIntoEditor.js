@@ -56,10 +56,10 @@ function loadPageDataIntoEditor(path, collectionId, click) {
             if (iframe !== pageData.uri) {
                 setTimeout(loadPageDataIntoEditor(path, collectionId), 200);
             } else {
-                makeEditSections(collectionId, pageData, isPageComplete);
+                renderAccordionSections(collectionId, pageData, isPageComplete);
             }
         } else {
-            makeEditSections(collectionId, pageData, isPageComplete);
+            renderAccordionSections(collectionId, pageData, isPageComplete);
         }
     });
 }
