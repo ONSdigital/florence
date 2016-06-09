@@ -6,10 +6,20 @@
  * @param idField - HTML id for the template
  */
 function renderMarkdownContentAccordionSection (collectionId, data, field, idField) {
+
+  // the list of content sections to render in accordion section.
   var list = data[field];
+
+  // a view model including the list and field name the list is contained in.
   var dataTemplate = {list: list, idField: idField};
+
+  // render the HTML for the accordion section.
   var html = templates.editorContent(dataTemplate);
+
+  // inject the HTML into the accordion section
   $('#'+ idField).replaceWith(html);
+
+  // attach event handlers for the buttons.
   initialiseMarkdownContentAccordionSection(collectionId, data, field, idField)
 }
 
@@ -82,11 +92,19 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
   });
 
   function sortable() {
+
+    var sortableStartPosition;
+
     $('#sortable-' + idField).sortable({
-      stop: function(){
+      stop: function(event, ui){
         $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
           $(this).empty().append(index + 1);
         });
+        console.log("sortable update: Start: " + sortableStartPosition + " now: " + ui.item.index());
+      },
+      start: function(event, ui) {
+        sortableStartPosition = ui.item.index();
+        console.log("sortable start: " + sortableStartPosition);
       }
     });
   }
