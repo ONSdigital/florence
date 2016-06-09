@@ -8,28 +8,9 @@
 function checkRenameUri(collectionId, data, renameUri, onSave) {
 
     if (renameUri && !data.description.language && !data.description.edition) {   // It will not change welsh url + do not rename content with edition.
-        doRename();// askUserIfTheyAreSure();
+        doRename();
     } else {
         onSave(collectionId, data.uri, JSON.stringify(data));
-    }
-
-    function askUserIfTheyAreSure() {
-        swal({
-            title: "Warning",
-            text: "You have changed the title or edition and this could change the uri. Are you sure you want to proceed?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Change url",
-            cancelButtonText: "Cancel",
-            closeOnConfirm: true
-        }, function (result) {
-            if (result === true) {
-                doRename();
-            } else {
-                refreshPreview(data.uri);
-                loadPageDataIntoEditor(data.uri, collectionId);
-            }
-        });
     }
 
     function doRename() {
@@ -37,6 +18,7 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
         if (data.description.edition) {
             // CH 29/04/2016 disabling the URI change of content with an edition as it breaks the link of previous editions
             //moveContentWithEditionInUri();
+            onSave(collectionId, data.uri, JSON.stringify(data));
         } else if (data.type === 'static_adhoc') {
             moveAdHoc();
         } else {
