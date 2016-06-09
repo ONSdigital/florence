@@ -129,9 +129,6 @@ function bulletinEditor(collectionId, data) {
         $(orderSection).each(function (indexS, nameS) {
             var markdown = data.sections[parseInt(nameS)].markdown;
             var title = $('#section-title_' + nameS).val();
-
-            console.log("section: " + nameS + " " + title)
-
             newSections[indexS] = {title: title, markdown: markdown};
         });
         data.sections = newSections;
