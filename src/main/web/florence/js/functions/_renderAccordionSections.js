@@ -5,7 +5,7 @@
  * @param isPageComplete - if present page has been approved
  */
 
-function makeEditSections(collectionId, pageData, isPageComplete) {
+function renderAccordionSections(collectionId, pageData, isPageComplete) {
 
     var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
     templateData.isPageComplete = isPageComplete;
@@ -60,7 +60,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'taxonomy_landing_page') {
         var html = templates.workEditT2(templateData);
         $('.workspace-menu').html(html);
-        editRelated(collectionId, pageData, templateData, 'highlightedLinks', 'highlights');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'highlightedLinks', 'highlights');
         accordion();
         t2Editor(collectionId, pageData);
     }
@@ -68,12 +68,12 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'product_page') {
         var html = templates.workEditT3(templateData);
         $('.workspace-menu').html(html);
-        editRelated(collectionId, pageData, templateData, 'items', 'timeseries');
-        editRelated(collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
-        editRelated(collectionId, pageData, templateData, 'relatedArticles', 'articles');
-        editRelated(collectionId, pageData, templateData, 'datasets', 'datasets');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'items', 'timeseries');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedArticles', 'articles');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'datasets', 'datasets');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         accordion();
         t3Editor(collectionId, pageData);
     }
@@ -90,16 +90,16 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
-        editRelated(collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');   //2b deleted
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedData', 'data');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'data');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         addFile(collectionId, pageData, 'pdfTable', 'pdf');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -118,16 +118,16 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
-        editRelated(collectionId, pageData, templateData, 'relatedArticles', 'article');   //2b deleted
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedData', 'data');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedArticles', 'article');   //2b deleted
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'data');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         addFile(collectionId, pageData, 'pdfTable', 'pdf');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -147,13 +147,13 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
             loadImagesList(collectionId, pageData);
         }
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedData', 'data');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'data');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         addFile(collectionId, pageData, 'downloads', 'file');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
         accordion();
@@ -165,11 +165,11 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         $('.workspace-menu').html(html);
         editMarkdownOneObject(collectionId, pageData, 'section');
         editMarkdownWithNoTitle(collectionId, pageData, 'notes', 'note');
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedData', 'timeseries');
-        editRelated(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'timeseries');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -179,10 +179,10 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'compendium_landing_page') {
         var html = templates.workEditT6(templateData);
         $('.workspace-menu').html(html);
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedData', 'data');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'data');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -201,12 +201,12 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -216,10 +216,10 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'compendium_data') {
         var html = templates.workEditT8Compendium(templateData);
         $('.workspace-menu').html(html);
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         addFileWithDetails(collectionId, pageData, 'downloads', 'file');
         editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
         accordion();
@@ -269,7 +269,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
         addFile(collectionId, pageData, 'downloads', 'file');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
@@ -282,8 +282,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         addFile(collectionId, pageData, 'downloads', 'file');
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
         accordion();
         qmiEditor(collectionId, pageData);
     }
@@ -318,10 +318,10 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        editMarkdown(collectionId, pageData, 'sections', 'section');
-        editMarkdown(collectionId, pageData, 'accordion', 'tab');
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
         addFile(collectionId, pageData, 'downloads', 'file');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
         //editTopics (collectionId, pageData, templateData, 'topics', 'topics');  //ready 2b used
@@ -336,8 +336,8 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         addFile(collectionId, pageData, 'downloads', 'file');
         addFile(collectionId, pageData, 'pdfDownloads', 'pdfFile');
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -349,10 +349,10 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         $('.workspace-menu').html(html);
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
         addDataset(collectionId, pageData, 'datasets', 'edition');
-        editRelated(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
-        editRelated(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        editRelated(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -384,9 +384,9 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'prerelease');
         editDate(collectionId, pageData, templateData, 'dateChanges', 'changeDate');
-        editExtLink(collectionId, pageData, 'links', 'link');
-        //editRelated (collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        //editRelated (collectionId, pageData, templateData, 'relatedDatasets', 'data');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
+        //renderRelatedItemAccordionSection (collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        //renderRelatedItemAccordionSection (collectionId, pageData, templateData, 'relatedDatasets', 'data');
         accordion();
         releaseEditor(collectionId, pageData, templateData);
     }
@@ -446,7 +446,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
 function refreshEditNavigation() {
     getCollection(Florence.collection.id,
         success = function (collection) {
-            var pagePath = getPathName();
+            var pagePath = getPreviewUrl();
             var pageFile = pagePath + '/data.json';
             var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
             var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail());

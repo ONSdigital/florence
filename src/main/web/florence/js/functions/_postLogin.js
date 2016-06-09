@@ -52,7 +52,7 @@ function postLogin(email, password) {
 function getPublisherType(permission) {
     // Store in localStorage publisher type
     if (permission.admin) {
-        localStorage.setItem("userType", "ADMIN");
+        localStorage.setItem("userType", "PUBLISHING_SUPPORT");
     } else if (permission.editor && !permission.dataVisPublisher) {
         localStorage.setItem("userType", "PUBLISHING_SUPPORT");
     } else if (permission.editor && permission.dataVisPublisher) {

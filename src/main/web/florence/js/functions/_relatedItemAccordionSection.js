@@ -7,25 +7,25 @@
  * @param idField - HTML id for the template
  */
 
-function editRelated(collectionId, data, templateData, field, idField) {
+function renderRelatedItemAccordionSection(collectionId, data, templateData, field, idField) {
     var list = templateData[field];
-    var dataTemplate = createRelatedTemplate(idField, list);
+    var dataTemplate = createRelatedItemAccordionSectionViewModel(idField, list);
     var html = templates.editorRelated(dataTemplate);
     $('#' + idField).replaceWith(html);
-    initialiseRelated(collectionId, data, templateData, field, idField);
+    initialiseRelatedItemAccordionSection(collectionId, data, templateData, field, idField);
     resolveTitle(collectionId, data, templateData, field, idField);
     $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 }
 
-function refreshRelated(collectionId, data, templateData, field, idField) {
+function refreshRelatedItemAccordionSection(collectionId, data, templateData, field, idField) {
     var list = templateData[field];
-    var dataTemplate = createRelatedTemplate(idField, list);
+    var dataTemplate = createRelatedItemAccordionSectionViewModel(idField, list);
     var html = templates.editorRelated(dataTemplate);
     $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
-    initialiseRelated(collectionId, data, templateData, field, idField);
+    initialiseRelatedItemAccordionSection(collectionId, data, templateData, field, idField);
 }
 
-function createRelatedTemplate(idField, list) {
+function createRelatedItemAccordionSectionViewModel(idField, list) {
     var dataTemplate;
     if (idField === 'article') {
         dataTemplate = {list: list, idField: idField, idPlural: 'articles (DO NOT USE. TO BE DELETED)'};
@@ -47,13 +47,13 @@ function createRelatedTemplate(idField, list) {
     return dataTemplate;
 }
 
-function initialiseRelated(collectionId, data, templateData, field, idField) {
+function initialiseRelatedItemAccordionSection(collectionId, data, templateData, field, idField) {
     // Load
     if (!data[field] || data[field].length === 0) {
-        editRelated['lastIndex' + field] = 0;
+        renderRelatedItemAccordionSection['lastIndex' + field] = 0;
     } else {
         $(data[field]).each(function (index) {
-            editRelated['lastIndex' + field] = index + 1;
+            renderRelatedItemAccordionSection['lastIndex' + field] = index + 1;
 
             // Delete
             $('#' + idField + '-delete_' + index).click(function () {
@@ -82,7 +82,7 @@ function initialiseRelated(collectionId, data, templateData, field, idField) {
                             success = function () {
                                 Florence.Editor.isDirty = false;
                                 refreshPreview(data.uri);
-                                refreshRelated(collectionId, data, templateData, field, idField);
+                                refreshRelatedItemAccordionSection(collectionId, data, templateData, field, idField);
                             },
                             error = function (response) {
                                 if (response.status === 400) {
@@ -316,6 +316,6 @@ function resolveTitle(collectionId, data, templateData, field, idField) {
     });
 
     $.when.apply($, ajaxRequest).then(function () {
-        refreshRelated(collectionId, data, templateData, field, idField);
+        refreshRelatedItemAccordionSection(collectionId, data, templateData, field, idField);
     });
 }

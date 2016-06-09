@@ -3,7 +3,6 @@ function t1EditorCensus(collectionId, data, templateData) {
   var newBlocks = [], newImage = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
-  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -25,10 +24,6 @@ function t1EditorCensus(collectionId, data, templateData) {
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
@@ -38,18 +33,10 @@ function t1EditorCensus(collectionId, data, templateData) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(',');
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
 
   // Save
@@ -71,7 +58,6 @@ function t1EditorCensus(collectionId, data, templateData) {
   });
 
   function save(onSave) {
-    clearTimeout(timeoutId);
     // Blocks
     var orderBlocks = $("#sortable-block").sortable('toArray');
     $(orderBlocks).each(function (indexB, titleB) {
