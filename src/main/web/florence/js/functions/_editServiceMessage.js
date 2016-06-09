@@ -1,5 +1,4 @@
 function editServiceMessage(collectionId, data) {
-  var timeoutId;
   if (!data.serviceMessage) {
     data.serviceMessage = '';
   }
@@ -11,16 +10,10 @@ function editServiceMessage(collectionId, data) {
   $("#srv-msg-txt").on('input', function () {
     $(this).textareaAutoSize();
     data.serviceMessage = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-      refreshPreview('');
-    }, 3000);
   });
 
   //delete
   $('#srv-msg-delete').click(function () {
-    clearTimeout(timeoutId);
     swal({
       title: "Warning",
       text: "Are you sure you want to delete?",
