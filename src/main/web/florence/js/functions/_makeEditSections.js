@@ -99,7 +99,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         addFile(collectionId, pageData, 'pdfTable', 'pdf');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -127,7 +127,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         addFile(collectionId, pageData, 'pdfTable', 'pdf');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -153,7 +153,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         addFile(collectionId, pageData, 'downloads', 'file');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
         accordion();
@@ -206,7 +206,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
@@ -384,7 +384,7 @@ function makeEditSections(collectionId, pageData, isPageComplete) {
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'prerelease');
         editDate(collectionId, pageData, templateData, 'dateChanges', 'changeDate');
-        editExtLink(collectionId, pageData, 'links', 'link');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         //renderRelatedItemAccordionSection (collectionId, pageData, templateData, 'relatedDocuments', 'document');
         //renderRelatedItemAccordionSection (collectionId, pageData, templateData, 'relatedDatasets', 'data');
         accordion();
