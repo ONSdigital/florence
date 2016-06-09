@@ -19,7 +19,7 @@ function editIntAndExtLinks(collectionId, data, templateData, field, idField) {
         }
     });
     var list = templateData[field];
-    var dataTemplate = createRelatedTemplate(idField, list);
+    var dataTemplate = createRelatedItemAccordionSectionViewModel(idField, list);
     var html = templates.editorRelated(dataTemplate);
     $('#' + idField).replaceWith(html);
     initialiseLinks(collectionId, data, templateData, field, idField);
@@ -28,7 +28,7 @@ function editIntAndExtLinks(collectionId, data, templateData, field, idField) {
 
 function refreshLinks(collectionId, data, templateData, field, idField) {
     var list = templateData[field];
-    var dataTemplate = createRelatedTemplate(idField, list);
+    var dataTemplate = createRelatedItemAccordionSectionViewModel(idField, list);
     var html = templates.editorRelated(dataTemplate);
     $('#sortable-' + idField).replaceWith($(html).find('#sortable-' + idField));
     initialiseLinks(collectionId, data, templateData, field, idField);
