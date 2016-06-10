@@ -1,6 +1,6 @@
 function bulletinEditor(collectionId, data) {
 
-    var newChart = [], newTable = [], newImage = [], newBulletin = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newFiles = [];
+    var newChart = [], newTable = [], newImage = [], newLinks = [], newFiles = [];
     var setActiveTab, getActiveTab;
     var renameUri = false;
 
@@ -26,22 +26,19 @@ function bulletinEditor(collectionId, data) {
         $(this).textareaAutoSize();
         data.description.edition = $(this).val();
     });
-    //if (!Florence.collection.date) {                        //overwrite scheduled collection date
+
     if (!data.description.releaseDate) {
         $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
             data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
         });
     } else {
-        //dateTmp = $('#releaseDate').val();
         dateTmp = data.description.releaseDate;
         var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
         $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
             data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
         });
     }
-    //} else {
-    //    $('.release-date').hide();
-    //}
+
     $("#nextRelease").on('input', function () {
         $(this).textareaAutoSize();
         data.description.nextRelease = $(this).val();
@@ -123,6 +120,9 @@ function bulletinEditor(collectionId, data) {
     });
 
     function save(onSave) {
+
+        Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
         // charts
         var orderChart = $("#sortable-chart").sortable('toArray');
         $(orderChart).each(function (indexCh, nameCh) {
@@ -153,30 +153,6 @@ function bulletinEditor(collectionId, data) {
             newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
         });
         data.images = newImage;
-        // Related bulletins TO BE DELETED
-        var orderBulletin = $("#sortable-bulletin").sortable('toArray');
-        $(orderBulletin).each(function (indexB, nameB) {
-            var uri = data.relatedBulletins[parseInt(nameB)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newBulletin[indexB] = {uri: safeUri};
-        });
-        data.relatedBulletins = newBulletin;
-        // Related documents
-        var orderDocument = $("#sortable-document").sortable('toArray');
-        $(orderDocument).each(function (indexDoc, nameDoc) {
-            var uri = data.relatedDocuments[parseInt(nameDoc)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newDocuments[indexDoc] = {uri: safeUri};
-        });
-        data.relatedDocuments = newDocuments;
-        // Related data
-        var orderData = $("#sortable-data").sortable('toArray');
-        $(orderData).each(function (indexD, nameD) {
-            var uri = data.relatedData[parseInt(nameD)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newData[indexD] = {uri: safeUri};
-        });
-        data.relatedData = newData;
         // External links
         var orderLink = $("#sortable-link").sortable('toArray');
         $(orderLink).each(function (indexL, nameL) {
@@ -185,22 +161,6 @@ function bulletinEditor(collectionId, data) {
             newLinks[indexL] = {uri: link, title: displayText};
         });
         data.links = newLinks;
-        // qmi
-        var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
-        $(orderRelatedQmi).each(function (indexM, nameM) {
-            var uri = data.relatedMethodology[parseInt(nameM)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedQmi[indexM] = {uri: safeUri};
-        });
-        data.relatedMethodology = newRelatedQmi;
-        // methodology
-        var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-        $(orderRelatedMethodology).each(function (indexM, nameM) {
-            var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedMethodology[indexM] = {uri: safeUri};
-        });
-        data.relatedMethodologyArticle = newRelatedMethodology;
         // Files are uploaded. Save metadata
         var orderFile = $("#sortable-pdf").sortable('toArray');
         $(orderFile).each(function (indexF, nameF) {
