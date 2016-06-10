@@ -1,13 +1,11 @@
 function compendiumChapterEditor(collectionId, data) {
 
-    var newChart = [], newTable = [], newImage = [], newRelatedDocuments = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [];
+    var newChart = [], newTable = [], newImage = [], newLinks = [];
     var parentUrl = getParentPage(data.uri);
     var setActiveTab, getActiveTab;
 
-
     //Add parent link onto page
     loadParentLink(collectionId, data, parentUrl);
-
 
     $(".edit-accordion").on('accordionactivate', function (event, ui) {
         setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -29,7 +27,6 @@ function compendiumChapterEditor(collectionId, data) {
         $(this).textareaAutoSize();
         data.description.headline = $(this).val();
     });
-    //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate) {
         $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
             data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
@@ -41,9 +38,6 @@ function compendiumChapterEditor(collectionId, data) {
             data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
         });
     }
-    //} else {
-    //    $('.release-date').hide();
-    //}
     $("#nextRelease").on('input', function () {
         $(this).textareaAutoSize();
         data.description.nextRelease = $(this).val();
@@ -104,11 +98,6 @@ function compendiumChapterEditor(collectionId, data) {
         updateContent(collectionId, data.uri, JSON.stringify(data));
     });
 
-    //editNav.on('click', '#save-and-exit', function () {
-    //  save();
-    //  updateContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
-    //});
-
     // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
         save();
@@ -123,6 +112,9 @@ function compendiumChapterEditor(collectionId, data) {
 
 
     function save() {
+
+        Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
         // charts
         var orderChart = $("#sortable-chart").sortable('toArray');
         $(orderChart).each(function (indexCh, nameCh) {
@@ -133,6 +125,7 @@ function compendiumChapterEditor(collectionId, data) {
             newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
         });
         data.charts = newChart;
+
         // tables
         var orderTable = $("#sortable-table").sortable('toArray');
         $(orderTable).each(function (indexTable, nameTable) {
@@ -153,14 +146,7 @@ function compendiumChapterEditor(collectionId, data) {
             newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
         });
         data.images = newImage;
-        // Related documents
-        var orderArticle = $("#sortable-document").sortable('toArray');
-        $(orderArticle).each(function (indexB, nameB) {
-            var uri = data.relatedDocuments[parseInt(nameB)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedDocuments[indexB] = {uri: safeUri};
-        });
-        data.relatedDocuments = newRelatedDocuments;
+
         // External links
         var orderLink = $("#sortable-link").sortable('toArray');
         $(orderLink).each(function (indexL, nameL) {
@@ -169,22 +155,6 @@ function compendiumChapterEditor(collectionId, data) {
             newLinks[indexL] = {uri: link, title: displayText};
         });
         data.links = newLinks;
-        // Related qmi
-        var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
-        $(orderRelatedQmi).each(function (indexM, nameM) {
-            var uri = data.relatedMethodology[parseInt(nameM)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedQmi[indexM] = {uri: safeUri};
-        });
-        data.relatedMethodology = newRelatedQmi;
-        // methodology
-        var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-        $(orderRelatedMethodology).each(function (indexM, nameM) {
-            var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedMethodology[indexM] = {uri: safeUri};
-        });
-        data.relatedMethodologyArticle = newRelatedMethodology;
     }
 }
 

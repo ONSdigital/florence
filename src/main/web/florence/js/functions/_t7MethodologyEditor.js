@@ -1,7 +1,6 @@
 function methodologyEditor(collectionId, data) {
 
-  var newChart = [], newTable = [], newImage = [], newDocuments = [], newDatasets = [],
-    newFiles = [];
+  var newChart = [], newTable = [], newImage = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
 
@@ -90,6 +89,8 @@ function methodologyEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {
@@ -120,22 +121,7 @@ function methodologyEditor(collectionId, data) {
       newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
     });
     data.images = newImage;
-    // Related documents
-    var orderDocument = $("#sortable-document").sortable('toArray');
-    $(orderDocument).each(function (indexD, nameD) {
-      var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDocuments[indexD] = {uri: safeUri};
-    });
-    data.relatedDocuments = newDocuments;
-    // Related dataset
-    var orderDataset = $("#sortable-dataset").sortable('toArray');
-    $(orderDataset).each(function (indexData, nameData) {
-      var uri = data.relatedDatasets[parseInt(nameData)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDatasets[indexData] = {uri: safeUri};
-    });
-    data.relatedDatasets = newDatasets;
+
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function (indexF, nameF) {

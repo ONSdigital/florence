@@ -201,6 +201,9 @@ function staticLandingPageEditor(collectionId, data) {
   });
 
   function save(onSave) {
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {

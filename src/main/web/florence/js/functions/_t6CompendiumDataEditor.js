@@ -1,6 +1,6 @@
 function compendiumDataEditor(collectionId, data) {
 
-    var newFiles = [], newRelatedDocuments = [], newRelatedData = [], newRelatedQmi = [], newRelatedMethodology = [];
+    var newFiles = [];
     var parentUrl = getParentPage(data.uri);
     var setActiveTab, getActiveTab;
 
@@ -101,11 +101,6 @@ function compendiumDataEditor(collectionId, data) {
         updateContent(collectionId, data.uri, JSON.stringify(data));
     });
 
-    //editNav.on('click', '#save-and-exit', function () {
-    //  save();
-    //  updateContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
-    //});
-
     // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
         //pageData = $('.fl-editor__headline').val();
@@ -120,6 +115,9 @@ function compendiumDataEditor(collectionId, data) {
     });
 
     function save() {
+
+        Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
         // Files are uploaded. Save metadata
         var orderFile = $("#sortable-file").sortable('toArray');
         $(orderFile).each(function (indexF, nameF) {
@@ -129,38 +127,6 @@ function compendiumDataEditor(collectionId, data) {
             newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
         });
         data.downloads = newFiles;
-        // Related documents
-        var orderRelatedDocument = $("#sortable-document").sortable('toArray');
-        $(orderRelatedDocument).each(function (indexD, nameD) {
-            var uri = data.relatedDocuments[parseInt(nameD)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedDocuments[indexD] = {uri: safeUri};
-        });
-        data.relatedDocuments = newRelatedDocuments;
-        // Related datasets
-        var orderRelatedDataset = $("#sortable-dataset").sortable('toArray');
-        $(orderRelatedDataset).each(function (indexDt, nameDt) {
-            var uri = data.relatedDatasets[parseInt(nameDt)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedData[indexDt] = {uri: safeUri};
-        });
-        data.relatedDatasets = newRelatedData;
-        // Related qmi
-        var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
-        $(orderRelatedQmi).each(function (indexM, nameM) {
-            var uri = data.relatedMethodology[parseInt(nameM)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedQmi[indexM] = {uri: safeUri};
-        });
-        data.relatedMethodology = newRelatedQmi;
-        // methodology
-        var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-        $(orderRelatedMethodology).each(function (indexM, nameM) {
-            var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
-            var safeUri = checkPathSlashes(uri);
-            newRelatedMethodology[indexM] = {uri: safeUri};
-        });
-        data.relatedMethodologyArticle = newRelatedMethodology;
     }
 }
 
