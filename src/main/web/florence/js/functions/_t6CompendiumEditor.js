@@ -1,7 +1,7 @@
 function compendiumEditor(collectionId, data, templateData) {
 
 //  var index = data.release;
-  var newChapters = [], newRelatedQmi = [], newRelatedMethodology = [], newDocuments = [], newData = [];
+  var newChapters = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
   var renameUri = false;
@@ -31,7 +31,6 @@ function compendiumEditor(collectionId, data, templateData) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  //if (!Florence.collection.date) {                    //overwrite scheduled collection date
   if (!data.description.releaseDate) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
@@ -43,9 +42,6 @@ function compendiumEditor(collectionId, data, templateData) {
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
     });
   }
-  //} else {
-  //  $('.release-date').hide();
-  //}
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
@@ -173,6 +169,9 @@ function compendiumEditor(collectionId, data, templateData) {
   });
 
   function save(onSave) {
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // Chapters
     var orderRelatedChapter = $("#sortable-chapter").sortable('toArray');
     $(orderRelatedChapter).each(function (indexC, nameC) {
@@ -181,38 +180,6 @@ function compendiumEditor(collectionId, data, templateData) {
       newChapters[indexC] = {uri: safeUri};
     });
     data.chapters = newChapters;
-    // Related documents
-    var orderDocument = $("#sortable-document").sortable('toArray');
-    $(orderDocument).each(function (indexD, nameD) {
-      var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDocuments[indexD] = {uri: safeUri};
-    });
-    data.relatedDocuments = newDocuments;
-    // Related data
-    var orderData = $("#sortable-data").sortable('toArray');
-    $(orderData).each(function (indexDat, nameDat) {
-      var uri = data.relatedData[parseInt(nameDat)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newData[indexDat] = {uri: safeUri};
-    });
-    data.relatedData = newData;
-    // Related qmi
-    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
-    $(orderRelatedQmi).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedQmi[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodology = newRelatedQmi;
-    // methodology
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-    $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedMethodology[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodologyArticle = newRelatedMethodology;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }

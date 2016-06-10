@@ -1,6 +1,6 @@
 function qmiEditor(collectionId, data) {
 
-  var newFiles = [], newDocument = [], newDataset = [];
+  var newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
 
@@ -121,6 +121,9 @@ function qmiEditor(collectionId, data) {
   });
 
   function save(onSave) {
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // Sections
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
@@ -131,22 +134,6 @@ function qmiEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.downloads = newFiles;
-    // Related documents
-    var orderDocument = $("#sortable-document").sortable('toArray');
-    $(orderDocument).each(function (indexD, nameD) {
-      var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDocument[indexD] = {uri: safeUri};
-    });
-    data.relatedDocuments = newDocument;
-    // Related dataset
-    var orderDataset = $("#sortable-dataset").sortable('toArray');
-    $(orderDataset).each(function (indexData, nameData) {
-      var uri = data.relatedDatasets[parseInt(nameData)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDataset[indexData] = {uri: safeUri};
-    });
-    data.relatedDatasets = newDataset;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }

@@ -74,6 +74,9 @@ function staticArticleEditor(collectionId, data) {
   });
 
   function save(onSave) {
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {

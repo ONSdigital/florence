@@ -111,6 +111,9 @@ function datasetLandingEditor(collectionId, data) {
   });
 
   function save(onSave) {
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // Datasets are uploaded. Save metadata
     var orderDataset = $("#sortable-edition").sortable('toArray');
     $(orderDataset).each(function (indexF, nameF) {
@@ -118,30 +121,6 @@ function datasetLandingEditor(collectionId, data) {
       newDatasets[indexF] = {uri: file};
     });
     data.datasets = newDatasets;
-    // Used in links
-    var orderUsedIn = $("#sortable-document").sortable('toArray');
-    $(orderUsedIn).each(function (indexU, nameU) {
-      var uri = data.relatedDocuments[parseInt(nameU)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedDocuments[indexU] = {uri: safeUri};
-    });
-    data.relatedDocuments = newRelatedDocuments;
-    // Related qmi
-    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
-    $(orderRelatedQmi).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedQmi[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodology = newRelatedQmi;
-    // methodology
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-    $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedMethodology[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodologyArticle = newRelatedMethodology;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }

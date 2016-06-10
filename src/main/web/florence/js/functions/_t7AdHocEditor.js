@@ -93,6 +93,9 @@ function adHocEditor(collectionId, data) {
   });
 
   function save(onSave) {
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // Sections
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
