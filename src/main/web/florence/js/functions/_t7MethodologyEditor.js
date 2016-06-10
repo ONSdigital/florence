@@ -1,6 +1,6 @@
 function methodologyEditor(collectionId, data) {
 
-  var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newDocuments = [], newDatasets = [],
+  var newChart = [], newTable = [], newImage = [], newDocuments = [], newDatasets = [],
     newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
@@ -90,22 +90,6 @@ function methodologyEditor(collectionId, data) {
   });
 
   function save(onSave) {
-    // Sections
-    var orderSection = $("#sortable-section").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = data.sections[parseInt(nameS)].markdown;
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
-    // Tabs
-    var orderTab = $("#sortable-tab").sortable('toArray');
-    $(orderTab).each(function (indexT, nameT) {
-      var markdown = data.accordion[parseInt(nameT)].markdown;
-      var title = $('#tab-title_' + nameT).val();
-      newTabs[indexT] = {title: title, markdown: markdown};
-    });
-    data.accordion = newTabs;
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {
