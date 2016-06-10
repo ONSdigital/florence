@@ -12,12 +12,12 @@
         "node-sass": "latest"
     },
     "scripts": {
-        "watch-js": "npm run build-js && onchange 'js/classes/*.js' 'js/functions/*.js' 'js/components/*.js' -v -- npm run build-js ",
+        "watch-js": "npm run build-js && ./node_modules/onchange/cli.js 'js/classes/*.js' 'js/functions/*.js' 'js/components/*.js' -v -- npm run build-js",
         "build-js": "cat js/classes/*.js js/zebedee-api/*.js js/functions/*.js js/components/*.js > assets/js/main.js",
-        "watch-templates": "npm run build-templates && onchange 'templates/*.handlebars' -v -- npm run build-templates ",
-        "build-templates": "handlebars templates/*.handlebars --output assets/js/templates.js",
-        "watch-css": "npm run build-css && onchange 'scss/*.scss' 'scss/*/*.scss' -v -- npm run build-css ",
-        "build-css": "node-sass --output-style compressed scss/main.scss assets/css/main.min.css",
+        "watch-templates": "npm run build-templates && ./node_modules/onchange/cli.js 'templates/*.handlebars' -v -- npm run build-templates",
+        "build-templates": "./node_modules/handlebars/bin/handlebars templates/*.handlebars --output assets/js/templates.js",
+        "watch-css": "npm run build-css && ./node_modules/onchange/cli.js 'scss/*.scss' 'scss/*/*.scss' -v -- npm run build-css",
+        "build-css": "./node_modules/node-sass/bin/node-sass --output-style compressed scss/main.scss assets/css/main.min.css",
         "watch": "npm run watch-js & npm run watch-templates & npm run watch-css",
         "postinstall": "npm run build-js & npm run build-templates & npm run build-css"
     }
