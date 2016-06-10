@@ -59,7 +59,7 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
       // create the function to define what happens on save in the markdown editor
       var saveContent = function(updatedContent) {
         data[field][index].markdown = updatedContent;
-        saveMarkdown (collectionId, data.uri, data, field, idField);
+        saveContentThenRefreshSection (collectionId, data.uri, data, field, idField);
       };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -82,7 +82,7 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
           data[field].splice(index, 1);
 
           // post content to the server and refresh accordion section view.
-          saveMarkdown(collectionId, data.uri, data, field, idField);
+          saveContentThenRefreshSection(collectionId, data.uri, data, field, idField);
 
           swal({
             title: "Deleted",
@@ -98,7 +98,7 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
   // Attach add new handler.
   $('#add-' + idField).off().one('click', function () {
     data[field].push({markdown:"", title:""});
-    saveMarkdown(collectionId, data.uri, data, field, idField);
+    saveContentThenRefreshSection(collectionId, data.uri, data, field, idField);
   });
 
   function sortable() {
@@ -125,13 +125,13 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
         sectionsArray.splice(sortableStartPosition, 1);
         sectionsArray.splice(sortableEndPosition, 0, item);
 
-        saveMarkdown (collectionId, data.uri, data, field, idField);
+        saveContentThenRefreshSection (collectionId, data.uri, data, field, idField);
       }
     });
   }
   sortable();
 
-  function saveMarkdown (collectionId, path, data, field, idField) {
+  function saveContentThenRefreshSection (collectionId, path, data, field, idField) {
     putContent(collectionId, path, JSON.stringify(data),
       success = function () {
         Florence.Editor.isDirty = false;
