@@ -1,6 +1,5 @@
 function t2Editor(collectionId, data) {
 
-  var newHighlights = [];
   var setActiveTab, getActiveTab;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
@@ -41,31 +40,20 @@ function t2Editor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    save();
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
     saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
-
-  function save() {
-    // Highligths
-    var orderHighlights = $("#sortable-highlights").sortable('toArray');
-    $(orderHighlights).each(function (indexH, titleH) {
-      var uri = data.highlightedLinks[parseInt(titleH)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newHighlights[indexH] = {uri: safeUri};
-    });
-    data.highlightedLinks = newHighlights;
-  }
 }
 
