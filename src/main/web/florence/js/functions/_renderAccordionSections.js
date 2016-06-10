@@ -92,7 +92,6 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         }
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
-        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedBulletins', 'bulletin');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'data');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
