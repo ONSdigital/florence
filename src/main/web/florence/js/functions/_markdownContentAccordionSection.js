@@ -34,20 +34,32 @@ function refreshMarkdownContentAccordionSection (collectionId, data, field, idFi
 function initialiseMarkdownContentAccordionSection(collectionId, data, field, idField) {
 
   // for each entry in the list
+  function debugLogAccordionSection() {
+    for (var i = 0; i < data[field].length; i++) {
+      console.log(data[field][i].title)
+    }
+  }
+
   $(data[field]).each(function(index){
 
+    $('#' + idField +'-title_' + index).on('input', function () {
+      data[field][index].title = $(this).val();
+      //debugLogAccordionSection();
+    });
+
     // attach edit handler
-    $('#' + idField +'-edit_'+index).click(function() {
+    $('#' + idField +'-edit_'+ index).click(function() {
+
+      // create view model to pass to the markdown editor
       var editedSectionValue = {
-        "title": $('#' + idField +'-title_' + index).val(),
-        "markdown": $('#' + idField + '-markdown_' + index).val()
+        "title": data[field][index].title,
+        "markdown": data[field][index].markdown
       };
 
+      // create the function to define what happens on save in the markdown editor
       var saveContent = function(updatedContent) {
         data[field][index].markdown = updatedContent;
-        data[field][index].title = $('#' + idField +'-title_' + index).val();
         saveMarkdown (collectionId, data.uri, data, field, idField);
-        refreshPreview(data.uri);
       };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
@@ -65,13 +77,13 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
         closeOnConfirm: false
       }, function(result) {
         if (result === true) {
-          var position = $(".workspace-edit").scrollTop();
-          Florence.globalVars.pagePos = position + 300;
-          $(this).parent().remove();
+
+          // delete the item from the data model
           data[field].splice(index, 1);
+
+          // post content to the server and refresh accordion section view.
           saveMarkdown(collectionId, data.uri, data, field, idField);
-          refreshPreview(data.uri);
-          console.log(idField);
+
           swal({
             title: "Deleted",
             text: "This " + idField + " has been deleted",
@@ -85,8 +97,6 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
 
   // Attach add new handler.
   $('#add-' + idField).off().one('click', function () {
-    var position = $(".workspace-edit").scrollTop();
-    Florence.globalVars.pagePos = position + 300;
     data[field].push({markdown:"", title:""});
     saveMarkdown(collectionId, data.uri, data, field, idField);
   });
@@ -96,26 +106,37 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
     var sortableStartPosition;
 
     $('#sortable-' + idField).sortable({
-      stop: function(event, ui){
-        $('#' + idField + ' .edit-section__sortable-item--counter').each(function(index) {
-          $(this).empty().append(index + 1);
-        });
-        console.log("sortable update: Start: " + sortableStartPosition + " now: " + ui.item.index());
-      },
       start: function(event, ui) {
+
+        // remember the index of the item at the start of drag + drop
         sortableStartPosition = ui.item.index();
-        console.log("sortable start: " + sortableStartPosition);
+        //console.log("sortable start: " + sortableStartPosition);
+      },
+      stop: function(event, ui){
+
+        // determine the new index of the item after being dropped.
+        var sortableEndPosition =  ui.item.index();
+        //console.log("sortable update: Start: " + sortableStartPosition + " now: " + sortableEndPosition) ;
+
+        var sectionsArray = data[field];
+        var item = data[field][sortableStartPosition];
+
+        // Move the item from the start drag position to the end drop position in the data model.
+        sectionsArray.splice(sortableStartPosition, 1);
+        sectionsArray.splice(sortableEndPosition, 0, item);
+
+        saveMarkdown (collectionId, data.uri, data, field, idField);
       }
     });
   }
   sortable();
-
 
   function saveMarkdown (collectionId, path, data, field, idField) {
     putContent(collectionId, path, JSON.stringify(data),
       success = function () {
         Florence.Editor.isDirty = false;
         refreshMarkdownContentAccordionSection (collectionId, data, field, idField);
+        refreshPreview(data.uri);
       },
       error = function (response) {
         if (response.status === 400) {
