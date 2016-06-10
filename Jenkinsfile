@@ -11,10 +11,22 @@ node {
 
     stage 'Image'
     sh 'git rev-parse --short HEAD > git_commit_id'
-    commit = readFile('git_commit_id').trim()
-    def img = docker.build "${env.ECR_REPOSITORY_URI}/florence:${commit}"
+    branch  = env.JOB_NAME.replaceFirst('.+/', '')
+    commit  = readFile('git_commit_id').trim()
+    imgRepo = null
+    imgTag  = null
+
+    if (branch == 'develop' || branch == 'live') {
+        imgTag  = branch
+        imgRepo = env.DOCKERHUB_REPOSITORY
+    } else {
+        imgTag  = commit
+        imgRepo = env.ECR_REPOSITORY_URI
+    }
+
+    def img = docker.build "${imgRepo}/florence:${imgTag}"
 
     stage 'Push'
-    sh '$(aws ecr get-login)'
+    sh imgRepo == env.ECR_REPOSITORY_URI ? '$(aws ecr get-login)' : 'docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS'
     img.push()
 }
