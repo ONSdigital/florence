@@ -27,22 +27,18 @@ function ArticleDownloadEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.edition = $(this).val();
   });
-  //if (!Florence.collection.date) {                        //overwrite scheduled collection date
   if (!data.description.releaseDate) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
     });
   } else {
-    //dateTmp = $('#releaseDate').val();
     dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
     });
   }
-  //} else {
-  //    $('.release-date').hide();
-  //}
+
   $("#nextRelease").on('input', function () {
     $(this).textareaAutoSize();
     data.description.nextRelease = $(this).val();
@@ -112,8 +108,12 @@ function ArticleDownloadEditor(collectionId, data) {
   });
 
   function save(onSave) {
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // Sections
     data.markdown = [$('#content-markdown').val()];
+
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {
@@ -144,22 +144,7 @@ function ArticleDownloadEditor(collectionId, data) {
       newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
     });
     data.images = newImage;
-    // Related documents
-    var orderDocument = $("#sortable-document").sortable('toArray');
-    $(orderDocument).each(function (indexD, nameD) {
-      var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDocuments[indexD] = {uri: safeUri};
-    });
-    data.relatedDocuments = newDocuments;
-    // Related data
-    var orderData = $("#sortable-data").sortable('toArray');
-    $(orderData).each(function (indexDat, nameDat) {
-      var uri = data.relatedData[parseInt(nameDat)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newData[indexDat] = {uri: safeUri};
-    });
-    data.relatedData = newData;
+
     // Files are uploaded. Save metadata
     var orderFile = $("#sortable-file").sortable('toArray');
     $(orderFile).each(function (indexF, nameF) {
@@ -176,22 +161,6 @@ function ArticleDownloadEditor(collectionId, data) {
       newLinks[indexL] = {uri: link, title: displayText};
     });
     data.links = newLinks;
-    // Related qmi
-    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
-    $(orderRelatedQmi).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedQmi[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodology = newRelatedQmi;
-    // methodology
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-    $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedMethodology[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodologyArticle = newRelatedMethodology;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
