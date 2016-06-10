@@ -106,7 +106,7 @@ function timeseriesEditor(collectionId, data) {
     if (Florence.globalVars.welsh) {
       sweetAlert('You cannot perform this operation in Welsh.');
     } else {
-      save();
+      Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
       updateContent(collectionId, data.uri, JSON.stringify(data));
     }
   });
@@ -116,59 +116,16 @@ function timeseriesEditor(collectionId, data) {
     if (Florence.globalVars.welsh) {
       sweetAlert('You cannot perform this operation in Welsh.');
     } else {
-      save();
+      Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
       saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
     }
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 
-
-  function save() {
-    // Related documents
-    var orderDocument = $("#sortable-document").sortable('toArray');
-    $(orderDocument).each(function (indexD, nameD) {
-      var uri = data.relatedDocuments[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newDocument[indexD] = {uri: safeUri};
-    });
-    data.relatedDocuments = newDocument;
-    // Related timeseries
-    var orderTimeseries = $("#sortable-timeseries").sortable('toArray');
-    $(orderTimeseries).each(function (indexT, nameT) {
-      var uri = data.relatedData[parseInt(nameT)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newTimeseries[indexT] = {uri: safeUri};
-    });
-    data.relatedData = newTimeseries;
-    // Related datasets
-    var orderDataset = $("#sortable-dataset").sortable('toArray');
-    $(orderDataset).each(function (indexD, nameD) {
-      var uri = data.relatedDatasets[parseInt(nameD)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelated[indexD] = {uri: safeUri};
-    });
-    data.relatedDatasets = newRelated;
-    // Related qmi
-    var orderRelatedQmi = $("#sortable-qmi").sortable('toArray');
-    $(orderRelatedQmi).each(function (indexM, nameM) {
-      var uri = data.relatedMethodology[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedQmi[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodology = newRelatedQmi;
-    // methodology
-    var orderRelatedMethodology = $("#sortable-methodology").sortable('toArray');
-    $(orderRelatedMethodology).each(function (indexM, nameM) {
-      var uri = data.relatedMethodologyArticle[parseInt(nameM)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newRelatedMethodology[indexM] = {uri: safeUri};
-    });
-    data.relatedMethodologyArticle = newRelatedMethodology;
-  }
 }
 
