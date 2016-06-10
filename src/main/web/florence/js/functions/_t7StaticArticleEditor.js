@@ -1,6 +1,6 @@
 function staticArticleEditor(collectionId, data) {
 
-  var newSections = [], newChart = [], newTable = [], newImage = [], newLinks = [], newFiles = [];
+  var newChart = [], newTable = [], newImage = [], newLinks = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
 
@@ -74,14 +74,6 @@ function staticArticleEditor(collectionId, data) {
   });
 
   function save(onSave) {
-    // Sections
-    var orderSection = $("#sortable-section").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = data.sections[parseInt(nameS)].markdown;
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {

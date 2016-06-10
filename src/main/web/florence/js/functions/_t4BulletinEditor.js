@@ -1,6 +1,6 @@
 function bulletinEditor(collectionId, data) {
 
-    var newSections = [], newTabs = [], newChart = [], newTable = [], newImage = [], newBulletin = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newFiles = [];
+    var newChart = [], newTable = [], newImage = [], newBulletin = [], newDocuments = [], newData = [], newLinks = [], newRelatedQmi = [], newRelatedMethodology = [], newFiles = [];
     var setActiveTab, getActiveTab;
     var renameUri = false;
 
