@@ -60,6 +60,11 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
       var saveContent = function(updatedContent) {
         data[field][index].markdown = updatedContent;
         saveContentThenRefreshSection (collectionId, data.uri, data, field, idField);
+
+        // when finished in the markdown editor be sure to refresh the charts / tables / images list to show any newly added
+        refreshChartList(collectionId, data);
+        refreshTablesList(collectionId, data);
+        refreshImagesList(collectionId, data);
       };
 
       loadMarkdownEditor(editedSectionValue, saveContent, data);
