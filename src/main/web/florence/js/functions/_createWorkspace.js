@@ -27,6 +27,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             safePath = checkPathSlashes(currentPath);
         }
 
+        
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
             document.cookie = "lang=" + "en;path=/";
@@ -98,11 +99,13 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             if (menuItem.is('#browse')) {
                 loadBrowseScreen(collectionId, 'click', collectionData);
             } else if (menuItem.is('#create')) {
-                Florence.globalVars.pagePath = getPathName();
+                ;
+                Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPathName();
+                ;
+                Florence.globalVars.pagePath = getPreviewUrl();
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
@@ -122,6 +125,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var typeClass = spanType[0].attributes[0].nodeValue;
             var typeGroup = typeClass.match(/--(\w*)$/);
             var type = typeGroup[1];
+            ;
             Florence.globalVars.pagePath = dest;
             $('.nav--workspace li').removeClass('selected');
             $("#create").addClass('selected');
@@ -131,12 +135,14 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         $('.workspace-menu').on('click', '.btn-browse-create-datavis', function () {
             var dest = '/visualisations';
             var type = 'visualisation';
+            ;
             Florence.globalVars.pagePath = dest;
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
 
         $('.workspace-menu').on('click', '.btn-browse-edit', function () {
             var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+            ;
             Florence.globalVars.pagePath = dest;
             $('.nav--workspace li').removeClass('selected');
             $("#edit").addClass('selected');
@@ -168,8 +174,24 @@ function processPreviewLoad() {
         var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
             $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
 
+        // Check it is a load event and that iframe is in the DOM still before processing the load
         if (event.data == "load" && $iframe.length) {
-            processPageChange(); // Update browse tree
+            // Check whether page URL is different and then load editor or update browse tree
+            checkForPageChanged(function (newUrl) {
+                var safeUrl = checkPathSlashes(newUrl),
+                    selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
+                Florence.globalVars.pagePath = safeUrl;
+
+                if ($('.workspace-edit').length) {
+                    loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
+                    return false;
+                }
+                else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
+                    // Only update browse tree of on 'browse' tab and preview and active node don't already match
+                    treeNodeSelect(safeUrl);
+                    return false;
+                }
+            });
             updateBrowserURL(); // Update browser preview URL
 
             if ($browse.hasClass('selected')) {
@@ -183,25 +205,6 @@ function processPreviewLoad() {
 function onIframeLoad(runFunction) {
     window.addEventListener("message", function (event) {
         runFunction(event);
-    });
-}
-
-// Check whether page URL is different and then load editor or update browse tree
-function processPageChange() {
-    checkForPageChanged(function (newUrl) {
-        var safeUrl = checkPathSlashes(newUrl),
-            selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
-        Florence.globalVars.pagePath = safeUrl;
-
-        if ($('.workspace-edit').length) {
-            loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
-            return false;
-        }
-        else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
-            // Only update browse tree of on 'browse' tab and preview and active node don't already match
-            treeNodeSelect(safeUrl);
-            return false;
-        }
     });
 }
 

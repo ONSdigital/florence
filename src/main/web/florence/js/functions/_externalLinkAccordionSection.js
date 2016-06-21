@@ -6,7 +6,7 @@
  * @param idField - HTML id for the template
  */
 
-function editExtLink (collectionId, data, field, idField) {
+function renderExternalLinkAccordionSection (collectionId, data, field, idField) {
   var list = data[field];
   var dataTemplate = {list: list, idField: idField};
   var html = templates.editorLinks(dataTemplate);
@@ -104,13 +104,12 @@ function editExtLink (collectionId, data, field, idField) {
     });
   }
   sortable();
-}
 
-function saveLink (collectionId, path, data, field, idField) {
-  putContent(collectionId, path, JSON.stringify(data),
-      success = function (response) {
+  function saveLink (collectionId, path, data, field, idField) {
+    putContent(collectionId, path, JSON.stringify(data),
+      success = function () {
         Florence.Editor.isDirty = false;
-        editExtLink (collectionId, data, field, idField);
+        renderExternalLinkAccordionSection (collectionId, data, field, idField);
         refreshPreview(data.uri);
       },
       error = function (response) {
@@ -121,5 +120,6 @@ function saveLink (collectionId, path, data, field, idField) {
           handleApiError(response);
         }
       }
-  );
+    );
+  }
 }

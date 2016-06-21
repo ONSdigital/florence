@@ -1,6 +1,5 @@
 function releaseEditor(collectionId, data) {
     var setActiveTab, getActiveTab;
-    var timeoutId;
     var renameUri = false;
     var pageDataRequests = [];
     var pages = {};
@@ -24,10 +23,6 @@ function releaseEditor(collectionId, data) {
     });
     $("#provisionalDate").on('input', function () {
         data.description.provisionalDate = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
     });
     var dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
@@ -37,10 +32,6 @@ function releaseEditor(collectionId, data) {
             var publishTime = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
             var toIsoDate = $('#releaseDate').datepicker("getDate");
             data.description.releaseDate = new Date(parseInt(new Date(toIsoDate).getTime()) + publishTime).toISOString();
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(function () {
-                autoSaveMetadata(collectionId, data);
-            }, 3000);
         });
     } else {
         $('.release-date').on('change', function () {
@@ -73,41 +64,26 @@ function releaseEditor(collectionId, data) {
 
     $("#nextRelease").on('input', function () {
         data.description.nextRelease = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
     if (!data.description.contact) {
         data.description.contact = {};
     }
     $("#contactName").on('input', function () {
         data.description.contact.name = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
     $("#contactEmail").on('input', function () {
         data.description.contact.email = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
     $("#contactTelephone").on('input', function () {
         data.description.contact.telephone = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
     $("#summary").on('input', function () {
         data.description.summary = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
 
     /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
@@ -136,10 +112,7 @@ function releaseEditor(collectionId, data) {
     // Gets status of checkbox and sets JSON to match
     $("#natStat input[type='checkbox']").prop('checked', checkBoxStatus($('#natStat').attr('id'))).click(function () {
         data.description.nationalStatistic = $("#natStat input[type='checkbox']").prop('checked') ? true : false;
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
 
     $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
@@ -169,10 +142,7 @@ function releaseEditor(collectionId, data) {
         } else {
             data.description.cancellationNotice = [];
         }
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
 
     if (data.description.finalised) {
@@ -198,10 +168,6 @@ function releaseEditor(collectionId, data) {
                         $('.provisional-date').remove();
                         $('#finalised').remove();
                     }
-                    clearTimeout(timeoutId);
-                    timeoutId = setTimeout(function () {
-                        autoSaveMetadata(collectionId, data);
-                    }, 3000);
                 } else {
                     $("#finalised input[type='checkbox']").prop('checked', false);
                 }
@@ -211,10 +177,7 @@ function releaseEditor(collectionId, data) {
 
     $("#dateChange").on('input', function () {
         data.dateChanges.previousDate = $(this).val();
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            autoSaveMetadata(collectionId, data);
-        }, 3000);
+        
     });
 
     function saveOldDate(collectionId, data, oldDate) {
@@ -328,7 +291,6 @@ function releaseEditor(collectionId, data) {
     });
 
     function save(onSave) {
-        clearTimeout(timeoutId);
         checkRenameUri(collectionId, data, renameUri, onSave);
     }
 }

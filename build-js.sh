@@ -2,4 +2,4 @@
 
 export WEB_DIRECTORY="./src/main/web/florence"
 
-npm --prefix $WEB_DIRECTORY install
+npm --no-bin-links --prefix $WEB_DIRECTORY install

@@ -26,6 +26,11 @@ function editMarkdownWithNoTitle(collectionId, data, field, idField) {
     var saveContent = function (updatedContent) {
       data[field] = [updatedContent];
       saveMarkdownNoTitle(collectionId, data.uri, data, field, idField);
+
+      // when finished in the markdown editor be sure to refresh the charts / tables / images list to show any newly added
+      refreshChartList(collectionId, data);
+      refreshTablesList(collectionId, data);
+      refreshImagesList(collectionId, data);
     };
     loadMarkdownEditor(editedSectionValue, saveContent, data);
   });
@@ -62,8 +67,6 @@ function saveMarkdownNoTitle(collectionId, path, data, field, idField) {
     success = function () {
       Florence.Editor.isDirty = false;
       editMarkdownWithNoTitle(collectionId, data, field, idField);
-      refreshChartList(collectionId, data);
-      refreshTablesList(collectionId, data);
     },
     error = function (response) {
       if (response.status === 400) {

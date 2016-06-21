@@ -166,10 +166,6 @@ function viewCollectionDetails(collectionId) {
         $('.collection-selected .btn-collection-cancel').click(function () {
             $('.collection-selected').stop().animate({right: "-50%"}, 500);
             $('.collections-select-table tbody tr').removeClass('selected');
-            // Wait until the animation ends
-            setTimeout(function () {
-                //viewController('collections');
-            }, 500);
         });
 
         $('.btn-collection-work-on').click(function () {
