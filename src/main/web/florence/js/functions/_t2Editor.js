@@ -1,8 +1,6 @@
 function t2Editor(collectionId, data) {
 
-  var newHighlights = [];
   var setActiveTab, getActiveTab;
-  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -18,18 +16,10 @@ function t2Editor(collectionId, data) {
   $("#title").on('input', function () {
     $(this).textareaAutoSize();
     data.description.title = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
@@ -39,18 +29,10 @@ function t2Editor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(',');
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
 
   // Save
@@ -58,32 +40,20 @@ function t2Editor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    save();
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-    save();
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
     saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-    save();
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
-
-  function save() {
-    clearTimeout(timeoutId);
-    // Highligths
-    var orderHighlights = $("#sortable-highlights").sortable('toArray');
-    $(orderHighlights).each(function (indexH, titleH) {
-      var uri = data.highlightedLinks[parseInt(titleH)].uri;
-      var safeUri = checkPathSlashes(uri);
-      newHighlights[indexH] = {uri: safeUri};
-    });
-    data.highlightedLinks = newHighlights;
-  }
 }
 

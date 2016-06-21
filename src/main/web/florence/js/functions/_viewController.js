@@ -27,7 +27,5 @@ function viewController(view) {
   else {
     viewLogIn();
   }
-
-  // setTimeout(uiTidyUp, 300);
 }
 

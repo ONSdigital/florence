@@ -1,9 +1,8 @@
 function staticArticleEditor(collectionId, data) {
 
-  var newSections = [], newChart = [], newTable = [], newImage = [], newLinks = [], newFiles = [];
+  var newChart = [], newTable = [], newImage = [], newLinks = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
-  var timeoutId;
 
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
@@ -26,10 +25,6 @@ function staticArticleEditor(collectionId, data) {
   if (!data.description.releaseDate) {
     $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
     });
   } else {
     //dateTmp = $('#releaseDate').val();
@@ -37,10 +32,6 @@ function staticArticleEditor(collectionId, data) {
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
     $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function () {
-        autoSaveMetadata(collectionId, data);
-      }, 3000);
     });
   }
   //} else {
@@ -49,10 +40,6 @@ function staticArticleEditor(collectionId, data) {
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
@@ -62,18 +49,10 @@ function staticArticleEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(',');
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
 
   // Save
@@ -95,15 +74,9 @@ function staticArticleEditor(collectionId, data) {
   });
 
   function save(onSave) {
-    clearTimeout(timeoutId);
-    // Sections
-    var orderSection = $("#sortable-section").sortable('toArray');
-    $(orderSection).each(function (indexS, nameS) {
-      var markdown = data.sections[parseInt(nameS)].markdown;
-      var title = $('#section-title_' + nameS).val();
-      newSections[indexS] = {title: title, markdown: markdown};
-    });
-    data.sections = newSections;
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {

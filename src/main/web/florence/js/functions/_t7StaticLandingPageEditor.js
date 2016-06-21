@@ -3,7 +3,7 @@ function staticLandingPageEditor(collectionId, data) {
   var newSections = [], newLinks = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
-  var timeoutId;
+
   $(".edit-accordion").on('accordionactivate', function (event, ui) {
     setActiveTab = $(".edit-accordion").accordion("option", "active");
     if (setActiveTab !== false) {
@@ -24,10 +24,6 @@ function staticLandingPageEditor(collectionId, data) {
   $("#summary").on('input', function () {
     $(this).textareaAutoSize();
     data.description.summary = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#keywordsTag").tagit({
     availableTags: data.description.keywords,
@@ -37,18 +33,10 @@ function staticLandingPageEditor(collectionId, data) {
   });
   $('#keywords').on('change', function () {
     data.description.keywords = $('#keywords').val().split(',');
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
   $("#metaDescription").on('input', function () {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      autoSaveMetadata(collectionId, data);
-    }, 3000);
   });
 
   // Edit content
@@ -192,7 +180,7 @@ function staticLandingPageEditor(collectionId, data) {
 
   sortableContent();
 
-  editExtLink(collectionId, data, 'links', 'link');
+  renderExternalLinkAccordionSection(collectionId, data, 'links', 'link');
 
   // Save
   var editNav = $('.edit-nav');
@@ -213,7 +201,9 @@ function staticLandingPageEditor(collectionId, data) {
   });
 
   function save(onSave) {
-    clearTimeout(timeoutId);
+
+    Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+
     // Sections
     var orderSection = $("#sortable-section").sortable('toArray');
     $(orderSection).each(function (indexS, nameS) {

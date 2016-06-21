@@ -5,7 +5,7 @@ function saveAndReviewContent(collectionId, path, content, recursive, redirectTo
   }
 
   putContent(collectionId, path, content,
-    success = function (response) {
+    success = function () {
       Florence.Editor.isDirty = false;
       if (redirectToPath) {
         postReview(collectionId, path, recursive, redirectToPath);
