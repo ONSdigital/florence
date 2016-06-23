@@ -22,20 +22,15 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
     markdownEditor();
 
-    var markdown;
+    var markdown = $('#wmd-input').val();
 
-    if (notEmpty) {
-        markdown = $('#wmd-input').val();
-    }
+    // if (notEmpty) {
+    //     markdown = $('#wmd-input').val();
+    // }
 
     // Detect if markdown updated and update variable
     $('#wmd-input').on('input', function() {
         markdown = $('#wmd-input').val();
-
-        // Just a little test to see if the markdown is ever getting set to null - can delete it later if this is never fired
-        if (markdown == "null" || markdown == "undefined") {
-            console.log("Error, undefined or null markdown value");
-        }
     });
 
     if (notEmpty === true || markdown === '') {
@@ -61,6 +56,11 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         });
     } else {
         $(".btn-markdown-editor-exit").click(function () {
+            console.log(markdown);
+            // Just a little test to see if the markdown is ever getting set to null - can delete it later if this is never fired
+            if (markdown == "null" || markdown == "undefined") {
+                console.log("Error, undefined or null markdown value");
+            }
             onSave(markdown);
             $('.markdown-editor').stop().fadeOut(200).remove();
         });
