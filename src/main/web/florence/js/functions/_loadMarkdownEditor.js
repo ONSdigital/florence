@@ -24,10 +24,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
     var markdown = $('#wmd-input').val();
 
-    // if (notEmpty) {
-    //     markdown = $('#wmd-input').val();
-    // }
-
     // Detect if markdown updated and update variable
     $('#wmd-input').on('input', function() {
         markdown = $('#wmd-input').val();
@@ -56,9 +52,8 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         });
     } else {
         $(".btn-markdown-editor-exit").click(function () {
-            console.log(markdown);
             // Just a little test to see if the markdown is ever getting set to null - can delete it later if this is never fired
-            if (markdown == "null" || markdown == "undefined") {
+            if (!markdown || markdown == "null") {
                 console.log("Error, undefined or null markdown value");
             }
             onSave(markdown);
