@@ -22,9 +22,21 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
     markdownEditor();
 
+    var markdown;
+
     if (notEmpty) {
-        var markdown = $('#wmd-input').val();
+        markdown = $('#wmd-input').val();
     }
+
+    // Detect if markdown updated and update variable
+    $('#wmd-input').on('input', function() {
+        markdown = $('#wmd-input').val();
+
+        // Just a little test to see if the markdown is ever getting set to null - can delete it later if this is never fired
+        if (markdown == "null" || markdown == "undefined") {
+            console.log("Error, undefined or null markdown value");
+        }
+    });
 
     if (notEmpty === true || markdown === '') {
         $('.btn-markdown-editor-cancel').hide();
@@ -40,7 +52,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
     if (notEmpty) {
         $(".btn-markdown-editor-exit").click(function () {
-            var markdown = $('#wmd-input').val();
             if (markdown === '') {
                 sweetAlert('Please add some text', "This can't be left empty");
             } else {
@@ -50,7 +61,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         });
     } else {
         $(".btn-markdown-editor-exit").click(function () {
-            var markdown = $('#wmd-input').val();
             onSave(markdown);
             $('.markdown-editor').stop().fadeOut(200).remove();
         });
@@ -77,7 +87,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     });
 
     $(".btn-markdown-editor-embed").click(function () {
-        console.log("embed");
         loadEmbedIframe(function (markdown) {
             onInsertSave('', markdown);
         });
