@@ -63,6 +63,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
     var onInsertSave = function (name, markdown) {
         insertAtCursor($('#wmd-input')[0], markdown);
+        $('#wmd-input').trigger('input');
         Florence.Editor.markdownEditor.refreshPreview();
     };
 
@@ -171,6 +172,11 @@ function markdownEditor() {
             return '[interactive url="' + path + '" ]';
         });
         return newText;
+    });
+
+    converter.hooks.chain("plainLinkText", function (link) {
+        console.log("link done, innit");
+        console.log(link);
     });
 
     Markdown.Extra.init(converter, {

@@ -73,6 +73,11 @@
     var imageDefaultText = "http://";
     var linkDefaultText = "http://";
 
+    // Custom function to trigger change events in markdown editor after any link, undo or redo. Otherwise data object won't be updated
+    function triggerMarkdownChange() {
+        $('#wmd-input').trigger('input');
+    }
+
     // -------------------------------------------------------------------
     //  END OF YOUR CHANGES
     // -------------------------------------------------------------------
@@ -525,6 +530,7 @@
             mode = "none";
             panels.input.focus();
             refreshState();
+            triggerMarkdownChange();
         };
 
         // Redo an action.
@@ -542,6 +548,7 @@
             mode = "none";
             panels.input.focus();
             refreshState();
+            triggerMarkdownChange();
         };
 
         // Push the input area state to the stack.
@@ -1818,6 +1825,8 @@
                     }
                 }
                 postProcessing();
+
+                triggerMarkdownChange();
             };
 
             background = ui.createBackground();
