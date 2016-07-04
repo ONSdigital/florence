@@ -127,10 +127,9 @@ function saveAlert(collectionId, path, data, templateData, field, idField) {
       refreshPreview(data.uri);
     },
     error = function (response) {
-      if (response.status === 400) {
+      if (response.status === 409) {
         sweetAlert("Cannot edit this page", "It is already part of another collection.");
-      }
-      else {
+      } else {
         handleApiError(response);
       }
     }
