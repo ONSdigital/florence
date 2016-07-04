@@ -124,10 +124,9 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         refreshRelatedItemAccordionSection(collectionId, data, templateData, field, idField);
       },
       error = function (response) {
-        if (response.status === 400) {
+        if (response.status === 409) {
           sweetAlert("Cannot edit this page", "It is already part of another collection.");
-        }
-        else {
+        } else {
           handleApiError(response);
         }
       }
