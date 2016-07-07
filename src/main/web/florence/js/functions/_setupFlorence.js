@@ -226,15 +226,56 @@ function setupFlorence() {
 
     // Log every click that will be changing the state or data in Florence
     $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .nav--admin__item, .page-item', function(e) {
-        var clickEvent = {
-            time: new Date(),
-            trigger: e.target,
-            currentCollection: Florence.collection,
-            pagePath: Florence.globalVars.pagePath
-        };
-
-        console.log("Click event", clickEvent);
+        var diagnosticJSON = JSON.stringify(new clickEventObject(e));
+        $.ajax({
+          url: "/zebedee/clickEventLog",
+          type: 'POST',
+          contentType: "application/json",
+          data: diagnosticJSON,
+          async: true,
+        });
     });
 
+    function clickEventObject(event) {
+        this.user = localStorage.getItem('loggedInAs');
+        triggerTemp = {};
+        collectionTemp = {};
+
+        if (event.target.id) {
+            triggerTemp.elementId = event.target.id;
+        }
+
+        if ($(event.target).attr('class')) {
+            classes = [];
+            $.each($(event.target).attr('class').split(" "), function(index, value) {
+                if (value) {
+                    classes.push(value);
+                }
+            });
+            if (classes.length > 0) {
+                triggerTemp.elementClasses = classes;
+            }
+        }
+
+        if (Florence.collection.id) {
+            collectionTemp.id = Florence.collection.id;
+        }
+
+        if (Florence.collection.name) {
+            collectionTemp.name = Florence.collection.name;
+        }
+
+        if (Florence.collection.type) {
+            collectionTemp.type = Florence.collection.type;
+        }
+
+        if (triggerTemp.elementId || triggerTemp.elementClasses) {
+            this.trigger = triggerTemp;
+        }
+
+        if (collectionTemp.id || collectionTemp.name || collectionTemp.type) {
+            this.collection = collectionTemp
+        }
+    }
 }
 
