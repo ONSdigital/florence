@@ -201,6 +201,7 @@ function pageTypeDataT7(pageType) {
             "images": [],
             "downloads": [],
             "links": [],
+            "pdfTable": [],
             "alerts": [],
             type: pageType
         };
