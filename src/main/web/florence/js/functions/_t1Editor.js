@@ -86,9 +86,9 @@ function resolveTitleT1(collectionId, data, templateData, field) {
   $(templateData[field]).each(function (index, path) {
     var eachUri = path.statistics.uri;
     var dfd = $.Deferred();
-    getPageDataTitle(collectionId, eachUri,
+    getBabbagePageData(collectionId, eachUri,
       success = function (response) {
-        templateData[field][index].statistics.title = response.title;
+        templateData[field][index].statistics.title = response.description.title;
         dfd.resolve();
       },
       error = function () {
