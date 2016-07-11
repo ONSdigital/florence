@@ -302,11 +302,11 @@ function resolvePageTitlesThenRefresh(collectionId, data, templateData, field, i
     var eachUri = path.uri;
     var latest = eachUri.match(/\/latest\/?$/) ? true : false;
     var dfd = $.Deferred();
-    getPageDataTitle(collectionId, eachUri,
+    getBabbagePageData(collectionId, eachUri,
       success = function (response) {
-        templateData[field][index].description.title = latest ? '(Latest) ' + response.title : response.title;
-        if (response.edition) {
-          templateData[field][index].description.edition = response.edition;
+        templateData[field][index].description.title = latest ? '(Latest) ' + response.description.title : response.description.title;
+        if (response.description.edition) {
+          templateData[field][index].description.edition = response.description.edition;
         }
         dfd.resolve();
       },
