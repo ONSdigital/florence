@@ -313,6 +313,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
         addFile(collectionId, pageData, 'downloads', 'file');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
+        addFile(collectionId, pageData, 'pdfTable', 'pdf');
         //editTopics (collectionId, pageData, templateData, 'topics', 'topics');  //ready 2b used
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
