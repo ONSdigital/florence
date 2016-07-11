@@ -80,3 +80,22 @@ function getPageDataTitle(collectionId, path, success, error) {
     }
   });
 }
+
+function getBabbagePageData(collectionId, path, success, error) {
+  return $.ajax({
+    url: path + '/data',
+    dataType: 'json',
+    type: 'GET',
+    success: function (response) {
+      if (success)
+        success(response);
+    },
+    error: function (response) {
+      if (error) {
+        error(response);
+      } else {
+        handleApiError(response);
+      }
+    }
+  });
+}
