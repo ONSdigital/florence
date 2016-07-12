@@ -39,15 +39,22 @@ function viewUsers(view) {
             if ($('input:checked').val() === 'admin') {
                 isAdmin = true;
                 isEditor = true;
+                isDataVisPublisher = false;
             }
             else if ($('input:checked').val() === 'publisher') {
+                isAdmin = false;
                 isEditor = true;
+                isDataVisPublisher = false;
             }
             else if ($('input:checked').val() === 'dataVisPublisher') {
+                isAdmin = false;
+                isEditor = false;
                 isDataVisPublisher = true;
             }
             else {
+                isAdmin = false;
                 isEditor = false;
+                isDataVisPublisher = false;
             }
         });
 
