@@ -101,36 +101,36 @@
 	}
 }
 
-.collections-accordion {
-	border-bottom: 2px solid $pickled-bluewood;
-}
-
-
-.collections-accordion {
-	.ui-accordion-header {
-		&:before {
-			content: '';
-			position: absolute;
-			width: 0; 
-			height: 0;
-			top: $lineheight;
-			right: $col--2;
-			background-color: transparent;
-			border-top: 10px solid $emperor;
-			border-left: 10px solid transparent; 
-			border-right:10px solid transparent; 
-		}
-	}
-
-	.ui-accordion-header-active {
-		&:before {
-			border-top: 0px solid transparent;
-			border-bottom: 10px solid $emperor;
-			border-left: 10px solid transparent; 
-			border-right:10px solid transparent; 
-		}
-	}
-}
+//.collections-accordion {
+//	border-bottom: 2px solid $pickled-bluewood;
+//}
+//
+//
+//.collections-accordion {
+//	.ui-accordion-header {
+//		&:before {
+//			content: '';
+//			position: absolute;
+//			width: 0;
+//			height: 0;
+//			top: $lineheight;
+//			right: $col--2;
+//			background-color: transparent;
+//			border-top: 10px solid $emperor;
+//			border-left: 10px solid transparent;
+//			border-right:10px solid transparent;
+//		}
+//	}
+//
+//	.ui-accordion-header-active {
+//		&:before {
+//			border-top: 0px solid transparent;
+//			border-bottom: 10px solid $emperor;
+//			border-left: 10px solid transparent;
+//			border-right:10px solid transparent;
+//		}
+//	}
+//}
 
 
 
