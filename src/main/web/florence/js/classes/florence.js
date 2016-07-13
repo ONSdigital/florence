@@ -3,7 +3,7 @@ var Florence = Florence || {
         babbageBaseUrl: window.location.origin,
         refreshAdminMenu: function () {
             var mainNavHtml = templates.mainNav(Florence);
-            $('.admin-nav').html(mainNavHtml);
+            $('.js-nav').html(mainNavHtml);
         },
         setActiveCollection: function (collection) {
             document.cookie = "collection=" + collection.id + ";path=/";
