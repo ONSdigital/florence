@@ -65,7 +65,7 @@ function viewUserDetails(email) {
                     });
                 });
 
-                $('.collection-selected .btn-collection-cancel').click(function () {
+                $('.btn-user-cancel').click(function () {
                     $('.collection-selected').stop().animate({right: "-50%"}, 500);
                     $('.collections-select-table tbody tr').removeClass('selected');
                 });
