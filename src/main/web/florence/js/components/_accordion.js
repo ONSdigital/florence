@@ -19,10 +19,12 @@ function bindAccordions() {
         }
 
         // Deselect any accordions already active
+        $activeAccordions.closest('.js-accordion').removeClass('active');
         $activeAccordions.removeClass('active');
 
         // Activate clicked accordion if it wasn't already
         if (!active) {
+            $this.closest('.js-accordion').addClass('active');
             $this.addClass('active');
             $this.next('.js-accordion__content').addClass('active');
         }

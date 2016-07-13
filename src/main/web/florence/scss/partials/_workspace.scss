@@ -949,74 +949,74 @@
     }
 }
 
-.collection-editor {
-
-    &__inner {
-        background-color: $quill-gray;
-        width: 100%;
-        margin-top: 0;
-        margin-right: auto;
-        margin-left: auto;
-        overflow: hidden;
-        position: absolute;
-        z-index: 1;
-    }
-
-    &__editor {
-        box-sizing: border-box;
-        width: 80%;
-        float: left;
-        padding-left: 18.5%;
-        padding-top: $lineheight * 2;
-    }
-
-    &__footer {
-        height: $lineheight * 3;
-        width: 100%;
-        padding-top: $lineheight * 2;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        background-color: $pickled-bluewood;
-
-        &-div {
-            padding-left: $col--2;
-            height: 0;
-        }
-
-        button {
-            margin-top: -10px;
-        }
-    }
-
-    form {
-        margin-top: 0;
-    }
-
-    textarea {
-        box-sizing: border-box;
-        border: 3px solid #58585B;
-        border-radius: 4px;
-    }
-
-    input, textarea {
-        margin-top: 0;
-        margin-bottom: 7px;
-        width: $col--12 - .4%;
-        background-color: $white;
-    }
-
-    label {
-        display: inline-block;
-        margin-top: -5px;
-        margin-bottom: 7px;
-
-        input, textarea {
-            width: 100%;
-        }
-    }
-
-}
+//.collection-editor {
+//
+//    &__inner {
+//        background-color: $quill-gray;
+//        width: 100%;
+//        margin-top: 0;
+//        margin-right: auto;
+//        margin-left: auto;
+//        overflow: hidden;
+//        position: absolute;
+//        z-index: 1;
+//    }
+//
+//    &__editor {
+//        box-sizing: border-box;
+//        width: 80%;
+//        float: left;
+//        padding-left: 18.5%;
+//        padding-top: $lineheight * 2;
+//    }
+//
+//    &__footer {
+//        height: $lineheight * 3;
+//        width: 100%;
+//        padding-top: $lineheight * 2;
+//        position: absolute;
+//        bottom: 0;
+//        right: 0;
+//        background-color: $pickled-bluewood;
+//
+//        &-div {
+//            padding-left: $col--2;
+//            height: 0;
+//        }
+//
+//        button {
+//            margin-top: -10px;
+//        }
+//    }
+//
+//    form {
+//        margin-top: 0;
+//    }
+//
+//    textarea {
+//        box-sizing: border-box;
+//        border: 3px solid #58585B;
+//        border-radius: 4px;
+//    }
+//
+//    input, textarea {
+//        margin-top: 0;
+//        margin-bottom: 7px;
+//        width: $col--12 - .4%;
+//        background-color: $white;
+//    }
+//
+//    label {
+//        display: inline-block;
+//        margin-top: -5px;
+//        margin-bottom: 7px;
+//
+//        input, textarea {
+//            width: 100%;
+//        }
+//    }
+//
+//}
 
 .child-page {
     background-color: $scarpa-flow;

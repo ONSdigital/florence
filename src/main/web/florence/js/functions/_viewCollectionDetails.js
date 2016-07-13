@@ -72,11 +72,6 @@ function viewCollectionDetails(collectionId) {
             || collection.timeseriesImportFiles.length > 0)) {
             approve.show().one('click', function () {
                 postApproveCollection(collection.id);
-                // swal({
-                //     title: "Collection approval in progress. It can take some time. You will be redirected soon.",
-                //     type: "success",
-                //     timer: 5000
-                // });
             });
         }
         else {
@@ -85,7 +80,8 @@ function viewCollectionDetails(collectionId) {
         }
 
         //edit collection
-        $('.collection-selected .btn-collection-edit').click(function () {
+        $('.btn-collection-edit').click(function () {
+            // console.log($(this));
             editCollection(collection);
         });
 
