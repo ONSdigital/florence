@@ -4,7 +4,7 @@
 @import "partials/colour-palette";
 @import "partials/fonts";
 @import "elements/typography"; // In new directory
-@import "patterns/grid"; // In new directory
+@import "utilities/grid"; // In new directory
 @import "partials/elements";
 @import "partials/base";
 @import "partials/utilities";
@@ -25,11 +25,13 @@
 
 // Elements
 @import "elements/tables";
+@import "elements/nav";
 
 // Components
 @import "components/accordion";
+@import "components/network-status";
 
-// Patterns
+// Utilities
 
 
 /* proposed structure:

@@ -104,9 +104,9 @@ function setupFlorence() {
     $('body').append(florence);
     Florence.refreshAdminMenu();
 
-    var adminMenu = $('.admin-nav');
+    var adminMenu = $('.js-nav');
     // dirty checks on admin menu
-    adminMenu.on('click', '.nav--admin__item', function () {
+    adminMenu.on('click', '.js-nav-item', function () {
         if (Florence.Editor.isDirty) {
             swal({
                 title: "Warning",
@@ -141,30 +141,30 @@ function setupFlorence() {
     function processMenuClick(clicked) {
         Florence.collection = {};
 
-        $('.nav--admin__item--collection').hide();
-        $('.nav--admin__item').removeClass('selected');
+        $('.js-nav-item--collection').hide();
+        $('.js-nav-item').removeClass('selected');
         var menuItem = $(clicked);
 
         menuItem.addClass('selected');
 
 
-        if (menuItem.hasClass("nav--admin__item--collections")) {
+        if (menuItem.hasClass("js-nav-item--collections")) {
             viewController('collections');
-        } else if (menuItem.hasClass("nav--admin__item--collection")) {
+        } else if (menuItem.hasClass("js-nav-item--collection")) {
             var thisCollection = CookieUtils.getCookieValue("collection");
             viewCollections(thisCollection);
-            $(".nav--admin__item--collections").addClass('selected');
-        } else if (menuItem.hasClass("nav--admin__item--users")) {
+            $(".js-nav-item--collections").addClass('selected');
+        } else if (menuItem.hasClass("js-nav-item--users")) {
             viewController('users');
-        } else if (menuItem.hasClass("nav--admin__item--teams")) {
+        } else if (menuItem.hasClass("js-nav-item--teams")) {
             viewController('teams');
-        } else if (menuItem.hasClass("nav--admin__item--publish")) {
+        } else if (menuItem.hasClass("js-nav-item--publish")) {
             viewController('publish');
-        } else if (menuItem.hasClass("nav--admin__item--reports")) {
+        } else if (menuItem.hasClass("js-nav-item--reports")) {
             viewController('reports');
-        } else if (menuItem.hasClass("nav--admin__item--login")) {
+        } else if (menuItem.hasClass("js-nav-item--login")) {
             viewController('login');
-        } else if (menuItem.hasClass("nav--admin__item--logout")) {
+        } else if (menuItem.hasClass("js-nav-item--logout")) {
             logout();
             viewController();
         }
@@ -225,7 +225,7 @@ function setupFlorence() {
     resetPage();
 
     // Log every click that will be changing the state or data in Florence
-    $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .nav--admin__item, .page-item', function(e) {
+    $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page-item', function(e) {
         var diagnosticJSON = JSON.stringify(new clickEventObject(e));
         $.ajax({
           url: "/zebedee/clickEventLog",

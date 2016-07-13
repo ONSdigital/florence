@@ -9,6 +9,7 @@
 
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
     var safePath = '';
+
     $("#working-on").on('click', function () {
     }); // add event listener to mainNav
 
@@ -45,6 +46,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
 
+        // Store nav objects
+        var $nav = $('.js-workspace-nav'),
+            $navItem = $nav.find('.js-workspace-nav__item');
+
         document.getElementById('iframe').onload = function () {
             detectPreviewClick();
         };
@@ -66,7 +71,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         }
 
         //click handlers
-        $('.nav--workspace > li').click(function () {
+        $navItem.click(function () {
             menu = '';
             if (Florence.Editor.isDirty) {
                 swal({
@@ -93,18 +98,16 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         function processMenuClick(clicked) {
             var menuItem = $(clicked);
 
-            $('.nav--workspace li').removeClass('selected');
+            $navItem.removeClass('selected');
             menuItem.addClass('selected');
 
             if (menuItem.is('#browse')) {
                 loadBrowseScreen(collectionId, 'click', collectionData);
             } else if (menuItem.is('#create')) {
-                ;
                 Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                ;
                 Florence.globalVars.pagePath = getPreviewUrl();
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
@@ -127,7 +130,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var type = typeGroup[1];
             ;
             Florence.globalVars.pagePath = dest;
-            $('.nav--workspace li').removeClass('selected');
+            $navItem.removeClass('selected');
             $("#create").addClass('selected');
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
@@ -135,7 +138,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         $('.workspace-menu').on('click', '.btn-browse-create-datavis', function () {
             var dest = '/visualisations';
             var type = 'visualisation';
-            ;
             Florence.globalVars.pagePath = dest;
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
@@ -144,17 +146,17 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
             ;
             Florence.globalVars.pagePath = dest;
-            $('.nav--workspace li').removeClass('selected');
+            $navItem.removeClass('selected');
             $("#edit").addClass('selected');
             loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
         });
 
         if (menu === 'edit') {
-            $('.nav--workspace li').removeClass('selected');
+            $navItem.removeClass('selected');
             $("#edit").addClass('selected');
             loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
         } else if (menu === 'browse') {
-            $('.nav--workspace li').removeClass('selected');
+            $navItem.removeClass('selected');
             $("#browse").addClass('selected');
             loadBrowseScreen(collectionId, 'click', collectionData);
         }
