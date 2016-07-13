@@ -1,9 +1,9 @@
-<div class="section-head">
+<div class="slider__head js-collection__head">
     <h2>{{name}}</h2>
-    <p>Publish: {{date}}</br>{{createdBy events}}</p>
+    <p>Publish: {{date}}<br>{{createdBy events}}</p>
     <button class="btn-collection-edit">Edit collection</button>
 </div>
-<div class="section-content">
+<div class="slider__content js-collection__content">
     <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
     <ul class="page-list">
         {{#each inProgress}}
@@ -67,7 +67,7 @@
     </ul>
 </div>
 
-<nav class="section-nav">
+<nav class="slider__nav">
     <button class="btn-collection-work-on">Work on collection</button>
     <button class="btn-collection-approve">Approve collection</button>
     <button id="collection-delete" class="btn-page-delete">Delete collection</button>

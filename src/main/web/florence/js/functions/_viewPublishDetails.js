@@ -45,12 +45,7 @@ function viewPublishDetails(collections) {
     $.when.apply($, pageDataRequests).then(function () {
         var publishDetails = templates.publishDetails(result);
         $('.publish-selected').html(publishDetails);
-        $('.collections-accordion').accordion({
-            header: '.collections-section__head',
-            heightStyle: "content",
-            active: false,
-            collapsible: true
-        });
+        bindAccordions();
 
         $('.btn-collection-publish').click(function () {
             var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');

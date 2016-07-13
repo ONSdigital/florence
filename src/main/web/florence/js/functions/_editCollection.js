@@ -5,10 +5,10 @@ function editCollection(collection) {
     getTeams(
         success = function (teams) {
             var editPublishTime, toIsoDate;
-            var collDetails = $('.section-content').detach();
+            var collDetails = $('.js-collection__content').detach();
             var html = templates.collectionEdit({collection: collection, teams: teams.teams});
-            $('.section-head').after(html);
-            $('.collection-selected .btn-collection-edit').off();
+            $('.js-collection__head').after(html);
+            $('.btn-collection-edit').off();
 
             $('#collection-editor-name').on('input', function () {
                 collection.name = $('#collection-editor-name').val();
@@ -119,11 +119,11 @@ function editCollection(collection) {
 
             //Cancel
             $('.btn-collection-editor-cancel').click(function () {
-                $('.collection-selected .btn-collection-edit').click(function () {
+                $('.btn-collection-edit').click(function () {
                     editCollection(collection);
                 });
-                $('.collection-editor').remove();
-                $('.section-head').after(collDetails);
+                $('.js-collection__edit-modal').remove();
+                $('.js-collection__head').after(collDetails);
             });
 
             setCollectionEditorHeight();

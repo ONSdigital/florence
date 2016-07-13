@@ -1,0 +1,74 @@
+.slider {
+
+    /* Default slider */
+    &__head {
+        background-color: $pickled-bluewood;
+        overflow: hidden;
+        color: $cadet-blue;
+        padding-top: 0;
+        padding-bottom: $lineheight * 2;
+        padding-left: $col--2;
+        padding-right: $col--2;
+        p {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+    }
+
+    &__content {
+        overflow-y: scroll;
+        padding-top: 0;
+        padding-bottom: $lineheight * 2;
+        padding-left: $col--2;
+        padding-right: $col--2;
+        height: $lineheight * 23;
+        color: $emperor;
+
+        &--fullwidth {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+    &__nav {
+        box-sizing: border-box;
+        overflow: hidden;
+        padding-top: $lineheight;
+        padding-bottom: $lineheight;
+        padding-left: $col--2;
+        padding-right: $col--2;
+        background-color: $pickled-bluewood;
+        color: $cadet-blue;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: $lineheight * 5;
+
+        button {
+            margin-right: 0;
+            margin-left: 10px;
+            &:first-child {
+                margin-right: 0;
+                margin-left: 20px;
+            }
+        }
+    }
+
+    /* Collection details overlaid on 'Edit collection' */
+    &__modal {
+        background-color: $quill-gray;
+        width: 100%;
+        margin-top: $lineheight;
+        margin-right: auto;
+        margin-left: auto;
+        padding-bottom: $lineheight;
+        overflow: hidden;
+        position: absolute;
+        z-index: 1;
+
+        textarea {
+            border: 3px solid $scarpa-flow;
+        }
+    }
+}
