@@ -611,57 +611,6 @@ button {
 
 }
 
-// Buttons - CSS/colour only classes
-.btn {
-    border-radius: 4px;
-    padding: 10px $gutter;
-    text-decoration: none;
-    position: relative;
-
-    // Colours
-
-    &--primary {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &--positive {
-        color: $concrete;
-        background-color: $como;
-    }
-
-    &--warning {
-        color: $concrete;
-        background-color: $tawny-port;
-    }
-
-    &:hover,
-    &:focus {
-        &:after {
-            content: '';
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background-color: rgba(0,0,0,0.2);
-            top: 0;
-            left: 0;
-            border-radius: 4px;
-        }
-    }
-
-    // Margin
-
-    &--flush {
-        margin: 0;
-    }
-
-    // Display
-
-    &--inline-block {
-        display: inline-block;
-    }
-}
-
 // Inputs - should eventually replace all the unique/specific classing being used
 .input {
     &__file {
