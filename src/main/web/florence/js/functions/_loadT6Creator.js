@@ -257,6 +257,7 @@ function loadT6Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
                 "images": [],
                 "versions": [],
                 "alerts": [],
+                "pdfTable": [],
                 type: pageType
             };
         }

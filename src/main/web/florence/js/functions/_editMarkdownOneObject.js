@@ -9,6 +9,10 @@
 function editMarkdownOneObject (collectionId, data, field, title) {
   var list = data[field];
 
+  if(!data[field]) {
+    data[field] = {}
+  }
+
   var dataTemplate;
   if (title) {
     dataTemplate = {list: list, header: title};
