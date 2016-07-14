@@ -25,7 +25,6 @@ function viewCollectionDetails(collectionId, $this) {
         ProcessPages(collection.complete);
         ProcessPages(collection.reviewed);
 
-        // var collectionHtml = window.templates.collectionDetails(collection);
         var showPanelOptions = {
             html: window.templates.collectionDetails(collection)
         };
