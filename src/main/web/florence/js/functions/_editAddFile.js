@@ -60,7 +60,7 @@ function addFile(collectionId, data, field, idField) {
         downloadExtensions = /\.xls$|.pdf$|.zip$/;
     } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
         downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
-    } else if (data.type === 'article' || data.type === 'bulletin') {
+    } else if (data.type === 'article' || data.type === 'bulletin'|| data.type === 'compendium_chapter') {
         downloadExtensions = /\.pdf$/;
     } else {
         sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
