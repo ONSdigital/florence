@@ -47,7 +47,7 @@ function viewTeamDetails(teamName, $this) {
         });
 
         $('.btn-team-cancel').click(function () {
-            hidePanel();
+            hidePanel({});
         });
 
         $('.btn-team-edit-members').click(function () {

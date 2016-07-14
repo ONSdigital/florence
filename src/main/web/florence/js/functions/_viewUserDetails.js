@@ -17,7 +17,7 @@ function viewUserDetails(email, $this) {
     );
 
     var isAdmin, isEditor, isVisPublisher;
-    function populateUserDetails(user, email) {
+    function populateUserDetails(user, email, $this) {
         getUserPermission(
             function (permission) {
                 isAdmin = permission.admin;
@@ -26,7 +26,6 @@ function viewUserDetails(email, $this) {
 
                 addPermissionToJSON(user);
 
-                // var html = window.templates.userDetails(user);
                 var showPanelOptions = {
                     html: window.templates.userDetails(user)
                 };
@@ -71,7 +70,7 @@ function viewUserDetails(email, $this) {
                 });
 
                 $('.btn-user-cancel').click(function () {
-                    hidePanel();
+                    hidePanel({});
                 });
             },
             function (error) {handleApiError(error);},
