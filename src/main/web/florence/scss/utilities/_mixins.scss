@@ -1,0 +1,11 @@
+/* Mixin to create utility - enough lineheight multiples to fill the height of Florence */
+@mixin spacingUtility($property) {
+    @for $i from 0 through 42 {
+        .#{$property}-top--#{$i} {
+            #{$property}-top: ($lineheight * $i) !important;
+        }
+        .#{$property}-bottom--#{$i} {
+            #{$property}-bottom: ($lineheight * $i) !important;
+        }
+    }
+}

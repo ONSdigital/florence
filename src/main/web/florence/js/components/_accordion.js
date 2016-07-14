@@ -7,9 +7,9 @@ function bindAccordions() {
     var $accordions = $('.js-accordion'),
         $title = $accordions.find('.js-accordion__title');
 
-    if ($accordions.length === 1) {
-        $accordions.find('.js-accordion__content').addClass('accordion__content--borders');
-    }
+    // if ($accordions.length === 1) {
+    //     $accordions.find('.js-accordion__content').addClass('accordion__content--borders');
+    // }
 
     $title.click(function() {
         var $this = $(this),
