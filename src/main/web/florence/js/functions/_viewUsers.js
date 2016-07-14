@@ -29,10 +29,10 @@ function viewUsers(view) {
 
 
         $('.collections-select-table tbody tr').click(function () {
-            $('.collections-select-table tbody tr').removeClass('selected');
-            $(this).addClass('selected');
+            // $('.collections-select-table tbody tr').removeClass('selected');
+            // $(this).addClass('selected');
             var userId = $(this).attr('data-id');
-            viewUserDetails(userId);
+            viewUserDetails(userId, $(this));
         });
 
         $('.radioBtnDiv').change(function () {

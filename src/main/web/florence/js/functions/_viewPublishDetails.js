@@ -83,9 +83,12 @@ function viewPublishDetails(collections) {
             $(this).next('.page-options').show();
         });
         $('.btn-collection-cancel').click(function () {
-            var onHide = false,
-                moveCenteredPanel = true;
-            hidePanel(onHide, moveCenteredPanel);
+            var hidePanelOptions = {
+                onHide: false,
+                moveCenteredPanel: true
+            };
+
+            hidePanel(hidePanelOptions);
         });
     });
 }

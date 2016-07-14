@@ -1,12 +1,13 @@
 /**
  * Display the details of the team with the given name.
- * @param name
+ * @param teamName
+ * @param $this = jQuery object of selected table item
  */
-function viewTeamDetails(teamName) {
+function viewTeamDetails(teamName, $this) {
 
     getTeams(
         success = function (team) {
-            populateTeamDetails(team);
+            populateTeamDetails(team, $this);
         },
         error = function (response) {
             handleApiError(response);
@@ -14,10 +15,13 @@ function viewTeamDetails(teamName) {
         teamName
     );
 
-    function populateTeamDetails(team) {
+    function populateTeamDetails(team, $this) {
 
-        var html = window.templates.teamDetails(team);
-        showPanel(html);
+        // var html = window.templates.teamDetails(team);
+        var showPanelOptions = {
+            html: window.templates.teamDetails(team)
+        };
+        showPanel($this, showPanelOptions);
 
         $('.btn-team-delete').click(function () {
             swal({
