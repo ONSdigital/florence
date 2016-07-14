@@ -16,9 +16,7 @@ function viewTeams() {
         var teamsHtml = templates.teamList(teams);
         $('.section').html(teamsHtml);
 
-        $('.collections-select-table tbody tr').click(function () {
-            // $('.collections-select-table tbody tr').removeClass('selected');
-            // $(this).addClass('selected');
+        $('.js-selectable-table tbody tr').click(function () {
             var teamId = $(this).attr('data-id');
             viewTeamDetails(teamId, $(this));
         });
