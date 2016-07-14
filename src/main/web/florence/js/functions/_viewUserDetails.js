@@ -1,12 +1,14 @@
 /**
  * Display the details of the user with the given email.
+ *
  * @param email
+ * @param $this = jQuery object of selected table item
  */
-function viewUserDetails(email) {
+function viewUserDetails(email, $this) {
 
     getUsers(
         success = function (user) {
-            populateUserDetails(user, email);
+            populateUserDetails(user, email, $this);
         },
         error = function (response) {
             handleApiError(response);
@@ -24,8 +26,11 @@ function viewUserDetails(email) {
 
                 addPermissionToJSON(user);
 
-                var html = window.templates.userDetails(user);
-                showPanel(html);
+                // var html = window.templates.userDetails(user);
+                var showPanelOptions = {
+                    html: window.templates.userDetails(user)
+                };
+                showPanel($this, showPanelOptions);
 
                 $('.btn-user-change-password').click(function () {
                     var currentPasswordRequired = false;

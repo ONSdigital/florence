@@ -52,7 +52,12 @@ function viewPublish() {
             var collections = $(this).attr('data-collections').split(',');
             Florence.collectionToPublish.publishDate = $(this).find('td').html();
             viewPublishDetails(collections);
-            showPanel($(this), false, true);
+
+            var showPanelOptions = {
+                html: false,
+                moveCenteredPanel: true
+            };
+            showPanel($(this), showPanelOptions);
             // $('.panel--centred').animate({marginLeft: "0%"}, 800);
         });
     }

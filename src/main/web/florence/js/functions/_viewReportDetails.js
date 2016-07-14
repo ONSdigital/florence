@@ -1,4 +1,13 @@
-function viewReportDetails(collection, isPublished) {
+/**
+ * Display panel with selected report's details
+ *
+ * @param collection = selected collection data object
+ * @param isPublished = boolean flag of whether selected collection is published or not
+ * @param $this = jQuery object of selected item from table
+ */
+
+function viewReportDetails(collection, isPublished, $this) {
+
     var details, reportDetails, published, events;
 
     // get the event details
@@ -24,8 +33,6 @@ function viewReportDetails(collection, isPublished) {
                     success: function (collection) {
 
                         var collection = collection[0];
-
-                        //console.log(collection);
 
                         var date = collection.publishEndDate;
                         collection.formattedDate = StringUtils.formatIsoFull(date);
@@ -69,9 +76,12 @@ function viewReportDetails(collection, isPublished) {
                             success: success
                         };
 
-                        reportDetails = templates.reportPublishedDetails(details);
+                        var showPanelOptions = {
+                            html: templates.reportPublishedDetails(details),
+                            moveCenteredPanel: true
+                        };
 
-                        $('.publish-selected').html(reportDetails);
+                        showPanel($this, showPanelOptions);
                         bindAccordions();
                         bindTableOrdering();
 
@@ -90,17 +100,21 @@ function viewReportDetails(collection, isPublished) {
                     name: collection.name,
                     events: events
                 };
-                reportDetails = templates.reportUnpublishedDetails(details);
+
+                var showPanelOptions = {
+                    html: templates.reportUnpublishedDetails(details),
+                    moveCenteredPanel: true
+                };
+                showPanel($this, showPanelOptions);
             }
 
-            // Load handlebars into page and bind accordion events
-            $('.publish-selected').html(reportDetails);
             bindAccordions();
 
-            $('.publish-selected .btn-collection-cancel').click(function () {
-                $('.publish-selected').animate({right: "-50%"}, 500);
-                $('.publish-select').animate({marginLeft: "25%"}, 800);
-                $('.publish-select-table tbody tr').removeClass('selected');
+            $('.btn-collection-cancel').click(function () {
+                var hidePanelOptions = {
+                    moveCenteredPanel: true
+                };
+                hidePanel(hidePanelOptions)
             });
 
         },

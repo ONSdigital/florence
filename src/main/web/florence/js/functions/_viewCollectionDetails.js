@@ -25,8 +25,11 @@ function viewCollectionDetails(collectionId, $this) {
         ProcessPages(collection.complete);
         ProcessPages(collection.reviewed);
 
-        var collectionHtml = window.templates.collectionDetails(collection);
-        showPanel($this, collectionHtml);
+        // var collectionHtml = window.templates.collectionDetails(collection);
+        var showPanelOptions = {
+            html: window.templates.collectionDetails(collection)
+        };
+        showPanel($this, showPanelOptions);
 
         var deleteButton = $('#collection-delete');
         if (collection.inProgress.length === 0

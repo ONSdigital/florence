@@ -26,6 +26,19 @@
         border-radius: 4px;
         margin-top:-3px;
 
+        thead {
+            display: block;
+        }
+
+        thead tr {
+            background-color: $pickled-bluewood;
+            color: $cadet-blue;
+        }
+
+        tr {
+            display: block;
+        }
+
         td {
             padding-top: $lineheight;
             padding-bottom: $lineheight;
@@ -34,11 +47,9 @@
         td, th {
             padding-right: $gutter;
             padding-left: $gutter;
-        }
-
-        thead tr {
-            background-color: $pickled-bluewood;
-            color: $cadet-blue;
+            width: 49%;
+            box-sizing: border-box;
+            display: inline-block;
         }
 
         tbody {
@@ -68,6 +79,14 @@
                 }
             }
         }
+    }
+
+
+    /* Fixed height table - used in selectable tables in panels */
+    &--fixed-height tbody {
+        max-height: ($lineheight * 24);
+        overflow-y: scroll;
+        display: block;
     }
 
     /* Selectable table (ie collections list) */
