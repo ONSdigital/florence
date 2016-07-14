@@ -163,7 +163,7 @@ function viewCollectionDetails(collectionId, $this) {
         });
 
         $('.btn-collection-cancel').click(function () {
-            hidePanel();
+            hidePanel({});
         });
 
         $('.btn-collection-work-on').click(function () {
