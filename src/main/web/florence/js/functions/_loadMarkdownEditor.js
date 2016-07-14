@@ -75,6 +75,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         loadTableBuilder(pageData, onInsertSave);
     });
 
+    $(".btn-markdown-editor-equation").click(function () {
+        loadEquationBuilder(pageData, onInsertSave);
+    });
+
     $(".btn-markdown-editor-image").click(function () {
         loadImageBuilder(pageData, function (name, markdown, pageData) {
             onInsertSave(name, markdown);
