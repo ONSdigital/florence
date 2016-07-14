@@ -25,7 +25,7 @@ function viewUserDetails(email) {
                 addPermissionToJSON(user);
 
                 var html = window.templates.userDetails(user);
-                $('.collection-selected').html(html).animate({right: "0%"}, 500);
+                showPanel(html);
 
                 $('.btn-user-change-password').click(function () {
                     var currentPasswordRequired = false;
@@ -66,8 +66,7 @@ function viewUserDetails(email) {
                 });
 
                 $('.btn-user-cancel').click(function () {
-                    $('.collection-selected').stop().animate({right: "-50%"}, 500);
-                    $('.collections-select-table tbody tr').removeClass('selected');
+                    hidePanel();
                 });
             },
             function (error) {handleApiError(error);},

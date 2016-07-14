@@ -1,6 +1,8 @@
 .slider {
 
     /* Default slider */
+    background: $quill-gray;
+    height: 100%;
     &__head {
         background-color: $pickled-bluewood;
         overflow: hidden;
@@ -21,7 +23,7 @@
         padding-bottom: $lineheight * 2;
         padding-left: $col--2;
         padding-right: $col--2;
-        height: $lineheight * 23;
+        //min-height: $lineheight * 24;
         color: $emperor;
 
         &--fullwidth {

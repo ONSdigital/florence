@@ -7,10 +7,7 @@ function postApproveCollection(collectionId) {
         type: 'POST',
         success: function (response) {
             $('.over').remove();
-            $('.collections-select-table tbody tr').removeClass('selected');
-            $('.collection-selected').stop().animate({right: "-50%"}, 500, function() {
-                viewController('publish');
-            });
+            hidePanel(viewController('publish'));
         },
         error: function (response) {
             $('.over').remove();

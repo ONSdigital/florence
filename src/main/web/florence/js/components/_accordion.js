@@ -2,8 +2,14 @@
  *  A simple jQuery accordion
  *  Requires a container ('js-accordion'), a title ('js-accordion__title) and the content ('js-accordion__content')
  **/
+
 function bindAccordions() {
-    var $title = $('.js-accordion .js-accordion__title');
+    var $accordions = $('.js-accordion'),
+        $title = $accordions.find('.js-accordion__title');
+
+    if ($accordions.length === 1) {
+        $accordions.find('.js-accordion__content').addClass('accordion__content--borders');
+    }
 
     $title.click(function() {
         var $this = $(this),

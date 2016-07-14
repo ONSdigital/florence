@@ -14,16 +14,6 @@ $panel-height-2-top-nav: 756px;
     background: $porcelain;
 }
 
-.panel {
-    overflow: hidden;
-    height: $panel-height-1-top-nav;
-    display: block;
-
-    &--with-top-sub-menu {
-        height: $panel-height-2-top-nav;
-    }
-}
-
 .block {
     overflow: hidden;
 }

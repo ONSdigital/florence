@@ -44,16 +44,16 @@ function viewPublishDetails(collections) {
 
     $.when.apply($, pageDataRequests).then(function () {
         var publishDetails = templates.publishDetails(result);
-        $('.publish-selected').html(publishDetails);
+        $('.panel--off-canvas').html(publishDetails);
         bindAccordions();
 
         $('.btn-collection-publish').click(function () {
-            var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
+            var collection = $(this).closest('.panel').find('.collection-name').attr('data-id');
             publish(collection);
         });
 
         $('.btn-collection-unlock').click(function () {
-            var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
+            var collection = $(this).closest('.panel').find('.collection-name').attr('data-id');
 
             if (result.date !== manual) {
                 swal({
@@ -82,10 +82,10 @@ function viewPublishDetails(collections) {
             $(this).parent('li').addClass('selected');
             $(this).next('.page-options').show();
         });
-        $('.publish-selected .btn-collection-cancel').click(function () {
-            $('.publish-selected').animate({right: "-50%"}, 500);
-            $('.publish-select').animate({marginLeft: "25%"}, 800);
-            $('.publish-select-table tbody tr').removeClass('selected');
+        $('.btn-collection-cancel').click(function () {
+            var onHide = false,
+                moveCenteredPanel = true;
+            hidePanel(onHide, moveCenteredPanel);
         });
     });
 }
