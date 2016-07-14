@@ -7,7 +7,7 @@
 @import "utilities/grid"; // In new directory
 @import "partials/elements";
 @import "partials/base";
-@import "partials/utilities";
+//@import "partials/utilities";
 
 //For code that needs refactoring - empty regularly
 @import "partials/shame";
@@ -34,7 +34,10 @@
 @import "components/slider";
 
 // Utilities
+@import "utilities/mixins";
 @import "utilities/panels";
+@import "utilities/padding";
+@import "utilities/margin";
 
 
 /* proposed structure:

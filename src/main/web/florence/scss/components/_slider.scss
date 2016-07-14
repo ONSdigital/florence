@@ -3,6 +3,11 @@
     /* Default slider */
     background: $quill-gray;
     height: 100%;
+
+    &--background-primary {
+        background: $pickled-bluewood;
+    }
+
     &__head {
         background-color: $pickled-bluewood;
         overflow: hidden;

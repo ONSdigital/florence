@@ -14,11 +14,6 @@
         position: relative;
         padding: 0 $col--2;
         cursor: pointer;
-        //border-bottom: 3px solid $gray-chateau; // Add on border and remove it when active to stop jump from border on content when it appears
-
-        &.active {
-            //border-bottom: 3px solid $gray-chateau;
-        }
 
         // Handle different headings in accordion title
         h3 {
@@ -57,6 +52,7 @@
 
     &__content {
         overflow: scroll;
+        background: $quill-gray;
         animation-name: accordion-hide;
         animation-fill-mode: forwards;
         animation-duration: 0.4s;
@@ -80,21 +76,21 @@
         }
 
         // Add borders to the accordion content (currently used on single accordions)
-        &--borders {
-            border-left: 3px solid $gray-chateau;
-            border-right: 3px solid $gray-chateau;
-            animation-name: accordion-hide--borders;
-            animation-fill-mode: forwards;
-            animation-duration: 0.4s;
-            animation-timing-function: ease-in-out;
-        }
-
-        &--borders.active {
-            animation-name: accordion-show--borders;
-            animation-fill-mode: forwards;
-            animation-duration: 0.4s;
-            animation-timing-function: ease-in-out;
-        }
+        //&--borders {
+        //    border-left: 3px solid $gray-chateau;
+        //    border-right: 3px solid $gray-chateau;
+        //    animation-name: accordion-hide--borders;
+        //    animation-fill-mode: forwards;
+        //    animation-duration: 0.4s;
+        //    animation-timing-function: ease-in-out;
+        //}
+        //
+        //&--borders.active {
+        //    animation-name: accordion-show--borders;
+        //    animation-fill-mode: forwards;
+        //    animation-duration: 0.4s;
+        //    animation-timing-function: ease-in-out;
+        //}
     }
 }
 
@@ -109,11 +105,11 @@
 }
 
 // Modifier to add border to accordion
-@keyframes accordion-show--borders {
-    from {max-height: 0; border-bottom: 0;}
-    to {max-height: ($lineheight * 17); border-bottom: 3px solid $gray-chateau;}
-}
-@keyframes accordion-hide--borders {
-    from {max-height: ($lineheight * 17); border-bottom: 3px solid $gray-chateau;}
-    to {max-height: 0; border-bottom: 0;}
-}
+//@keyframes accordion-show--borders {
+//    from {max-height: 0; border-bottom: 0;}
+//    to {max-height: ($lineheight * 17); border-bottom: 3px solid $gray-chateau;}
+//}
+//@keyframes accordion-hide--borders {
+//    from {max-height: ($lineheight * 17); border-bottom: 3px solid $gray-chateau;}
+//    to {max-height: 0; border-bottom: 0;}
+//}
