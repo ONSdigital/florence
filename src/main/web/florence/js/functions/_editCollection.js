@@ -126,7 +126,7 @@ function editCollection(collection) {
                 $('.js-collection__head').after(collDetails);
             });
 
-            // setCollectionEditorHeight(); // Commented to see if it breaks anything, unsure where it is needed at the moment
+            setCollectionEditorHeight();
         },
         error = function (jqxhr) {
             handleApiError(jqxhr);
@@ -135,12 +135,12 @@ function editCollection(collection) {
 }
 
 function setCollectionEditorHeight() {
-    var panelHeight = parseInt($('.js-selectable-table').height());
+    var $contentModal = $('.js-collection__edit-modal'),
+        panelHeight = parseInt($('.panel--off-canvas').height()),
+        headHeight = parseInt($('.slider__head').outerHeight()),
+        contentMargin = (parseInt($contentModal.css('margin-top'))) + (parseInt($contentModal.css('margin-bottom')));
 
-    var headHeight = parseInt($('.section-head').height());
-    var headPadding = parseInt($('.section-head').css('padding-bottom'));
-
-    var contentHeight = panelHeight - (headHeight + headPadding);
-    $('.collection-editor__editor').css('height', contentHeight);
+    var contentHeight = panelHeight - headHeight - contentMargin;
+    $contentModal.css('height', contentHeight);
 }
 
