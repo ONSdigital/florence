@@ -17,7 +17,6 @@ function viewTeamDetails(teamName, $this) {
 
     function populateTeamDetails(team, $this) {
 
-        // var html = window.templates.teamDetails(team);
         var showPanelOptions = {
             html: window.templates.teamDetails(team)
         };

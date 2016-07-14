@@ -9,8 +9,11 @@
  */
 
 function showPanel($this, options) {
-    $('.js-selectable-table tbody tr').removeClass('selected');
-    $this.addClass('selected');
+
+    if ($this) {
+        $('.js-selectable-table tbody tr').removeClass('selected');
+        $this.addClass('selected');
+    }
 
     if (options.html) {
         $('.panel--off-canvas').html(options.html).animate({right: "0%"}, 500);
