@@ -17,7 +17,7 @@ function viewTeamDetails(teamName) {
     function populateTeamDetails(team) {
 
         var html = window.templates.teamDetails(team);
-        $('.collection-selected').html(html).animate({right: "0%"}, 500);
+        showPanel(html);
 
         $('.btn-team-delete').click(function () {
             swal({
@@ -42,9 +42,8 @@ function viewTeamDetails(teamName) {
             });
         });
 
-        $('.collection-selected .btn-team-cancel').click(function () {
-            $('.collection-selected').stop().animate({right: "-50%"}, 500);
-            $('.collections-select-table tbody tr').removeClass('selected');
+        $('.btn-team-cancel').click(function () {
+            hidePanel();
         });
 
         $('.btn-team-edit-members').click(function () {

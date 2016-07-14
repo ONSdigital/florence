@@ -14,6 +14,11 @@
         position: relative;
         padding: 0 $col--2;
         cursor: pointer;
+        //border-bottom: 3px solid $gray-chateau; // Add on border and remove it when active to stop jump from border on content when it appears
+
+        &.active {
+            //border-bottom: 3px solid $gray-chateau;
+        }
 
         // Handle different headings in accordion title
         h3 {
@@ -51,16 +56,11 @@
     }
 
     &__content {
-        background: $quill-gray;
         overflow: scroll;
         animation-name: accordion-hide;
         animation-fill-mode: forwards;
         animation-duration: 0.4s;
         animation-timing-function: ease-in-out;
-
-        &--padded {
-            padding: 0 $col--2;
-        }
 
         // Stop animation showing on initial render of the accordion - class removed on click
         &.disable-animation {
@@ -74,15 +74,46 @@
             animation-duration: 0.4s;
             animation-timing-function: ease-in-out;
         }
+
+        &--padded {
+            padding: 0 $col--2;
+        }
+
+        // Add borders to the accordion content (currently used on single accordions)
+        &--borders {
+            border-left: 3px solid $gray-chateau;
+            border-right: 3px solid $gray-chateau;
+            animation-name: accordion-hide--borders;
+            animation-fill-mode: forwards;
+            animation-duration: 0.4s;
+            animation-timing-function: ease-in-out;
+        }
+
+        &--borders.active {
+            animation-name: accordion-show--borders;
+            animation-fill-mode: forwards;
+            animation-duration: 0.4s;
+            animation-timing-function: ease-in-out;
+        }
     }
 }
 
 /* Accordion animation */
 @keyframes accordion-show {
     from {max-height: 0;}
-    to {max-height: ($lineheight * 17)}
+    to {max-height: ($lineheight * 17);}
 }
 @keyframes accordion-hide {
-    from {max-height: ($lineheight * 17)}
+    from {max-height: ($lineheight * 17);}
     to {max-height: 0;}
+}
+
+// Modifier to add border to accordion
+@keyframes accordion-show--borders {
+    from {max-height: 0; border-bottom: 0;}
+    to {max-height: ($lineheight * 17); border-bottom: 3px solid $gray-chateau;}
+}
+@keyframes accordion-hide--borders {
+    from {max-height: ($lineheight * 17); border-bottom: 3px solid $gray-chateau;}
+    to {max-height: 0; border-bottom: 0;}
 }

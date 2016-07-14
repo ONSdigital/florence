@@ -1,11 +1,12 @@
-<div class="slider__head">
-    <h2>{{date}}</h2>
-    <p>{{subtitle}}</p>
-</div>
+<div class="slider">
+    <div class="slider__head">
+        <h2>{{date}}</h2>
+        <p>{{subtitle}}</p>
+    </div>
 
-<div class="slider__content slider__content--fullwidth">
-    {{#each collectionDetails}}
-        <div class="accordion js-accordion">
+    <div class="slider__content slider__content--fullwidth">
+        {{#each collectionDetails}}
+            <div class="accordion js-accordion">
                 <div class="accordion__title js-accordion__title">
                     <h3 class="collection-name" data-id="{{id}}">{{name}}</h3>
                 </div>
@@ -27,10 +28,11 @@
                         {{/each}}
                     </ul>
                 </div>
-        </div>
-    {{/each}}
-</div>
+            </div>
+        {{/each}}
+    </div>
 
-<nav class="slider__nav">
-    <button class="btn-collection-cancel">Cancel</button>
-</nav>
+    <nav class="slider__nav">
+        <button class="btn-collection-cancel">Cancel</button>
+    </nav>
+</div>

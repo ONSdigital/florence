@@ -48,15 +48,12 @@ function viewPublish() {
         var publishList = templates.publishList(result);
         $('.section').html(publishList);
 
-        $('.publish-select-table tbody tr').click(function () {
+        $('.js-selectable-table tbody tr').click(function () {
             var collections = $(this).attr('data-collections').split(',');
             Florence.collectionToPublish.publishDate = $(this).find('td').html();
             viewPublishDetails(collections);
-
-            $('.publish-select-table tbody tr').removeClass('selected');
-            $(this).addClass('selected');
-            $('.publish-selected').animate({right: "0%"}, 800);
-            $('.publish-select').animate({marginLeft: "0%"}, 500);
+            showPanel($(this), false, true);
+            // $('.panel--centred').animate({marginLeft: "0%"}, 800);
         });
     }
 }
