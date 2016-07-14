@@ -169,7 +169,16 @@ function markdownEditor() {
         return newText;
     });
 
-    // output table tag as text instead of the actual tag.
+    // output equation tag as text instead of the actual tag.
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/(<ons-equation\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+            var path = $(match).attr('path');
+            return '[equation path="' + path + '" ]';
+        });
+        return newText;
+    });
+
+    // output interactive tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {
         var newText = text.replace(/(<ons-interactive\surl="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
             var path = $(match).attr('url');
