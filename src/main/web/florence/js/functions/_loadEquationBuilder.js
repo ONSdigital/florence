@@ -85,7 +85,7 @@ function loadEquationBuilder(pageData, onSave, equation) {
             type: 'POST',
             contentType: 'text/plain',
             crossDomain: true,
-            data: content,
+            data: JSON.stringify(content),
             success: function (data) {
                 svg = data;
                 console.log("SVG: ", svg);
