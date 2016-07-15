@@ -1,18 +1,18 @@
-<div class="equation-builder builder overlay">
+<div class="builder js-equation-builder overlay">
     <div class="equation-builder__inner builder__inner">
         <!-- <h1>Chart Builder</h1> -->
 
         <div id="edit-equation" class="equation-builder__editor builder__editor">
             <form>
                 <label for="equation-title">Title</label>
-                <input type="text" id="equation-title" placeholder="[Title]" value="{{title}}"/>
+                <input type="text" id="equation-title" class="js-equation-title" placeholder="[Title]" value="{{title}}"/>
 
                 <label for="equation-content">Equation markdown</label>
-                <textarea id="equation-content" placeholder="[Equation markdown]" rows="10">{{content}}</textarea>
+                <textarea id="equation-content" placeholder="[Equation markdown]" class="js-equation-content" rows="10">{{content}}</textarea>
             </form>
         </div>
 
-        <div id="preview-equation" class="equation-builder__preview builder__preview"">
+        <div id="preview-equation" class="builder__preview js-equation-preview">
 
         </div>
 

@@ -2,11 +2,12 @@ function loadEquationBuilder(pageData, onSave, equation) {
     var equation = equation;
     var pageUrl = pageData.uri;
     var html = templates.equationBuilder(equation);
+
     $('body').append(html);
-    $('.equation-builder').css("display", "block");
+    $('.js-equation-builder').css("display", "block");
 
     $('.btn-equation-builder-cancel').on('click', function () {
-        $('.equation-builder').stop().fadeOut(200).remove();
+        $('.js-equation-builder').stop().fadeOut(200).remove();
     });
 
     // if editing existing equation render preview straight away
@@ -58,7 +59,8 @@ function loadEquationBuilder(pageData, onSave, equation) {
                 if (onSave) {
                     onSave(equation.filename, '<ons-equation path="' + equation.filename + '" />');
                 }
-                $('.equation-builder').stop().fadeOut(200).remove();
+                $('.js-equation-builder').stop().fadeOut(200).remove();
+                refreshEquationsList(Florence.collection.id, pageData);
             }
         });
     });
@@ -89,7 +91,7 @@ function loadEquationBuilder(pageData, onSave, equation) {
             success: function (data) {
                 svg = data;
                 console.log("SVG: ", svg);
-                $( "#preview-equation" ).html(svg);
+                $( ".js-equation-preview" ).html(svg);
             }
         });
     }
