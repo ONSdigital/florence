@@ -78,7 +78,7 @@ function initialiseEquationList(collectionId, data) {
                     });
                     putContent(collectionId, basePath, JSON.stringify(data),
                         success = function () {
-                            deleteContent(collectionId, equationJson + '.json', onSuccess = function () {
+                            deleteEquation(collectionId, equationJson, onSuccess = function () {
                             }, onError = function () {
                             });
                             Florence.Editor.isDirty = false;
