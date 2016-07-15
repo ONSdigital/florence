@@ -87,6 +87,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.tables) {
             loadTablesList(collectionId, pageData);
         }
+        if (pageData.equations) {
+            loadEquationsList(collectionId, pageData);
+        }
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
@@ -113,6 +116,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         }
         if (pageData.tables) {
             loadTablesList(collectionId, pageData);
+        }
+        if (pageData.equations) {
+            loadEquationsList(collectionId, pageData);
         }
         if (pageData.images) {
             loadImagesList(collectionId, pageData);

@@ -615,6 +615,47 @@
         }
     }
 
+    .btn-markdown-editor-equation {
+        float: left;
+        background-color: transparent;
+        margin: 10.5px 0 0 20px;
+        width: 40px;
+        height: 42px;
+
+        &:before {
+            font-size: 36px;
+            color: $cadet-blue;
+            width: 40px;
+            height: 42px;
+            top: 10px;
+            left: 0;
+            position: absolute;
+            content: '√';
+            background-color: transparent;
+        }
+
+        &:after {
+            font-size: 20px;
+            color: $cadet-blue;
+            width: 40px;
+            height: 42px;
+            top: 10px;
+            left: 15px;
+            position: absolute;
+            content: 'x';
+            background-color: transparent;
+        }
+
+        &:hover {
+            float: left;
+            background-color: transparent;
+            margin: 10.5px 0 0 20px;
+            width: 40px;
+            height: 42px;
+            content: '√x';
+        }
+    }
+
     .markdown-editor-line-numbers {
         box-sizing: border-box;
         width: 8%;
@@ -661,283 +702,283 @@
     margin-right: -5px !important;
 }
 
-.chart-builder {
-
-    &__inner {
-        background-color: $wild-sand;
-        height: $lineheight * 30;
-        width: $col--10;
-        margin-top: $lineheight * 6;
-        margin-right: auto;
-        margin-left: auto;
-        // margin-right: $gutter * 6;
-        // margin-left: $gutter * 6;
-        overflow: hidden;
-        position: relative;
-    }
-
-    &__editor {
-        box-sizing: border-box;
-        width: $col--6;
-        height: $lineheight * 30;
-        float: left;
-        padding: ($lineheight * 2) $gutter $lineheight $gutter;
-        overflow-y: scroll;
-    }
-
-    &__preview {
-        box-sizing: border-box;
-        width: $col--6;
-        height: $lineheight * 30;
-        float: right;
-        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
-        overflow-y: scroll;
-        // background-color: $white;
-    }
-
-    &__footer {
-        height: $lineheight * 2;
-        width: $col--6;
-        padding: $lineheight 0;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        text-align: center;
-        background-color: $wild-sand;
-        // background-color: $pickled-bluewood;
-
-        button {
-            margin-top: 0;
-        }
-    }
-
-    input, select {
-        margin-top: 0;
-        width: $col--6 - .4%;
-        //background-color: $white;
-    }
-
-    textarea {
-        height: $lineheight * 6;
-        width: $col--12 - .3%;
-        border: 3px solid $scarpa-flow;
-        white-space: pre;
-        word-wrap: normal;
-        tab-size: 30;
-    }
-
-    label {
-        display: inline-block;
-        width: $col--6 - .4%;
-        margin-top: -5px;
-        margin-bottom: 4px;
-
-        input, select {
-            width: 100%;
-        }
-    }
-
-    #chart {
-        width: 600px;
-        overflow: auto;
-    }
-
-    #chart-alt-text {
-        height: auto;
-        min-height: $lineheight * 2;
-    }
-
-}
-
-.table-builder {
-
-    &__inner {
-        background-color: $wild-sand;
-        height: $lineheight * 30;
-        width: $col--10;
-        margin-top: $lineheight * 6;
-        margin-right: auto;
-        margin-left: auto;
-        // margin-right: $gutter * 6;
-        // margin-left: $gutter * 6;
-        overflow: hidden;
-        position: relative;
-    }
-
-    &__editor {
-        box-sizing: border-box;
-        width: 30%;
-        height: $lineheight * 30;
-        float: left;
-        padding: ($lineheight * 2) $gutter $lineheight $gutter;
-        overflow-y: scroll;
-    }
-
-    &__preview {
-        box-sizing: border-box;
-        width: 70%;
-        height: $lineheight * 30;
-        float: right;
-        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
-        overflow-y: scroll;
-        // background-color: $white;
-    }
-
-    &__footer {
-        height: $lineheight * 2;
-        width: 70%;
-        padding: $lineheight 0;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        text-align: center;
-        background-color: $wild-sand;
-        // background-color: $pickled-bluewood;
-
-        button {
-            margin-top: 0;
-        }
-    }
-
-    form {
-        margin-top: 0;
-    }
-
-    input, select {
-        margin-top: 0;
-        width: $col--12 - .4%;
-        //background-color: $white;
-    }
-
-    input[type=submit] {
-        @extend button;
-        color: $concrete;
-        background-color: $astral;
-        width: auto;
-        border: none;
-        margin-left: 0;
-    }
-
-    textarea {
-        height: $lineheight * 6;
-        width: $col--12 - .3%;
-        border: 3px solid $scarpa-flow;
-        white-space: pre;
-        word-wrap: normal;
-        tab-size: 30;
-    }
-
-    label {
-        display: inline-block;
-        width: $col--6 - .4%;
-        margin-top: -5px;
-        margin-bottom: 4px;
-
-        input, select {
-            width: 100%;
-        }
-    }
-
-    iframe {
-        width: 800px;
-        min-width: 300px;
-        height: 500px;
-        resize: horizontal;
-        overflow: auto;
-    }
-
-}
-
-.image-builder {
-
-    &__inner {
-        background-color: $wild-sand;
-        height: $lineheight * 30;
-        width: $col--10;
-        margin-top: $lineheight * 6;
-        margin-right: auto;
-        margin-left: auto;
-        // margin-right: $gutter * 6;
-        // margin-left: $gutter * 6;
-        overflow: hidden;
-        position: relative;
-    }
-
-    &__editor {
-        box-sizing: border-box;
-        width: 30%;
-        height: $lineheight * 30;
-        float: left;
-        padding: ($lineheight * 2) $gutter $lineheight $gutter;
-        overflow-y: scroll;
-    }
-
-    &__preview {
-        box-sizing: border-box;
-        width: 70%;
-        height: $lineheight * 30;
-        float: right;
-        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
-        overflow-y: scroll;
-        // background-color: $white;
-    }
-
-    &__footer {
-        height: $lineheight * 2;
-        width: 70%;
-        padding: $lineheight 0;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        text-align: center;
-        background-color: $wild-sand;
-        // background-color: $pickled-bluewood;
-
-        button {
-            margin-top: 0;
-        }
-    }
-
-    form {
-        margin-top: 0;
-    }
-
-    input, select {
-        margin-top: 0;
-        width: $col--12 - .4%;
-        //background-color: $white;
-    }
-
-    input[type=submit] {
-        @extend button;
-        color: $concrete;
-        background-color: $astral;
-        width: auto;
-        border: none;
-        margin-left: 0;
-    }
-
-    textarea {
-        height: $lineheight * 6;
-        width: $col--12 - .3%;
-        border: 3px solid $scarpa-flow;
-        white-space: pre;
-        word-wrap: normal;
-        tab-size: 30;
-    }
-
-    label {
-        display: inline-block;
-        width: $col--6 - .4%;
-        margin-top: -5px;
-        margin-bottom: 4px;
-
-        input, select {
-            width: 100%;
-        }
-    }
-
-}
+//.chart-builders {
+//
+//    &__inner {
+//        background-color: $wild-sand;
+//        height: $lineheight * 30;
+//        width: $col--10;
+//        margin-top: $lineheight * 6;
+//        margin-right: auto;
+//        margin-left: auto;
+//        // margin-right: $gutter * 6;
+//        // margin-left: $gutter * 6;
+//        overflow: hidden;
+//        position: relative;
+//    }
+//
+//    &__editor {
+//        box-sizing: border-box;
+//        width: $col--6;
+//        height: $lineheight * 30;
+//        float: left;
+//        padding: ($lineheight * 2) $gutter $lineheight $gutter;
+//        overflow-y: scroll;
+//    }
+//
+//    &__preview {
+//        box-sizing: border-box;
+//        width: $col--6;
+//        height: $lineheight * 30;
+//        float: right;
+//        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+//        overflow-y: scroll;
+//        // background-color: $white;
+//    }
+//
+//    &__footer {
+//        height: $lineheight * 2;
+//        width: $col--6;
+//        padding: $lineheight 0;
+//        position: absolute;
+//        bottom: 0;
+//        right: 0;
+//        text-align: center;
+//        background-color: $wild-sand;
+//        // background-color: $pickled-bluewood;
+//
+//        button {
+//            margin-top: 0;
+//        }
+//    }
+//
+//    input, select {
+//        margin-top: 0;
+//        width: $col--6 - .4%;
+//        //background-color: $white;
+//    }
+//
+//    textarea {
+//        height: $lineheight * 6;
+//        width: $col--12 - .3%;
+//        border: 3px solid $scarpa-flow;
+//        white-space: pre;
+//        word-wrap: normal;
+//        tab-size: 30;
+//    }
+//
+//    label {
+//        display: inline-block;
+//        width: $col--6 - .4%;
+//        margin-top: -5px;
+//        margin-bottom: 4px;
+//
+//        input, select {
+//            width: 100%;
+//        }
+//    }
+//
+//    #chart {
+//        width: 600px;
+//        overflow: auto;
+//    }
+//
+//    #chart-alt-text {
+//        height: auto;
+//        min-height: $lineheight * 2;
+//    }
+//
+//}
+//
+//.table-builders {
+//
+//    &__inner {
+//        background-color: $wild-sand;
+//        height: $lineheight * 30;
+//        width: $col--10;
+//        margin-top: $lineheight * 6;
+//        margin-right: auto;
+//        margin-left: auto;
+//        // margin-right: $gutter * 6;
+//        // margin-left: $gutter * 6;
+//        overflow: hidden;
+//        position: relative;
+//    }
+//
+//    &__editor {
+//        box-sizing: border-box;
+//        width: 30%;
+//        height: $lineheight * 30;
+//        float: left;
+//        padding: ($lineheight * 2) $gutter $lineheight $gutter;
+//        overflow-y: scroll;
+//    }
+//
+//    &__preview {
+//        box-sizing: border-box;
+//        width: 70%;
+//        height: $lineheight * 30;
+//        float: right;
+//        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+//        overflow-y: scroll;
+//        // background-color: $white;
+//    }
+//
+//    &__footer {
+//        height: $lineheight * 2;
+//        width: 70%;
+//        padding: $lineheight 0;
+//        position: absolute;
+//        bottom: 0;
+//        right: 0;
+//        text-align: center;
+//        background-color: $wild-sand;
+//        // background-color: $pickled-bluewood;
+//
+//        button {
+//            margin-top: 0;
+//        }
+//    }
+//
+//    form {
+//        margin-top: 0;
+//    }
+//
+//    input, select {
+//        margin-top: 0;
+//        width: $col--12 - .4%;
+//        //background-color: $white;
+//    }
+//
+//    input[type=submit] {
+//        @extend button;
+//        color: $concrete;
+//        background-color: $astral;
+//        width: auto;
+//        border: none;
+//        margin-left: 0;
+//    }
+//
+//    textarea {
+//        height: $lineheight * 6;
+//        width: $col--12 - .3%;
+//        border: 3px solid $scarpa-flow;
+//        white-space: pre;
+//        word-wrap: normal;
+//        tab-size: 30;
+//    }
+//
+//    label {
+//        display: inline-block;
+//        width: $col--6 - .4%;
+//        margin-top: -5px;
+//        margin-bottom: 4px;
+//
+//        input, select {
+//            width: 100%;
+//        }
+//    }
+//
+//    iframe {
+//        width: 800px;
+//        min-width: 300px;
+//        height: 500px;
+//        resize: horizontal;
+//        overflow: auto;
+//    }
+//
+//}
+//
+//.image-builders {
+//
+//    &__inner {
+//        background-color: $wild-sand;
+//        height: $lineheight * 30;
+//        width: $col--10;
+//        margin-top: $lineheight * 6;
+//        margin-right: auto;
+//        margin-left: auto;
+//        // margin-right: $gutter * 6;
+//        // margin-left: $gutter * 6;
+//        overflow: hidden;
+//        position: relative;
+//    }
+//
+//    &__editor {
+//        box-sizing: border-box;
+//        width: 30%;
+//        height: $lineheight * 30;
+//        float: left;
+//        padding: ($lineheight * 2) $gutter $lineheight $gutter;
+//        overflow-y: scroll;
+//    }
+//
+//    &__preview {
+//        box-sizing: border-box;
+//        width: 70%;
+//        height: $lineheight * 30;
+//        float: right;
+//        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+//        overflow-y: scroll;
+//        // background-color: $white;
+//    }
+//
+//    &__footer {
+//        height: $lineheight * 2;
+//        width: 70%;
+//        padding: $lineheight 0;
+//        position: absolute;
+//        bottom: 0;
+//        right: 0;
+//        text-align: center;
+//        background-color: $wild-sand;
+//        // background-color: $pickled-bluewood;
+//
+//        button {
+//            margin-top: 0;
+//        }
+//    }
+//
+//    form {
+//        margin-top: 0;
+//    }
+//
+//    input, select {
+//        margin-top: 0;
+//        width: $col--12 - .4%;
+//        //background-color: $white;
+//    }
+//
+//    input[type=submit] {
+//        @extend button;
+//        color: $concrete;
+//        background-color: $astral;
+//        width: auto;
+//        border: none;
+//        margin-left: 0;
+//    }
+//
+//    textarea {
+//        height: $lineheight * 6;
+//        width: $col--12 - .3%;
+//        border: 3px solid $scarpa-flow;
+//        white-space: pre;
+//        word-wrap: normal;
+//        tab-size: 30;
+//    }
+//
+//    label {
+//        display: inline-block;
+//        width: $col--6 - .4%;
+//        margin-top: -5px;
+//        margin-bottom: 4px;
+//
+//        input, select {
+//            width: 100%;
+//        }
+//    }
+//
+//}
 
 .embed {
     &__form {
