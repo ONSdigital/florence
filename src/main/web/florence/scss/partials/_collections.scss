@@ -1,48 +1,48 @@
 
-.scheduled-publish-options {
-    background: $iron-dark;
-    margin: 0 -20px;
-    padding: 0 20px;
-    position: relative;
-    overflow: visible;
+//.scheduled-publish-options {
+//    background: $iron-dark;
+//    margin: 0 -20px;
+//    padding: 0 20px;
+//    position: relative;
+//    overflow: visible;
+//
+//    &:after {
+//        content: '';
+//        position: absolute;
+//        top: -15px;
+//        left: 50px;
+//        width: 0;
+//        height: 0;
+//        border-left: 15px solid transparent;
+//        border-right: 15px solid transparent;
+//        border-bottom: 15px solid $iron-dark;
+//    }
+//}
 
-    &:after {
-        content: '';
-        position: absolute;
-        top: -15px;
-        left: 50px;
-        width: 0;
-        height: 0;
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-bottom: 15px solid $iron-dark;
-    }
-}
-
-.custom-schedule-options, .release-schedule-options {
-    background: $silver-sand;
-    margin: 0 -20px;
-    padding: 21px 20px;
-    position: relative;
-    overflow: visible;
-
-    &:after {
-        content: '';
-        position: absolute;
-        top: -15px;
-        left: 50px;
-        width: 0;
-        height: 0;
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-bottom: 15px solid $silver-sand;
-    }
-
-    .btn {
-        display: inline-block;
-        text-decoration: none;
-    }
-}
+//.custom-schedule-options, .release-schedule-options {
+//    background: $silver-sand;
+//    margin: 0 -20px;
+//    padding: 21px 20px;
+//    position: relative;
+//    overflow: visible;
+//
+//    &:after {
+//        content: '';
+//        position: absolute;
+//        top: -15px;
+//        left: 50px;
+//        width: 0;
+//        height: 0;
+//        border-left: 15px solid transparent;
+//        border-right: 15px solid transparent;
+//        border-bottom: 15px solid $silver-sand;
+//    }
+//
+//    .btn {
+//        display: inline-block;
+//        text-decoration: none;
+//    }
+//}
 
 .release-schedule-options {
     &:after {

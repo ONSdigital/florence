@@ -13,7 +13,7 @@
         <input type="text" class="hidden" id="editor-team-input">
         <input type="radio" id="collection-editor-scheduled" name="publishType" value="scheduledCollection" required {{#ifCond type '===' 'scheduled'}}checked{{/ifCond}} ><label for="collection-editor-scheduled">Scheduled publish</label>
         <input type="radio" id="collection-editor-manual" name="publishType" value="manualCollection" required {{#ifCond type '===' 'manual'}}checked{{/ifCond}}><label for="collection-editor-manual">Manual publish</label>
-        <div id="collection-editor-date-block" class="block">
+        <div id="collection-editor-date-block" class="overflow-hidden">
             <input type="text" id="collection-editor-date" placeholder="dd/mm/yyyy"
                    value="{{collection.publishDate}}"/>
 
