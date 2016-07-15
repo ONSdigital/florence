@@ -25,7 +25,7 @@ function initialiseEquationList(collectionId, data) {
                 success = function () {
                     Florence.Editor.isDirty = false;
                     refreshPreview();
-                    refreshEquationList(collectionId, data);
+                    refreshEquationsList(collectionId, data);
                 },
                 error = function (response) {
                     handleApiError(response);
@@ -88,7 +88,7 @@ function initialiseEquationList(collectionId, data) {
                                 type: "success",
                                 timer: 2000
                             });
-                            refreshEquationList(collectionId, data);
+                            refreshEquationsList(collectionId, data);
                         },
                         error = function (response) {
                             handleApiError(response);
