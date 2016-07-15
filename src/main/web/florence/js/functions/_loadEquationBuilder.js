@@ -27,7 +27,6 @@ function loadEquationBuilder(pageData, onSave, equation) {
     $('.btn-equation-builder-create').on('click', function () {
 
         equation = buildEquationObject();
-        console.log("Equation Object: ", equation);
 
         var jsonPath = equation.uri + ".json";
         $.ajax({
@@ -90,7 +89,6 @@ function loadEquationBuilder(pageData, onSave, equation) {
             data: JSON.stringify(content),
             success: function (data) {
                 svg = data;
-                console.log("SVG: ", svg);
                 $( ".js-equation-preview" ).html(svg);
             }
         });
