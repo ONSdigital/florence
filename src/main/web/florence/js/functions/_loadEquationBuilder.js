@@ -30,7 +30,7 @@ function loadEquationBuilder(pageData, onSave, equation) {
 
         var jsonPath = equation.uri + ".json";
         $.ajax({
-            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
+            url: "/zebedee/equation/" + Florence.collection.id + "?uri=" + jsonPath,
             type: 'POST',
             data: JSON.stringify(equation),
             processData: false,
