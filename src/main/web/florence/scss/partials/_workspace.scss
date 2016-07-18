@@ -57,11 +57,13 @@
 
     &-edit {
         box-sizing: border-box;
-        overflow-y: scroll;
         background-color: $quill-gray;
         // padding-bottom: $lineheight * 4;
-        height: $lineheight * 35;
         // position: relative;
+
+        //Temporarily used !important because refactoring panels puts it after workspace-edit in the CSS file, which means it gets overwritten, when workspace should have priority instead TODO make a modifier that fixes height and and scroll to overflow instead
+        overflow-y: scroll !important;
+        height: $lineheight * 35 !important;
 
         h1 {
             margin-top: 0;
