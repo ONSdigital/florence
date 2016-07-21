@@ -4,7 +4,7 @@
     <div class="page-options">
       <button class="btn-browse-edit">Edit</button>
       <button class="btn-browse-create">Create</button>
-      <button class="btn-browse-delete">Delete</button>
+        {{#if isDeletable}}<button class="btn-browse-delete">Delete</button>{{/if}}
     </div>
     {{#if children}} {{! Within the context of the current item }}
         <ul>
