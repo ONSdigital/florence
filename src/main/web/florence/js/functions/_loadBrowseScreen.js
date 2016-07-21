@@ -6,6 +6,10 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         type: 'GET',
         success: function (response) {
 
+            // run through all json and add isDeletable flag to all nodes
+            checkAndAddDeleteFlag(response);
+
+
             var collectionOwner = localStorage.getItem('userType');
             response['collectionOwner'] = collectionOwner;
 
@@ -35,7 +39,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                     if (collectionOwner == 'DATA_VISUALISATION') {
                         newURL += "/";
                     }
-                    console.log(newURL);
 
                     $('.page-list li').removeClass('selected');
                     $this.parent('li').addClass('selected');
@@ -94,6 +97,27 @@ function openVisDirectoryOnLoad() {
         $this.parent('li').addClass('selected');
         $this.siblings('ul').addClass('active');
         $this.addClass('page-item--directory--selected');
+    }
+}
+
+// recursively add isDeletable flag to all browse tree nodes
+function checkAndAddDeleteFlag(json) {
+    json['isDeletable'] = isDeletable(json.type);
+
+    $.each(json.children, function( key, jsonObj ) {
+        jsonObj['isDeletable'] = isDeletable(jsonObj.type);
+            if (jsonObj.children) {
+                checkAndAddDeleteFlag(jsonObj);
+            }
+        });
+}
+
+// set deletable flag to false for certain page types
+function isDeletable(type) {
+    if (type == 'home_page' || type == 'taxonomy_landing_page' || type == 'product_page') {
+        return false;
+    } else {
+        return true;
     }
 }
 
