@@ -225,7 +225,7 @@ function setupFlorence() {
     resetPage();
 
     // Log every click that will be changing the state or data in Florence
-    $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page-item', function(e) {
+    $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page__item', function(e) {
         var diagnosticJSON = JSON.stringify(new clickEventObject(e));
         $.ajax({
           url: "/zebedee/clickEventLog",

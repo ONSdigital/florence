@@ -9,7 +9,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             // run through all json and add isDeletable flag to all nodes
             checkAndAddDeleteFlag(response);
 
-
             var collectionOwner = localStorage.getItem('userType');
             response['collectionOwner'] = collectionOwner;
 
@@ -41,18 +40,20 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                         newURL += "/";
                     }
 
+                    console.log(newURL);
+
                     // Hide children for previously selected and show for selected one
                     $('.js-browse__item.selected').removeClass('selected');
                     $thisItem.addClass('selected');
 
                     // Hide container for item and buttons for previous and show selected one
-                    $('.page-container.selected').removeClass('selected');
-                    $thisItem.find('.page-container:first').addClass('selected');
+                    $('.page__container.selected').removeClass('selected');
+                    $thisItem.find('.page__container:first').addClass('selected');
 
                     // Hide previous displayed page buttons and show selected one
-                    if ($thisItem.find('.page-options:first')) {
-                        $('.page-options.selected').removeClass('selected');
-                        $thisItem.find('.page-options:first').addClass('selected');
+                    if ($thisItem.find('.page__buttons:first')) {
+                        $('.page__buttons.selected').removeClass('selected');
+                        $thisItem.find('.page__buttons:first').addClass('selected');
                     }
 
                     //change iframe location
@@ -65,10 +66,10 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 $this.parents('ul').addClass('active');
                 $this.closest('li').children('ul').addClass('active');
 
-                $this.closest('li').find('.page-item--directory').removeClass('page-item--directory--selected');
-                if ($this.hasClass('page-item--directory')) {
-                    $('.page-item--directory').removeClass('page-item--directory--selected');
-                    $this.addClass('page-item--directory--selected');
+                $this.closest('li').find('.page__item--directory').removeClass('selected');
+                if ($this.hasClass('page__item--directory')) {
+                    $('.page__item--directory').removeClass('selected');
+                    $this.addClass('selected');
                 }
 
                 // Update browse tree scroll position
@@ -89,6 +90,8 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             }
 
+            browseScrollPos();
+
             openVisDirectoryOnLoad();
 
         },
@@ -107,7 +110,7 @@ function openVisDirectoryOnLoad() {
         var $this = $('.datavis-directory');
         $this.parent('li').addClass('selected');
         $this.siblings('ul').addClass('active');
-        $this.addClass('page-item--directory--selected');
+        $this.addClass('selected');
     }
 }
 

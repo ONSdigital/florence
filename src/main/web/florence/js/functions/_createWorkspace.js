@@ -123,7 +123,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         });
 
         $('.workspace-menu').on('click', '.btn-browse-create', function () {
-            var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+            var dest = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url');
             var spanType = $(this).parent().prev('span');
             var typeClass = spanType[0].attributes[0].nodeValue;
             var typeGroup = typeClass.match(/--(\w*)$/);
@@ -135,8 +135,8 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         });
 
         $('.workspace-menu').on('click', '.btn-browse-delete', function () {
-            var $parentItem = $('.tree-nav-holder ul').find('.selected');
-            var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+            var $parentItem = $('.tree-nav-holder ul').find('.js-browse__item.selected');
+            var dest = $parentItem.attr('data-url');
             var spanType = $(this).parent().prev('span');
             var title = spanType.html();
             addDeleteMarker(dest, title, function() {
@@ -154,7 +154,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         });
 
         $('.workspace-menu').on('click', '.btn-browse-edit', function () {
-            var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+            var dest = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url');
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
