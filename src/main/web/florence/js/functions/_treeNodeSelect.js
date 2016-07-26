@@ -18,4 +18,10 @@ function treeNodeSelect(url) {
     $('.tree-nav-holder ul').removeClass('active');
     $selectedListItem.parents('ul').addClass('active');
     $selectedListItem.closest('li').children('ul').addClass('active');
+
+    // Update browse tree scroll position
+    browseScrollPos();
+
+    // Open active directories
+    selectParentDirectories($selectedListItem);
 }
