@@ -161,6 +161,24 @@ function viewCollectionDetails(collectionId, $this) {
             //}
         });
 
+        $('.delete-marker-remove').click(function () {
+            console.log(".delete-marker-remove");
+            var selection = $('.page-list').find('.selected');
+            var uri = $(this).attr('data-path');
+            removeDeleteMarker(uri, function() {
+                // selection.remove();
+                getCollectionDetails(collectionId,
+                    success = function (response) {
+                        populateCollectionDetails(response, collectionId, $this);
+                    },
+                    error = function (response) {
+                        handleApiError(response);
+                    }
+                );
+                sweetAlert('Undo', "Deletion removed", 'success');
+            });
+        });
+
         $('.btn-collection-cancel').click(function () {
             hidePanel({});
         });
@@ -171,7 +189,7 @@ function viewCollectionDetails(collectionId, $this) {
         });
 
         setCollectionDetailsHeight();
-    }
+    };
 
     function ProcessPages(pages) {
         _.sortBy(pages, 'uri');

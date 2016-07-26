@@ -54,6 +54,7 @@ function createCollection(teams) {
                 name: collectionId,
                 type: publishType,
                 publishDate: collectionDate,
+                filesToDelete: [],
                 teams: teams,
                 collectionOwner: Florence.Authentication.userType(),
                 releaseUri: releaseUri
