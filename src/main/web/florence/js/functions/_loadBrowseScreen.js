@@ -40,41 +40,22 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                         newURL += "/";
                     }
 
-                    console.log(newURL);
+                    treeNodeSelect(newURL);
 
-                    // Hide children for previously selected and show for selected one
-                    $('.js-browse__item.selected').removeClass('selected');
-                    $thisItem.addClass('selected');
-
-                    // Hide container for item and buttons for previous and show selected one
-                    $('.page__container.selected').removeClass('selected');
-                    $thisItem.find('.page__container:first').addClass('selected');
-
-                    // Hide previous displayed page buttons and show selected one
-                    if ($thisItem.find('.page__buttons:first')) {
-                        $('.page__buttons.selected').removeClass('selected');
-                        $thisItem.find('.page__buttons:first').addClass('selected');
-                    }
-
-                    //change iframe location
+                    // Update iframe location which will send change event for iframe to update too
                     document.getElementById('iframe').contentWindow.location.href = newURL;
                     $('.browser-location').val(newURL);
+
+                } else {
+
+                    // Set all directories above it in the tree to be active when a directory clicked
+                    selectParentDirectories($this);
                 }
 
-                //page-list-tree
+                // Open active branches in browse tree
                 $('.tree-nav-holder ul').removeClass('active');
                 $this.parents('ul').addClass('active');
                 $this.closest('li').children('ul').addClass('active');
-
-                $this.closest('li').find('.page__item--directory').removeClass('selected');
-                if ($this.hasClass('page__item--directory')) {
-                    $('.page__item--directory').removeClass('selected');
-                    $this.addClass('selected');
-                }
-
-                // Update browse tree scroll position
-                browseScrollPos();
-
             });
 
 
@@ -89,8 +70,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 treeNodeSelect('/');
 
             }
-
-            browseScrollPos();
 
             openVisDirectoryOnLoad();
 
@@ -133,5 +112,11 @@ function isDeletable(type) {
     } else {
         return true;
     }
+}
+
+// display open directory icon for parents directories
+function selectParentDirectories($this) {
+    $('.page__item--directory').removeClass('selected'); // remove previous selections
+    $this.parents('.js-browse__item--directory').find('.page__item--directory:first').addClass('selected'); // select directories along parent path
 }
 
