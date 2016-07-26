@@ -8,10 +8,10 @@
         <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
         <ul class="page-list">
             {{#each inProgress}}
-                <li><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
+                <li class="page-list__item"><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
                 {{/ifCond}}{{description
                 .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
-                    <div class="page-options">
+                    <div class="page-options page-options--list">
                         <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
                             file
                         </button>
@@ -28,10 +28,10 @@
         <h3 id="complete-uris">{{complete.length}} pages awaiting review</h3>
         <ul class="page-list">
             {{#each complete}}
-                <li><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
+                <li class="page-list__item"><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
                 {{/ifCond}}{{description
                 .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
-                    <div class="page-options">
+                    <div class="page-options page-options--list">
                         <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">
                             Review
                             file
@@ -49,10 +49,10 @@
         <h3 id="reviewed-uris">{{reviewed.length}} pages awaiting approval</h3>
         <ul class="page-list">
             {{#each reviewed}}
-                <li><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
+                <li class="page-list__item"><span class="page-item page-item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
                 {{/ifCond}}{{description
                 .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
-                    <div class="page-options">
+                    <div class="page-options page-options--list">
                         <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
                             file
                         </button>

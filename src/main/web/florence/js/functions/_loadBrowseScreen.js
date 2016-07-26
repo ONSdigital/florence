@@ -29,9 +29,10 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             $('.workspace-browse').css("overflow", "scroll");
 
             //page-list
-            $('.page-item').click(function () {
+            $('.js-browse__item-title').click(function () {
                 var $this = $(this),
-                    uri = $this.closest('li').attr('data-url');
+                    $thisItem = $this.closest('.js-browse__item'),
+                    uri = $thisItem.attr('data-url');
 
                 if (uri) {
                     var newURL = baseURL + uri;
@@ -40,11 +41,21 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                         newURL += "/";
                     }
 
-                    $('.page-list li').removeClass('selected');
-                    $this.parent('li').addClass('selected');
+                    // Hide children for previously selected and show for selected one
+                    $('.js-browse__item.selected').removeClass('selected');
+                    $thisItem.addClass('selected');
+
+                    // Hide container for item and buttons for previous and show selected one
+                    $('.page-container.selected').removeClass('selected');
+                    $thisItem.find('.page-container:first').addClass('selected');
+
+                    // Hide previous displayed page buttons and show selected one
+                    if ($thisItem.find('.page-options:first')) {
+                        $('.page-options.selected').removeClass('selected');
+                        $thisItem.find('.page-options:first').addClass('selected');
+                    }
 
                     //change iframe location
-                    //browserContent.location.href = ;
                     document.getElementById('iframe').contentWindow.location.href = newURL;
                     $('.browser-location').val(newURL);
                 }
