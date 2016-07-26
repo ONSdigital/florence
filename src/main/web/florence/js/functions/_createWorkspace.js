@@ -136,13 +136,27 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
         $('.workspace-menu').on('click', '.btn-browse-delete', function () {
             var $parentItem = $('.tree-nav-holder ul').find('.selected');
+            var $button = $('.tree-nav-holder ul').find('.page-container.selected').find('.btn-browse-delete');
             var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
             var spanType = $(this).parent().prev('span');
             var title = spanType.html();
             addDeleteMarker(dest, title, function() {
                 $parentItem.addClass('deleted');
                 $parentItem.css('background-color','red'); // for testing. remove one scss is finished
+                toggleDeleteRevertButton($button);
                 sweetAlert('Deleted', "Content marked for deletion.", 'success');
+            });
+        });
+
+        $('.workspace-menu').on('click', '.btn-browse-delete-revert', function () {
+            var $parentItem = $('.tree-nav-holder ul').find('.selected');
+            var $button = $('.tree-nav-holder ul').find('.page-container.selected').find('.btn-browse-delete-revert');
+            var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+            removeDeleteMarker(dest, function() {
+                $parentItem.removeClass('deleted');
+                $parentItem.css('background-color','white'); // for testing. remove one scss is finished
+                toggleDeleteRevertButton($button);
+                sweetAlert('Undo', "Content will not be deleted.", 'success');
             });
         });
 
@@ -244,5 +258,18 @@ function updateBrowserURL(url) {
     }
     
     $('.browser-location').val(Florence.babbageBaseUrl + url);
+}
+
+// toggle delete button from 'delete' to 'revert' for content marked as to be deleted
+function toggleDeleteRevertButton(button) {
+    button.toggleClass('btn-browse-delete', 'btn-browse-delete-revert');
+    button.toggleClass('btn-browse-delete-revert', 'btn-browse-delete');
+
+    if (button.text() == 'Delete') {
+        button.text('Revert deletion');
+    } else {
+        button.text('Delete');
+    }
+
 }
 
