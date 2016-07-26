@@ -67,6 +67,21 @@
                 </li>
             {{/each}}
         </ul>
+        <h3 id="delete-uris">{{deleteMarkers.length}} files marked for delete</h3>
+        <ul class="page-list">
+        {{#each deleteMarkers}}
+            <li>
+                <span class="page-item page-item--{{type}}">
+                {{#ifCond description.language '===' 'cy'}}(Welsh){{/ifCond}}
+                {{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
+                <div class="page-options">
+                    <!--<button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit file</button>-->
+                    <!--<button class="btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move file</button>-->
+                    <button class="btn-page-delete delete-marker-remove" data-path="{{uri}}" data-language="{{description.language}}">Cancel Delete</button>
+                </div>
+            </li>
+        {{/each}}
+        </ul>
     </div>
 
     <nav class="slider__nav">
