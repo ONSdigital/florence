@@ -2,7 +2,7 @@
 
 .page {
 
-    &-item {
+    &__item {
         display: inline-block;
         position: relative;
         padding-left: $gutter + 10;
@@ -149,25 +149,24 @@
                 height: 15px;
             }
 
-            &--selected {
-                &:after {
-                    background: transparent url(../../img/sprite.png) no-repeat -4px -445px;
-                    background-size: 30px auto;
-                    height: 15px;
-                }
+            &.selected:after {
+                background: transparent url(../../img/sprite.png) no-repeat -4px -445px;
+                background-size: 30px auto;
+                height: 15px;
             }
         }
     }
 
-    &-container.selected {
+    &__container.selected {
         padding: $lineheight $gutter;
         background-color: $concrete;
         color: $mine-shaft;
         font-weight: 400;
         display: block;
+        margin-left: -$gutter;
     }
 
-    &-options {
+    &__buttons {
         margin-top: $lineheight;
         button {
             margin-top: 0;
@@ -191,7 +190,7 @@
     }
 }
 
-/* List of pages (eg collection details) */
+/* List of pages (eg collection details and browse tree) */
 .page-list {
     position: relative;
 
@@ -206,164 +205,32 @@
         position: relative;
     }
 
-    &__item {
-
-        &.selected {
-            margin-top: $lineheight - 4;
-            margin-right: -4px;
-            margin-left: -4px;
-            padding-top: $lineheight;
-            padding-bottom: $lineheight - 4;
-            padding-right: $gutter;
-            padding-left: $gutter;
-            background-color: $concrete;
-            color: $mine-shaft;
-            font-weight: 400;
-            border: 4px solid $gray-chateau;
-        }
-    }
-
     &--tree {
-        //.page-options {
-        //    margin-top: -$lineheight * 2;
-        //    margin-bottom: 0;
-        //    margin-right: -$gutter;
-        //    margin-left: -$gutter;
-        //    padding-top: $lineheight * 3;
-        //    padding-bottom: $lineheight;
-        //    padding-right: $gutter;
-        //    padding-left: $gutter;
-        //    background-color: $porcelain;
-        //    /*border: 1px solid red;*/
-        //}
 
         &.active {
             display: block;
         }
+
         ul.active {
             display: block;
         }
-        /*&.active > li > ul{
-            display: block;
-        }
-
-        &li.selected > ul{
-            display: block;
-        }*/
 
         li {
             margin: 0;
-            padding-top: $lineheight;
-            padding-bottom: 0;
-            padding-right: 0;
-            // width: 100%;
-            // padding-top: $lineheight / 2;
-            // padding-bottom: $lineheight / 2;
-            // li:first-child:after {
-            // 	height: ($lineheight * 4) + ($lineheight / 2);
-            // 	top: -($lineheight * 4);
-
-            // }
-
-            /*works*/
-            /*li:after {
-                content: '';
-                position: absolute;
-                width: 2px;
-                height: $lineheight * 2;
-                top: -($lineheight + 9);
-                left: 5px;
-                background-color: $dusty-gray;
-           }*/
-
-            /*works*/
-            /*li:before {
-                content: '';
-                position: absolute;
-                width: 15px;
-                height: 2px;
-                top: ($lineheight / 2) + $lineheight;
-                left: 5px;
-                background-color: $dusty-gray;
-            }*/
+            padding: $lineheight 0 0 0;
 
             ul {
                 display: none;
                 position: relative;
-                // margin-top: $lineheight / 2;
-                /*&:before {
-                    content: '';
-                    position: absolute;
-                    width: 2px;
-                    // height: 100%;
-                    top: -$lineheight / 2;
-                    // bottom: -$lineheight / 2;
-                    left: 5px;
-                    background-color: $dusty-gray;
-                }*/
+                padding-left: $gutter;
                 &.active > ul {
                     display: block;
+                    padding-left: $gutter * 2;
                 }
             }
 
             &.selected {
-                //margin-top: $lineheight;
-                //margin-bottom: 0;
-                //margin-right: 0;
-                //margin-left: 0;
-                //padding-top: $lineheight;
-                //padding-bottom: $lineheight;
-                //padding-right: $gutter;
-                //padding-left: $gutter;
-                //background-color: transparent;
-                ///*background-color: $white;*/
-                //color: $mine-shaft;
-                //font-weight: 400;
-                //border: 0;
-
-                & > .page-options {
-                    display: block;
-                }
-
-                /*works*/
-                /*&:after {
-                    content: '';
-                    position: absolute;
-                    width: 200%;
-                    height: $lineheight * 6;
-                    top: 0;
-                    left: 0;
-                    background-color: rgba(0,0,0,0.1);
-                    pointer-events: none;
-                }*/
-
-                ul {
-                    /*&:before {
-                        content: '';
-                        position: absolute;
-                        width: 2px;
-                        height: 100%;
-                        top: -$lineheight / 2;
-                        left: -15px;
-                        background-color: red;
-                    }*/
-
-                    /*&:first-child:after {
-                        content: '';
-                        position: absolute;
-                        width: 2px;
-                        height: 100%;
-                        top: -$lineheight * 4;
-                        left: 5px;
-                        background-color: $dusty-gray;
-                    }*/
-
-                    /*li.selected {
-                        &:after {
-                            margin-left: -$gutter;
-                        }
-                    }*/
-                }
+                padding-left: 0;
             }
 
             li.selected {
