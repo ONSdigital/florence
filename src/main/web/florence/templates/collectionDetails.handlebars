@@ -49,9 +49,8 @@
         <h3 id="reviewed-uris">{{reviewed.length}} pages awaiting approval</h3>
         <ul class="page-list">
             {{#each reviewed}}
-                <li class="page-list__item"><span class="page__item page__item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh)
-                {{/ifCond}}{{description
-                .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
+                <li class="page-list__item">
+                    <span class="page__item page__item--{{type}}">{{#ifCond description.language '===' 'cy'}}(Welsh){{/ifCond}}{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
                     <div class="page__buttons page__buttons--list">
                         <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
                             file
@@ -70,11 +69,11 @@
         <h3 id="delete-uris">{{deleteMarkers.length}} files marked for delete</h3>
         <ul class="page-list">
         {{#each deleteMarkers}}
-            <li>
+            <li class="page-list__item">
                 <span class="page__item page__item--{{type}}">
                 {{#ifCond description.language '===' 'cy'}}(Welsh){{/ifCond}}
                 {{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
-                <div class="page__buttons">
+                <div class="page__buttons page__buttons--list">
                     <!--<button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit file</button>-->
                     <!--<button class="btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move file</button>-->
                     <button class="btn-page-delete delete-marker-remove" data-path="{{uri}}" data-language="{{description.language}}">Cancel Delete</button>
