@@ -194,17 +194,29 @@
 .page-list {
     position: relative;
 
-    .page-options {
-        display: none;
-    }
-
-    li {
+    &__item {
         list-style: none;
         margin: $lineheight 0;
         padding: 0 $gutter;
         position: relative;
     }
 
+    &__item.selected {
+        margin-top: $lineheight - 4;
+        margin-right: -4px;
+        margin-left: -4px;
+        padding-top: $lineheight;
+        padding-bottom: $lineheight - 4;
+        padding-right: $gutter;
+        padding-left: $gutter;
+        background-color: $concrete;
+        color: $mine-shaft;
+        font-weight: 400;
+        border: 4px solid $gray-chateau;
+    }
+
+
+    // Kept as silent classing because it represents the structure needed for the browse tree easily
     &--tree {
 
         &.active {
@@ -218,6 +230,7 @@
         li {
             margin: 0;
             padding: $lineheight 0 0 0;
+            list-style: none;
 
             ul {
                 display: none;
