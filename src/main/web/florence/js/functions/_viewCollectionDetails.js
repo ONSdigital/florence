@@ -88,12 +88,12 @@ function viewCollectionDetails(collectionId, $this) {
         });
 
         //page-list
-        $('.page-item').click(function () {
+        $('.page__item').click(function () {
             $('.page-list li').removeClass('selected');
-            $('.page-options').hide();
+            $('.page__buttons').hide();
 
             $(this).parent('li').addClass('selected');
-            $(this).next('.page-options').show();
+            $(this).next('.page__buttons').show();
         });
 
         $('.btn-page-edit').click(function () {
