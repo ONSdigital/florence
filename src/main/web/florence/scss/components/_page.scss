@@ -157,13 +157,33 @@
         }
     }
 
-    &__container.selected {
-        padding: $lineheight $gutter;
-        background-color: $concrete;
-        color: $mine-shaft;
-        font-weight: 400;
-        display: block;
-        margin-left: -$gutter;
+    &__container {
+        &.selected {
+            padding: $lineheight $gutter;
+            background-color: $concrete;
+            color: $mine-shaft;
+            font-weight: 400;
+            display: block;
+            margin-left: -$gutter;
+        }
+
+
+        /* Page is marked to be deleted */
+
+        // Shows in browse tree, not selected
+        &.deleted .page__item {
+            color: lighten($mine-shaft, 20%);
+            text-decoration: line-through;
+        }
+        // Selected and deleted
+        &.selected.deleted {
+            color: lighten($mine-shaft, 20%);
+            background-color: darken($concrete, 22%);
+        }
+        // Removed by JS once animation is finished - so we only animate during delete/undo delete toggle, not on every .selected item
+        &.selected.animating {
+            transition: all 0.3s ease;
+        }
     }
 
     &__buttons {
