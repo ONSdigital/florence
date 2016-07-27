@@ -7,7 +7,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         success: function (response) {
 
             // run through all json and add isDeletable flag to all nodes
-            checkAndAddDeleteFlag(response);
+            checkAndAddDeleteFlag(response, collectionData);
 
             var collectionOwner = localStorage.getItem('userType');
             response['collectionOwner'] = collectionOwner;
@@ -93,14 +93,14 @@ function openVisDirectoryOnLoad() {
     }
 }
 
-// recursively add isDeletable flag to all browse tree nodes
-function checkAndAddDeleteFlag(json) {
-    json['isDeletable'] = isDeletable(json.type);
+// recursively add isDeletable and deleteIsInCollection flags to all browse tree nodes
+function checkAndAddDeleteFlag(browseTree, collectionData) {
+    browseTree['isDeletable'] = isDeletable(browseTree.type);
+    browseTree['deleteIsInCollection'] = deleteIsInCollection(collectionData, browseTree.contentPath);
 
-    $.each(json.children, function( key, jsonObj ) {
-        jsonObj['isDeletable'] = isDeletable(jsonObj.type);
-            if (jsonObj.children) {
-                checkAndAddDeleteFlag(jsonObj);
+    $.each(browseTree.children, function( key, browseTreeNode ) {
+            if (browseTreeNode.children) {
+                checkAndAddDeleteFlag(browseTreeNode, collectionData);
             }
         });
 }
@@ -112,6 +112,20 @@ function isDeletable(type) {
     } else {
         return true;
     }
+}
+
+// check if given uri is marked for deletion in current collection
+function deleteIsInCollection(json, uri) {
+    var bool;
+    $.each(json.deleteMarkers, function (key, deleteMarker) {
+        if (uri == deleteMarker.uri) {
+            bool = true;
+        } else {
+            bool = false;
+        }
+    });
+
+    return bool;
 }
 
 // display open directory icon for parents directories
