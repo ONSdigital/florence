@@ -206,6 +206,10 @@
             &.selected {
                 display: block !important;
             }
+
+            &.deleted {
+                display: none !important;
+            }
         }
     }
 }
