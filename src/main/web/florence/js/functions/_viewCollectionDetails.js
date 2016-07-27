@@ -162,7 +162,6 @@ function viewCollectionDetails(collectionId, $this) {
         });
 
         $('.delete-marker-remove').click(function () {
-            console.log(".delete-marker-remove");
             var selection = $('.page-list').find('.selected');
             var uri = $(this).attr('data-path');
             removeDeleteMarker(uri, function() {
