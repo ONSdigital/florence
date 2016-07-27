@@ -170,6 +170,13 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             });
         });
 
+        $('.workspace-menu').on('click', '.btn-browse-move', function() {
+            var $parentItem = $('.tree-nav-holder ul').find('.js-browse__item.selected'),
+                fromUrl = $parentItem.attr('data-url');
+
+            moveBrowseNode(fromUrl);
+        });
+
         $('.workspace-menu').on('click', '.btn-browse-create-datavis', function () {
             var dest = '/visualisations';
             var type = 'visualisation';

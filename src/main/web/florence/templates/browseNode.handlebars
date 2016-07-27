@@ -5,6 +5,7 @@
         <div class="page__buttons page__buttons--list">
             <button class="btn btn--primary btn-browse-edit" {{#if deleteMarker}}style="display:none"{{/if}}>Edit</button>
             <button class="btn btn--positive btn-browse-create" {{#if deleteMarker}}style="display:none"{{/if}}>Create</button>
+            <button class="btn btn--primary btn-browse-move">Move</button>
             {{#unless deleteMarker}}
             {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
             {{else}}
