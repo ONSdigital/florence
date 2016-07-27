@@ -1,11 +1,15 @@
 {{#each children}} {{! Each item is an "li" }}
   <li class="js-browse__item {{#unless uri}}js-browse__item--directory{{/unless}}" data-url="{{uri}}">
-    <span class="page__container">
+    <span class="page__container {{#if deleteMarker}}deleted{{/if}}">
         <span class="js-browse__item-title page__item{{#unless uri}} page__item--directory{{else}} page__item--{{type}}{{/unless}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</span>
         <div class="page__buttons page__buttons--list">
-            <button class="btn btn--primary btn-browse-edit">Edit</button>
-            <button class="btn btn--positive btn-browse-create">Create</button>
+            <button class="btn btn--primary btn-browse-edit" {{#if deleteMarker}}style="display:none"{{/if}}>Edit</button>
+            <button class="btn btn--positive btn-browse-create" {{#if deleteMarker}}style="display:none"{{/if}}>Create</button>
+            {{#unless deleteMarker}}
             {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
+            {{else}}
+            {{#if deleteIsInCollection}}<button class="btn btn--primary btn-browse-delete-revert">Revert deletion</button>{{else}}* this file has been delete in another collection{{/if}}
+            {{/unless}}
         </div>
     </span>
     {{#if children}} {{! Within the context of the current item }}
