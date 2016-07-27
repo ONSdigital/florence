@@ -158,7 +158,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var $parentItem = $('.tree-nav-holder ul').find('.js-browse__item.selected');
             var $parentContainer = $parentItem.find('.page__container.selected');
             var $button = $parentContainer.find('.btn-browse-delete-revert');
-            var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
+            var dest = $parentItem.attr('data-url');
             removeDeleteMarker(dest, function() {
                 $parentContainer.addClass('animating').removeClass('deleted');
                 toggleDeleteRevertButton($button);
