@@ -249,15 +249,17 @@ function browseScrollPos() {
     var $selectedItem = $('.workspace-browse li.selected'),
         $browseTree = $('.workspace-browse');
 
-    var selectedTop = $selectedItem.offset().top,
-        selectedBottom = selectedTop + $selectedItem.height(),
-        browseTop = $browseTree.offset().top,
-        browseBottom = browseTop + $browseTree.height(),
-        navHeight = $('.nav').height();
+    if ($selectedItem.length) {
+        var selectedTop = $selectedItem.offset().top,
+            selectedBottom = selectedTop + $selectedItem.height(),
+            browseTop = $browseTree.offset().top,
+            browseBottom = browseTop + $browseTree.height(),
+            navHeight = $('.nav').height();
 
-    if (selectedTop < browseTop || selectedBottom > browseBottom) {
-        var newPos = selectedTop - navHeight;
-        $browseTree.scrollTop(newPos);
+        if (selectedTop < browseTop || selectedBottom > browseBottom) {
+            var newPos = selectedTop - navHeight;
+            $browseTree.scrollTop(newPos);
+        }
     }
 }
 

@@ -85,11 +85,15 @@ function openVisDirectoryOnLoad() {
     var userType = Florence.Authentication.userType();
     
     if (userType == 'DATA_VISUALISATION') {
-        $('.page-list li').removeClass('selected');
+        $('.js-browse__item .page__container').removeClass('selected');
+        $('.page__buttons--list.selected').removeClass('selected');
         var $this = $('.datavis-directory');
-        $this.parent('li').addClass('selected');
-        $this.siblings('ul').addClass('active');
-        $this.addClass('selected');
+        $this.next('.page__buttons--list').addClass('selected')
+            .closest('.page__container').addClass('selected')
+            .next('.js-browse__children').addClass('active');
+        // $this.parent('li').addClass('selected');
+        // $this.siblings('ul').addClass('active');
+        // $this.addClass('selected');
     }
 }
 
