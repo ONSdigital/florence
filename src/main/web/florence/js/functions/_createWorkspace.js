@@ -144,13 +144,12 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             addDeleteMarker(dest, title, function() {
                 $parentContainer.addClass('animating').addClass('deleted');
                 toggleDeleteRevertButton($button);
+                toggleDeleteRevertChildren($parentItem);
 
                 // Stops animation happening anytime other than when going between delete/undo delete
                 $parentContainer.one("webkitTransitionEnd transitionEnd", function() {
                     $parentContainer.removeClass('animating');
                 });
-
-                // sweetAlert('Deleted', "Content marked for deletion.", 'success');
             });
         });
 
@@ -162,13 +161,12 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             removeDeleteMarker(dest, function() {
                 $parentContainer.addClass('animating').removeClass('deleted');
                 toggleDeleteRevertButton($button);
+                toggleDeleteRevertChildren($parentItem);
 
                 // Stops animation happening anytime other than when going between delete/undo delete
                 $parentContainer.one("webkitTransitionEnd transitionEnd", function() {
                     $parentContainer.removeClass('animating');
                 });
-
-                // sweetAlert('Undo', "Content will not be deleted.", 'success');
             });
         });
 
@@ -271,19 +269,37 @@ function updateBrowserURL(url) {
 }
 
 // toggle delete button from 'delete' to 'revert' for content marked as to be deleted
-function toggleDeleteRevertButton(button) {
-    button.toggleClass('btn-browse-delete btn--warning', 'btn-browse-delete-revert');
-    button.toggleClass('btn-browse-delete-revert btn--primary', 'btn-browse-delete');
+function toggleDeleteRevertButton($button) {
+    $button.toggleClass('btn-browse-delete btn--warning', 'btn-browse-delete-revert');
+    $button.toggleClass('btn-browse-delete-revert btn--primary', 'btn-browse-delete');
 
     // Hide / show other buttons accordingly
-    button.siblings('.btn-browse-edit').toggle();
-    button.siblings('.btn-browse-create').toggle();
+    $button.siblings('.btn-browse-edit').toggle();
+    $button.siblings('.btn-browse-create').toggle();
 
-    if (button.text() == 'Delete') {
-        button.text('Revert deletion');
+    if ($button.text() == 'Delete') {
+        $button.text('Revert deletion');
     } else {
-        button.text('Delete');
+        $button.text('Delete');
+    }
+}
+
+// Toggle displaying children as deleted or not deleted
+function toggleDeleteRevertChildren($item) {
+    var $childContainer = $item.find('.js-browse__item .page__container'),
+        isDeleting = $item.children('.page__container').hasClass('deleted');
+
+    if (isDeleting) {
+        $childContainer.addClass('deleted');
+    } else {
+        $childContainer.removeClass('deleted');
+
+        // If a child item has previously been deleted but is being shown by a parent then undo the toggle buttons
+        if ($childContainer.find('.btn-browse-delete-revert').length) {
+            toggleDeleteRevertButton($childContainer.find('.btn-browse-delete-revert'));
+        }
     }
 
+    $childContainer.find('.page__buttons').toggleClass('deleted');
 }
 
