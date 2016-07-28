@@ -9,8 +9,8 @@
             </form>
 
             <form id="table-modify-form" style="display: none; padding-top: 10px;">
-                <p class="flush--left flush--right">Submit a comma separated list of row/column numbers below to exclude rows, add table row/column headers to the generated HTML table. These changes will only apply to the HTML table generation theuploaded .xls file will not be affected.</p>
-                <p class="flush--left flush--right"><b>Note: </b><i>XLS row/column indices start from 0.</i></p>
+                <p class="margin-right--0 margin-left--0">Submit a comma separated list of row/column numbers below to exclude rows, add table row/column headers to the generated HTML table. These changes will only apply to the HTML table generation theuploaded .xls file will not be affected.</p>
+                <p class="margin-right--0 margin-left--0"><b>Note: </b><i>XLS row/column indices start from 0.</i></p>
                 <input type="text" pattern="^[\d, ]+$" id="rows-excluded" placeholder="[Exclude Rows]" value="{{#comma_separated_list modifications.rowsExcluded}}{{this}}{{/comma_separated_list}}"/>
                 <input type="text" pattern="^[\d, ]+$" id="header-rows" placeholder="[Table Header Rows]" value="{{#comma_separated_list modifications.headerRows}}{{this}}{{/comma_separated_list}}"/>
                 <input type="text" pattern="^[\d, ]+$" id="header-columns" placeholder="[Table Header Columns]" value="{{#comma_separated_list modifications.headerColumns}}{{this}}{{/comma_separated_list}}"/>
