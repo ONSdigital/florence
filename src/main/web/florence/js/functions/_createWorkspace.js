@@ -192,6 +192,29 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
         });
 
+        $('.workspace-menu').on('click', '.js-browse__menu', function() {
+            var $this = $('.js-browse__item.selected .page__container.selected .js-browse__menu'),
+                $thisMenu = $this.next('.page__menu'),
+                menuHidden;
+
+            function toggleMenu() {
+                $this.toggleClass('active').children('.hamburger-icon__span').toggleClass('active');
+                $thisMenu.siblings('.page__pre-menu').toggleClass('active');
+                $thisMenu.toggleClass('active');
+            }
+
+            toggleMenu();
+
+            // Untoggle menu is another item is clicked
+            $('.js-browse__item-title, .btn-browse-move').on('click', function() {
+                if (!menuHidden) {
+                    toggleMenu();
+                    menuHidden = true;
+                    console.log('hello');
+                }
+            });
+        });
+
         if (menu === 'edit') {
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
