@@ -5,9 +5,16 @@
 
 function moveBrowseNode(fromUrl) {
     var moveToBtn = "<button class='btn btn--positive btn-browse-move-to'>Move here</button>",
-        moveInProgress = true; // flag to use to see state of move process
+        moveInProgress = true, // flag to use to see state of move process
+        headerHeight = 98,
+        $browseTree = $('#browse-tree'),
+        $wrapper = $('.wrapper'),
+        overlay = $('<div class="overlay"></div>'),
+        browseTreeMoveHeader = $('<div class="workspace-menu__header"><h2>Select a location</h2></div>'),
+        $treeBrowser = $('.workspace-browse');
 
     // Toggle buttons on selected item
+    showBrowseTreeModal();
     toggleMoveHereButton();
 
     // Switch off browse tree changes updating the preview or global pagePath
@@ -45,6 +52,8 @@ function moveBrowseNode(fromUrl) {
 
             // Show ordinary browse tree buttons
             toggleMoveHereButton();
+            hideBrowseTreeModal();
+
         });
 
     });
@@ -66,4 +75,26 @@ function moveBrowseNode(fromUrl) {
         }
 
     }
+
+    function showBrowseTreeModal() {
+        // give blacked put appearance to page
+        $wrapper.append(overlay);
+        // add move header to browse tree
+        $browseTree.prepend(browseTreeMoveHeader);
+        // bring browse tree element in front of overlay
+        $browseTree.css({'z-index': 1001, 'position': 'relative'});
+        // resize browser height because adding header has taken up space
+        $treeBrowser.height($treeBrowser[0].offsetHeight - headerHeight);
+    }
+
+    function hideBrowseTreeModal() {
+        //remove overlay & header
+        overlay.remove();
+        browseTreeMoveHeader.remove();
+        // 'reset' z-index
+        $browseTree.css({'z-index': 1, 'position': 'relative'});
+        // calculate size after removing header
+        $treeBrowser.height($treeBrowser[0].offsetHeight + headerHeight);
+    }
+
 }
