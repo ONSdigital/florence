@@ -3,30 +3,30 @@
         <span class="page__container {{#if deleteMarker}}deleted{{/if}}">
             <span class="js-browse__item-title page__item{{#unless uri}} page__item--directory{{else}} page__item--{{type}}{{/unless}}">{{description.title}}{{#if description.edition}}
                 : {{description.edition}}{{/if}}</span>
-            <div class="page__buttons page__buttons--list">
+            <span class="page__buttons page__buttons--list">
 
-                <span class="page__pre-menu">
-                    <button class="btn btn--primary btn-browse-edit"{{#if deleteMarker}}style="display:none"{{/if}}>Edit</button>
-                    <button class="btn btn--positive btn-browse-create"{{#if deleteMarker}}style="display:none"{{/if}}>Create</button>
+                <span class="page__primary-buttons js-browse__buttons--primary {{#if deleteMarker}}hidden{{/if}}">
+                    <button class="btn btn--primary btn-browse-edit">Edit</button>
+                    <button class="btn btn--positive btn-browse-create">Create</button>
                 </span>
 
-                <button class="js-browse__menu hamburger-icon hamburger-icon--page-item">
-                    <span class="hamburger-icon__span">toggle menu</span>
-                </button>
 
-                <span class="page__menu">
-                    <button class="btn btn--primary btn-browse-move">Move</button>
-                    {{#unless deleteMarker}}
-                        {{#if isDeletable}}
-                            <button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
-                    {{/unless}}
-                </span>
+                <button class="btn btn--primary btn-browse-delete-revert {{#ifCond deleteIsInCollection '&&' deleteMarker}}{{else}}hidden{{/ifCond}}">Revert deletion</button>
                 {{#if deleteMarker}}
-                    {{#if deleteIsInCollection}}
-                        <button class="btn btn--primary btn-browse-delete-revert">Revert deletion</button>{{else}}* this file has been delete in another collection
-                    {{/if}}
+                    {{#unless deleteIsInCollection}}* this file has been delete in another collection{{/unless}}
                 {{/if}}
-            </div>
+
+                <span class="js-browse__buttons--secondary {{#if deleteMarker}}hidden{{/if}}">
+                    <button class="js-browse__menu hamburger-icon hamburger-icon--page-item">
+                        <span class="hamburger-icon__span">toggle menu</span>
+                    </button>
+
+                    <span class="page__menu">
+                        <button class="btn btn--primary btn-browse-move">Move</button>
+                        {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
+                    </span>
+                </span>
+            </span>
         </span>
         {{#if children}} {{! Within the context of the current item }}
             <ul class="js-browse__children">

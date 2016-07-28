@@ -67,7 +67,7 @@ function moveBrowseNode(fromUrl) {
         $moveToButton.remove();
 
         // Toggle current buttons (show if move is finished or hide if move is in progress
-        $thisButtons.find('button').toggle();
+        $thisButtons.find('.js-browse__buttons--primary, .js-browse__buttons--secondary').toggle();
 
         if (moveInProgress) {
             // Hide existing buttons in selected item and add in new 'Move here' button
