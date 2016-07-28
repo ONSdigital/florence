@@ -28,36 +28,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             // Bind click event for browse tree item
             bindBrowseTreeClick();
-            // $('.js-browse__item-title').click(function () {
-            //     var $this = $(this),
-            //         $thisItem = $this.closest('.js-browse__item'),
-            //         uri = $thisItem.attr('data-url');
-            //
-            //     if (uri) {
-            //         var newURL = baseURL + uri;
-            //
-            //         if (collectionOwner == 'DATA_VISUALISATION') {
-            //             newURL += "/";
-            //         }
-            //
-            //         treeNodeSelect(newURL);
-            //
-            //         // Update iframe location which will send change event for iframe to update too
-            //         document.getElementById('iframe').contentWindow.location.href = newURL;
-            //         $('.browser-location').val(newURL);
-            //
-            //     } else {
-            //
-            //         // Set all directories above it in the tree to be active when a directory clicked
-            //         selectParentDirectories($this);
-            //     }
-            //
-            //     // Open active branches in browse tree
-            //     $('.tree-nav-holder ul').removeClass('active');
-            //     $this.parents('ul').addClass('active');
-            //     $this.closest('li').children('ul').addClass('active');
-            // });
-
 
             if (click) {
                 var url = getPreviewUrl();
