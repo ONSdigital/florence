@@ -3,6 +3,18 @@
     &-menu {
         background-color: $quill-gray;
         height: 100%;
+
+        &__header {
+            background-color: $pickled-bluewood;
+            color: $porcelain;
+            padding: 21px;
+
+            h2 {
+                margin: 0;
+            }
+
+        }
+
     }
 
     &-browse {
