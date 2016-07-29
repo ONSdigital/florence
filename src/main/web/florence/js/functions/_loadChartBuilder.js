@@ -3,7 +3,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var pageUrl = pageData.uri;
     var html = templates.chartBuilder(chart);
     $('body').append(html);
-    $('.chart-builder').css("display", "block");
+    $('.js-chart-builder').css("display", "block");
 
     if (chart) {
         $('#chart-data').val(toTsv(chart));
@@ -58,7 +58,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     });
 
     $('.btn-chart-builder-cancel').on('click', function () {
-        $('.chart-builder').stop().fadeOut(200).remove();
+        $('.js-chart-builder').stop().fadeOut(200).remove();
     });
 
     $('.btn-chart-builder-create').on('click', function () {
@@ -95,7 +95,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 if (onSave) {
                     onSave(chart.filename, '<ons-chart path="' + chart.filename + '" />');
                 }
-                $('.chart-builder').stop().fadeOut(200).remove();
+                $('.js-chart-builder').stop().fadeOut(200).remove();
             }
         });
     });
