@@ -2,9 +2,9 @@
   <li data-url="{{uri}}">
     <span class="page-item{{#unless uri}} page-item--directory{{else}} page-item--{{type}}{{/unless}}">{{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}</span>
     <div class="page-options">
-      <button class="btn-browse-edit">Edit</button>
-      <button class="btn-browse-create">Create</button>
-      <button class="btn-browse-delete">Delete</button>
+      <button class="btn btn--primary btn-browse-edit">Edit</button>
+      <button class="btn btn--positive btn-browse-create">Create</button>
+      <button class="btn btn--warning btn-browse-delete">Delete</button>
     </div>
     {{#if children}} {{! Within the context of the current item }}
         <ul>

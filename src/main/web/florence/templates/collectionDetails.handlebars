@@ -2,7 +2,7 @@
     <div class="slider__head js-collection__head">
         <h2>{{name}}</h2>
         <p>Publish: {{date}}<br>{{createdBy events}}</p>
-        <button class="btn-collection-edit">Edit collection</button>
+        <button class="btn btn--primary btn-collection-edit">Edit collection details</button>
     </div>
     <div class="slider__content js-collection__content">
         <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
@@ -12,13 +12,13 @@
                 {{/ifCond}}{{description
                 .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
                     <div class="page-options">
-                        <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
+                        <button class="btn btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
                             file
                         </button>
-                        <button class="btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move
-                            file
-                        </button>
-                        <button class="btn-page-delete page-delete" data-path="{{uri}}" data-language="{{description
+                        {{!-- <button class="btn btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move
+                             file
+                         </button> --}}
+                        <button class="btn btn--warning btn-page-delete page-delete" data-path="{{uri}}" data-language="{{description
                         .language}}">Delete file
                         </button>
                     </div>
@@ -32,14 +32,14 @@
                 {{/ifCond}}{{description
                 .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
                     <div class="page-options">
-                        <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">
+                        <button class="btn btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">
                             Review
                             file
                         </button>
-                        <button class="btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move
-                            file
-                        </button>
-                        <button class="btn-page-delete page-delete" data-path="{{uri}}" data-language="{{description
+                        {{!-- <button class="btn btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move
+                             file
+                         </button> --}}
+                        <button class="btn btn--warning btn-page-delete page-delete" data-path="{{uri}}" data-language="{{description
                         .language}}">Delete file
                         </button>
                     </div>
@@ -53,13 +53,13 @@
                 {{/ifCond}}{{description
                 .title}}{{#if description.edition}}: {{description.edition}}{{/if}} ({{lastEditedBy events}})</span>
                     <div class="page-options">
-                        <button class="btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
+                        <button class="btn btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
                             file
                         </button>
-                        <button class="btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move
-                            file
-                        </button>
-                        <button class="btn-page-delete page-delete" data-path="{{uri}}"
+                        {{!-- <button class="btn btn-page-move" data-path="{{uri}}" data-language="{{description.language}}">Move
+                             file
+                         </button> --}}
+                        <button class="btn btn--warning btn-page-delete page-delete" data-path="{{uri}}"
                                 data-language="{{description
                                 .language}}">Delete file
                         </button>
@@ -70,10 +70,10 @@
     </div>
 
     <nav class="slider__nav">
-        <button class="btn-collection-work-on">Work on collection</button>
-        <button class="btn-collection-approve">Approve collection</button>
-        <button id="collection-delete" class="btn-page-delete">Delete collection</button>
-        <button class="btn-collection-cancel">Cancel</button>
+        <button class="btn btn--primary btn-collection-work-on">Work on collection</button>
+        <button class="btn btn--positive btn-collection-approve">Approve collection</button>
+        <button id="collection-delete" class="btn btn--warning btn-page-delete">Delete collection</button>
+        <button class="btn btn-collection-cancel">Cancel</button>
     </nav>
 </div>
 
