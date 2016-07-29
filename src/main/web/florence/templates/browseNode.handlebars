@@ -16,16 +16,20 @@
                     {{#unless deleteIsInCollection}}* this file has been delete in another collection{{/unless}}
                 {{/if}}
 
-                <span class="js-browse__buttons--secondary {{#if deleteMarker}}hidden{{/if}}">
-                    <button class="js-browse__menu hamburger-icon hamburger-icon--page-item">
-                        <span class="hamburger-icon__span">toggle menu</span>
-                    </button>
+                {{#if isDeletable}}
+                    <span class="js-browse__buttons--secondary {{#if deleteMarker}}hidden{{/if}}">
+                        <button class="js-browse__menu hamburger-icon hamburger-icon--page-item">
+                            <span class="hamburger-icon__span">toggle menu</span>
+                        </button>
 
-                    <span class="page__menu">
-                        <button class="btn btn--primary btn-browse-move">Move</button>
-                        {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
+                        <span class="page__menu">
+                            {{#if isMoveable}}
+                                <button class="btn btn--primary btn-browse-move">Move</button>{{/if}}
+                            {{#if isDeletable}}
+                                <button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
+                        </span>
                     </span>
-                </span>
+                {{/if}}
             </span>
         </span>
         {{#if children}} {{! Within the context of the current item }}
