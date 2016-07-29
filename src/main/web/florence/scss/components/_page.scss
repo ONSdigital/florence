@@ -165,6 +165,8 @@
             font-weight: 400;
             display: block;
             margin-left: -$gutter;
+
+            overflow: hidden;
         }
 
 
@@ -188,7 +190,6 @@
 
     &__buttons {
         margin-top: $lineheight;
-        overflow-x: hidden;
         button {
             margin-top: 0;
             margin-right: $gutter;
@@ -202,7 +203,7 @@
         }
 
         &--list {
-            display: none;
+            display: none; // JS toggles to show when selected
             position: relative; // for hamburger icon positioning
 
             &.selected {
@@ -217,13 +218,14 @@
 
     &__menu {
         position: absolute;
-        right: -100%;
-        width: calc(100% - #{$gutter});
+        left: calc(-100% - #{$gutter*3});
         transition: 0.5s ease-in-out;
+        top: -($lineheight / 2);
+        padding: ($lineheight / 2) $gutter;
         //background-color: $iron;
 
         &.active {
-            right: $gutter;
+            left: -$gutter;
         }
     }
 
@@ -233,8 +235,6 @@
         transition: 0.3s ease-in-out 0.1s;
 
         &.active {
-            //position: absolute;
-            //left: -100%;
             opacity: 0;
             transition: 0.2s ease-in-out;
         }
