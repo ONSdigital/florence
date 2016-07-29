@@ -121,14 +121,13 @@ function isDeletable(type) {
 // check if given uri is marked for deletion in current collection
 function deleteIsInCollection(json, uri) {
     var bool;
-    $.each(json.deleteMarkers, function (key, deleteMarker) {
+    $.each(json.pendingDeletes, function (key, deleteMarker) {
         if (uri == deleteMarker.uri) {
             bool = true;
         } else {
             bool = false;
         }
     });
-
     return bool;
 }
 
