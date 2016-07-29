@@ -5,9 +5,9 @@
                 <span class="page-item{{#unless uri}} page-item--directory{{else}} page-item--{{type}}{{/unless}}">{{description.title}}</span>
                 {{#if_eq collectionOwner "PUBLISHING_SUPPORT"}}
                     <div class="page-options">
-                        <button class="btn-browse-edit">Edit</button>
-                        <button class="btn-browse-create">Create</button>
-                        <button class="btn-browse-delete">Delete</button>
+                        <button class="btn btn--primary btn-browse-edit">Edit</button>
+                        <button class="btn btn--positive btn-browse-create">Create</button>
+                        <button class="btn btn--warning btn-browse-delete">Delete</button>
                     </div>
                 {{/if_eq}}
                 {{#if children}} {{! Within the context of the current item }}
