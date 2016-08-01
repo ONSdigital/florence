@@ -68,10 +68,7 @@ function viewCollectionDetails(collectionId, $this) {
         }
 
         var approve = $('.btn-collection-approve');
-        if (collection.inProgress.length === 0
-            && collection.complete.length === 0
-            && (collection.reviewed.length > 0
-            || collection.timeseriesImportFiles.length > 0)) {
+        if (showApproveButton(collection)) {
             approve.show().one('click', function () {
                 postApproveCollection(collection.id);
             });
@@ -216,5 +213,14 @@ function viewCollectionDetails(collectionId, $this) {
 
         var contentHeight = panelHeight - (headHeight + headPadding + contentPadding + navHeight + navPadding);
         $('.slider__content').css('height', contentHeight);
+    }
+
+    function showApproveButton(collection) {
+        if (collection.pendingDeletes && collection.pendingDeletes.length > 0) {
+            return (collection.inProgress.length === 0 && collection.complete.length === 0
+                && collection.reviewed.length >= 0) || (collection.timeseriesImportFiles.length > 0);
+        }
+        return (collection.inProgress.length === 0 && collection.complete.length === 0
+            && collection.reviewed.length > 0) || (collection.timeseriesImportFiles.length > 0);
     }
 }
