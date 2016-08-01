@@ -71,18 +71,21 @@
             {{#each pendingDeletes}}
                 <li class="page-list__item">
                     <span class="page__item page__item--{{type}}">
-                        <h5>{{uri}}</h5>
-                        {{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}
+                        {{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}<br/>
+                        {{uri}}
                     </span>
                     <div class="page__buttons page__buttons--list">
                         <button class="btn-page-delete delete-marker-remove" data-path="{{uri}}" data-language="{{description.language}}">
                             Cancel Delete
                         </button>
                     </div>
+                    {{#if children}} {{! Within the context of the current item }}
+                        <div class="page__children">
+                            <h4>This delete contains</h4>
+                            {{> childDeletes}} {{! Recursively render the partial }}
+                        </div>
+                    {{/if}}
                 </li>
-                {{#if children}} {{! Within the context of the current item }}
-                    {{> childDeletes}} {{! Recursively render the partial }}
-                {{/if}}
             {{/each}}
         </ul>
     </div>
