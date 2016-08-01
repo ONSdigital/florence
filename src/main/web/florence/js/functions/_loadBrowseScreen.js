@@ -9,6 +9,8 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             // run through all json and add isDeletable flag to all nodes
             checkAndAddDeleteFlag(response, collectionData);
 
+            console.log(collectionData);
+
             var collectionOwner = localStorage.getItem('userType');
             response['collectionOwner'] = collectionOwner;
 
@@ -121,7 +123,7 @@ function isDeletable(type) {
 function deleteIsInCollection(uri, json) {
     var bool;
     $.each(json.pendingDeletes, function (key, deleteMarker) {
-        if (uri == deleteMarker.uri) {
+        if (uri == deleteMarker.root.uri) {
             bool = true;
             return false;
         } else {
