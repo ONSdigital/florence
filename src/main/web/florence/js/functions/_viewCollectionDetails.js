@@ -83,17 +83,22 @@ function viewCollectionDetails(collectionId, $this) {
 
         //edit collection
         $('.btn-collection-edit').click(function () {
-            // console.log($(this));
             editCollection(collection);
         });
 
         //page-list
-        $('.page__item').click(function () {
+        $('.page__item:not(.delete-child)').click(function () {
             $('.page-list li').removeClass('selected');
             $('.page__buttons').hide();
+            $('.page__children').hide();
 
-            $(this).parent('li').addClass('selected');
-            $(this).next('.page__buttons').show();
+            var $this = $(this),
+                $buttons = $this.next('.page__buttons'),
+                $childrenPages = $buttons.next('.page__children');
+
+            $this.parent('li').addClass('selected');
+            $buttons.show();
+            $childrenPages.show();
         });
 
         $('.btn-page-edit').click(function () {

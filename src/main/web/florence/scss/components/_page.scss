@@ -212,6 +212,10 @@
             }
         }
     }
+
+    &__children {
+        display: none;
+    }
 }
 
 /* List of pages (eg collection details and browse tree) */
