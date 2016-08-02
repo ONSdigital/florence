@@ -33,15 +33,15 @@
                         <h4>Deleted pages in this collection</h4>
                         <ul class="page-list">
                             {{#each pendingDeletes}}
-                                <li>
-                                    <span>
+                                <li class="page-list__item">
+                                    <span class="page__item page__item--{{root.type}}">
                                         {{root.description.title}}{{#if root.description.edition}}: {{root.description.edition}}{{/if}}<br/>
                                         {{root.uri}}
                                     </span>
-                                    {{#if root.children}} {{! Within the context of the current item }}
-                                        <div>
+                                    {{#if root.children}} {{!-- Within the context of the current item --}}
+                                        <div class="page__children">
                                             <h4>This delete contains</h4>
-                                            {{> approvedDeleteChildren}} {{! Recursively render the partial }}
+                                            {{> childDeletes}} {{!-- Recursively render the partial --}}
                                         </div>
                                     {{/if}}
                                 </li>
