@@ -91,7 +91,7 @@ function viewCollectionDetails(collectionId, $this) {
 
             var $this = $(this),
                 $buttons = $this.next('.page__buttons'),
-                $childrenPages = $buttons.next('.page__children');
+                $childrenPages = $buttons.length > 0 ? $buttons.next('.page__children') : $this.next('.page__children');
 
             $this.parent('li').addClass('selected');
             $buttons.show();
