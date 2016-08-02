@@ -8,7 +8,6 @@ function setupFlorence() {
     Handlebars.registerPartial("selectorMinute", templates.selectorMinute);
     Handlebars.registerPartial("tickAnimation", templates.tickAnimation);
     Handlebars.registerPartial("loadingAnimation", templates.loadingAnimation);
-    Handlebars.registerPartial("approvedDeleteChildren", templates.approvedDeleteChildren);
     Handlebars.registerPartial("childDeletes", templates.childDeletes);
     Handlebars.registerHelper('select', function (value, options) {
         var $el = $('<select />').html(options.fn(this));
