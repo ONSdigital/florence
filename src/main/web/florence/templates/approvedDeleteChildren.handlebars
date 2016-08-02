@@ -1,0 +1,15 @@
+<div>
+    {{#each root.children}}
+    <ul>
+        <li>
+            <span>
+            {{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}<br/>
+                {{#parent_dir uri}}{{/parent_dir}}
+            </span>
+        </li>
+        {{#if children}}
+            <ul>{{> pendingDeletes}}</ul>
+        {{/if}}
+    {{/each}}
+</ul>
+</div>
