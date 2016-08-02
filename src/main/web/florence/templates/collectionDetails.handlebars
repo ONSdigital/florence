@@ -66,13 +66,14 @@
                 </li>
             {{/each}}
         </ul>
-        <h3 id="delete-uris">{{pendingDeletes.length}} files marked for delete</h3>
+        <h3 id="delete-uris">Content Deletions</h3>
 
         <p id="approval-permission-blocked" style="display: none"><strong>You will not be able to approve this collection as it contains delete requests actioned by you.</strong></p>
 
         <ul class="page-list">
             {{#each pendingDeletes}}
                 <li class="page-list__item">
+                    <span><strong>Total Deletes: {{totalDeletes}}</strong></span>
                     <span class="page__item page__item--{{root.type}}">
                         {{root.description.title}}{{#if root.description.edition}}: {{root.description.edition}}{{/if}}<br/>
                         {{root.uri}}
