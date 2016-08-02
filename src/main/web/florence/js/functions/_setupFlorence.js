@@ -8,6 +8,7 @@ function setupFlorence() {
     Handlebars.registerPartial("selectorMinute", templates.selectorMinute);
     Handlebars.registerPartial("tickAnimation", templates.tickAnimation);
     Handlebars.registerPartial("loadingAnimation", templates.loadingAnimation);
+    Handlebars.registerPartial("approvedDeleteChildren", templates.approvedDeleteChildren);
     Handlebars.registerPartial("childDeletes", templates.childDeletes);
     Handlebars.registerHelper('select', function (value, options) {
         var $el = $('<select />').html(options.fn(this));
@@ -96,13 +97,18 @@ function setupFlorence() {
         return asString;
     });
 
-        Handlebars.registerHelper('parent_dir', function (uri) {
-            var pathSections = uri.split("/");
-            if (pathSections.length > 0) {
-                return "/" + pathSections[pathSections.length -1];
-            }
-            return "";
-        });
+    Handlebars.registerHelper('parent_dir', function (uri) {
+        var pathSections = uri.split("/");
+        if (pathSections.length > 0) {
+            return "/" + pathSections[pathSections.length -1];
+        }
+        return "";
+    });
+
+    Handlebars.registerHelper('debug', function (message, object) {
+       console.log("DEBUG: " + message + " " + JSON.stringify(object));
+       return "";
+    });
 
 
     Florence.globalVars.activeTab = false;

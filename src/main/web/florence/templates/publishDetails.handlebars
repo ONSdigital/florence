@@ -15,18 +15,39 @@
                         <button class="btn margin-top--1 margin-bottom--0 btn-collection-publish">Publish collection</button>
                     {{/if}}
                     <button class="btn btn--primary margin-top--1 margin-bottom--0 btn-collection-unlock">Unlock collection</button>
-                    <h4>Approved pages in this collection</h4>
-                    <ul class="page-list">
-                        {{#each pageDetails}}
-                            <li class="page-list__item"><span class="page__item page__item--{{type}}"
-                                      data-path="{{uri}}">{{description.title}}{{#if description.edition}}
-                                : {{description.edition}}{{/if}}</span>
-                                <div class="page__buttons page__buttons--list">
-                                    <button class="btn-page-delete">Remove from this publish</button>
-                                </div>
-                            </li>
-                        {{/each}}
-                    </ul>
+                    {{#if pageDetails}}
+                        <h4>Approved pages in this collection</h4>
+                        <ul class="page-list">
+                            {{#each pageDetails}}
+                                <li class="page-list__item"><span class="page__item page__item--{{type}}"
+                                          data-path="{{uri}}">{{description.title}}{{#if description.edition}}
+                                    : {{description.edition}}{{/if}}</span>
+                                    <div class="page__buttons page__buttons--list">
+                                        <button class="btn-page-delete">Remove from this publish</button>
+                                    </div>
+                                </li>
+                            {{/each}}
+                        </ul>
+                    {{/if}}
+                    {{#if pendingDeletes}}
+                        <h4>Deleted pages in this collection</h4>
+                        <ul class="page-list">
+                            {{#each pendingDeletes}}
+                                <li>
+                                    <span>
+                                        {{root.description.title}}{{#if root.description.edition}}: {{root.description.edition}}{{/if}}<br/>
+                                        {{root.uri}}
+                                    </span>
+                                    {{#if root.children}} {{! Within the context of the current item }}
+                                        <div>
+                                            <h4>This delete contains</h4>
+                                            {{> approvedDeleteChildren}} {{! Recursively render the partial }}
+                                        </div>
+                                    {{/if}}
+                                </li>
+                            {{/each}}
+                        </ul>
+                    {{/if}}
                 </div>
             </div>
         {{/each}}

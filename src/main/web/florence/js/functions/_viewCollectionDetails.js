@@ -216,7 +216,17 @@ function viewCollectionDetails(collectionId, $this) {
     }
 
     function showApproveButton(collection) {
+        // If the collection contains deletes...
         if (collection.pendingDeletes && collection.pendingDeletes.length > 0) {
+            // Check that the current user is not the owner of any of the deletes.
+            for (i = 0; i < collection.pendingDeletes.length; i++) {
+                var pendingDelete = collection.pendingDeletes[i];
+                if (pendingDelete.user == localStorage.getItem('loggedInAs')) {
+                    $("#approval-permission-blocked").show();
+                    return false;
+                }
+            }
+
             return (collection.inProgress.length === 0 && collection.complete.length === 0
                 && collection.reviewed.length >= 0) || (collection.timeseriesImportFiles.length > 0);
         }

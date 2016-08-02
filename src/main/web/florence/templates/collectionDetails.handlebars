@@ -67,6 +67,10 @@
             {{/each}}
         </ul>
         <h3 id="delete-uris">{{pendingDeletes.length}} files marked for delete</h3>
+
+        <div id="approval-permission-blocked" style="display: none">
+            <strong>You will not be able to approve this collection as it contains delete requests actioned by you.</strong>
+        </div>
         <ul class="page-list">
             {{#each pendingDeletes}}
                 <li class="page-list__item">

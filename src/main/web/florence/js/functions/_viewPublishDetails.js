@@ -4,7 +4,8 @@ function viewPublishDetails(collections) {
     var result = {
         date: Florence.collectionToPublish.publishDate,
         subtitle: '',
-        collectionDetails: []
+        collectionDetails: [],
+        pendingDeletes: []
     };
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
     var onlyOne = 0;
@@ -19,7 +20,8 @@ function viewPublishDetails(collections) {
                             id: response.id,
                             name: response.name,
                             pageDetails: response.reviewed,
-                            pageType: 'manual'
+                            pageType: 'manual',
+                            pendingDeletes: response.pendingDeletes
                         });
                     } else {
                         result.collectionDetails.push({
