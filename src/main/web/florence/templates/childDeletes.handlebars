@@ -1,8 +1,8 @@
 <div>
-    {{#each root.children}}
     <ul class="page-list">
+    {{#each root.children}}
         <li class="page-list__item">
-            <span class="page__item page__item--{{type}} delete-child" onclick="">
+            <span class="page__item page__item--{{type}} delete-child">
             {{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}<br/>
             {{#parent_dir uri}}{{/parent_dir}}
             </span>
