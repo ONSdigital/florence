@@ -170,6 +170,7 @@ function setupFlorence() {
         }
     }
 
+    // Get ping times to zebedee and surface for user
     var lastPingTime;
     var pingTimes = [];
 
@@ -277,5 +278,50 @@ function setupFlorence() {
             this.collection = collectionTemp
         }
     }
+
+    // Check running version versus latest and notify user if they don't match
+    var runningVersion;
+    function checkVersion() {
+        return fetch('assets/version.json')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(responseJson) {
+                return responseJson;
+            })
+            .catch(function(err) {
+                console.log("Error getting latest Florence version: ", err);
+                return err
+            });
+    }
+
+    checkVersion().then(function(response) {
+        runningVersion = response;
+    });
+
+    setInterval(function() {
+        // Get the latest version and alert user if it differs from version stored on load
+        checkVersion().then(function (response) {
+            if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
+                console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
+                swal({
+                    title: "New version of Florence available",
+                    type: "info",
+                    showCancelButton: true,
+                    closeOnCancel: false,
+                    closeOnConfirm: false,
+                    confirmButtonText: "Refresh Florence",
+                    cancelButtonText: "Don't refresh"
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        location.reload();
+                    } else {
+                        swal("Warning", "Florence could be unstable without the latest version", "warning")
+                    }
+                });
+                runningVersion = response;
+            }
+        });
+    }, 10000)
 }
 
