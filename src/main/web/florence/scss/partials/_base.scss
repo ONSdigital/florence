@@ -14,22 +14,6 @@ $panel-height-2-top-nav: 756px;
     background: $porcelain;
 }
 
-.block {
-    overflow: hidden;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.float-left {
-    float: left !important;
-}
-
-.float-right {
-    float: right !important;
-}
-
 .selectbg {
     display: block;
     width: 100%;
@@ -461,143 +445,143 @@ $panel-height-2-top-nav: 756px;
 
 //buttons
 button {
-    &.cancel {
-        color: $pickled-bluewood;
-        background-color: $cadet-blue;
-    }
-
-    &.btn-collection-work-on {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-collection-approve {
-        color: $concrete;
-        background-color: $como;
-    }
-
-    &.btn-collection-create {
-        color: $concrete;
-        background-color: $como;
-        float: right;
-        margin-top: $lineheight;
-        margin-right: 0;
-    }
-
-    &.btn-page-create {
-        color: $concrete;
-        background-color: $como;
-        float: right;
-        margin-top: $lineheight;
-        margin-right: 0;
-    }
-
-    &.btn-markdown-edit {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-page-delete {
-        color: $concrete;
-        background-color: $tawny-port;
-    }
-
-    &.btn-browse-edit {
-        color: $concrete;
-        background-color: $astral;
-    }
-    &.btn-browse-create {
-        color: $concrete;
-        background-color: $como;
-    }
-    &.btn-browse-create-datavis {
-        color: $concrete;
-        background-color: $como;
-    }
-    &.btn-browse-delete {
-        color: $concrete;
-        background-color: $tawny-port;
-    }
-
-    &.btn-add-section {
-        color: $mirage;
-        background-color: $cadet-blue;
-        opacity: 0.5;
-
-        &:hover {
-            opacity: 1;
-            color: $pickled-bluewood;
-        }
-    }
-
-    &.btn-markdown-editor-cancel {
-        color: $pickled-bluewood;
-        background-color: $cadet-blue;
-    }
-
-    &.btn-markdown-editor-save {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-markdown-editor-exit {
-        color: $concrete;
-        background-color: $como;
-    }
-
-    &.btn-collection-unlock {
-        color: $concrete;
-        background-color: $astral;
-        margin-bottom: $lineheight / 2;
-    }
-
-    &.btn-collection-immediate-publish {
-        color: $concrete;
-        background-color: $como;
-        margin-bottom: $lineheight / 2;
-    }
-
-    &.btn-edit-cancel {
-        color: $concrete;
-        background-color: $mine-shaft;
-    }
-
-    &.btn-edit-save {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-edit-save-and-submit-for-review {
-        color: $concrete;
-        background-color: $como;
-        margin-left: 0;
-    }
-
-    &.btn-edit-save-and-submit-for-approval {
-        color: $concrete;
-        background-color: $como;
-        margin-left: 0;
-    }
-
-    &.btn-florence-login {
-        color: $concrete;
-        background-color: $astral;
-        margin-left: 0;
-    }
-    &.btn-release-selector-cancel {
-        color: $emperor;
-        background-color: $concrete;
-    }
-
-    &.btn-release-search {
-        float: right;
-        margin: 21px 20px 21px 0px;
-    }
-
-    &.btn-embed-save {
-        color: $concrete;
-        background-color: $astral;
-    }
+    //&.cancel {
+    //    color: $pickled-bluewood;
+    //    background-color: $cadet-blue;
+    //}
+    //
+    //&.btn-collection-work-on {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-collection-approve {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //
+    //&.btn-collection-create {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    float: right;
+    //    margin-top: $lineheight;
+    //    margin-right: 0;
+    //}
+    //
+    //&.btn-page-create {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    float: right;
+    //    margin-top: $lineheight;
+    //    margin-right: 0;
+    //}
+    //
+    //&.btn-markdown-edit {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-page-delete {
+    //    color: $concrete;
+    //    background-color: $tawny-port;
+    //}
+    //
+    //&.btn-browse-edit {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //&.btn-browse-create {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //&.btn-browse-create-datavis {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //&.btn-browse-delete {
+    //    color: $concrete;
+    //    background-color: $tawny-port;
+    //}
+    //
+    //&.btn-add-section {
+    //    color: $mirage;
+    //    background-color: $cadet-blue;
+    //    opacity: 0.5;
+    //
+    //    &:hover {
+    //        opacity: 1;
+    //        color: $pickled-bluewood;
+    //    }
+    //}
+    //
+    //&.btn-markdown-editor-cancel {
+    //    color: $pickled-bluewood;
+    //    background-color: $cadet-blue;
+    //}
+    //
+    //&.btn-markdown-editor-save {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-markdown-editor-exit {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //
+    //&.btn-collection-unlock {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //    margin-bottom: $lineheight / 2;
+    //}
+    //
+    //&.btn-collection-immediate-publish {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    margin-bottom: $lineheight / 2;
+    //}
+    //
+    //&.btn-edit-cancel {
+    //    color: $concrete;
+    //    background-color: $mine-shaft;
+    //}
+    //
+    //&.btn-edit-save {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-edit-save-and-submit-for-review {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    margin-left: 0;
+    //}
+    //
+    //&.btn-edit-save-and-submit-for-approval {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    margin-left: 0;
+    //}
+    //
+    //&.btn-florence-login {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //    margin-left: 0;
+    //}
+    //&.btn-release-selector-cancel {
+    //    color: $emperor;
+    //    background-color: $concrete;
+    //}
+    //
+    //&.btn-release-search {
+    //    float: right;
+    //    margin: 21px 20px 21px 0px;
+    //}
+    //
+    //&.btn-embed-save {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
 
 }
 

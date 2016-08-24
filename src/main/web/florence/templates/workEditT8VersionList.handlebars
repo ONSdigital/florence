@@ -8,9 +8,9 @@
                  value="{{this.updateDate}}" class="hasDateTimePicker"/>
           <textarea style="display: none;" id="correction-markdown_{{@index}}">{{this.correctionNotice}}</textarea>
           <div class="edit-section__buttons">
-            <button class="btn-markdown-edit" id="correction-edit-label_{{@index}}">Edit label</button>
-            <button class="btn-markdown-edit" id="correction-edit_{{@index}}">Edit notice</button>
-            <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
+            <button class="btn btn--primary btn-markdown-edit" id="correction-edit-label_{{@index}}">Edit label</button>
+            <button class="btn btn--primary btn-markdown-edit" id="correction-edit_{{@index}}">Edit notice</button>
+            <button class="btn btn--warning btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
           </div>
         </div>
       {{/if}}
@@ -25,8 +25,8 @@
           <input id="version-date_{{@index}}" type="text" placeholder="Day month year"
                  value="{{this.updateDate}}" class="hasDateTimePicker"/>
           <div class="edit-section__buttons">
-            <button class="btn-markdown-edit" id="version-edit-label_{{@index}}">Edit label</button>
-            <button class="btn-page-delete" id="version-delete_{{@index}}">Delete</button>
+            <button class="btn btn--primary btn-markdown-edit" id="version-edit-label_{{@index}}">Edit label</button>
+            <button class="btn btn--warning btn-page-delete" id="version-delete_{{@index}}">Delete</button>
           </div>
         </div>
       {{/unless}}

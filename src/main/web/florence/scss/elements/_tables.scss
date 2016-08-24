@@ -81,10 +81,26 @@
         }
     }
 
+    /* 75% and 25% width column table - used on release calendar list */
+    &--75-25 {
+        td, th {
+            width: 25%;
+        }
+
+        td:first-child, th:first-child {
+            width: 74%;
+        }
+    }
+
 
     /* Fixed height table - used in selectable tables in panels */
-    &--fixed-height tbody {
+    &--fixed-height-24 tbody {
         max-height: ($lineheight * 24);
+        overflow-y: scroll;
+        display: block;
+    }
+    &--fixed-height-17 tbody {
+        max-height: ($lineheight * 17);
         overflow-y: scroll;
         display: block;
     }
