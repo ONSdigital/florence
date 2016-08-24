@@ -216,6 +216,10 @@
         }
     }
 
+    &__children {
+        display: none;
+    }
+
     &__menu {
         position: absolute;
         left: calc(-100% - #{$gutter*3});
