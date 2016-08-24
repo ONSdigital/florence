@@ -165,6 +165,8 @@
             font-weight: 400;
             display: block;
             margin-left: -$gutter;
+
+            overflow: hidden;
         }
 
 
@@ -201,7 +203,8 @@
         }
 
         &--list {
-            display: none;
+            display: none; // JS toggles to show when selected
+            position: relative; // for hamburger icon positioning
 
             &.selected {
                 display: block !important;
@@ -215,6 +218,30 @@
 
     &__children {
         display: none;
+    }
+
+    &__menu {
+        position: absolute;
+        left: calc(-100% - #{$gutter*3});
+        transition: 0.5s ease-in-out;
+        top: -($lineheight / 2);
+        padding: ($lineheight / 2) $gutter;
+        //background-color: $iron;
+
+        &.active {
+            left: -$gutter;
+        }
+    }
+
+    // Any elements/buttons that need to be shifted to the side whilst the menu comes onto canvas
+    &__primary-buttons {
+        opacity: 1;
+        transition: 0.3s ease-in-out 0.1s;
+
+        &.active {
+            opacity: 0;
+            transition: 0.2s ease-in-out;
+        }
     }
 }
 
