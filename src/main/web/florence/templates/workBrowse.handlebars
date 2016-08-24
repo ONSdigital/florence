@@ -6,9 +6,9 @@
                     <span class="js-browse__item-title page__item{{#unless uri}} page__item--directory{{else}} page__item--{{type}}{{/unless}}">{{description.title}}</span>
                     {{#if_eq collectionOwner "PUBLISHING_SUPPORT"}}
                         <div class="page__buttons page__buttons--list selected">
-                            <button class="btn-browse-edit">Edit</button>
-                            <button class="btn-browse-create">Create</button>
-                            {{#if isDeletable}}<button class="btn-browse-delete">Delete</button>{{/if}}
+                            <button class="btn btn--primary btn-browse-edit">Edit</button>
+                            <button class="btn btn--positive btn-browse-create">Create</button>
+                            {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
                         </div>
                     {{/if_eq}}
                 </div>

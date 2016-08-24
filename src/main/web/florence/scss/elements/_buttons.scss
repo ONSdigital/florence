@@ -22,6 +22,17 @@
         background-color: $tawny-port;
     }
 
+    &--subtle {
+        color: $mirage;
+        background-color: $cadet-blue;
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+            color: $pickled-bluewood;
+        }
+    }
+
     &:hover,
     &:focus {
         &:after {
