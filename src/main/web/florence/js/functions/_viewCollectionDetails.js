@@ -68,10 +68,7 @@ function viewCollectionDetails(collectionId, $this) {
         }
 
         var approve = $('.btn-collection-approve');
-        if (collection.inProgress.length === 0
-            && collection.complete.length === 0
-            && (collection.reviewed.length > 0
-            || collection.timeseriesImportFiles.length > 0)) {
+        if (showApproveButton(collection)) {
             approve.show().one('click', function () {
                 postApproveCollection(collection.id);
             });
@@ -83,17 +80,22 @@ function viewCollectionDetails(collectionId, $this) {
 
         //edit collection
         $('.btn-collection-edit').click(function () {
-            // console.log($(this));
             editCollection(collection);
         });
 
         //page-list
-        $('.page__item').click(function () {
+        $('.page__item:not(.delete-child)').click(function () {
             $('.page-list li').removeClass('selected');
             $('.page__buttons').hide();
+            $('.page__children').hide();
 
-            $(this).parent('li').addClass('selected');
-            $(this).next('.page__buttons').show();
+            var $this = $(this),
+                $buttons = $this.next('.page__buttons'),
+                $childrenPages = $buttons.length > 0 ? $buttons.next('.page__children') : $this.next('.page__children');
+
+            $this.parent('li').addClass('selected');
+            $buttons.show();
+            $childrenPages.show();
         });
 
         $('.btn-page-edit').click(function () {
@@ -211,5 +213,24 @@ function viewCollectionDetails(collectionId, $this) {
 
         var contentHeight = panelHeight - (headHeight + headPadding + contentPadding + navHeight + navPadding);
         $('.slider__content').css('height', contentHeight);
+    }
+
+    function showApproveButton(collection) {
+        // If the collection contains deletes...
+        if (collection.pendingDeletes && collection.pendingDeletes.length > 0) {
+            // Check that the current user is not the owner of any of the deletes.
+            for (i = 0; i < collection.pendingDeletes.length; i++) {
+                var pendingDelete = collection.pendingDeletes[i];
+                if (pendingDelete.user == localStorage.getItem('loggedInAs')) {
+                    $("#approval-permission-blocked").show();
+                    return false;
+                }
+            }
+
+            return (collection.inProgress.length === 0 && collection.complete.length === 0
+                && collection.reviewed.length >= 0) || (collection.timeseriesImportFiles.length > 0);
+        }
+        return (collection.inProgress.length === 0 && collection.complete.length === 0
+            && collection.reviewed.length > 0) || (collection.timeseriesImportFiles.length > 0);
     }
 }
