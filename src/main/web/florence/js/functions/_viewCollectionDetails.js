@@ -1,8 +1,8 @@
-function viewCollectionDetails(collectionId) {
+function viewCollectionDetails(collectionId, $this) {
 
     getCollectionDetails(collectionId,
         success = function (response) {
-            populateCollectionDetails(response, collectionId);
+            populateCollectionDetails(response, collectionId, $this);
         },
         error = function (response) {
             handleApiError(response);
@@ -25,8 +25,10 @@ function viewCollectionDetails(collectionId) {
         ProcessPages(collection.complete);
         ProcessPages(collection.reviewed);
 
-        var collectionHtml = window.templates.collectionDetails(collection);
-        $('.collection-selected').html(collectionHtml).animate({right: "0%"}, 500);
+        var showPanelOptions = {
+            html: window.templates.collectionDetails(collection)
+        };
+        showPanel($this, showPanelOptions);
 
         var deleteButton = $('#collection-delete');
         if (collection.inProgress.length === 0
@@ -72,11 +74,6 @@ function viewCollectionDetails(collectionId) {
             || collection.timeseriesImportFiles.length > 0)) {
             approve.show().one('click', function () {
                 postApproveCollection(collection.id);
-                // swal({
-                //     title: "Collection approval in progress. It can take some time. You will be redirected soon.",
-                //     type: "success",
-                //     timer: 5000
-                // });
             });
         }
         else {
@@ -85,7 +82,8 @@ function viewCollectionDetails(collectionId) {
         }
 
         //edit collection
-        $('.collection-selected .btn-collection-edit').click(function () {
+        $('.btn-collection-edit').click(function () {
+            // console.log($(this));
             editCollection(collection);
         });
 
@@ -163,9 +161,8 @@ function viewCollectionDetails(collectionId) {
             //}
         });
 
-        $('.collection-selected .btn-collection-cancel').click(function () {
-            $('.collection-selected').stop().animate({right: "-50%"}, 500);
-            $('.collections-select-table tbody tr').removeClass('selected');
+        $('.btn-collection-cancel').click(function () {
+            hidePanel({});
         });
 
         $('.btn-collection-work-on').click(function () {
@@ -185,17 +182,17 @@ function viewCollectionDetails(collectionId) {
     }
 
     function setCollectionDetailsHeight() {
-        var panelHeight = parseInt($('.collection-selected').height());
+        var panelHeight = parseInt($('.panel--off-canvas').height());
 
-        var headHeight = parseInt($('.section-head').height());
-        var headPadding = parseInt($('.section-head').css('padding-bottom'));
+        var headHeight = parseInt($('.slider__head').height());
+        var headPadding = parseInt($('.slider__head').css('padding-bottom'));
 
-        var contentPadding = parseInt($('.section-content').css('padding-bottom'));
+        var contentPadding = parseInt($('.slider__content').css('padding-bottom'));
 
-        var navHeight = parseInt($('.section-nav').height());
-        var navPadding = (parseInt($('.section-nav').css('padding-bottom'))) + (parseInt($('.section-nav').css('padding-top')));
+        var navHeight = parseInt($('.slider__nav').height());
+        var navPadding = (parseInt($('.slider__nav').css('padding-bottom'))) + (parseInt($('.slider__nav').css('padding-top')));
 
         var contentHeight = panelHeight - (headHeight + headPadding + contentPadding + navHeight + navPadding);
-        $('.section-content').css('height', contentHeight);
+        $('.slider__content').css('height', contentHeight);
     }
 }

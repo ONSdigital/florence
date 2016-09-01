@@ -4,10 +4,10 @@
 @import "partials/colour-palette";
 @import "partials/fonts";
 @import "elements/typography"; // In new directory
-@import "patterns/grid"; // In new directory
+@import "utilities/grid"; // In new directory
 @import "partials/elements";
 @import "partials/base";
-@import "partials/utilities";
+//@import "partials/utilities";
 
 //For code that needs refactoring - empty regularly
 @import "partials/shame";
@@ -25,11 +25,23 @@
 
 // Elements
 @import "elements/tables";
+@import "elements/nav";
+@import "elements/buttons";
+@import "elements/forms";
 
 // Components
 @import "components/accordion";
+@import "components/network-status";
+@import "components/slider";
+@import "components/builder";
 
-// Patterns
+// Utilities
+@import "utilities/mixins";
+@import "utilities/panels";
+@import "utilities/padding";
+@import "utilities/margin";
+@import "utilities/display";
+@import "utilities/utilities";
 
 
 /* proposed structure:
@@ -52,11 +64,12 @@ SCSS
 		show/hide
 		tabs
 		tree
-
-	Patterns
 		slider
-		workspace
+
+	Utilities
+		workspace??
 		grid
-		screens
+		utilities
+		screens??
 
 */

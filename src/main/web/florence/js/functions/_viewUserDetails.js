@@ -1,12 +1,14 @@
 /**
  * Display the details of the user with the given email.
+ *
  * @param email
+ * @param $this = jQuery object of selected table item
  */
-function viewUserDetails(email) {
+function viewUserDetails(email, $this) {
 
     getUsers(
         success = function (user) {
-            populateUserDetails(user, email);
+            populateUserDetails(user, email, $this);
         },
         error = function (response) {
             handleApiError(response);
@@ -15,7 +17,7 @@ function viewUserDetails(email) {
     );
 
     var isAdmin, isEditor, isVisPublisher;
-    function populateUserDetails(user, email) {
+    function populateUserDetails(user, email, $this) {
         getUserPermission(
             function (permission) {
                 isAdmin = permission.admin;
@@ -24,8 +26,10 @@ function viewUserDetails(email) {
 
                 addPermissionToJSON(user);
 
-                var html = window.templates.userDetails(user);
-                $('.collection-selected').html(html).animate({right: "0%"}, 500);
+                var showPanelOptions = {
+                    html: window.templates.userDetails(user)
+                };
+                showPanel($this, showPanelOptions);
 
                 $('.btn-user-change-password').click(function () {
                     var currentPasswordRequired = false;
@@ -65,9 +69,8 @@ function viewUserDetails(email) {
                     });
                 });
 
-                $('.collection-selected .btn-collection-cancel').click(function () {
-                    $('.collection-selected').stop().animate({right: "-50%"}, 500);
-                    $('.collections-select-table tbody tr').removeClass('selected');
+                $('.btn-user-cancel').click(function () {
+                    hidePanel({});
                 });
             },
             function (error) {handleApiError(error);},

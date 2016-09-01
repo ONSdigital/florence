@@ -26,6 +26,19 @@
         border-radius: 4px;
         margin-top:-3px;
 
+        thead {
+            display: block;
+        }
+
+        thead tr {
+            background-color: $pickled-bluewood;
+            color: $cadet-blue;
+        }
+
+        tr {
+            display: block;
+        }
+
         td {
             padding-top: $lineheight;
             padding-bottom: $lineheight;
@@ -34,11 +47,9 @@
         td, th {
             padding-right: $gutter;
             padding-left: $gutter;
-        }
-
-        thead tr {
-            background-color: $pickled-bluewood;
-            color: $cadet-blue;
+            width: 49%;
+            box-sizing: border-box;
+            display: inline-block;
         }
 
         tbody {
@@ -69,6 +80,99 @@
             }
         }
     }
+
+    /* 75% and 25% width column table - used on release calendar list */
+    &--75-25 {
+        td, th {
+            width: 25%;
+        }
+
+        td:first-child, th:first-child {
+            width: 74%;
+        }
+    }
+
+
+    /* Fixed height table - used in selectable tables in panels */
+    &--fixed-height-24 tbody {
+        max-height: ($lineheight * 24);
+        overflow-y: scroll;
+        display: block;
+    }
+    &--fixed-height-17 tbody {
+        max-height: ($lineheight * 17);
+        overflow-y: scroll;
+        display: block;
+    }
+
+    /* Selectable table (ie collections list) */
+    //&--selectable {
+    //    padding: 0 $col--1;
+    //}
+    //
+    //&-create {
+    //    padding: 0 $col--1;
+    //    select {
+    //        &.small {
+    //            /*width: 30%;*/
+    //        }
+    //    }
+    //
+    //    .selectbg {
+    //        &--small {
+    //            width: 28%;
+    //            float: left;
+    //
+    //            &--margin {
+    //                margin-right: 8%;
+    //                margin-left: 8%;
+    //            }
+    //        }
+    //    }
+    //
+    //    form {
+    //        margin-top: -$lineheight;
+    //    }
+    //}
+    //
+    //&-selected {
+    //
+    //    right: -50%;
+    //    position: absolute;
+    //    background: $quill-gray;
+    //    // display: none;
+    //}
+
+    // Appears to do fuck all?
+    //&--selectable {
+    //    thead {
+    //        display: block;
+    //
+    //        tr {
+    //            display: block;
+    //        }
+    //    }
+    //
+    //    tbody {
+    //        max-height: $lineheight * 24;
+    //        overflow-y: scroll;
+    //        display: block;
+    //
+    //        tr {
+    //            display: block;
+    //        }
+    //    }
+    //
+    //    tr {
+    //        display: block;
+    //    }
+    //
+    //    th, td {
+    //        display: inline-block;
+    //        width: 49%;
+    //        box-sizing: border-box;
+    //    }
+    //}
 
     /* Table in a slide-out section */
     &--section {

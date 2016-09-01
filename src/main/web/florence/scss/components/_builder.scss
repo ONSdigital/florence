@@ -1,0 +1,93 @@
+.builder {
+
+    &__inner {
+        background-color: $wild-sand;
+        height: $lineheight * 30;
+        width: $col--10;
+        margin-top: $lineheight * 6;
+        margin-right: auto;
+        margin-left: auto;
+        overflow: hidden;
+        position: relative;
+    }
+
+    &__editor {
+        box-sizing: border-box;
+        width: 30%;
+        height: $lineheight * 26;
+        float: left;
+        padding: ($lineheight * 2) $gutter $lineheight $gutter;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        &--chart {
+            width: $col--6;
+        }
+
+    }
+
+    &__preview {
+        box-sizing: border-box;
+        width: 70%;
+        height: $lineheight * 26;
+        float: right;
+        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+        overflow-y: scroll;
+        background-color: white;
+
+        &--chart {
+            width: $col--6;
+        }
+
+    }
+
+    &__footer {
+        height: $lineheight * 2;
+        width: 100%;
+        padding: $lineheight 0;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: $gray-chateau;
+
+        button {
+            margin-top: 0;
+            margin-right: 0;
+        }
+    }
+
+    form {
+        margin-top: 0;
+    }
+
+    input, select {
+        margin-top: 0;
+        width: 100%;
+        background-color: $white;
+
+    }
+
+    label {
+        display: inline-block;
+        width: $col--6 - .4%;
+        //margin-top: -5px;
+        //margin-bottom: 4px;
+    }
+
+    textarea {
+        width: 100%;
+        border: 3px solid $scarpa-flow;
+        background-color: $white;
+        white-space: pre;
+        word-wrap: normal;
+    }
+
+    iframe {
+        width: 100%;
+        min-width: 700px;
+        height: ($lineheight * 25);
+        resize: horizontal;
+        overflow: auto;
+    }
+
+}
