@@ -78,7 +78,7 @@ function viewReports() {
         $('.unpublished').click(function() {
             var i = $(this).attr('data-collections-order');
             var isPublished = false;
-            viewReportDetails(collections.unpublished[i], isPublished);
+            viewReportDetails(collections.unpublished[i], isPublished, $(this));
 
             selectTr($(this));
         });
@@ -87,16 +87,19 @@ function viewReports() {
         $('.published').click(function () {
             var i = $(this).attr('data-collections-order');
             var isPublished = true;
-            viewReportDetails(collections.published[i], isPublished);
+            viewReportDetails(collections.published[i], isPublished, $(this));
 
             selectTr($(this));
         });
 
         function selectTr($this) {
-            $('.publish-select-table tbody tr').removeClass('selected');
-            $this.addClass('selected');
-            $('.publish-selected').animate({right: "0%"}, 800);
-            $('.publish-select').animate({marginLeft: "0%"}, 500);
+            // $('.publish-select-table tbody tr').removeClass('selected');
+            // $this.addClass('selected');
+            // $('.publish-selected').animate({right: "0%"}, 800);
+            // $('.publish-select').animate({marginLeft: "0%"}, 500);
+            var showPanelOptions = {
+
+            }
         }
     }
 }

@@ -19,14 +19,14 @@
           <textarea style="display: none;" id="correction-markdown_{{@index}}">{{correctionNotice}}</textarea>
 
           <div class="edit-section__buttons">
-            <button class="btn-markdown-edit" id="correction-edit_{{@index}}">Edit notice</button>
-            <button class="btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
+            <button class="btn btn--primary btn-markdown-edit" id="correction-edit_{{@index}}">Edit notice</button>
+            <button class="btn btn--warning btn-page-delete" id="correction-delete_{{@index}}">Delete</button>
           </div>
         </div>
       {{/each}}
     </div>
     <div class="text-center">
-      <button class="btn-add-section" id="add-{{idField}}">Add {{idField}}</button>
+      <button class="btn btn--subtle btn-add-section" id="add-{{idField}}">Add {{idField}}</button>
     </div>
   </div>
 </div>

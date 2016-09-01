@@ -5,10 +5,10 @@ function editCollection(collection) {
     getTeams(
         success = function (teams) {
             var editPublishTime, toIsoDate;
-            var collDetails = $('.section-content').detach();
+            var collDetails = $('.js-collection__content').detach();
             var html = templates.collectionEdit({collection: collection, teams: teams.teams});
-            $('.section-head').after(html);
-            $('.collection-selected .btn-collection-edit').off();
+            $('.js-collection__head').after(html);
+            $('.btn-collection-edit').off();
 
             $('#collection-editor-name').on('input', function () {
                 collection.name = $('#collection-editor-name').val();
@@ -119,11 +119,11 @@ function editCollection(collection) {
 
             //Cancel
             $('.btn-collection-editor-cancel').click(function () {
-                $('.collection-selected .btn-collection-edit').click(function () {
+                $('.btn-collection-edit').click(function () {
                     editCollection(collection);
                 });
-                $('.collection-editor').remove();
-                $('.section-head').after(collDetails);
+                $('.js-collection__edit-modal').remove();
+                $('.js-collection__head').after(collDetails);
             });
 
             setCollectionEditorHeight();
@@ -135,12 +135,12 @@ function editCollection(collection) {
 }
 
 function setCollectionEditorHeight() {
-    var panelHeight = parseInt($('.collection-selected').height());
+    var $contentModal = $('.js-collection__edit-modal'),
+        panelHeight = parseInt($('.panel--off-canvas').height()),
+        headHeight = parseInt($('.slider__head').outerHeight()),
+        contentMargin = (parseInt($contentModal.css('margin-top'))) + (parseInt($contentModal.css('margin-bottom')));
 
-    var headHeight = parseInt($('.section-head').height());
-    var headPadding = parseInt($('.section-head').css('padding-bottom'));
-
-    var contentHeight = panelHeight - (headHeight + headPadding);
-    $('.collection-editor__editor').css('height', contentHeight);
+    var contentHeight = panelHeight - headHeight - contentMargin;
+    $contentModal.css('height', contentHeight);
 }
 

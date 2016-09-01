@@ -1,3 +1,5 @@
+/** ACCORDION **/
+
 .accordion {
 
     // If more than one accordion put a border between them
@@ -28,7 +30,7 @@
             position: absolute;
             width: 0;
             height: 0;
-            top: $lineheight;
+            top: $lineheight + 6;
             right: $col--2;
             background-color: transparent;
             border-top: 10px solid $emperor;
@@ -37,7 +39,7 @@
         }
 
         &.active:before {
-            border-top: 0px solid transparent;
+            border-top: 0 solid transparent;
             border-bottom: 10px solid $emperor;
             border-left: 10px solid transparent;
             border-right:10px solid transparent;
@@ -49,12 +51,12 @@
     }
 
     &__content {
-        background: $quill-gray;
         overflow: scroll;
+        background: $quill-gray;
         animation-name: accordion-hide;
         animation-fill-mode: forwards;
-        animation-duration: 0.3s;
-        animation-timing-function: ease-out;
+        animation-duration: 0.4s;
+        animation-timing-function: ease-in-out;
 
         // Stop animation showing on initial render of the accordion - class removed on click
         &.disable-animation {
@@ -65,18 +67,22 @@
             display: block;
             animation-name: accordion-show;
             animation-fill-mode: forwards;
-            animation-duration: 0.3s;
-            animation-timing-function: ease-out;
+            animation-duration: 0.4s;
+            animation-timing-function: ease-in-out;
+        }
+
+        &--padded {
+            padding: 0 $col--2;
         }
     }
 }
 
 /* Accordion animation */
 @keyframes accordion-show {
-    from {height: 0;}
-    to {height: 315px;}
+    from {max-height: 0;}
+    to {max-height: ($lineheight * 17);}
 }
 @keyframes accordion-hide {
-    from {height: 315px;}
-    to {height: 0;}
+    from {max-height: ($lineheight * 17);}
+    to {max-height: 0;}
 }

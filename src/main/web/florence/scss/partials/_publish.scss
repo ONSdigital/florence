@@ -46,45 +46,45 @@
 
 		}
 
-		.section-content--fullwidth {
-			padding-left: 0;
-			padding-right: 0;
-		}
+		//.section-content--fullwidth {
+		//	padding-left: 0;
+		//	padding-right: 0;
+		//}
 
-		.collections-section {
-			background: $quill-gray;
-			 overflow: hidden;
-			/*background: $gray-chateau;*/
-
-			h3 {
-				margin: 0;
-				padding: ($lineheight / 2) $gutter;
-			}
-
-			h4 {
-				margin-top: 0;
-			}
-
-
-
-			&__head {
-				box-sizing: border-box;
-				outline: none;
-				position: relative;
-				height: $lineheight * 3;
-				background: $gray-chateau;
-				padding: 0 $col--2;
-				cursor: pointer;
-				border-top: 2px solid $pickled-bluewood;
-				/*border-bottom: 1px solid $pickled-bluewood;*/
-			}
-
-			&__content {
-				padding: 0 $col--2;
-				margin-top: $lineheight;
-				margin-bottom: $lineheight;
-			}
-		}
+		//.collections-section {
+		//	background: $quill-gray;
+		//	 overflow: hidden;
+		//	/*background: $gray-chateau;*/
+        //
+		//	h3 {
+		//		margin: 0;
+		//		padding: ($lineheight / 2) $gutter;
+		//	}
+        //
+		//	h4 {
+		//		margin-top: 0;
+		//	}
+        //
+        //
+        //
+		//	&__head {
+		//		box-sizing: border-box;
+		//		outline: none;
+		//		position: relative;
+		//		height: $lineheight * 3;
+		//		background: $gray-chateau;
+		//		padding: 0 $col--2;
+		//		cursor: pointer;
+		//		border-top: 2px solid $pickled-bluewood;
+		//		/*border-bottom: 1px solid $pickled-bluewood;*/
+		//	}
+        //
+		//	&__content {
+		//		padding: 0 $col--2;
+		//		margin-top: $lineheight;
+		//		margin-bottom: $lineheight;
+		//	}
+		//}
 	}
 }
 
@@ -101,36 +101,36 @@
 	}
 }
 
-.collections-accordion {
-	border-bottom: 2px solid $pickled-bluewood;
-}
-
-
-.collections-accordion {
-	.ui-accordion-header {
-		&:before {
-			content: '';
-			position: absolute;
-			width: 0; 
-			height: 0;
-			top: $lineheight;
-			right: $col--2;
-			background-color: transparent;
-			border-top: 10px solid $emperor;
-			border-left: 10px solid transparent; 
-			border-right:10px solid transparent; 
-		}
-	}
-
-	.ui-accordion-header-active {
-		&:before {
-			border-top: 0px solid transparent;
-			border-bottom: 10px solid $emperor;
-			border-left: 10px solid transparent; 
-			border-right:10px solid transparent; 
-		}
-	}
-}
+//.collections-accordion {
+//	border-bottom: 2px solid $pickled-bluewood;
+//}
+//
+//
+//.collections-accordion {
+//	.ui-accordion-header {
+//		&:before {
+//			content: '';
+//			position: absolute;
+//			width: 0;
+//			height: 0;
+//			top: $lineheight;
+//			right: $col--2;
+//			background-color: transparent;
+//			border-top: 10px solid $emperor;
+//			border-left: 10px solid transparent;
+//			border-right:10px solid transparent;
+//		}
+//	}
+//
+//	.ui-accordion-header-active {
+//		&:before {
+//			border-top: 0px solid transparent;
+//			border-bottom: 10px solid $emperor;
+//			border-left: 10px solid transparent;
+//			border-right:10px solid transparent;
+//		}
+//	}
+//}
 
 
 

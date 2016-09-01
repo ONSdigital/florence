@@ -28,11 +28,9 @@ function viewUsers(view) {
         $('.section').html(usersHtml);
 
 
-        $('.collections-select-table tbody tr').click(function () {
-            $('.collections-select-table tbody tr').removeClass('selected');
-            $(this).addClass('selected');
+        $('.js-selectable-table tbody tr').click(function () {
             var userId = $(this).attr('data-id');
-            viewUserDetails(userId);
+            viewUserDetails(userId, $(this));
         });
 
         $('.radioBtnDiv').change(function () {

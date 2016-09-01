@@ -1,20 +1,20 @@
-<div class="section-head">
-    <h2>{{date}}</h2>
-    <p>{{subtitle}}</p>
-</div>
+<div class="slider slider--background-primary">
+    <div class="slider__head">
+        <h2>{{date}}</h2>
+        <p>{{subtitle}}</p>
+    </div>
 
-<div class="section-content section-content--fullwidth">
-    {{#each collectionDetails}}
-        <div class="collections-accordion">
-            <div class="collections-section">
-                <div class="collections-section__head">
+    <div class="slider__content slider__content--fullwidth">
+        {{#each collectionDetails}}
+            <div class="accordion js-accordion">
+                <div class="accordion__title js-accordion__title">
                     <h3 class="collection-name" data-id="{{id}}">{{name}}</h3>
                 </div>
-                <div class="collections-section__content">
+                <div class="accordion__content accordion__content--padded disable-animation js-accordion__content">
                     {{#if pageType}}
-                        <button class="btn-collection-publish">Publish collection</button>
+                        <button class="btn btn--positive margin-top--1 margin-bottom--0 btn-collection-publish">Publish collection</button>
                     {{/if}}
-                    <button class="btn-collection-unlock">Unlock collection</button>
+                    <button class="btn btn--primary margin-top--1 margin-bottom--0 btn-collection-unlock">Unlock collection</button>
                     <h4>Approved pages in this collection</h4>
                     <ul class="page-list">
                         {{#each pageDetails}}
@@ -22,17 +22,17 @@
                                       data-path="{{uri}}">{{description.title}}{{#if description.edition}}
                                 : {{description.edition}}{{/if}}</span>
                                 <div class="page-options">
-                                    <button class="btn-page-delete">Remove from this publish</button>
+                                    <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
                                 </div>
                             </li>
                         {{/each}}
                     </ul>
                 </div>
             </div>
-        </div>
-    {{/each}}
-</div>
+        {{/each}}
+    </div>
 
-<nav class="section-nav">
-    <button class="btn-collection-cancel">Cancel</button>
-</nav>
+    <nav class="slider__nav">
+        <button class="btn btn-collection-cancel">Cancel</button>
+    </nav>
+</div>

@@ -44,21 +44,18 @@ function viewPublishDetails(collections) {
 
     $.when.apply($, pageDataRequests).then(function () {
         var publishDetails = templates.publishDetails(result);
-        $('.publish-selected').html(publishDetails);
-        $('.collections-accordion').accordion({
-            header: '.collections-section__head',
-            heightStyle: "content",
-            active: false,
-            collapsible: true
-        });
+        $('.panel--off-canvas').html(publishDetails);
+        bindAccordions();
 
         $('.btn-collection-publish').click(function () {
-            var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
+            var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
+            console.log(collection);
             publish(collection);
         });
 
         $('.btn-collection-unlock').click(function () {
-            var collection = $(this).closest('.collections-section').find('.collection-name').attr('data-id');
+            var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
+            console.log(collection);
 
             if (result.date !== manual) {
                 swal({
@@ -87,10 +84,13 @@ function viewPublishDetails(collections) {
             $(this).parent('li').addClass('selected');
             $(this).next('.page-options').show();
         });
-        $('.publish-selected .btn-collection-cancel').click(function () {
-            $('.publish-selected').animate({right: "-50%"}, 500);
-            $('.publish-select').animate({marginLeft: "25%"}, 800);
-            $('.publish-select-table tbody tr').removeClass('selected');
+        $('.btn-collection-cancel').click(function () {
+            var hidePanelOptions = {
+                onHide: false,
+                moveCenteredPanel: true
+            };
+
+            hidePanel(hidePanelOptions);
         });
     });
 }

@@ -14,187 +14,6 @@ $panel-height-2-top-nav: 756px;
     background: $porcelain;
 }
 
-.panel {
-    overflow: hidden;
-    height: $panel-height-1-top-nav;
-    display: block;
-
-    &--with-top-sub-menu {
-        height: $panel-height-2-top-nav;
-    }
-}
-
-.nav {
-    overflow: hidden;
-    background: $mine-shaft;
-    padding: 0 20px;
-    color: $gray-chateau;
-    height: $lineheight * 3;
-    text-align: right;
-
-    a {
-        color: $gray-chateau;
-        text-decoration: none;
-    }
-
-    li {
-        display: inline-block;
-        position: relative;
-
-        &.selected {
-            color: $white;
-            &:before {
-                content: '';
-                display: block;
-                position: absolute;
-                width: 100%;
-                height: 3px;
-                top: - $lineheight;
-                background-color: $white;
-            }
-
-            a {
-                color: $white;
-            }
-        }
-    }
-
-    &--admin {
-        &__item {
-
-            a {
-                // color: $concrete;
-                // text-decoration: none;
-            }
-        }
-    }
-}
-
-.icon-status {
-    height: 21px;
-    float: left;
-
-    div {
-        background-color: $white;
-        opacity: 0.2;
-        width: 6px;
-        margin-right: 1px;
-        float: left;
-    }
-
-    &--very-poor {
-        height: 5px;
-        margin-top: 15px;
-    }
-
-    &--poor {
-        height: 10px;
-        margin-top: 10px;
-    }
-
-    &--ok {
-        height: 15px;
-        margin-top: 5px;
-    }
-
-    &--good {
-        height: 20px;
-    }
-}
-
-.section {
-    &-head {
-        background-color: $pickled-bluewood;
-        overflow: hidden;
-        color: $cadet-blue;
-        padding-top: 0;
-        padding-bottom: $lineheight * 2;
-        padding-left: $col--2;
-        padding-right: $col--2;
-        p {
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-    }
-
-    &-content {
-        overflow-y: scroll;
-        padding-top: 0;
-        padding-bottom: $lineheight * 2;
-        padding-left: $col--2;
-        padding-right: $col--2;
-        height: $lineheight * 23;
-        color: $emperor;
-        /*position: relative;*/
-
-        // Disabled gradient on section because it breaks the flat design at the moment. Will see if it being disabled causes issues
-        &:after {
-            //content: '';
-            //width: 100%;
-            //height: $lineheight * 2;
-            //position: absolute;
-            //bottom: $lineheight * 5;
-            //left: 0;
-            //background: rgba(255, 255, 255, 0);
-            //background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(204, 204, 203, 1) 100%);
-            //background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(204, 204, 203, 1)));
-            //background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(204, 204, 203, 1) 100%);
-            //background: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(204, 204, 203, 1) 100%);
-            //background: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(204, 204, 203, 1) 100%);
-            //background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(204, 204, 203, 1) 100%);
-            //filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#cccccb', GradientType=0);
-        }
-    }
-
-    &-nav {
-        box-sizing: border-box;
-        overflow: hidden;
-        padding-top: $lineheight;
-        padding-bottom: $lineheight;
-        padding-left: $col--2;
-        padding-right: $col--2;
-        background-color: $pickled-bluewood;
-        overflow: hidden;
-        color: $cadet-blue;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: $lineheight * 5;
-
-        button {
-            // See comment on '&:last-child'
-            //margin-right: 10px
-            margin-right: 0;
-            margin-left: 10px;
-            &:first-child {
-                margin-right: 0;
-                margin-left: 20px;
-            }
-            // Broke when cancel button moved to last because it shows without a button inbetween
-            // &:last-child {
-            // 	margin-left: 0;
-            // }
-        }
-    }
-}
-
-.block {
-    overflow: hidden;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.float-left {
-    float: left !important;
-}
-
-.float-right {
-    float: right !important;
-}
-
 .selectbg {
     display: block;
     width: 100%;
@@ -626,195 +445,144 @@ $panel-height-2-top-nav: 756px;
 
 //buttons
 button {
-    &.cancel {
-        color: $pickled-bluewood;
-        background-color: $cadet-blue;
-    }
+    //&.cancel {
+    //    color: $pickled-bluewood;
+    //    background-color: $cadet-blue;
+    //}
+    //
+    //&.btn-collection-work-on {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-collection-approve {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //
+    //&.btn-collection-create {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    float: right;
+    //    margin-top: $lineheight;
+    //    margin-right: 0;
+    //}
+    //
+    //&.btn-page-create {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    float: right;
+    //    margin-top: $lineheight;
+    //    margin-right: 0;
+    //}
+    //
+    //&.btn-markdown-edit {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-page-delete {
+    //    color: $concrete;
+    //    background-color: $tawny-port;
+    //}
+    //
+    //&.btn-browse-edit {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //&.btn-browse-create {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //&.btn-browse-create-datavis {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //&.btn-browse-delete {
+    //    color: $concrete;
+    //    background-color: $tawny-port;
+    //}
+    //
+    //&.btn-add-section {
+    //    color: $mirage;
+    //    background-color: $cadet-blue;
+    //    opacity: 0.5;
+    //
+    //    &:hover {
+    //        opacity: 1;
+    //        color: $pickled-bluewood;
+    //    }
+    //}
+    //
+    //&.btn-markdown-editor-cancel {
+    //    color: $pickled-bluewood;
+    //    background-color: $cadet-blue;
+    //}
+    //
+    //&.btn-markdown-editor-save {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-markdown-editor-exit {
+    //    color: $concrete;
+    //    background-color: $como;
+    //}
+    //
+    //&.btn-collection-unlock {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //    margin-bottom: $lineheight / 2;
+    //}
+    //
+    //&.btn-collection-immediate-publish {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    margin-bottom: $lineheight / 2;
+    //}
+    //
+    //&.btn-edit-cancel {
+    //    color: $concrete;
+    //    background-color: $mine-shaft;
+    //}
+    //
+    //&.btn-edit-save {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
+    //
+    //&.btn-edit-save-and-submit-for-review {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    margin-left: 0;
+    //}
+    //
+    //&.btn-edit-save-and-submit-for-approval {
+    //    color: $concrete;
+    //    background-color: $como;
+    //    margin-left: 0;
+    //}
+    //
+    //&.btn-florence-login {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //    margin-left: 0;
+    //}
+    //&.btn-release-selector-cancel {
+    //    color: $emperor;
+    //    background-color: $concrete;
+    //}
+    //
+    //&.btn-release-search {
+    //    float: right;
+    //    margin: 21px 20px 21px 0px;
+    //}
+    //
+    //&.btn-embed-save {
+    //    color: $concrete;
+    //    background-color: $astral;
+    //}
 
-    &.btn-collection-work-on {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-collection-approve {
-        color: $concrete;
-        background-color: $como;
-    }
-
-    &.btn-collection-create {
-        color: $concrete;
-        background-color: $como;
-        float: right;
-        margin-top: $lineheight;
-        margin-right: 0;
-    }
-
-    &.btn-page-create {
-        color: $concrete;
-        background-color: $como;
-        float: right;
-        margin-top: $lineheight;
-        margin-right: 0;
-    }
-
-    &.btn-markdown-edit {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-page-delete {
-        color: $concrete;
-        background-color: $tawny-port;
-    }
-
-    &.btn-browse-edit {
-        color: $concrete;
-        background-color: $astral;
-    }
-    &.btn-browse-create {
-        color: $concrete;
-        background-color: $como;
-    }
-    &.btn-browse-create-datavis {
-        color: $concrete;
-        background-color: $como;
-    }
-    &.btn-browse-delete {
-        color: $concrete;
-        background-color: $tawny-port;
-    }
-
-    &.btn-add-section {
-        color: $mirage;
-        background-color: $cadet-blue;
-        opacity: 0.5;
-
-        &:hover {
-            opacity: 1;
-            color: $pickled-bluewood;
-        }
-    }
-
-    &.btn-markdown-editor-cancel {
-        color: $pickled-bluewood;
-        background-color: $cadet-blue;
-    }
-
-    &.btn-markdown-editor-save {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-markdown-editor-exit {
-        color: $concrete;
-        background-color: $como;
-    }
-
-    &.btn-collection-unlock {
-        color: $concrete;
-        background-color: $astral;
-        margin-bottom: $lineheight / 2;
-    }
-
-    &.btn-collection-immediate-publish {
-        color: $concrete;
-        background-color: $como;
-        margin-bottom: $lineheight / 2;
-    }
-
-    &.btn-edit-cancel {
-        color: $concrete;
-        background-color: $mine-shaft;
-    }
-
-    &.btn-edit-save {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &.btn-edit-save-and-submit-for-review {
-        color: $concrete;
-        background-color: $como;
-        margin-left: 0;
-    }
-
-    &.btn-edit-save-and-submit-for-approval {
-        color: $concrete;
-        background-color: $como;
-        margin-left: 0;
-    }
-
-    &.btn-florence-login {
-        color: $concrete;
-        background-color: $astral;
-        margin-left: 0;
-    }
-    &.btn-release-selector-cancel {
-        color: $emperor;
-        background-color: $concrete;
-    }
-
-    &.btn-release-search {
-        float: right;
-        margin: 21px 20px 21px 0px;
-    }
-
-    &.btn-embed-save {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-}
-
-// Buttons - CSS/colour only classes
-.btn {
-    border-radius: 4px;
-    padding: 10px $gutter;
-    text-decoration: none;
-    position: relative;
-
-    // Colours
-
-    &--primary {
-        color: $concrete;
-        background-color: $astral;
-    }
-
-    &--positive {
-        color: $concrete;
-        background-color: $como;
-    }
-
-    &--warning {
-        color: $concrete;
-        background-color: $tawny-port;
-    }
-
-    &:hover,
-    &:focus {
-        &:after {
-            content: '';
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background-color: rgba(0,0,0,0.2);
-            top: 0;
-            left: 0;
-            border-radius: 4px;
-        }
-    }
-
-    // Margin
-
-    &--flush {
-        margin: 0;
-    }
-
-    // Display
-
-    &--inline-block {
-        display: inline-block;
-    }
 }
 
 // Inputs - should eventually replace all the unique/specific classing being used

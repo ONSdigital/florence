@@ -52,16 +52,12 @@ function viewCollections(collectionId) {
         $('.section').html(collectionsHtml);
 
         if (collectionId) {
-            $('.collections-select-table tr[data-id="' + collectionId + '"]')
-                .addClass('selected');
-            viewCollectionDetails(collectionId);
+            viewCollectionDetails(collectionId, $('.collections-select-table tr[data-id="' + collectionId + '"]'));
         }
 
-        $('.collections-select-table tbody tr').click(function () {
-            $('.collections-select-table tbody tr').removeClass('selected');
-            $(this).addClass('selected');
+        $('.js-selectable-table tbody tr').click(function () {
             var collectionId = $(this).attr('data-id');
-            viewCollectionDetails(collectionId);
+            viewCollectionDetails(collectionId, $(this));
         });
 
         $("#team-tag").tagit({
