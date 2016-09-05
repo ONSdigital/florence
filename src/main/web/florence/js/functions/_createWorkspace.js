@@ -124,7 +124,8 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
         $('.workspace-menu').on('click', '.btn-browse-create', function () {
             var dest = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url');
-            var spanType = $(this).parent().prev('span');
+            // var spanType = $(this).parent().prev('span');
+            var spanType = $(this).closest('.js-browse__item').find('.js-browse__item-title:first');
             var typeClass = spanType[0].attributes[0].nodeValue;
             var typeGroup = typeClass.match(/--(\w*)$/);
             var type = typeGroup[1];
