@@ -7,9 +7,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         success: function (response) {
 
             // run through all json and add isDeletable flag to all nodes
-            checkAndAddDeleteFlag(response, collectionData);
-
-            console.log(collectionData);
+            checkAndAddDeleteFlag(collectionId, response, collectionData);
 
             var collectionOwner = localStorage.getItem('userType');
             response['collectionOwner'] = collectionOwner;
@@ -20,7 +18,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 treeNodeSelect(visDirectory);
             }
 
-            var browserContent = $('#iframe')[0].contentWindow;
+            // var browserContent = $('#iframe')[0].contentWindow;
             var html = templates.workBrowse(response);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
@@ -104,15 +102,31 @@ function openVisDirectoryOnLoad() {
 }
 
 // recursively add isDeletable and deleteIsInCollection flags to all browse tree nodes
-function checkAndAddDeleteFlag(browseTree, collectionData) {
-    browseTree['isDeletable'] = isDeletable(browseTree.type);
-    browseTree['deleteIsInCollection'] = deleteIsInCollection(browseTree.contentPath, collectionData);
+function checkAndAddDeleteFlag(collectionId, browseTree, collectionData) {
+    var getCollectionData = new Promise(function (resolve, reject) {
+        if (!collectionData) {
+            getCollection(collectionId, function (response) {
+                collectionData = response;
+                resolve(response);
+            }, function (response) {
+                console.log("Error getting collection details: ", response);
+                reject(response);
+            })
+        } else {
+            resolve(collectionData);
+        }
+    });
 
-    $.each(browseTree.children, function( key, browseTreeNode ) {
+    getCollectionData.then(function(response) {
+        browseTree['isDeletable'] = isDeletable(browseTree.type);
+        browseTree['deleteIsInCollection'] = deleteIsInCollection(browseTree.contentPath, response);
+
+        $.each(browseTree.children, function( key, browseTreeNode ) {
             if (browseTreeNode.children) {
-                checkAndAddDeleteFlag(browseTreeNode, collectionData);
+                checkAndAddDeleteFlag(collectionId, browseTreeNode, response);
             }
         });
+    });
 }
 
 // set deletable flag to false for certain page types
@@ -125,16 +139,18 @@ function isDeletable(type) {
 }
 
 // check if given uri is marked for deletion in current collection
-function deleteIsInCollection(uri, json) {
+function deleteIsInCollection(uri, collectionData) {
     var bool;
-    $.each(json.pendingDeletes, function (key, deleteMarker) {
-        if (uri == deleteMarker.root.uri) {
-            bool = true;
-            return false;
-        } else {
-            bool = false;
-        }
-    });
+    if (collectionData.pendingDeletes) {
+        $.each(collectionData.pendingDeletes, function (key, deleteMarker) {
+            if (uri == deleteMarker.root.uri) {
+                bool = true;
+                return false;
+            } else {
+                bool = false;
+            }
+        });
+    }
     return bool;
 }
 
