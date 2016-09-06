@@ -278,7 +278,7 @@ function onIframeLoad(runFunction) {
 
 // Update the scroll position of the browse tree if selected item off screen
 function browseScrollPos() {
-    var $selectedItem = $('.workspace-browse li.selected'),
+    var $selectedItem = $('.workspace-browse li.selected .page__container.selected'),
         $browseTree = $('.workspace-browse');
 
     if ($selectedItem.length) {
@@ -288,9 +288,12 @@ function browseScrollPos() {
             browseBottom = browseTop + $browseTree.height(),
             navHeight = $('.nav').height();
 
-        if (selectedTop < browseTop || selectedBottom > browseBottom) {
-            var newPos = selectedTop - navHeight;
-            $browseTree.scrollTop(newPos);
+        if (selectedTop < browseTop) {
+            console.log('Item was outside of viewable browse tree');
+            $browseTree.scrollTop($browseTree.scrollTop() + (selectedTop) - (navHeight / 2));
+        } else if (selectedBottom > browseBottom) {
+            console.log('Item was outside of viewable browse tree');
+            $browseTree.scrollTop(selectedBottom - (navHeight / 2) - $selectedItem.height())
         }
     }
 }
