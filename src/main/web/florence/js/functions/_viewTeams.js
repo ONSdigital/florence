@@ -10,9 +10,6 @@ function viewTeams() {
     );
 
     function populateTeamsTable(data) {
-        var teams = _.sortBy(data, function (d) {
-            return d.name.toLowerCase()
-        });
         var teamsHtml = templates.teamList(teams);
         $('.section').html(teamsHtml);
 
