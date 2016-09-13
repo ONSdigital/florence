@@ -1,6 +1,6 @@
 function methodologyEditor(collectionId, data) {
 
-  var newChart = [], newTable = [], newImage = [], newFiles = [];
+  var newChart = [], newTable = [], newEquation = [], newImage = [], newFiles = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
 
@@ -111,6 +111,16 @@ function methodologyEditor(collectionId, data) {
       newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
     });
     data.tables = newTable;
+    // equations
+    var orderEquation = $("#sortable-equation").sortable('toArray');
+    $(orderEquation).each(function (indexEquation, nameEquation) {
+      var uri = data.equations[parseInt(nameEquation)].uri;
+      var title = data.equations[parseInt(nameEquation)].title;
+      var filename = data.equations[parseInt(nameEquation)].filename;
+      var safeUri = checkPathSlashes(uri);
+      newEquation[indexEquation] = {uri: safeUri, title: title, filename: filename};
+    });
+    data.equations = newEquation;
     // images
     var orderImage = $("#sortable-image").sortable('toArray');
     $(orderImage).each(function (indexImage, nameImage) {
