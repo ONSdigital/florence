@@ -62,7 +62,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             });
 
-
+            // Select URL in browse tree
             if (click) {
                 var url = getPreviewUrl();
                 if (url === "/blank") {
@@ -73,6 +73,13 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             } else {
                 treeNodeSelect('/');
 
+            }
+
+            // Switch to browse tab (if not already)
+            var $browseTab = $('#browse');
+            if (!$browseTab.hasClass('selected')) {
+                $('.js-workspace-nav .js-workspace-nav__item').removeClass('selected');
+                $browseTab.addClass('selected');
             }
 
             openVisDirectoryOnLoad();

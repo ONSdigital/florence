@@ -3,9 +3,10 @@
  * @param path - path to iframe
  * @param collectionId
  * @param menu - opens a specific menu
+ * @param collectionData - JSON of the currently active collection
  * @param stopEventListener - separates the link between editor and iframe
  * @returns {boolean}
- */
+ **/
 
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
     var safePath = '';
@@ -50,16 +51,15 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         var $nav = $('.js-workspace-nav'),
             $navItem = $nav.find('.js-workspace-nav__item');
 
-        document.getElementById('iframe').onload = function () {
-            detectPreviewClick();
-        };
-
         // Set browse panel to full height to show loading icon
         $('.loader').css('margin-top', '84px');
         $('.workspace-menu').height($('.workspace-nav').height());
 
+        // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
+        detectPreviewClick();
+
         // Detect changes to preview and handle accordingly
-        processPreviewLoad();
+        processPreviewLoad(collectionId, collectionData);
 
         // Update preview URL on initial load of workspace
         updateBrowserURL(path);
@@ -128,7 +128,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var typeClass = spanType[0].attributes[0].nodeValue;
             var typeGroup = typeClass.match(/--(\w*)$/);
             var type = typeGroup[1];
-            ;
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#create").addClass('selected');
@@ -144,7 +143,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
         $('.workspace-menu').on('click', '.btn-browse-edit', function () {
             var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-            ;
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
@@ -164,14 +162,14 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
     }
 }
 
-// Bind click event to iframe element and run global Florence.Handler
+// SHOULD BE REPLACED BY 'onIframeLoad' -  Bind click event to iframe element and run global Florence.Handler
 function detectPreviewClick() {
     var iframeEvent = document.getElementById('iframe').contentWindow;
     iframeEvent.addEventListener('click', Florence.Handler, true);
 }
 
 // Full collection of functions to run on iframe load
-function processPreviewLoad() {
+function processPreviewLoad(collectionId, collectionData) {
     onIframeLoad(function (event) {
         var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
             $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
@@ -182,16 +180,18 @@ function processPreviewLoad() {
             checkForPageChanged(function (newUrl) {
                 var safeUrl = checkPathSlashes(newUrl),
                     selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
+
                 Florence.globalVars.pagePath = safeUrl;
 
-                if ($('.workspace-edit').length) {
-                    loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
-                    return false;
+                if ($('.workspace-edit').length || $('.workspace-create').length) {
+                    // Switch to browse screen if navigating around preview whilst on create or edit tab
+                    loadBrowseScreen(collectionId, 'click', collectionData);
+                    // return false;
                 }
                 else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
                     // Only update browse tree of on 'browse' tab and preview and active node don't already match
                     treeNodeSelect(safeUrl);
-                    return false;
+                    // return false;
                 }
             });
             updateBrowserURL(); // Update browser preview URL
@@ -230,7 +230,7 @@ function browseScrollPos() {
 function updateBrowserURL(url) {
     
     if(!url) {
-        url =Florence.globalVars.pagePath;
+        url = Florence.globalVars.pagePath;
     }
     
     $('.browser-location').val(Florence.babbageBaseUrl + url);
