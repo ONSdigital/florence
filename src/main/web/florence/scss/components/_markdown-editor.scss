@@ -35,8 +35,9 @@
     }
 
     &__footer {
-        height: $lineheight * 4;
+        //height: $lineheight * 4;
         background-color: $pickled-bluewood;
+        padding: ($lineheight/2) 0 $lineheight 0;
     }
 
     &__input {
