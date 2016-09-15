@@ -1,6 +1,6 @@
 function compendiumChapterEditor(collectionId, data) {
 
-    var newChart = [], newTable = [], newImage = [], newLinks = [];
+    var newChart = [], newTable = [], newEquation = [], newImage = [], newLinks = [];
     var parentUrl = getParentPage(data.uri);
     var setActiveTab, getActiveTab;
 
@@ -136,6 +136,15 @@ function compendiumChapterEditor(collectionId, data) {
             newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
         });
         data.tables = newTable;
+        var orderEquation = $("#sortable-equation").sortable('toArray');
+        $(orderEquation).each(function (indexEquation, nameEquation) {
+            var uri = data.equations[parseInt(nameEquation)].uri;
+            var title = data.equations[parseInt(nameEquation)].title;
+            var filename = data.equations[parseInt(nameEquation)].filename;
+            var safeUri = checkPathSlashes(uri);
+            newEquation[indexEquation] = {uri: safeUri, title: title, filename: filename};
+        });
+        data.equations = newEquation;
         // images
         var orderImage = $("#sortable-image").sortable('toArray');
         $(orderImage).each(function (indexImage, nameImage) {

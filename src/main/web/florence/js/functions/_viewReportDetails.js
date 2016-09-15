@@ -73,7 +73,8 @@ function viewReportDetails(collection, isPublished, $this) {
                             date: collection.formattedDate,
                             starting: starting,
                             duration: duration,
-                            success: success
+                            success: success,
+                            events: events
                         };
 
                         var showPanelOptions = {

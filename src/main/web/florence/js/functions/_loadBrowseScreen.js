@@ -40,6 +40,13 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             }
 
+            // Switch to browse tab (if not already)
+            var $browseTab = $('#browse');
+            if (!$browseTab.hasClass('selected')) {
+                $('.js-workspace-nav .js-workspace-nav__item').removeClass('selected');
+                $browseTab.addClass('selected');
+            }
+
             openVisDirectoryOnLoad();
 
         },
