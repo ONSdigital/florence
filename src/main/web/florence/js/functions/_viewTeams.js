@@ -10,7 +10,7 @@ function viewTeams() {
     );
 
     function populateTeamsTable(data) {
-        var teamsHtml = templates.teamList(teams);
+        var teamsHtml = templates.teamList(data);
         $('.section').html(teamsHtml);
 
         $('.js-selectable-table tbody tr').click(function () {
