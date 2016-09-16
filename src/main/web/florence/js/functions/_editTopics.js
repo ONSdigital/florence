@@ -107,7 +107,7 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
 
             //Disable the editor
             $('body').append(
-                "<div class='col col--5 panel disabled'></div>"
+                "<div class='col col--5 panel modal-background'></div>"
             );
 
             //Add buttons to iframe window
@@ -117,19 +117,19 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
             $('.btn-browse-cancel').off().one('click', function () {
                 createWorkspace(data.uri, collectionId, 'edit');
                 $('.iframe-nav').remove();
-                $('.disabled').remove();
+                $('.modal-background').remove();
             });
 
             //Remove added markup if user navigates away from editor screen
             $('a:not(.btn-browse-get)').click(function () {
                 $('.iframe-nav').remove();
-                $('.disabled').remove();
+                $('.modal-background').remove();
             });
 
             $('.btn-browse-get').off().one('click', function () {
                 var dataUrl = getPathNameTrimLast();
                 $('.iframe-nav').remove();
-                $('.disabled').remove();
+                $('.modal-background').remove();
                 getTopic(collectionId, data, templateData, field, idField, dataUrl);
             });
         });

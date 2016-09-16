@@ -37,6 +37,17 @@
         }
     }
 
+    &__banner {
+        background-color: $nevada;
+        padding: ($lineheight / 2) $col--2;
+        color: $iron-dark;
+
+        p {
+            margin-top: ($lineheight / 2);
+            margin-bottom: ($lineheight / 2);
+        }
+    }
+
     &__nav {
         box-sizing: border-box;
         overflow: hidden;
