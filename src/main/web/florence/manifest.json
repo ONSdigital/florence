@@ -3,7 +3,7 @@
     "short_name": "Flo",
     "icons": [
         {
-            "src": "https://placekitten.com/144/144",
+            "src": "img/flo-logo144.png",
             "sizes": "144x144",
             "type": "image/png"
         }
