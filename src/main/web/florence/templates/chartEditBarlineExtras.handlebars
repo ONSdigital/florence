@@ -1,8 +1,8 @@
-<label for="finish-at-hundred">Finish at 100</label>
+<label for="finish-at-hundred" class="checkbox-label">Finish at 100</label>
 <input id="finish-at-hundred" name="Finish at 100" {{#if finishAtHundred}}checked{{/if}} type="checkbox">
 
 {{#each series}}
-  <label>{{this}}</label>
+  <label for="types_{{@index}}">{{this}}</label>
   <div class="select-wrap">
     <select id="types_{{@index}}" class="col--5">
       {{#select (lookup ../chartTypes this)}}
