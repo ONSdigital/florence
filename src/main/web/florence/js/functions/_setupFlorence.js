@@ -8,6 +8,7 @@ function setupFlorence() {
     Handlebars.registerPartial("selectorMinute", templates.selectorMinute);
     Handlebars.registerPartial("tickAnimation", templates.tickAnimation);
     Handlebars.registerPartial("loadingAnimation", templates.loadingAnimation);
+    Handlebars.registerPartial("childDeletes", templates.childDeletes);
     Handlebars.registerHelper('select', function (value, options) {
         var $el = $('<select />').html(options.fn(this));
         $el.find('[value="' + value + '"]').attr({'selected': 'selected'});
@@ -93,6 +94,19 @@ function setupFlorence() {
             return asString.substring(0, asString.lastIndexOf(","));
         }
         return asString;
+    });
+
+    Handlebars.registerHelper('parent_dir', function (uri) {
+        var pathSections = uri.split("/");
+        if (pathSections.length > 0) {
+            return "/" + pathSections[pathSections.length -1];
+        }
+        return "";
+    });
+
+    Handlebars.registerHelper('debug', function (message, object) {
+       console.log("DEBUG: " + message + " " + JSON.stringify(object));
+       return "";
     });
 
 
@@ -226,7 +240,7 @@ function setupFlorence() {
     resetPage();
 
     // Log every click that will be changing the state or data in Florence
-    $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page-item', function(e) {
+    $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page__item', function(e) {
         var diagnosticJSON = JSON.stringify(new clickEventObject(e));
         $.ajax({
           url: "/zebedee/clickEventLog",

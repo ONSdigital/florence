@@ -3,9 +3,10 @@
  * @param path - path to iframe
  * @param collectionId
  * @param menu - opens a specific menu
+ * @param collectionData - JSON of the currently active collection
  * @param stopEventListener - separates the link between editor and iframe
  * @returns {boolean}
- */
+ **/
 
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
     var safePath = '';
@@ -50,16 +51,15 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         var $nav = $('.js-workspace-nav'),
             $navItem = $nav.find('.js-workspace-nav__item');
 
-        document.getElementById('iframe').onload = function () {
-            detectPreviewClick();
-        };
-
         // Set browse panel to full height to show loading icon
         $('.loader').css('margin-top', '84px');
         $('.workspace-menu').height($('.workspace-nav').height());
 
+        // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
+        detectPreviewClick();
+
         // Detect changes to preview and handle accordingly
-        processPreviewLoad();
+        processPreviewLoad(collectionId, collectionData);
 
         // Update preview URL on initial load of workspace
         updateBrowserURL(path);
@@ -123,16 +123,59 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         });
 
         $('.workspace-menu').on('click', '.btn-browse-create', function () {
-            var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-            var spanType = $(this).parent().prev('span');
+            var dest = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url');
+            // var spanType = $(this).parent().prev('span');
+            var spanType = $(this).closest('.js-browse__item').find('.js-browse__item-title:first');
             var typeClass = spanType[0].attributes[0].nodeValue;
             var typeGroup = typeClass.match(/--(\w*)$/);
             var type = typeGroup[1];
-            ;
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#create").addClass('selected');
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
+        });
+
+        $('.workspace-menu').on('click', '.btn-browse-delete', function () {
+            var $parentItem = $('.tree-nav-holder ul').find('.js-browse__item.selected');
+            var $parentContainer = $parentItem.find('.page__container.selected');
+            var $button = $parentContainer.find('.btn-browse-delete');
+            var dest = $parentItem.attr('data-url');
+            var spanType = $(this).parent().prev('span');
+            var title = spanType.html();
+            addDeleteMarker(dest, title, function() {
+                $parentContainer.addClass('animating').addClass('deleted');
+                toggleDeleteRevertButton($parentContainer);
+                toggleDeleteRevertChildren($parentItem);
+
+                // Stops animation happening anytime other than when going between delete/undo delete
+                $parentContainer.one("webkitTransitionEnd transitionEnd", function() {
+                    $parentContainer.removeClass('animating');
+                });
+            });
+        });
+
+        $('.workspace-menu').on('click', '.btn-browse-delete-revert', function () {
+            var $parentItem = $('.tree-nav-holder ul').find('.js-browse__item.selected');
+            var $parentContainer = $parentItem.find('.page__container.selected');
+            var $button = $parentContainer.find('.btn-browse-delete-revert');
+            var dest = $parentItem.attr('data-url');
+            removeDeleteMarker(dest, function() {
+                $parentContainer.addClass('animating').removeClass('deleted');
+                toggleDeleteRevertButton($parentContainer);
+                toggleDeleteRevertChildren($parentItem);
+
+                // Stops animation happening anytime other than when going between delete/undo delete
+                $parentContainer.one("webkitTransitionEnd transitionEnd", function() {
+                    $parentContainer.removeClass('animating');
+                });
+            });
+        });
+
+        $('.workspace-menu').on('click', '.btn-browse-move', function() {
+            var $parentItem = $('.tree-nav-holder ul').find('.js-browse__item.selected'),
+                fromUrl = $parentItem.attr('data-url');
+
+            moveBrowseNode(fromUrl);
         });
 
         $('.workspace-menu').on('click', '.btn-browse-create-datavis', function () {
@@ -143,12 +186,35 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         });
 
         $('.workspace-menu').on('click', '.btn-browse-edit', function () {
-            var dest = $('.tree-nav-holder ul').find('.selected').attr('data-url');
-            ;
+            var dest = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url');
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
             loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+        });
+
+        $('.workspace-menu').on('click', '.js-browse__menu', function() {
+            var $thisItem = $('.js-browse__item.selected .page__container.selected'),
+                $thisBtn = $thisItem.find('.js-browse__menu'),
+                $thisMenu = $thisBtn.next('.page__menu'),
+                menuHidden;
+
+            function toggleMenu() {
+                $thisBtn.toggleClass('active').children('.hamburger-icon__span').toggleClass('active');
+                $thisItem.find('.js-browse__buttons--primary').toggleClass('active');
+                $thisMenu.toggleClass('active');
+            }
+
+            // Toggle menu on click
+            toggleMenu();
+
+            // Shut menu if another item or button is clicked
+            $('.js-browse__item-title, .btn-browse-move, .btn-browse-delete').on('click', function() {
+                if (!menuHidden) {
+                    toggleMenu();
+                    menuHidden = true;
+                }
+            });
         });
 
         if (menu === 'edit') {
@@ -164,14 +230,14 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
     }
 }
 
-// Bind click event to iframe element and run global Florence.Handler
+// SHOULD BE REPLACED BY 'onIframeLoad' -  Bind click event to iframe element and run global Florence.Handler
 function detectPreviewClick() {
     var iframeEvent = document.getElementById('iframe').contentWindow;
     iframeEvent.addEventListener('click', Florence.Handler, true);
 }
 
 // Full collection of functions to run on iframe load
-function processPreviewLoad() {
+function processPreviewLoad(collectionId, collectionData) {
     onIframeLoad(function (event) {
         var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
             $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
@@ -182,16 +248,18 @@ function processPreviewLoad() {
             checkForPageChanged(function (newUrl) {
                 var safeUrl = checkPathSlashes(newUrl),
                     selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
+
                 Florence.globalVars.pagePath = safeUrl;
 
-                if ($('.workspace-edit').length) {
-                    loadPageDataIntoEditor(safeUrl, Florence.collection.id, 'click');
-                    return false;
+                if ($('.workspace-edit').length || $('.workspace-create').length) {
+                    // Switch to browse screen if navigating around preview whilst on create or edit tab
+                    loadBrowseScreen(collectionId, 'click', collectionData);
+                    // return false;
                 }
                 else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
                     // Only update browse tree of on 'browse' tab and preview and active node don't already match
                     treeNodeSelect(safeUrl);
-                    return false;
+                    // return false;
                 }
             });
             updateBrowserURL(); // Update browser preview URL
@@ -212,27 +280,55 @@ function onIframeLoad(runFunction) {
 
 // Update the scroll position of the browse tree if selected item off screen
 function browseScrollPos() {
-    var $selectedItem = $('.workspace-browse li.selected'),
+    var $selectedItem = $('.workspace-browse li.selected .page__container.selected'),
         $browseTree = $('.workspace-browse');
 
-    var selectedTop = $selectedItem.offset().top,
-        selectedBottom = selectedTop + $selectedItem.height(),
-        browseTop = $browseTree.offset().top,
-        browseBottom = browseTop + $browseTree.height(),
-        navHeight = $('.nav').height();
+    if ($selectedItem.length) {
+        var selectedTop = $selectedItem.offset().top,
+            selectedBottom = selectedTop + $selectedItem.height(),
+            browseTop = $browseTree.offset().top,
+            browseBottom = browseTop + $browseTree.height(),
+            navHeight = $('.nav').height();
 
-    if (selectedTop < browseTop || selectedBottom > browseBottom) {
-        var newPos = selectedTop - navHeight;
-        $browseTree.scrollTop(newPos);
+        if (selectedTop < browseTop) {
+            console.log('Item was outside of viewable browse tree');
+            $browseTree.scrollTop($browseTree.scrollTop() + (selectedTop) - (navHeight / 2));
+        } else if (selectedBottom > browseBottom) {
+            console.log('Item was outside of viewable browse tree');
+            $browseTree.scrollTop(selectedBottom - (navHeight / 2) - $selectedItem.height())
+        }
     }
 }
 
 function updateBrowserURL(url) {
-    
     if(!url) {
-        url =Florence.globalVars.pagePath;
+        url = Florence.globalVars.pagePath;
     }
-    
     $('.browser-location').val(Florence.babbageBaseUrl + url);
+}
+
+// toggle delete button from 'delete' to 'revert' for content marked as to be deleted and remove/show other buttons in item
+function toggleDeleteRevertButton($container) {
+    $container.find('.btn-browse-delete-revert, .js-browse__buttons--primary, .js-browse__buttons--secondary').toggle();
+}
+
+// Toggle displaying children as deleted or not deleted
+function toggleDeleteRevertChildren($item) {
+    var $childContainer = $item.find('.js-browse__item .page__container'),
+        isDeleting = $item.children('.page__container').hasClass('deleted');
+
+    if (isDeleting) {
+        $childContainer.addClass('deleted');
+    } else {
+        $childContainer.removeClass('deleted');
+
+        // If a child item has previously been deleted but is being shown by a parent then undo the toggle buttons
+        if ($childContainer.find('.btn-browse-delete-revert').length) {
+            // toggleDeleteRevertButton($childContainer.find('.btn-browse-delete-revert'));
+            toggleDeleteRevertButton($childContainer);
+        }
+    }
+
+    $childContainer.find('.page__buttons').toggleClass('deleted');
 }
 
