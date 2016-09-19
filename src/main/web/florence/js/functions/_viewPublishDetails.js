@@ -4,7 +4,8 @@ function viewPublishDetails(collections) {
     var result = {
         date: Florence.collectionToPublish.publishDate,
         subtitle: '',
-        collectionDetails: []
+        collectionDetails: [],
+        pendingDeletes: []
     };
     var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
     var onlyOne = 0;
@@ -19,7 +20,8 @@ function viewPublishDetails(collections) {
                             id: response.id,
                             name: response.name,
                             pageDetails: response.reviewed,
-                            pageType: 'manual'
+                            pageType: 'manual',
+                            pendingDeletes: response.pendingDeletes
                         });
                     } else {
                         result.collectionDetails.push({
@@ -77,13 +79,23 @@ function viewPublishDetails(collections) {
         });
 
         //page-list
-        $('.page-item').click(function () {
+        $('.page__item:not(.delete-child)').click(function () {
             $('.page-list li').removeClass('selected');
-            $('.page-options').hide();
+            $('.page__buttons').hide();
+            $('.page__children').hide();
 
-            $(this).parent('li').addClass('selected');
-            $(this).next('.page-options').show();
+            // $(this).parent('li').addClass('selected');
+            // $(this).next('.page__buttons').show();
+
+            var $this = $(this),
+                $buttons = $this.next('.page__buttons'),
+                $childrenPages = $buttons.length > 0 ? $buttons.next('.page__children') : $this.next('.page__children');
+
+            $this.parent('li').addClass('selected');
+            $buttons.show();
+            $childrenPages.show();
         });
+
         $('.btn-collection-cancel').click(function () {
             var hidePanelOptions = {
                 onHide: false,
