@@ -32,15 +32,7 @@ function viewCollections(collectionId) {
         $.each(result.data, function (i, collection) {
             var approvalStates = {inProgress: false, thrownError: false, completed: false};
 
-            // TODO Remove this stubbed data!
-            // if (collection.name === 'dont encrypt') {
-            //     collection.approvalState = 'IN_PROGRESS';
-            // }
-            // if (collection.name === 'A name') {
-            //     collection.approvalState = 'ERROR';
-            // }
-
-            if (!collection.approvedStatus) {
+            if (collection.approvalStatus != "COMPLETE") {
 
                 // Set publish date
                 if (!collection.publishDate) {
@@ -52,7 +44,7 @@ function viewCollections(collectionId) {
                 }
 
                 // Set approval state
-                switch (collection.approvalState) {
+                switch (collection.approvalStatus) {
                     case (undefined): {
                         break;
                     }
@@ -60,7 +52,7 @@ function viewCollections(collectionId) {
                         approvalStates.inProgress = true;
                         break;
                     }
-                    case ('COMPLETED'): {
+                    case ('COMPLETE'): {
                         approvalStates.completed = true;
                         break;
                     }

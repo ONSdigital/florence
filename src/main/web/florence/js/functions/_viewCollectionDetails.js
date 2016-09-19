@@ -10,13 +10,6 @@ function viewCollectionDetails(collectionId, $this) {
     );
 
     function populateCollectionDetails(collection, collectionId) {
-        // TODO Remove this stubbed data once server side is done
-        // if (collection.name === 'dont encrypt') {
-        //     collection.approvalState = 'IN_PROGRESS';
-        // }
-        // if (collection.name === 'A name') {
-        //     collection.approvalState = 'ERROR';
-        // }
 
         Florence.setActiveCollection(collection);
 
@@ -36,7 +29,7 @@ function viewCollectionDetails(collectionId, $this) {
 
         // Set collection approval state
         var approvalStates = {inProgress: false, thrownError: false, completed: false};
-        switch (collection.approvalState) {
+        switch (collection.approvalStatus) {
             case (undefined): {
                 collection.approvalState = '';
                 console.log(collection.approvalState);
@@ -46,7 +39,7 @@ function viewCollectionDetails(collectionId, $this) {
                 approvalStates.inProgress = true;
                 break;
             }
-            case ('COMPLETED'): {
+            case ('COMPLETE'): {
                 approvalStates.completed = true;
                 break;
             }
