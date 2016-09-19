@@ -12,7 +12,7 @@
     padding-bottom: $lineheight * 3;
     padding-right: $gutter * 3;
     padding-left: $gutter * 3;
-    background-color: $modal-bg;
+    background-color: rgba($black, .75);
 
     &__header {
         height: $lineheight * 6;
