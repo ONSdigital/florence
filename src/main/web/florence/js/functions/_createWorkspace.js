@@ -113,7 +113,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
             } else {
-                loadBrowseScreen(collectionId);
+                loadBrowseScreen(collectionId, false, collectionData);
             }
         }
 
