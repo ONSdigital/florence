@@ -45,7 +45,7 @@ function markDownEditorSetLines() {
 
   if(linesLi) {
     var linesOl = '<ol>' + linesLi + '</ol>';
-    $('.markdown-editor-line-numbers').html(linesOl);
+    $('#markdown-editor-line-numbers').html(linesOl);
     // console.log(linesOl);
   }
 

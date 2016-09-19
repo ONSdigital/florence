@@ -67,26 +67,26 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         Florence.Editor.markdownEditor.refreshPreview();
     };
 
-    $(".btn-markdown-editor-chart").click(function () {
+    $("#js-editor--chart").click(function () {
         loadChartBuilder(pageData, onInsertSave);
     });
 
-    $(".btn-markdown-editor-table").click(function () {
+    $("#js-editor--table").click(function () {
         loadTableBuilder(pageData, onInsertSave);
     });
 
-    $(".btn-markdown-editor-equation").click(function () {
+    $("#js-editor--equation").click(function () {
         loadEquationBuilder(pageData, onInsertSave);
     });
 
-    $(".btn-markdown-editor-image").click(function () {
+    $("#js-editor--image").click(function () {
         loadImageBuilder(pageData, function (name, markdown, pageData) {
             onInsertSave(name, markdown);
             refreshImagesList(Florence.collection.id, pageData)
         });
     });
 
-    $(".btn-markdown-editor-embed").click(function () {
+    $("#js-editor--embed").click(function () {
         loadEmbedIframe(function (markdown) {
             onInsertSave('', markdown);
         });
