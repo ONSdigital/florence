@@ -54,7 +54,7 @@ Florence.Authentication = {
 
 Florence.Handler = function (e) {
     if (Florence.Editor.isDirty) {
-        var result = confirm("You have unsaved changes. Are you sure you want to continue");
+        var result = confirm("You have unsaved changes. Are you sure you want to continue?");
         if (result === true) {
             Florence.Editor.isDirty = false;
             processPreviewLoad();
