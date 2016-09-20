@@ -69,7 +69,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
             creatorDatePicker();
         }
 
-        $('form').submit(function (e) {
+        $('form').off().submit(function (e) {
             e.preventDefault();
             var nameValid = validatePageName();
             if (!nameValid) {
@@ -114,9 +114,14 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
             }
 
             if (pageName.length < 4) {
-                sweetAlert("This is not a valid file name");
+                sweetAlert({
+                    title: "This is not a valid page name",
+                    text: "Page names must be 4 characters or longer",
+                    type: "warning"
+                });
                 loadCreateScreen(parentUrl, collectionId);
             } else {
+                debugger;
                 saveContent(collectionId, safeNewUri, pageData);
             }
         });
