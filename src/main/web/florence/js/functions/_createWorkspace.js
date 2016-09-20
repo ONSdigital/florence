@@ -254,12 +254,15 @@ function processPreviewLoad(collectionId, collectionData) {
                 if ($('.workspace-edit').length || $('.workspace-create').length) {
                     // Switch to browse screen if navigating around preview whilst on create or edit tab
                     loadBrowseScreen(collectionId, 'click', collectionData);
-                    // return false;
+
+                    // TODO temporary fix, remove this when data vis has been refactored to not use trailing slashes (difference between URL is causing visualisations to sometimes switch to browse tab on save)
+                    if (Florence.Authentication.userType() == "DATA_VISUALISATION") {
+                        return false;
+                    }
                 }
                 else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
                     // Only update browse tree of on 'browse' tab and preview and active node don't already match
                     treeNodeSelect(safeUrl);
-                    // return false;
                 }
             });
             updateBrowserURL(); // Update browser preview URL
