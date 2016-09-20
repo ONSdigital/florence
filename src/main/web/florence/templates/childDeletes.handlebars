@@ -1,0 +1,18 @@
+<div>
+    <ul class="page-list">
+    {{#each root.children}}
+        <li class="page-list__item">
+            <span class="page__item page__item--{{type}} delete-child">
+            {{description.title}}{{#if description.edition}}: {{description.edition}}{{/if}}<br/>
+            {{#parent_dir uri}}{{/parent_dir}}
+            </span>
+        </li>
+
+        {{#if children}} {{! Within the context of the current item }}
+            <ul>
+                {{> childDeletes}} {{! Recursively render the partial }}
+            </ul>
+        {{/if}}
+    {{/each}}
+    </ul>
+</div>
