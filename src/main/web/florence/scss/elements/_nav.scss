@@ -122,3 +122,11 @@
         background-color: $pickled-bluewood;
     }
 }
+
+// Displays a message to show users are on dev or sandpit
+.environment-notification {
+    height: 21px;
+    float: left;
+    margin: $lineheight;
+    color: $focus;
+}
