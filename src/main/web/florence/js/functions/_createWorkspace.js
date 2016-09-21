@@ -113,7 +113,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
             } else {
-                loadBrowseScreen(collectionId);
+                loadBrowseScreen(collectionId, false, collectionData);
             }
         }
 
@@ -252,14 +252,17 @@ function processPreviewLoad(collectionId, collectionData) {
                 Florence.globalVars.pagePath = safeUrl;
 
                 if ($('.workspace-edit').length || $('.workspace-create').length) {
+                    // TODO temporary fix, remove this when data vis has been refactored to not use trailing slashes (difference between URL is causing visualisations to sometimes switch to browse tab on save)
+                    if (Florence.Authentication.userType() == "DATA_VISUALISATION") {
+                        return false;
+                    }
+
                     // Switch to browse screen if navigating around preview whilst on create or edit tab
                     loadBrowseScreen(collectionId, 'click', collectionData);
-                    // return false;
                 }
                 else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
                     // Only update browse tree of on 'browse' tab and preview and active node don't already match
                     treeNodeSelect(safeUrl);
-                    // return false;
                 }
             });
             updateBrowserURL(); // Update browser preview URL
