@@ -27,20 +27,49 @@ function viewCollections(collectionId) {
 
     $.when.apply($, pageDataRequests).then(function () {
 
-        var response = [], teams = [];
+        var response = [], teams = [], date = "";
 
         $.each(result.data, function (i, collection) {
-            if (!collection.approvedStatus) {
+            var approvalStates = {inProgress: false, thrownError: false, completed: false};
+
+            if (collection.approvalStatus != "COMPLETE") {
+
+                // Set publish date
                 if (!collection.publishDate) {
                     date = '[manual collection]';
-                    response.push({id: collection.id, name: collection.name, date: date});
                 } else if (collection.publishDate && collection.type === 'manual') {
-                    var formattedDate = StringUtils.formatIsoDateString(collection.publishDate) + ' [rolled back]';
-                    response.push({id: collection.id, name: collection.name, date: formattedDate});
+                    date = StringUtils.formatIsoDateString(collection.publishDate) + ' [rolled back]';
                 } else {
-                    var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
-                    response.push({id: collection.id, name: collection.name, date: formattedDate});
+                    date = StringUtils.formatIsoDateString(collection.publishDate);
                 }
+
+                // Set approval state
+                switch (collection.approvalStatus) {
+                    case (undefined): {
+                        break;
+                    }
+                    case ('IN_PROGRESS'): {
+                        approvalStates.inProgress = true;
+                        break;
+                    }
+                    case ('COMPLETE'): {
+                        approvalStates.completed = true;
+                        break;
+                    }
+                    case ('ERROR'): {
+                        approvalStates.thrownError = true;
+                        break;
+                    }
+                    default: {
+                        console.log('Default response');
+                    }
+                }
+
+                // console.log(collection.name);
+                // console.log(approvalState);
+                // console.log('-----');
+
+                response.push({id: collection.id, name: collection.name, date: date, approvalState: approvalStates});
             }
         });
 

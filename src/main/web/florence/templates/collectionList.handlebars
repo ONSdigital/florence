@@ -9,8 +9,11 @@
         </thead>
         <tbody>
         {{#each response}}
-            <tr data-id="{{id}}">
-                <td headers="collection-name" class="collection-name">{{name}}</td>
+            <tr data-id="{{id}}" class=" {{#if approvalState.inProgress}}warning{{/if}} {{#if approvalState.thrownError}}error{{/if}}">
+                <td headers="collection-name" class="collection-name">{{name}}
+                    {{#if approvalState.inProgress}} [preparing publish]{{/if}}
+                    {{#if approvalState.thrownError}} [error whilst preparing publish]{{/if}}
+                </td>
                 <td headers="collection-date" class="collection-date">{{date}}</td>
             </tr>
         {{/each}}

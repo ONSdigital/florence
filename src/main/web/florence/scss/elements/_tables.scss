@@ -78,6 +78,30 @@
                     background-color: $astral;
                 }
             }
+
+            tr.error {
+                position: relative;
+
+                &:before {
+                    position: absolute;
+                    content: '';
+                    height: 100%;
+                    width: 7px;
+                    background-color: $night-shadz;
+                }
+            }
+
+            tr.warning {
+                position: relative;
+
+                &:before {
+                    position: absolute;
+                    content: '';
+                    height: 100%;
+                    width: 7px;
+                    background-color: $nevada;
+                }
+            }
         }
     }
 

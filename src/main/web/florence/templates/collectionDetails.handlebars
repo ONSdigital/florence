@@ -4,6 +4,18 @@
         <p>Publish: {{date}}<br>{{createdBy events}}</p>
         <button class="btn btn--primary btn-collection-edit">Edit collection details</button>
     </div>
+
+    {{#ifCond approvalState.inProgress '||' approvalState.thrownError}}
+        <div class="slider__banner">
+            {{#if approvalState.inProgress}}
+                <p>This collection has been approved and is being prepared for the publishing queue</p>
+            {{/if}}
+            {{#if approvalState.thrownError}}
+                <p>Oops, we seem to have hit an error whilst preparing this collection for the publishing queue :(</p>
+            {{/if}}
+        </div>
+    {{/ifCond}}
+    
     <div class="slider__content js-collection__content">
         <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
         <ul class="page-list">

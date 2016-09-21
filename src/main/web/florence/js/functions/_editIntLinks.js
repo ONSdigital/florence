@@ -129,7 +129,7 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
 
                 //Disable the editor
                 $('body').append(
-                    "<div class='col col--5 panel disabled'></div>"
+                    "<div class='col col--5 panel modal-background'></div>"
                 );
 
                 //Add buttons to iframe window
@@ -142,13 +142,13 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
                 $('.btn-browse-cancel').off().one('click', function () {
                     createWorkspace(data.uri, collectionId, 'edit');
                     $('.iframe-nav').remove();
-                    $('.disabled').remove();
+                    $('.modal-background').remove();
                 });
 
                 //Remove added markup if user navigates away from editor screen
                 $('a:not(.btn-browse-get)').click(function () {
                     $('.iframe-nav').remove();
-                    $('.disabled').remove();
+                    $('.modal-background').remove();
                 });
 
                 $('.btn-browse-get').off().one('click', function () {
@@ -177,7 +177,7 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
                                 latestUrl = dataUrl;
                             }
                             $('.iframe-nav').remove();
-                            $('.disabled').remove();
+                            $('.modal-background').remove();
                             data[field].push({uri: latestUrl});
                             templateData[field].push({uri: latestUrl});
                             saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
@@ -185,7 +185,7 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
                     } else {
                         latestUrl = dataUrl;
                         $('.iframe-nav').remove();
-                        $('.disabled').remove();
+                        $('.modal-background').remove();
                         data[field].push({uri: latestUrl});
                         templateData[field].push({uri: latestUrl});
                         saveExternalLink(collectionId, data.uri, data, templateData, field, idField);
