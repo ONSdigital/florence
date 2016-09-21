@@ -32,6 +32,21 @@
             color: $pickled-bluewood;
         }
     }
+    
+    &--disabled {
+        opacity: 0.65;
+
+        // Disabled default hover/focus effects
+        &:hover,
+        :focus {
+            cursor: default;
+        }
+
+        &:hover:after,
+        :focus:after {
+            display: none;
+        }
+    }
 
     &:hover,
     &:focus {
