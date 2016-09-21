@@ -118,8 +118,8 @@
 
 
     /* Fixed height table - used in selectable tables in panels */
-    &--fixed-height-24 tbody {
-        max-height: ($lineheight * 24);
+    &--fixed-height-27 tbody {
+        max-height: ($lineheight * 27);
         overflow-y: scroll;
         display: block;
     }
