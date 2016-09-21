@@ -32,7 +32,6 @@ function viewCollectionDetails(collectionId, $this) {
         switch (collection.approvalStatus) {
             case (undefined): {
                 collection.approvalState = '';
-                console.log(collection.approvalState);
                 break;
             }
             case ('IN_PROGRESS'): {
@@ -46,9 +45,6 @@ function viewCollectionDetails(collectionId, $this) {
             case ('ERROR'): {
                 approvalStates.thrownError = true;
                 break;
-            }
-            default: {
-                console.log('Default response');
             }
         }
         collection.approvalState = approvalStates;
