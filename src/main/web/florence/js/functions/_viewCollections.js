@@ -74,7 +74,7 @@ function viewCollections(collectionId) {
         $('.section').html(collectionsHtml);
 
         if (collectionId) {
-            viewCollectionDetails(collectionId, $('.collections-select-table tr[data-id="' + collectionId + '"]'));
+            viewCollectionDetails(collectionId, $('.js-selectable-table tr[data-id="' + collectionId + '"]'));
         }
 
         $('.js-selectable-table tbody tr').click(function () {
