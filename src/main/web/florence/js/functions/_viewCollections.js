@@ -60,14 +60,7 @@ function viewCollections(collectionId) {
                         approvalStates.thrownError = true;
                         break;
                     }
-                    default: {
-                        console.log('Default response');
-                    }
                 }
-
-                // console.log(collection.name);
-                // console.log(approvalState);
-                // console.log('-----');
 
                 response.push({id: collection.id, name: collection.name, date: date, approvalState: approvalStates});
             }
