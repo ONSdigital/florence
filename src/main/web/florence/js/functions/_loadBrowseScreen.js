@@ -1,13 +1,23 @@
 function loadBrowseScreen(collectionId, click, collectionData) {
 
+    // Get collection data if it's undefined and re-run the function once request has returned
+    if (!collectionData) {
+        getCollection(collectionId, success = function(getCollectionResponse) {
+                loadBrowseScreen(collectionId, click, getCollectionResponse);
+            }, error = function() {
+                console.log('Error getting collection data for: ', collectionId);
+            });
+
+        return false;
+    }
+
     return $.ajax({
         url: "/zebedee/collectionBrowseTree/" + collectionId, // url: "/navigation",
         dataType: 'json',
         type: 'GET',
         success: function (response) {
 
-            // run through all json and add isDeletable flag to all nodes
-            checkAndAddDeleteFlag(collectionId, response, collectionData);
+            checkAndAddDeleteFlag(response, collectionData);
 
             var collectionOwner = localStorage.getItem('userType');
             response['collectionOwner'] = collectionOwner;
@@ -97,7 +107,7 @@ function openBrowseBranch($this) {
 
 function openVisDirectoryOnLoad() {
     var userType = Florence.Authentication.userType();
-    
+
     if (userType == 'DATA_VISUALISATION') {
         $('.js-browse__item .page__container').removeClass('selected');
         $('.page__buttons--list.selected').removeClass('selected');
@@ -109,30 +119,14 @@ function openVisDirectoryOnLoad() {
 }
 
 // recursively add isDeletable and deleteIsInCollection flags to all browse tree nodes
-function checkAndAddDeleteFlag(collectionId, browseTree, collectionData) {
-    var getCollectionData = new Promise(function (resolve, reject) {
-        if (!collectionData) {
-            getCollection(collectionId, function (response) {
-                collectionData = response;
-                resolve(response);
-            }, function (response) {
-                console.log("Error getting collection details: ", response);
-                reject(response);
-            })
-        } else {
-            resolve(collectionData);
+function checkAndAddDeleteFlag(browseTree, collectionData) {
+    browseTree['isDeletable'] = isDeletable(browseTree.type);
+    browseTree['deleteIsInCollection'] = deleteIsInCollection(browseTree.contentPath, collectionData);
+
+    $.each(browseTree.children, function( key, browseTreeNode ) {
+        if (browseTreeNode.children) {
+            checkAndAddDeleteFlag(browseTreeNode, collectionData);
         }
-    });
-
-    getCollectionData.then(function(response) {
-        browseTree['isDeletable'] = isDeletable(browseTree.type);
-        browseTree['deleteIsInCollection'] = deleteIsInCollection(browseTree.contentPath, response);
-
-        $.each(browseTree.children, function( key, browseTreeNode ) {
-            if (browseTreeNode.children) {
-                checkAndAddDeleteFlag(collectionId, browseTreeNode, response);
-            }
-        });
     });
 }
 
