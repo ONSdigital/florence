@@ -54,11 +54,13 @@ function viewCollectionDetails(collectionId, $this) {
         };
         showPanel($this, showPanelOptions);
 
-        var deleteButton = $('#collection-delete');
-        if (collection.inProgress.length === 0
-            && collection.complete.length === 0
-            && collection.reviewed.length === 0
-            && collection.timeseriesImportFiles.length === 0) {
+        var deleteButton = $('#collection-delete'),
+            collectionCanBeDeleted = collection.inProgress.length === 0
+                && collection.complete.length === 0
+                && collection.reviewed.length === 0
+                && collection.timeseriesImportFiles.length === 0
+                && collection.pendingDeletes.length <= 0;
+        if (collectionCanBeDeleted) {
             deleteButton.show().click(function () {
                 swal({
                     title: "Warning",
