@@ -7,7 +7,11 @@ function postApproveCollection(collectionId) {
         type: 'POST',
         success: function () {
             // $('.over').remove(); // Commented because I can't see what this does at the moment?
-            hidePanel({onHide: function(){return viewController('collections')}});
+            hidePanel({onHide: function(){
+                    // Select collections tab
+                    viewController('collections')
+                }
+            });
         },
         error: function (response) {
             // $('.over').remove();
