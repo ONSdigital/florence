@@ -77,7 +77,7 @@ function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
         creatorDatePicker();
 
         //Submits inherited and added information to JSON
-        $('form').submit(function (e) {
+        $('form').off().submit(function (e) {
             var nameValid = validatePageName();
             if (!nameValid) {
                 return false;

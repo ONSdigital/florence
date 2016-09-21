@@ -45,7 +45,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
             creatorDatePicker();
         }
 
-        $('form').submit(function (e) {
+        $('form').off().submit(function (e) {
             var nameValid = validatePageName();
             if (!nameValid) {
                 return false;
