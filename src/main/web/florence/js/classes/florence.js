@@ -2,6 +2,9 @@
 var Florence = Florence || {
         babbageBaseUrl: window.location.origin,
         refreshAdminMenu: function () {
+            // Display a message to show users are on dev or sandpit
+            Florence.environment = isDevOrSandpit();
+
             var mainNavHtml = templates.mainNav(Florence);
             $('.js-nav').html(mainNavHtml);
         },
@@ -21,6 +24,7 @@ var Florence = Florence || {
             };
         }
     };
+
 
 Florence.Editor = {
     isDirty: false,
