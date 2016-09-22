@@ -10,7 +10,7 @@ function isDevOrSandpit () {
         env.name = 'sandpit'
     }
 
-    // if((hostname.indexOf('127') > -1) || (hostname.indexOf('localhost'))) {
+    // if((hostname.indexOf('127') > -1) || (hostname.indexOf('localhost')) > -1) {
     //     env.name = 'localhost'
     // }
 
