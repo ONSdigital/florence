@@ -78,6 +78,30 @@
                     background-color: $astral;
                 }
             }
+
+            tr.error {
+                position: relative;
+
+                &:before {
+                    position: absolute;
+                    content: '';
+                    height: 100%;
+                    width: 7px;
+                    background-color: $night-shadz;
+                }
+            }
+
+            tr.warning {
+                position: relative;
+
+                &:before {
+                    position: absolute;
+                    content: '';
+                    height: 100%;
+                    width: 7px;
+                    background-color: $nevada;
+                }
+            }
         }
     }
 
@@ -94,8 +118,8 @@
 
 
     /* Fixed height table - used in selectable tables in panels */
-    &--fixed-height-24 tbody {
-        max-height: ($lineheight * 24);
+    &--fixed-height-27 tbody {
+        max-height: ($lineheight * 27);
         overflow-y: scroll;
         display: block;
     }

@@ -8,11 +8,11 @@
     right: 0;
     width: 100%;
     height: 100%;
-    padding-top: $lineheight * 4;
-    padding-bottom: $lineheight * 4;
-    padding-right: $gutter * 4;
-    padding-left: $gutter * 4;
-    background-color: rgba($black, .85);
+    padding-top: $lineheight * 3;
+    padding-bottom: $lineheight * 3;
+    padding-right: $gutter * 3;
+    padding-left: $gutter * 3;
+    background-color: rgba($black, .75);
 
     &__header {
         height: $lineheight * 6;
@@ -31,7 +31,7 @@
         box-sizing: border-box;
         padding: 0;
         // height: 100%;
-        height: $lineheight * 24;
+        height: $lineheight * 31;
     }
 
     &__footer {

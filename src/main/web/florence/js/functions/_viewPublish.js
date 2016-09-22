@@ -25,7 +25,7 @@ function viewPublish() {
 
         var collectionsByDate = _.chain(collections)
             .filter(function (collection) {
-                return collection.approvedStatus;
+                return collection.approvalStatus == "COMPLETE"
             })
             .sortBy('publishDate')
             .groupBy('publishDate')
