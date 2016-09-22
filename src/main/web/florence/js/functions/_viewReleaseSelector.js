@@ -13,7 +13,9 @@ function viewReleaseSelector() {
         $('.release-select').stop().fadeOut(200).remove();
     });
 
-    $('#release-search-input').on('input', function () {
+    var $searchInput = $('#release-search-input');
+    $searchInput.focus();
+    $searchInput.on('input', function () {
         var searchText = $(this).val();
         populateReleasesList(releases, searchText);
     });
@@ -109,10 +111,12 @@ function viewReleaseSelector() {
 
         releaseList.find('tr').on('click', function () {
             var releaseTitle = $(this).attr('data-id');
-            var releaseUri = $(this).attr('data-uri');
+            var releaseUri = $(this).attr('data-uri'),
+                $releaseTitle = $('.selected-release');
             Florence.CreateCollection.selectedRelease = {uri: releaseUri, title: releaseTitle};
 
-            $('.selected-release').text(releaseTitle);
+
+            $releaseTitle.show().text(releaseTitle);
             $('.release-select').stop().fadeOut(200).remove();
         })
     }

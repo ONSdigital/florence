@@ -13,6 +13,7 @@ function viewCollectionDetails(collectionId, $this) {
 
         Florence.setActiveCollection(collection);
 
+        // Set published date
         if (!collection.publishDate) {
             collection.date = '[manual collection]';
         } else if (collection.publishDate && collection.type === 'manual') {
@@ -21,20 +22,45 @@ function viewCollectionDetails(collectionId, $this) {
             collection.date = StringUtils.formatIsoFull(collection.publishDate);
         }
 
+        // Set collection progress
         ProcessPages(collection.inProgress);
         ProcessPages(collection.complete);
         ProcessPages(collection.reviewed);
+
+        // Set collection approval state
+        var approvalStates = {inProgress: false, thrownError: false, completed: false};
+        switch (collection.approvalStatus) {
+            case (undefined): {
+                collection.approvalState = '';
+                break;
+            }
+            case ('IN_PROGRESS'): {
+                approvalStates.inProgress = true;
+                break;
+            }
+            case ('COMPLETE'): {
+                approvalStates.completed = true;
+                break;
+            }
+            case ('ERROR'): {
+                approvalStates.thrownError = true;
+                break;
+            }
+        }
+        collection.approvalState = approvalStates;
 
         var showPanelOptions = {
             html: window.templates.collectionDetails(collection)
         };
         showPanel($this, showPanelOptions);
 
-        var deleteButton = $('#collection-delete');
-        if (collection.inProgress.length === 0
-            && collection.complete.length === 0
-            && collection.reviewed.length === 0
-            && collection.timeseriesImportFiles.length === 0) {
+        var deleteButton = $('#collection-delete'),
+            collectionCanBeDeleted = collection.inProgress.length === 0
+                && collection.complete.length === 0
+                && collection.reviewed.length === 0
+                && collection.timeseriesImportFiles.length === 0
+                && collection.pendingDeletes.length <= 0;
+        if (collectionCanBeDeleted) {
             deleteButton.show().click(function () {
                 swal({
                     title: "Warning",
@@ -67,19 +93,27 @@ function viewCollectionDetails(collectionId, $this) {
             deleteButton.hide();
         }
 
-        var approve = $('.btn-collection-approve');
-        if (showApproveButton(collection)) {
-            approve.show().one('click', function () {
+        var $approveBtn = $('.btn-collection-approve'),
+            $editBtn = $('.btn-collection-edit'),
+            $workOnBtn = $('.btn-collection-work-on'),
+            collectionIsApproved = collection.approvalState.inProgress || collection.approvalState.thrownError;
+
+        if (collectionIsApproved) {
+            // Collection has been approved and is generating PDF, timeseries etc so disable buttons
+            $workOnBtn.addClass('btn--disabled').attr('disabled', true);
+            $approveBtn.addClass('btn--disabled').attr('disabled', true);
+        } else if (showApproveButton(collection)) {
+            // Collection has been reviewed and is ready for approval, so show button and bind click
+            $approveBtn.show().one('click', function () {
                 postApproveCollection(collection.id);
             });
-        }
-        else {
-            // You can't approve collections unless there is nothing left to be reviewed
-            approve.hide();
+        } else {
+            // You can't approve collections unless there is nothing left to be reviewed, hide approve button
+            $approveBtn.hide();
         }
 
         //edit collection
-        $('.btn-collection-edit').click(function () {
+        $editBtn.click(function () {
             editCollection(collection);
         });
 
@@ -184,7 +218,7 @@ function viewCollectionDetails(collectionId, $this) {
             hidePanel({});
         });
 
-        $('.btn-collection-work-on').click(function () {
+        $workOnBtn.click(function () {
             Florence.globalVars.welsh = false;
             createWorkspace('', collectionId, 'browse', collection);
         });

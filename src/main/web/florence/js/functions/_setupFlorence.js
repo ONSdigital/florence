@@ -105,8 +105,8 @@ function setupFlorence() {
     });
 
     Handlebars.registerHelper('debug', function (message, object) {
-       console.log("DEBUG: " + message + " " + JSON.stringify(object));
-       return "";
+        console.log("DEBUG: " + message + " " + JSON.stringify(object));
+        return "";
     });
 
 
@@ -184,6 +184,7 @@ function setupFlorence() {
         }
     }
 
+    // Get ping times to zebedee and surface for user
     var lastPingTime;
     var pingTimes = [];
 
@@ -242,11 +243,11 @@ function setupFlorence() {
     $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page__item', function(e) {
         var diagnosticJSON = JSON.stringify(new clickEventObject(e));
         $.ajax({
-          url: "/zebedee/clickEventLog",
-          type: 'POST',
-          contentType: "application/json",
-          data: diagnosticJSON,
-          async: true,
+            url: "/zebedee/clickEventLog",
+            type: 'POST',
+            contentType: "application/json",
+            data: diagnosticJSON,
+            async: true,
         });
     });
 
@@ -291,5 +292,54 @@ function setupFlorence() {
             this.collection = collectionTemp
         }
     }
+
+    // Check running version versus latest and notify user if they don't match
+    var runningVersion,
+        userWarned = false;
+    function checkVersion() {
+        return fetch('assets/version.json')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(responseJson) {
+                return responseJson;
+            })
+            .catch(function(err) {
+                console.log("Error getting latest Florence version: ", err);
+                return err
+            });
+    }
+
+    checkVersion().then(function(response) {
+        runningVersion = response;
+    });
+
+    setInterval(function() {
+        // Get the latest version and alert user if it differs from version stored on load (but only if the user hasn't been warned already, so they don't get spammed after being warned already)
+        if (!userWarned) {
+            checkVersion().then(function (response) {
+                if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
+                    console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
+                    swal({
+                        title: "New version of Florence available",
+                        type: "info",
+                        showCancelButton: true,
+                        closeOnCancel: false,
+                        closeOnConfirm: false,
+                        confirmButtonText: "Refresh Florence",
+                        cancelButtonText: "Don't refresh"
+                    }, function (isConfirm) {
+                        userWarned = true;
+                        if (isConfirm) {
+                            location.reload();
+                        } else {
+                            swal("Warning", "Florence could be unstable without the latest version", "warning")
+                        }
+                    });
+                    runningVersion = response;
+                }
+            });
+        }
+    }, 10000)
 }
 
