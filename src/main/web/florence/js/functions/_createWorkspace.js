@@ -236,42 +236,44 @@ function detectPreviewClick() {
     iframeEvent.addEventListener('click', Florence.Handler, true);
 }
 
-// Full collection of functions to run on iframe load
 function processPreviewLoad(collectionId, collectionData) {
-    onIframeLoad(function (event) {
-        var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
-            $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
+    if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
+        // iframe is blacked out on browse for data vis content
+        $('#iframe').empty();
 
-        // Check it is a load event and that iframe is in the DOM still before processing the load
-        if (event.data == "load" && $iframe.length) {
-            // Check whether page URL is different and then load editor or update browse tree
-            checkForPageChanged(function (newUrl) {
-                var safeUrl = checkPathSlashes(newUrl),
-                    selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
+    } else {
+        // Collection of functions to run on iframe load
+        onIframeLoad(function (event) {
+            var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
+                $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
 
-                Florence.globalVars.pagePath = safeUrl;
+            // Check it is a load event and that iframe is in the DOM still before processing the load
+            if (event.data == "load" && $iframe.length) {
+                // Check whether page URL is different and then load editor or update browse tree
+                checkForPageChanged(function (newUrl) {
+                    var safeUrl = checkPathSlashes(newUrl),
+                        selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
 
-                if ($('.workspace-edit').length || $('.workspace-create').length) {
-                    // TODO temporary fix, remove this when data vis has been refactored to not use trailing slashes (difference between URL is causing visualisations to sometimes switch to browse tab on save)
-                    // if (Florence.Authentication.userType() == "DATA_VISUALISATION") {
-                    //     return false;
-                    // }
+                    Florence.globalVars.pagePath = safeUrl;
 
-                    // Switch to browse screen if navigating around preview whilst on create or edit tab
-                    loadBrowseScreen(collectionId, 'click', collectionData);
+                    if ($('.workspace-edit').length || $('.workspace-create').length) {
+
+                        // Switch to browse screen if navigating around preview whilst on create or edit tab
+                        loadBrowseScreen(collectionId, 'click', collectionData);
+                    }
+                    else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
+                        // Only update browse tree of on 'browse' tab and preview and active node don't already match
+                        treeNodeSelect(safeUrl);
+                    }
+                });
+                updateBrowserURL(); // Update browser preview URL
+
+                if ($browse.hasClass('selected')) {
+                    browseScrollPos(); // Update browse tree scroll position
                 }
-                else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
-                    // Only update browse tree of on 'browse' tab and preview and active node don't already match
-                    treeNodeSelect(safeUrl);
-                }
-            });
-            updateBrowserURL(); // Update browser preview URL
-
-            if ($browse.hasClass('selected')) {
-                browseScrollPos(); // Update browse tree scroll position
             }
-        }
-    });
+        });
+    }
 }
 
 // Reusable iframe startload event - uses message sent up form babbage on window.load
