@@ -7,6 +7,8 @@
 function visualisationEditor(collectionId, data) {
     var path = data.uri,
         $indexSelect = $('#filenames'),
+        $fileInput = $('#input-vis'),
+        $fileForm = $('#upload-vis'),
         setActiveTab, getActiveTab;
 
     // Active tab
@@ -22,6 +24,7 @@ function visualisationEditor(collectionId, data) {
 
     // Refresh preview with new URL if index page previously selected (can't use refreshPreview function because it removes "/" from end or path by default)
     function refreshVisPreview(url) {
+        // debugger;
         var newUrl;
         if (url) {
             newUrl = Florence.babbageBaseUrl + path  + "/" + url;
@@ -37,24 +40,36 @@ function visualisationEditor(collectionId, data) {
     bindZipSubmit();
 
     // Edit existing ZIP file
-    $('#edit-vis').on('submit', function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
+    // $('#edit-vis').on('submit', function (e) {
+    //     e.preventDefault();
+    //     e.stopImmediatePropagation();
+    //
+    //     // Refresh visualisations tab but show 'submit ZIP' option
+    //     // var tempData = data;
+    //     // tempData.zipTitle = "";
+    //     // var html = templates.workEditVisualisation(tempData);
+    //     // $('.workspace-menu').html(html);
+    //     // bindZipSubmit();
+    //
+    //     // Set visualisation tab to active
+    //     accordion(1);
+    // });
 
-        // Refresh visualisations tab but show 'submit ZIP' option
-        var tempData = data;
-        tempData.zipTitle = "";
-        var html = templates.workEditVisualisation(tempData);
-        $('.workspace-menu').html(html);
-        bindZipSubmit();
-
-        // Set visualisation tab to active
-        accordion(1);
-    });
-
+    // TODO possibly re-use this for viewing different HTML files
     // Listen to change of index page input and refresh preview to show new index page
-    $indexSelect.change(function () {
-        refreshVisPreview($indexSelect.val());
+    // $indexSelect.change(function () {
+    //     refreshVisPreview($indexSelect.val());
+    // });
+
+    // Bind file save to the change event of the file input
+    $fileInput.on('change', function() {
+        var fileTitle = ($(this).val()).split('\\').pop();
+
+        data.zipTitle = fileTitle;
+
+        $fileForm.submit();
+
+        // TODO submit form here automagically!!
     });
 
     // Bind save buttons
@@ -62,8 +77,10 @@ function visualisationEditor(collectionId, data) {
     editNav.off(); // remove any existing event handlers.
 
     editNav.on('click', '.btn-edit-save', function () {
-        var indexPage = $('#filenames').val();
-        data['indexPage'] = indexPage;
+
+        //TODO delete once babbage refactored to not use these
+        // var indexPage = $('#filenames').val();
+        // data['indexPage'] = indexPage;
 
         save();
     });

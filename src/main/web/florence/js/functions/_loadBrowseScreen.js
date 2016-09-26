@@ -78,9 +78,10 @@ function bindBrowseTreeClick() {
         if (uri) {
             var newURL = baseURL + uri;
 
-            if (localStorage.getItem('userType') == 'DATA_VISUALISATION') {
-                newURL += "/";
-            }
+            // TODO delete once babbage has been updated to not use trailing slash
+            // if (localStorage.getItem('userType') == 'DATA_VISUALISATION') {
+            //     newURL += "/";
+            // }
 
             treeNodeSelect(newURL);
 

@@ -142,6 +142,11 @@
                 content: 'RE';
             }
         }
+        &--visualisation {
+            &:after {
+                content: 'VIS';
+            }
+        }
         &--directory {
             &:after {
                 background: transparent url(../../img/sprite.png) no-repeat -4px -418px;
