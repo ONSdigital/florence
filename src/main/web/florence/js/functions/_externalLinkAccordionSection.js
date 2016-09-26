@@ -18,21 +18,7 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
         $('#' + idField + '-edit_' + index).click(function () {
             var uri = data[field][index].uri;
             var title = data[field][index].title;
-
-            // var editedSectionValue = {
-            //     "title": data[field][index].uri,
-            //     "markdown": data[field][index].title
-            // };
-            //
-            // var saveContent = function (updatedContent) {
-            //     data[field][index].title = updatedContent;                         //markdown
-            //     data[field][index].uri = $('#' + idField + '-uri_' + index).val();
-            //     saveLink(collectionId, data.uri, data, field, idField);
-            //     refreshPreview(data.uri);
-            // };
-
-            // loadMarkdownEditor(editedSectionValue, saveContent, data);
-            editLinksModal('edit', uri, title, index);
+            addEditLinksModal('edit', uri, title, index);
         });
 
         // Delete
@@ -68,36 +54,7 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
     $('#add-' + idField).click(function () {
         var position = $(".workspace-edit").scrollTop();
         Florence.globalVars.pagePos = position + 300;
-
-        editLinksModal();
-
-        // if (!data[field]) {
-        //     data[field] = [];
-        // }
-        // var modal = templates.linkExternalModal;
-        // var uri, title;
-        // $('.workspace-menu').append(modal);
-        // $('#uri-input').change(function () {
-        //     uri = $('#uri-input').val();
-        // });
-        // $('#uri-title').change(function () {
-        //     title = $('#uri-title').val();
-        // });
-        // $('.btn-uri-get').off().click(function () {
-        //     if (!title) {
-        //         sweetAlert('You need to enter a title to continue');
-        //     } else if (uri.match(/\s/g)) {
-        //         sweetAlert('Your link cannot contain spaces');
-        //     } else {
-        //         data[field].push({uri: uri, title: title});
-        //         saveLink(collectionId, data.uri, data, field, idField);
-        //         $('.modal').remove();
-        //     }
-        // });
-        // $('.btn-uri-cancel').off().click(function () {
-        //     //createWorkspace(data.uri, collectionId, 'edit');
-        //     $('.modal').remove();
-        // });
+        addEditLinksModal();
     });
 
     function sortable() {
@@ -130,7 +87,7 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
         );
     }
 
-    function editLinksModal(mode, uri, title, index) {
+    function addEditLinksModal(mode, uri, title, index) {
 
         var uri = uri;
         var title = title;
@@ -152,7 +109,6 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
         });
 
         $('.btn-uri-get').off().click(function () {
-            console.log('title: ', title, ' uri: ', uri);
             if (!title) {
                 sweetAlert('You need to enter a title to continue');
             } else if (uri.match(/\s/g)) {
@@ -170,7 +126,6 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
         });
 
         $('.btn-uri-cancel').off().click(function () {
-            //createWorkspace(data.uri, collectionId, 'edit');
             $('.modal').remove();
         });
 
