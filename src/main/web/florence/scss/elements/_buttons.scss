@@ -1,5 +1,25 @@
 /** BUTTONS **/
 
+// This styling on the element should be able to be removed but must tests for breakages
+button {
+    position: relative;
+    border-radius: 4px;
+
+    &:hover,
+    &:focus {
+        &:after {
+            content: '';
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: rgba(0,0,0,0.2);
+            top: 0;
+            left: 0;
+            border-radius: 4px;
+        }
+    }
+}
+
 .btn {
     border-radius: 4px;
     padding: 10px $gutter;

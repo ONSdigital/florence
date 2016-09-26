@@ -1,10 +1,10 @@
 function treeNodeSelect(url) {
     var urlPart = url.replace(Florence.babbageBaseUrl, '');
 
-    // Remove the trailing slash on visualisations so the node select works as expected (unless at root)
-    if (urlPart !== '/') {
-        urlPart = urlPart.replace(/\/+$/, '');
-    }
+    // BEING REMOVED BECAUSE BABBAGE IS NOW RENDERING SAME AS NORMAL PAGE - Remove the trailing slash on visualisations so the node select works as expected (unless at root)
+    // if (urlPart !== '/') {
+    //     urlPart = urlPart.replace(/\/+$/, '');
+    // }
 
     var $selectedListItem = $('[data-url="' + urlPart + '"]'); //get first li with data-url with url
     $('.js-browse__item.selected').removeClass('selected');
