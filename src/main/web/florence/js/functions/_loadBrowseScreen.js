@@ -78,12 +78,12 @@ function bindBrowseTreeClick() {
         if (uri) {
             var newURL = baseURL + uri;
 
-            // TODO delete once babbage has been updated to not use trailing slash
-            // if (localStorage.getItem('userType') == 'DATA_VISUALISATION') {
-            //     newURL += "/";
-            // }
-
             treeNodeSelect(newURL);
+
+            // TODO find better solution to removing browse tree on vis
+            // if (localStorage.getItem('userType') == 'DATA_VISUALISATION') {
+            //     return false
+            // }
 
             // Update iframe location which will send change event for iframe to update too
             document.getElementById('iframe').contentWindow.location.href = newURL;

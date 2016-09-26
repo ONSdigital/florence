@@ -8,7 +8,7 @@ function visualisationEditor(collectionId, data) {
     var path = data.uri,
         $fileInput = $('#input-vis'),
         $fileForm = $('#upload-vis'),
-        setActiveTab, getActiveTab;
+        i, setActiveTab, getActiveTab;
 
     // Active tab
     $(".edit-accordion").on('accordionactivate', function () {
@@ -21,12 +21,40 @@ function visualisationEditor(collectionId, data) {
     accordion(getActiveTab);
     getLastPosition();
 
-    // Refresh preview with new URL if index page previously selected (can't use refreshPreview function because it removes "/" from end or path by default)
-    function refreshVisPreview() {
-        var newUrl = Florence.babbageBaseUrl + path;
-        document.getElementById('iframe').contentWindow.location.href = newUrl;
-        $('.browser-location').val(newUrl);
+    // onIframeLoad(function(event) {
+    //     if (event.data == "load") {
+    //         debugger;
+    //         console.log('sup');
+    //         event.stopImmediatePropagation();
+    //         return false;
+    //     }
+    // });
+
+    // Add select to display all HTML files in ZIP
+    var $fileSelectHtml = $("<div class='select-wrap' id='select-vis-wrapper'><select class='browser-location' id='select-vis-preview'></select></div>"),
+        selectOptions = ["<option value=''>-- Select an HTML file to preview --</option>"],
+        $selectWrapper = $('#select-vis-wrapper');
+
+    for (i = 0; i < data.filenames.length; i++) {
+        selectOptions.push("<option value='" + data.filenames[i] + "'>" + data.filenames[i] + "</option>")
     }
+    // $fileSelectHtml.find('select').append("<option value=''>-- Select an HTML file --</option><option>" + (data.filenames).join('</option><option>') + "</option>");
+    if ($selectWrapper.length) {
+        $selectWrapper.remove();
+    }
+    $fileSelectHtml.find('select').append(selectOptions.join(''));
+    $('#browser-location').remove();
+    $('.addressbar').append($fileSelectHtml);
+
+    // Bind to new select's change and toggle preview to selected HTML file
+    $('#select-vis-preview').change(function() {
+        refreshVisPreview("/" + $(this).val());
+    });
+
+    // Completely reload browse screen if
+    // $('#browse').click(function() {
+    //    loadBrowseScreen(collectionId);
+    // });
 
     // Submit new ZIP file
     bindZipSubmit();
@@ -127,6 +155,11 @@ function visualisationEditor(collectionId, data) {
         });
     }
 
+    // Refresh preview (don't use global refreshPreview function because we want do other functions at the same time when selecting different HTML files)
+    function refreshVisPreview(url) {
+        document.getElementById('iframe').contentWindow.location.href = Florence.babbageBaseUrl + path + url;
+    }
+
     function deleteAndUploadFile(path, contentUri, formData, success) {
         $.ajax({
             url: "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + contentUri,
@@ -189,7 +222,8 @@ function visualisationEditor(collectionId, data) {
         putContent(collectionId, data.uri, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
-                refreshVisPreview();
+                // refreshVisPreview();
+                // refreshPreview();
                 loadPageDataIntoEditor(data.uri, collectionId);
             },
             error = function (response) {
