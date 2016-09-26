@@ -6,7 +6,6 @@
 
 function visualisationEditor(collectionId, data) {
     var path = data.uri,
-        $indexSelect = $('#filenames'),
         $fileInput = $('#input-vis'),
         $fileForm = $('#upload-vis'),
         setActiveTab, getActiveTab;
@@ -23,15 +22,8 @@ function visualisationEditor(collectionId, data) {
     getLastPosition();
 
     // Refresh preview with new URL if index page previously selected (can't use refreshPreview function because it removes "/" from end or path by default)
-    function refreshVisPreview(url) {
-        // debugger;
-        var newUrl;
-        if (url) {
-            newUrl = Florence.babbageBaseUrl + path  + "/" + url;
-            // Florence.globalVars.pagePath = path;
-        } else {
-            newUrl = Florence.babbageBaseUrl + path + "/";
-        }
+    function refreshVisPreview() {
+        var newUrl = Florence.babbageBaseUrl + path;
         document.getElementById('iframe').contentWindow.location.href = newUrl;
         $('.browser-location').val(newUrl);
     }
@@ -68,8 +60,6 @@ function visualisationEditor(collectionId, data) {
         data.zipTitle = fileTitle;
 
         $fileForm.submit();
-
-        // TODO submit form here automagically!!
     });
 
     // Bind save buttons

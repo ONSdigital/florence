@@ -39,10 +39,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         Florence.refreshAdminMenu();
 
         // If data visualisation load preview but ending with '/' so that vis loads correctly
-        if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-            safePath += "/";
-            path += "/";
-        }
+        // if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
+        //     safePath += "/";
+        //     path += "/";
+        // }
 
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
