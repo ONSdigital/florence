@@ -21,72 +21,36 @@ function visualisationEditor(collectionId, data) {
     accordion(getActiveTab);
     getLastPosition();
 
-    // onIframeLoad(function(event) {
-    //     if (event.data == "load") {
-    //         debugger;
-    //         console.log('sup');
-    //         event.stopImmediatePropagation();
-    //         return false;
-    //     }
-    // });
-
-    // Add select to display all HTML files in ZIP
-    var $fileSelectHtml = $("<div class='select-wrap' id='select-vis-wrapper'><select class='browser-location' id='select-vis-preview'></select></div>"),
-        selectOptions = ["<option value=''>-- Select an HTML file to preview --</option>"],
+    // Update hidden select to display all HTML files in ZIP
+    var selectOptions = ["<option value=''>-- Select an HTML file to preview --</option>"],
         $selectWrapper = $('#select-vis-wrapper');
 
     for (i = 0; i < data.filenames.length; i++) {
         selectOptions.push("<option value='" + data.filenames[i] + "'>" + data.filenames[i] + "</option>")
     }
-    // $fileSelectHtml.find('select').append("<option value=''>-- Select an HTML file --</option><option>" + (data.filenames).join('</option><option>') + "</option>");
-    if ($selectWrapper.length) {
-        $selectWrapper.remove();
-    }
-    $fileSelectHtml.find('select').append(selectOptions.join(''));
-    $('#browser-location').remove();
-    $('.addressbar').append($fileSelectHtml);
+    $selectWrapper.find('select').empty().append(selectOptions.join(''));
+    $selectWrapper.show();
+    $('#browser-location').hide();
+    $('.browser.disabled').removeClass('disabled');
 
-    // Bind to new select's change and toggle preview to selected HTML file
+    // Bind to select's change and toggle preview to selected HTML file
     $('#select-vis-preview').change(function() {
         refreshVisPreview("/" + $(this).val());
     });
 
-    // Completely reload browse screen if
-    // $('#browse').click(function() {
-    //    loadBrowseScreen(collectionId);
-    // });
+    // Disable preview when navigating back to browse tab
+    $('#browse').click(function() {
+        $selectWrapper.hide();
+        $('#browser-location').show();
+        $('.browser').addClass('disabled');
+    });
 
     // Submit new ZIP file
     bindZipSubmit();
 
-    // Edit existing ZIP file
-    // $('#edit-vis').on('submit', function (e) {
-    //     e.preventDefault();
-    //     e.stopImmediatePropagation();
-    //
-    //     // Refresh visualisations tab but show 'submit ZIP' option
-    //     // var tempData = data;
-    //     // tempData.zipTitle = "";
-    //     // var html = templates.workEditVisualisation(tempData);
-    //     // $('.workspace-menu').html(html);
-    //     // bindZipSubmit();
-    //
-    //     // Set visualisation tab to active
-    //     accordion(1);
-    // });
-
-    // TODO possibly re-use this for viewing different HTML files
-    // Listen to change of index page input and refresh preview to show new index page
-    // $indexSelect.change(function () {
-    //     refreshVisPreview($indexSelect.val());
-    // });
-
     // Bind file save to the change event of the file input
     $fileInput.on('change', function() {
-        var fileTitle = ($(this).val()).split('\\').pop();
-
-        data.zipTitle = fileTitle;
-
+        data.zipTitle = ($(this).val()).split('\\').pop();
         $fileForm.submit();
     });
 
@@ -95,11 +59,6 @@ function visualisationEditor(collectionId, data) {
     editNav.off(); // remove any existing event handlers.
 
     editNav.on('click', '.btn-edit-save', function () {
-
-        //TODO delete once babbage refactored to not use these
-        // var indexPage = $('#filenames').val();
-        // data['indexPage'] = indexPage;
-
         save();
     });
 

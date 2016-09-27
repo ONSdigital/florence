@@ -28,7 +28,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             currentPath = path;
             safePath = checkPathSlashes(currentPath);
         }
-
         
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
@@ -37,12 +36,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             document.cookie = "lang=" + "cy;path=/";
         }
         Florence.refreshAdminMenu();
-
-        // If data visualisation load preview but ending with '/' so that vis loads correctly
-        // if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-        //     safePath += "/";
-        //     path += "/";
-        // }
 
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
@@ -55,14 +48,22 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         $('.loader').css('margin-top', '84px');
         $('.workspace-menu').height($('.workspace-nav').height());
 
-        // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
-        detectPreviewClick();
 
-        // Detect changes to preview and handle accordingly
-        processPreviewLoad(collectionId, collectionData);
+        /* Setup preview */
+        if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
+            // Disable preview for data vis
+            $('#browser-location').show();
+            $('.browser').addClass('disabled');
+        } else {
+            // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
+            detectPreviewClick();
 
-        // Update preview URL on initial load of workspace
-        updateBrowserURL(path);
+            // Detect changes to preview and handle accordingly
+            processPreviewLoad(collectionId, collectionData);
+
+            // Update preview URL on initial load of workspace
+            updateBrowserURL(path);
+        }
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -70,7 +71,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: Welsh</a>');
         }
 
-        //click handlers
+        /* Bind clicking */
         $navItem.click(function () {
             menu = '';
             if (Florence.Editor.isDirty) {
