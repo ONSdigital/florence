@@ -54,6 +54,8 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             // Disable preview for data vis
             $('#browser-location').show();
             $('.browser').addClass('disabled');
+            updateBrowserURL("/");
+            $('#iframe').attr('src', Florence.babbageBaseUrl);
         } else {
             // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
             detectPreviewClick();
