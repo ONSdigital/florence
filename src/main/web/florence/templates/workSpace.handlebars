@@ -19,7 +19,12 @@
         <div class="addressbar">
             <button class="btn browser-btn-back">&lt;</button>
             <button class="btn browser-btn-forward">&gt;</button>
-            <label for="browser-location" class="browser-location-label">Preview URL</label><input id="browser-location" class="browser-location" type="text" value="">
+            <label for="browser-location" class="browser-location-label">Preview URL</label>
+            <input id="browser-location" class="browser-location" type="text" value="">
+            <div class="browser-location__select select-wrap select-wrap--browser" id='select-vis-wrapper'>
+                {{!-- <label for="select-vis-preview">Preview HTML file</label> --}}
+                <select id='select-vis-preview'></select>
+            </div>
             <button class="btn browser-btn-mobile">Mobile</button>
         </div>
         <iframe id="iframe" src="{{this}}">
