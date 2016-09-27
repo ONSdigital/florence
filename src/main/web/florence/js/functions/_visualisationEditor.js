@@ -52,6 +52,7 @@ function visualisationEditor(collectionId, data) {
 
     // Bind file save to the change event of the file input
     $fileInput.on('change', function() {
+        $('.input__file').attr('data-file-title', 'File uploading ...');
         data.zipTitle = ($(this).val()).split('\\').pop();
         $fileForm.submit();
     });
