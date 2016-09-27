@@ -585,16 +585,16 @@ button {
 
 }
 
-// Inputs - should eventually replace all the unique/specific classing being used
-.input {
-    &__file {
-        margin: 0 !important; // Reverts other default styling on file inputs in workspace
-        float: none !important; // Reverts other default styling on file inputs in workspace
-        padding: ($lineheight / 2) 0 !important; // Reverts other default styling on file inputs in workspace
-        color: $mine-shaft;
-        display: block;
-    }
-}
+// Inputs - should eventually replace all the unique/specific classing being used - been moved to separate inputs file at the moment
+//.input {
+//    &__file {
+//        margin: 0 !important; // Reverts other default styling on file inputs in workspace
+//        float: none !important; // Reverts other default styling on file inputs in workspace
+//        padding: ($lineheight / 2) 0 !important; // Reverts other default styling on file inputs in workspace
+//        color: $mine-shaft;
+//        display: block;
+//    }
+//}
 
 .browser {
     position: relative;
@@ -614,10 +614,35 @@ button {
 
     // border: 4px solid $nevada;
 
+    // If preview isn't available this should be overlaid
+    &.disabled:before {
+        content: "No page available to preview";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        color: $iron;
+        z-index: 12;
+        text-align: center;
+    }
+    &.disabled:after {
+        content: "";
+        color: $ship-gray;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background-color: $black;
+        opacity: 0.75;
+        top: 0;
+        left: 0;
+    }
+
     iframe {
         width: 100%;
         height: 100%;
         border: 0;
+        background-color: $white;
+        position: relative;
     }
 
     label {
@@ -678,6 +703,10 @@ button {
     }
 
     &-btn-mobile {
+        display: none;
+    }
+
+    &__select {
         display: none;
     }
 
