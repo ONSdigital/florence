@@ -48,7 +48,7 @@
      {{/if}}
                     {{else}} --}}
                         <form id="upload-vis">
-                            <label class="input__file" for="input-vis" data-file-title="{{this.zipTitle}}" >Upload ZIP
+                            <label class="input__file" for="input-vis" data-file-title="{{#if this.zipTitle}}{{this.zipTitle}}{{else}}No file uploaded{{/if}}" >Upload ZIP
                                 <input type="file" name="input-vis" id="input-vis" accept=".zip">
                             </label>
                             <!--<button class="btn btn--primary btn--inline-block" type="submit" value="upload-vis">Submit</button>-->
