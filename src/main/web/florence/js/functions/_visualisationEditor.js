@@ -43,6 +43,8 @@ function visualisationEditor(collectionId, data) {
         $selectWrapper.hide();
         $('#browser-location').show();
         $('.browser').addClass('disabled');
+        updateBrowserURL("/");
+        $('#iframe').attr('src', Florence.babbageBaseUrl);
     });
 
     // Submit new ZIP file
