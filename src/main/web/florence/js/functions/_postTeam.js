@@ -10,15 +10,14 @@ function postTeam(name) {
             name: encodedName
         }),
         success: function () {
-            viewTeams();
 
-            // use time out to give browser time to render. this needs a fix
-            setTimeout(function(){
-                // find the new team in teams list and add select class
-                var select = $("table").find("[data-id='" + name + "']");
+            viewTeams(selectTableRowAndDisplayTeamDetails);
 
-                viewTeamDetails(name, select);
-             }, 5);
+            // on success of view teams, display new team details and highlight team in table
+            function selectTableRowAndDisplayTeamDetails() {
+                var rowToSelect = $("table").find("[data-id='" + name + "']");
+                viewTeamDetails(name, rowToSelect);
+            }
 
         },
         error: function (response) {
