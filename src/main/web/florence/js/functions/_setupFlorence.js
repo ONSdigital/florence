@@ -200,6 +200,9 @@ function setupFlorence() {
             }),
             success: function (response) {
 
+                // Handle session information
+                checkSessionTimeout(response);
+
                 var end = new Date().getTime();
                 var time = end - start;
 
@@ -235,6 +238,56 @@ function setupFlorence() {
     var pingTimer = setTimeout(function () {
         doPing();
     }, 10000);
+
+    // Alert user if ping states that their session is going to log out (log out if it's run out too)
+    var countdownIsShown = false,
+        secondCounter = 0;
+
+    function checkSessionTimeout(sessionData) {
+        var currentDateTime = new Date(),
+            sessionExpiry = new Date(sessionData.sessionExpiryDate),
+            timeLeftInSession = parseInt((sessionExpiry - currentDateTime)/1000);
+
+        if (timeLeftInSession <= 31 && !countdownIsShown) {
+            // Session is going to expire soon, warn user and give them option to reset session timer
+            countdownIsShown = true;
+            secondCounter = timeLeftInSession;
+            console.log("Session to expire in " + timeLeftInSession + " seconds");
+            sweetAlert({
+                type: "warning",
+                title: "Session expiring in <span id='session-expiry'>" + timeLeftInSession + "</span> seconds",
+                text: "You've not been active for sometime now, are you still using Florence?",
+                html: true,
+                confirmButtonText: "I'm still using Florence!"
+            }, function(response) {
+                if (response) {
+                    $.get("/zebedee/users?email=" + Florence.Authentication.loggedInEmail());
+                    countdownIsShown = false;
+                    console.log("Session timer reset");
+                }
+            });
+            // Update alert with amount of time user has left until they're logged out
+            var sessionCountdown = setInterval(function() {
+                secondCounter -= 1;
+                $('#session-expiry').html(secondCounter);
+
+                // If session has timed out & the warning hasn't been closed yet, log out the user and inform them why they've been logged out
+                if (secondCounter === 0 && countdownIsShown) {
+                    sweetAlert({
+                        type: "warning",
+                        title: "Your session has expired",
+                        text: "Florence was left inactive for too long so you have been logged out"
+                    });
+                    logout();
+                    countdownIsShown = false;
+                    clearInterval(sessionCountdown);
+                } else if (!countdownIsShown) {
+                    // User responded to warning so Florence is active now, clear the countdown
+                    clearInterval(sessionCountdown);
+                }
+            }, 1000);
+        }
+    }
 
     // Reset default functions from certain elements - eg form submits
     resetPage();
