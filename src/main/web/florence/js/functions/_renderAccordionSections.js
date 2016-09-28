@@ -286,6 +286,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         addFile(collectionId, pageData, 'downloads', 'file');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         accordion();
         qmiEditor(collectionId, pageData);
     }
