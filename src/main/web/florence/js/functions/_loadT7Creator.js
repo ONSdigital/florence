@@ -121,7 +121,6 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
                 });
                 loadCreateScreen(parentUrl, collectionId);
             } else {
-                debugger;
                 saveContent(collectionId, safeNewUri, pageData);
             }
         });

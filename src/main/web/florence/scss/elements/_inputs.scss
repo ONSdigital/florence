@@ -6,6 +6,8 @@
     // Class has JS bound to it to handle the change event to simulate a native file input behaviour
     &__file {
 
+        display: block;
+
         &:hover {
             cursor: pointer;
         }
@@ -21,11 +23,16 @@
             background-color: $white;
             line-height: $lineheight;
             border: 3px solid $scarpa-flow;
+            border-radius: 3px;
         }
 
         & input {
             position: absolute;
             left: -10000px;
+        }
+
+        &.focus:after {
+            border-color: $focus;
         }
     }
 }

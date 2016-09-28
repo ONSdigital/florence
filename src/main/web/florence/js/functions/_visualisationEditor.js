@@ -52,7 +52,6 @@ function visualisationEditor(collectionId, data) {
 
     // Bind file save to the change event of the file input
     $fileInput.on('change', function() {
-        $('.input__file').attr('data-file-title', 'File uploading ...');
         data.zipTitle = ($(this).val()).split('\\').pop();
         $fileForm.submit();
     });
@@ -89,30 +88,28 @@ function visualisationEditor(collectionId, data) {
                 return false;
             }
 
-            if (!file.name.match(/\.zip$/)) {
-                sweetAlert("Incorrect file format", "You are only allowed to upload ZIP files", "warning")
-            } else {
-                var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
-                var uniqueIdNoSpace = data.uid.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
-                var contentUri = "/visualisations/" + uniqueIdNoSpace + "/content";
-                var uriUpload = contentUri + "/" + fileNameNoSpace;
-                var safeUriUpload = checkPathSlashes(uriUpload);
+            $('.input__file').attr('data-file-title', 'File uploading ...');
 
-                path = "/visualisations/" + uniqueIdNoSpace;
+            var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
+            var uniqueIdNoSpace = data.uid.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
+            var contentUri = "/visualisations/" + uniqueIdNoSpace + "/content";
+            var uriUpload = contentUri + "/" + fileNameNoSpace;
+            var safeUriUpload = checkPathSlashes(uriUpload);
 
-                deleteAndUploadFile(
-                    safeUriUpload, contentUri, formdata,
-                    success = function () {
-                        unpackZip(safeUriUpload,
-                            success = function () {
+            path = "/visualisations/" + uniqueIdNoSpace;
 
-                                // On unpack of Zip refresh the reload editor and preview
-                                loadPageDataIntoEditor(path, collectionId);
-                            }
-                        );
-                    }
-                )
-            }
+            deleteAndUploadFile(
+                safeUriUpload, contentUri, formdata,
+                success = function () {
+                    unpackZip(safeUriUpload,
+                        success = function () {
+
+                            // On unpack of Zip refresh the reload editor and preview
+                            loadPageDataIntoEditor(path, collectionId);
+                        }
+                    );
+                }
+            )
 
         });
     }
