@@ -2,9 +2,9 @@
 
     &__inner {
         background-color: $wild-sand;
-        height: $lineheight * 30;
+        height: $lineheight * 37;
         width: $col--10;
-        margin-top: $lineheight * 6;
+        margin-top: $lineheight * 5;
         margin-right: auto;
         margin-left: auto;
         overflow: hidden;
@@ -14,7 +14,7 @@
     &__editor {
         box-sizing: border-box;
         width: 30%;
-        height: $lineheight * 26;
+        height: $lineheight * 33;
         float: left;
         padding: ($lineheight * 2) $gutter $lineheight $gutter;
         overflow-y: scroll;
@@ -29,7 +29,7 @@
     &__preview {
         box-sizing: border-box;
         width: 70%;
-        height: $lineheight * 26;
+        height: $lineheight * 33;
         float: right;
         padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
         overflow-y: scroll;

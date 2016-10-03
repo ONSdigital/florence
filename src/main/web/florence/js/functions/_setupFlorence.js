@@ -105,8 +105,8 @@ function setupFlorence() {
     });
 
     Handlebars.registerHelper('debug', function (message, object) {
-       console.log("DEBUG: " + message + " " + JSON.stringify(object));
-       return "";
+        console.log("DEBUG: " + message + " " + JSON.stringify(object));
+        return "";
     });
 
 
@@ -184,6 +184,7 @@ function setupFlorence() {
         }
     }
 
+    // Get ping times to zebedee and surface for user
     var lastPingTime;
     var pingTimes = [];
 
@@ -198,6 +199,9 @@ function setupFlorence() {
                 lastPingTime: lastPingTime
             }),
             success: function (response) {
+
+                // Handle session information
+                checkSessionTimeout(response);
 
                 var end = new Date().getTime();
                 var time = end - start;
@@ -235,6 +239,56 @@ function setupFlorence() {
         doPing();
     }, 10000);
 
+    // Alert user if ping states that their session is going to log out (log out if it's run out too)
+    var countdownIsShown = false,
+        secondCounter = 0;
+
+    function checkSessionTimeout(sessionData) {
+        var currentDateTime = new Date(),
+            sessionExpiry = new Date(sessionData.sessionExpiryDate),
+            timeLeftInSession = parseInt((sessionExpiry - currentDateTime)/1000);
+
+        if (timeLeftInSession <= 31 && !countdownIsShown) {
+            // Session is going to expire soon, warn user and give them option to reset session timer
+            countdownIsShown = true;
+            secondCounter = timeLeftInSession;
+            console.log("Session to expire in " + timeLeftInSession + " seconds");
+            sweetAlert({
+                type: "warning",
+                title: "Session expiring in <span id='session-expiry'>" + timeLeftInSession + "</span> seconds",
+                text: "You've not been active for sometime now, are you still using Florence?",
+                html: true,
+                confirmButtonText: "I'm still using Florence!"
+            }, function(response) {
+                if (response) {
+                    $.get("/zebedee/users?email=" + Florence.Authentication.loggedInEmail());
+                    countdownIsShown = false;
+                    console.log("Session timer reset");
+                }
+            });
+            // Update alert with amount of time user has left until they're logged out
+            var sessionCountdown = setInterval(function() {
+                secondCounter -= 1;
+                $('#session-expiry').html(secondCounter);
+
+                // If session has timed out & the warning hasn't been closed yet, log out the user and inform them why they've been logged out
+                if (secondCounter === 0 && countdownIsShown) {
+                    sweetAlert({
+                        type: "warning",
+                        title: "Your session has expired",
+                        text: "Florence was left inactive for too long so you have been logged out"
+                    });
+                    logout();
+                    countdownIsShown = false;
+                    clearInterval(sessionCountdown);
+                } else if (!countdownIsShown) {
+                    // User responded to warning so Florence is active now, clear the countdown
+                    clearInterval(sessionCountdown);
+                }
+            }, 1000);
+        }
+    }
+
     // Reset default functions from certain elements - eg form submits
     resetPage();
 
@@ -242,11 +296,11 @@ function setupFlorence() {
     $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page__item', function(e) {
         var diagnosticJSON = JSON.stringify(new clickEventObject(e));
         $.ajax({
-          url: "/zebedee/clickEventLog",
-          type: 'POST',
-          contentType: "application/json",
-          data: diagnosticJSON,
-          async: true,
+            url: "/zebedee/clickEventLog",
+            type: 'POST',
+            contentType: "application/json",
+            data: diagnosticJSON,
+            async: true,
         });
     });
 
@@ -291,5 +345,54 @@ function setupFlorence() {
             this.collection = collectionTemp
         }
     }
+
+    // Check running version versus latest and notify user if they don't match
+    var runningVersion,
+        userWarned = false;
+    function checkVersion() {
+        return fetch('assets/version.json')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(responseJson) {
+                return responseJson;
+            })
+            .catch(function(err) {
+                console.log("Error getting latest Florence version: ", err);
+                return err
+            });
+    }
+
+    checkVersion().then(function(response) {
+        runningVersion = response;
+    });
+
+    setInterval(function() {
+        // Get the latest version and alert user if it differs from version stored on load (but only if the user hasn't been warned already, so they don't get spammed after being warned already)
+        if (!userWarned) {
+            checkVersion().then(function (response) {
+                if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
+                    console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
+                    swal({
+                        title: "New version of Florence available",
+                        type: "info",
+                        showCancelButton: true,
+                        closeOnCancel: false,
+                        closeOnConfirm: false,
+                        confirmButtonText: "Refresh Florence",
+                        cancelButtonText: "Don't refresh"
+                    }, function (isConfirm) {
+                        userWarned = true;
+                        if (isConfirm) {
+                            location.reload();
+                        } else {
+                            swal("Warning", "Florence could be unstable without the latest version", "warning")
+                        }
+                    });
+                    runningVersion = response;
+                }
+            });
+        }
+    }, 10000)
 }
 

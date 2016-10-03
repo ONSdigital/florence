@@ -63,7 +63,7 @@ function loadT6Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
             $('#pagename').val(title);
         }
 
-        $('form').submit(function (e) {
+        $('form').off().submit(function (e) {
             releaseDateManual = $('#releaseDate').val();
 
             // Input validation
