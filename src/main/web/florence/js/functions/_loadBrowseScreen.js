@@ -19,14 +19,8 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             checkAndAddDeleteFlag(response, collectionData);
 
-            var collectionOwner = localStorage.getItem('userType');
-            response['collectionOwner'] = collectionOwner;
-
-            // Send visualisations back to visualisations folder by default on browse tree load
-            if (collectionOwner == "DATA_VISUALISATION") {
-                var visDirectory = "/visualisations";
-                treeNodeSelect(visDirectory);
-            }
+            // var collectionOwner = localStorage.getItem('userType');
+            response['collectionOwner'] = localStorage.getItem('userType');
 
             // var browserContent = $('#iframe')[0].contentWindow;
             var html = templates.workBrowse(response);
@@ -35,12 +29,18 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             $('.workspace-browse').css("overflow", "scroll");
 
+            // Send visualisations back to visualisations folder by default on browse tree load
+            // if (collectionOwner == "DATA_VISUALISATION") {
+            //     var visDirectory = "/visualisations";
+            //     treeNodeSelect(visDirectory);
+            // }
+
             // Bind click event for browse tree item
             bindBrowseTreeClick();
 
             if (click) {
                 var url = getPreviewUrl();
-                if (url === "/blank") {
+                if (url === "/blank" || response['collectionOwner'] == 'DATA_VISUALISATION') {
                     treeNodeSelect('/');
                 } else {
                     treeNodeSelect(url);
@@ -73,16 +73,18 @@ function bindBrowseTreeClick() {
         var $this = $(this),
             $thisItem = $this.closest('.js-browse__item'),
             uri = $thisItem.attr('data-url'),
-            baseURL = Florence.babbageBaseUrl;
+            baseURL = Florence.babbageBaseUrl,
+            isDataVis = localStorage.getItem('userType') == 'DATA_VISUALISATION';
 
         if (uri) {
             var newURL = baseURL + uri;
 
-            if (localStorage.getItem('userType') == 'DATA_VISUALISATION') {
-                newURL += "/";
-            }
-
             treeNodeSelect(newURL);
+
+            // Data vis browsing doesn't update iframe
+            if (isDataVis) {
+                return false
+            }
 
             // Update iframe location which will send change event for iframe to update too
             document.getElementById('iframe').contentWindow.location.href = newURL;

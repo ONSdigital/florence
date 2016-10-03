@@ -5,7 +5,11 @@
         <div class="icon-status--ok"></div>
         <div class="icon-status--good"></div>
     </li>
+
     {{#if this.Authentication.isAuthenticated}}
+        {{!-- display envirnoment if develop or sandpit --}}
+        {{#if environment.name}}<li class="environment-notification">You're on {{environment.name}} environment</li>{{/if}}
+
         {{#if this.collection.name}}
             <li id="working-on" class="nav__item"><a class="nav__link js-nav-item js-nav-item--collection selected" href="javascript:void(0)">Working
                 on: {{this.collection.name}}</a></li>

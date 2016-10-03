@@ -1,5 +1,7 @@
 function loadCreator(parentUrl, collectionId, type, collectionData) {
-    var pageType, releaseDate;
+    var $typeSelect = $('#pagetype'),
+        pageType,
+        releaseDate;
 
     getCollection(collectionId,
         success = function (response) {
@@ -17,14 +19,16 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
     //releaseDate = Florence.collection.date;             //to be added back to scheduled collections
 
     if (type === 'bulletin' || type === 'article') {
-        $('#pagetype').val(type).change();
+        $typeSelect.val(type).change();
         loadT4Creator(collectionId, releaseDate, type, parentUrl);
     } else if (type === 'compendium_landing_page') {
-        $('#pagetype').val(type).change();
+        $typeSelect.val(type).change();
         loadT6Creator(collectionId, releaseDate, type, parentUrl);
-    }
-    else {
-        $('select').off().change(function () {
+    } else if (type === 'visualisation') {
+        $typeSelect.val(type).change();
+        loadVisualisationCreator(collectionId, type, collectionData);
+    } else {
+        $typeSelect.off().change(function () {
             pageType = $(this).val();
             $('.edition').empty();
             $('.create-publishing-error').remove();
@@ -40,22 +44,16 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
             }
             else if (pageType === 'dataset_landing_page' || pageType === 'timeseries_landing_page') {
                 loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
-            }
-            else if (pageType === 'release') {
+            } else if (pageType === 'visualisation') {
+                console.log('Visualisation');
+
+            } else if (pageType === 'release') {
                 loadT16Creator(collectionId, releaseDate, pageType, parentUrl);
             }
-            // else if (pageType === 'visualisation') {
-            //     loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData);
-            // }
             else {
                 sweetAlert("Error", 'Page type not recognised. Contact an administrator', "error");
             }
         });
-    }
-
-    if ($('#pagetype').val() == 'visualisation') {
-        pageType = $('#pagetype').val();
-        loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData);
     }
 }
 
