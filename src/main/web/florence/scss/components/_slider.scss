@@ -29,11 +29,23 @@
         padding-left: $col--2;
         padding-right: $col--2;
         //min-height: $lineheight * 24;
+        max-height: $lineheight * 27;
         color: $emperor;
 
         &--fullwidth {
             padding-left: 0;
             padding-right: 0;
+        }
+    }
+
+    &__banner {
+        background-color: $nevada;
+        padding: ($lineheight / 2) $col--2;
+        color: $iron-dark;
+
+        p {
+            margin-top: ($lineheight / 2);
+            margin-bottom: ($lineheight / 2);
         }
     }
 

@@ -269,6 +269,24 @@ function releaseEditor(collectionId, data) {
         });
     }
 
+    // Check whether release is being added back into collection and the published flag should be toggled to truthy
+    function checkPublishedFlag(data) {
+        return new Promise (function(resolve, reject) {
+            if (!data.description.published) {
+                getCollection(collectionId, success = function (collectionData) {
+                    if (collectionData.releaseUri == data.uri) {
+                        data.description.published = true;
+                    }
+                    resolve()
+                }, error = function (error) {
+                    reject(error);
+                });
+            } else {
+                resolve();
+            }
+        });
+    }
+
     //Save and update preview page
     //Get collection content
 
@@ -291,7 +309,14 @@ function releaseEditor(collectionId, data) {
     });
 
     function save(onSave) {
-        checkRenameUri(collectionId, data, renameUri, onSave);
+        // Check whether the publish flag needs to be toggle - this is async so needs to be a promise
+        checkPublishedFlag(data).then(function() {
+            // Once publish flag is checked then continue with rest of save
+            checkRenameUri(collectionId, data, renameUri, onSave);
+        }).catch(function(error) {
+            console.log("Error getting collection data: ", error);
+        });
+
     }
 }
 

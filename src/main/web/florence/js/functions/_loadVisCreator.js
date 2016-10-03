@@ -1,10 +1,11 @@
 /**
  * Creates data visualisation's JSON
  * @param collectionId
- * @param parentUrl
+ * @param pageType
+ * @param collectionData
  */
 
-function loadVisualisationCreator(collectionId, pageType, parentUrl, collectionData) {
+function loadVisualisationCreator(collectionId, pageType, collectionData) {
     var pageData, pageTitle, pageId, newUri, safeNewUri, uriSection, pageIdTrimmed;
     var parentUrlData = "/data";
     $.ajax({

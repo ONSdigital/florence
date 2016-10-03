@@ -78,7 +78,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             $('#pagename').val(title);
         }
 
-        $('form').submit(function (e) {
+        $('form').off().submit(function (e) {
             e.preventDefault();
             releaseDateManual = $('#releaseDate').val();
 

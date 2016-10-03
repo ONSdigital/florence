@@ -1,8 +1,13 @@
-function viewTeams() {
+function viewTeams(selectTableRowAndDisplayTeamDetails) {
 
     getTeams(
         success = function (data) {
             populateTeamsTable(data.teams);
+
+            // on creation of new team highlight row in table and display team details
+            if (selectTableRowAndDisplayTeamDetails) {
+                selectTableRowAndDisplayTeamDetails();
+            }
         },
         error = function (jqxhr) {
             handleApiError(jqxhr);
