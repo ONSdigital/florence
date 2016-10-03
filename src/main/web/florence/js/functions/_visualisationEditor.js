@@ -6,8 +6,9 @@
 
 function visualisationEditor(collectionId, data) {
     var path = data.uri,
-        $indexSelect = $('#filenames'),
-        setActiveTab, getActiveTab;
+        $fileInput = $('#input-vis'),
+        $fileForm = $('#upload-vis'),
+        i, setActiveTab, getActiveTab;
 
     // Active tab
     $(".edit-accordion").on('accordionactivate', function () {
@@ -20,41 +21,39 @@ function visualisationEditor(collectionId, data) {
     accordion(getActiveTab);
     getLastPosition();
 
-    // Refresh preview with new URL if index page previously selected (can't use refreshPreview function because it removes "/" from end or path by default)
-    function refreshVisPreview(url) {
-        var newUrl;
-        if (url) {
-            newUrl = Florence.babbageBaseUrl + path  + "/" + url;
-            // Florence.globalVars.pagePath = path;
-        } else {
-            newUrl = Florence.babbageBaseUrl + path + "/";
-        }
-        document.getElementById('iframe').contentWindow.location.href = newUrl;
-        $('.browser-location').val(newUrl);
+    // Update hidden select to display all HTML files in ZIP
+    var selectOptions = ["<option value=''>-- Select an HTML file to preview --</option>"],
+        $selectWrapper = $('#select-vis-wrapper');
+
+    for (i = 0; i < data.filenames.length; i++) {
+        selectOptions.push("<option value='" + data.filenames[i] + "'>" + data.filenames[i] + "</option>")
     }
+    $selectWrapper.find('select').empty().append(selectOptions.join(''));
+    $selectWrapper.show();
+    $('#browser-location').hide();
+    $('.browser.disabled').removeClass('disabled');
+
+    // Bind to select's change and toggle preview to selected HTML file
+    $('#select-vis-preview').change(function() {
+        refreshVisPreview("/" + $(this).val());
+    });
+
+    // Disable preview when navigating back to browse tab
+    $('#browse').click(function() {
+        $selectWrapper.hide();
+        $('#browser-location').show();
+        $('.browser').addClass('disabled');
+        updateBrowserURL("/");
+        $('#iframe').attr('src', Florence.babbageBaseUrl);
+    });
 
     // Submit new ZIP file
     bindZipSubmit();
 
-    // Edit existing ZIP file
-    $('#edit-vis').on('submit', function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        // Refresh visualisations tab but show 'submit ZIP' option
-        var tempData = data;
-        tempData.zipTitle = "";
-        var html = templates.workEditVisualisation(tempData);
-        $('.workspace-menu').html(html);
-        bindZipSubmit();
-
-        // Set visualisation tab to active
-        accordion(1);
-    });
-
-    // Listen to change of index page input and refresh preview to show new index page
-    $indexSelect.change(function () {
-        refreshVisPreview($indexSelect.val());
+    // Bind file save to the change event of the file input
+    $fileInput.on('change', function() {
+        data.zipTitle = ($(this).val()).split('\\').pop();
+        $fileForm.submit();
     });
 
     // Bind save buttons
@@ -62,9 +61,6 @@ function visualisationEditor(collectionId, data) {
     editNav.off(); // remove any existing event handlers.
 
     editNav.on('click', '.btn-edit-save', function () {
-        var indexPage = $('#filenames').val();
-        data['indexPage'] = indexPage;
-
         save();
     });
 
@@ -92,32 +88,35 @@ function visualisationEditor(collectionId, data) {
                 return false;
             }
 
-            if (!file.name.match(/\.zip$/)) {
-                sweetAlert("Incorrect file format", "You are only allowed to upload ZIP files", "warning")
-            } else {
-                var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
-                var uniqueIdNoSpace = data.uid.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
-                var contentUri = "/visualisations/" + uniqueIdNoSpace + "/content";
-                var uriUpload = contentUri + "/" + fileNameNoSpace;
-                var safeUriUpload = checkPathSlashes(uriUpload);
+            $('.input__file').attr('data-file-title', 'File uploading ...');
 
-                path = "/visualisations/" + uniqueIdNoSpace;
+            var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
+            var uniqueIdNoSpace = data.uid.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
+            var contentUri = "/visualisations/" + uniqueIdNoSpace + "/content";
+            var uriUpload = contentUri + "/" + fileNameNoSpace;
+            var safeUriUpload = checkPathSlashes(uriUpload);
 
-                deleteAndUploadFile(
-                    safeUriUpload, contentUri, formdata,
-                    success = function () {
-                        unpackZip(safeUriUpload,
-                            success = function () {
+            path = "/visualisations/" + uniqueIdNoSpace;
 
-                                // On unpack of Zip refresh the reload editor and preview
-                                loadPageDataIntoEditor(path, collectionId);
-                            }
-                        );
-                    }
-                )
-            }
+            deleteAndUploadFile(
+                safeUriUpload, contentUri, formdata,
+                success = function () {
+                    unpackZip(safeUriUpload,
+                        success = function () {
+
+                            // On unpack of Zip refresh the reload editor and preview
+                            loadPageDataIntoEditor(path, collectionId);
+                        }
+                    );
+                }
+            )
 
         });
+    }
+
+    // Refresh preview (don't use global refreshPreview function because we want do other functions at the same time when selecting different HTML files)
+    function refreshVisPreview(url) {
+        document.getElementById('iframe').contentWindow.location.href = Florence.babbageBaseUrl + path + url;
     }
 
     function deleteAndUploadFile(path, contentUri, formData, success) {
@@ -182,7 +181,8 @@ function visualisationEditor(collectionId, data) {
         putContent(collectionId, data.uri, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
-                refreshVisPreview();
+                // refreshVisPreview();
+                // refreshPreview();
                 loadPageDataIntoEditor(data.uri, collectionId);
             },
             error = function (response) {

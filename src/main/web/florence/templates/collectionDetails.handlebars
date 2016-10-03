@@ -4,6 +4,18 @@
         <p>Publish: {{date}}<br>{{createdBy events}}</p>
         <button class="btn btn--primary btn-collection-edit">Edit collection details</button>
     </div>
+
+    {{#ifCond approvalState.inProgress '||' approvalState.thrownError}}
+        <div class="slider__banner">
+            {{#if approvalState.inProgress}}
+                <p>This collection has been approved and is being prepared for the publishing queue</p>
+            {{/if}}
+            {{#if approvalState.thrownError}}
+                <p>Oops, we seem to have hit an error whilst preparing this collection for the publishing queue :(</p>
+            {{/if}}
+        </div>
+    {{/ifCond}}
+    
     <div class="slider__content js-collection__content">
         <h3 id="in-progress-uris">{{inProgress.length}} pages in progress</h3>
         <ul class="page-list">
@@ -66,31 +78,38 @@
                 </li>
             {{/each}}
         </ul>
-        <h3 id="delete-uris">Content deletions</h3>
+        {{#if pendingDeletes}}
+            <h3 id="delete-uris">Content deletions</h3>
 
-        <p id="approval-permission-blocked" style="display: none"><strong>You will not be able to approve this collection as it contains delete requests actioned by you.</strong></p>
+            <p id="approval-permission-blocked" style="display: none"><strong>You will not be able to approve this
+                collection as it contains delete requests actioned by you.</strong></p>
 
-        <ul class="page-list">
-            {{#each pendingDeletes}}
-                <li class="page-list__item">
-                    <span class="page__item page__item--{{root.type}}">
-                        {{root.description.title}}{{#if root.description.edition}}: {{root.description.edition}}{{/if}}  ({{totalDeletes}} delete{{#ifCond totalDeletes '>' '1'}}s{{/ifCond}} in total)<br/>
-                        <!--{{root.uri}}-->
-                    </span>
-                    <div class="page__buttons page__buttons--list">
-                        <button class="btn-page-delete delete-marker-remove" data-path="{{root.uri}}" data-language="{{root.description.language}}">
-                            Cancel Delete
-                        </button>
-                    </div>
-                    {{#if root.children}} {{! Within the context of the current item }}
-                        <div class="page__children">
-                            <h4>This delete contains</h4>
-                            {{> childDeletes}} {{!-- Recursively render the partial --}}
+            <ul class="page-list">
+                {{#each pendingDeletes}}
+                    <li class="page-list__item">
+                        <span class="page__item page__item--{{root.type}}">
+                            {{root.description.title}}{{#if root.description.edition}}
+                            : {{root.description.edition}}{{/if}}  ({{totalDeletes}} delete{{#ifCond totalDeletes '>'
+                                                                                                     '1'}}
+                            s{{/ifCond}} in total)<br/>
+                            <!--{{root.uri}}-->
+                        </span>
+                        <div class="page__buttons page__buttons--list">
+                            <button class="btn-page-delete delete-marker-remove" data-path="{{root.uri}}"
+                                    data-language="{{root.description.language}}">
+                                Cancel Delete
+                            </button>
                         </div>
-                    {{/if}}
-                </li>
-            {{/each}}
-        </ul>
+                        {{#if root.children}} {{! Within the context of the current item }}
+                            <div class="page__children">
+                                <h4>This delete contains</h4>
+                                {{> childDeletes}} {{!-- Recursively render the partial --}}
+                            </div>
+                        {{/if}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{/if}}
     </div>
 
     <nav class="slider__nav">
