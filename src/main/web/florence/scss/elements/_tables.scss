@@ -123,6 +123,13 @@
         overflow-y: scroll;
         display: block;
     }
+
+    &--fixed-height-24 tbody {
+        max-height: ($lineheight * 24);
+        overflow-y: scroll;
+        display: block;
+    }
+
     &--fixed-height-17 tbody {
         max-height: ($lineheight * 17);
         overflow-y: scroll;
