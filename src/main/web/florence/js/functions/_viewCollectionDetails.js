@@ -28,10 +28,14 @@ function viewCollectionDetails(collectionId, $this) {
         ProcessPages(collection.reviewed);
 
         // Set collection approval state
-        var approvalStates = {inProgress: false, thrownError: false, completed: false};
+        var approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false};
         switch (collection.approvalStatus) {
             case (undefined): {
                 collection.approvalState = '';
+                break;
+            }
+            case ('NOT_STARTED'): {
+                approvalStates.notStarted = true;
                 break;
             }
             case ('IN_PROGRESS'): {
@@ -94,8 +98,10 @@ function viewCollectionDetails(collectionId, $this) {
         }
 
         var $approveBtn = $('.btn-collection-approve'),
-            $editBtn = $('.btn-collection-edit'),
-            $workOnBtn = $('.btn-collection-work-on');
+            $editBtn = $('.js-edit-collection'),
+            $workOnBtn = $('.btn-collection-work-on'),
+            $restoreContentBtn = $('.js-restore'),
+            $importBtn = $('.js-import');
 
         if (collection.approvalState.inProgress) {
             // Collection has been approved and is generating PDF, timeseries etc so disable buttons
@@ -121,6 +127,17 @@ function viewCollectionDetails(collectionId, $this) {
         $editBtn.click(function () {
             editCollection(collection);
         });
+
+        // restore deleted content
+        $restoreContentBtn.click(function () {
+            console.log("Restore content clicked");
+        });
+
+        // import time series
+        $importBtn.click(function () {
+            console.log("Import time series clicked");
+        });
+
 
         //page-list
         $('.page__item:not(.delete-child)').click(function () {
