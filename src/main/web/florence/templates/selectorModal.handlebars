@@ -1,0 +1,30 @@
+<div class="overlay" id="js-modal-select">
+    <div class="modal-select">
+        <div class="modal-select__head">
+            <h1 class="modal-select__title">{{title}}</h1>
+            <div class="modal-select__search">
+                <input id="release-search-input" type="text" placeholder="Search">
+            </div>
+        </div>
+        <div class="modal-select__body">
+            <table class="table table--primary table--50-25-25 table--fixed-height-24" id="js-modal-select__table">
+                <thead>
+                <tr>
+                    {{#each columns}}
+                        <th scope="col">{{this}}</th>
+                    {{/each}}
+                </tr>
+                </thead>
+                <tbody id="js-modal-select__body">
+                {{!-- Loading animation, removed upon load of Ajax content --}}
+                <tr><td colspan="3" class="modal-select__animation">{{> loadingAnimation large=true dark=true}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-select__footer">
+            <button class="btn" id="js-modal-select__cancel">Cancel</button>
+        </div>
+
+    </div>
+</div>
