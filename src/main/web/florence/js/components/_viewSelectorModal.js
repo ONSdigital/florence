@@ -9,47 +9,28 @@ function viewSelectModal(templateData, onSearch) {
     bindSelectModalEvents();
 
     function bindSelectModalEvents() {
-        var $modal = $('#js-modal-select');
+        var $search = $('#js-modal-select__search');
 
         $('#js-modal-select__cancel').click(function() {
-            $modal.remove();
+            closeModal()
         });
 
-        $modal.find('#js-modal-select__search').on('input', function() {
+        $search.on('input', function() {
             onSearch($(this).val());
         });
 
-        // $modal.find('#js-modal-select__body').on('click', 'tr', function() {
-        //     onItemSelect($(this).index());
-        //     $modal.remove();
-        // });
+        $search.focus();
+
+        $(document).keydown(function(event) {
+            if (event.keyCode === 27) {
+                closeModal()
+            }
+        });
 
     }
 
-    // function buildTableBody() {
-    //     var tableBodyHtml = function() {
-    //         var i,
-    //             tableBodyDataLength = tableBodyData.length,
-    //             html = [];
-    //
-    //         // Loop through each row object
-    //         for (i = 0; i < tableBodyDataLength; i++) {
-    //             var tableRow = [];
-    //
-    //             // Loop through each property in row object and wrap in <td> element
-    //             for (var property in tableBodyData[i]) {
-    //                 if(!tableBodyData[i].hasOwnProperty(property)) continue;
-    //                 tableRow.push("<td>" + tableBodyData[i][property] + "</td>");
-    //             }
-    //
-    //             // Join together <td>s, wrap in <tr> and push into HTML variable
-    //             html.push("<tr>" + tableRow.join() + "</tr>");
-    //         }
-    //
-    //         // Return string of table body HTML
-    //         return html.join();
-    //     };
-    //
-    //     $('#js-modal-select__body').html(tableBodyHtml());
-    // }
+   function closeModal() {
+       $('#js-modal-select').remove();
+       $(document).off('keydown');
+   }
 }
