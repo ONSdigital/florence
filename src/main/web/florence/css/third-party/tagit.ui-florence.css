@@ -44,7 +44,7 @@ ul.tagit li.tagit-choice:hover, ul.tagit li.tagit-choice.remove {
 }
 ul.tagit li.tagit-choice a.tagLabel:hover,
 ul.tagit li.tagit-choice a.tagit-close .text-icon:hover {
-    color: #D32F2F;
+    color: #AA354C;
 }
 ul.tagit input[type="text"] {
     color: #333333;
