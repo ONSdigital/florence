@@ -18,7 +18,7 @@ function viewRestoreDeleted(collectionData) {
             title: "Select a deletion",
             columns: ["Deleted page and URI", "No. of deleted pages", "Date of delete"]
         };
-
+        templateData['noOfColumns'] = templateData.columns.length;
         viewSelectModal(templateData, onSearch);
     }
 
