@@ -30,7 +30,6 @@
                 cursor: pointer;
                 text-decoration: underline;
             }
-
         }
     }
 
@@ -54,10 +53,8 @@
 
     &__content {
         overflow-y: scroll;
-        padding-top: 0;
-        padding-left: $col--2;
-        padding-right: $col--2;
-        max-height: $lineheight * 28;
+        padding: ($lineheight / 2) $col--2;
+        max-height: $lineheight * 27;
         color: $emperor;
 
         &--padded {
