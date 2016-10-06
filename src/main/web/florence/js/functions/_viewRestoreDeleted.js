@@ -20,18 +20,6 @@ function viewRestoreDeleted(collectionData) {
         };
 
         viewSelectModal(templateData, onSearch);
-
-
-            // tableBodyData = buildTableBodyData(deletedPagesData);
-
-        // viewSelectModal(templateData, tableBodyData, onItemSelect = function(tableRowIndex) {
-        //     // Callback from view layer saying that item has been clicked
-        //     postRestoreDeletedPage(deletedPagesData[tableRowIndex].id, collectionData.id, success = function(response) {
-        //         // Page/s have been restored to current collection, refresh collection details
-        //         console.log(response);
-        //         viewCollectionDetails(collectionData.id);
-        //     })
-        // });
     }
 
     function renderTableBody(deletedPagesData) {
@@ -71,31 +59,12 @@ function viewRestoreDeleted(collectionData) {
             i;
 
         for (i = 0; i < deletedPagesDataLength; i++) {
-            if ((onSearchDeletedPagesData[i].pageTitle).toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+            // Add to new array if search term and page name or uri match it
+            if ((onSearchDeletedPagesData[i].pageTitle).toLowerCase().indexOf(searchValue.toLowerCase()) >= 0 || (onSearchDeletedPagesData[i].uri).toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
                 filteredArray.push(onSearchDeletedPagesData[i]);
             }
         }
 
         renderTableBody(filteredArray)
     }
-
-    function buildTableBodyData(deletedPagesData) {
-        var newTemplateData = [],
-            dataLength = deletedPagesData.length,
-            i;
-
-        // Build up custom array to build pass to table builder function
-        for (i = 0; i < dataLength; i++) {
-            var arrayEntry = {
-                column1: deletedPagesData[i].pageTitle + "<br>" + deletedPagesData[i].uri,
-                column2: deletedPagesData[i].noOfPages,
-                column3: deletedPagesData[i].eventDate
-            };
-
-            newTemplateData.push(arrayEntry);
-        }
-
-        return newTemplateData;
-    }
-
 }
