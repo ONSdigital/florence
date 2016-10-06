@@ -135,7 +135,7 @@ function viewCollectionDetails(collectionId, $this) {
 
         // import time series
         $importBtn.click(function () {
-            console.log("Import time series clicked");
+            importTsTitles(collection.id);
         });
 
 
