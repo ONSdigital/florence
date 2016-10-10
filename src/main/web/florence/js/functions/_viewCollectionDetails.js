@@ -95,13 +95,18 @@ function viewCollectionDetails(collectionId, $this) {
 
         var $approveBtn = $('.btn-collection-approve'),
             $editBtn = $('.btn-collection-edit'),
-            $workOnBtn = $('.btn-collection-work-on'),
-            collectionIsApproved = collection.approvalState.inProgress || collection.approvalState.thrownError;
+            $workOnBtn = $('.btn-collection-work-on');
 
-        if (collectionIsApproved) {
+        if (collection.approvalState.inProgress) {
             // Collection has been approved and is generating PDF, timeseries etc so disable buttons
             $workOnBtn.addClass('btn--disabled').attr('disabled', true);
             $approveBtn.addClass('btn--disabled').attr('disabled', true);
+        } else if (collection.approvalState.thrownError) {
+            // Collection has thrown error doing pre-publish tasks, give user option to retry approval
+            $workOnBtn.hide();
+            $approveBtn.text('Retry approval').show().one('click', function () {
+                postApproveCollection(collection.id);
+            });
         } else if (showApproveButton(collection)) {
             // Collection has been reviewed and is ready for approval, so show button and bind click
             $approveBtn.show().one('click', function () {
