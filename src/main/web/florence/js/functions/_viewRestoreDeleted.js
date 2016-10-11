@@ -3,7 +3,7 @@ function viewRestoreDeleted(collectionData) {
 
     var onSearchDeletedPagesData;
 
-    $('.js-restore-delete').click(function() {
+    // $('.js-restore-delete').click(function() {
         renderModal();
         bindTableClick();
 
@@ -11,7 +11,7 @@ function viewRestoreDeleted(collectionData) {
             onSearchDeletedPagesData = deletedPagesData;
             renderTableBody(deletedPagesData);
         });
-    });
+    // });
 
     function renderModal() {
         var templateData  = {
