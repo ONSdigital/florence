@@ -97,13 +97,10 @@ function viewCollectionDetails(collectionId, $this) {
             deleteButton.hide();
         }
 
-        // Bind restore deleted page button
-        viewRestoreDeleted(collection);
-
         var $approveBtn = $('.btn-collection-approve'),
             $editBtn = $('.js-edit-collection'),
             $workOnBtn = $('.btn-collection-work-on'),
-            $restoreContentBtn = $('.js-restore'),
+            $restoreContentBtn = $('.js-restore-delete'),
             $importBtn = $('.js-import');
 
         if (collection.approvalState.inProgress) {
@@ -133,7 +130,7 @@ function viewCollectionDetails(collectionId, $this) {
 
         // restore deleted content
         $restoreContentBtn.click(function () {
-            console.log("Restore content clicked");
+            viewRestoreDeleted(collection);
         });
 
         // import time series
