@@ -93,6 +93,9 @@ function viewCollectionDetails(collectionId, $this) {
             deleteButton.hide();
         }
 
+        // Bind restore deleted page button
+        viewRestoreDeleted(collection);
+
         var $approveBtn = $('.btn-collection-approve'),
             $editBtn = $('.btn-collection-edit'),
             $workOnBtn = $('.btn-collection-work-on');
