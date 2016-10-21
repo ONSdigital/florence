@@ -133,6 +133,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
                     } else if (datasetId !== downloadTitle) {
                         // Throw error to user if file name and dataset ID don't match
                         sweetAlert({
+                            title: "Warning",
                             text: "CSDB filename must match the dataset's ID",
                             type: "warning"
                         });
