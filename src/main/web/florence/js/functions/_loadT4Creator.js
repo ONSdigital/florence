@@ -84,8 +84,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
 
             // Do input validation
             var nameValid = validatePageName();
-            var editionValid = validatePageName('#edition');
-            if (!nameValid || !editionValid) {
+            if (!nameValid) {
                 return false;
             }
 
