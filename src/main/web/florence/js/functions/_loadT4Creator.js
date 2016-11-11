@@ -88,6 +88,10 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 return false;
             }
 
+            if (pageType === 'bulletin' && !validatePageName($('#edition'))) {
+                return false;
+            }
+
             pageData = pageTypeDataT4(pageType);
             pageData.description.edition = $('#edition').val();
             if (title) {
