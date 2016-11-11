@@ -81,6 +81,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
         $('form').off().submit(function (e) {
             e.preventDefault();
             releaseDateManual = $('#releaseDate').val();
+            var pageEdition = $('#edition').val();
 
             // Do input validation
             var nameValid = validatePageName();
@@ -88,12 +89,18 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 return false;
             }
 
-            if (pageType === 'bulletin' && !validatePageName($('#edition'))) {
+            // Bulletin page title validation
+            if (pageType === 'bulletin' && !validatePageName(pageEdition)) {
                 return false;
             }
 
+            // Article page validation - remove empty space
+            if ((pageType === 'article' || pageType === 'article_download') && pageEdition === " ") {
+                pageEdition = "";
+            }
+
             pageData = pageTypeDataT4(pageType);
-            pageData.description.edition = $('#edition').val();
+            pageData.description.edition = pageEdition;
             if (title) {
                 //do nothing;
             } else {
