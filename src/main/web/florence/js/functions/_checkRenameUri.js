@@ -72,7 +72,6 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
                         data = pageData;
 
                         Florence.globalVars.pagePath = newUri;
-                        ;
                         //is it a compendium? Rename children array
                         //take this out if moveContent in Zebedee works
                         if (data.type === 'compendium_landing_page') {
@@ -97,7 +96,8 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
         var tmpNewUri = data.uri.split("/");
         //Articles with no edition. Add date as edition
         if (data.type === 'article' || data.type === 'article_download') {
-            var editionDate = $.datepicker.formatDate('yy-mm-dd', new Date());
+            console.log(data.description.releaseDate);
+            var editionDate = $.datepicker.formatDate('yy-mm-dd', new Date(data.description.releaseDate));
             tmpNewUri.splice([tmpNewUri.length - 2], 2, titleNoSpace, editionDate);
         } else {
             tmpNewUri.splice([tmpNewUri.length - 1], 1, titleNoSpace);
