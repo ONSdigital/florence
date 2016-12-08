@@ -26,14 +26,15 @@ node {
     }
 
     stage('Bundle') {
-        sh sprintf('sed -i -e %s -e %s -e %s -e %s appspec.yml scripts/codedeploy/*', [
+        sh sprintf('sed -i -e %s -e %s -e %s -e %s -e %s appspec.yml scripts/codedeploy/*', [
             "s/\\\${CODEDEPLOY_USER}/${env.CODEDEPLOY_USER}/g",
+            "s/^CONFIG_BUCKET=.*/CONFIG_BUCKET=${env.S3_CONFIGURATIONS_BUCKET}/",
             "s/^ECR_REPOSITORY_URI=.*/ECR_REPOSITORY_URI=${env.ECR_REPOSITORY_URI}/",
             "s/^GIT_COMMIT=.*/GIT_COMMIT=${revision[0]}/",
             "s/^AWS_REGION=.*/AWS_REGION=${env.AWS_DEFAULT_REGION}/",
         ])
         sh "tar -cvzf florence-${revision[0]}.tar.gz appspec.yml scripts/codedeploy"
-        sh "aws s3 cp florence-${revision[0]}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/florence-${revision[0]}.tar.gz"
+        sh "aws s3 cp florence-${revision[0]}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/"
     }
 
     if (branch != 'develop') return
