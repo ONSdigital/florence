@@ -90,7 +90,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             }
 
             // Bulletin page title validation
-            if (pageType === 'bulletin' && !validatePageName(pageEdition)) {
+            if (pageType === 'bulletin' && !validatePageName('#edition')) {
                 return false;
             }
 
