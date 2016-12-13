@@ -1,6 +1,6 @@
 function datasetLandingEditor(collectionId, data) {
 
-  var newDatasets = [], newRelatedDocuments = [], newRelatedQmi = [], newRelatedMethodology = [];
+  var newDatasets = [], newLinks = [], newRelatedDocuments = [], newRelatedQmi = [], newRelatedMethodology = [];
   var setActiveTab, getActiveTab;
   var renameUri = false;
 
@@ -121,6 +121,15 @@ function datasetLandingEditor(collectionId, data) {
       newDatasets[indexF] = {uri: file};
     });
     data.datasets = newDatasets;
+
+    // links
+    var orderLink = $("#sortable-link").sortable('toArray');
+    $(orderLink).each(function (indexL, nameL) {
+      var displayText = data.links[parseInt(nameL)].title;
+      var link = $('#link-uri_' + nameL).val();
+      newLinks[indexL] = {uri: link, title: displayText};
+    });
+    data.links = newLinks;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
