@@ -2,7 +2,11 @@
     <div class="chart-builder__inner builder__inner">
 
 
-            <div class="background--ship-grey padding-top-md--1">
+
+        <div id="edit-chart" class="builder__editor builder__editor--chart">
+
+
+            <div class="tab--background">
                 <nav class="tabs--js">
                     <ul class="list--neutral flush">
                         <li class="tab__item width-sm--6">
@@ -23,11 +27,9 @@
                     </ul>
                 </nav>
             </div>
-        <!-- <h1>Chart Builder</h1> -->
 
-        <div id="edit-chart" class="builder__editor builder__editor--chart">
 
-<div id='chart-panel' class="js-chart-builder-panel">
+            <div id='chart-panel' class="js-chart-builder-panel">
                 <label for="chart-data">Chart data</label>
                 <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4"
                           cols="120"></textarea>
@@ -97,154 +99,48 @@
 
             </div>
             
+            {{!-- <div id='series-panel' class="js-chart-builder-panel workspace-edit"> --}}
             <div id='series-panel' class="js-chart-builder-panel">
+<div class="edit-section" id="charts">
+    <div id="chart-list" class="edit-section__content">
+        <div id="sortable-chart" class="edit-section__sortable">
+            {{#each this.temp_series}}
 
-                <div class="js-show-hide">
-                    <div class="show-hide show-hide--light">
-                        <div class="js-show-hide__title">
-                            <h2 class="show-hide__title">
-                                Series 1
-                            </h2>
+                <div id="{{@index}}" class="edit-section__sortable-item ui-sortable-handle">
+                    <div class="edit-section__title">{{title}}</div>
+
+                   <label>Chart type<br>
+                        <div class="select-wrap">
+                            <select id="chart-type" class="refresh-chart">
+                                {{#select chartType}}
+                                    <option value="bar">Bar Chart</option>
+                                    <option value="rotated">Bar Chart (rotated)</option>
+                                    <option value="line">Line Chart</option>
+                                    <option value="area">Area Chart</option>
+                                    <option value="barline">Bar + Line Chart</option>
+                                    <option value="rotated-barline">Bar + Line Chart (rotated)</option>
+                                    <option value="dual-axis">Dual Axis</option>
+                                    <option value="scatter">Scatter Plot Chart</option>
+                                    <option value="pie">Pie Chart</option>
+                                    <option value="population">Population Pyramid</option>
+                                    <option value="confidence-interval">Confidence Interval</option>
+                                    <option value="rotated-confidence-interval">Confidence Interval (rotated)</option>
+                                    <option value="box-and-whisker">Box and Whisker</option>
+                                {{/select}}
+                            </select>
                         </div>
-                        <div class="js-show-hide__content">
-                            <label>Chart type<br>
-                                <div class="select-wrap">
-                                    <select id="chart-type" class="refresh-chart">
-                                        {{#select chartType}}
-                                            <option value="bar">Bar Chart</option>
-                                            <option value="rotated">Bar Chart (rotated)</option>
-                                            <option value="line">Line Chart</option>
-                                            <option value="area">Area Chart</option>
-                                            <option value="barline">Bar + Line Chart</option>
-                                            <option value="rotated-barline">Bar + Line Chart (rotated)</option>
-                                            <option value="dual-axis">Dual Axis</option>
-                                            <option value="scatter">Scatter Plot Chart</option>
-                                            <option value="pie">Pie Chart</option>
-                                            <option value="population">Population Pyramid</option>
-                                            <option value="confidence-interval">Confidence Interval</option>
-                                            <option value="rotated-confidence-interval">Confidence Interval (rotated)</option>
-                                            <option value="box-and-whisker">Box and Whisker</option>
-                                        {{/select}}
-                                    </select>
-                                </div>
-                            </label>
-
-                            <label>Stack bars<input type="checkbox" id="tooltip" value="tooltip_checkbox"></label>
-                            <label>highlight<input type="checkbox" id="markers" value="markers_checkbox"></label>
-
-                        </div>
-                    </div>
+                    </label>
+                    <br/>
+                    <label>Stack bars<input type="checkbox" id="tooltip" value="tooltip_checkbox" {{#if isStacked}}checked{{/if}}></label>
+                    <label>highlight<input type="checkbox" id="markers" value="markers_checkbox" {{#if isHighlight}}checked{{/if}} ></label>
                 </div>
+            {{/each}}
+        </div>
+        
+    </div>
+</div>
 
-                <div class="js-show-hide">
-                    <div class="show-hide show-hide--light">
-                        <div class="js-show-hide__title">
-                            <h2 class="show-hide__title">
-                                Series 2
-                            </h2>
-                        </div>
-                        <div class="js-show-hide__content">
-                            <label>Chart type<br>
-                                <div class="select-wrap">
-                                    <select id="chart-type" class="refresh-chart">
-                                        {{#select chartType}}
-                                            <option value="bar">Bar Chart</option>
-                                            <option value="rotated">Bar Chart (rotated)</option>
-                                            <option value="line">Line Chart</option>
-                                            <option value="area">Area Chart</option>
-                                            <option value="barline">Bar + Line Chart</option>
-                                            <option value="rotated-barline">Bar + Line Chart (rotated)</option>
-                                            <option value="dual-axis">Dual Axis</option>
-                                            <option value="scatter">Scatter Plot Chart</option>
-                                            <option value="pie">Pie Chart</option>
-                                            <option value="population">Population Pyramid</option>
-                                            <option value="confidence-interval">Confidence Interval</option>
-                                            <option value="rotated-confidence-interval">Confidence Interval (rotated)</option>
-                                            <option value="box-and-whisker">Box and Whisker</option>
-                                        {{/select}}
-                                    </select>
-                                </div>
-                            </label>
 
-                            <label>Stack bars<input type="checkbox" id="tooltip" value="tooltip_checkbox"></label>
-                            <label>highlight<input type="checkbox" id="markers" value="markers_checkbox"></label>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="js-show-hide">
-                    <div class="show-hide show-hide--light">
-                        <div class="js-show-hide__title">
-                            <h2 class="show-hide__title">
-                                Series 3
-                            </h2>
-                        </div>
-                        <div class="js-show-hide__content">
-                            <label>Chart type<br>
-                                <div class="select-wrap">
-                                    <select id="chart-type" class="refresh-chart">
-                                        {{#select chartType}}
-                                            <option value="bar">Bar Chart</option>
-                                            <option value="rotated">Bar Chart (rotated)</option>
-                                            <option value="line">Line Chart</option>
-                                            <option value="area">Area Chart</option>
-                                            <option value="barline">Bar + Line Chart</option>
-                                            <option value="rotated-barline">Bar + Line Chart (rotated)</option>
-                                            <option value="dual-axis">Dual Axis</option>
-                                            <option value="scatter">Scatter Plot Chart</option>
-                                            <option value="pie">Pie Chart</option>
-                                            <option value="population">Population Pyramid</option>
-                                            <option value="confidence-interval">Confidence Interval</option>
-                                            <option value="rotated-confidence-interval">Confidence Interval (rotated)</option>
-                                            <option value="box-and-whisker">Box and Whisker</option>
-                                        {{/select}}
-                                    </select>
-                                </div>
-                            </label>
-
-                            <label>Stack bars<input type="checkbox" id="tooltip" value="tooltip_checkbox"></label>
-                            <label>highlight<input type="checkbox" id="markers" value="markers_checkbox"></label>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="js-show-hide">
-                    <div class="show-hide show-hide--light">
-                        <div class="js-show-hide__title">
-                            <h2 class="show-hide__title">
-                                Series 4
-                            </h2>
-                        </div>
-                        <div class="js-show-hide__content">
-                            <label>Chart type<br>
-                                <div class="select-wrap">
-                                    <select id="chart-type" class="refresh-chart">
-                                        {{#select chartType}}
-                                            <option value="bar">Bar Chart</option>
-                                            <option value="rotated">Bar Chart (rotated)</option>
-                                            <option value="line">Line Chart</option>
-                                            <option value="area">Area Chart</option>
-                                            <option value="barline">Bar + Line Chart</option>
-                                            <option value="rotated-barline">Bar + Line Chart (rotated)</option>
-                                            <option value="dual-axis">Dual Axis</option>
-                                            <option value="scatter">Scatter Plot Chart</option>
-                                            <option value="pie">Pie Chart</option>
-                                            <option value="population">Population Pyramid</option>
-                                            <option value="confidence-interval">Confidence Interval</option>
-                                            <option value="rotated-confidence-interval">Confidence Interval (rotated)</option>
-                                            <option value="box-and-whisker">Box and Whisker</option>
-                                        {{/select}}
-                                    </select>
-                                </div>
-                            </label>
-
-                            <label>Stack bars<input type="checkbox" id="tooltip" value="tooltip_checkbox"></label>
-                            <label>highlight<input type="checkbox" id="markers" value="markers_checkbox"></label>
-
-                        </div>
-                    </div>
-                </div>
             </div>
             
             <div id='advanced-panel' class="js-chart-builder-panel">
@@ -252,16 +148,31 @@
             <label>Turn off tooltips<input type="checkbox" id="tooltip" value="tooltip_checkbox"></label>
             <label>Turn off marker points<input type="checkbox" id="markers" value="markers_checkbox"></label>
 
-            <label>X-axis position<br>
-                    <input type="text" id="chart-label-x-axis" class="refresh-chart" placeholder="[Label x-axis]"
-                           value="{{labelInterval}}"/>
+                <br/>
+
+                <label>X-axis position<br>
+                    <div class="select-wrap">
+                        <select id="position-x-axis" class="refresh-chart">
+                            {{#select aspectRatio}}
+                                <option value="top">top</option>
+                                <option value="bottom">bottom</option>
+                            {{/select}}
+                        </select>
+                    </div>
                 </label>
                 <label>Y-axis position<br>
-                    <input type="text" id="chart-label-y-axis" class="refresh-chart" placeholder="[Label y-axis]"
-                           value="{{labelInterval}}"/>
+                    <div class="select-wrap">
+                        <select id="position-y-axis" class="refresh-chart">
+                            {{#select aspectRatio}}
+                                <option value="left">left</option>
+                                <option value="right">right</option>
+                            {{/select}}
+                        </select>
+                    </div>
                 </label>
 
 
+                <br/>
 
 
                 <label>Aspect ratio<br>
@@ -279,12 +190,12 @@
                 </label>
 
 
+                <br/>
 
 
 
-
-                <label>Use configuration from exisiting chart<br>
-                    <input type="text" id="chart-label-URL" class="refresh-chart" placeholder="[URL"
+                <label>Use configuration from existing chart<br>
+                    <input type="text" id="chart-config-URL" class="refresh-chart" placeholder="[URL]"
                            value="{{labelURL}}"/>
                 </label>
 
@@ -292,6 +203,47 @@
             </div>
 
             <div id='annotation-panel' class="js-chart-builder-panel">
+            <div class="">
+                <button class="btn btn--subtle btn-add-section" id="add-annotation">Add annotation</button>
+            </div>
+
+
+        <div id="sortable-chart" class="edit-section__sortable">
+            {{#each this.temp_annotations}}
+
+                <div id="{{@index}}" class="edit-section__sortable-item ui-sortable-handle">
+                    <div class="edit-section__title">{{title}}</div>
+
+                   <label>Chart type<br>
+                        <div class="select-wrap">
+                            <select id="chart-type" class="refresh-chart">
+                                {{#select targetDevice}}
+                                    <option value="bar">Mobile</option>
+                                    <option value="rotated">Desktop</option>
+                                    <option value="line">Tablet</option>
+                                {{/select}}
+                            </select>
+                        </div>
+                    </label>
+                    <br/>
+                    <label for="chart-title">X Position
+                        <input type="text" id="note-x" class="half" placeholder="[x]" value="{{devices.0.x}}"/>
+                    </label>
+                    <label for="chart-title">Y Position
+                        <input type="text" id="note-x" class="half" placeholder="[y]" value="{{devices.0.y}}"/>
+                    </label>
+
+                    <br/>
+                    <label for="chart-notes">Notes</label>
+                        <textarea id="chart-notes" class="refresh-text" placeholder="Add annotation here" rows="4" cols="120">{{copy}}</textarea>
+
+                    <br/>
+                    
+                    <label>Hide on this screen size<input type="checkbox" id="is-hidden" value="display_checkbox" {{#if devices.0.isHidden}}checked{{/if}} ></label>
+                </div>
+            {{/each}}
+            </div>
+
 
 
 

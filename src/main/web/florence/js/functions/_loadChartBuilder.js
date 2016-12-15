@@ -1,10 +1,40 @@
 function loadChartBuilder(pageData, onSave, chart) {
-
-    // complete chart object
+    console.log('________');
+    console.log(pageData);
+    console.log('________');
     var chart = chart;
-    var pageUrl = pageData.uri;
 
-    // build the html from the handlebars template
+    //hack
+
+    chart.temp_series = [
+        {index:0, title: 'series1', chartType:'Bar', isStacked:true, isHighlight:false},
+        {index:1, title: 'series2', chartType:'line', isStacked:false, isHighlight:false},
+        {index:2, title: 'series3', chartType:'line', isStacked:true, isHighlight:true},
+        {index:3, title: 'series4', chartType:'line', isStacked:false, isHighlight:false}
+    ];
+    chart.temp_annotations = [
+        {   
+            index: 0,
+            title: 'Annotation 1', 
+            devices:[
+                {type:'Mobile', x:0, y:0, isHidden:true},
+                {type:'Tablet', x:0, y:0, isHidden:false},
+                {type:'Desktop', x:0, y:0, isHidden:false}
+            ],
+            copy:'Annotation 1: top left'
+        },
+        {   
+            index: 1,
+            title: 'Annotation 2', 
+            devices:[
+                {type:'Mobile', x:200, y:150, isHidden:false},
+                {type:'Tablet', x:0, y:0, isHidden:false},
+                {type:'Desktop', x:0, y:0, isHidden:false}
+            ],
+            copy:'Annotation 2 : somewhere else'
+        }
+    ];
+    var pageUrl = pageData.uri;
     var html = templates.chartBuilder(chart);
     $('body').append(html);
     $('.js-chart-builder').css("display", "block");
@@ -16,6 +46,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     renderText();
     renderChart();
+
+    //
+    showTab( 'Chart' );
 
     function refreshExtraOptions() {
         var template = getExtraOptionsTemplate(chart.chartType);
@@ -49,7 +82,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             case 'Chart':
                 return templates.chartBuilderChart;
             case 'Metadata':
-                return templates.chartBuilderMetadata;
+                return templates.chartBuilderMeta;
             case 'Series':
                 return templates.chartBuilderSeries;
             case 'Advanced':
@@ -62,20 +95,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     function showTab(tabName) {
-
-console.log('show tab');
-
-        $('#edit-chart').empty();
-
-        var template = getTabTemplate(tabName);
-        if (template) {
-            var html = template(chart);
-            console.log(html);
-            $('#edit-chart').html(html);
-        } 
-
-
-/*
+        console.log(pageData);
         $('.js-chart-builder-panel').hide();
         switch (tabName) {
             case 'Chart':
@@ -96,8 +116,6 @@ console.log('show tab');
             default:
                 return;
         }
-*/
-
     }
 
     $('.refresh-chart').on('input', function () {
@@ -124,19 +142,10 @@ console.log('show tab');
     $('.tab__link').on('click', function () {
         $('.tab__link').removeClass('tab__link--active');
         $(this).addClass('tab__link--active');
-        console.log($('.tab__link'));
-        console.log($(this));
 
         showTab( $(this).text() );
-
-        //hide existing panel
-
-        //show new
-
     });
 
-    //urggh!
-    //showTab( 'Chart' );
 
     $('.btn-chart-builder-create').on('click', function () {
 
@@ -228,8 +237,15 @@ console.log('show tab');
 
     function buildChartObject() {
         var json = $('#chart-data').val();
+        var existing = $('#chart-config-URL').val();
         if (!chart) {
             chart = {};
+        }
+
+
+        //use existing chart config
+        if (existing) {
+            console.warn("OVERWRITE ALL CONFIG!");
         }
 
         chart.type = "chart";
@@ -259,6 +275,10 @@ console.log('show tab');
         chart.categories = tsvJSONRowNames(json);
 
         chart.aspectRatio = $('#aspect-ratio').val();
+        chart.xAxisPosition = $('#position-x-axis').val();
+        chart.yAxisPosition = $('#position-y-axis').val();
+
+
 
         if (isShowBarLineSelection(chart.chartType)) {
             var types = {};
