@@ -1,0 +1,33 @@
+<div id='advanced-panel' class="js-chart-builder-panel">
+
+<label>Turn off tooltips<input type="checkbox" id="tooltip" value="tooltip_checkbox"></label>
+<label>Turn off marker points<input type="checkbox" id="markers" value="markers_checkbox"></label>
+
+<label>X-axis position<br>
+        <input type="text" id="chart-label-x-axis" class="refresh-chart" placeholder="[Label x-axis]"
+               value="{{labelInterval}}"/>
+    </label>
+    <label>Y-axis position<br>
+        <input type="text" id="chart-label-y-axis" class="refresh-chart" placeholder="[Label y-axis]"
+               value="{{labelInterval}}"/>
+    </label>
+
+    <label>Aspect ratio<br>
+        <div class="select-wrap">
+            <select id="aspect-ratio" class="refresh-chart">
+                {{#select aspectRatio}}
+                    <option value="0.56">16:9</option>
+                    <option value="0.75">4:3</option>
+                    <option value="0.42">21:9</option>
+                    <option value="1">1:1</option>
+                    <option value="1.3">10:13</option>
+                {{/select}}
+            </select>
+        </div>
+    </label>
+    
+    <label>Use configuration from exisiting chart<br>
+        <input type="text" id="chart-label-URL" class="refresh-chart" placeholder="[URL"
+               value="{{labelURL}}"/>
+    </label>
+</div>

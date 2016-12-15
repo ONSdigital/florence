@@ -1,6 +1,10 @@
 function loadChartBuilder(pageData, onSave, chart) {
+
+    // complete chart object
     var chart = chart;
     var pageUrl = pageData.uri;
+
+    // build the html from the handlebars template
     var html = templates.chartBuilder(chart);
     $('body').append(html);
     $('.js-chart-builder').css("display", "block");
@@ -40,6 +44,62 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
     }
 
+    function getTabTemplate(tabName) {
+        switch (tabName) {
+            case 'Chart':
+                return templates.chartBuilderChart;
+            case 'Metadata':
+                return templates.chartBuilderMetadata;
+            case 'Series':
+                return templates.chartBuilderSeries;
+            case 'Advanced':
+                return templates.chartBuilderAdvanced;
+            case 'Annotation':
+                return templates.chartBuilderAnnotation;
+            default:
+                return;
+        }
+    }
+
+    function showTab(tabName) {
+
+console.log('show tab');
+
+        $('#edit-chart').empty();
+
+        var template = getTabTemplate(tabName);
+        if (template) {
+            var html = template(chart);
+            console.log(html);
+            $('#edit-chart').html(html);
+        } 
+
+
+/*
+        $('.js-chart-builder-panel').hide();
+        switch (tabName) {
+            case 'Chart':
+                $('#chart-panel').show();
+                break;
+            case 'Metadata':
+                $('#metadata-panel').show();
+                break;
+            case 'Series':
+                $('#series-panel').show();
+                break;
+            case 'Advanced':
+                $('#advanced-panel').show();
+                break;
+            case 'Annotation':
+                $('#annotation-panel').show();
+                break;
+            default:
+                return;
+        }
+*/
+
+    }
+
     $('.refresh-chart').on('input', function () {
         chart = buildChartObject();
         refreshExtraOptions();
@@ -60,6 +120,23 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('.btn-chart-builder-cancel').on('click', function () {
         $('.js-chart-builder').stop().fadeOut(200).remove();
     });
+
+    $('.tab__link').on('click', function () {
+        $('.tab__link').removeClass('tab__link--active');
+        $(this).addClass('tab__link--active');
+        console.log($('.tab__link'));
+        console.log($(this));
+
+        showTab( $(this).text() );
+
+        //hide existing panel
+
+        //show new
+
+    });
+
+    //urggh!
+    //showTab( 'Chart' );
 
     $('.btn-chart-builder-create').on('click', function () {
 
@@ -210,7 +287,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.files = [];
         //chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
         //chart.files.push({ type:'png', filename:chart.filename + '.png' });
-
+console.log(chart);
         return chart;
     }
 
