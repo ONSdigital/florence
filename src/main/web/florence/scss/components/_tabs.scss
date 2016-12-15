@@ -1,5 +1,4 @@
 // _tabs.scss
-/* TESTING */
 
 .tab {
 
@@ -9,8 +8,13 @@
 
     //border-bottom: 1px solid $iron;
     //margin-bottom: -1px;
-    //background: $ship-gray;
+    background: $white;
 
+    &--background {
+        background: $astral;
+    }
+
+    
     &__item {
         margin: 0;
         vertical-align: bottom;
@@ -43,13 +47,13 @@
         &:hover,
         &:focus {
             cursor: pointer;
-            background: darken($white, 15%);
+            background: darken($wild-sand, 15%);
         }
 
         &--active {
             padding-top: 20px;
             padding-bottom: 12px;
-            background: $white;
+            background: $wild-sand;
             color: $ship-gray;
             height: ($lineheight + 6);
 
