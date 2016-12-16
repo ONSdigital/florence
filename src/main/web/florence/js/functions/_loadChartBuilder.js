@@ -1,11 +1,13 @@
 function loadChartBuilder(pageData, onSave, chart) {
     console.log('________');
-    console.log(pageData);
-    console.log('________');
+    console.log(chart.xAxisPos);
+    console.log(chart.xAxisLabel);
+    console.log(chart);
     var chart = chart;
 
-    //hack
 
+    /////////////////////////////
+    //hack
     chart.temp_series = [
         {index:0, title: 'series1', chartType:'Bar', isStacked:true, isHighlight:false},
         {index:1, title: 'series2', chartType:'line', isStacked:false, isHighlight:false},
@@ -34,6 +36,15 @@ function loadChartBuilder(pageData, onSave, chart) {
             copy:'Annotation 2 : somewhere else'
         }
     ];
+
+    chart.xAxisPos = 'top';
+    chart.yAxisPos = 'left';
+    chart.palette = 'blue';
+    /////////////////////////////
+
+
+
+
     var pageUrl = pageData.uri;
     var html = templates.chartBuilder(chart);
     $('body').append(html);
@@ -130,6 +141,12 @@ function loadChartBuilder(pageData, onSave, chart) {
         renderChart();
     });
 
+    $('.refresh-chart').on('change', ':radio', function () {
+        chart = buildChartObject();
+        refreshExtraOptions();
+        renderChart();
+    });
+
 
     $('.refresh-text').on('input', function () {
         renderText();
@@ -144,6 +161,10 @@ function loadChartBuilder(pageData, onSave, chart) {
         $(this).addClass('tab__link--active');
 
         showTab( $(this).text() );
+    });
+
+    $('#add-annotation').on('click', function () {
+        console.log("add annotation");
     });
 
 
@@ -274,10 +295,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.series = tsvJSONColNames(json);
         chart.categories = tsvJSONRowNames(json);
 
+        chart.xAxisPos = $('#position-x-axis').val();
+        chart.yAxisPos = $('#position-y-axis').val();
         chart.aspectRatio = $('#aspect-ratio').val();
-        chart.xAxisPosition = $('#position-x-axis').val();
-        chart.yAxisPosition = $('#position-y-axis').val();
 
+        chart.palette = $('input[name=palette]:checked').val()
 
 
         if (isShowBarLineSelection(chart.chartType)) {
@@ -301,13 +323,10 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.chartType = $('#chart-type').val();
 
-        //console.log(chart);
         parseChartObject(chart);
 
         chart.files = [];
-        //chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
-        //chart.files.push({ type:'png', filename:chart.filename + '.png' });
-console.log(chart);
+        console.log(chart);
         return chart;
     }
 
