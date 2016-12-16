@@ -56,15 +56,29 @@
                 </label>
                 <div id="extras" class="refresh-chart">
                 </div>
+                <br/>
                 <label>Decimal places<br>
                     <input type="text" id="chart-decimal-places" class="refresh-chart" placeholder="[Decimal places]"
                            value="{{decimalPlaces}}"/>
                 </label>
+                <br/>
 
                     <label for="chart-title">Overwrite default y-axis
                         <input type="text" id="chart-min" class="quarter" placeholder="[Min]" value="{{min}}"/>
                         <input type="text" id="chart-max" class="quarter" placeholder="[Max]" value="{{max}}"/>
                     </label>
+
+<br/>
+  <div class="refresh-chart">
+    <legend>Colours</legend>
+      {{!-- <input type="radio" name="palette" id="default" value="colour" checked="checked"/> --}}
+      <input type="radio" name="palette" id="default" value="colour" {{#if_eq palette 'colour'}}checked="checked"{{/if_eq}}/>
+      <label for="default">Colour</label>
+      <input type="radio" name="palette" id="blue" value="blue" {{#if_eq palette 'blue'}}checked="checked"{{/if_eq}}/>
+      <label for="blue">Blue</label>
+  </div>
+
+                
             </div>
             
 
@@ -131,8 +145,10 @@
                         </div>
                     </label>
                     <br/>
+                    <div class="refresh-chart">
                     <label>Stack bars<input type="checkbox" id="tooltip" value="tooltip_checkbox" {{#if isStacked}}checked{{/if}}></label>
                     <label>highlight<input type="checkbox" id="markers" value="markers_checkbox" {{#if isHighlight}}checked{{/if}} ></label>
+                    </div>
                 </div>
             {{/each}}
         </div>
@@ -143,7 +159,7 @@
 
             </div>
             
-            <div id='advanced-panel' class="js-chart-builder-panel">
+            <div id='advanced-panel' class="js-chart-builder-panel refresh-chart">
 
             <label>Turn off tooltips<input type="checkbox" id="tooltip" value="tooltip_checkbox"></label>
             <label>Turn off marker points<input type="checkbox" id="markers" value="markers_checkbox"></label>
@@ -152,18 +168,18 @@
 
                 <label>X-axis position<br>
                     <div class="select-wrap">
-                        <select id="position-x-axis" class="refresh-chart">
-                            {{#select aspectRatio}}
-                                <option value="top">top</option>
+                        <select id="position-x-axis" class="">
+                            {{#select xAxisPos}}
                                 <option value="bottom">bottom</option>
+                                <option value="top">top</option>
                             {{/select}}
                         </select>
                     </div>
                 </label>
-                <label>Y-axis position<br>
+                <label>Y-axis position{{ yAxisPos}}<br>
                     <div class="select-wrap">
-                        <select id="position-y-axis" class="refresh-chart">
-                            {{#select aspectRatio}}
+                        <select id="position-y-axis" class="">
+                            {{#select yAxisPos}}
                                 <option value="left">left</option>
                                 <option value="right">right</option>
                             {{/select}}
@@ -175,9 +191,9 @@
                 <br/>
 
 
-                <label>Aspect ratio<br>
+                <label>Aspect ratio{{ aspectRatio}}<br>
                     <div class="select-wrap">
-                        <select id="aspect-ratio" class="refresh-chart">
+                        <select id="aspect-ratio" class="">
                             {{#select aspectRatio}}
                                 <option value="0.56">16:9</option>
                                 <option value="0.75">4:3</option>
@@ -195,7 +211,7 @@
 
 
                 <label>Use configuration from existing chart<br>
-                    <input type="text" id="chart-config-URL" class="refresh-chart" placeholder="[URL]"
+                    <input type="text" id="chart-config-URL" class="" placeholder="[URL]"
                            value="{{labelURL}}"/>
                 </label>
 
