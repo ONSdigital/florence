@@ -30,7 +30,7 @@ function viewCollections(collectionId) {
         var response = [], teams = [], date = "";
 
         $.each(result.data, function (i, collection) {
-            var approvalStates = {inProgress: false, thrownError: false, completed: false};
+            var approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false};
 
             if (collection.approvalStatus != "COMPLETE") {
 
@@ -46,6 +46,10 @@ function viewCollections(collectionId) {
                 // Set approval state
                 switch (collection.approvalStatus) {
                     case (undefined): {
+                        break;
+                    }
+                    case ('NOT_STARTED'): {
+                        approvalStates.notStarted = true;
                         break;
                     }
                     case ('IN_PROGRESS'): {
