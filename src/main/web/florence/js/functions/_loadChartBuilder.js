@@ -1,9 +1,10 @@
 function loadChartBuilder(pageData, onSave, chart) {
     console.log('________');
-    console.log(chart.xAxisPos);
-    console.log(chart.xAxisLabel);
     console.log(chart);
+    //console.log(chart.xAxisPos);
+    //console.log(chart.xAxisLabel);
     var chart = chart;
+
 
 
     /////////////////////////////
@@ -88,6 +89,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
     }
 
+    // not used - instead load all categories and show hide as required
+    // then can use existing code to populate chart object
+    /*
     function getTabTemplate(tabName) {
         switch (tabName) {
             case 'Chart':
@@ -104,9 +108,9 @@ function loadChartBuilder(pageData, onSave, chart) {
                 return;
         }
     }
+    */
 
     function showTab(tabName) {
-        console.log(pageData);
         $('.js-chart-builder-panel').hide();
         switch (tabName) {
             case 'Chart':
@@ -116,6 +120,9 @@ function loadChartBuilder(pageData, onSave, chart) {
                 $('#metadata-panel').show();
                 break;
             case 'Series':
+                var template = templates.chartBuilderSeries;
+                var html = template(chart);
+                $('#series-panel').html(html);
                 $('#series-panel').show();
                 break;
             case 'Advanced':
@@ -147,7 +154,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         renderChart();
     });
 
-
     $('.refresh-text').on('input', function () {
         renderText();
     });
@@ -159,7 +165,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     $('.tab__link').on('click', function () {
         $('.tab__link').removeClass('tab__link--active');
         $(this).addClass('tab__link--active');
-
         showTab( $(this).text() );
     });
 
@@ -295,6 +300,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.series = tsvJSONColNames(json);
         chart.categories = tsvJSONRowNames(json);
 
+        //build a series object to track each series
+        // TODO: rename here and in handlebars
+        chart.temp_series = tsvToSeries(json)
+        console.log(chart.temp_series);
+
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
         chart.aspectRatio = $('#aspect-ratio').val();
@@ -302,13 +312,15 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.palette = $('input[name=palette]:checked').val()
 
 
-        if (isShowBarLineSelection(chart.chartType)) {
+        if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
             var groups = [];
             var group = [];
             var seriesData = chart.series;
             $.each(seriesData, function (index) {
                 types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+                console.log(types[seriesData[index]]);
+                console.log(index, $('#types_' + index).val());
             });
             (function () {
                 $('#extras input:checkbox:checked').each(function () {
@@ -319,6 +331,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             })();
             chart.chartTypes = types;
             chart.groups = groups;
+            console.log(groups);
         }
 
         chart.chartType = $('#chart-type').val();
@@ -450,6 +463,18 @@ function loadChartBuilder(pageData, onSave, chart) {
         var lines = input.split("\n");
         var headers = lines[0].split("\t");
         return headers;
+    }
+
+    function tsvToSeries(input) {
+        var series = [];
+        var lines = input.split("\n");
+        var headers = lines[0].split("\t");
+
+        for (var i = 1; i < headers.length; i++) {
+            var obj = {index:i, title: headers[i] + ': series'+(i+1), chartType:'line', isStacked:false, isHighlight:false};
+            series.push(obj);
+        }
+        return series;
     }
 
     function exportToSVG(sourceSelector) {
