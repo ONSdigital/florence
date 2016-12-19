@@ -41,6 +41,10 @@ function loadChartBuilder(pageData, onSave, chart) {
     chart.xAxisPos = 'top';
     chart.yAxisPos = 'left';
     chart.palette = 'blue';
+    chart.showTooltip = true;
+    chart.showMarker = false;
+    //also tooltip marker?
+
     /////////////////////////////
 
 
@@ -303,13 +307,14 @@ function loadChartBuilder(pageData, onSave, chart) {
         //build a series object to track each series
         // TODO: rename here and in handlebars
         chart.temp_series = tsvToSeries(json)
-        console.log(chart.temp_series);
 
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
         chart.aspectRatio = $('#aspect-ratio').val();
 
-        chart.palette = $('input[name=palette]:checked').val()
+        chart.palette = $('input[name=palette]:checked').val();
+        chart.showTooltip = $('#show-tooltip').prop('checked');
+        chart.showMarker = $('#show-marker').prop('checked');
 
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
@@ -319,8 +324,8 @@ function loadChartBuilder(pageData, onSave, chart) {
             var seriesData = chart.series;
             $.each(seriesData, function (index) {
                 types[seriesData[index]] = $('#types_' + index).val() || 'bar';
-                console.log(types[seriesData[index]]);
-                console.log(index, $('#types_' + index).val());
+                //console.log(types[seriesData[index]]);
+                //console.log(index, $('#types_' + index).val());
             });
             (function () {
                 $('#extras input:checkbox:checked').each(function () {
@@ -331,7 +336,6 @@ function loadChartBuilder(pageData, onSave, chart) {
             })();
             chart.chartTypes = types;
             chart.groups = groups;
-            console.log(groups);
         }
 
         chart.chartType = $('#chart-type').val();
