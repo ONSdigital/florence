@@ -101,10 +101,8 @@
                         <li class="page-list__item">
                             <span class="page__item page__item--{{root.type}}">
                                 {{root.description.title}}{{#if root.description.edition}}
-                                : {{root.description.edition}}{{/if}}  ({{totalDeletes}} delete{{#ifCond totalDeletes '>'
-                                                                                                         '1'}}
-                                s{{/ifCond}} in total)<br/>
-                                <!--{{root.uri}}-->
+                                : {{root.description.edition}}{{/if}}  ({{totalDeletes}} delete{{#ifCond totalDeletes '>' '1'}}s{{/ifCond}} in total)<br/>
+                                {{root.uri}}
                             </span>
                             <div class="page__buttons page__buttons--list">
                                 <button class="btn-page-delete delete-marker-remove" data-path="{{root.uri}}"
