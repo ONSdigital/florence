@@ -286,6 +286,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.unit = $('#chart-unit').val();
         chart.source = $('#chart-source').val();
 
+        chart.isStacked = $('#isStacked').prop('checked');
         chart.decimalPlaces = $('#chart-decimal-places').val();
         chart.labelInterval = $('#chart-label-interval').val();
 
@@ -294,6 +295,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.xAxisLabel = $('#chart-x-axis-label').val();
         chart.startFromZero = $('#start-from-zero').prop('checked');
         chart.finishAtHundred = $('#finish-at-hundred').prop('checked');
+        chart.yMin = $('#chart-min').val();
+        chart.yMax = $('#chart-max').val();
 
         if (chart.title === '') {
             chart.title = '[Title]'
