@@ -1,6 +1,6 @@
 function loadChartBuilder(pageData, onSave, chart) {
-    console.log('________');
-    console.log(chart);
+    //console.log('________');
+    //console.log(chart);
     //console.log(chart.xAxisPos);
     //console.log(chart.xAxisLabel);
     var chart = chart;
@@ -9,42 +9,45 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     /////////////////////////////
     //hack
-    chart.temp_series = [
-        {index:0, title: 'series1', chartType:'Bar', isStacked:true, isHighlight:false},
-        {index:1, title: 'series2', chartType:'line', isStacked:false, isHighlight:false},
-        {index:2, title: 'series3', chartType:'line', isStacked:true, isHighlight:true},
-        {index:3, title: 'series4', chartType:'line', isStacked:false, isHighlight:false}
-    ];
-    chart.temp_annotations = [
-        {   
-            index: 0,
-            title: 'Annotation 1', 
-            devices:[
-                {type:'Mobile', x:0, y:0, isHidden:true},
-                {type:'Tablet', x:0, y:0, isHidden:false},
-                {type:'Desktop', x:0, y:0, isHidden:false}
-            ],
-            copy:'Annotation 1: top left'
-        },
-        {   
-            index: 1,
-            title: 'Annotation 2', 
-            devices:[
-                {type:'Mobile', x:200, y:150, isHidden:false},
-                {type:'Tablet', x:0, y:0, isHidden:false},
-                {type:'Desktop', x:0, y:0, isHidden:false}
-            ],
-            copy:'Annotation 2 : somewhere else'
-        }
-    ];
+    if(chart){
 
-    chart.xAxisPos = 'top';
-    chart.yAxisPos = 'left';
-    chart.palette = 'blue';
-    chart.showTooltip = true;
-    chart.showMarker = false;
-    //also tooltip marker?
+        chart.temp_series = [
+            {index:0, title: 'series1', chartType:'Bar', isStacked:true, isHighlight:false},
+            {index:1, title: 'series2', chartType:'line', isStacked:false, isHighlight:false},
+            {index:2, title: 'series3', chartType:'line', isStacked:true, isHighlight:true},
+            {index:3, title: 'series4', chartType:'line', isStacked:false, isHighlight:false}
+        ];
+        chart.temp_annotations = [
+            {   
+                index: 0,
+                title: 'Annotation 1', 
+                devices:[
+                    {type:'Mobile', x:0, y:0, isHidden:true},
+                    {type:'Tablet', x:0, y:0, isHidden:false},
+                    {type:'Desktop', x:0, y:0, isHidden:false}
+                ],
+                copy:'Annotation 1: top left'
+            },
+            {   
+                index: 1,
+                title: 'Annotation 2', 
+                devices:[
+                    {type:'Mobile', x:200, y:150, isHidden:false},
+                    {type:'Tablet', x:0, y:0, isHidden:false},
+                    {type:'Desktop', x:0, y:0, isHidden:false}
+                ],
+                copy:'Annotation 2 : somewhere else'
+            }
+        ];
 
+        chart.xAxisPos = 'top';
+        chart.yAxisPos = 'left';
+        chart.palette = 'blue';
+        chart.showTooltip = true;
+        chart.showMarker = false;
+        // TODO check also tooltip marker?
+
+    }
     /////////////////////////////
 
 
@@ -124,6 +127,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 $('#metadata-panel').show();
                 break;
             case 'Series':
+
                 var template = templates.chartBuilderSeries;
                 var html = template(chart);
                 $('#series-panel').html(html);
@@ -267,6 +271,12 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     function buildChartObject() {
         var json = $('#chart-data').val();
+        // catch any double quotes and replace with single for now...
+        // this stops them breaking the TSV transformation
+        json = json.replace(/["]/g,'\'');
+        console.log($('#chart-data').val());
+
+
         var existing = $('#chart-config-URL').val();
         if (!chart) {
             chart = {};
@@ -325,18 +335,39 @@ function loadChartBuilder(pageData, onSave, chart) {
             var groups = [];
             var group = [];
             var seriesData = chart.series;
+            //bar line panel settings
             $.each(seriesData, function (index) {
-                types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+                //custom series panel takes precendence
+                if( $('#series-types_' + index).val() ){
+                    types[seriesData[index]] = $('#series-types_' + index).val();
+
+                }else{
+                    types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+                    
+                }
                 //console.log(types[seriesData[index]]);
                 //console.log(index, $('#types_' + index).val());
             });
+            
             (function () {
                 $('#extras input:checkbox:checked').each(function () {
+                    console.log('push '  + $(this).val())
                     group.push($(this).val());
                 });
                 groups.push(group);
                 return groups;
             })();
+
+            (function () {
+                $('#series-panel input:checkbox:checked').each(function () {
+                    console.log('series push '  + $(this).val())
+                    group.push($(this).val());
+                });
+                groups.push(group);
+                console.log(groups);
+                return groups;
+            })();
+            //console.log('reset chart types ' , chart.chartTypes );
             chart.chartTypes = types;
             chart.groups = groups;
         }
@@ -467,8 +498,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     function tsvJSONHeaders(input) {
-        var lines = input.split("\n");
-        var headers = lines[0].split("\t");
+        var lines = input.split("\n"); //%0A - "\n"
+        var headers = lines[0].split("\t"); //%09 - "\t"
         return headers;
     }
 
@@ -500,21 +531,10 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         }
 
-        //var style = document.createElementNS("http://www.w3.org/2000/svg", "style");
-        //$(style).textContent += "\n<![CDATA[\n" + styleContent + "\n]]>\n";
-        //
-        //svg.prepend(style);
-        //svg[0].getElementsByTagName("defs")[0].appendChild(style);
-
 
         svg.prepend("\n<style type='text/css'></style>");
         svg.find("style").textContent += "\n<![CDATA[" + styleContent + "]]>\n";
 
-
-        //if ($('#chart-type').val() === 'line') {
-        //  $('.c3 line').css("fill", "none");
-        //  console.log($('.c3 line'))
-        //}
 
         var source = (new XMLSerializer).serializeToString(svg[0]);
         //console.log(source);
