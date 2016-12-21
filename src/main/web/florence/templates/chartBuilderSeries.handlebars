@@ -1,10 +1,33 @@
 <div class="edit-section" id="charts">
     <div id="chart-list" class="edit-section__content">
         <div id="sortable-chart" class="edit-section__sortable">
-            {{#each this.temp_series}}
+
+
+{{#each this.series}}
+  <label for="series-types_{{@index}}">{{this}}</label>
+  <div class="select-wrap">
+    <select id="series-types_{{@index}}" class="col--5">
+      {{#select (lookup ../chartTypes this)}}
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+      {{/select}}
+    </select>
+  </div>
+  <label for="{{this}}">Highlight</label>
+    <input id="{{this}}" name="highlight-group" value="{{this}}" type="checkbox"
+    {{!-- {{#ifContains ../chartTypes}} checked{{/ifContains}} --}}
+    >
+  {{!-- <label for="{{this}}">Highlight</label>
+    <input id="{{this}}" name="highlight-group" value="{{this}}" type="checkbox"{{#ifContains this ../groups.[0]}} checked{{/ifContains}}> --}}
+  <br/>
+{{/each}}
+
+
+{{!--             {{#each this.temp_series}}
 
                 <div id="{{@index}}" class="edit-section__sortable-item ui-sortable-handle">
                     <div class="edit-section__title">{{title}}</div>
+
 
                    <label>
                         <div class="select-wrap">
@@ -22,7 +45,7 @@
                     <label>highlight<input type="checkbox" id="markers" value="markers_checkbox" {{#if isHighlight}}checked{{/if}} ></label>
                     </div>
                 </div>
-            {{/each}}
+            {{/each}} --}}
         </div>
         
     </div>
