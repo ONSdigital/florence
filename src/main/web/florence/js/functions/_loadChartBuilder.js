@@ -11,6 +11,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     //hack
     if(chart){
 
+        console.log(chart.palette);
+
         chart.temp_series = [
             {index:0, title: 'series1', chartType:'Bar', isStacked:true, isHighlight:false},
             {index:1, title: 'series2', chartType:'line', isStacked:false, isHighlight:false},
@@ -40,10 +42,10 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         ];
 
-        chart.xAxisPos = 'top';
-        chart.yAxisPos = 'left';
-        chart.palette = 'blue';
-        chart.showTooltip = true;
+        //chart.xAxisPos = 'top';
+        //chart.yAxisPos = 'left';
+        //chart.palette = 'blue';
+        //chart.showTooltip = true;
         chart.showMarker = false;
         // TODO check also tooltip marker?
 
@@ -274,7 +276,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         // catch any double quotes and replace with single for now...
         // this stops them breaking the TSV transformation
         json = json.replace(/["]/g,'\'');
-        console.log($('#chart-data').val());
+        //console.log($('#chart-data').val());
 
 
         var existing = $('#chart-config-URL').val();
