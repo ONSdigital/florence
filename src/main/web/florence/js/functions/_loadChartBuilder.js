@@ -1,17 +1,10 @@
 function loadChartBuilder(pageData, onSave, chart) {
-    //console.log('________');
-    //console.log(chart);
-    //console.log(chart.xAxisPos);
-    //console.log(chart.xAxisLabel);
+
     var chart = chart;
-
-
 
     /////////////////////////////
     //hack
     if(chart){
-
-        console.log(chart.palette);
 
         chart.temp_series = [
             {index:0, title: 'series1', chartType:'Bar', isStacked:true, isHighlight:false},
@@ -19,36 +12,39 @@ function loadChartBuilder(pageData, onSave, chart) {
             {index:2, title: 'series3', chartType:'line', isStacked:true, isHighlight:true},
             {index:3, title: 'series4', chartType:'line', isStacked:false, isHighlight:false}
         ];
-        chart.temp_annotations = [
+        chart.annotations = [
             {   
-                index: 0,
+                id: 0,
                 title: 'Annotation 1', 
                 devices:[
-                    {type:'Mobile', x:0, y:0, isHidden:true},
-                    {type:'Tablet', x:0, y:0, isHidden:false},
-                    {type:'Desktop', x:0, y:0, isHidden:false}
+                    {type:'Mobile', x:50, y:50, isHidden:true},
+                    {type:'Tablet', x:50, y:50, isHidden:false},
+                    {type:'Desktop', x:50, y:50, isHidden:false}
                 ],
                 copy:'Annotation 1: top left'
             },
             {   
-                index: 1,
+                id: 1,
                 title: 'Annotation 2', 
                 devices:[
                     {type:'Mobile', x:200, y:150, isHidden:false},
-                    {type:'Tablet', x:0, y:0, isHidden:false},
-                    {type:'Desktop', x:0, y:0, isHidden:false}
+                    {type:'Tablet', x:50, y:50, isHidden:false},
+                    {type:'Desktop', x:50, y:50, isHidden:false}
                 ],
                 copy:'Annotation 2 : somewhere else'
             }
         ];
-
+        //temp annotation (singular)
+        chart.annotation = {};
+        chart.annotation.x = 80;
+        chart.annotation.y = 100;
+        chart.annotation.title = 'Copy goes here';
         //chart.xAxisPos = 'top';
         //chart.yAxisPos = 'left';
         //chart.palette = 'blue';
         //chart.showTooltip = true;
         chart.showMarker = false;
         // TODO check also tooltip marker?
-
     }
     /////////////////////////////
 
@@ -276,14 +272,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         // catch any double quotes and replace with single for now...
         // this stops them breaking the TSV transformation
         json = json.replace(/["]/g,'\'');
-        //console.log($('#chart-data').val());
-
 
         var existing = $('#chart-config-URL').val();
         if (!chart) {
             chart = {};
         }
-
 
         //use existing chart config
         if (existing) {
@@ -331,6 +324,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.showTooltip = $('#show-tooltip').prop('checked');
         chart.showMarker = $('#show-marker').prop('checked');
 
+        chart.annotation.x = parseInt( $('#note-x').val() );
+        chart.annotation.y = parseInt( $('#note-y').val() );
+        chart.annotation.title = $('#chart-notes'+0).val();
+        console.log('__________________');
+        console.log(chart.annotation.title);
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
@@ -347,13 +345,10 @@ function loadChartBuilder(pageData, onSave, chart) {
                     types[seriesData[index]] = $('#types_' + index).val() || 'bar';
                     
                 }
-                //console.log(types[seriesData[index]]);
-                //console.log(index, $('#types_' + index).val());
             });
             
             (function () {
                 $('#extras input:checkbox:checked').each(function () {
-                    console.log('push '  + $(this).val())
                     group.push($(this).val());
                 });
                 groups.push(group);
@@ -362,11 +357,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
             (function () {
                 $('#series-panel input:checkbox:checked').each(function () {
-                    console.log('series push '  + $(this).val())
                     group.push($(this).val());
                 });
                 groups.push(group);
-                console.log(groups);
                 return groups;
             })();
             //console.log('reset chart types ' , chart.chartTypes );
@@ -376,17 +369,27 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.chartType = $('#chart-type').val();
 
+
         parseChartObject(chart);
 
         chart.files = [];
+
         console.log(chart);
         return chart;
     }
+
+
+    function setBoxPos(x,y) {
+        console.log('set box ' +x,y);
+
+    }
+
 
     //Determines if selected chart type is barline or rotated bar line
     function isShowBarLineSelection(chartType) {
         return (chartType === 'barline' || chartType === "rotated-barline" || chartType === "dual-axis");
     }
+
 
     function parseChartObject(chart) {
 
@@ -666,4 +669,6 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         });
     }
+
+     
 }

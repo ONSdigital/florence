@@ -231,7 +231,7 @@
 
 
         <div id="sortable-chart" class="edit-section__sortable">
-            {{#each this.temp_annotations}}
+            {{#each this.annotations}}
 
                 <div id="{{@index}}" class="edit-section__sortable-item ui-sortable-handle">
                     <div class="edit-section__title">{{title}}</div>
@@ -249,15 +249,15 @@
                     </label>
                     <br/>
                     <label for="chart-title">X Position
-                        <input type="text" id="note-x" class="half" placeholder="[x]" value="{{devices.0.x}}"/>
+                        <input type="text" id="note-x" class="half refresh-chart" placeholder="[x]" value="{{devices.0.x}}"/>
                     </label>
                     <label for="chart-title">Y Position
-                        <input type="text" id="note-x" class="half" placeholder="[y]" value="{{devices.0.y}}"/>
+                        <input type="text" id="note-y" class="half refresh-chart" placeholder="[y]" value="{{devices.0.y}}"/>
                     </label>
 
                     <br/>
                     <label for="chart-notes">Notes</label>
-                        <textarea id="chart-notes" class="refresh-text" placeholder="Add annotation here" rows="4" cols="120">{{copy}}</textarea>
+                        <textarea id="chart-notes{{id}}" class="refresh-chart" placeholder="Add annotation here" rows="4" cols="120">{{copy}}</textarea>
 
                     <br/>
                     
