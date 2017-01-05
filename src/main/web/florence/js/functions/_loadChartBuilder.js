@@ -327,8 +327,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.annotation.x = parseInt( $('#note-x').val() );
         chart.annotation.y = parseInt( $('#note-y').val() );
         chart.annotation.title = $('#chart-notes'+0).val();
-        console.log('__________________');
-        console.log(chart.annotation.title);
+        chart.annotation.isHidden = $('#is-hidden').prop('checked');
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
