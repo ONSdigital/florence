@@ -15,23 +15,36 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.annotations = [
             {   
                 id: 0,
-                title: 'Annotation 1', 
+                title: 'Annotation 1: top left', 
                 devices:[
                     {type:'Mobile', x:50, y:50, isHidden:true},
                     {type:'Tablet', x:50, y:50, isHidden:false},
                     {type:'Desktop', x:50, y:50, isHidden:false}
-                ],
-                copy:'Annotation 1: top left'
+                ]
+                , x:50, y:50
+                , isHidden:false
             },
             {   
                 id: 1,
-                title: 'Annotation 2', 
+                title: 'Annotation 2 : somewhere else', 
                 devices:[
                     {type:'Mobile', x:200, y:150, isHidden:false},
                     {type:'Tablet', x:50, y:50, isHidden:false},
                     {type:'Desktop', x:50, y:50, isHidden:false}
-                ],
-                copy:'Annotation 2 : somewhere else'
+                ]
+                , x:250, y:70
+                , isHidden:false
+            },
+            {   
+                id: 4,
+                title: 'Annotation 4 : zzzzz', 
+                devices:[
+                    {type:'Mobile', x:200, y:150, isHidden:false},
+                    {type:'Tablet', x:50, y:50, isHidden:false},
+                    {type:'Desktop', x:50, y:50, isHidden:false}
+                ]
+                , x:250, y:70
+                , isHidden:false
             }
         ];
         //temp annotation (singular)
@@ -125,7 +138,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                 $('#metadata-panel').show();
                 break;
             case 'Series':
-
                 var template = templates.chartBuilderSeries;
                 var html = template(chart);
                 $('#series-panel').html(html);
@@ -141,7 +153,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 return;
         }
     }
-
+    //TODO remove chart= as it picked up in renderChart()
     $('.refresh-chart').on('input', function () {
         chart = buildChartObject();
         refreshExtraOptions();
@@ -175,7 +187,32 @@ function loadChartBuilder(pageData, onSave, chart) {
     });
 
     $('#add-annotation').on('click', function () {
-        console.log("add annotation");
+       // console.log("add annotation");
+        var obj = {   
+                //id: chart.annotations.length,
+                title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
+                devices:[
+                    {type:'Mobile', x:200, y:150, isHidden:false},
+                    {type:'Tablet', x:50, y:50, isHidden:false},
+                    {type:'Desktop', x:50, y:50, isHidden:false}
+                ]
+                , x:250, y:70
+                , isHidden:false
+            }
+        chart.annotations.push(obj);
+        //console.log(chart.annotations);
+        //renderText();
+    });
+
+    $('.btn-delete-section').on('click', function (e) {
+        var target = e.target.id.substring(18);
+        //console.log(e);
+        //console.log("DELETE " + target);
+        
+        chart.annotations.splice(target,1);
+
+        //console.log(chart.annotations);
+        //renderText();
     });
 
 
@@ -324,10 +361,44 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.showTooltip = $('#show-tooltip').prop('checked');
         chart.showMarker = $('#show-marker').prop('checked');
 
-        chart.annotation.x = parseInt( $('#note-x').val() );
-        chart.annotation.y = parseInt( $('#note-y').val() );
-        chart.annotation.title = $('#chart-notes'+0).val();
-        chart.annotation.isHidden = $('#is-hidden').prop('checked');
+
+        //loop though annotations and populate array
+        $.each(chart.annotations, function(idx, itm){
+
+            var lines = $('#chart-notes-'+idx).val().split('\n');
+            var maxLength = 0;
+            $.each(lines, function(idx, line){
+                if (line.length>maxLength){
+                    maxLength = line.length;
+                }
+            });
+
+            itm.id = idx;
+            itm.x = parseInt( $('#note-x-'+idx).val() );
+            itm.y = parseInt( $('#note-y-'+idx).val() );
+            itm.title = lines.join('<br/>');
+            itm.isHidden = $('#is-hidden-'+idx).prop('checked');
+            itm.width = parseInt( maxLength * 6.5) + 6 ;
+            itm.height = (lines.length+1)*12 + 10 ;
+
+
+/*
+            chart.annotation.x = parseInt( $('#note-x').val() );
+            chart.annotation.y = parseInt( $('#note-y').val() );
+            chart.annotation.title = lines.join('<br/>');
+            chart.annotation.isHidden = $('#is-hidden').prop('checked');
+            chart.annotation.width = parseInt( maxLength * 6.5) + 6 ;
+            chart.annotation.height = (lines.length+1)*12 + 10 ;
+            chart.devices = [
+                    {type:'Mobile', x:200, y:150, isHidden:false},
+                    {type:'Tablet', x:50, y:50, isHidden:false},
+                    {type:'Desktop', x:50, y:50, isHidden:false}
+                ];
+*/
+        });
+
+        //HACK: create text blob to use to generate annotations object in js via handlebars
+        //chart.textBlob = "{id:1,x: 50,y: 50,allowDragY: true,allowDragX: true,title:'annotation.devices1'},{id:2,x: 90,y: 90,allowDragY: true,allowDragX: true,title:'XXXXXX'},";
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
@@ -361,7 +432,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 groups.push(group);
                 return groups;
             })();
-            //console.log('reset chart types ' , chart.chartTypes );
+            
             chart.chartTypes = types;
             chart.groups = groups;
         }

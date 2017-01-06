@@ -120,7 +120,7 @@
         <div id="sortable-chart" class="edit-section__sortable">
             {{#each this.temp_series}}
 
-                <div id="{{@index}}" class="edit-section__sortable-item ui-sortable-handle">
+                <div id="{{index}}" class="edit-section__sortable-item ui-sortable-handle">
                     <div class="edit-section__title">{{title}}</div>
 
                    <label>Chart type<br>
@@ -230,13 +230,13 @@
             </div>
 
 
-        <div id="sortable-chart" class="edit-section__sortable">
+        <div id="annotation-chart" class="edit-section__sortable">
             {{#each this.annotations}}
 
-                <div id="annotation{{@id}}" class="edit-section__sortable-item ui-sortable-handle refresh-chart">
+                <div id="annotation-{{@index}}" class="edit-section__sortable-item ui-sortable-handle refresh-chart">
                     <div class="edit-section__title">{{title}}</div>
-
-                   <label>Chart type<br>
+                    <button class="btn btn--subtle btn-delete-section" id="delete-annotation-{{@index}}">delete</button>
+                   <label>Chart type {{id}}<br>
                         <div class="select-wrap">
                             <select id="chart-type" class="">
                                 {{#select targetDevice}}
@@ -249,19 +249,19 @@
                     </label>
                     <br/>
                     <label for="chart-title">X Position
-                        <input type="text" id="note-x" class="half" placeholder="[x]" value="{{devices.0.x}}"/>
+                        <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{devices.0.x}}"/>
                     </label>
                     <label for="chart-title">Y Position
-                        <input type="text" id="note-y" class="half" placeholder="[y]" value="{{devices.0.y}}"/>
+                        <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{devices.0.y}}"/>
                     </label>
 
                     <br/>
                     <label for="chart-notes">Notes</label>
-                        <textarea id="chart-notes{{id}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{copy}}</textarea>
+                        <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
 
                     <br/>
                     
-                    <label>Hide on this screen size<input type="checkbox" id="is-hidden" value="display_checkbox" {{#if devices.0.isHidden}}checked{{/if}} ></label>
+                    <label>Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" {{#if devices.0.isHidden}}checked{{/if}} ></label>
                 </div>
             {{/each}}
             </div>
