@@ -1,38 +1,35 @@
-<div id='chart-panel' class="js-chart-builder-panel">
-<h3>ANNOTATIONS GO HERE</h3>
-    <label for="chart-data">Chart data</label>
-    <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4"
-              cols="120"></textarea>
-    <label>Chart type<br>
-        <div class="select-wrap">
-            <select id="chart-type" class="refresh-chart">
-                {{#select chartType}}
-                    <option value="bar">Bar Chart</option>
-                    <option value="rotated">Bar Chart (rotated)</option>
-                    <option value="line">Line Chart</option>
-                    <option value="area">Area Chart</option>
-                    <option value="barline">Bar + Line Chart</option>
-                    <option value="rotated-barline">Bar + Line Chart (rotated)</option>
-                    <option value="dual-axis">Dual Axis</option>
-                    <option value="scatter">Scatter Plot Chart</option>
-                    <option value="pie">Pie Chart</option>
-                    <option value="population">Population Pyramid</option>
-                    <option value="confidence-interval">Confidence Interval</option>
-                    <option value="rotated-confidence-interval">Confidence Interval (rotated)</option>
-                    <option value="box-and-whisker">Box and Whisker</option>
-                {{/select}}
-            </select>
-        </div>
-    </label>
-    <div id="extras" class="refresh-chart">
-    </div>
-    <label>Decimal places<br>
-        <input type="text" id="chart-decimal-places" class="refresh-chart" placeholder="[Decimal places]"
-               value="{{decimalPlaces}}"/>
-    </label>
 
-        <label for="chart-title">Overwrite default y-axis
-            <input type="text" id="chart-min" class="quarter" placeholder="[Min]" value="{{min}}"/>
-            <input type="text" id="chart-max" class="quarter" placeholder="[Max]" value="{{max}}"/>
+{{#each this.annotations}}
+
+    <div id="annotation-{{@index}}" class="edit-section__sortable-item ui-sortable-handle refresh-chart">
+        <div class="edit-section__title">{{title}}</div>
+        <button class="btn btn--subtle btn-delete-section" id="delete-annotation-{{@index}}">delete</button>
+       <label>Chart type {{id}}<br>
+            <div class="select-wrap">
+                <select id="chart-type" class="">
+                    {{#select targetDevice}}
+                        <option value="bar">Mobile</option>
+                        <option value="rotated">Desktop</option>
+                        <option value="line">Tablet</option>
+                    {{/select}}
+                </select>
+            </div>
         </label>
-</div>
+        <br/>
+        <label for="chart-title">X Position
+            <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{x}}"/>
+        </label>
+        <label for="chart-title">Y Position
+            <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{y}}"/>
+        </label>
+
+        <br/>
+        <label for="chart-notes">Notes</label>
+            <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
+
+        <br/>
+        
+        <label>Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" {{#if isHidden}}checked{{/if}} ></label>
+    </div>
+
+{{/each}}
