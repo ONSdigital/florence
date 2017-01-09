@@ -207,6 +207,30 @@ function loadChartBuilder(pageData, onSave, chart) {
     setDeleteListeners();
 
 
+    var slider = document.getElementById('chart-slider');
+
+    noUiSlider.create(slider, {
+        start: [100],
+        connect: true,
+        range: {
+            'min': 0,
+            '50%': [ 100 ],
+            'max': 200
+        },
+        pips: {
+            mode: 'count',
+            values: 6,
+            density: 4
+        }
+    });
+
+    slider.noUiSlider.on('end', function(){
+        var val = slider.noUiSlider.get();
+        renderChart();
+    });
+
+
+
     $('.btn-chart-builder-create').on('click', function () {
 
         chart = buildChartObject();
@@ -332,8 +356,13 @@ function loadChartBuilder(pageData, onSave, chart) {
     function renderChart() {
         chart = buildChartObject();
         var preview = $('#chart');
-        var chartHeight = preview.width() * chart.aspectRatio;
-        var chartWidth = preview.width();
+        var zoom = 1;
+        if(slider){
+            zoom = slider.noUiSlider.get()/100;
+        }
+        var chartHeight = parseInt(preview.width() * chart.aspectRatio * zoom);
+        var chartWidth = parseInt(preview.width()* zoom);
+        console.log(chartHeight, chartWidth);
         renderChartObject('chart', chart, chartHeight, chartWidth);
     }
 
@@ -501,6 +530,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 var chartConfig = window["chart-" + chart.filename];
                 console.debug("Refreshing the chart, config:", chartConfig);
                 if (chartConfig) {
+                console.debug("ACTUALLY Refreshing the chart, config:", chartConfig);
                     chartConfig.chart.renderTo = "chart";
                     new Highcharts.Chart(chartConfig);
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
