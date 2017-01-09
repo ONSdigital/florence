@@ -48,15 +48,15 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         ];
         //temp annotation (singular)
-        chart.annotation = {};
-        chart.annotation.x = 80;
-        chart.annotation.y = 100;
-        chart.annotation.title = 'Copy goes here';
+        //chart.annotation = {};
+        //chart.annotation.x = 80;
+        //chart.annotation.y = 100;
+        //chart.annotation.title = 'Copy goes here';
         //chart.xAxisPos = 'top';
         //chart.yAxisPos = 'left';
         //chart.palette = 'blue';
         //chart.showTooltip = true;
-        chart.showMarker = false;
+        //chart.showMarker = false;
         // TODO check also tooltip marker?
     }
     /////////////////////////////
@@ -187,7 +187,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     });
 
     $('#add-annotation').on('click', function () {
-       // console.log("add annotation");
         var obj = {   
                 //id: chart.annotations.length,
                 title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
@@ -200,20 +199,12 @@ function loadChartBuilder(pageData, onSave, chart) {
                 , isHidden:false
             }
         chart.annotations.push(obj);
-        //console.log(chart.annotations);
-        //renderText();
+        console.log(chart.annotations);
+        renderNotes();
+        renderChart();
     });
 
-    $('.btn-delete-section').on('click', function (e) {
-        var target = e.target.id.substring(18);
-        //console.log(e);
-        //console.log("DELETE " + target);
-        
-        chart.annotations.splice(target,1);
-
-        //console.log(chart.annotations);
-        //renderText();
-    });
+    setDeleteListeners();
 
 
     $('.btn-chart-builder-create').on('click', function () {
@@ -260,6 +251,48 @@ function loadChartBuilder(pageData, onSave, chart) {
     setShortcuts('#chart-data', renderChart);
     setShortcuts('#chart-x-axis-label', renderChart);
     setShortcuts('#chart-notes', renderText);
+
+
+    function setDeleteListeners() {
+        $('.btn-delete-section').on('click', function (e) {
+            var target = parseInt(e.target.id.substring(18));
+            console.log("DEL " + target, e.target.id)
+            chart.annotations.splice(target,1);
+            console.log(chart.annotations);
+            renderNotes();
+            renderChart();
+        });
+
+        $('.refresh-chart').on('input', function () {
+            //chart = buildChartObject();
+            refreshExtraOptions();
+            renderChart();
+        });
+
+        $('.refresh-chart').on('change', ':checkbox', function () {
+            //chart = buildChartObject();
+            refreshExtraOptions();
+            renderChart();
+        });
+
+        $('.refresh-chart').on('change', ':radio', function () {
+            //chart = buildChartObject();
+            refreshExtraOptions();
+            renderChart();
+        });
+
+    }
+    //Renders annotation panel fields
+    function renderNotes() {
+        var template = templates.chartBuilderAnnotation;
+        var html = template(chart);
+        $('#annotation-chart').empty();
+        $('#annotation-chart').html(html);
+        $('#annotation-chart').show();
+
+        //update the delete button listeners
+        setDeleteListeners();
+    }   
 
     //Renders html outside actual chart area (title, subtitle, source, notes etc.)
     function renderText() {
@@ -362,9 +395,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.showMarker = $('#show-marker').prop('checked');
 
 
-        //loop though annotations and populate array
+        //loop though annotations and populate array from form
         $.each(chart.annotations, function(idx, itm){
-
             var lines = $('#chart-notes-'+idx).val().split('\n');
             var maxLength = 0;
             $.each(lines, function(idx, line){
@@ -380,25 +412,8 @@ function loadChartBuilder(pageData, onSave, chart) {
             itm.isHidden = $('#is-hidden-'+idx).prop('checked');
             itm.width = parseInt( maxLength * 6.5) + 6 ;
             itm.height = (lines.length+1)*12 + 10 ;
-
-
-/*
-            chart.annotation.x = parseInt( $('#note-x').val() );
-            chart.annotation.y = parseInt( $('#note-y').val() );
-            chart.annotation.title = lines.join('<br/>');
-            chart.annotation.isHidden = $('#is-hidden').prop('checked');
-            chart.annotation.width = parseInt( maxLength * 6.5) + 6 ;
-            chart.annotation.height = (lines.length+1)*12 + 10 ;
-            chart.devices = [
-                    {type:'Mobile', x:200, y:150, isHidden:false},
-                    {type:'Tablet', x:50, y:50, isHidden:false},
-                    {type:'Desktop', x:50, y:50, isHidden:false}
-                ];
-*/
+            console.log(itm);
         });
-
-        //HACK: create text blob to use to generate annotations object in js via handlebars
-        //chart.textBlob = "{id:1,x: 50,y: 50,allowDragY: true,allowDragX: true,title:'annotation.devices1'},{id:2,x: 90,y: 90,allowDragY: true,allowDragX: true,title:'XXXXXX'},";
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
@@ -444,14 +459,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.files = [];
 
-        console.log(chart);
+        //console.log(chart);
         return chart;
-    }
-
-
-    function setBoxPos(x,y) {
-        console.log('set box ' +x,y);
-
     }
 
 
