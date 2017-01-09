@@ -161,12 +161,12 @@
             
             <div id='advanced-panel' class="js-chart-builder-panel refresh-chart">
 
-<label for="show-tooltip" class="checkbox-label">Show tooltips</label>
-<input id="show-tooltip" name="Show Tooltip" {{#if showTooltip}}checked{{/if}} type="checkbox">
+                <label for="show-tooltip" class="checkbox-label">Show tooltips</label>
+                <input id="show-tooltip" name="Show Tooltip" {{#if showTooltip}}checked{{/if}} type="checkbox">
 
-     
-<label for="show-marker" class="checkbox-label">Show marker points</label>
-<input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
+                     
+                <label for="show-marker" class="checkbox-label">Show marker points</label>
+                <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
 
             
 
@@ -225,54 +225,50 @@
             </div>
 
             <div id='annotation-panel' class="js-chart-builder-panel">
-            <div class="">
-                <button class="btn btn--subtle btn-add-section" id="add-annotation">Add annotation</button>
-            </div>
-
-
-        <div id="annotation-chart" class="edit-section__sortable">
-            {{#each this.annotations}}
-
-                <div id="annotation-{{@index}}" class="edit-section__sortable-item ui-sortable-handle refresh-chart">
-                    <div class="edit-section__title">{{title}}</div>
-                    <button class="btn btn--subtle btn-delete-section" id="delete-annotation-{{@index}}">delete</button>
-                   <label>Chart type {{id}}<br>
-                        <div class="select-wrap">
-                            <select id="chart-type" class="">
-                                {{#select targetDevice}}
-                                    <option value="bar">Mobile</option>
-                                    <option value="rotated">Desktop</option>
-                                    <option value="line">Tablet</option>
-                                {{/select}}
-                            </select>
-                        </div>
-                    </label>
-                    <br/>
-                    <label for="chart-title">X Position
-                        <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{devices.0.x}}"/>
-                    </label>
-                    <label for="chart-title">Y Position
-                        <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{devices.0.y}}"/>
-                    </label>
-
-                    <br/>
-                    <label for="chart-notes">Notes</label>
-                        <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
-
-                    <br/>
-                    
-                    <label>Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" {{#if devices.0.isHidden}}checked{{/if}} ></label>
+                <div class="">
+                    <button class="btn btn--subtle btn-add-section" id="add-annotation">Add annotation</button>
                 </div>
-            {{/each}}
+
+
+                <div id="annotation-chart" class="edit-section__sortable">
+                    {{#each this.annotations}}
+
+                        <div id="annotation-{{@index}}" class="edit-section__sortable-item ui-sortable-handle refresh-chart">
+                            
+                            <div class="edit-section__title">{{title}}</div>
+
+                            <button class="btn btn--subtle btn-delete-section" id="delete-annotation-{{@index}}">delete</button>
+                           <label>Chart type {{id}}<br>
+                                <div class="select-wrap">
+                                    <select id="chart-type" class="">
+                                        {{#select targetDevice}}
+                                            <option value="bar">Mobile</option>
+                                            <option value="rotated">Desktop</option>
+                                            <option value="line">Tablet</option>
+                                        {{/select}}
+                                    </select>
+                                </div>
+                            </label>
+                            <br/>
+                            <label for="chart-title">X Position
+                                <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{x}}"/>
+                            </label>
+                            <label for="chart-title">Y Position
+                                <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{y}}"/>
+                            </label>
+
+                            <br/>
+                            <label for="chart-notes">Notes</label>
+                                <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
+
+                            <br/>
+                            
+                            <label>Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" {{#if isHidden}}checked{{/if}} ></label>
+                        </div>
+                    {{/each}}
+                </div>
+
             </div>
-
-
-
-
-            </div>
-
-
-
 
         </div>
 
