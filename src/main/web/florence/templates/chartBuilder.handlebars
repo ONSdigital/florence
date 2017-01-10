@@ -6,6 +6,9 @@
         <div id="edit-chart" class="builder__editor builder__editor--chart">
 
 
+            <div class="">
+               FILE NAME: {{filename}} <a href='../chartconfig?uri={{uri}}' target ="data"> JSON</a>
+            </div>
             <div class="tab--background">
                 <nav class="tabs--js">
                     <ul class="list--neutral flush">
@@ -110,7 +113,7 @@
                 <label for="chart-notes">Notes</label>
                 <textarea id="chart-notes" class="refresh-text" placeholder="Add chart notes here" rows="4"
                       cols="120">{{notes}}</textarea>
-
+Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ONS Homepage")
             </div>
             
             {{!-- <div id='series-panel' class="js-chart-builder-panel workspace-edit"> --}}
