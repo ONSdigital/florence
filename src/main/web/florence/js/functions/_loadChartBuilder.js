@@ -2,57 +2,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     var chart = chart;
     var slider = $('#chart-slider');
-
-
-console.log('chart')
-    console.log(chart)
-    
-    /////////////////////////////
-    //hack
-    /*
-    if(chart){
-        chart.annotations = [
-            {   
-                id: 0,
-                title: 'Annotation 1: top left', 
-                devices:[
-                    {type:'Mobile', x:50, y:50, isHidden:true},
-                    {type:'Tablet', x:50, y:50, isHidden:false},
-                    {type:'Desktop', x:50, y:50, isHidden:false}
-                ]
-                , x:50, y:50
-                , isHidden:false
-            },
-            {   
-                id: 1,
-                title: 'Annotation 2 : somewhere else', 
-                devices:[
-                    {type:'Mobile', x:200, y:150, isHidden:false},
-                    {type:'Tablet', x:50, y:50, isHidden:false},
-                    {type:'Desktop', x:50, y:50, isHidden:false}
-                ]
-                , x:250, y:70
-                , isHidden:false
-            },
-            {   
-                id: 4,
-                title: 'Annotation 4 : zzzzz', 
-                devices:[
-                    {type:'Mobile', x:200, y:150, isHidden:false},
-                    {type:'Tablet', x:50, y:50, isHidden:false},
-                    {type:'Desktop', x:50, y:50, isHidden:false}
-                ]
-                , x:250, y:70
-                , isHidden:false
-            }
-        ];
-
-    }*/
-    /////////////////////////////
-
-
     var pageUrl = pageData.uri;
     var html = templates.chartBuilder(chart);
+
     $('body').append(html);
     $('.js-chart-builder').css("display", "block");
 
@@ -60,7 +12,6 @@ console.log('chart')
         $('#chart-data').val(toTsv(chart));
         refreshExtraOptions();
     }
-
 
     initSlider();
 
@@ -143,21 +94,26 @@ console.log('chart')
     }
 
 
-    //remove chart= as it picked up in renderChart()
     $('.refresh-chart').on('input', function () {
-        //chart = buildChartObject();
-        refreshExtraOptions();
-        renderChart();
+        var existing = $('#chart-config-URL').val();
+        console.log('load ' + existing);
+
+        if (existing) {
+            console.warn("OVERWRITE ALL CONFIG!");
+            loadExisting(existing);
+        }else{
+            refreshExtraOptions();
+            renderChart();
+        }
+
     });
 
     $('.refresh-chart').on('change', ':checkbox', function () {
-        //chart = buildChartObject();
         refreshExtraOptions();
         renderChart();
     });
 
     $('.refresh-chart').on('change', ':radio', function () {
-        //chart = buildChartObject();
         refreshExtraOptions();
         renderChart();
     });
@@ -178,7 +134,6 @@ console.log('chart')
 
     $('#add-annotation').on('click', function () {
         var obj = {   
-                //id: chart.annotations.length,
                 title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
                 devices:[
                     {type:'Mobile', x:200, y:150, isHidden:false},
@@ -193,16 +148,8 @@ console.log('chart')
         renderChart();
     });
 
-    // re set listeners on new buttons
-    setDeleteListeners();
-
-
-
-
     $('.btn-chart-builder-create').on('click', function () {
-
         chart = buildChartObject();
-
         var jsonPath = chart.uri + ".json";
         $.ajax({
             url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
@@ -238,12 +185,38 @@ console.log('chart')
         });
     });
 
+    // re-set listeners on new buttons
+    setDeleteListeners();
+
     setShortcuts('#chart-title', renderText);
     setShortcuts('#chart-subtitle', renderText);
     setShortcuts('#chart-data', renderChart);
     setShortcuts('#chart-x-axis-label', renderChart);
     setShortcuts('#chart-notes', renderText);
 
+
+    function loadExisting(uri) {
+        var targetUri = pageUrl + "/" + uri + "/data";
+        $.ajax({
+            url: targetUri,
+            type: 'POST',
+            data: null,
+            contentType: "image/png",
+            processData: false,
+            success: function (res) {
+                updateForm(res);
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+
+    function updateForm(newData) {
+        console.log('updateForm');
+        console.log(newData);
+    
+    }
 
     function initSlider() {
         slider = document.getElementById('chart-slider');
@@ -366,16 +339,12 @@ console.log('chart')
         // this stops them breaking the TSV transformation
         json = json.replace(/["]/g,'\'');
 
-        //chart.existing = $('#chart-config-URL').val();
+        
         if (!chart) {
             chart = {};
         }
 
-        //use existing chart config
-        //TODO: re-populate fields? warn?
-        if (chart.existing) {
-            console.warn("OVERWRITE ALL CONFIG!");
-        }
+
 
         chart.type = "chart";
         chart.title = $('#chart-title').val();
@@ -440,7 +409,7 @@ console.log('chart')
             itm.width = parseInt( maxLength * 6.5) + 6 ;
             itm.height = (lines.length+1)*12 + 10 ;
         });
-console.log(chart.annotations);
+
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
             var groups = [];
