@@ -1,17 +1,16 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
     var chart = chart;
+    var slider = $('#chart-slider');
 
+
+console.log('chart')
+    console.log(chart)
+    
     /////////////////////////////
     //hack
+    /*
     if(chart){
-
-        chart.temp_series = [
-            {index:0, title: 'series1', chartType:'Bar', isStacked:true, isHighlight:false},
-            {index:1, title: 'series2', chartType:'line', isStacked:false, isHighlight:false},
-            {index:2, title: 'series3', chartType:'line', isStacked:true, isHighlight:true},
-            {index:3, title: 'series4', chartType:'line', isStacked:false, isHighlight:false}
-        ];
         chart.annotations = [
             {   
                 id: 0,
@@ -47,21 +46,9 @@ function loadChartBuilder(pageData, onSave, chart) {
                 , isHidden:false
             }
         ];
-        //temp annotation (singular)
-        //chart.annotation = {};
-        //chart.annotation.x = 80;
-        //chart.annotation.y = 100;
-        //chart.annotation.title = 'Copy goes here';
-        //chart.xAxisPos = 'top';
-        //chart.yAxisPos = 'left';
-        //chart.palette = 'blue';
-        //chart.showTooltip = true;
-        //chart.showMarker = false;
-        // TODO check also tooltip marker?
-    }
+
+    }*/
     /////////////////////////////
-
-
 
 
     var pageUrl = pageData.uri;
@@ -74,10 +61,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         refreshExtraOptions();
     }
 
+
+    initSlider();
+
     renderText();
     renderChart();
-
-    //
     showTab( 'Chart' );
 
     function refreshExtraOptions() {
@@ -153,21 +141,23 @@ function loadChartBuilder(pageData, onSave, chart) {
                 return;
         }
     }
-    //TODO remove chart= as it picked up in renderChart()
+
+
+    //remove chart= as it picked up in renderChart()
     $('.refresh-chart').on('input', function () {
-        chart = buildChartObject();
+        //chart = buildChartObject();
         refreshExtraOptions();
         renderChart();
     });
 
     $('.refresh-chart').on('change', ':checkbox', function () {
-        chart = buildChartObject();
+        //chart = buildChartObject();
         refreshExtraOptions();
         renderChart();
     });
 
     $('.refresh-chart').on('change', ':radio', function () {
-        chart = buildChartObject();
+        //chart = buildChartObject();
         refreshExtraOptions();
         renderChart();
     });
@@ -199,35 +189,13 @@ function loadChartBuilder(pageData, onSave, chart) {
                 , isHidden:false
             }
         chart.annotations.push(obj);
-        console.log(chart.annotations);
         renderNotes();
         renderChart();
     });
 
+    // re set listeners on new buttons
     setDeleteListeners();
 
-
-    var slider = document.getElementById('chart-slider');
-
-    noUiSlider.create(slider, {
-        start: [100],
-        connect: true,
-        range: {
-            'min': 0,
-            '50%': [ 100 ],
-            'max': 200
-        },
-        pips: {
-            mode: 'count',
-            values: 6,
-            density: 4
-        }
-    });
-
-    slider.noUiSlider.on('end', function(){
-        var val = slider.noUiSlider.get();
-        renderChart();
-    });
 
 
 
@@ -277,12 +245,38 @@ function loadChartBuilder(pageData, onSave, chart) {
     setShortcuts('#chart-notes', renderText);
 
 
+    function initSlider() {
+        slider = document.getElementById('chart-slider');
+
+        noUiSlider.create(slider, {
+            start: [100],
+            connect: true,
+            range: {
+                'min': 0,
+                '50%': [ 100 ],
+                'max': 200
+            },
+            pips: {
+                mode: 'count',
+                values: 6,
+                density: 4
+            }
+        });
+
+        slider.noUiSlider.on('end', function(){
+            var val = slider.noUiSlider.get();
+            renderChart();
+        });
+
+    }
+
+
     function setDeleteListeners() {
+        console.log("set delete listeners");
         $('.btn-delete-section').on('click', function (e) {
             var target = parseInt(e.target.id.substring(18));
-            console.log("DEL " + target, e.target.id)
             chart.annotations.splice(target,1);
-            console.log(chart.annotations);
+            
             renderNotes();
             renderChart();
         });
@@ -372,13 +366,14 @@ function loadChartBuilder(pageData, onSave, chart) {
         // this stops them breaking the TSV transformation
         json = json.replace(/["]/g,'\'');
 
-        var existing = $('#chart-config-URL').val();
+        //chart.existing = $('#chart-config-URL').val();
         if (!chart) {
             chart = {};
         }
 
         //use existing chart config
-        if (existing) {
+        //TODO: re-populate fields? warn?
+        if (chart.existing) {
             console.warn("OVERWRITE ALL CONFIG!");
         }
 
@@ -413,7 +408,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //build a series object to track each series
         // TODO: rename here and in handlebars
-        chart.temp_series = tsvToSeries(json)
+        //chart.temp_series = tsvToSeries(json)
 
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
@@ -423,6 +418,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.showTooltip = $('#show-tooltip').prop('checked');
         chart.showMarker = $('#show-marker').prop('checked');
 
+        if(!chart.annotations){
+            chart.annotations = [];
+        }
 
         //loop though annotations and populate array from form
         $.each(chart.annotations, function(idx, itm){
@@ -441,9 +439,8 @@ function loadChartBuilder(pageData, onSave, chart) {
             itm.isHidden = $('#is-hidden-'+idx).prop('checked');
             itm.width = parseInt( maxLength * 6.5) + 6 ;
             itm.height = (lines.length+1)*12 + 10 ;
-            console.log(itm);
         });
-
+console.log(chart.annotations);
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
             var groups = [];
@@ -530,7 +527,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                 var chartConfig = window["chart-" + chart.filename];
                 console.debug("Refreshing the chart, config:", chartConfig);
                 if (chartConfig) {
-                console.debug("ACTUALLY Refreshing the chart, config:", chartConfig);
                     chartConfig.chart.renderTo = "chart";
                     new Highcharts.Chart(chartConfig);
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
@@ -737,6 +733,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         var content = exportToSVG(sourceSelector).trim();
 
         var $canvas = $(canvasSelector);
+        //TODO Check dimension with scaling...
         $canvas.width(chartWidth);
         $canvas.height(chartHeight);
 
@@ -748,7 +745,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         // get data url from canvas.
         var dataUrl = canvas.toDataURL('image/png');
         var pngData = dataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
-        //console.log(dataUrl);
 
         var raw = window.atob(pngData);
         var rawLength = raw.length;
