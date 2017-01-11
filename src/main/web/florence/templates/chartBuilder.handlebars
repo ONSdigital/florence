@@ -33,7 +33,7 @@
 
 
             <div id='chart-panel' class="js-chart-builder-panel">
-                <label for="chart-data">Chart data</label>
+                <label for="chart-data">Chart data (date in yyy-mm-dd)</label>
                 <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4"
                           cols="120"></textarea>
                 <label>Chart type<br>
@@ -170,7 +170,11 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
             <div id='advanced-panel' class="js-chart-builder-panel refresh-chart">
 
                 <label for="show-tooltip" class="checkbox-label">Show tooltips</label>
-                <input id="show-tooltip" name="Show Tooltip" {{#if showTooltip}}checked{{/if}} type="checkbox">
+                {{#if_eq showTooltip false}}
+                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
+                {{else}}
+                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
+                {{/if_eq}}
 
                      
                 <label for="show-marker" class="checkbox-label">Show marker points</label>
@@ -227,9 +231,7 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                 <label>Use configuration from existing chart<br>
                     <input type="text" id="chart-config-URL" class="loadExisting" placeholder="[URL]"
                            value="{{labelURL}}"/>
-                </label>
-                eg: 8bd65442, fc0d5bc1, 27fabb49
-
+                </label>eg: 8bd65442, fc0d5bc1, 27fabb49
 
             </div>
 
