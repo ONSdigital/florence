@@ -79,11 +79,26 @@
                 <br/>
                   <div class="refresh-chart">
                     <legend>Colours</legend>
-                      {{!-- <input type="radio" name="palette" id="default" value="colour" checked="checked"/> --}}
+
+                    {{#if_eq palette 'blue'}}
+                    <input type="radio" name="palette" id="default" value="colour" />
+                    <label for="default">Colour</label>
+                    <input type="radio" name="palette" id="blue" value="blue" checked="checked"/>
+                    <label for="blue">Blue</label>
+                    {{else}}
+                    <input type="radio" name="palette" id="default" value="colour" checked="checked"/>
+                    <label for="default">Colour</label>
+                    <input type="radio" name="palette" id="blue" value="blue"/>
+                    <label for="blue">Blue</label>
+                    {{/if_eq}}
+
+{{!-- 
                       <input type="radio" name="palette" id="default" value="colour" {{#if_eq palette 'colour'}}checked="checked"{{/if_eq}}/>
                       <label for="default">Colour</label>
                       <input type="radio" name="palette" id="blue" value="blue" {{#if_eq palette 'blue'}}checked="checked"{{/if_eq}}/>
                       <label for="blue">Blue</label>
+ --}}
+
                   </div>
 
                 
