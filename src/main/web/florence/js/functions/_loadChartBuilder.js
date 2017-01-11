@@ -1,7 +1,7 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
     var chart = chart;
-    var slider = $('#chart-slider');
+    var slider;
     var pageUrl = pageData.uri;
     var html = templates.chartBuilder(chart);
 
@@ -182,18 +182,14 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     function updateForm(newData) {
-        console.log('updateForm');
-        console.log(newData);
-        console.log("exisiting data "  + chart.data.length);
 
-        // TODO do we need to update the page dat as well if we update
-        // are there some field we don't want to update eg DATA!! title?
+        // there some field we don't want to update eg DATA!! title?
+        // so store and restore
         var original = {};
         original.filename = chart.filename;
         original.data = chart.data;
         original.headers = chart.headers;
         original.categories = chart.categories;
-        console.log("new data "  + newData.data.length);
 
         chart = newData;
         chart.filename = original.filename;
@@ -201,7 +197,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.headers = original.headers;
         chart.categories = original.categories;
 
-        console.log("replace data "  + chart.data.length);
+        // loop and recreate panels
         var panels = [
             templates.chartBuilderChart,
             templates.chartBuilderMetadata,
@@ -224,22 +220,20 @@ function loadChartBuilder(pageData, onSave, chart) {
 
             $(targets[index]).empty();
             $(targets[index]).append(html);
-            //console.log(html);
         })
 
         $('#chart-data').val(toTsv(chart));
         refreshExtraOptions();
 
-
         setFormListeners();
         renderText();
-        renderChart();
-
-    
+        renderChart();    
     }
+
 
     function initSlider() {
         slider = document.getElementById('chart-slider');
+        //slider =$('#chart-slider')[0]; //returns a HTML DOM Object
 
         noUiSlider.create(slider, {
             start: [100],
@@ -265,10 +259,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function setFormListeners() {
-        console.log("set FORM listeners");
     $('.refresh-chart').on('input', function () {
         var existing = $('#chart-config-URL').val();
-        console.log('load ' + existing);
 
         if (existing) {
             console.warn("OVERWRITE ALL CONFIG!");
@@ -314,7 +306,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function setDeleteListeners() {
-        console.log("set delete listeners");
         $('.btn-delete-section').on('click', function (e) {
             var target = parseInt(e.target.id.substring(18));
             chart.annotations.splice(target,1);
@@ -322,7 +313,6 @@ function loadChartBuilder(pageData, onSave, chart) {
             renderNotes();
             renderChart();
         });
-
     }
 
 
@@ -382,7 +372,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
         var chartHeight = parseInt(preview.width() * chart.aspectRatio * zoom);
         var chartWidth = parseInt(preview.width()* zoom);
-        console.log(chartHeight, chartWidth);
         renderChartObject('chart', chart, chartHeight, chartWidth);
     }
 
@@ -503,8 +492,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         parseChartObject(chart);
 
         chart.files = [];
-
-        //console.log(chart);
+        
         return chart;
     }
 
@@ -544,7 +532,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             },
             function () {
                 var chartConfig = window["chart-" + chart.filename];
-                console.debug("Refreshing the chart, config:", chartConfig);
+                //console.debug("Refreshing the chart, config:", chartConfig);
                 if (chartConfig) {
                     chartConfig.chart.renderTo = "chart";
                     new Highcharts.Chart(chartConfig);
@@ -668,7 +656,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
         var source = (new XMLSerializer).serializeToString(svg[0]);
-        //console.log(source);
 
         //add name spaces.
         if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
@@ -791,7 +778,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             contentType: "image/png",
             processData: false,
             success: function (res) {
-                //console.log('png uploaded!');
+                console.log('png uploaded!');
             }
         });
     }
