@@ -5,6 +5,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     var pageUrl = pageData.uri;
     var html = templates.chartBuilder(chart);
 
+
+
     $('body').append(html);
     $('.js-chart-builder').css("display", "block");
 
@@ -15,9 +17,15 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     initSlider();
 
+    setPageListeners();
+    setFormListeners();
+    setDeleteListeners();
+    setShortcutGroup();
+
     renderText();
     renderChart();
     showTab( 'Chart' );
+
 
     function refreshExtraOptions() {
         var template = getExtraOptionsTemplate(chart.chartType);
@@ -67,6 +75,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
     */
 
+
     function showTab(tabName) {
         $('.js-chart-builder-panel').hide();
         switch (tabName) {
@@ -94,105 +103,65 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
 
-    $('.refresh-chart').on('input', function () {
-        var existing = $('#chart-config-URL').val();
-        console.log('load ' + existing);
+    function setPageListeners() {
 
-        if (existing) {
-            console.warn("OVERWRITE ALL CONFIG!");
-            loadExisting(existing);
-        }else{
-            refreshExtraOptions();
-            renderChart();
-        }
-
-    });
-
-    $('.refresh-chart').on('change', ':checkbox', function () {
-        refreshExtraOptions();
-        renderChart();
-    });
-
-    $('.refresh-chart').on('change', ':radio', function () {
-        refreshExtraOptions();
-        renderChart();
-    });
-
-    $('.refresh-text').on('input', function () {
-        renderText();
-    });
-
-    $('.btn-chart-builder-cancel').on('click', function () {
-        $('.js-chart-builder').stop().fadeOut(200).remove();
-    });
-
-    $('.tab__link').on('click', function () {
-        $('.tab__link').removeClass('tab__link--active');
-        $(this).addClass('tab__link--active');
-        showTab( $(this).text() );
-    });
-
-    $('#add-annotation').on('click', function () {
-        var obj = {   
-                title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
-                devices:[
-                    {type:'Mobile', x:200, y:150, isHidden:false},
-                    {type:'Tablet', x:50, y:50, isHidden:false},
-                    {type:'Desktop', x:50, y:50, isHidden:false}
-                ]
-                , x:250, y:70
-                , isHidden:false
-            }
-        chart.annotations.push(obj);
-        renderNotes();
-        renderChart();
-    });
-
-    $('.btn-chart-builder-create').on('click', function () {
-        chart = buildChartObject();
-        var jsonPath = chart.uri + ".json";
-        $.ajax({
-            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
-            type: 'POST',
-            data: JSON.stringify(chart),
-            processData: false,
-            contentType: 'application/json',
-            success: function (res) {
-
-                if (!pageData.charts) {
-                    pageData.charts = [];
-                }
-
-                existingChart = _.find(pageData.charts, function (existingChart) {
-                    return existingChart.filename === chart.filename;
-                });
-
-                if (existingChart) {
-                    existingChart.title = chart.title;
-                } else {
-                    pageData.charts.push({
-                        title: chart.title,
-                        filename: chart.filename,
-                        uri: chart.uri
-                    });
-                }
-
-                if (onSave) {
-                    onSave(chart.filename, '<ons-chart path="' + chart.filename + '" />');
-                }
-                $('.js-chart-builder').stop().fadeOut(200).remove();
-            }
+        $('.tab__link').on('click', function () {
+            $('.tab__link').removeClass('tab__link--active');
+            $(this).addClass('tab__link--active');
+            showTab( $(this).text() );
         });
-    });
 
-    // re-set listeners on new buttons
-    setDeleteListeners();
+        $('.btn-chart-builder-cancel').on('click', function () {
+            $('.js-chart-builder').stop().fadeOut(200).remove();
+        });
 
-    setShortcuts('#chart-title', renderText);
-    setShortcuts('#chart-subtitle', renderText);
-    setShortcuts('#chart-data', renderChart);
-    setShortcuts('#chart-x-axis-label', renderChart);
-    setShortcuts('#chart-notes', renderText);
+        $('.btn-chart-builder-create').on('click', function () {
+            chart = buildChartObject();
+            var jsonPath = chart.uri + ".json";
+            $.ajax({
+                url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
+                type: 'POST',
+                data: JSON.stringify(chart),
+                processData: false,
+                contentType: 'application/json',
+                success: function (res) {
+
+                    if (!pageData.charts) {
+                        pageData.charts = [];
+                    }
+
+                    existingChart = _.find(pageData.charts, function (existingChart) {
+                        return existingChart.filename === chart.filename;
+                    });
+
+                    if (existingChart) {
+                        existingChart.title = chart.title;
+                    } else {
+                        pageData.charts.push({
+                            title: chart.title,
+                            filename: chart.filename,
+                            uri: chart.uri
+                        });
+                    }
+
+                    if (onSave) {
+                        onSave(chart.filename, '<ons-chart path="' + chart.filename + '" />');
+                    }
+                    $('.js-chart-builder').stop().fadeOut(200).remove();
+                }
+            });
+        });
+    }
+
+
+    
+    function setShortcutGroup() {
+        setShortcuts('#chart-title', renderText);
+        setShortcuts('#chart-subtitle', renderText);
+        setShortcuts('#chart-data', renderChart);
+        setShortcuts('#chart-x-axis-label', renderChart);
+        setShortcuts('#chart-notes', renderText);
+    }
 
 
     function loadExisting(uri) {
@@ -215,6 +184,57 @@ function loadChartBuilder(pageData, onSave, chart) {
     function updateForm(newData) {
         console.log('updateForm');
         console.log(newData);
+        console.log("exisiting data "  + chart.data.length);
+
+        // TODO do we need to update the page dat as well if we update
+        // are there some field we don't want to update eg DATA!! title?
+        var original = {};
+        original.filename = chart.filename;
+        original.data = chart.data;
+        original.headers = chart.headers;
+        original.categories = chart.categories;
+        console.log("new data "  + newData.data.length);
+
+        chart = newData;
+        chart.filename = original.filename;
+        chart.data = original.data;
+        chart.headers = original.headers;
+        chart.categories = original.categories;
+
+        console.log("replace data "  + chart.data.length);
+        var panels = [
+            templates.chartBuilderChart,
+            templates.chartBuilderMetadata,
+            templates.chartBuilderSeries,
+            templates.chartBuilderAdvanced,
+            templates.chartBuilderAnnotation
+        ];
+
+        var targets= [
+            '#chart-panel',
+            '#metadata-panel',
+            '#series-panel',
+            '#advanced-panel',
+            '#annotation-panel',
+        ];
+
+        $.each(panels, function(index, val){
+            var template = val;
+            var html = template(chart);
+
+            $(targets[index]).empty();
+            $(targets[index]).append(html);
+            //console.log(html);
+        })
+
+        $('#chart-data').val(toTsv(chart));
+        refreshExtraOptions();
+
+
+        setFormListeners();
+        renderText();
+        renderChart();
+
     
     }
 
@@ -244,6 +264,55 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
 
+    function setFormListeners() {
+        console.log("set FORM listeners");
+    $('.refresh-chart').on('input', function () {
+        var existing = $('#chart-config-URL').val();
+        console.log('load ' + existing);
+
+        if (existing) {
+            console.warn("OVERWRITE ALL CONFIG!");
+            loadExisting(existing);
+        }else{
+            refreshExtraOptions();
+            renderChart();
+        }
+
+    });
+
+    $('.refresh-chart').on('change', ':checkbox', function () {
+        refreshExtraOptions();
+        renderChart();
+    });
+
+    $('.refresh-chart').on('change', ':radio', function () {
+        refreshExtraOptions();
+        renderChart();
+    });
+
+    $('.refresh-text').on('input', function () {
+        renderText();
+    });
+
+    $('#add-annotation').on('click', function () {
+        var obj = {   
+                title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
+                devices:[
+                    {type:'Mobile', x:200, y:150, isHidden:false},
+                    {type:'Tablet', x:50, y:50, isHidden:false},
+                    {type:'Desktop', x:50, y:50, isHidden:false}
+                ]
+                , x:250, y:70
+                , isHidden:false
+            }
+        chart.annotations.push(obj);
+        renderNotes();
+        renderChart();
+    });
+
+    }
+
+
     function setDeleteListeners() {
         console.log("set delete listeners");
         $('.btn-delete-section').on('click', function (e) {
@@ -254,25 +323,9 @@ function loadChartBuilder(pageData, onSave, chart) {
             renderChart();
         });
 
-        $('.refresh-chart').on('input', function () {
-            //chart = buildChartObject();
-            refreshExtraOptions();
-            renderChart();
-        });
-
-        $('.refresh-chart').on('change', ':checkbox', function () {
-            //chart = buildChartObject();
-            refreshExtraOptions();
-            renderChart();
-        });
-
-        $('.refresh-chart').on('change', ':radio', function () {
-            //chart = buildChartObject();
-            refreshExtraOptions();
-            renderChart();
-        });
-
     }
+
+
     //Renders annotation panel fields
     function renderNotes() {
         var template = templates.chartBuilderAnnotation;
@@ -339,12 +392,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         // this stops them breaking the TSV transformation
         json = json.replace(/["]/g,'\'');
 
-        
         if (!chart) {
             chart = {};
         }
-
-
 
         chart.type = "chart";
         chart.title = $('#chart-title').val();
@@ -538,6 +588,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         for (var i = 0; i < data.categories.length; i++) {
+
             output += "\n" + toTsvLine(data.data[i], data.headers);
         }
 
@@ -549,6 +600,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         var output = "";
 
         for (var i = 0; i < headers.length; i++) {
+
             if (i === headers.length - 1) {
                 output += data[headers[i]];
             } else {
