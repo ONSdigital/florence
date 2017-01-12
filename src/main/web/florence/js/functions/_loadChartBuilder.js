@@ -259,48 +259,54 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function setFormListeners() {
-    $('.refresh-chart').on('input', function () {
-        var existing = $('#chart-config-URL').val();
 
-        if (existing) {
-            console.warn("OVERWRITE ALL CONFIG!");
-            loadExisting(existing);
-        }else{
+        // NOTE need to refresh the chart object before refreshing the Extra options
+        $('.refresh-chart').on('input', function () {
+            var existing = $('#chart-config-URL').val();
+
+            if (existing) {
+                console.warn("OVERWRITE ALL CONFIG!");
+                loadExisting(existing);
+            }else{
+                chart = buildChartObject();
+                refreshExtraOptions();
+                renderChart();
+            }
+
+        });
+
+        $('.refresh-chart').on('change', ':checkbox', function () {
+            chart = buildChartObject();
             refreshExtraOptions();
             renderChart();
-        }
+        });
 
-    });
+        $('.refresh-chart').on('change', ':radio', function () {
+            chart = buildChartObject();
+            refreshExtraOptions();
+            renderChart();
+        });    
 
-    $('.refresh-chart').on('change', ':checkbox', function () {
-        refreshExtraOptions();
-        renderChart();
-    });
+        $('.refresh-text').on('input', function () {
+            console.log('text input');
+            renderText();
+        });
 
-    $('.refresh-chart').on('change', ':radio', function () {
-        refreshExtraOptions();
-        renderChart();
-    });
-
-    $('.refresh-text').on('input', function () {
-        renderText();
-    });
-
-    $('#add-annotation').on('click', function () {
-        var obj = {   
-                title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
-                devices:[
-                    {type:'Mobile', x:200, y:150, isHidden:false},
-                    {type:'Tablet', x:50, y:50, isHidden:false},
-                    {type:'Desktop', x:50, y:50, isHidden:false}
-                ]
-                , x:250, y:70
-                , isHidden:false
-            }
-        chart.annotations.push(obj);
-        renderNotes();
-        renderChart();
-    });
+        $('#add-annotation').on('click', function () {
+            var obj = {   
+                    title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
+                    devices:[
+                        {type:'Mobile', x:200, y:150, isHidden:false},
+                        {type:'Tablet', x:50, y:50, isHidden:false},
+                        {type:'Desktop', x:50, y:50, isHidden:false}
+                    ]
+                    , x:250, y:70
+                    , isHidden:false
+                }
+            chart.annotations.push(obj);
+            renderNotes();
+            renderChart();
+        });
 
     }
 
@@ -488,11 +494,10 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.chartType = $('#chart-type').val();
 
-
         parseChartObject(chart);
 
         chart.files = [];
-        
+
         return chart;
     }
 
