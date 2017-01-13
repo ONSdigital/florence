@@ -501,9 +501,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#chart-highlight').empty();
         $('#chart-highlight').append(html);
 
-
-
-        console.log(html);
         console.log(chart);
 
         parseChartObject(chart);
