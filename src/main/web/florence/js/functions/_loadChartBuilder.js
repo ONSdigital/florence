@@ -494,6 +494,17 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         chart.chartType = $('#chart-type').val();
+        // update advanced select menu under th Advanced tab
+       // var html = templates.chartBuilder(chartBuilderAdvancedSelect);
+        var html = templates.chartBuilderAdvancedSelect(chart);
+        //var html = templates.chartBuilderAdvancedSelect;
+        $('#chart-highlight').empty();
+        $('#chart-highlight').append(html);
+
+
+
+        console.log(html);
+        console.log(chart);
 
         parseChartObject(chart);
 
