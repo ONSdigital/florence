@@ -22,8 +22,24 @@ function loadChartBuilder(pageData, onSave, chart) {
     setDeleteListeners();
     setShortcutGroup();
 
+            try {
+                $('#annotation-chart').accordion({
+                    header: '.accordian-header',
+                    active: 0,
+                    collapsible: true
+                });
+
+                console.log('init annotation');
+
+            }
+            catch(err){
+                console.warn('danger will robinson')
+            }
+
     renderText();
     renderChart();
+    renderNotes();
+
     showTab( 'Chart' );
 
 
@@ -96,6 +112,21 @@ function loadChartBuilder(pageData, onSave, chart) {
                 break;
             case 'Annotation':
                 $('#annotation-panel').show();
+
+                $( "#annotation-chart" ).accordion({
+                  active: 0
+                });
+
+                 /*var allPanels = $('.accordian-body').hide();
+    
+                  $('h1.title ').click(function() {
+                    var active = $( "#annotation-chart" ).accordion( "option", "active" );
+                    console.log(active);
+                    allPanels.slideUp();
+                    $(this).parent().find(".accordian-body").slideDown();
+
+                    return false;
+                  });*/
                 break;
             default:
                 return;
@@ -332,6 +363,11 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //update the delete button listeners
         setDeleteListeners();
+
+        //console.log('annotations.length ' + chart.annotations.length);
+        $( "#annotation-chart" ).accordion( "refresh" );
+        $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
+        
     }   
 
     //Renders html outside actual chart area (title, subtitle, source, notes etc.)
@@ -426,7 +462,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
-        chart.aspectRatio = $('#aspect-ratio').val();
+        chart.aspectRatio = $('#aspect-ratio-desk').val();
+        chart.aspectRatioMobile = $('#aspect-ratio-mob').val();
+        chart.aspectRatioTablet = $('#aspect-ratio-tab').val();
         chart.highlight = $('#chart-highlight option:selected').text();
 
         chart.palette = $('input[name=palette]:checked').val();
@@ -439,21 +477,24 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //loop though annotations and populate array from form
         $.each(chart.annotations, function(idx, itm){
-            var lines = $('#chart-notes-'+idx).val().split('\n');
-            var maxLength = 0;
-            $.each(lines, function(idx, line){
-                if (line.length>maxLength){
-                    maxLength = line.length;
-                }
-            });
+            var text = $('#chart-notes-'+idx).val();
+                var maxLength = 0;
+            if(text){
+                var lines = text.split('\n');
+                $.each(lines, function(idx, line){
+                    if (line.length>maxLength){
+                        maxLength = line.length;
+                    }
+                });
 
-            itm.id = idx;
-            itm.x = parseInt( $('#note-x-'+idx).val() );
-            itm.y = parseInt( $('#note-y-'+idx).val() );
-            itm.title = lines.join('<br/>');
-            itm.isHidden = $('#is-hidden-'+idx).prop('checked');
-            itm.width = parseInt( maxLength * 6.5) + 6 ;
-            itm.height = (lines.length+1)*12 + 10 ;
+                itm.id = idx;
+                itm.x = parseInt( $('#note-x-'+idx).val() );
+                itm.y = parseInt( $('#note-y-'+idx).val() );
+                itm.title = lines.join('<br/>');
+                itm.isHidden = $('#is-hidden-'+idx).prop('checked');
+                itm.width = parseInt( maxLength * 6.5) + 6 ;
+                itm.height = (lines.length+1)*12 + 10 ;
+            }
         });
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
