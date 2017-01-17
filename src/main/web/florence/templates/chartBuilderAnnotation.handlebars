@@ -1,35 +1,39 @@
 
 {{#each this.annotations}}
 
-    <div id="annotation-{{@index}}" class="edit-section__sortable-item ui-sortable-handle refresh-chart">
-        <div class="edit-section__title">{{title}}</div>
-        <button class="btn btn--subtle btn-delete-section" id="delete-annotation-{{@index}}">delete</button>
-       <label>Chart type {{id}}<br>
-            <div class="select-wrap">
-                <select id="chart-type" class="">
-                    {{#select targetDevice}}
-                        <option value="bar">Mobile</option>
-                        <option value="rotated">Desktop</option>
-                        <option value="line">Tablet</option>
-                    {{/select}}
-                </select>
-            </div>
-        </label>
-        <br/>
-        <label for="chart-title">X Position
-            <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{x}}"/>
-        </label>
-        <label for="chart-title">Y Position
-            <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{y}}"/>
-        </label>
+    <div id="annotation-{{@index}}" class="accordian refresh-chart">
+    
+        <h3 class="accordian-header edit-section__head accordian__title">{{title}}</h3>
+        <div class="accordian-body accordian__content" >
+           
+           <label>Chart type <br>
+                <div class="select-wrap">
+                    <select id="chart-type" class="">
+                        {{#select targetDevice}}
+                            <option value="bar">Mobile</option>
+                            <option value="rotated">Desktop</option>
+                            <option value="line">Tablet</option>
+                        {{/select}}
+                    </select>
+                </div>
+            </label>
+            <button class="btn btn--warning btn-delete-section" id="delete-annotation-{{@index}}">Delete</button>
+            <br/>
+            <label for="chart-title">X Position
+                <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{x}}"/>
+            </label>
+            <label for="chart-title">Y Position
+                <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{y}}"/>
+            </label>
 
-        <br/>
-        <label for="chart-notes">Notes</label>
-            <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
+            <br/>
+            <label for="chart-notes">Notes</label>
+                <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
 
-        <br/>
-        
-        <label>Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" {{#if isHidden}}checked{{/if}} ></label>
+            <br/>
+            
+            <label class="checkbox-label-half">Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" class="inline-block" {{#if isHidden}}checked{{/if}} ></label>
+        </div>
     </div>
 
 {{/each}}

@@ -2,9 +2,9 @@
     <div id="chart-list" class="edit-section__content">
         <div id="sortable-chart" class="edit-section__sortable">
 
-
+NB: the type needs to be set to Bar+Line in order to change the series
 {{#each this.series}}
-  <label for="series-types_{{@index}}">{{this}}</label>
+  <label for="series-types_{{@index}}">Series {{@index}}: {{this}}</label>
   <div class="select-wrap">
     <select id="series-types_{{@index}}" class="col--5">
       {{#select (lookup ../chartTypes this)}}
@@ -13,39 +13,14 @@
       {{/select}}
     </select>
   </div>
-  <label for="{{this}}">Highlight</label>
-    <input id="{{this}}" name="highlight-group" value="{{this}}" type="checkbox"
-    {{!-- {{#ifContains ../chartTypes}} checked{{/ifContains}} --}}
-    >
+
+
   {{!-- <label for="{{this}}">Highlight</label>
     <input id="{{this}}" name="highlight-group" value="{{this}}" type="checkbox"{{#ifContains this ../groups.[0]}} checked{{/ifContains}}> --}}
   <br/>
 {{/each}}
 
 
-{{!--             {{#each this.temp_series}}
-
-                <div id="{{@index}}" class="edit-section__sortable-item ui-sortable-handle">
-                    <div class="edit-section__title">{{title}}</div>
-
-
-                   <label>
-                        <div class="select-wrap">
-                            <select id="types_{{@index}}" class="refresh-chart">
-                                {{#select (lookup ../chartTypes this)}}
-                                    <option value="bar">Bar Chart</option>
-                                    <option value="line">Line Chart</option>
-                                {{/select}}
-                            </select>
-                        </div>
-                    </label>
-                    <br/>
-                    <div class="refresh-chart">
-                    <label>Stack bars<input type="checkbox" id="tooltip" value="tooltip_checkbox" {{#if isStacked}}checked{{/if}}></label>
-                    <label>highlight<input type="checkbox" id="markers" value="markers_checkbox" {{#if isHighlight}}checked{{/if}} ></label>
-                    </div>
-                </div>
-            {{/each}} --}}
         </div>
         
     </div>
