@@ -6,9 +6,7 @@
         <div id="edit-chart" class="builder__editor builder__editor--chart">
 
 
-            <div class="">
-               FILE NAME: {{filename}} <a href='../chartconfig?uri={{uri}}' target ="data"> JSON</a>
-            </div>
+
             <div class="tab--background">
                 <nav class="tabs--js">
                     <ul class="list--neutral flush">
@@ -34,10 +32,9 @@
 
             <div id='chart-panel' class="js-chart-builder-panel">
                 <label for="chart-data">Chart data (date in yyy-mm-dd)</label>
-                <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4"
-                          cols="120"></textarea>
+                <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4" cols="120"></textarea>
                 <label>Chart type<br>
-                    <div class="select-wrap">
+                    <div class="select-wrap half">
                         <select id="chart-type" class="refresh-chart">
                             {{#select chartType}}
                                 <option value="bar">Bar Chart</option>
@@ -57,7 +54,7 @@
                         </select>
                     </div>
                 </label>
-                <div id="extras" class="refresh-chart">
+                <div id="extras" class="refresh-chart half">
                 </div>
                 <br/>
                 
@@ -68,9 +65,11 @@
                 </label>
                 <br/>
 
-                    <label for="chart-title">Overwrite default y-axis (min 10)
-                        <input type="text" id="chart-min" class="refresh-chart" placeholder="[Min]" value="{{yMin}}"/>
-                        <input type="text" id="chart-max" class="refresh-chart" placeholder="[Max]" value="{{yMax}}"/>
+                    <label for="chart-min" class=""> Set y-axis minimum (min 10)
+                        <input type="text" id="chart-min" class=" refresh-chart" placeholder="[Min]" value="{{yMin}}"/>
+                    </label>
+                    <label for="chart-max" class="">Set y-axis maximum
+                        <input type="text" id="chart-max" class=" refresh-chart" placeholder="[Max]" value="{{yMax}}"/>
                     </label>
 
                 <br/>
@@ -78,24 +77,16 @@
                     <legend>Colours</legend>
 
                     {{#if_eq palette 'blue'}}
-                    <input type="radio" name="palette" id="default" value="colour" />
-                    <label for="default">Colour</label>
-                    <input type="radio" name="palette" id="blue" value="blue" checked="checked"/>
-                    <label for="blue">Blue</label>
+                    <input type="radio" class="" name="palette" id="default" value="colour" />
+                    <label for="default" class="">Colour</label>
+                    <input type="radio" class="" name="palette" id="blue" value="blue" checked="checked"/>
+                    <label for="blue" class="">Blue</label>
                     {{else}}
-                    <input type="radio" name="palette" id="default" value="colour" checked="checked"/>
-                    <label for="default">Colour</label>
-                    <input type="radio" name="palette" id="blue" value="blue"/>
-                    <label for="blue">Blue</label>
+                    <input type="radio" class="" name="palette" id="default" value="colour" checked="checked"/>
+                    <label for="default" class="">Colour</label>
+                    <input type="radio" class="" name="palette" id="blue" value="blue"/>
+                    <label for="blue" class="">Blue</label>
                     {{/if_eq}}
-
-{{!-- 
-                      <input type="radio" name="palette" id="default" value="colour" {{#if_eq palette 'colour'}}checked="checked"{{/if_eq}}/>
-                      <label for="default">Colour</label>
-                      <input type="radio" name="palette" id="blue" value="blue" {{#if_eq palette 'blue'}}checked="checked"{{/if_eq}}/>
-                      <label for="blue">Blue</label>
- --}}
-
                   </div>
 
                 
@@ -107,7 +98,7 @@
                     <label for="chart-title">Title
                         <input type="text" id="chart-title" class="half" placeholder="[Title]" value="{{title}}"/>
                     </label>
-                    <label for="chart-subtitle">Sub-title
+                    <label for="chart-subtitle">Subtitle
                         <input type="text" id="chart-subtitle" class="half" placeholder="[Subtitle]" value="{{subtitle}}"/>
                     </label>
                     <label for="chart-source">Source
@@ -140,17 +131,21 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
             </div>
             
             <div id='advanced-panel' class="js-chart-builder-panel refresh-chart">
-
-                <label for="show-tooltip" class="checkbox-label">Show tooltips</label>
+                
+                
+                <div id='' class="">
+                <label for="show-tooltip" class="checkbox-label--small">Show tooltips</label>
                 {{#if_eq showTooltip false}}
                 <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
                 {{else}}
                 <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
                 {{/if_eq}}
+                </div>
 
-                     
-                <label for="show-marker" class="checkbox-label">Show marker points</label>
+                <div id='' class="">     
+                <label for="show-marker" class="checkbox-label--small">Show marker points</label>
                 <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
+                </div>
 
             
 
@@ -180,10 +175,9 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
 
                 <br/>
 
-
-                <label>Aspect ratio<br>
-                    <div class="select-wrap">
-                        <select id="aspect-ratio" class="">
+                <label>Aspect ratio: Desktop<br>
+                    <div class="select-wrap ">
+                        <select id="aspect-ratio-desk" >
                             {{#select aspectRatio}}
                                 <option value="0.56">16:9</option>
                                 <option value="0.75">4:3</option>
@@ -194,6 +188,36 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                         </select>
                     </div>
                 </label>
+<br/>
+                <label>Aspect ratio: Mobile<br>
+                    <div class="select-wrap ">
+                        <select id="aspect-ratio-mob" >
+                            {{#select aspectRatioMobile}}
+                                <option value="0.56">16:9</option>
+                                <option value="0.75">4:3</option>
+                                <option value="0.42">21:9</option>
+                                <option value="1">1:1</option>
+                                <option value="1.3">10:13</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
+
+                <label>Aspect ratio: Tablet<br>
+                    <div class="select-wrap  ">
+                        <select id="aspect-ratio-tad" >
+                            {{#select aspectRatioTablet}}
+                                <option value="0.56">16:9</option>
+                                <option value="0.75">4:3</option>
+                                <option value="0.42">21:9</option>
+                                <option value="1">1:1</option>
+                                <option value="1.3">10:13</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
+
+                
 
 
                 <br/>
@@ -242,46 +266,12 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
 
             <div id='annotation-panel' class="js-chart-builder-panel">
                 <div class="">
-                    <button class="btn btn--subtle btn-add-section" id="add-annotation">Add annotation</button>
+                    <button class="btn btn--positive btn-chart-builder-create btn-add-section" id="add-annotation">Add annotation</button>
                 </div>
 
 
                 <div id="annotation-chart" class="edit-section__sortable">
-                    {{#each this.annotations}}
 
-                        <div id="annotation-{{@index}}" class="edit-section__sortable-item ui-sortable-handle refresh-chart">
-                            
-                            <div class="edit-section__title">{{title}}</div>
-
-                            <button class="btn btn--subtle btn-delete-section" id="delete-annotation-{{@index}}">delete</button>
-                           <label>Chart type {{id}}<br>
-                                <div class="select-wrap">
-                                    <select id="chart-type" class="">
-                                        {{#select targetDevice}}
-                                            <option value="bar">Mobile</option>
-                                            <option value="rotated">Desktop</option>
-                                            <option value="line">Tablet</option>
-                                        {{/select}}
-                                    </select>
-                                </div>
-                            </label>
-                            <br/>
-                            <label for="chart-title">X Position
-                                <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{x}}"/>
-                            </label>
-                            <label for="chart-title">Y Position
-                                <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{y}}"/>
-                            </label>
-
-                            <br/>
-                            <label for="chart-notes">Notes</label>
-                                <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
-
-                            <br/>
-                            
-                            <label>Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" {{#if isHidden}}checked{{/if}} ></label>
-                        </div>
-                    {{/each}}
                 </div>
 
             </div>
@@ -311,6 +301,12 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
         <div class="builder__footer">
             <button class="btn btn--positive btn-chart-builder-create">Save chart</button>
             <button class="btn btn-chart-builder-cancel">Cancel</button>
+
+            <div class="debug-links">
+                FILE ID: <strong>{{filename}}</strong> <a href='{{uri}}' target ="chart">CHART</a>
+                 | <a href='{{uri}}/data' target ="data">DATA</a>
+                 | <a href='../chartconfig?uri={{uri}}' target ="json">JSON</a>
+            </div>
         </div>
 
     </div>

@@ -16,7 +16,7 @@
         width: 30%;
         height: $lineheight * 33;
         float: left;
-        padding: ($lineheight * 2) $gutter $lineheight $gutter;
+        padding: 0px $gutter $lineheight $gutter;
         overflow-y: scroll;
         overflow-x: hidden;
 
@@ -76,6 +76,13 @@
     // Exception to label styling - make checkboxes only 15% width
     & .checkbox-label {
         width: 15%;
+    }    
+
+    & .checkbox-label--small {
+        width: 28%;
+    }
+    & .checkbox-label--half {
+        width: 50%;
     }
 
     textarea {
