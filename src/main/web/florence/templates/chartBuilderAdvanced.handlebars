@@ -1,9 +1,16 @@
-                <label for="show-tooltip" class="checkbox-label">Show tooltips</label>
-                <input id="show-tooltip" name="Show Tooltip" {{#if showTooltip}}checked{{/if}} type="checkbox">
+                <div id='' class="">
+                <label for="show-tooltip" class="checkbox-label--small">Show tooltips</label>
+                {{#if_eq showTooltip false}}
+                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
+                {{else}}
+                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
+                {{/if_eq}}
+                </div>
 
-                     
-                <label for="show-marker" class="checkbox-label">Show marker points</label>
+                <div id='' class="">     
+                <label for="show-marker" class="checkbox-label--small">Show marker points</label>
                 <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
+                </div>
 
             
 
@@ -31,12 +38,11 @@
                 </label>
 
 
-                <br/>
+               <br/>
 
-
-                <label>Aspect ratio<br>
-                    <div class="select-wrap">
-                        <select id="aspect-ratio" class="">
+                <label>Aspect ratio: Desktop<br>
+                    <div class="select-wrap ">
+                        <select id="aspect-ratio-desk" >
                             {{#select aspectRatio}}
                                 <option value="0.56">16:9</option>
                                 <option value="0.75">4:3</option>
@@ -47,9 +53,72 @@
                         </select>
                     </div>
                 </label>
+<br/>
+                <label>Aspect ratio: Mobile<br>
+                    <div class="select-wrap ">
+                        <select id="aspect-ratio-mob" >
+                            {{#select aspectRatioMobile}}
+                                <option value="0.56">16:9</option>
+                                <option value="0.75">4:3</option>
+                                <option value="0.42">21:9</option>
+                                <option value="1">1:1</option>
+                                <option value="1.3">10:13</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
 
+                <label>Aspect ratio: Tablet<br>
+                    <div class="select-wrap  ">
+                        <select id="aspect-ratio-tad" >
+                            {{#select aspectRatioTablet}}
+                                <option value="0.56">16:9</option>
+                                <option value="0.75">4:3</option>
+                                <option value="0.42">21:9</option>
+                                <option value="1">1:1</option>
+                                <option value="1.3">10:13</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
+
+                
+
+
+
+                <label>Label interval<br>
+                <input type="text" id="chart-label-interval" class="refresh-chart" placeholder="[Label interval]"
+                       value="{{labelInterval}}"/>
+                </label>
 
                 <br/>
+
+ 
+                
+                <label>Highlight Category<br>
+                    <div class="select-wrap">
+                        <select id="chart-highlight" class="">
+                            {{#if_eq chartType 'line'}}
+                            {{#select highlight}}
+                                <option value="0">No Highlight</option>
+                            {{#each series}}
+                                <option value="{{plus @index 1}}">{{this}}</option>
+                            {{/each}}
+                            {{/select}}
+                            {{else}}
+                            {{#select highlight}}
+                                <option value="0">No Highlight</option>
+                            {{#each categories}}
+                                <option value="{{plus @index 1}}">{{this}}</option>
+                            {{/each}}
+                            {{/select}}
+                            {{/if_eq}}
+                        </select>
+                    </div>
+                </label>
+
+                <br/>
+
 
 
 
