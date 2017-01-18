@@ -547,7 +547,7 @@ console.log(chart.height, chart.width);
         $('#chart-highlight').empty();
         $('#chart-highlight').append(html);
 
-        console.log(chart);
+        //console.log(chart);
 
         parseChartObject(chart);
 
@@ -585,7 +585,6 @@ console.log(chart.height, chart.width);
 
     //// Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
-console.log(JSON.stringify(chart));
         var jqxhr = $.post("/chartconfig", {
                 data: JSON.stringify(chart),
                 width: chartWidth
@@ -679,6 +678,9 @@ console.log(JSON.stringify(chart));
     function tsvJSONHeaders(input) {
         var lines = input.split("\n"); //%0A - "\n"
         var headers = lines[0].split("\t"); //%09 - "\t"
+        if(headers.length>3){
+            console.warn('That\'s a lot of series. Do you want to use small multiples?');
+        }
         return headers;
     }
 
@@ -691,6 +693,7 @@ console.log(JSON.stringify(chart));
             var obj = {index:i, title: headers[i] + ': series'+(i+1), chartType:'line', isStacked:false, isHighlight:false};
             series.push(obj);
         }
+
         return series;
     }
 
