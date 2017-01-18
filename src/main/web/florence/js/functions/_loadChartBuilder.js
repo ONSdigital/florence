@@ -4,6 +4,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     var slider;
     var pageUrl = pageData.uri;
     var html = templates.chartBuilder(chart);
+    var zoom;
 
 
 
@@ -24,7 +25,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
             try {
                 $('#annotation-chart').accordion({
-                    header: '.accordian-header',
+                    header: '.chart-accordian-header',
                     active: 0,
                     collapsible: true
                 });
@@ -33,7 +34,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
             }
             catch(err){
-                console.warn('danger will robinson')
+                console.warn('Issue initialising ')
             }
 
     renderText();
@@ -408,7 +409,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     function renderChart() {
         chart = buildChartObject();
         var preview = $('#chart');
-        var zoom = 1;
+        zoom = 1;
         if(slider){
             zoom = slider.noUiSlider.get()/100;
         }
@@ -488,6 +489,10 @@ function loadChartBuilder(pageData, onSave, chart) {
                 });
 
                 itm.id = idx;
+                //scale the  annotion box position based on its ratio position
+console.log(chart.height, chart.width);
+                /*itm.x = parseInt( $('#note-x-'+idx).val()/chart.height * zoom );
+                itm.y = parseInt( $('#note-y-'+idx).val()/chart.width * zoom );*/
                 itm.x = parseInt( $('#note-x-'+idx).val() );
                 itm.y = parseInt( $('#note-y-'+idx).val() );
                 itm.title = lines.join('<br/>');
@@ -580,7 +585,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     //// Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
-
+console.log(JSON.stringify(chart));
         var jqxhr = $.post("/chartconfig", {
                 data: JSON.stringify(chart),
                 width: chartWidth
