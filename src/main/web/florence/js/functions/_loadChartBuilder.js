@@ -1,48 +1,46 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
-    var chart = chart;
+    var chart;
     var slider;
-    var pageUrl = pageData.uri;
-    var html = templates.chartBuilder(chart);
+    var pageUrl;
+    var html;
     var zoom;
+    const ALPHA = 0.6;
 
 
+    initialise(pageData, chart);
 
-    $('body').append(html);
-    $('.js-chart-builder').css("display", "block");
 
-    if (chart) {
-        $('#chart-data').val(toTsv(chart));
-        refreshExtraOptions();
+    function initialise(pageData, _chart){
+        console.log('initialise!');
+        chart = _chart;
+        pageUrl = pageData.uri;
+        html = templates.chartBuilder(chart);
+
+
+        $('body').append(html);
+        $('.js-chart-builder').css("display", "block");
+
+        if (chart) {
+            $('#chart-data').val(toTsv(chart));
+            refreshExtraOptions();
+        }
+
+        initSlider();
+        initAccordian();
+
+        setPageListeners();
+        setFormListeners();
+        setDeleteListeners();
+        setShortcutGroup();
+
+        renderText();
+        renderChart();
+        renderNotes();
+
+        showTab( 'Chart' );
+
     }
-
-    initSlider();
-
-    setPageListeners();
-    setFormListeners();
-    setDeleteListeners();
-    setShortcutGroup();
-
-            try {
-                $('#annotation-chart').accordion({
-                    header: '.chart-accordian-header',
-                    active: 0,
-                    collapsible: true
-                });
-
-                console.log('init annotation');
-
-            }
-            catch(err){
-                console.warn('Issue initialising ')
-            }
-
-    renderText();
-    renderChart();
-    renderNotes();
-
-    showTab( 'Chart' );
-
 
     function refreshExtraOptions() {
         var template = getExtraOptionsTemplate(chart.chartType);
@@ -263,29 +261,47 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
 
+    function initAccordian() {
+        try {
+            $('#annotation-chart').accordion({
+                header: '.chart-accordian-header',
+                active: 0,
+                collapsible: true
+            });
+        }
+        catch(err){
+            console.warn('Issue initialising ACCORDIAN');
+        }
+    }
+
+
     function initSlider() {
         slider = document.getElementById('chart-slider');
-        //slider =$('#chart-slider')[0]; //returns a HTML DOM Object
 
-        noUiSlider.create(slider, {
-            start: [100],
-            connect: true,
-            range: {
-                'min': 0,
-                '50%': [ 100 ],
-                'max': 200
-            },
-            pips: {
-                mode: 'count',
-                values: 6,
-                density: 4
-            }
-        });
+        try {
+            noUiSlider.create(slider, {
+                start: [100],
+                connect: true,
+                range: {
+                    'min': 0,
+                    '50%': [ 100 ],
+                    'max': 200
+                },
+                pips: {
+                    mode: 'count',
+                    values: 6,
+                    density: 4
+                }
+            });
 
-        slider.noUiSlider.on('end', function(){
-            var val = slider.noUiSlider.get();
-            renderChart();
-        });
+            slider.noUiSlider.on('end', function(){
+                var val = slider.noUiSlider.get();
+                renderChart();
+            });
+        }
+        catch(err){
+            console.warn('Issue initialising SLIDER');
+        }
 
     }
 
@@ -294,6 +310,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         // NOTE need to refresh the chart object before refreshing the Extra options
         $('.refresh-chart').on('input', function () {
+            console.log('refresh');
             var existing = $('#chart-config-URL').val();
 
             if (existing) {
@@ -368,6 +385,16 @@ function loadChartBuilder(pageData, onSave, chart) {
         //console.log('annotations.length ' + chart.annotations.length);
         $( "#annotation-chart" ).accordion( "refresh" );
         $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
+
+        $('.refresh-chart').on('input', function () {
+            console.log('refresh');
+
+                chart = buildChartObject();
+                refreshExtraOptions();
+                renderChart();
+            
+
+        });
         
     }   
 
@@ -429,6 +456,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         chart.type = "chart";
+        chart.alpha = ALPHA;
         chart.title = $('#chart-title').val();
         chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         chart.uri = pageUrl + "/" + chart.filename;
@@ -490,7 +518,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
                 itm.id = idx;
                 //scale the  annotion box position based on its ratio position
-console.log(chart.height, chart.width);
+
                 /*itm.x = parseInt( $('#note-x-'+idx).val()/chart.height * zoom );
                 itm.y = parseInt( $('#note-y-'+idx).val()/chart.width * zoom );*/
                 itm.x = parseInt( $('#note-x-'+idx).val() );
