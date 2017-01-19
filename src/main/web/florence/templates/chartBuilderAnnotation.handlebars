@@ -6,17 +6,17 @@
         <h3 class="chart-accordian-header edit-section__head accordian__title">{{title}}</h3>
         <div class="chart-accordian-body accordian__content" >
            
-           <label>Chart type <br>
+           {{!-- <label>Chart type <br>
                 <div class="select-wrap">
                     <select id="chart-type" class="">
                         {{#select targetDevice}}
-                            <option value="bar">Mobile</option>
-                            <option value="rotated">Desktop</option>
-                            <option value="line">Tablet</option>
+                            <option value="mobile">Mobile</option>
+                            <option value="desktop">Desktop</option>
+                            <option value="tablet">Tablet</option>
                         {{/select}}
                     </select>
                 </div>
-            </label>
+            </label> --}}
             <button class="btn btn--warning btn-delete-section" id="delete-annotation-{{@index}}">Delete</button>
             <br/>
             <label for="chart-title">X Position
@@ -32,7 +32,7 @@
 
             <br/>
             
-            <label class="checkbox-label-half">Hide on this screen size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" class="inline-block" {{#if isHidden}}checked{{/if}} ></label>
+            <label class="checkbox-label-half">Hide on this device size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" class="inline-block" {{#if isHidden}}checked{{/if}} ></label>
         </div>
     </div>
 
