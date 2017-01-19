@@ -35,6 +35,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         //initSlider();
         initAccordian();
 
+        // TODO: organise add/remove listeners
+        // TODO: rationalise templates
         setPageListeners();
         setFormListeners();
         setDeleteListeners();
@@ -226,7 +228,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     function updateForm(newData) {
-
         // there some field we don't want to update eg DATA!! title?
         // so store and restore
         var original = {};
@@ -303,17 +304,11 @@ function loadChartBuilder(pageData, onSave, chart) {
                     '75%': [ 150 ],
                     'max': 200
                 },
-                /*pips: {
-                    mode: 'count',
-                    values: 6,
-                    density: 4
-                }*/
-
                 pips: {
-        mode: 'positions',
-        values: [0,25,50,75,100],
-        density: 4
-    }
+                    mode: 'positions',
+                    values: [0,25,50,75,100],
+                    density: 4
+                }
             });
 
             slider.noUiSlider.on('end', function(){
@@ -378,30 +373,17 @@ function loadChartBuilder(pageData, onSave, chart) {
             renderNotes();
             renderChart();
         });
-console.log('add aspect ratio listener');
+
         //device type
         $('.refresh-aspect').on('input', function () {
 
             var device = $('#device').val();
             console.log('change!' + device);
 
-            switch (device) {
-
-                case 'sm':
-                    chart.aspectRatioMobile = $('#aspect-ratio').val();
-                break;
-
-                case 'md':
-                    chart.aspectRatioTablet = $('#aspect-ratio').val();
-                break;
-
-                case 'lg':
-                    chart.aspectRatioDesktop = $('#aspect-ratio').val();
-                break;
-            }
+            chart.devices[device].aspectRatio = $('#aspect-ratio').val();
+            chart.devices[device].labelInterval = $('#chart-label-interval').val();
 
             chart = buildChartObject();
-            //refreshExtraOptions();
             renderChart();
         });
 
@@ -532,41 +514,31 @@ console.log('add aspect ratio listener');
         chart.yMax = $('#chart-max').val();
 
         // store the device and the respective aspect ratio
+        if(!chart.devices){
+            chart.devices = {
+                'sm':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                'md':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                'lg':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                            };
+        }
         chart.device = $('#device').val();
         chart.size = sizes[chart.device];
 
         //set defaults
 
-        if (!chart.aspectRatioMobile) {
-            chart.aspectRatioMobile = $('#aspect-ratio').val();
-        }
-        if (!chart.aspectRatioTablet) {
-            chart.aspectRatioTablet = $('#aspect-ratio').val();
-        }
-        if (!chart.aspectRatioDesktop) {
-            chart.aspectRatioDesktop = $('#aspect-ratio').val();
-        }
+       // if (!chart.devices[chart.device].aspectRatio) {
+       //     chart.devices[chart.device].aspectRatio = $('#aspect-ratio').val();
+       // }
+
         chart.aspectRatio = $('#aspect-ratio').val();
         console.log(chart.aspectRatio);
 
         // set ratio is done when the aspect ratio changes so recall existing aspect ratio
-        switch (chart.device) {
-
-            case 'sm':
-                $('#aspect-ratio').val(chart.aspectRatioMobile);
-            break;
-
-            case 'md':
-                $('#aspect-ratio').val(chart.aspectRatioTablet);
-            break;
-
-            case 'lg':
-                $('#aspect-ratio').val(chart.aspectRatioDesktop);
-            break;
-        }
+        $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
+        $('#chart-label-interval').val(chart.devices[chart.device].labelInterval);
 
 
-        console.log(chart);
+        console.log(chart.devices);
         if (chart.title === '') {
             chart.title = '[Title]'
         }
