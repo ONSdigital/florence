@@ -375,7 +375,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         });
 
         //device type
-        $('.refresh-aspect').on('input', function () {
+        $('.refresh-aspect').on('input', function (e) {
 
             var device = $('#device').val();
             console.log('change!' + device);
@@ -386,6 +386,8 @@ function loadChartBuilder(pageData, onSave, chart) {
             chart = buildChartObject();
             renderChart();
         });
+
+
 
     }
 
@@ -417,13 +419,21 @@ function loadChartBuilder(pageData, onSave, chart) {
         $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
 
         $('.refresh-chart').on('input', function () {
-            console.log('refresh');
+            chart = buildChartObject();
+            refreshExtraOptions();
+            renderChart();
+        });
 
-                chart = buildChartObject();
-                refreshExtraOptions();
-                renderChart();
-            
+        $('.refresh-aspect').on('change', ':checkbox', function (e) {
+            var id = $(this).attr('id');
+            id = id.split('-')[2];
+            var device = $('#device').val();
 
+            chart.devices[device].aspectRatio = $('#aspect-ratio').val();
+            chart.devices[device].labelInterval = $('#chart-label-interval').val();
+
+            chart = buildChartObject();
+            renderChart();
         });
         
     }   
@@ -509,9 +519,14 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.startFromZero = $('#start-from-zero').prop('checked');
         chart.finishAtHundred = $('#finish-at-hundred').prop('checked');
 
-        // TODO: handle negative min vlues without a break...
+        // handle negative min values without a break...
+        chart.hasLineBreak = false;
         chart.yMin = $('#chart-min').val();
         chart.yMax = $('#chart-max').val();
+
+        if(chart.yMin>0){
+            chart.hasLineBreak = true;
+        }
 
         // store the device and the respective aspect ratio
         if(!chart.devices){
