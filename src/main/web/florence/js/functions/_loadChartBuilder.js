@@ -5,7 +5,13 @@ function loadChartBuilder(pageData, onSave, chart) {
     var pageUrl;
     var html;
     var zoom;
+
     const ALPHA = 0.6;
+    const SM  = 760;
+    const MD  = 990;
+    const LG  = 1280;
+
+    const sizes = {sm:SM, md:MD, lg:LG}; // - phone, tablet, desktop
 
 
     initialise(pageData, chart);
@@ -26,7 +32,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             refreshExtraOptions();
         }
 
-        initSlider();
+        //initSlider();
         initAccordian();
 
         setPageListeners();
@@ -195,7 +201,15 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function loadExisting(uri) {
+        // check uri for existing page url
+        // '/economy/grossdomesticproductgdp/articles/chartdemo/2017-01-05'
+        var slash = uri.indexOf("/");
         var targetUri = pageUrl + "/" + uri + "/data";
+        
+        if (slash >-1){
+            targetUri =  uri + "/data";
+        }
+
         $.ajax({
             url: targetUri,
             type: 'POST',
@@ -283,15 +297,23 @@ function loadChartBuilder(pageData, onSave, chart) {
                 start: [100],
                 connect: true,
                 range: {
-                    'min': 0,
+                    'min': 50,
+                    '25%': [ 50 ],
                     '50%': [ 100 ],
+                    '75%': [ 150 ],
                     'max': 200
                 },
-                pips: {
+                /*pips: {
                     mode: 'count',
                     values: 6,
                     density: 4
-                }
+                }*/
+
+                pips: {
+        mode: 'positions',
+        values: [0,25,50,75,100],
+        density: 4
+    }
             });
 
             slider.noUiSlider.on('end', function(){
@@ -354,6 +376,32 @@ function loadChartBuilder(pageData, onSave, chart) {
                 }
             chart.annotations.push(obj);
             renderNotes();
+            renderChart();
+        });
+console.log('add aspect ratio listener');
+        //device type
+        $('.refresh-aspect').on('input', function () {
+
+            var device = $('#device').val();
+            console.log('change!' + device);
+
+            switch (device) {
+
+                case 'sm':
+                    chart.aspectRatioMobile = $('#aspect-ratio').val();
+                break;
+
+                case 'md':
+                    chart.aspectRatioTablet = $('#aspect-ratio').val();
+                break;
+
+                case 'lg':
+                    chart.aspectRatioDesktop = $('#aspect-ratio').val();
+                break;
+            }
+
+            chart = buildChartObject();
+            //refreshExtraOptions();
             renderChart();
         });
 
@@ -440,8 +488,13 @@ function loadChartBuilder(pageData, onSave, chart) {
         if(slider){
             zoom = slider.noUiSlider.get()/100;
         }
-        var chartHeight = parseInt(preview.width() * chart.aspectRatio * zoom);
-        var chartWidth = parseInt(preview.width()* zoom);
+        /*var chartHeight = parseInt(preview.width() * chart.aspectRatio * zoom);
+        var chartWidth = parseInt(preview.width()* zoom);*/
+        var chartHeight = parseInt(chart.aspectRatio * zoom * chart.size);
+        var chartWidth = parseInt(zoom * chart.size);
+        console.log('SIZE'+chart.size);
+
+        $("#chart-size").html('Size:' + chartWidth + ' x ' + chartHeight);
         renderChartObject('chart', chart, chartHeight, chartWidth);
     }
 
@@ -473,9 +526,47 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.xAxisLabel = $('#chart-x-axis-label').val();
         chart.startFromZero = $('#start-from-zero').prop('checked');
         chart.finishAtHundred = $('#finish-at-hundred').prop('checked');
+
+        // TODO: handle negative min vlues without a break...
         chart.yMin = $('#chart-min').val();
         chart.yMax = $('#chart-max').val();
 
+        // store the device and the respective aspect ratio
+        chart.device = $('#device').val();
+        chart.size = sizes[chart.device];
+
+        //set defaults
+
+        if (!chart.aspectRatioMobile) {
+            chart.aspectRatioMobile = $('#aspect-ratio').val();
+        }
+        if (!chart.aspectRatioTablet) {
+            chart.aspectRatioTablet = $('#aspect-ratio').val();
+        }
+        if (!chart.aspectRatioDesktop) {
+            chart.aspectRatioDesktop = $('#aspect-ratio').val();
+        }
+        chart.aspectRatio = $('#aspect-ratio').val();
+        console.log(chart.aspectRatio);
+
+        // set ratio is done when the aspect ratio changes so recall existing aspect ratio
+        switch (chart.device) {
+
+            case 'sm':
+                $('#aspect-ratio').val(chart.aspectRatioMobile);
+            break;
+
+            case 'md':
+                $('#aspect-ratio').val(chart.aspectRatioTablet);
+            break;
+
+            case 'lg':
+                $('#aspect-ratio').val(chart.aspectRatioDesktop);
+            break;
+        }
+
+
+        console.log(chart);
         if (chart.title === '') {
             chart.title = '[Title]'
         }
@@ -485,15 +576,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.series = tsvJSONColNames(json);
         chart.categories = tsvJSONRowNames(json);
 
-        //build a series object to track each series
-        // TODO: rename here and in handlebars
-        //chart.temp_series = tsvToSeries(json)
-
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
-        chart.aspectRatio = $('#aspect-ratio-desk').val();
-        chart.aspectRatioMobile = $('#aspect-ratio-mob').val();
-        chart.aspectRatioTablet = $('#aspect-ratio-tab').val();
         chart.highlight = $('#chart-highlight option:selected').text();
 
         chart.palette = $('input[name=palette]:checked').val();
@@ -517,10 +601,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 });
 
                 itm.id = idx;
-                //scale the  annotion box position based on its ratio position
-
-                /*itm.x = parseInt( $('#note-x-'+idx).val()/chart.height * zoom );
-                itm.y = parseInt( $('#note-y-'+idx).val()/chart.width * zoom );*/
+                // TODO? scale the  annotion box position based on its ratio position
                 itm.x = parseInt( $('#note-x-'+idx).val() );
                 itm.y = parseInt( $('#note-y-'+idx).val() );
                 itm.title = lines.join('<br/>');
