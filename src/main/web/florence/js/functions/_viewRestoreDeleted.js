@@ -28,9 +28,10 @@ function viewRestoreDeleted(collectionData) {
                 deletionsLength = deletedPagesData.length,
                 html = [];
             for (i = 0; i < deletionsLength; i++) {
+                console.log(deletedPagesData[i]);
                 html.push("<tr data-id='" + deletedPagesData[i].id + "'>" +
                     "<td>"+ deletedPagesData[i].pageTitle + "<br>" + deletedPagesData[i].uri + "</td>" +
-                    "<td>" + deletedPagesData[i].noOfPages + "</td>" +
+                    "<td>" + deletedPagesData[i].deletedFiles.length + "</td>" +
                     "<td>" + deletedPagesData[i].eventDate + "</td>" +
                     "</tr>")
             }
