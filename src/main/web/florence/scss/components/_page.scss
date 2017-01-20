@@ -6,6 +6,7 @@
         display: inline-block;
         position: relative;
         padding-left: $gutter + 10;
+        word-break: word-wrap; // Allows long urls in collection details screen to wrap
         &:hover {
             cursor: pointer;
             color: $mine-shaft;
