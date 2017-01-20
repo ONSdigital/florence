@@ -378,15 +378,41 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('.refresh-aspect').on('input', function (e) {
 
             var device = $('#device').val();
-            console.log('change!' + device);
+            console.log('change!' + device, $('#is-hidden').val());
 
             chart.devices[device].aspectRatio = $('#aspect-ratio').val();
             chart.devices[device].labelInterval = $('#chart-label-interval').val();
+            chart.devices[device].isHidden = $('#is-hidden').is(':checked');;
+            chart.isHidden = $('#is-hidden').is(':checked');;
+
+            //update blank settings
+            //TODO: change event as it updates for each key (so only captures first key)
+            /*$.each(chart.devices, function(idx, itm){
+                console.log(itm);
+                if(!itm.labelInterval) itm.labelInterval = $('#chart-label-interval').val();
+                if(!itm.aspectRatio) itm.aspectRatio = $('#aspect-ratio').val();
+            })
+            */
+
+            console.log("chart.isHidden: " + chart.isHidden);
+            chart = buildChartObject();
+            renderChart();
+        });
+        $('.refresh-aspect').on('change', ':checkbox', function (e) {
+            //var id = $(this).attr('id');
+            //id = id.split('-')[2];
+            var device = $('#device').val();
+
+            chart.devices[device].aspectRatio = $('#aspect-ratio').val();
+            chart.devices[device].labelInterval = $('#chart-label-interval').val();
+            chart.devices[device].isHidden = $('#is-hidden').is(':checked');;
+            chart.isHidden = $('#is-hidden').is(':checked');;
+            console.log(chart.devices);
+            console.log("chart.isHidden: " + chart.isHidden);
 
             chart = buildChartObject();
             renderChart();
         });
-
 
 
     }
@@ -424,17 +450,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             renderChart();
         });
 
-        $('.refresh-aspect').on('change', ':checkbox', function (e) {
-            var id = $(this).attr('id');
-            id = id.split('-')[2];
-            var device = $('#device').val();
 
-            chart.devices[device].aspectRatio = $('#aspect-ratio').val();
-            chart.devices[device].labelInterval = $('#chart-label-interval').val();
-
-            chart = buildChartObject();
-            renderChart();
-        });
         
     }   
 
@@ -529,7 +545,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         // store the device and the respective aspect ratio
-        if(!chart.devices){
+        if(!chart.devices['sm']){
             chart.devices = {
                 'sm':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
                 'md':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
@@ -539,21 +555,15 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.device = $('#device').val();
         chart.size = sizes[chart.device];
 
-        //set defaults
-
-       // if (!chart.devices[chart.device].aspectRatio) {
-       //     chart.devices[chart.device].aspectRatio = $('#aspect-ratio').val();
-       // }
-
         chart.aspectRatio = $('#aspect-ratio').val();
-        console.log(chart.aspectRatio);
 
         // set ratio is done when the aspect ratio changes so recall existing aspect ratio
         $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
         $('#chart-label-interval').val(chart.devices[chart.device].labelInterval);
+        $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
+        chart.isHidden = chart.devices[chart.device].isHidden;
 
-
-        console.log(chart.devices);
+console.log(chart.device, chart.devices[chart.device].isHidden );
         if (chart.title === '') {
             chart.title = '[Title]'
         }
