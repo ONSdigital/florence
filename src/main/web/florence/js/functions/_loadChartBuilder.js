@@ -560,14 +560,17 @@ function loadChartBuilder(pageData, onSave, chart) {
         if(chart.yMin>0){
             chart.hasLineBreak = true;
         }
-
+        console.log(chart.devices);
         // store the device and the respective aspect ratio
-        if(!chart.devices['sm']){
-            chart.devices = {
-                'sm':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
-                'md':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
-                'lg':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
-                            };
+        if(!chart.devices){
+            console.log('create');
+            //if(!chart.devices.sm){
+                chart.devices = {
+                    'sm':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                    'md':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                    'lg':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                                };
+            //}
         }
         chart.device = $('#device').val();
         chart.size = sizes[chart.device];
