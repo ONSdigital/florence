@@ -666,7 +666,8 @@ console.log(chart.device, chart.devices[chart.device].isHidden );
         }
 
         chart.chartType = $('#chart-type').val();
-        // update select menu under the Advanced tab
+        // if we change the chart type need to reload
+        // and update select menu under the Advanced tab
         var html = templates.chartBuilderAdvancedSelect(chart);
         $('#chart-highlight').empty();
         $('#chart-highlight').append(html);
