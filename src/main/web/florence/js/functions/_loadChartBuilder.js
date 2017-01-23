@@ -39,7 +39,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         // TODO: rationalise templates
         setPageListeners();
         setFormListeners();
-        setDeleteListeners();
         setShortcutGroup();
 
         renderText();
@@ -124,16 +123,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                   active: 0
                 });
 
-                 /*var allPanels = $('.accordian-body').hide();
-    
-                  $('h1.title ').click(function() {
-                    var active = $( "#annotation-chart" ).accordion( "option", "active" );
-                    console.log(active);
-                    allPanels.slideUp();
-                    $(this).parent().find(".accordian-body").slideDown();
-
-                    return false;
-                  });*/
                 break;
             default:
                 return;
@@ -142,7 +131,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function setPageListeners() {
-
+console.log('setPageListeners');
         $('.tab__link').on('click', function () {
             $('.tab__link').removeClass('tab__link--active');
             $(this).addClass('tab__link--active');
@@ -242,6 +231,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.headers = original.headers;
         chart.categories = original.categories;
 
+        // remove all these anonymous listeners (!)
+        clearFormListeners();
+
         // loop and recreate panels
         var panels = [
             templates.chartBuilderChart,
@@ -256,7 +248,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             '#metadata-panel',
             '#series-panel',
             '#advanced-panel',
-            '#annotation-panel',
+            '#annotation-chart',
         ];
 
         $.each(panels, function(index, val){
@@ -324,129 +316,113 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function setFormListeners() {
+console.log('setFormListeners');
+        
+        $('.refresh-chart').on('input', refreshChart);
+        $('.refresh-chart').on('change', ':checkbox', refreshChart);
+        $('.refresh-chart').on('change', ':radio', refreshChart);    
 
-        // NOTE need to refresh the chart object before refreshing the Extra options
-        $('.refresh-chart').on('input', function () {
-            console.log('refresh');
-            var existing = $('#chart-config-URL').val();
+        // for TEXTFIELDS only update the chart when the text field lose focus
+        $('.refresh-chart-text').on('blur', refreshChart);
 
-            if (existing) {
-                console.warn("OVERWRITE ALL CONFIG!");
-                loadExisting(existing);
-            }else{
-                chart = buildChartObject();
-                refreshExtraOptions();
-                renderChart();
-            }
+        $('.refresh-text').on('input', renderText);
 
-        });
-
-        //only update the chart when the text field lose focus
-        $('.refresh-chart-text').on('blur', function () {
-            console.log('on BLUR');
-            var existing = $('#chart-config-URL').val();
-
-            if (existing) {
-                console.warn("OVERWRITE ALL CONFIG!");
-                loadExisting(existing);
-            }else{
-                chart = buildChartObject();
-                refreshExtraOptions();
-                renderChart();
-            }
-
-        });
-
-        $('.refresh-chart').on('change', ':checkbox', function () {
-            chart = buildChartObject();
-            refreshExtraOptions();
-            renderChart();
-        });
-
-        $('.refresh-chart').on('change', ':radio', function () {
-            chart = buildChartObject();
-            refreshExtraOptions();
-            renderChart();
-        });    
-
-        $('.refresh-text').on('input', function () {
-            console.log('text input');
-            renderText();
-        });
-
-        $('#add-annotation').on('click', function () {
-            var obj = {   
-                    title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
-                    devices:[
-                        {type:'Mobile', x:200, y:150, isHidden:false},
-                        {type:'Tablet', x:50, y:50, isHidden:false},
-                        {type:'Desktop', x:50, y:50, isHidden:false}
-                    ]
-                    , x:250, y:70
-                    , isHidden:false
-                }
-            chart.annotations.push(obj);
-            renderNotes();
-            renderChart();
-        });
+        $('#add-annotation').on('click', addNotation);
 
         //device type
-        $('.refresh-aspect').on('input', function (e) {
-
-            var device = $('#device').val();
-            console.log('change!' + device, $('#is-hidden').val());
-
-            chart.devices[device].aspectRatio = $('#aspect-ratio').val();
-            chart.devices[device].labelInterval = $('#chart-label-interval').val();
-            chart.devices[device].isHidden = $('#is-hidden').is(':checked');;
-            chart.isHidden = $('#is-hidden').is(':checked');;
-
-            //update blank settings
-            //TODO: change event as it updates for each key (so only captures first key)
-            /*$.each(chart.devices, function(idx, itm){
-                console.log(itm);
-                if(!itm.labelInterval) itm.labelInterval = $('#chart-label-interval').val();
-                if(!itm.aspectRatio) itm.aspectRatio = $('#aspect-ratio').val();
-            })
-            */
-
-            console.log("chart.isHidden: " + chart.isHidden);
-            chart = buildChartObject();
-            renderChart();
-        });
-        $('.refresh-aspect').on('change', ':checkbox', function (e) {
-            //var id = $(this).attr('id');
-            //id = id.split('-')[2];
-            var device = $('#device').val();
-
-            chart.devices[device].aspectRatio = $('#aspect-ratio').val();
-            chart.devices[device].labelInterval = $('#chart-label-interval').val();
-            chart.devices[device].isHidden = $('#is-hidden').is(':checked');;
-            chart.isHidden = $('#is-hidden').is(':checked');;
-            console.log(chart.devices);
-            console.log("chart.isHidden: " + chart.isHidden);
-
-            chart = buildChartObject();
-            renderChart();
-        });
-
+        $('.refresh-aspect').on('input', refreshChartDimensions );
+        $('.refresh-aspect').on('change', ':checkbox', refreshChartDimensions );
 
     }
 
 
-    function setDeleteListeners() {
-        $('.btn-delete-section').on('click', function (e) {
+    function clearFormListeners() {
+console.log('clearFormListeners');
+        
+        $('.refresh-chart').off('input', refreshChart);
+        $('.refresh-chart').off('change', ':checkbox', refreshChart);
+        $('.refresh-chart').off('change', ':radio', refreshChart);    
+
+        // for TEXTFIELDS only update the chart when the text field lose focus
+        $('.refresh-chart-text').off('blur', refreshChart);
+
+        $('.refresh-text').off('input', renderText);
+
+        $('#add-annotation').off('click', addNotation);
+
+        //device type
+        $('.refresh-aspect').off('input', refreshChartDimensions );
+        $('.refresh-aspect').off('change', ':checkbox', refreshChartDimensions );
+
+    }
+
+
+
+    // event listeners /////////////////////////////////
+    function refreshChart(){
+        var existing = $('#chart-config-URL').val();
+console.log('refreshChart::EXISTING ' + existing);
+        if (existing) {
+            console.warn("OVERWRITE ALL CONFIG!");
+            loadExisting(existing);
+        }else{
+            // NOTE need to refresh the chart object before refreshing the Extra options
+            chart = buildChartObject();
+            refreshExtraOptions();
+            renderChart();
+        }
+    }
+
+
+    function refreshChartDimensions(){
+        var device = $('#device').val();
+
+        chart.devices[device].aspectRatio = $('#aspect-ratio').val();
+        chart.devices[device].labelInterval = $('#chart-label-interval').val();
+        chart.devices[device].isHidden = $('#is-hidden').is(':checked');;
+        chart.isHidden = $('#is-hidden').is(':checked');;
+
+        chart = buildChartObject();
+        renderChart();   
+    }
+
+    function addNotation(){
+        var obj = {   
+                title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
+                devices:[
+                    {type:'Mobile', x:200, y:150, isHidden:false},
+                    {type:'Tablet', x:50, y:50, isHidden:false},
+                    {type:'Desktop', x:50, y:50, isHidden:false}
+                ]
+                , x:250, y:70
+                , isHidden:false
+            }
+        chart.annotations.push(obj);
+        renderNotes();
+        renderChart();
+    }
+    ////////////////////////////////////////////////////
+
+
+
+    function onDelete(e) {
+        console.log('onDelete');
+        //$('.btn-delete-annotation').on('click', function (e) {
             var target = parseInt(e.target.id.substring(18));
             chart.annotations.splice(target,1);
-            
+            console.log('target ' +target);
             renderNotes();
             renderChart();
-        });
+        //});
     }
 
 
     //Renders annotation panel fields
     function renderNotes() {
+
+        //remove existing events
+        $('.btn-delete-annotation').off('click', onDelete);
+
         var template = templates.chartBuilderAnnotation;
         var html = template(chart);
         $('#annotation-chart').empty();
@@ -454,12 +430,12 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#annotation-chart').show();
 
         //update the delete button listeners
-        setDeleteListeners();
+        $('.btn-delete-annotation').on('click', onDelete);
 
         //console.log('annotations.length ' + chart.annotations.length);
         $( "#annotation-chart" ).accordion( "refresh" );
         $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
-
+console.log('chart-accordian.refresh-chart).on(input');
         $('.chart-accordian.refresh-chart').on('input', function () {
             console.log('refresh notes');
             chart = buildChartObject();
@@ -507,6 +483,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     // Builds, parses, and renders our chart in the chart editor
     function renderChart() {
+
+        //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
         var preview = $('#chart');
         zoom = 1;
@@ -517,7 +495,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         var chartWidth = parseInt(preview.width()* zoom);*/
         var chartHeight = parseInt(chart.aspectRatio * zoom * chart.size);
         var chartWidth = parseInt(zoom * chart.size);
-        console.log('SIZE'+chart.size);
 
         $("#chart-size").html('Size:' + chartWidth + ' x ' + chartHeight);
         renderChartObject('chart', chart, chartHeight, chartWidth);
@@ -560,17 +537,14 @@ function loadChartBuilder(pageData, onSave, chart) {
         if(chart.yMin>0){
             chart.hasLineBreak = true;
         }
-        console.log(chart.devices);
+        
         // store the device and the respective aspect ratio
         if(!chart.devices){
-            console.log('create');
-            //if(!chart.devices.sm){
-                chart.devices = {
-                    'sm':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
-                    'md':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
-                    'lg':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
-                                };
-            //}
+            chart.devices = {
+                'sm':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                'md':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                'lg':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                            };
         }
         chart.device = $('#device').val();
         chart.size = sizes[chart.device];
@@ -583,7 +557,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
         chart.isHidden = chart.devices[chart.device].isHidden;
 
-console.log(chart.device, chart.devices[chart.device].isHidden );
         if (chart.title === '') {
             chart.title = '[Title]'
         }
@@ -714,7 +687,7 @@ console.log(chart.device, chart.devices[chart.device].isHidden );
             },
             function () {
                 var chartConfig = window["chart-" + chart.filename];
-                //console.debug("Refreshing the chart, config:", chartConfig);
+                
                 if (chartConfig) {
                     chartConfig.chart.renderTo = "chart";
                     new Highcharts.Chart(chartConfig);
