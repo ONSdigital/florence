@@ -35,7 +35,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         //initSlider();
         initAccordian();
 
-        // TODO: organise add/remove listeners
         // TODO: rationalise templates
         setPageListeners();
         setFormListeners();
@@ -131,7 +130,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function setPageListeners() {
-console.log('setPageListeners');
         $('.tab__link').on('click', function () {
             $('.tab__link').removeClass('tab__link--active');
             $(this).addClass('tab__link--active');
@@ -259,6 +257,14 @@ console.log('setPageListeners');
             $(targets[index]).append(html);
         })
 
+        // add the chart dimensions back in
+        $('#chart-label-interval').val(chart.labelInterval);
+        if(chart.devices && chart.device){       
+            $('#device').val(chart.devices[chart.device].type);
+            $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
+            $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
+        }
+
         $('#chart-data').val(toTsv(chart));
         refreshExtraOptions();
 
@@ -316,44 +322,25 @@ console.log('setPageListeners');
 
 
     function setFormListeners() {
-console.log('setFormListeners');
-        
-        $('.refresh-chart').on('input', refreshChart);
-        $('.refresh-chart').on('change', ':checkbox', refreshChart);
-        $('.refresh-chart').on('change', ':radio', refreshChart);    
-
+        $('.refresh-chart').on('change', refreshChart);   
         // for TEXTFIELDS only update the chart when the text field lose focus
         $('.refresh-chart-text').on('blur', refreshChart);
-
         $('.refresh-text').on('input', renderText);
-
         $('#add-annotation').on('click', addNotation);
-
         //device type
-        $('.refresh-aspect').on('input', refreshChartDimensions );
-        $('.refresh-aspect').on('change', ':checkbox', refreshChartDimensions );
+        $('.refresh-aspect').on('change', refreshChartDimensions );
 
     }
 
 
     function clearFormListeners() {
-console.log('clearFormListeners');
-        
-        $('.refresh-chart').off('input', refreshChart);
-        $('.refresh-chart').off('change', ':checkbox', refreshChart);
-        $('.refresh-chart').off('change', ':radio', refreshChart);    
-
+        $('.refresh-chart').off('change', refreshChart);
         // for TEXTFIELDS only update the chart when the text field lose focus
         $('.refresh-chart-text').off('blur', refreshChart);
-
         $('.refresh-text').off('input', renderText);
-
         $('#add-annotation').off('click', addNotation);
-
         //device type
-        $('.refresh-aspect').off('input', refreshChartDimensions );
-        $('.refresh-aspect').off('change', ':checkbox', refreshChartDimensions );
-
+        $('.refresh-aspect').off('change', refreshChartDimensions );
     }
 
 
@@ -361,7 +348,6 @@ console.log('clearFormListeners');
     // event listeners /////////////////////////////////
     function refreshChart(){
         var existing = $('#chart-config-URL').val();
-console.log('refreshChart::EXISTING ' + existing);
         if (existing) {
             console.warn("OVERWRITE ALL CONFIG!");
             loadExisting(existing);
@@ -401,20 +387,16 @@ console.log('refreshChart::EXISTING ' + existing);
         renderNotes();
         renderChart();
     }
-    ////////////////////////////////////////////////////
-
-
 
     function onDelete(e) {
-        console.log('onDelete');
-        //$('.btn-delete-annotation').on('click', function (e) {
-            var target = parseInt(e.target.id.substring(18));
-            chart.annotations.splice(target,1);
-            console.log('target ' +target);
-            renderNotes();
-            renderChart();
-        //});
+        var target = parseInt(e.target.id.substring(18));
+        chart.annotations.splice(target,1);
+        renderNotes();
+        renderChart();
     }
+
+    ////////////////////////////////////////////////////
+
 
 
     //Renders annotation panel fields
@@ -435,17 +417,13 @@ console.log('refreshChart::EXISTING ' + existing);
         //console.log('annotations.length ' + chart.annotations.length);
         $( "#annotation-chart" ).accordion( "refresh" );
         $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
-console.log('chart-accordian.refresh-chart).on(input');
         $('.chart-accordian.refresh-chart').on('input', function () {
-            console.log('refresh notes');
             chart = buildChartObject();
             refreshExtraOptions();
             renderChart();
         });
-
-
-        
     }   
+
 
     //Renders html outside actual chart area (title, subtitle, source, notes etc.)
     function renderText() {
@@ -548,7 +526,6 @@ console.log('chart-accordian.refresh-chart).on(input');
         }
         chart.device = $('#device').val();
         chart.size = sizes[chart.device];
-
         chart.aspectRatio = $('#aspect-ratio').val();
 
         // set ratio is done when the aspect ratio changes so recall existing aspect ratio
@@ -591,7 +568,7 @@ console.log('chart-accordian.refresh-chart).on(input');
                 });
 
                 itm.id = idx;
-                // TODO? scale the  annotion box position based on its ratio position
+                
                 itm.x = parseInt( $('#note-x-'+idx).val() );
                 itm.y = parseInt( $('#note-y-'+idx).val() );
                 itm.title = lines.join('<br/>');
@@ -900,7 +877,7 @@ console.log('chart-accordian.refresh-chart).on(input');
         var content = exportToSVG(sourceSelector).trim();
 
         var $canvas = $(canvasSelector);
-        //TODO Check dimension with scaling...
+        
         $canvas.width(chartWidth);
         $canvas.height(chartHeight);
 
