@@ -60,16 +60,16 @@
                 
 
                 <label>Decimal places<br>
-                    <input type="text" id="chart-decimal-places" class="refresh-chart" placeholder="[Decimal places]"
+                    <input type="text" id="chart-decimal-places" class="refresh-chart-text" placeholder="[Decimal places]"
                            value="{{decimalPlaces}}"/>
                 </label>
                 <br/>
 
-                    <label for="chart-min" class=""> Set y-axis minimum (min 10)
-                        <input type="text" id="chart-min" class=" refresh-chart" placeholder="[Min]" value="{{yMin}}"/>
+                    <label for="chart-min" class="">Set y-axis minimum (min 10)
+                        <input type="text" id="chart-min" class="refresh-chart-text" placeholder="[Min]" value="{{yMin}}"/>
                     </label>
                     <label for="chart-max" class="">Set y-axis maximum
-                        <input type="text" id="chart-max" class=" refresh-chart" placeholder="[Max]" value="{{yMax}}"/>
+                        <input type="text" id="chart-max" class="refresh-chart-text" placeholder="[Max]" value="{{yMax}}"/>
                     </label>
 
                 <br/>
@@ -107,10 +107,10 @@
                 </span>
 
                 <label for="chart-unit">Units
-                    <input type="text" id="chart-unit" class="refresh-chart half" placeholder="[Unit]" value="{{unit}}"/>
+                    <input type="text" id="chart-unit" class="refresh-chart-text half" placeholder="[Unit]" value="{{unit}}"/>
                 </label>
                 <label for="chart-alt-text">X axis label</label>
-                <input type="text" id="chart-x-axis-label" style="width: 99.7%" class="refresh-chart"
+                <input type="text" id="chart-x-axis-label" style="width: 99.7%" class="refresh-chart-text"
                    placeholder="[X axis label]" value="{{xAxisLabel}}"/>
 
 
@@ -130,10 +130,10 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
 
             </div>
             
-            <div id='advanced-panel' class="js-chart-builder-panel refresh-chart">
+            <div id='advanced-panel' class="js-chart-builder-panel">
                 
                 
-                <div id='' class="">
+                <div class="refresh-chart">
                 <label for="show-tooltip" class="checkbox-label--small">Show tooltips</label>
                 {{#if_eq showTooltip false}}
                 <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
@@ -142,7 +142,7 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                 {{/if_eq}}
                 </div>
 
-                <div id='' class="">     
+                <div class="refresh-chart">     
                 <label for="show-marker" class="checkbox-label--small">Show marker points</label>
                 <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
                 </div>
@@ -151,6 +151,7 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
 
                 <br/>
 
+                <div class="refresh-chart-text">     
                 <label>X-axis position<br>
                     <div class="select-wrap">
                         <select id="position-x-axis" class="">
@@ -171,62 +172,14 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                         </select>
                     </div>
                 </label>
-
+                </div>
 
                 <br/>
-{{!-- 
-                <label>Aspect ratio: Desktop<br>
-                    <div class="select-wrap ">
-                        <select id="aspect-ratio-desk" >
-                            {{#select aspectRatio}}
-                                <option value="0.56">16:9</option>
-                                <option value="0.75">4:3</option>
-                                <option value="0.42">21:9</option>
-                                <option value="1">1:1</option>
-                                <option value="1.3">10:13</option>
-                            {{/select}}
-                        </select>
-                    </div>
-                </label>
-                <br/>
-                <label>Aspect ratio: Mobile<br>
-                    <div class="select-wrap ">
-                        <select id="aspect-ratio-mob" >
-                            {{#select aspectRatioMobile}}
-                                <option value="0.56">16:9</option>
-                                <option value="0.75">4:3</option>
-                                <option value="0.42">21:9</option>
-                                <option value="1">1:1</option>
-                                <option value="1.3">10:13</option>
-                            {{/select}}
-                        </select>
-                    </div>
-                </label>
-
-                <label>Aspect ratio: Tablet<br>
-                    <div class="select-wrap  ">
-                        <select id="aspect-ratio-tad" >
-                            {{#select aspectRatioTablet}}
-                                <option value="0.56">16:9</option>
-                                <option value="0.75">4:3</option>
-                                <option value="0.42">21:9</option>
-                                <option value="1">1:1</option>
-                                <option value="1.3">10:13</option>
-                            {{/select}}
-                        </select>
-                    </div>
-                </label>
-
-                
-
-
-                <br/> --}}
-
-
 
 
  
                 
+                <div class="refresh-chart"> 
                 <label>Highlight Category<br>
                     <div class="select-wrap">
                         <select id="chart-highlight" class="">
@@ -248,18 +201,20 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                         </select>
                     </div>
                 </label>
-
+                </div>
                 <br/>
 
-
+                <div class="refresh-chart-text">
                 <label>Use configuration from existing chart<br>
                     <input type="text" id="chart-config-URL" class="loadExisting" placeholder="[URL]"
                            value="{{labelURL}}"/>
-                </label>eg: 8bd65442, fc0d5bc1, 
-
+                </label>eg: 8bd65442, fc0d5bc1,
                 <br/> or /economy/grossdomesticproductgdp/articles/chartdemo/2017-01-05/27fabb49
+                </div>
 
             </div>
+
+
 
             <div id='annotation-panel' class="js-chart-builder-panel">
                 <div class="">
@@ -267,12 +222,11 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                     Drag and drop the annotation to position
                 </div>
 
-
                 <div id="annotation-chart" class="edit-section__sortable">
-
                 </div>
-
             </div>
+
+
 
         </div>
 
@@ -310,7 +264,7 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                         <input type="text" id="chart-label-interval" class="refresh-aspect" placeholder="[Label interval]" value="{{labelInterval}}"/>
                     </label>
 
-<label class="checkbox-label-half refresh-aspect">Hide on this device size<input type="checkbox" id="is-hidden" value="display_checkbox" class="inline-block" {{#if devices['sm'].isHidden}}checked{{/if}} ></label>
+                    <label class="checkbox-label-half refresh-aspect">Hide on this device size<input type="checkbox" id="is-hidden" value="display_checkbox" class="inline-block" {{#if devices.sm.isHidden}}checked{{/if}} ></label>
                 <br/>
                     
                 </div>
