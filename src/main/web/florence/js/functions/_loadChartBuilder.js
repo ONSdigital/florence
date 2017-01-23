@@ -341,6 +341,22 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         });
 
+        //only update the chart when the text field lose focus
+        $('.refresh-chart-text').on('blur', function () {
+            console.log('on BLUR');
+            var existing = $('#chart-config-URL').val();
+
+            if (existing) {
+                console.warn("OVERWRITE ALL CONFIG!");
+                loadExisting(existing);
+            }else{
+                chart = buildChartObject();
+                refreshExtraOptions();
+                renderChart();
+            }
+
+        });
+
         $('.refresh-chart').on('change', ':checkbox', function () {
             chart = buildChartObject();
             refreshExtraOptions();
@@ -444,7 +460,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         $( "#annotation-chart" ).accordion( "refresh" );
         $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
 
-        $('.refresh-chart').on('input', function () {
+        $('.chart-accordian.refresh-chart').on('input', function () {
+            console.log('refresh notes');
             chart = buildChartObject();
             refreshExtraOptions();
             renderChart();
@@ -646,14 +663,10 @@ console.log(chart.device, chart.devices[chart.device].isHidden );
         }
 
         chart.chartType = $('#chart-type').val();
-        // update advanced select menu under th Advanced tab
-       // var html = templates.chartBuilder(chartBuilderAdvancedSelect);
+        // update select menu under the Advanced tab
         var html = templates.chartBuilderAdvancedSelect(chart);
-        //var html = templates.chartBuilderAdvancedSelect;
         $('#chart-highlight').empty();
         $('#chart-highlight').append(html);
-
-        //console.log(chart);
 
         parseChartObject(chart);
 
