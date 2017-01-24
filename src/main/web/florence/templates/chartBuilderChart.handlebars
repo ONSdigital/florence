@@ -24,24 +24,30 @@
                 </label>
                 <div id="extras" class="refresh-chart">
                 </div>
-                <br/>
-                <label>Decimal places<br>
-                    <input type="text" id="chart-decimal-places" class="refresh-chart" placeholder="[Decimal places]"
-                           value="{{decimalPlaces}}"/>
-                </label>
-                <br/>
 
-                    <label for="chart-title">Overwrite default y-axis
-                        <input type="text" id="chart-min" class="refresh-chart" placeholder="[Min]" value="{{yMin}}"/>
-                        <input type="text" id="chart-max" class="refresh-chart" placeholder="[Max]" value="{{yMax}}"/>
+                <div class="refresh-chart">
+                    <label>Decimal places<br>
+                        <input type="text" id="chart-decimal-places" class="refresh-chart half" placeholder="[Decimal places]"
+                               value="{{decimalPlaces}}"/>
                     </label>
+                </div>
+                <span class="refresh-chart">
+                    <label for="chart-min">Overwrite y-axis
+                        <input type="text" id="chart-min" class="half" placeholder="[Min]" value="{{yMin}}"/>
+                    </label>
+                    <label for="chart-max">
+                        <input type="text" id="chart-max" class="half" placeholder="[Max]" value="{{yMax}}"/>
+                    </label>
+                </span>
 
-                <br/>
-                  <div class="refresh-chart">
+
+
+                </div>
+                  <span class="refresh-chart">
                     <legend>Colours</legend>
                       {{!-- <input type="radio" name="palette" id="default" value="colour" checked="checked"/> --}}
                       <input type="radio" name="palette" id="default" value="colour" {{#if_eq palette 'colour'}}checked="checked"{{/if_eq}}/>
                       <label for="default">Colour</label>
                       <input type="radio" name="palette" id="blue" value="blue" {{#if_eq palette 'blue'}}checked="checked"{{/if_eq}}/>
                       <label for="blue">Blue</label>
-                  </div>
+                  </span>
