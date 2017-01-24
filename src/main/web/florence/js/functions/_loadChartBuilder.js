@@ -22,9 +22,10 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart = _chart;
         pageUrl = pageData.uri;
         html = templates.chartBuilder(chart);
-
-
         $('body').append(html);
+
+        loadTemplates();
+
         $('.js-chart-builder').css("display", "block");
 
         if (chart) {
@@ -214,24 +215,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         });
     }
 
-    function updateForm(newData) {
-        // there some field we don't want to update eg DATA!! title?
-        // so store and restore
-        var original = {};
-        original.filename = chart.filename;
-        original.data = chart.data;
-        original.headers = chart.headers;
-        original.categories = chart.categories;
 
-        chart = newData;
-        chart.filename = original.filename;
-        chart.data = original.data;
-        chart.headers = original.headers;
-        chart.categories = original.categories;
-
-        // remove all these anonymous listeners (!)
-        clearFormListeners();
-
+    function loadTemplates(){
         // loop and recreate panels
         var panels = [
             templates.chartBuilderChart,
@@ -256,6 +241,28 @@ function loadChartBuilder(pageData, onSave, chart) {
             $(targets[index]).empty();
             $(targets[index]).append(html);
         })
+    }
+
+
+    function updateForm(newData) {
+        // there some field we don't want to update eg DATA!! title?
+        // so store and restore
+        var original = {};
+        original.filename = chart.filename;
+        original.data = chart.data;
+        original.headers = chart.headers;
+        original.categories = chart.categories;
+
+        chart = newData;
+        chart.filename = original.filename;
+        chart.data = original.data;
+        chart.headers = original.headers;
+        chart.categories = original.categories;
+
+        // remove all these anonymous listeners (!)
+        clearFormListeners();
+
+        loadTemplates();
 
         // add the chart dimensions back in
         $('#chart-label-interval').val(chart.labelInterval);
