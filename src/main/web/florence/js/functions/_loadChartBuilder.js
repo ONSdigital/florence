@@ -1,10 +1,9 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
     var chart;
-    var slider;
+    //var slider;
     var pageUrl;
     var html;
-    var zoom;
 
     const ALPHA = 0.6;
     const SM  = 760;
@@ -18,7 +17,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function initialise(pageData, _chart){
-        console.log('initialise!');
         chart = _chart;
         pageUrl = pageData.uri;
         html = templates.chartBuilder(chart);
@@ -36,7 +34,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         //initSlider();
         initAccordian();
 
-        // TODO: rationalise templates
         setPageListeners();
         setFormListeners();
         setShortcutGroup();
@@ -75,27 +72,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                 return;
         }
     }
-
-    // not used - instead load all categories and show hide as required
-    // then can use existing code to populate chart object
-    /*
-    function getTabTemplate(tabName) {
-        switch (tabName) {
-            case 'Chart':
-                return templates.chartBuilderChart;
-            case 'Metadata':
-                return templates.chartBuilderMeta;
-            case 'Series':
-                return templates.chartBuilderSeries;
-            case 'Advanced':
-                return templates.chartBuilderAdvanced;
-            case 'Annotation':
-                return templates.chartBuilderAnnotation;
-            default:
-                return;
-        }
-    }
-    */
 
 
     function showTab(tabName) {
@@ -192,12 +168,14 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     function loadExisting(uri) {
         // check uri for existing page url
-        // '/economy/grossdomesticproductgdp/articles/chartdemo/2017-01-05'
+        // eg '/economy/grossdomesticproductgdp/articles/chartdemo/2017-01-05'
         var slash = uri.indexOf("/");
-        var targetUri = pageUrl + "/" + uri + "/data";
+        var targetUri;
         
         if (slash >-1){
             targetUri =  uri + "/data";
+        }else{
+            targetUri = pageUrl + "/" + uri + "/data";
         }
 
         $.ajax({
@@ -245,7 +223,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function updateForm(newData) {
-        // there some field we don't want to update eg DATA!! title?
+        // there some fields we don't want to update eg DATA!! title?
         // so store and restore
         var original = {};
         original.filename = chart.filename;
@@ -259,7 +237,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.headers = original.headers;
         chart.categories = original.categories;
 
-        // remove all these anonymous listeners (!)
         clearFormListeners();
 
         loadTemplates();
@@ -294,7 +271,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
     }
 
-
+    /*
     function initSlider() {
         slider = document.getElementById('chart-slider');
 
@@ -326,7 +303,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
     }
-
+    */
 
     function setFormListeners() {
         $('.refresh-chart').on('change', refreshChart);   
@@ -421,7 +398,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         //update the delete button listeners
         $('.btn-delete-annotation').on('click', onDelete);
 
-        //console.log('annotations.length ' + chart.annotations.length);
         $( "#annotation-chart" ).accordion( "refresh" );
         $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
         $('.chart-accordian.refresh-chart').on('input', function () {
@@ -471,15 +447,13 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
-        var preview = $('#chart');
-        zoom = 1;
-        if(slider){
-            zoom = slider.noUiSlider.get()/100;
-        }
-        /*var chartHeight = parseInt(preview.width() * chart.aspectRatio * zoom);
-        var chartWidth = parseInt(preview.width()* zoom);*/
-        var chartHeight = parseInt(chart.aspectRatio * zoom * chart.size);
-        var chartWidth = parseInt(zoom * chart.size);
+
+        //zoom = 1;
+        //if(slider){
+        //    zoom = slider.noUiSlider.get()/100;
+        //}
+        var chartHeight = parseInt(chart.aspectRatio * chart.size);
+        var chartWidth = parseInt(chart.size);
 
         $("#chart-size").html('Size:' + chartWidth + ' x ' + chartHeight);
         renderChartObject('chart', chart, chartHeight, chartWidth);
@@ -663,7 +637,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
     }
 
-    //// Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
+    // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         var jqxhr = $.post("/chartconfig", {
                 data: JSON.stringify(chart),
@@ -793,10 +767,8 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         }
 
-
         svg.prepend("\n<style type='text/css'></style>");
         svg.find("style").textContent += "\n<![CDATA[" + styleContent + "]]>\n";
-
 
         var source = (new XMLSerializer).serializeToString(svg[0]);
 
