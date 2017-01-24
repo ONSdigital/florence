@@ -2,10 +2,7 @@
     <div class="chart-builder__inner builder__inner">
 
 
-
         <div id="edit-chart" class="builder__editor builder__editor--chart">
-
-
 
             <div class="tab--background">
                 <nav class="tabs--js">
@@ -31,191 +28,19 @@
 
 
             <div id='chart-panel' class="js-chart-builder-panel">
-                <label for="chart-data">Chart data (date in yyy-mm-dd)</label>
-                <textarea id="chart-data" class="refresh-chart" placeholder="Paste your data here" rows="4" cols="120"></textarea>
-                <label>Chart type<br>
-                    <div class="select-wrap half">
-                        <select id="chart-type" class="refresh-chart">
-                            {{#select chartType}}
-                                <option value="bar">Bar Chart</option>
-                                <option value="rotated">Bar Chart (rotated)</option>
-                                <option value="line">Line Chart</option>
-                                <option value="area">Area Chart</option>
-                                <option value="barline">Bar + Line Chart</option>
-                                <option value="rotated-barline">Bar + Line Chart (rotated)</option>
-                                <option value="dual-axis">Dual Axis</option>
-                                <option value="scatter">Scatter Plot Chart</option>
-                                <option value="pie">Pie Chart</option>
-                                <option value="population">Population Pyramid</option>
-                                <option value="confidence-interval">Confidence Interval</option>
-                                <option value="rotated-confidence-interval">Confidence Interval (rotated)</option>
-                                <option value="box-and-whisker">Box and Whisker</option>
-                            {{/select}}
-                        </select>
-                    </div>
-                </label>
-                <div id="extras" class="refresh-chart half">
-                </div>
-                <br/>
-                
-
-                <label>Decimal places<br>
-                    <input type="text" id="chart-decimal-places" class="refresh-chart-text" placeholder="[Decimal places]"
-                           value="{{decimalPlaces}}"/>
-                </label>
-                <br/>
-
-                    <label for="chart-min" class="">Set y-axis minimum (min 10)
-                        <input type="text" id="chart-min" class="refresh-chart-text" placeholder="[Min]" value="{{yMin}}"/>
-                    </label>
-                    <label for="chart-max" class="">Set y-axis maximum
-                        <input type="text" id="chart-max" class="refresh-chart-text" placeholder="[Max]" value="{{yMax}}"/>
-                    </label>
-
-                <br/>
-                  <div class="refresh-chart">
-                    <legend>Colours</legend>
-
-                    {{#if_eq palette 'blue'}}
-                    <input type="radio" class="" name="palette" id="default" value="colour" />
-                    <label for="default" class="">Colour</label>
-                    <input type="radio" class="" name="palette" id="blue" value="blue" checked="checked"/>
-                    <label for="blue" class="">Blue</label>
-                    {{else}}
-                    <input type="radio" class="" name="palette" id="default" value="colour" checked="checked"/>
-                    <label for="default" class="">Colour</label>
-                    <input type="radio" class="" name="palette" id="blue" value="blue"/>
-                    <label for="blue" class="">Blue</label>
-                    {{/if_eq}}
-                  </div>
-
-                
             </div>
-            
+
 
             <div id='metadata-panel' class="js-chart-builder-panel">
-                <span class="refresh-text">
-                    <label for="chart-title">Title
-                        <input type="text" id="chart-title" class="half" placeholder="[Title]" value="{{title}}"/>
-                    </label>
-                    <label for="chart-subtitle">Subtitle
-                        <input type="text" id="chart-subtitle" class="half" placeholder="[Subtitle]" value="{{subtitle}}"/>
-                    </label>
-                    <label for="chart-source">Source
-                        <input type="text" id="chart-source" placeholder="[Source]" class="half" value="{{source}}"/>
-                    </label>
-                </span>
-
-                <label for="chart-unit">Units
-                    <input type="text" id="chart-unit" class="refresh-chart-text half" placeholder="[Unit]" value="{{unit}}"/>
-                </label>
-                <label for="chart-alt-text">X axis label</label>
-                <input type="text" id="chart-x-axis-label" style="width: 99.7%" class="refresh-chart-text"
-                   placeholder="[X axis label]" value="{{xAxisLabel}}"/>
-
-
-
-                <label for="chart-alt-text">Alt text</label>
-                <textarea id="chart-alt-text" class="refresh-text" placeholder="[Alt text]">{{altText}}</textarea>
-
-                <label for="chart-notes">Notes</label>
-                <textarea id="chart-notes" class="refresh-text" placeholder="Add chart notes here" rows="4"
-                      cols="120">{{notes}}</textarea>
-Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ONS Homepage")
             </div>
-            
-            {{!-- <div id='series-panel' class="js-chart-builder-panel workspace-edit"> --}}
+
+
             <div id='series-panel' class="js-chart-builder-panel refresh-chart">
-
-
             </div>
-            
+
+
             <div id='advanced-panel' class="js-chart-builder-panel">
-                
-                
-                <div class="refresh-chart">
-                <label for="show-tooltip" class="checkbox-label--small">Show tooltips</label>
-                {{#if_eq showTooltip false}}
-                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
-                {{else}}
-                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
-                {{/if_eq}}
-                </div>
-
-                <div class="refresh-chart">     
-                <label for="show-marker" class="checkbox-label--small">Show marker points</label>
-                <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
-                </div>
-
-            
-
-                <br/>
-
-                <div class="refresh-chart">     
-                <label>X-axis position<br>
-                    <div class="select-wrap">
-                        <select id="position-x-axis" class="">
-                            {{#select xAxisPos}}
-                                <option value="bottom">bottom</option>
-                                <option value="top">top</option>
-                            {{/select}}
-                        </select>
-                    </div>
-                </label>
-                <label>Y-axis position{{ yAxisPos}}<br>
-                    <div class="select-wrap">
-                        <select id="position-y-axis" class="">
-                            {{#select yAxisPos}}
-                                <option value="left">left</option>
-                                <option value="right">right</option>
-                            {{/select}}
-                        </select>
-                    </div>
-                </label>
-                </div>
-
-                <br/>
-
-
- 
-                
-                <div class="refresh-chart"> 
-                <label>Highlight Category: {{highlight}}<br>
-                    <div class="select-wrap">
-                        <select id="chart-highlight" class="">
-                            {{#if_eq chartType 'line'}}
-                                {{#select highlight}}
-                                    <option value="No Highlight">No Highlight</option>
-                                {{#each series}}
-                                    <option value="{{this}}">{{this}}</option>
-                                {{/each}}
-                                {{/select}}
-                            {{else}}
-                                {{#select highlight}}
-                                    <option value="No Highlight">No Highlight</option>
-                                {{#each categories}}
-                                    <option value="{{this}}">{{this}}</option>
-                                {{/each}}
-                                {{/select}}
-                            {{/if_eq}}
-
-
-                        </select>
-                    </div>
-                </label>
-                </div>
-                <br/>
-
-                <div class="refresh-chart">
-                <label>Use configuration from existing chart<br>
-                    <input type="text" id="chart-config-URL" class="loadExisting" placeholder="[URL]"
-                           value="{{labelURL}}"/>
-                </label>eg: 8bd65442, fc0d5bc1,
-                <br/> or /economy/grossdomesticproductgdp/articles/chartdemo/2017-01-05/27fabb49
-                </div>
-
             </div>
-
 
 
             <div id='annotation-panel' class="js-chart-builder-panel">
@@ -228,13 +53,11 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                 </div>
             </div>
 
-
-
         </div>
 
 
         <div id="preview-chart" class="builder__preview builder__preview--chart">
-                <div> 
+            <div> 
                 <div> 
                     <label>DEVICE <br>
                         <div class="select-wrap half">
@@ -261,20 +84,24 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
                         </div>
                     </label>
                 
-                    <div id="chart-size"></div>
-                    <label>Label interval<br>
-                        <input type="text" id="chart-label-interval" class="refresh-aspect" placeholder="[Label interval]" value="{{labelInterval}}"/>
-                    </label>
+                
+                    <div id="">
+                        <label>Label interval<br>
+                            <input type="text" id="chart-label-interval" class="refresh-aspect" placeholder="[Label interval]" value="{{labelInterval}}"/>
+                        </label>
 
-                    <label class="checkbox-label-half refresh-aspect">Hide on this device size<input type="checkbox" id="is-hidden" value="display_checkbox" class="inline-block" {{#if devices.sm.isHidden}}checked{{/if}} ></label>
-                <br/>
-                    
+                        <label class="checkbox-label-half refresh-aspect">Hide on this device size
+                            <input type="checkbox" id="is-hidden" value="display_checkbox" class="inline-block" {{#if devices.sm.isHidden}}checked{{/if}} ></label>
+                        <br/>
+                    </div>
+                    <div id="chart-size"></div>
                 </div>
-                </div>
-                <hr/>
+            </div>
+
+            <hr/>
+
             <span id="chart-title-preview"></span>
             </br>
-
             <span id="chart-subtitle-preview"></span>
             <div id="chart"></div>
             Source:<span id="chart-source-preview"></span>
@@ -306,7 +133,6 @@ Sample markdown:[I'm an inline-style link with title](https://www.ons.gov.uk "ON
 
     <div id="hiddenDiv" style="display:none">
         <canvas id="hiddenCanvas"></canvas>
-
     </div>
 
 
