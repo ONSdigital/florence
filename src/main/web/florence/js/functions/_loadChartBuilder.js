@@ -1,7 +1,6 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
     var chart;
-    //var slider;
     var pageUrl;
     var html;
 
@@ -31,7 +30,6 @@ function loadChartBuilder(pageData, onSave, chart) {
             refreshExtraOptions();
         }
 
-        //initSlider();
         initAccordian();
 
         setPageListeners();
@@ -271,39 +269,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
     }
 
-    /*
-    function initSlider() {
-        slider = document.getElementById('chart-slider');
-
-        try {
-            noUiSlider.create(slider, {
-                start: [100],
-                connect: true,
-                range: {
-                    'min': 50,
-                    '25%': [ 50 ],
-                    '50%': [ 100 ],
-                    '75%': [ 150 ],
-                    'max': 200
-                },
-                pips: {
-                    mode: 'positions',
-                    values: [0,25,50,75,100],
-                    density: 4
-                }
-            });
-
-            slider.noUiSlider.on('end', function(){
-                var val = slider.noUiSlider.get();
-                renderChart();
-            });
-        }
-        catch(err){
-            console.warn('Issue initialising SLIDER');
-        }
-
-    }
-    */
 
     function setFormListeners() {
         $('.refresh-chart').on('change', refreshChart);   
@@ -319,11 +284,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     function clearFormListeners() {
         $('.refresh-chart').off('change', refreshChart);
-        // for TEXTFIELDS only update the chart when the text field lose focus
         $('.refresh-chart-text').off('blur', refreshChart);
         $('.refresh-text').off('input', renderText);
         $('#add-annotation').off('click', addNotation);
-        //device type
         $('.refresh-aspect').off('change', refreshChartDimensions );
     }
 
@@ -447,11 +410,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
-
-        //zoom = 1;
-        //if(slider){
-        //    zoom = slider.noUiSlider.get()/100;
-        //}
         var chartHeight = parseInt(chart.aspectRatio * chart.size);
         var chartWidth = parseInt(chart.size);
 
