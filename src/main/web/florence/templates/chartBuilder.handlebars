@@ -104,8 +104,8 @@
             </br>
             <span id="chart-subtitle-preview"></span>
             <div id="chart"></div>
-            Source:<span id="chart-source-preview"></span>
-            Notes:<span id="chart-notes-preview"></span>
+            <h5>Source:</h5><span id="chart-source-preview"></span>
+            <h6>Notes:</h6><span id="chart-notes-preview"></span>
 
             <div>
             {{!-- ZOOM SLIDER: Percentage size
@@ -122,7 +122,9 @@
             <button class="btn btn-chart-builder-cancel">Cancel</button>
 
             <div class="debug-links">
-                FILE ID: <strong>{{filename}}</strong> <a href='{{uri}}' target ="showchart">CHART</a>
+                FILE ID: <strong>{{filename}}</strong>
+                 | PATH: {{uri}}
+                 | <a href='{{uri}}' target ="showchart">CHART</a>
                  | <a href='{{uri}}/data' target ="data">DATA</a>
                  | <a href='../chartconfig?uri={{uri}}' target ="json">JSON</a>
             </div>
