@@ -1,14 +1,14 @@
-                <span class="">
-                <label for="show-tooltip" class="checkbox-label--small">Show tooltips</label>
-                {{#if_eq showTooltip false}}
-                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
-                {{else}}
-                <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
-                {{/if_eq}}
-                
-    
-                <label for="show-marker" class="checkbox-label--small">Show marker points</label>
-                <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
+                <span class="refresh-chart">
+                    <label for="show-tooltip" class="checkbox-label--small">Show tooltips</label>
+                    {{#if_eq showTooltip false}}
+                    <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
+                    {{else}}
+                    <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
+                    {{/if_eq}}
+                    
+        
+                    <label for="show-marker" class="checkbox-label--small">Show marker points</label>
+                    <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
                 </span>
 
             
@@ -46,7 +46,7 @@
                 <br/>
 
  
-                
+                <div class="refresh-chart"> 
                 <label>Highlight Category<br>
                     <div class="select-wrap">
                         <select id="chart-highlight" class="">
@@ -68,6 +68,7 @@
                         </select>
                     </div>
                 </label>
+                </div>
 
                 <br/>
 
