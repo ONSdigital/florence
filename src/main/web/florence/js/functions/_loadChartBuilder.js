@@ -6,9 +6,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     var html;
 
     const ALPHA = 0.6;
-    const SM  = 760;
-    const MD  = 990;
-    const LG  = 1280;
+    const SM  = 360;
+    const MD  = 520;
+    const LG  = 700;
 
     const sizes = {sm:SM, md:MD, lg:LG}; // - phone, tablet, desktop
 
