@@ -6,17 +6,6 @@
         <h3 class="chart-accordian-header edit-section__head accordian__title">{{title}}</h3>
         <div class="chart-accordian-body accordian__content" >
            
-           {{!-- <label>Chart type <br>
-                <div class="select-wrap">
-                    <select id="chart-type" class="">
-                        {{#select targetDevice}}
-                            <option value="mobile">Mobile</option>
-                            <option value="desktop">Desktop</option>
-                            <option value="tablet">Tablet</option>
-                        {{/select}}
-                    </select>
-                </div>
-            </label> --}}
             <button class="btn btn--warning btn-delete-annotation" id="delete-annotation-{{@index}}">Delete</button>
             <br/>
             <label for="chart-title">X Position
@@ -31,8 +20,8 @@
                 <textarea id="chart-notes-{{@index}}" class="" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
 
             <br/>
-            NOTE: the chart is updated on every key press...
-            {{!-- <label class="checkbox-label-half refresh-aspect">Hide on this device size<input type="checkbox" id="is-hidden-{{@index}}" value="display_checkbox" class="inline-block" {{#if isHidden}}checked{{/if}} ></label> --}}
+            
+
         </div>
     </div>
 
