@@ -7,11 +7,14 @@
         <div class="chart-accordian-body accordian__content" >
            
             <button class="btn btn--warning btn-delete-annotation" id="delete-annotation-{{@index}}">Delete</button>
+
+            <label for="show-plotline" class="checkbox-label--small">Plotline (Y axis)</label>
+                    <input name="show-plotline-{{@index}}" id="is-plotline-{{@index}}" {{#if isPlotline}}checked{{/if}} type="checkbox">
             <br/>
             <label for="chart-title">X Position
                 <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{x}}"/>
             </label>
-            <label for="chart-title">Y Position
+            <label for="chart-title">Y Position (change this to set the plotline position)
                 <input type="text" id="note-y-{{@index}}" class="half" placeholder="[y]" value="{{y}}"/>
             </label>
 

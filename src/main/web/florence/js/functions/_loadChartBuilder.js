@@ -280,7 +280,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#add-annotation').on('click', addNotation);
         //device type
         $('.refresh-aspect').on('change', refreshChartDimensions );
-
     }
 
 
@@ -331,11 +330,14 @@ function loadChartBuilder(pageData, onSave, chart) {
                 ]
                 , x:250, y:70
                 , isHidden:false
+                , isPlotline:false
+
             }
         chart.annotations.push(obj);
         renderNotes();
         renderChart();
     }
+
 
     function onDelete(e) {
         var target = parseInt(e.target.id.substring(18));
@@ -353,6 +355,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //remove existing events
         $('.btn-delete-annotation').off('click', onDelete);
+        $('chart-accordian.refresh-chart').off('change', refreshChart); 
 
         var template = templates.chartBuilderAnnotation;
         var html = template(chart);
@@ -365,11 +368,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         $( "#annotation-chart" ).accordion( "refresh" );
         $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
-        $('.chart-accordian.refresh-chart').on('input', function () {
-            chart = buildChartObject();
-            refreshExtraOptions();
-            renderChart();
-        });
+        $('.chart-accordian.refresh-chart').on('change', refreshChart);
     }   
 
 
@@ -474,7 +473,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
         $('#chart-label-interval').val(chart.devices[chart.device].labelInterval);
         $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
+        $('#is-plotline').prop('checked',chart.devices[chart.device].isPlotline);
         chart.isHidden = chart.devices[chart.device].isHidden;
+        
 
         if (chart.title === '') {
             chart.title = '[Title]'
@@ -515,11 +516,15 @@ function loadChartBuilder(pageData, onSave, chart) {
                 itm.y = parseInt( $('#note-y-'+idx).val() );
                 itm.title = lines.join('<br/>');
                 itm.isHidden = $('#is-hidden-'+idx).prop('checked');
+                itm.isPlotline = $('#is-plotline-'+idx).prop('checked');
                 itm.width = parseInt( maxLength * 6.5) + 6 ;
                 itm.height = (lines.length+1)*12 + 10 ;
+
+                console.log(idx, itm.isPlotline);
             }
         });
-
+console.log("++++++++++++++");
+console.log(chart.annotations);
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
             var groups = [];
