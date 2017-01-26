@@ -440,6 +440,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.isStacked = $('#isStacked').prop('checked');
         chart.decimalPlaces = $('#chart-decimal-places').val();
+        chart.decimalPlacesYaxis = $('#chart-decimal-places-yaxis').val();
         chart.labelInterval = $('#chart-label-interval').val();
 
         chart.notes = $('#chart-notes').val();
