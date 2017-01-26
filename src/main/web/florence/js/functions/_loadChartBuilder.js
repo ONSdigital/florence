@@ -66,6 +66,8 @@ function loadChartBuilder(pageData, onSave, chart) {
             case 'bar':
             case 'rotated':
                 return templates.chartEditBarChartExtras;
+            case 'scatter':
+                return templates.chartEditScatterExtras;
             default:
                 return;
         }
