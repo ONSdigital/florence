@@ -8,8 +8,27 @@
            
             <button class="btn btn--warning btn-delete-annotation" id="delete-annotation-{{@index}}">Delete</button>
 
-            <label for="show-plotline" class="checkbox-label--small">Plotline (Y axis)</label>
-                    <input name="show-plotline-{{@index}}" id="is-plotline-{{@index}}" {{#if isPlotline}}checked{{/if}} type="checkbox">
+            <label for="show-plotline-{{@index}}" class="checkbox-label--small">Plotline (Y axis):{{isPlotline}}</label>
+
+            <input name="show-plotline-{{@index}}" id="is-plotline-{{@index}}" {{#if isPlotline}}checked{{/if}} type="checkbox">
+
+            <div class="refresh-chart"> 
+                <label>Plotline orientation<br>
+                    <div class="select-wrap">
+                        <select id="orientation-axis-{{@index}}" class="">
+                            {{#select orientation}}
+                                <option value="x-axis">x axis</option>
+                                <option value="y-axis">y axis</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
+            </div>
+
+            <label for="chart-title">Plot Band Width
+                <input type="text" id="band-width-{{@index}}" class="half" placeholder="[band width]" value="{{bandWidth}}"/>
+            </label>
+
             <br/>
             <label for="chart-title">X Position
                 <input type="text" id="note-x-{{@index}}" class="half" placeholder="[x]" value="{{x}}"/>
