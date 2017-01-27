@@ -20,7 +20,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         pageUrl = pageData.uri;
         html = templates.chartBuilder(chart);
         $('body').append(html);
-
+console.log(chart.annotations);
         loadTemplates();
 
         $('.js-chart-builder').css("display", "block");
@@ -37,8 +37,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         setShortcutGroup();
 
         renderText();
-        renderChart();
         renderNotes();
+        renderChart();
 
         showTab( 'Chart' );
 
@@ -223,19 +223,27 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function updateForm(newData) {
-        // there some fields we don't want to update eg DATA!! title?
+        // there some fields we don't want to update
         // so store and restore
         var original = {};
         original.filename = chart.filename;
         original.data = chart.data;
         original.headers = chart.headers;
         original.categories = chart.categories;
+        original.title = chart.title;
+        original.subtitle = chart.subtitle;
+        original.notes = chart.notes;
+        original.altText = chart.altText;
 
         chart = newData;
         chart.filename = original.filename;
         chart.data = original.data;
         chart.headers = original.headers;
         chart.categories = original.categories;
+        chart.title = original.title;
+        chart.subtitle = original.subtitle;
+        chart.notes = original.notes;
+        chart.altText = original.altText;
 
         clearFormListeners();
 
@@ -518,13 +526,14 @@ function loadChartBuilder(pageData, onSave, chart) {
                 itm.isHidden = $('#is-hidden-'+idx).prop('checked');
                 itm.isPlotline = $('#is-plotline-'+idx).prop('checked');
                 itm.width = parseInt( maxLength * 6.5) + 6 ;
-                itm.height = (lines.length+1)*12 + 10 ;
+                itm.height = (lines.length+1)*12 + 10;
+                itm.orientation = $('#orientation-axis-'+idx).val();
+                itm.bandWidth = parseInt( $('#band-width-'+idx).val() );
 
-                console.log(idx, itm.isPlotline);
+                console.log(idx, itm.isPlotline, itm.orientation);
             }
         });
-console.log("++++++++++++++");
-console.log(chart.annotations);
+
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
             var groups = [];
