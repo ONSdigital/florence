@@ -2195,7 +2195,6 @@ input[type="checkbox"] {
   border-spacing: 0;
   /* Fully styled up table */
   /* 75% and 25% width column table - used on release calendar list */
-  /* 50%, 25% and 25% width column table - used on restore deleted page list */
   /* Fixed height table - used in selectable tables in panels */
   /* Selectable table (ie collections list) */
   /* Table in a slide-out section */
@@ -2308,14 +2307,6 @@ input[type="checkbox"] {
 
 .table--75-25 td:first-child, .table--75-25 th:first-child {
   width: 74%;
-}
-
-.table--50-25-25 td, .table--50-25-25 th {
-  width: 25%;
-}
-
-.table--50-25-25 td:first-child, .table--50-25-25 th:first-child {
-  width: 49%;
 }
 
 .table--fixed-height-27 tbody {
@@ -2794,59 +2785,19 @@ button:hover:after, button:focus:after {
   margin-bottom: 10px;
 }
 
-.slider__head .edit {
-  float: right;
-  font-size: 14px;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-}
-
-.slider__head .edit:hover {
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.slider__options {
-  padding: 21px 16.66%;
-  background-color: #A1A3A5;
-}
-
-.slider__options h3 {
-  color: #D1D2D4;
-  margin-top: 0;
-}
-
-.slider__options button {
-  margin: 0 0 0 10px;
-}
-
-.slider__options button:first-child {
-  margin: 0 0 0 20px;
-}
-
 .slider__content {
   overflow-y: scroll;
-  padding: 10.5px 16.66%;
+  padding-top: 0;
+  padding-bottom: 42px;
+  padding-left: 16.66%;
+  padding-right: 16.66%;
   max-height: 567px;
   color: #515151;
-}
-
-.slider__content--padded #collection-editor-name,
-.slider__content--padded #collection-editor-date,
-.slider__content--padded .select-wrap,
-.slider__content--padded label[for="collection-editor-scheduled"] {
-  margin-top: 0;
-  margin-left: 20px;
-  max-width: 600px;
 }
 
 .slider__content--fullwidth {
   padding-left: 0;
   padding-right: 0;
-}
-
-.slider__content h3:first-of-type {
-  margin-top: 0;
 }
 
 .slider__banner {
@@ -2993,7 +2944,6 @@ button:hover:after, button:focus:after {
   display: inline-block;
   position: relative;
   padding-left: 30px;
-  word-break: word-wrap;
 }
 
 .page__item:hover {
@@ -3693,55 +3643,6 @@ button:hover:after, button:focus:after {
   margin: 4px auto;
   background: transparent url(../../img/sprite.png) no-repeat 0px -262px;
   background-size: 30px auto;
-}
-
-/* This is the start of a re-usable component to make all modal's in Florence use consistent styling & naming. It'll be built first and then existing modal's should be migrated over to it in the future */
-.modal-select {
-  background-color: #F5F5F5;
-  height: 777px;
-  width: 83.33%;
-  margin-top: 105px;
-  margin-right: auto;
-  margin-left: auto;
-  overflow: hidden;
-  position: relative;
-}
-
-.modal-select__head {
-  padding: 0 20px;
-}
-
-.modal-select__title {
-  float: left;
-  margin-top: 21px;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.modal-select__search {
-  float: right;
-  width: 320px;
-}
-
-.modal-select__body {
-  padding: 0 16px 0 24px;
-}
-
-.modal-select__footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 63px;
-  background: #A1A3A5;
-}
-
-.modal-select__animation {
-  display: block;
-  width: 100% !important;
-  padding-left: 0;
-  padding-right: 0;
-  margin: 0 auto;
 }
 
 /* Create vertical utility classes - enough lineheight multiples to fill the height of Florence */
