@@ -262,24 +262,6 @@ function getCollectionDetails(collectionId, success, error) {
   });
 }
 /**
- * Returns array of pages that have been deleted from website
- * @param onSuccess - callback for successful response
- */
-
-
-function getDeletedPages(onSuccess) {
-    $.ajax({
-        url: "/zebedee/deletedcontent",
-        type: 'GET',
-        success: function(response) {
-            onSuccess(response);
-        },
-        error: function(error) {
-            handleApiError(error);
-        }
-    })
-}
-/**
  * Gets the JSON file for the page
  * @param collectionId
  * @param path
@@ -568,24 +550,6 @@ function postPermission(success, error, email, admin, editor, dataVisPublisher) 
       }
     }
   });
-}/**
- * Restores a delete page (and any sub-pages) into a collection
- * @param deleteID - Unique identifier of deletion that is being restored
- * @param collectionId - Collection to put the restored page/s into
- * @param onSuccess - Callback on successful response
- */
-
-function postRestoreDeletedPage(deleteID, collectionId, onSuccess) {
-    $.ajax({
-        url: "/zebedee/deletedcontent/" + deleteID + "?collectionid=" + collectionId,
-        type: "POST",
-        success: function(response) {
-            onSuccess(response);
-        },
-        error: function(error) {
-            handleApiError(error);
-        }
-    })
 }function putContent(collectionId, path, content, success, error, recursive) {
   postContent(collectionId, path, content, true, recursive,
     onSuccess = function () {
@@ -1030,7 +994,8 @@ function createCollection(teams) {
                 releaseUri: releaseUri
             }),
             success: function (collection) {
-                viewCollectionDetails(collection.id);
+                Florence.setActiveCollection(collection);
+                createWorkspace('', collection.id, 'browse', collection);
             },
             error: function (response) {
                 if (response.status === 409) {
@@ -2358,8 +2323,6 @@ function checkValidStats(collectionId, data, templateData, field, idField, dataU
 }
 function editCollection(collection) {
 
-    switchEditLinkText();
-
     collection.collectionOwner = Florence.Authentication.userType();
 
     getTeams(
@@ -2484,7 +2447,6 @@ function editCollection(collection) {
                 });
                 $('.js-collection__edit-modal').remove();
                 $('.js-collection__head').after(collDetails);
-                switchEditLinkText();
             });
 
             setCollectionEditorHeight();
@@ -2503,16 +2465,6 @@ function setCollectionEditorHeight() {
 
     var contentHeight = panelHeight - headHeight - contentMargin;
     $contentModal.css('height', contentHeight);
-}
-
-function switchEditLinkText() {
-    var linkText = $('.slider__head').find('.js-edit-collection');
-
-    if (linkText.text() == 'Edit collection') {
-        linkText.text('Editing collection...');
-    } else {
-        linkText.text('Edit collection');
-    }
 }
 
 /**
@@ -4675,58 +4627,6 @@ function handleLoginApiError(response) {
         console.log(message);
         sweetAlert("Error", message, "error");
     }
-}
-function importTsTitles(collectionId) {
-
-    // open the modal
-    var modal = templates.importTsTitlesModal;
-    $('.wrapper').append(modal);
-
-    // on save
-    $('#import-ts-form').submit(function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        var formdata = new FormData();
-
-        var file = this[0].files[0];
-        if (!file) {
-            sweetAlert("Please select a file to upload");
-            return;
-        }
-
-        var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
-        var uriUpload = "/" + fileNameNoSpace;
-
-        if (file.name.match(".csv")) {
-            if (formdata) {
-                formdata.append("name", file);
-            }
-        } else {
-            sweetAlert("This file type is not supported");
-            return;
-        }
-
-        if (formdata) {
-            $.ajax({
-                url: "/zebedee/timeseriesimport/" + collectionId + "?uri=" + uriUpload,
-                type: 'POST',
-                data: formdata,
-                cache: false,
-                processData: false,
-                contentType: false,
-                success: function () {
-                    $('.modal').remove();
-                }
-            });
-        }
-    });
-
-    // cancel button
-    $('.btn-modal-cancel').off().click(function () {
-        $('.modal').remove();
-    });
-
 }
 function initialiseLastNoteMarkdown(collectionId, data, field, field2) {
   // Load
@@ -14741,14 +14641,10 @@ function viewCollectionDetails(collectionId, $this) {
         ProcessPages(collection.reviewed);
 
         // Set collection approval state
-        var approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false};
+        var approvalStates = {inProgress: false, thrownError: false, completed: false};
         switch (collection.approvalStatus) {
             case (undefined): {
                 collection.approvalState = '';
-                break;
-            }
-            case ('NOT_STARTED'): {
-                approvalStates.notStarted = true;
                 break;
             }
             case ('IN_PROGRESS'): {
@@ -14811,10 +14707,8 @@ function viewCollectionDetails(collectionId, $this) {
         }
 
         var $approveBtn = $('.btn-collection-approve'),
-            $editBtn = $('.js-edit-collection'),
-            $workOnBtn = $('.btn-collection-work-on'),
-            $restoreContentBtn = $('.js-restore-delete'),
-            $importBtn = $('.js-import');
+            $editBtn = $('.btn-collection-edit'),
+            $workOnBtn = $('.btn-collection-work-on');
 
         if (collection.approvalState.inProgress) {
             // Collection has been approved and is generating PDF, timeseries etc so disable buttons
@@ -14840,17 +14734,6 @@ function viewCollectionDetails(collectionId, $this) {
         $editBtn.click(function () {
             editCollection(collection);
         });
-
-        // restore deleted content
-        $restoreContentBtn.click(function () {
-            viewRestoreDeleted(collection);
-        });
-
-        // import time series
-        $importBtn.click(function () {
-            importTsTitles(collection.id);
-        });
-
 
         //page-list
         $('.page__item:not(.delete-child)').click(function () {
@@ -15034,7 +14917,7 @@ function viewCollectionDetails(collectionId, $this) {
         var response = [], teams = [], date = "";
 
         $.each(result.data, function (i, collection) {
-            var approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false};
+            var approvalStates = {inProgress: false, thrownError: false, completed: false};
 
             if (collection.approvalStatus != "COMPLETE") {
 
@@ -15050,10 +14933,6 @@ function viewCollectionDetails(collectionId, $this) {
                 // Set approval state
                 switch (collection.approvalStatus) {
                     case (undefined): {
-                        break;
-                    }
-                    case ('NOT_STARTED'): {
-                        approvalStates.notStarted = true;
                         break;
                     }
                     case ('IN_PROGRESS'): {
@@ -15368,21 +15247,25 @@ function viewPublishDetails(collections) {
  */
 function viewReleaseSelector() {
 
-    var templateData = {
-        columns: ["Calendar entry", "Calendar entry date"],
-        title: "Select a calendar entry"
-    };
-    templateData['noOfColumns'] = templateData.columns.length;
-    viewSelectModal(templateData, onSearch = function(searchValue) {
-        populateReleasesList(releases, searchValue);
-    });
-
+    var html = templates.releaseSelector();
+    $('body').append(html);
 
     var releases = [];
     PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
 
+    $('.btn-release-selector-cancel').on('click', function () {
+        $('.release-select').stop().fadeOut(200).remove();
+    });
+
+    var $searchInput = $('#release-search-input');
+    $searchInput.focus();
+    $searchInput.on('input', function () {
+        var searchText = $(this).val();
+        populateReleasesList(releases, searchText);
+    });
+
     function PopulateReleasesForUri(baseReleaseUri, releases) {
-        console.log("populating release for uri " + baseReleaseUri);
+        //console.log("populating release for uri " + baseReleaseUri);
         $.ajax({
                 url: baseReleaseUri,
                 type: "get",
@@ -15457,7 +15340,7 @@ function viewReleaseSelector() {
      * @param releases
      */
     function populateReleasesList(releases, filter) {
-        var releaseList = $('#js-modal-select__body');
+        var releaseList = $('#release-list');
         releaseList.find('tr').remove(); // remove existing table entries
 
         _(_.sortBy(releases, function (release) {
@@ -15478,7 +15361,7 @@ function viewReleaseSelector() {
 
 
             $releaseTitle.show().text(releaseTitle);
-            $('#js-modal-select').stop().fadeOut(200).remove();
+            $('.release-select').stop().fadeOut(200).remove();
         })
     }
 }/**
@@ -15750,77 +15633,6 @@ function bindTableOrdering() {
 
             }
         }
-    }
-}
-
-function viewRestoreDeleted(collectionData) {
-
-    var onSearchDeletedPagesData;
-
-    // $('.js-restore-delete').click(function() {
-        renderModal();
-        bindTableClick();
-
-        getDeletedPages(success = function(deletedPagesData) {
-            onSearchDeletedPagesData = deletedPagesData;
-            renderTableBody(deletedPagesData);
-        });
-    // });
-
-    function renderModal() {
-        var templateData  = {
-            title: "Select a deletion",
-            columns: ["Deleted page and URI", "No. of deleted pages", "Date of delete"]
-        };
-        templateData['noOfColumns'] = templateData.columns.length;
-        viewSelectModal(templateData, onSearch);
-    }
-
-    function renderTableBody(deletedPagesData) {
-        var tableBodyHtml = function() {
-            var i,
-                deletionsLength = deletedPagesData.length,
-                html = [];
-            for (i = 0; i < deletionsLength; i++) {
-                console.log(deletedPagesData[i]);
-                html.push("<tr data-id='" + deletedPagesData[i].id + "'>" +
-                    "<td>"+ deletedPagesData[i].pageTitle + "<br>" + deletedPagesData[i].uri + "</td>" +
-                    "<td>" + deletedPagesData[i].deletedFiles.length + "</td>" +
-                    "<td>" + deletedPagesData[i].eventDate + "</td>" +
-                    "</tr>")
-            }
-
-            return html.join();
-        };
-
-        $('#js-modal-select__body').empty().append(tableBodyHtml());
-    }
-
-    function bindTableClick() {
-        $('#js-modal-select__body').on('click', 'tr', function() {
-            // Restore page to current collection, close modal and refresh collection details
-            postRestoreDeletedPage($(this).attr('data-id'), collectionData.id, success = function(response) {
-                console.log(response);
-                $('#js-modal-select').remove();
-                viewCollectionDetails(collectionData.id);
-            })
-        });
-    }
-
-    function onSearch(searchValue) {
-
-        var deletedPagesDataLength = onSearchDeletedPagesData.length,
-            filteredArray = [],
-            i;
-
-        for (i = 0; i < deletedPagesDataLength; i++) {
-            // Add to new array if search term and page name or uri match it
-            if ((onSearchDeletedPagesData[i].pageTitle).toLowerCase().indexOf(searchValue.toLowerCase()) >= 0 || (onSearchDeletedPagesData[i].uri).toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
-                filteredArray.push(onSearchDeletedPagesData[i]);
-            }
-        }
-
-        renderTableBody(filteredArray)
     }
 }
 /**
@@ -16592,39 +16404,4 @@ function showPanel($this, options) {
         // Remove the margin from the centered panel to make room for off-screen panel
         $('.panel--centred').animate({marginLeft: "0"}, 500);
     }
-}/**
- * Reusable component that renders selector modal and binds re-usable functionality (ie search input and cancel button)
- */
-
-
-function viewSelectModal(templateData, onSearch) {
-    var modalHtml = templates.selectorModal(templateData);
-    $('body').append(modalHtml);
-    bindSelectModalEvents();
-
-    function bindSelectModalEvents() {
-        var $search = $('#js-modal-select__search');
-
-        $('#js-modal-select__cancel').click(function() {
-            closeModal()
-        });
-
-        $search.on('input', function() {
-            onSearch($(this).val());
-        });
-
-        $search.focus();
-
-        $(document).keydown(function(event) {
-            if (event.keyCode === 27) {
-                closeModal()
-            }
-        });
-
-    }
-
-   function closeModal() {
-       $('#js-modal-select').remove();
-       $(document).off('keydown');
-   }
 }
