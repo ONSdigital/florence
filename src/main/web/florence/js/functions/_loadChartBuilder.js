@@ -416,7 +416,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     // Builds, parses, and renders our chart in the chart editor
     function renderChart() {
-
         //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
         // get device and its corresponding dims
