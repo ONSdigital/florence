@@ -26,5 +26,9 @@ module.exports = {
                 presets: ['react', 'es2015']
             }
         }]
+    },
+    resolve: {
+        // implicitly tell babel to load jsx
+        extensions: ['.js', '.jsx']
     }
 };
