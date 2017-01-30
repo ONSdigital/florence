@@ -22,6 +22,4 @@ node_modules
 npm-debug.log*
 
 # Dev project files
-src/assets/css/*
-src/assets/js/main.js
-src/assets/js/templates.js
+src/dist
