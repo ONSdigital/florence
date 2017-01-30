@@ -2,38 +2,43 @@
 // sources:
 // ../src/.DS_Store
 // ../src/app/App.jsx
+// ../src/app/collections/Collections.jsx
+// ../src/app/config/routes.js
+// ../src/app/config/store.js
+// ../src/dist/css/main.css
+// ../src/dist/img/favicon11.ico
+// ../src/dist/img/favicon12.ico
+// ../src/dist/img/favicon21.ico
+// ../src/dist/img/favicon22.ico
+// ../src/dist/img/favicon23.ico
+// ../src/dist/img/favicon24.ico
+// ../src/dist/img/flo-logo.png
+// ../src/dist/img/flo-logo144.png
+// ../src/dist/img/rule-21.png
+// ../src/dist/img/rule-22.png
+// ../src/dist/img/rule.png
+// ../src/dist/img/sb_v_double_arrow.png
+// ../src/dist/img/semi-transparent-bg.png
+// ../src/dist/img/sprite.png
+// ../src/dist/img/ui-bg_diagonals-thick_18_b81900_40x40.png
+// ../src/dist/img/ui-bg_diagonals-thick_20_666666_40x40.png
+// ../src/dist/img/ui-bg_flat_10_000000_40x100.png
+// ../src/dist/img/ui-bg_glass_100_f6f6f6_1x400.png
+// ../src/dist/img/ui-bg_glass_100_fdf5ce_1x400.png
+// ../src/dist/img/ui-bg_glass_65_ffffff_1x400.png
+// ../src/dist/img/ui-bg_gloss-wave_35_f6a828_500x100.png
+// ../src/dist/img/ui-bg_highlight-soft_100_eeeeee_1x100.png
+// ../src/dist/img/ui-bg_highlight-soft_75_ffe45c_1x100.png
+// ../src/dist/img/ui-icons_222222_256x240.png
+// ../src/dist/img/ui-icons_228ef1_256x240.png
+// ../src/dist/img/ui-icons_ef8c08_256x240.png
+// ../src/dist/img/ui-icons_ffd27a_256x240.png
+// ../src/dist/img/ui-icons_ffffff_256x240.png
+// ../src/dist/img/wmd-buttons.png
 // ../src/dist/js/florence.bundle.js
 // ../src/dist/manifest.json
 // ../src/dist/service-worker.js
-// ../src/img/favicon11.ico
-// ../src/img/favicon12.ico
-// ../src/img/favicon21.ico
-// ../src/img/favicon22.ico
-// ../src/img/favicon23.ico
-// ../src/img/favicon24.ico
-// ../src/img/flo-logo.png
-// ../src/img/flo-logo144.png
-// ../src/img/rule-21.png
-// ../src/img/rule-22.png
-// ../src/img/rule.png
-// ../src/img/sb_v_double_arrow.png
-// ../src/img/semi-transparent-bg.png
 // ../src/img/sprite.png
-// ../src/img/ui-bg_diagonals-thick_18_b81900_40x40.png
-// ../src/img/ui-bg_diagonals-thick_20_666666_40x40.png
-// ../src/img/ui-bg_flat_10_000000_40x100.png
-// ../src/img/ui-bg_glass_100_f6f6f6_1x400.png
-// ../src/img/ui-bg_glass_100_fdf5ce_1x400.png
-// ../src/img/ui-bg_glass_65_ffffff_1x400.png
-// ../src/img/ui-bg_gloss-wave_35_f6a828_500x100.png
-// ../src/img/ui-bg_highlight-soft_100_eeeeee_1x100.png
-// ../src/img/ui-bg_highlight-soft_75_ffe45c_1x100.png
-// ../src/img/ui-icons_222222_256x240.png
-// ../src/img/ui-icons_228ef1_256x240.png
-// ../src/img/ui-icons_ef8c08_256x240.png
-// ../src/img/ui-icons_ffd27a_256x240.png
-// ../src/img/ui-icons_ffffff_256x240.png
-// ../src/img/wmd-buttons.png
 // ../src/index.html
 // ../src/index.js
 // ../src/manifest.json
@@ -134,6 +139,600 @@ func SrcAppAppJsx() (*asset, error) {
 	return a, err
 }
 
+// SrcAppCollectionsCollectionsJsx reads file data from disk. It returns an error on failure.
+func SrcAppCollectionsCollectionsJsx() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/app/collections/Collections.jsx"
+	name := "../src/app/collections/Collections.jsx"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcAppConfigRoutesJs reads file data from disk. It returns an error on failure.
+func SrcAppConfigRoutesJs() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/app/config/routes.js"
+	name := "../src/app/config/routes.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcAppConfigStoreJs reads file data from disk. It returns an error on failure.
+func SrcAppConfigStoreJs() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/app/config/store.js"
+	name := "../src/app/config/store.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistCssMainCss reads file data from disk. It returns an error on failure.
+func SrcDistCssMainCss() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/css/main.css"
+	name := "../src/dist/css/main.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFavicon11Ico reads file data from disk. It returns an error on failure.
+func SrcDistImgFavicon11Ico() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/favicon11.ico"
+	name := "../src/dist/img/favicon11.ico"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFavicon12Ico reads file data from disk. It returns an error on failure.
+func SrcDistImgFavicon12Ico() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/favicon12.ico"
+	name := "../src/dist/img/favicon12.ico"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFavicon21Ico reads file data from disk. It returns an error on failure.
+func SrcDistImgFavicon21Ico() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/favicon21.ico"
+	name := "../src/dist/img/favicon21.ico"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFavicon22Ico reads file data from disk. It returns an error on failure.
+func SrcDistImgFavicon22Ico() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/favicon22.ico"
+	name := "../src/dist/img/favicon22.ico"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFavicon23Ico reads file data from disk. It returns an error on failure.
+func SrcDistImgFavicon23Ico() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/favicon23.ico"
+	name := "../src/dist/img/favicon23.ico"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFavicon24Ico reads file data from disk. It returns an error on failure.
+func SrcDistImgFavicon24Ico() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/favicon24.ico"
+	name := "../src/dist/img/favicon24.ico"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFloLogoPng reads file data from disk. It returns an error on failure.
+func SrcDistImgFloLogoPng() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/flo-logo.png"
+	name := "../src/dist/img/flo-logo.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgFloLogo144Png reads file data from disk. It returns an error on failure.
+func SrcDistImgFloLogo144Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/flo-logo144.png"
+	name := "../src/dist/img/flo-logo144.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgRule21Png reads file data from disk. It returns an error on failure.
+func SrcDistImgRule21Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/rule-21.png"
+	name := "../src/dist/img/rule-21.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgRule22Png reads file data from disk. It returns an error on failure.
+func SrcDistImgRule22Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/rule-22.png"
+	name := "../src/dist/img/rule-22.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgRulePng reads file data from disk. It returns an error on failure.
+func SrcDistImgRulePng() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/rule.png"
+	name := "../src/dist/img/rule.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgSb_v_double_arrowPng reads file data from disk. It returns an error on failure.
+func SrcDistImgSb_v_double_arrowPng() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/sb_v_double_arrow.png"
+	name := "../src/dist/img/sb_v_double_arrow.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgSemiTransparentBgPng reads file data from disk. It returns an error on failure.
+func SrcDistImgSemiTransparentBgPng() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/semi-transparent-bg.png"
+	name := "../src/dist/img/semi-transparent-bg.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgSpritePng reads file data from disk. It returns an error on failure.
+func SrcDistImgSpritePng() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/sprite.png"
+	name := "../src/dist/img/sprite.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_diagonalsThick_18_b81900_40x40Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_diagonalsThick_18_b81900_40x40Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_diagonals-thick_18_b81900_40x40.png"
+	name := "../src/dist/img/ui-bg_diagonals-thick_18_b81900_40x40.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_diagonalsThick_20_666666_40x40Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_diagonalsThick_20_666666_40x40Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_diagonals-thick_20_666666_40x40.png"
+	name := "../src/dist/img/ui-bg_diagonals-thick_20_666666_40x40.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_flat_10_000000_40x100Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_flat_10_000000_40x100Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_flat_10_000000_40x100.png"
+	name := "../src/dist/img/ui-bg_flat_10_000000_40x100.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_glass_100_f6f6f6_1x400Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_glass_100_f6f6f6_1x400Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_glass_100_f6f6f6_1x400.png"
+	name := "../src/dist/img/ui-bg_glass_100_f6f6f6_1x400.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_glass_100_fdf5ce_1x400Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_glass_100_fdf5ce_1x400Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_glass_100_fdf5ce_1x400.png"
+	name := "../src/dist/img/ui-bg_glass_100_fdf5ce_1x400.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_glass_65_ffffff_1x400Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_glass_65_ffffff_1x400Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_glass_65_ffffff_1x400.png"
+	name := "../src/dist/img/ui-bg_glass_65_ffffff_1x400.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_glossWave_35_f6a828_500x100Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_glossWave_35_f6a828_500x100Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_gloss-wave_35_f6a828_500x100.png"
+	name := "../src/dist/img/ui-bg_gloss-wave_35_f6a828_500x100.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_highlightSoft_100_eeeeee_1x100Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_highlightSoft_100_eeeeee_1x100Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_highlight-soft_100_eeeeee_1x100.png"
+	name := "../src/dist/img/ui-bg_highlight-soft_100_eeeeee_1x100.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiBg_highlightSoft_75_ffe45c_1x100Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiBg_highlightSoft_75_ffe45c_1x100Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-bg_highlight-soft_75_ffe45c_1x100.png"
+	name := "../src/dist/img/ui-bg_highlight-soft_75_ffe45c_1x100.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiIcons_222222_256x240Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiIcons_222222_256x240Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-icons_222222_256x240.png"
+	name := "../src/dist/img/ui-icons_222222_256x240.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiIcons_228ef1_256x240Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiIcons_228ef1_256x240Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-icons_228ef1_256x240.png"
+	name := "../src/dist/img/ui-icons_228ef1_256x240.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiIcons_ef8c08_256x240Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiIcons_ef8c08_256x240Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-icons_ef8c08_256x240.png"
+	name := "../src/dist/img/ui-icons_ef8c08_256x240.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiIcons_ffd27a_256x240Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiIcons_ffd27a_256x240Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-icons_ffd27a_256x240.png"
+	name := "../src/dist/img/ui-icons_ffd27a_256x240.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgUiIcons_ffffff_256x240Png reads file data from disk. It returns an error on failure.
+func SrcDistImgUiIcons_ffffff_256x240Png() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/ui-icons_ffffff_256x240.png"
+	name := "../src/dist/img/ui-icons_ffffff_256x240.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcDistImgWmdButtonsPng reads file data from disk. It returns an error on failure.
+func SrcDistImgWmdButtonsPng() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/img/wmd-buttons.png"
+	name := "../src/dist/img/wmd-buttons.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
 // SrcDistJsFlorenceBundleJs reads file data from disk. It returns an error on failure.
 func SrcDistJsFlorenceBundleJs() (*asset, error) {
 	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/dist/js/florence.bundle.js"
@@ -188,514 +787,10 @@ func SrcDistServiceWorkerJs() (*asset, error) {
 	return a, err
 }
 
-// SrcImgFavicon11Ico reads file data from disk. It returns an error on failure.
-func SrcImgFavicon11Ico() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/favicon11.ico"
-	name := "../src/img/favicon11.ico"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgFavicon12Ico reads file data from disk. It returns an error on failure.
-func SrcImgFavicon12Ico() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/favicon12.ico"
-	name := "../src/img/favicon12.ico"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgFavicon21Ico reads file data from disk. It returns an error on failure.
-func SrcImgFavicon21Ico() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/favicon21.ico"
-	name := "../src/img/favicon21.ico"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgFavicon22Ico reads file data from disk. It returns an error on failure.
-func SrcImgFavicon22Ico() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/favicon22.ico"
-	name := "../src/img/favicon22.ico"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgFavicon23Ico reads file data from disk. It returns an error on failure.
-func SrcImgFavicon23Ico() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/favicon23.ico"
-	name := "../src/img/favicon23.ico"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgFavicon24Ico reads file data from disk. It returns an error on failure.
-func SrcImgFavicon24Ico() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/favicon24.ico"
-	name := "../src/img/favicon24.ico"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgFloLogoPng reads file data from disk. It returns an error on failure.
-func SrcImgFloLogoPng() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/flo-logo.png"
-	name := "../src/img/flo-logo.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgFloLogo144Png reads file data from disk. It returns an error on failure.
-func SrcImgFloLogo144Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/flo-logo144.png"
-	name := "../src/img/flo-logo144.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgRule21Png reads file data from disk. It returns an error on failure.
-func SrcImgRule21Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/rule-21.png"
-	name := "../src/img/rule-21.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgRule22Png reads file data from disk. It returns an error on failure.
-func SrcImgRule22Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/rule-22.png"
-	name := "../src/img/rule-22.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgRulePng reads file data from disk. It returns an error on failure.
-func SrcImgRulePng() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/rule.png"
-	name := "../src/img/rule.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgSb_v_double_arrowPng reads file data from disk. It returns an error on failure.
-func SrcImgSb_v_double_arrowPng() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/sb_v_double_arrow.png"
-	name := "../src/img/sb_v_double_arrow.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgSemiTransparentBgPng reads file data from disk. It returns an error on failure.
-func SrcImgSemiTransparentBgPng() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/semi-transparent-bg.png"
-	name := "../src/img/semi-transparent-bg.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
 // SrcImgSpritePng reads file data from disk. It returns an error on failure.
 func SrcImgSpritePng() (*asset, error) {
 	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/sprite.png"
 	name := "../src/img/sprite.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_diagonalsThick_18_b81900_40x40Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_diagonalsThick_18_b81900_40x40Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_diagonals-thick_18_b81900_40x40.png"
-	name := "../src/img/ui-bg_diagonals-thick_18_b81900_40x40.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_diagonalsThick_20_666666_40x40Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_diagonalsThick_20_666666_40x40Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_diagonals-thick_20_666666_40x40.png"
-	name := "../src/img/ui-bg_diagonals-thick_20_666666_40x40.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_flat_10_000000_40x100Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_flat_10_000000_40x100Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_flat_10_000000_40x100.png"
-	name := "../src/img/ui-bg_flat_10_000000_40x100.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_glass_100_f6f6f6_1x400Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_glass_100_f6f6f6_1x400Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_glass_100_f6f6f6_1x400.png"
-	name := "../src/img/ui-bg_glass_100_f6f6f6_1x400.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_glass_100_fdf5ce_1x400Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_glass_100_fdf5ce_1x400Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_glass_100_fdf5ce_1x400.png"
-	name := "../src/img/ui-bg_glass_100_fdf5ce_1x400.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_glass_65_ffffff_1x400Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_glass_65_ffffff_1x400Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_glass_65_ffffff_1x400.png"
-	name := "../src/img/ui-bg_glass_65_ffffff_1x400.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_glossWave_35_f6a828_500x100Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_glossWave_35_f6a828_500x100Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_gloss-wave_35_f6a828_500x100.png"
-	name := "../src/img/ui-bg_gloss-wave_35_f6a828_500x100.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_highlightSoft_100_eeeeee_1x100Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_highlightSoft_100_eeeeee_1x100Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_highlight-soft_100_eeeeee_1x100.png"
-	name := "../src/img/ui-bg_highlight-soft_100_eeeeee_1x100.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiBg_highlightSoft_75_ffe45c_1x100Png reads file data from disk. It returns an error on failure.
-func SrcImgUiBg_highlightSoft_75_ffe45c_1x100Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-bg_highlight-soft_75_ffe45c_1x100.png"
-	name := "../src/img/ui-bg_highlight-soft_75_ffe45c_1x100.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiIcons_222222_256x240Png reads file data from disk. It returns an error on failure.
-func SrcImgUiIcons_222222_256x240Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-icons_222222_256x240.png"
-	name := "../src/img/ui-icons_222222_256x240.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiIcons_228ef1_256x240Png reads file data from disk. It returns an error on failure.
-func SrcImgUiIcons_228ef1_256x240Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-icons_228ef1_256x240.png"
-	name := "../src/img/ui-icons_228ef1_256x240.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiIcons_ef8c08_256x240Png reads file data from disk. It returns an error on failure.
-func SrcImgUiIcons_ef8c08_256x240Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-icons_ef8c08_256x240.png"
-	name := "../src/img/ui-icons_ef8c08_256x240.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiIcons_ffd27a_256x240Png reads file data from disk. It returns an error on failure.
-func SrcImgUiIcons_ffd27a_256x240Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-icons_ffd27a_256x240.png"
-	name := "../src/img/ui-icons_ffd27a_256x240.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgUiIcons_ffffff_256x240Png reads file data from disk. It returns an error on failure.
-func SrcImgUiIcons_ffffff_256x240Png() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/ui-icons_ffffff_256x240.png"
-	name := "../src/img/ui-icons_ffffff_256x240.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// SrcImgWmdButtonsPng reads file data from disk. It returns an error on failure.
-func SrcImgWmdButtonsPng() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/img/wmd-buttons.png"
-	name := "../src/img/wmd-buttons.png"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -1448,38 +1543,43 @@ func AssetNames() []string {
 var _bindata = map[string]func() (*asset, error){
 	"../src/.DS_Store": SrcDs_store,
 	"../src/app/App.jsx": SrcAppAppJsx,
+	"../src/app/collections/Collections.jsx": SrcAppCollectionsCollectionsJsx,
+	"../src/app/config/routes.js": SrcAppConfigRoutesJs,
+	"../src/app/config/store.js": SrcAppConfigStoreJs,
+	"../src/dist/css/main.css": SrcDistCssMainCss,
+	"../src/dist/img/favicon11.ico": SrcDistImgFavicon11Ico,
+	"../src/dist/img/favicon12.ico": SrcDistImgFavicon12Ico,
+	"../src/dist/img/favicon21.ico": SrcDistImgFavicon21Ico,
+	"../src/dist/img/favicon22.ico": SrcDistImgFavicon22Ico,
+	"../src/dist/img/favicon23.ico": SrcDistImgFavicon23Ico,
+	"../src/dist/img/favicon24.ico": SrcDistImgFavicon24Ico,
+	"../src/dist/img/flo-logo.png": SrcDistImgFloLogoPng,
+	"../src/dist/img/flo-logo144.png": SrcDistImgFloLogo144Png,
+	"../src/dist/img/rule-21.png": SrcDistImgRule21Png,
+	"../src/dist/img/rule-22.png": SrcDistImgRule22Png,
+	"../src/dist/img/rule.png": SrcDistImgRulePng,
+	"../src/dist/img/sb_v_double_arrow.png": SrcDistImgSb_v_double_arrowPng,
+	"../src/dist/img/semi-transparent-bg.png": SrcDistImgSemiTransparentBgPng,
+	"../src/dist/img/sprite.png": SrcDistImgSpritePng,
+	"../src/dist/img/ui-bg_diagonals-thick_18_b81900_40x40.png": SrcDistImgUiBg_diagonalsThick_18_b81900_40x40Png,
+	"../src/dist/img/ui-bg_diagonals-thick_20_666666_40x40.png": SrcDistImgUiBg_diagonalsThick_20_666666_40x40Png,
+	"../src/dist/img/ui-bg_flat_10_000000_40x100.png": SrcDistImgUiBg_flat_10_000000_40x100Png,
+	"../src/dist/img/ui-bg_glass_100_f6f6f6_1x400.png": SrcDistImgUiBg_glass_100_f6f6f6_1x400Png,
+	"../src/dist/img/ui-bg_glass_100_fdf5ce_1x400.png": SrcDistImgUiBg_glass_100_fdf5ce_1x400Png,
+	"../src/dist/img/ui-bg_glass_65_ffffff_1x400.png": SrcDistImgUiBg_glass_65_ffffff_1x400Png,
+	"../src/dist/img/ui-bg_gloss-wave_35_f6a828_500x100.png": SrcDistImgUiBg_glossWave_35_f6a828_500x100Png,
+	"../src/dist/img/ui-bg_highlight-soft_100_eeeeee_1x100.png": SrcDistImgUiBg_highlightSoft_100_eeeeee_1x100Png,
+	"../src/dist/img/ui-bg_highlight-soft_75_ffe45c_1x100.png": SrcDistImgUiBg_highlightSoft_75_ffe45c_1x100Png,
+	"../src/dist/img/ui-icons_222222_256x240.png": SrcDistImgUiIcons_222222_256x240Png,
+	"../src/dist/img/ui-icons_228ef1_256x240.png": SrcDistImgUiIcons_228ef1_256x240Png,
+	"../src/dist/img/ui-icons_ef8c08_256x240.png": SrcDistImgUiIcons_ef8c08_256x240Png,
+	"../src/dist/img/ui-icons_ffd27a_256x240.png": SrcDistImgUiIcons_ffd27a_256x240Png,
+	"../src/dist/img/ui-icons_ffffff_256x240.png": SrcDistImgUiIcons_ffffff_256x240Png,
+	"../src/dist/img/wmd-buttons.png": SrcDistImgWmdButtonsPng,
 	"../src/dist/js/florence.bundle.js": SrcDistJsFlorenceBundleJs,
 	"../src/dist/manifest.json": SrcDistManifestJson,
 	"../src/dist/service-worker.js": SrcDistServiceWorkerJs,
-	"../src/img/favicon11.ico": SrcImgFavicon11Ico,
-	"../src/img/favicon12.ico": SrcImgFavicon12Ico,
-	"../src/img/favicon21.ico": SrcImgFavicon21Ico,
-	"../src/img/favicon22.ico": SrcImgFavicon22Ico,
-	"../src/img/favicon23.ico": SrcImgFavicon23Ico,
-	"../src/img/favicon24.ico": SrcImgFavicon24Ico,
-	"../src/img/flo-logo.png": SrcImgFloLogoPng,
-	"../src/img/flo-logo144.png": SrcImgFloLogo144Png,
-	"../src/img/rule-21.png": SrcImgRule21Png,
-	"../src/img/rule-22.png": SrcImgRule22Png,
-	"../src/img/rule.png": SrcImgRulePng,
-	"../src/img/sb_v_double_arrow.png": SrcImgSb_v_double_arrowPng,
-	"../src/img/semi-transparent-bg.png": SrcImgSemiTransparentBgPng,
 	"../src/img/sprite.png": SrcImgSpritePng,
-	"../src/img/ui-bg_diagonals-thick_18_b81900_40x40.png": SrcImgUiBg_diagonalsThick_18_b81900_40x40Png,
-	"../src/img/ui-bg_diagonals-thick_20_666666_40x40.png": SrcImgUiBg_diagonalsThick_20_666666_40x40Png,
-	"../src/img/ui-bg_flat_10_000000_40x100.png": SrcImgUiBg_flat_10_000000_40x100Png,
-	"../src/img/ui-bg_glass_100_f6f6f6_1x400.png": SrcImgUiBg_glass_100_f6f6f6_1x400Png,
-	"../src/img/ui-bg_glass_100_fdf5ce_1x400.png": SrcImgUiBg_glass_100_fdf5ce_1x400Png,
-	"../src/img/ui-bg_glass_65_ffffff_1x400.png": SrcImgUiBg_glass_65_ffffff_1x400Png,
-	"../src/img/ui-bg_gloss-wave_35_f6a828_500x100.png": SrcImgUiBg_glossWave_35_f6a828_500x100Png,
-	"../src/img/ui-bg_highlight-soft_100_eeeeee_1x100.png": SrcImgUiBg_highlightSoft_100_eeeeee_1x100Png,
-	"../src/img/ui-bg_highlight-soft_75_ffe45c_1x100.png": SrcImgUiBg_highlightSoft_75_ffe45c_1x100Png,
-	"../src/img/ui-icons_222222_256x240.png": SrcImgUiIcons_222222_256x240Png,
-	"../src/img/ui-icons_228ef1_256x240.png": SrcImgUiIcons_228ef1_256x240Png,
-	"../src/img/ui-icons_ef8c08_256x240.png": SrcImgUiIcons_ef8c08_256x240Png,
-	"../src/img/ui-icons_ffd27a_256x240.png": SrcImgUiIcons_ffd27a_256x240Png,
-	"../src/img/ui-icons_ffffff_256x240.png": SrcImgUiIcons_ffffff_256x240Png,
-	"../src/img/wmd-buttons.png": SrcImgWmdButtonsPng,
 	"../src/index.html": SrcIndexHtml,
 	"../src/index.js": SrcIndexJs,
 	"../src/manifest.json": SrcManifestJson,
@@ -1565,8 +1665,49 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			".DS_Store": &bintree{SrcDs_store, map[string]*bintree{}},
 			"app": &bintree{nil, map[string]*bintree{
 				"App.jsx": &bintree{SrcAppAppJsx, map[string]*bintree{}},
+				"collections": &bintree{nil, map[string]*bintree{
+					"Collections.jsx": &bintree{SrcAppCollectionsCollectionsJsx, map[string]*bintree{}},
+				}},
+				"config": &bintree{nil, map[string]*bintree{
+					"routes.js": &bintree{SrcAppConfigRoutesJs, map[string]*bintree{}},
+					"store.js": &bintree{SrcAppConfigStoreJs, map[string]*bintree{}},
+				}},
 			}},
 			"dist": &bintree{nil, map[string]*bintree{
+				"css": &bintree{nil, map[string]*bintree{
+					"main.css": &bintree{SrcDistCssMainCss, map[string]*bintree{}},
+				}},
+				"img": &bintree{nil, map[string]*bintree{
+					"favicon11.ico": &bintree{SrcDistImgFavicon11Ico, map[string]*bintree{}},
+					"favicon12.ico": &bintree{SrcDistImgFavicon12Ico, map[string]*bintree{}},
+					"favicon21.ico": &bintree{SrcDistImgFavicon21Ico, map[string]*bintree{}},
+					"favicon22.ico": &bintree{SrcDistImgFavicon22Ico, map[string]*bintree{}},
+					"favicon23.ico": &bintree{SrcDistImgFavicon23Ico, map[string]*bintree{}},
+					"favicon24.ico": &bintree{SrcDistImgFavicon24Ico, map[string]*bintree{}},
+					"flo-logo.png": &bintree{SrcDistImgFloLogoPng, map[string]*bintree{}},
+					"flo-logo144.png": &bintree{SrcDistImgFloLogo144Png, map[string]*bintree{}},
+					"rule-21.png": &bintree{SrcDistImgRule21Png, map[string]*bintree{}},
+					"rule-22.png": &bintree{SrcDistImgRule22Png, map[string]*bintree{}},
+					"rule.png": &bintree{SrcDistImgRulePng, map[string]*bintree{}},
+					"sb_v_double_arrow.png": &bintree{SrcDistImgSb_v_double_arrowPng, map[string]*bintree{}},
+					"semi-transparent-bg.png": &bintree{SrcDistImgSemiTransparentBgPng, map[string]*bintree{}},
+					"sprite.png": &bintree{SrcDistImgSpritePng, map[string]*bintree{}},
+					"ui-bg_diagonals-thick_18_b81900_40x40.png": &bintree{SrcDistImgUiBg_diagonalsThick_18_b81900_40x40Png, map[string]*bintree{}},
+					"ui-bg_diagonals-thick_20_666666_40x40.png": &bintree{SrcDistImgUiBg_diagonalsThick_20_666666_40x40Png, map[string]*bintree{}},
+					"ui-bg_flat_10_000000_40x100.png": &bintree{SrcDistImgUiBg_flat_10_000000_40x100Png, map[string]*bintree{}},
+					"ui-bg_glass_100_f6f6f6_1x400.png": &bintree{SrcDistImgUiBg_glass_100_f6f6f6_1x400Png, map[string]*bintree{}},
+					"ui-bg_glass_100_fdf5ce_1x400.png": &bintree{SrcDistImgUiBg_glass_100_fdf5ce_1x400Png, map[string]*bintree{}},
+					"ui-bg_glass_65_ffffff_1x400.png": &bintree{SrcDistImgUiBg_glass_65_ffffff_1x400Png, map[string]*bintree{}},
+					"ui-bg_gloss-wave_35_f6a828_500x100.png": &bintree{SrcDistImgUiBg_glossWave_35_f6a828_500x100Png, map[string]*bintree{}},
+					"ui-bg_highlight-soft_100_eeeeee_1x100.png": &bintree{SrcDistImgUiBg_highlightSoft_100_eeeeee_1x100Png, map[string]*bintree{}},
+					"ui-bg_highlight-soft_75_ffe45c_1x100.png": &bintree{SrcDistImgUiBg_highlightSoft_75_ffe45c_1x100Png, map[string]*bintree{}},
+					"ui-icons_222222_256x240.png": &bintree{SrcDistImgUiIcons_222222_256x240Png, map[string]*bintree{}},
+					"ui-icons_228ef1_256x240.png": &bintree{SrcDistImgUiIcons_228ef1_256x240Png, map[string]*bintree{}},
+					"ui-icons_ef8c08_256x240.png": &bintree{SrcDistImgUiIcons_ef8c08_256x240Png, map[string]*bintree{}},
+					"ui-icons_ffd27a_256x240.png": &bintree{SrcDistImgUiIcons_ffd27a_256x240Png, map[string]*bintree{}},
+					"ui-icons_ffffff_256x240.png": &bintree{SrcDistImgUiIcons_ffffff_256x240Png, map[string]*bintree{}},
+					"wmd-buttons.png": &bintree{SrcDistImgWmdButtonsPng, map[string]*bintree{}},
+				}},
 				"js": &bintree{nil, map[string]*bintree{
 					"florence.bundle.js": &bintree{SrcDistJsFlorenceBundleJs, map[string]*bintree{}},
 				}},
@@ -1574,35 +1715,7 @@ var _bintree = &bintree{nil, map[string]*bintree{
 				"service-worker.js": &bintree{SrcDistServiceWorkerJs, map[string]*bintree{}},
 			}},
 			"img": &bintree{nil, map[string]*bintree{
-				"favicon11.ico": &bintree{SrcImgFavicon11Ico, map[string]*bintree{}},
-				"favicon12.ico": &bintree{SrcImgFavicon12Ico, map[string]*bintree{}},
-				"favicon21.ico": &bintree{SrcImgFavicon21Ico, map[string]*bintree{}},
-				"favicon22.ico": &bintree{SrcImgFavicon22Ico, map[string]*bintree{}},
-				"favicon23.ico": &bintree{SrcImgFavicon23Ico, map[string]*bintree{}},
-				"favicon24.ico": &bintree{SrcImgFavicon24Ico, map[string]*bintree{}},
-				"flo-logo.png": &bintree{SrcImgFloLogoPng, map[string]*bintree{}},
-				"flo-logo144.png": &bintree{SrcImgFloLogo144Png, map[string]*bintree{}},
-				"rule-21.png": &bintree{SrcImgRule21Png, map[string]*bintree{}},
-				"rule-22.png": &bintree{SrcImgRule22Png, map[string]*bintree{}},
-				"rule.png": &bintree{SrcImgRulePng, map[string]*bintree{}},
-				"sb_v_double_arrow.png": &bintree{SrcImgSb_v_double_arrowPng, map[string]*bintree{}},
-				"semi-transparent-bg.png": &bintree{SrcImgSemiTransparentBgPng, map[string]*bintree{}},
 				"sprite.png": &bintree{SrcImgSpritePng, map[string]*bintree{}},
-				"ui-bg_diagonals-thick_18_b81900_40x40.png": &bintree{SrcImgUiBg_diagonalsThick_18_b81900_40x40Png, map[string]*bintree{}},
-				"ui-bg_diagonals-thick_20_666666_40x40.png": &bintree{SrcImgUiBg_diagonalsThick_20_666666_40x40Png, map[string]*bintree{}},
-				"ui-bg_flat_10_000000_40x100.png": &bintree{SrcImgUiBg_flat_10_000000_40x100Png, map[string]*bintree{}},
-				"ui-bg_glass_100_f6f6f6_1x400.png": &bintree{SrcImgUiBg_glass_100_f6f6f6_1x400Png, map[string]*bintree{}},
-				"ui-bg_glass_100_fdf5ce_1x400.png": &bintree{SrcImgUiBg_glass_100_fdf5ce_1x400Png, map[string]*bintree{}},
-				"ui-bg_glass_65_ffffff_1x400.png": &bintree{SrcImgUiBg_glass_65_ffffff_1x400Png, map[string]*bintree{}},
-				"ui-bg_gloss-wave_35_f6a828_500x100.png": &bintree{SrcImgUiBg_glossWave_35_f6a828_500x100Png, map[string]*bintree{}},
-				"ui-bg_highlight-soft_100_eeeeee_1x100.png": &bintree{SrcImgUiBg_highlightSoft_100_eeeeee_1x100Png, map[string]*bintree{}},
-				"ui-bg_highlight-soft_75_ffe45c_1x100.png": &bintree{SrcImgUiBg_highlightSoft_75_ffe45c_1x100Png, map[string]*bintree{}},
-				"ui-icons_222222_256x240.png": &bintree{SrcImgUiIcons_222222_256x240Png, map[string]*bintree{}},
-				"ui-icons_228ef1_256x240.png": &bintree{SrcImgUiIcons_228ef1_256x240Png, map[string]*bintree{}},
-				"ui-icons_ef8c08_256x240.png": &bintree{SrcImgUiIcons_ef8c08_256x240Png, map[string]*bintree{}},
-				"ui-icons_ffd27a_256x240.png": &bintree{SrcImgUiIcons_ffd27a_256x240Png, map[string]*bintree{}},
-				"ui-icons_ffffff_256x240.png": &bintree{SrcImgUiIcons_ffffff_256x240Png, map[string]*bintree{}},
-				"wmd-buttons.png": &bintree{SrcImgWmdButtonsPng, map[string]*bintree{}},
 			}},
 			"index.html": &bintree{SrcIndexHtml, map[string]*bintree{}},
 			"index.js": &bintree{SrcIndexJs, map[string]*bintree{}},
