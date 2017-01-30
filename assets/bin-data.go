@@ -6,6 +6,8 @@
 // ../src/assets/js/jquery.min.js
 // ../src/assets/js/main.js
 // ../src/assets/js/templates.js
+// ../src/assets/manifest.json
+// ../src/assets/service-worker.js
 // ../src/assets/version.json
 // ../src/css/florence.css
 // ../src/css/rapid-prototype-main.css
@@ -16,7 +18,8 @@
 // ../src/css/third-party/responsive-tables.css
 // ../src/css/third-party/sweetalert.css
 // ../src/css/third-party/tagit.ui-zendesk.css
-// ../src/florence.html
+// ../src/font/.DS_Store
+// ../src/font/Open_Sans/.DS_Store
 // ../src/font/Open_Sans/LICENSE.txt
 // ../src/font/Open_Sans/OpenSans-Bold.eot
 // ../src/font/Open_Sans/OpenSans-Bold.svg
@@ -1796,6 +1799,42 @@ func SrcAssetsJsTemplatesJs() (*asset, error) {
 	return a, err
 }
 
+// SrcAssetsManifestJson reads file data from disk. It returns an error on failure.
+func SrcAssetsManifestJson() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/assets/manifest.json"
+	name := "../src/assets/manifest.json"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcAssetsServiceWorkerJs reads file data from disk. It returns an error on failure.
+func SrcAssetsServiceWorkerJs() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/assets/service-worker.js"
+	name := "../src/assets/service-worker.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
 // SrcAssetsVersionJson reads file data from disk. It returns an error on failure.
 func SrcAssetsVersionJson() (*asset, error) {
 	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/assets/version.json"
@@ -1976,10 +2015,28 @@ func SrcCssThirdPartyTagitUiZendeskCss() (*asset, error) {
 	return a, err
 }
 
-// SrcFlorenceHtml reads file data from disk. It returns an error on failure.
-func SrcFlorenceHtml() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/florence.html"
-	name := "../src/florence.html"
+// SrcFontDs_store reads file data from disk. It returns an error on failure.
+func SrcFontDs_store() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/font/.DS_Store"
+	name := "../src/font/.DS_Store"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// SrcFontOpen_sansDs_store reads file data from disk. It returns an error on failure.
+func SrcFontOpen_sansDs_store() (*asset, error) {
+	path := "/Users/crispinmerriman/Git/onsdigital/florence/src/font/Open_Sans/.DS_Store"
+	name := "../src/font/Open_Sans/.DS_Store"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -31662,6 +31719,8 @@ var _bindata = map[string]func() (*asset, error){
 	"../src/assets/js/jquery.min.js": SrcAssetsJsJqueryMinJs,
 	"../src/assets/js/main.js": SrcAssetsJsMainJs,
 	"../src/assets/js/templates.js": SrcAssetsJsTemplatesJs,
+	"../src/assets/manifest.json": SrcAssetsManifestJson,
+	"../src/assets/service-worker.js": SrcAssetsServiceWorkerJs,
 	"../src/assets/version.json": SrcAssetsVersionJson,
 	"../src/css/florence.css": SrcCssFlorenceCss,
 	"../src/css/rapid-prototype-main.css": SrcCssRapidPrototypeMainCss,
@@ -31672,7 +31731,8 @@ var _bindata = map[string]func() (*asset, error){
 	"../src/css/third-party/responsive-tables.css": SrcCssThirdPartyResponsiveTablesCss,
 	"../src/css/third-party/sweetalert.css": SrcCssThirdPartySweetalertCss,
 	"../src/css/third-party/tagit.ui-zendesk.css": SrcCssThirdPartyTagitUiZendeskCss,
-	"../src/florence.html": SrcFlorenceHtml,
+	"../src/font/.DS_Store": SrcFontDs_store,
+	"../src/font/Open_Sans/.DS_Store": SrcFontOpen_sansDs_store,
 	"../src/font/Open_Sans/LICENSE.txt": SrcFontOpen_sansLicenseTxt,
 	"../src/font/Open_Sans/OpenSans-Bold.eot": SrcFontOpen_sansOpensansBoldEot,
 	"../src/font/Open_Sans/OpenSans-Bold.svg": SrcFontOpen_sansOpensansBoldSvg,
@@ -33373,6 +33433,8 @@ var _bintree = &bintree{nil, map[string]*bintree{
 					"main.js": &bintree{SrcAssetsJsMainJs, map[string]*bintree{}},
 					"templates.js": &bintree{SrcAssetsJsTemplatesJs, map[string]*bintree{}},
 				}},
+				"manifest.json": &bintree{SrcAssetsManifestJson, map[string]*bintree{}},
+				"service-worker.js": &bintree{SrcAssetsServiceWorkerJs, map[string]*bintree{}},
 				"version.json": &bintree{SrcAssetsVersionJson, map[string]*bintree{}},
 			}},
 			"css": &bintree{nil, map[string]*bintree{
@@ -33388,9 +33450,10 @@ var _bintree = &bintree{nil, map[string]*bintree{
 					"tagit.ui-zendesk.css": &bintree{SrcCssThirdPartyTagitUiZendeskCss, map[string]*bintree{}},
 				}},
 			}},
-			"florence.html": &bintree{SrcFlorenceHtml, map[string]*bintree{}},
 			"font": &bintree{nil, map[string]*bintree{
+				".DS_Store": &bintree{SrcFontDs_store, map[string]*bintree{}},
 				"Open_Sans": &bintree{nil, map[string]*bintree{
+					".DS_Store": &bintree{SrcFontOpen_sansDs_store, map[string]*bintree{}},
 					"LICENSE.txt": &bintree{SrcFontOpen_sansLicenseTxt, map[string]*bintree{}},
 					"OpenSans-Bold.eot": &bintree{SrcFontOpen_sansOpensansBoldEot, map[string]*bintree{}},
 					"OpenSans-Bold.svg": &bintree{SrcFontOpen_sansOpensansBoldSvg, map[string]*bintree{}},
