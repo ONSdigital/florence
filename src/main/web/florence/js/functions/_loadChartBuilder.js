@@ -20,7 +20,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         pageUrl = pageData.uri;
         html = templates.chartBuilder(chart);
         $('body').append(html);
-console.log(chart.annotations);
+
         loadTemplates();
 
         $('.js-chart-builder').css("display", "block");
@@ -419,8 +419,10 @@ console.log(chart.annotations);
 
         //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
-        var chartHeight = parseInt(chart.aspectRatio * chart.size);
-        var chartWidth = parseInt(chart.size);
+        // get device and its corresponding dims
+        var device = $('#device').val();
+        var chartHeight = parseInt(chart.devices[device].aspectRatio * chart.size);
+        var chartWidth = chart.size;
 
         $("#chart-size").html('Size:' + chartWidth + ' x ' + chartHeight);
         renderChartObject('chart', chart, chartHeight, chartWidth);
@@ -529,8 +531,6 @@ console.log(chart.annotations);
                 itm.height = (lines.length+1)*12 + 10;
                 itm.orientation = $('#orientation-axis-'+idx).val();
                 itm.bandWidth = parseInt( $('#band-width-'+idx).val() );
-
-                console.log(idx, itm.isPlotline, itm.orientation);
             }
         });
 
