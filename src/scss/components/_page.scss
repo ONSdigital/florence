@@ -18,7 +18,7 @@
             position: absolute;
             left: 0;
             top: -5px;
-            background: transparent url(../../img/sprite.png) no-repeat -7px 0;
+            background: transparent url(../img/sprite.png) no-repeat -7px 0;
             background-size: 32px auto;
             display: block;
             font-size: 9px;
@@ -149,13 +149,13 @@
         }
         &--directory {
             &:after {
-                background: transparent url(../../img/sprite.png) no-repeat -4px -418px;
+                background: transparent url(../img/sprite.png) no-repeat -4px -418px;
                 background-size: 30px auto;
                 height: 15px;
             }
 
             &.selected:after {
-                background: transparent url(../../img/sprite.png) no-repeat -4px -445px;
+                background: transparent url(../img/sprite.png) no-repeat -4px -445px;
                 background-size: 30px auto;
                 height: 15px;
             }
