@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
-import Layout from '../global/Layout';
+import NavBar from './NavBar';
 
-class Login extends Component {
+class Layout extends Component {
     constructor(props) {
-        super(props);
+        super(props)
     }
 
     render() {
         return (
-            <Layout >
-                <div>This is login</div>
-            </Layout>
+            <div>
+                <NavBar />
+                {this.props.children}
+            </div>
         )
     }
 }
