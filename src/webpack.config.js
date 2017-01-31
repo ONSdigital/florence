@@ -40,6 +40,7 @@ module.exports = {
             }
         ]
     },
+    devtool: "eval-source-map",
     resolve: {
         // implicitly tell babel to load jsx
         extensions: ['.js', '.jsx']
