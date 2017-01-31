@@ -375,7 +375,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('.btn-delete-annotation').on('click', onDelete);
 
         $( "#annotation-chart" ).accordion( "refresh" );
-        $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );
+        if(chart){
+            $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );  
+        }
         $('.chart-accordian.refresh-chart').on('change', refreshChart);
     }   
 
