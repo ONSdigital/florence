@@ -495,6 +495,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.series = tsvJSONColNames(json);
         chart.categories = tsvJSONRowNames(json);
 
+        chart.yAxisMax = getMax(json);
+
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
         chart.highlight = $('#chart-highlight option:selected').text();
@@ -723,6 +725,22 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         return series;
+    }
+
+    function getMax(input){
+        var max = 0;
+        var lines = input.split("\n");
+
+        for (var i = 1; i < lines.length; i++) {
+            var currentline = lines[i].split("\t");
+            for (var j = 1; j < currentline.length; j++) {
+                seriesMax = parseFloat(currentline[j]) 
+                if(seriesMax>max){
+                    max = seriesMax;
+                }
+            }
+        }
+        return max;
     }
 
     function exportToSVG(sourceSelector) {
