@@ -322,7 +322,20 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.devices[device].aspectRatio = $('#aspect-ratio').val();
         chart.devices[device].labelInterval = $('#chart-label-interval').val();
         chart.devices[device].isHidden = $('#is-hidden').is(':checked');;
-        chart.isHidden = $('#is-hidden').is(':checked');;
+        chart.isHidden = $('#is-hidden').is(':checked');
+
+        //update the annotions
+        $.each(chart.annotations, function(idx, itm){
+            if(itm.devices){
+
+                if(itm.devices[device]){
+                    console.log("SET xy " + itm.devices[device].x, itm.devices[device].y);
+                    $('#note-x-'+idx).val(itm.devices[device].x);
+                    $('#note-y-'+idx).val(itm.devices[device].y);
+                }
+
+            }
+        });
 
         chart = buildChartObject();
         renderChart();   
@@ -332,9 +345,9 @@ function loadChartBuilder(pageData, onSave, chart) {
         var obj = {   
                 title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
                 devices:[
-                    {type:'Mobile', x:200, y:150, isHidden:false},
-                    {type:'Tablet', x:50, y:50, isHidden:false},
-                    {type:'Desktop', x:50, y:50, isHidden:false}
+                    {type:'sm', x:200, y:150, isHidden:false},
+                    {type:'md', x:50, y:50, isHidden:false},
+                    {type:'lg', x:50, y:50, isHidden:false}
                 ]
                 , x:250, y:70
                 , isHidden:false
@@ -425,6 +438,10 @@ function loadChartBuilder(pageData, onSave, chart) {
         var chartHeight = parseInt(chart.devices[device].aspectRatio * chart.size);
         var chartWidth = chart.size;
 
+        console.log("render " + device);
+
+        //if(!chart.annotations)
+
         $("#chart-size").html('Size:' + chartWidth + ' x ' + chartHeight);
         renderChartObject('chart', chart, chartHeight, chartWidth);
     }
@@ -488,6 +505,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.isHidden = chart.devices[chart.device].isHidden;
         
 
+
+
         if (chart.title === '') {
             chart.title = '[Title]'
         }
@@ -527,6 +546,10 @@ function loadChartBuilder(pageData, onSave, chart) {
                 
                 itm.x = parseInt( $('#note-x-'+idx).val() );
                 itm.y = parseInt( $('#note-y-'+idx).val() );
+
+                       console.log(itm.id, itm.x, itm.y)
+        updateAnnotationCoords(itm.id, itm.x, itm.y);
+
                 itm.title = lines.join('<br/>');
                 itm.isHidden = $('#is-hidden-'+idx).prop('checked');
                 itm.isPlotline = $('#is-plotline-'+idx).prop('checked');
@@ -614,11 +637,40 @@ function loadChartBuilder(pageData, onSave, chart) {
             chart.timeSeries = timeData;
         }
     }
-/*
-    function someFunction(){
-        console.log('click');
+
+    function updateAnnotationCoords(id, x, y){
+        var device = $('#device').val();
+        var itm = chart.annotations[id];
+
+        if(!itm.devices){
+            //itm.devices = {'sm':{}, 'md':{}, 'lg':{}};
+            itm.devices = {};
+        }
+
+        if(!itm.devices[device]){
+            itm.devices[device] = {};
+        }
+
+        itm.devices[device].x = x;
+        itm.devices[device].y = y;
+
+        console.log(itm);
     }
-*/
+
+    function annotationClick(evt){
+        console.log('click');
+        var id = $('#annotation-chart').accordion( "option", "active" );
+        //setBoxPosHandle(active, parseInt(e.xAxis[0].value), parseInt(e.yAxis[0].value));
+        var x = parseInt(evt.xAxis[0].value);
+        var y = parseInt(evt.yAxis[0].value);
+        console.log(id, x, y)
+        updateAnnotationCoords(id, x, y);
+
+        // important! trigger the change event after setting the value
+        $('#note-x-'+id).val(x).change();
+        $('#note-y-'+id).val(y).change();
+    }
+
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         var jqxhr = $.post("/chartconfig", {
@@ -631,8 +683,8 @@ function loadChartBuilder(pageData, onSave, chart) {
                 if (chartConfig) {
                     chartConfig.chart.renderTo = "chart";
                     var xchart = new Highcharts.Chart(chartConfig);
-                   // add listeners to chart here instead of in template
-                    //$(xchart).bind('click', someFunction);
+                    // add listeners to chart here instead of in template
+                    $(xchart).bind('click', annotationClick);
 
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
                 }
