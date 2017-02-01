@@ -710,6 +710,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     function tsvJSONHeaders(input) {
         var lines = input.split("\n"); //%0A - "\n"
         var headers = lines[0].split("\t"); //%09 - "\t"
+        if(headers[0]===''){
+            headers[0]=' ';
+        }
         if(headers.length>3){
             console.warn('That\'s a lot of series. Do you want to use small multiples?');
         }
