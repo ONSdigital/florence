@@ -614,7 +614,11 @@ function loadChartBuilder(pageData, onSave, chart) {
             chart.timeSeries = timeData;
         }
     }
-
+/*
+    function someFunction(){
+        console.log('click');
+    }
+*/
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         var jqxhr = $.post("/chartconfig", {
@@ -626,7 +630,10 @@ function loadChartBuilder(pageData, onSave, chart) {
                 
                 if (chartConfig) {
                     chartConfig.chart.renderTo = "chart";
-                    new Highcharts.Chart(chartConfig);
+                    var xchart = new Highcharts.Chart(chartConfig);
+                   // add listeners to chart here instead of in template
+                    //$(xchart).bind('click', someFunction);
+
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
                 }
             }, "script")
