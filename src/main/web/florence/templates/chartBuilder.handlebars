@@ -8,10 +8,10 @@
                 <nav class="tabs--js">
                     <ul class="list--neutral flush">
                         <li class="tab__item width-sm--6">
-                            <a href="#" class="tab__link tab__link--active">Chart</a>
+                            <a href="#" class="tab__link">Metadata</a>
                         </li>
                         <li class="tab__item width-sm--6">
-                            <a href="#" class="tab__link">Metadata</a>
+                            <a href="#" class="tab__link tab__link--active">Chart</a>
                         </li>
                         <li class="tab__item width-sm--6">
                             <a href="#" class="tab__link">Series</a>
@@ -61,11 +61,11 @@
                 <div> 
                     <label>DEVICE <br>
                         <div class="select-wrap half">
-                            <select id="device" class="refresh-aspect">
+                            <select id="device" class="refresh-device">
                                 {{#select targetDevice}}
-                                    <option value="sm">Mobile</option>
-                                    <option value="md">Tablet</option>
                                     <option value="lg">Desktop</option>
+                                    <option value="md">Tablet</option>
+                                    <option value="sm">Mobile</option>
                                 {{/select}}
                             </select>
                         </div>
@@ -119,10 +119,11 @@
 
             <div class="debug-links">
                 FILE ID: <strong>{{filename}}</strong>
-                 | PATH: {{uri}}
                  | <a href='{{uri}}' target ="showchart">CHART</a>
                  | <a href='{{uri}}/data' target ="data">DATA</a>
                  | <a href='../chartconfig?uri={{uri}}' target ="json">JSON</a>
+                 <br/>
+                 PATH: {{uri}}
             </div>
         </div>
 
