@@ -6,7 +6,6 @@ import Layout from './global/Layout'
 import Collections from './collections/Collections';
 import Login from './login/Login';
 
-import routes from './config/routes';
 import store from './config/store'
 
 export default class App extends Component {
