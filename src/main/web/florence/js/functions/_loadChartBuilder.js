@@ -343,18 +343,18 @@ function loadChartBuilder(pageData, onSave, chart) {
     function refreshDeviceDimensions(){
         console.log('refreshDeviceDimensions');
         var device = $('#device').val();
-        //update the annotions
+        //update the annotations
         $.each(chart.annotations, function(idx, itm){
             if(itm.devices){
 
                 if(itm.devices[device]){
-                    $('#note-x-'+idx).val(itm.devices[device].x).change();
-                    $('#note-y-'+idx).val(itm.devices[device].y).change();
+                    $('#note-x-'+idx).val(itm.devices[device].x);
+                    $('#note-y-'+idx).val(itm.devices[device].y);
                 }
 
             }
         });   
-
+        renderChart();
     }
 
 
