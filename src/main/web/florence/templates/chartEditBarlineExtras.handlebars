@@ -1,17 +1,15 @@
 <label for="finish-at-hundred" class="checkbox-label">Finish at 100</label>
 <input id="finish-at-hundred" name="Finish at 100" {{#if finishAtHundred}}checked{{/if}} type="checkbox">
 <br/>
-{{#each series}}
-  <label for="types_{{@index}}">{{this}}</label>
+{{#each this.series}}
+  <label for="series-types_{{@index}}">Series {{@index}}: {{this}}</label>
   <div class="select-wrap">
-    <select id="types_{{@index}}" class="col--5">
+    <select id="series-types_{{@index}}" class="col--5">
       {{#select (lookup ../chartTypes this)}}
         <option value="bar">Bar</option>
         <option value="line">Line</option>
       {{/select}}
     </select>
   </div>
-  <label for="{{this}}">Bar stack</label>
-    <input id="{{this}}" name="group_check" value="{{this}}" type="checkbox"{{#ifContains this ../groups.[0]}} checked{{/ifContains}}>
   <br/>
 {{/each}}
