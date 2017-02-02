@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
-import Layout from '../global/Layout'
-
 class Collections extends Component {
     constructor(props) {
         super(props);
@@ -10,9 +8,7 @@ class Collections extends Component {
 
     render () {
         return (
-            <Layout >
-                <div>This is collections list</div>
-            </Layout>
+            <div>This is collections list</div>
         )
     }
 }
