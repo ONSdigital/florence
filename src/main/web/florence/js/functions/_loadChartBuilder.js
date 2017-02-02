@@ -40,6 +40,13 @@ function loadChartBuilder(pageData, onSave, chart) {
         renderNotes();
         renderChart();
 
+        // reset the main size panel settings
+        // TODO remove high level aspect ratio etc
+        if(chart.devices && chart.device){       
+            $('#device').val(chart.device);
+            $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
+            $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
+        }
         showTab( 'Chart' );
 
     }
@@ -251,8 +258,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         // add the chart dimensions back in
         $('#chart-label-interval').val(chart.labelInterval);
+
         if(chart.devices && chart.device){       
-            $('#device').val(chart.devices[chart.device].type);
+            //$('#device').val(chart.devices[chart.device].type);
             $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
             $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
         }
@@ -287,7 +295,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('.refresh-text').on('input', renderText);
         $('#add-annotation').on('click', addNotation);
         //device type
-        $('.refresh-aspect').on('change', refreshChartDimensions );
+        $('.refresh-device').on('change', refreshDeviceDimensions);
+        $('.refresh-aspect').on('change', refreshChartDimensions);
     }
 
 
@@ -296,7 +305,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('.refresh-chart-text').off('blur', refreshChart);
         $('.refresh-text').off('input', renderText);
         $('#add-annotation').off('click', addNotation);
-        $('.refresh-aspect').off('change', refreshChartDimensions );
+        $('.refresh-device').off('change', refreshDeviceDimensions);
+        $('.refresh-aspect').off('change', refreshChartDimensions);
     }
 
 
@@ -311,34 +321,58 @@ function loadChartBuilder(pageData, onSave, chart) {
             // NOTE need to refresh the chart object before refreshing the Extra options
             chart = buildChartObject();
             refreshExtraOptions();
-            renderChart();
-        }
-    }
-
-
-    function refreshChartDimensions(){
-        var device = $('#device').val();
-
-        chart.devices[device].aspectRatio = $('#aspect-ratio').val();
-        chart.devices[device].labelInterval = $('#chart-label-interval').val();
-        chart.devices[device].isHidden = $('#is-hidden').is(':checked');;
-        chart.isHidden = $('#is-hidden').is(':checked');
-
+/*
         //update the annotions
+        var device = $('#device').val();
         $.each(chart.annotations, function(idx, itm){
             if(itm.devices){
 
                 if(itm.devices[device]){
-                    console.log("SET xy " + itm.devices[device].x, itm.devices[device].y);
+                    console.log("READ xy " + itm.devices[device].x, itm.devices[device].y);
                     $('#note-x-'+idx).val(itm.devices[device].x);
                     $('#note-y-'+idx).val(itm.devices[device].y);
                 }
 
             }
         });
+*/
+            renderChart();
+        }
+    }
+
+
+    function refreshDeviceDimensions(){
+        console.log('refreshDeviceDimensions');
+        var device = $('#device').val();
+        //update the annotions
+        $.each(chart.annotations, function(idx, itm){
+            console.log(itm);
+            if(itm.devices){
+
+                if(itm.devices[device]){
+                    console.log("refresh device xy " + itm.devices[device].x, itm.devices[device].y);
+                    $('#note-x-'+idx).val(itm.devices[device].x).change();
+                    $('#note-y-'+idx).val(itm.devices[device].y).change();
+                }
+
+            }
+        });   
+
+    }
+
+
+    function refreshChartDimensions(){
+        var device = $('#device').val();
+        console.log('refreshChartDimensions');
+        console.log(chart.devices);
+
+        chart.devices[device].aspectRatio = $('#aspect-ratio').val();
+        chart.devices[device].labelInterval = $('#chart-label-interval').val();
+        chart.devices[device].isHidden = $('#is-hidden').is(':checked');
+        chart.isHidden = $('#is-hidden').is(':checked');
 
         chart = buildChartObject();
-        renderChart();   
+        renderChart();
     }
 
     function addNotation(){
@@ -547,8 +581,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 itm.x = parseInt( $('#note-x-'+idx).val() );
                 itm.y = parseInt( $('#note-y-'+idx).val() );
 
-                       console.log(itm.id, itm.x, itm.y)
-        updateAnnotationCoords(itm.id, itm.x, itm.y);
+                //updateAnnotationCoords(itm.id, itm.x, itm.y);
 
                 itm.title = lines.join('<br/>');
                 itm.isHidden = $('#is-hidden-'+idx).prop('checked');
