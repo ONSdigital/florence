@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 
 import NavBar from './NavBar';
 
-class Layout extends Component {
+export default class Layout extends Component {
     constructor(props) {
         super(props)
     }
@@ -17,5 +16,3 @@ class Layout extends Component {
         )
     }
 }
-
-export default connect()(Layout);
