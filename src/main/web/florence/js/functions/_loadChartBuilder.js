@@ -47,7 +47,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
             $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
         }
-        showTab( 'Chart' );
+        showTab( 'Metadata' );
 
     }
 
@@ -289,6 +289,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
 
     function setFormListeners() {
+        console.log('set form listeners');
         $('.refresh-chart').on('change', refreshChart);   
         // for TEXTFIELDS only update the chart when the text field lose focus
         $('.refresh-chart-text').on('blur', refreshChart);
@@ -297,6 +298,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         //device type
         $('.refresh-device').on('change', refreshDeviceDimensions);
         $('.refresh-aspect').on('change', refreshChartDimensions);
+        //$('.refresh-coords').on('change', refreshCoords);
     }
 
 
@@ -307,12 +309,14 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#add-annotation').off('click', addNotation);
         $('.refresh-device').off('change', refreshDeviceDimensions);
         $('.refresh-aspect').off('change', refreshChartDimensions);
+       // $('.refresh-coords').off('change', refreshCoords);
     }
 
 
 
     // event listeners /////////////////////////////////
     function refreshChart(){
+        console.log('refresh chart');
         var existing = $('#chart-config-URL').val();
         if (existing) {
             console.warn("OVERWRITE ALL CONFIG!");
@@ -321,36 +325,29 @@ function loadChartBuilder(pageData, onSave, chart) {
             // NOTE need to refresh the chart object before refreshing the Extra options
             chart = buildChartObject();
             refreshExtraOptions();
-/*
-        //update the annotions
-        var device = $('#device').val();
-        $.each(chart.annotations, function(idx, itm){
-            if(itm.devices){
 
-                if(itm.devices[device]){
-                    console.log("READ xy " + itm.devices[device].x, itm.devices[device].y);
-                    $('#note-x-'+idx).val(itm.devices[device].x);
-                    $('#note-y-'+idx).val(itm.devices[device].y);
-                }
-
-            }
-        });
-*/
             renderChart();
         }
     }
 
+
+    function refreshCoords(){
+        console.log('refresh coords');
+        var idx = $('#annotation-chart').accordion( "option", "active" );
+        var x = parseInt( $('#note-x-'+idx).val() );
+        var y = parseInt( $('#note-y-'+idx).val() );
+
+        updateAnnotationCoords(idx, x, y);
+    }
 
     function refreshDeviceDimensions(){
         console.log('refreshDeviceDimensions');
         var device = $('#device').val();
         //update the annotions
         $.each(chart.annotations, function(idx, itm){
-            console.log(itm);
             if(itm.devices){
 
                 if(itm.devices[device]){
-                    console.log("refresh device xy " + itm.devices[device].x, itm.devices[device].y);
                     $('#note-x-'+idx).val(itm.devices[device].x).change();
                     $('#note-y-'+idx).val(itm.devices[device].y).change();
                 }
@@ -364,7 +361,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     function refreshChartDimensions(){
         var device = $('#device').val();
         console.log('refreshChartDimensions');
-        console.log(chart.devices);
 
         chart.devices[device].aspectRatio = $('#aspect-ratio').val();
         chart.devices[device].labelInterval = $('#chart-label-interval').val();
@@ -378,15 +374,15 @@ function loadChartBuilder(pageData, onSave, chart) {
     function addNotation(){
         var obj = {   
                 title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
-                devices:[
-                    {type:'sm', x:200, y:150, isHidden:false},
-                    {type:'md', x:50, y:50, isHidden:false},
-                    {type:'lg', x:50, y:50, isHidden:false}
-                ]
+                devices:{
+                    'sm':{x:200, y:150},
+                    'md':{x:50, y:50},
+                    'lg':{x:50, y:50}
+                }
                 , x:250, y:70
                 , isHidden:false
                 , isPlotline:false
-
+                , bandWidth:0
             }
         chart.annotations.push(obj);
         renderNotes();
@@ -410,7 +406,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //remove existing events
         $('.btn-delete-annotation').off('click', onDelete);
-        $('chart-accordian.refresh-chart').off('change', refreshChart); 
+        $('.chart-accordian .refresh-chart').off('change', refreshChart);
+        $('.refresh-coords').off('input', refreshCoords);
 
         var template = templates.chartBuilderAnnotation;
         var html = template(chart);
@@ -425,7 +422,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         if(chart){
             $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );  
         }
-        $('.chart-accordian.refresh-chart').on('change', refreshChart);
+        $('.chart-accordian .refresh-chart').on('change', refreshChart);
+        $('.refresh-coords').on('input', refreshCoords);
     }   
 
 
@@ -472,15 +470,14 @@ function loadChartBuilder(pageData, onSave, chart) {
         var chartHeight = parseInt(chart.devices[device].aspectRatio * chart.size);
         var chartWidth = chart.size;
 
-        console.log("render " + device);
-
-        //if(!chart.annotations)
+        console.log("render " + device, chart.devices[device].aspectRatio);
 
         $("#chart-size").html('Size:' + chartWidth + ' x ' + chartHeight);
         renderChartObject('chart', chart, chartHeight, chartWidth);
     }
 
     function buildChartObject() {
+        console.log('buildChartObject');
         var json = $('#chart-data').val();
         // catch any double quotes and replace with single for now...
         // this stops them breaking the TSV transformation
@@ -531,6 +528,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.size = sizes[chart.device];
         chart.aspectRatio = $('#aspect-ratio').val();
 
+//TODO swap this around so the data is set elsewhere and this bit reads in the data
         // set ratio is done when the aspect ratio changes so recall existing aspect ratio
         $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
         $('#chart-label-interval').val(chart.devices[chart.device].labelInterval);
@@ -538,8 +536,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('#is-plotline').prop('checked',chart.devices[chart.device].isPlotline);
         chart.isHidden = chart.devices[chart.device].isHidden;
         
-
-
 
         if (chart.title === '') {
             chart.title = '[Title]'
@@ -581,8 +577,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                 itm.x = parseInt( $('#note-x-'+idx).val() );
                 itm.y = parseInt( $('#note-y-'+idx).val() );
 
-                //updateAnnotationCoords(itm.id, itm.x, itm.y);
-
                 itm.title = lines.join('<br/>');
                 itm.isHidden = $('#is-hidden-'+idx).prop('checked');
                 itm.isPlotline = $('#is-plotline-'+idx).prop('checked');
@@ -590,6 +584,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 itm.height = (lines.length+1)*12 + 10;
                 itm.orientation = $('#orientation-axis-'+idx).val();
                 itm.bandWidth = parseInt( $('#band-width-'+idx).val() );
+                if(isNaN(itm.bandWidth))itm.bandWidth = 0;
             }
         });
 
@@ -600,7 +595,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             var seriesData = chart.series;
             //bar line panel settings
             $.each(seriesData, function (index) {
-                //custom series panel takes precendence
+                //custom series panel takes precedence
                 if( $('#series-types_' + index).val() ){
                     types[seriesData[index]] = $('#series-types_' + index).val();
 
@@ -674,9 +669,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     function updateAnnotationCoords(id, x, y){
         var device = $('#device').val();
         var itm = chart.annotations[id];
+        console.log('update ITM coords ',id,x,y , device);
 
         if(!itm.devices){
-            //itm.devices = {'sm':{}, 'md':{}, 'lg':{}};
             itm.devices = {};
         }
 
@@ -686,24 +681,29 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         itm.devices[device].x = x;
         itm.devices[device].y = y;
-
         console.log(itm);
     }
 
     function annotationClick(evt){
         console.log('click');
         var id = $('#annotation-chart').accordion( "option", "active" );
-        //setBoxPosHandle(active, parseInt(e.xAxis[0].value), parseInt(e.yAxis[0].value));
         var x = parseInt(evt.xAxis[0].value);
         var y = parseInt(evt.yAxis[0].value);
-        console.log(id, x, y)
+
         updateAnnotationCoords(id, x, y);
 
         // important! trigger the change event after setting the value
         $('#note-x-'+id).val(x).change();
         $('#note-y-'+id).val(y).change();
     }
-
+/*
+    function setBoxPos(id, x,y) {
+    console.log("set box position");
+    // important! trigger the change event after setting the value
+        $('#note-x-'+id).val(x).change();
+        $('#note-y-'+id).val(y).change();
+    }
+*/
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         var jqxhr = $.post("/chartconfig", {
@@ -718,6 +718,16 @@ function loadChartBuilder(pageData, onSave, chart) {
                     var xchart = new Highcharts.Chart(chartConfig);
                     // add listeners to chart here instead of in template
                     $(xchart).bind('click', annotationClick);
+/*
+                    if(xchart.options.annotations[0]){
+                        xchart.options.annotations[0].events.mouseup = function(e){
+                            console.log('click');
+                        } ;
+
+                    }
+                    console.log(xchart.options);
+
+                   */
 
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
                 }
