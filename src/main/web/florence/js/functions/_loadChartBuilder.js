@@ -555,6 +555,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.palette = $('input[name=palette]:checked').val();
         chart.showTooltip = $('#show-tooltip').prop('checked');
         chart.showMarker = $('#show-marker').prop('checked');
+        chart.hasConnectNull = $('#connect-null').prop('checked');
 
         if(!chart.annotations){
             chart.annotations = [];
