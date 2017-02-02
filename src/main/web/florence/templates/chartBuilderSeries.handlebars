@@ -1,7 +1,7 @@
 <div class="edit-section" id="charts">
     <div id="chart-list" class="edit-section__content">
         <div id="sortable-chart" class="edit-section__sortable">
-
+NOT CURRENTLY FUNCTIONAL
 NB: the type needs to be set to Bar+Line in order to change the series
 {{#each this.series}}
   <label for="series-types_{{@index}}">Series {{@index}}: {{this}}</label>
@@ -14,9 +14,6 @@ NB: the type needs to be set to Bar+Line in order to change the series
     </select>
   </div>
 
-
-  {{!-- <label for="{{this}}">Highlight</label>
-    <input id="{{this}}" name="highlight-group" value="{{this}}" type="checkbox"{{#ifContains this ../groups.[0]}} checked{{/ifContains}}> --}}
   <br/>
 {{/each}}
 
