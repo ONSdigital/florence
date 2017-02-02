@@ -3,25 +3,21 @@
  */
 function viewReleaseSelector() {
 
-    var html = templates.releaseSelector();
-    $('body').append(html);
+    var templateData = {
+        columns: ["Calendar entry", "Calendar entry date"],
+        title: "Select a calendar entry"
+    };
+    templateData['noOfColumns'] = templateData.columns.length;
+    viewSelectModal(templateData, onSearch = function(searchValue) {
+        populateReleasesList(releases, searchValue);
+    });
+
 
     var releases = [];
     PopulateReleasesForUri("/releasecalendar/data?view=upcoming", releases);
 
-    $('.btn-release-selector-cancel').on('click', function () {
-        $('.release-select').stop().fadeOut(200).remove();
-    });
-
-    var $searchInput = $('#release-search-input');
-    $searchInput.focus();
-    $searchInput.on('input', function () {
-        var searchText = $(this).val();
-        populateReleasesList(releases, searchText);
-    });
-
     function PopulateReleasesForUri(baseReleaseUri, releases) {
-        //console.log("populating release for uri " + baseReleaseUri);
+        console.log("populating release for uri " + baseReleaseUri);
         $.ajax({
                 url: baseReleaseUri,
                 type: "get",
@@ -96,7 +92,7 @@ function viewReleaseSelector() {
      * @param releases
      */
     function populateReleasesList(releases, filter) {
-        var releaseList = $('#release-list');
+        var releaseList = $('#js-modal-select__body');
         releaseList.find('tr').remove(); // remove existing table entries
 
         _(_.sortBy(releases, function (release) {
@@ -117,7 +113,7 @@ function viewReleaseSelector() {
 
 
             $releaseTitle.show().text(releaseTitle);
-            $('.release-select').stop().fadeOut(200).remove();
+            $('#js-modal-select').stop().fadeOut(200).remove();
         })
     }
 }
