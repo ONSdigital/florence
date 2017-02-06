@@ -1,5 +1,7 @@
 function editCollection(collection) {
 
+    switchEditLinkText();
+
     collection.collectionOwner = Florence.Authentication.userType();
 
     getTeams(
@@ -124,6 +126,7 @@ function editCollection(collection) {
                 });
                 $('.js-collection__edit-modal').remove();
                 $('.js-collection__head').after(collDetails);
+                switchEditLinkText();
             });
 
             setCollectionEditorHeight();
@@ -142,5 +145,15 @@ function setCollectionEditorHeight() {
 
     var contentHeight = panelHeight - headHeight - contentMargin;
     $contentModal.css('height', contentHeight);
+}
+
+function switchEditLinkText() {
+    var linkText = $('.slider__head').find('.js-edit-collection');
+
+    if (linkText.text() == 'Edit collection') {
+        linkText.text('Editing collection...');
+    } else {
+        linkText.text('Edit collection');
+    }
 }
 
