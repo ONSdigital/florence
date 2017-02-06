@@ -1,6 +1,7 @@
 <div class="slider__modal js-collection__edit-modal">
     <div class="slider__content slider__content--padded">
-        <textarea class="auto-size" id="collection-editor-name" placeholder="Enter new name">{{collection.name}}</textarea>
+        <p>{{createdBy collection.events}}</p>
+        <input id="collection-editor-name" placeholder="Enter new name" value="{{collection.name}}">
         <div class="select-wrap">
             <select id="editor-team">
                 <option selected disabled="disabled">Edit the team the collection can be previewed by</option>
