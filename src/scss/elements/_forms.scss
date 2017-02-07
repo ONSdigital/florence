@@ -4,6 +4,11 @@
     /* Default form styling */
     //TODO put default form styling in here
 
+    &__error {
+        color: $night-shadz;
+        font-weight: 600;
+    }
+
     /* Form used when creating from one of the main screens (eg create collection or create user) */
     &__container {
         background: $iron-dark;

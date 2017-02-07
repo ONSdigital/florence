@@ -148,41 +148,47 @@ h1, h2, h3, h4 {
     font-family: 'Roboto Slab', serif;
     font-weight: 400;
     /*font-size: 30px;*/
-    font-size: $magicnumber1 * 5;
+    //font-size: $magicnumber1 * 5;
     line-height: $lineheight * 2;
+    //margin-top: $lineheight * 3;
+    //margin-bottom: $lineheight * 2;
+    //margin-right: $gutter;
+    //margin-left: $gutter;
+}
+
+h1 {
+    font-size: $magicnumber1 * 5;
     margin-top: $lineheight * 3;
     margin-bottom: $lineheight * 2;
-    margin-right: $gutter;
-    margin-left: $gutter;
 }
 
 h2 {
     font-size: $magicnumber1 * 4;
-    padding-top: 4px;
-    margin-bottom: -4px;
+    //padding-top: 4px;
+    //margin-bottom: -4px;
 }
 
 h3 {
-    margin-top: $lineheight;
+    //margin-top: $lineheight;
     font-size: $magicnumber1 * 3;
-    padding-top: 10px;
-    margin-bottom: -10px;
+    //padding-top: 10px;
+    //margin-bottom: -10px;
 }
 
 h4 {
-    margin-top: $lineheight;
+    //margin-top: $lineheight;
     font-size: 18px;
-    padding-top: 10px;
-    margin-bottom: -10px;
+    //padding-top: 10px;
+    //margin-bottom: -10px;
 }
 
 p {
     /*font-size: 15px;*/
     line-height: $lineheight;
-    margin-top: $lineheight;
-    margin-bottom: $lineheight;
-    margin-right: $gutter;
-    margin-left: $gutter;
+    //margin-top: $lineheight;
+    //margin-bottom: $lineheight;
+    //margin-right: $gutter;
+    //margin-left: $gutter;
 }
 
 li {
@@ -195,22 +201,22 @@ button {
     font-size: $magicnumber1 * 2;
     font-weight: 300;
     line-height: $lineheight;
-    margin-top: $lineheight / 2;
-    margin-bottom: 0;
-    margin-right: $gutter;
-    margin-left: $gutter;
-    padding: 10px $gutter;
+    //margin-top: $lineheight / 2;
+    //margin-bottom: 0;
+    //margin-right: $gutter;
+    //margin-left: $gutter;
+    //padding: 10px $gutter;
 }
 
-table {
-    th {
-        font-size: 18px;
-    }
-
-    strong {
-        font-weight: 600;
-    }
-}
+//table {
+//    th {
+//        font-size: 18px;
+//    }
+//
+//    strong {
+//        font-weight: 600;
+//    }
+//}
 
 ::-webkit-input-placeholder {
     font-style: italic;
@@ -246,7 +252,7 @@ select {
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
     font-size: 14px;
-    padding: 7px;
+    //padding: 7px;
     line-height: $lineheight + 1;
 
     select:first-child {
