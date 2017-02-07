@@ -689,14 +689,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
     }
-/*
-    function setBoxPos(id, x,y) {
-    console.log("set box position");
-    // important! trigger the change event after setting the value
-        $('#note-x-'+id).val(x).change();
-        $('#note-y-'+id).val(y).change();
-    }
-*/
+
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         var jqxhr = $.post("/chartconfig", {
@@ -705,24 +698,39 @@ function loadChartBuilder(pageData, onSave, chart) {
             },
             function () {
                 var chartConfig = window["chart-" + chart.filename];
-                
+
                 if (chartConfig) {
-                    chartConfig.chart.renderTo = "chart";
-                    var xchart = new Highcharts.Chart(chartConfig);
-                    // add listeners to chart here instead of in template
-                    $(xchart).bind('click', annotationClick);
-/*
-                //TODO loop through all annotations
-                    if(xchart.options.annotations[0]){
-                        xchart.options.annotations[0].events.mouseup = function(e){
-                            console.log('mouseUP');
-                            setBoxPosHandle(this.options.id, this.transX, this.transY);
-                        } ;
+                    //check for multiples
+                    if(chart.chartType==='small-multiples'){
+                        //loop through series and create mini-charts
+                        var div;
+                        var xchart
+                        var tempSeries = chartConfig.series;
 
+                        //clear holder   
+                        $("#holder").empty();
+
+                        $.each(chart.series, function(idx, itm){
+                            div = '<div id="chart' + idx + '" class="float-left"></div>';
+                            $("#holder").append(div);
+
+                            var name = 'chart' + idx;
+                            chartConfig.chart.renderTo = name;
+                            chartConfig.chart.height = 200;
+                            chartConfig.chart.width = 200;
+                            chartConfig.series = [tempSeries[idx]];
+
+                            xchart = new Highcharts.Chart(chartConfig);
+                        })
+                        // NB No annotations here for visual reasons
+                        // otherwise need to attach listeners to each chart
+
+                    }else{
+                        chartConfig.chart.renderTo = "chart";
+                        xchart = new Highcharts.Chart(chartConfig);
+                        // add listeners to chart here instead of in template
+                        $(xchart).bind('click', annotationClick);
                     }
-                    console.log(xchart.options);
-
-                   */
 
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
                 }
