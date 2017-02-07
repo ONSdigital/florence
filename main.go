@@ -87,7 +87,7 @@ func main() {
 func staticFiles(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":uri")
 
-	b, err := assets.Asset("../src/dist/" + path)
+	b, err := assets.Asset("../dist/" + path)
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
@@ -102,7 +102,7 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 func indexFile(w http.ResponseWriter, req *http.Request) {
 	log.Debug("Getting index.html", nil)
 
-	b, err := assets.Asset("../src/index.html")
+	b, err := assets.Asset("../dist/index.html")
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
