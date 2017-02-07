@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import { get } from '../utilities/get'
 import { post } from '../utilities/post'
@@ -12,13 +13,16 @@ class Login extends Component {
 
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            error: {
+                inputID: "",
+                message: ""
+            }
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
-
     }
 
     setUserState(response) {
@@ -60,32 +64,83 @@ class Login extends Component {
                 this.setAccessTokenCookie(accessToken);
                 this.getUserType(this.state.email)
             }).catch(error => {
-                console.log(error);
-                return error;
+            switch (error.status) {
+                case (404): {
+                    this.setState({
+                        error: {
+                            inputID: "email",
+                            message: "Email address is not recognised"
+                        }
+                    });
+                    break;
+                }
+                case (401): {
+                    this.setState({
+                        error: {
+                            inputID: "password",
+                            message: "Incorrect password"
+                        }
+                    });
+                    break;
+                }
+            }
             });
     }
 
     handleEmailChange(event) {
         this.setState({email: event.target.value});
+
+        if (this.state.error.inputID === "email") {
+            this.setState({
+                error: {
+                    inputID: "",
+                    message: ""
+                }
+            })
+        }
     }
 
     handlePasswordChange(event) {
         this.setState({password: event.target.value});
+
+        if (this.state.error.inputID === "password") {
+            this.setState({
+                error: {
+                    inputID: "",
+                    message: ""
+                }
+            })
+
+        }
     }
 
     render() {
         return (
-            <div className="col--4 login-wrapper">
+            <div className="col col--4 col--centred">
                 <h1>Login</h1>
 
-                <form onSubmit={this.handleSubmit}>
+                <form className="form" onSubmit={this.handleSubmit}>
                     <label htmlFor="email">Email:</label>
-                    <input id="email" type="email" className="fl-user-and-access__email" name="email" cols="40" rows="1" onChange={this.handleEmailChange}/>
+                    {
+                        this.state.error.inputID === "email" ?
+                            <div className="form__error">{this.state.error.message}</div>
+                            :
+                            ""
+                    }
+                    <input id="email" type="email" className="input input__text" name="email" cols="40" rows="1" onChange={this.handleEmailChange}/>
+
 
                     <label htmlFor="password">Password:</label>
-                    <input id="password" type="password" className="fl-user-and-access__password" name="password" cols="40" rows="1" onChange={this.handlePasswordChange}/>
+                    {
+                        this.state.error.inputID === "password" ?
+                            <div className="form__error">{this.state.error.message}</div>
+                            :
+                            ""
+                    }
+                    <input id="password" type="password" className="input input__text" name="password" cols="40" rows="1" onChange={this.handlePasswordChange}/>
 
-                    <button type="submit" id="login" className="btn btn--primary margin-left--0 btn-florence-login fl-panel--user-and-access__login ">Log in</button>
+
+                    <button type="submit" className="btn btn--primary margin-top--1">Log in</button>
                 </form>
             </div>
         )
