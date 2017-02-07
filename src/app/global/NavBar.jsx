@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router'
+import { connect } from 'react-redux'
 
-export default class NavBar extends Component {
+class NavBar extends Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            authenticated: true
-        }
     }
 
     render() {
@@ -22,7 +20,7 @@ export default class NavBar extends Component {
     }
 
     renderNavItems() {
-        if (this.state.authenticated) {
+        if (this.props.isAuthenticated) {
             return (
                 <span>
                     <li className="nav__item">
@@ -60,3 +58,12 @@ export default class NavBar extends Component {
     }
 
 }
+
+function mapStateToProps(state) {
+    const isAuthenticated = state.state.user.isAuthenticated;
+
+    return {
+        isAuthenticated
+    }
+}
+export default connect(mapStateToProps)(NavBar);
