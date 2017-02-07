@@ -1,7 +1,10 @@
 
 const initialState = {
     user: {
-        authenticated: false
+        isAuthenticated: false,
+        email: '',
+        userType: '',
+        isAdmin: false
     }
 };
 
@@ -10,7 +13,10 @@ export default function reducer(state = initialState, action) {
         case ('USER_LOGGED_IN'): {
             return Object.assign({}, state, {
                 user: Object.assign({}, state.user, {
-                    authenticated: true
+                    isAuthenticated: true,
+                    email: action.email,
+                    userType: action.userType,
+                    isAdmin: action.isAdmin
                 })
             })
         }
