@@ -22,4 +22,4 @@ node_modules
 npm-debug.log*
 
 # Dev project files
-src/dist
+dist
