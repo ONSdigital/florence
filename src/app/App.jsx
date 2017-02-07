@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux';
 import { Router, Route, browserHistory } from 'react-router';
-import { syncHistoryWithStore, routerReducer, routerActions, routerMiddleware } from 'react-router-redux';
+import { syncHistoryWithStore, routerReducer, routerActions, routerMiddleware, push } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 import thunkMiddleware from 'redux-thunk';
 
