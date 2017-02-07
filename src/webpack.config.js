@@ -9,7 +9,7 @@ module.exports = {
         app: './index.js',
     },
     output: {
-        path: path.resolve(__dirname, './dist'),
+        path: path.resolve(__dirname, '../dist'),
         filename: 'js/florence.bundle.js',
     },
     module: {
@@ -47,6 +47,7 @@ module.exports = {
     },
     plugins: [
         new CopyWebpackPlugin([
+            { from: 'index.html', to: 'index.html' },
             { from: 'manifest.json', to: 'manifest.json' },
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' }
