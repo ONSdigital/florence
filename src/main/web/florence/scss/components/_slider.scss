@@ -20,22 +20,67 @@
             margin-top: 0;
             margin-bottom: 10px;
         }
+        .edit{
+            float: right;
+            font-size: 14px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__options {
+        padding: $lineheight $col--2;
+        background-color: $gray-chateau;
+
+        h3 {
+            color: $iron-dark;
+            margin-top: 0;
+        }
+
+        button {
+            margin: 0 0 0 10px;
+            &:first-child {
+                margin: 0 0 0 20px;
+            }
+        }
+
     }
 
     &__content {
         overflow-y: scroll;
-        padding-top: 0;
-        padding-bottom: $lineheight * 2;
-        padding-left: $col--2;
-        padding-right: $col--2;
-        //min-height: $lineheight * 24;
+        padding: ($lineheight / 2) $col--2;
         max-height: $lineheight * 27;
         color: $emperor;
+
+        &--padded {
+
+            // horrible fix for edit collection elements to line up
+            // with stupid silently classes p and heading elements
+            #collection-editor-name,
+            #collection-editor-date,
+            .select-wrap,
+            label[for="collection-editor-scheduled"] {
+                margin-top: 0;
+                margin-left: $gutter;
+                max-width: 600px;
+            }
+
+        }
 
         &--fullwidth {
             padding-left: 0;
             padding-right: 0;
         }
+
+        h3:first-of-type {
+            margin-top: 0;
+        }
+
     }
 
     &__banner {
