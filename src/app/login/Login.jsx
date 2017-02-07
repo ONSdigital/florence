@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
+import { get } from '../utilities/get'
 import { post } from '../utilities/post'
+
+import { userLoggedIn } from '../config/actions';
 
 class Login extends Component {
     constructor(props) {
@@ -18,6 +21,32 @@ class Login extends Component {
 
     }
 
+    setUserState(response) {
+        const email = response.email;
+        let userType = '';
+        if (response.editor) {
+            userType = 'EDITOR'
+        } else {
+            userType = 'DATA-VIS'
+        }
+        const isAdmin = !!response.admin;
+        this.props.dispatch(userLoggedIn(email, userType, isAdmin));
+    }
+
+    setAccessTokenCookie(accessToken) {
+        document.cookie = "access_token=" + accessToken + ";path=/";
+    }
+
+    getUserType(email) {
+        get(`/zebedee/permission?email=${email}`)
+            .then(userTypeResponse => {
+                this.setUserState(userTypeResponse);
+            }).catch(error => {
+                console.log(error);
+                return error;
+            });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
@@ -26,22 +55,15 @@ class Login extends Component {
             password: this.state.password
         };
 
-        function setAccessTokenCookie(accessToken) {
-            document.cookie = "access_token=" + accessToken+ ";path=/";
-            console.log(`Cookie: access_token: ${accessToken} set`);
-            // TODO update state authentication property
-        }
-
-        return post('/zebedee/login', postBody)
-            .then(function(accessToken) {
-                setAccessTokenCookie(accessToken);
-            }).catch(function(error) {
+        post('/zebedee/login', postBody)
+            .then(accessToken => {
+                this.setAccessTokenCookie(accessToken);
+                this.getUserType(this.state.email)
+            }).catch(error => {
+                console.log(error);
                 return error;
             });
-
-
     }
-
 
     handleEmailChange(event) {
         this.setState({email: event.target.value});

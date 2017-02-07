@@ -34,7 +34,7 @@ type asset struct {
 
 // DistCssMainCss reads file data from disk. It returns an error on failure.
 func DistCssMainCss() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/dist/css/main.css"
+	path := "/Users/jon/web/florence/dist/css/main.css"
 	name := "../dist/css/main.css"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -52,7 +52,7 @@ func DistCssMainCss() (*asset, error) {
 
 // DistImgSpritePng reads file data from disk. It returns an error on failure.
 func DistImgSpritePng() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/dist/img/sprite.png"
+	path := "/Users/jon/web/florence/dist/img/sprite.png"
 	name := "../dist/img/sprite.png"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -70,7 +70,7 @@ func DistImgSpritePng() (*asset, error) {
 
 // DistIndexHtml reads file data from disk. It returns an error on failure.
 func DistIndexHtml() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/dist/index.html"
+	path := "/Users/jon/web/florence/dist/index.html"
 	name := "../dist/index.html"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -88,7 +88,7 @@ func DistIndexHtml() (*asset, error) {
 
 // DistJsFlorenceBundleJs reads file data from disk. It returns an error on failure.
 func DistJsFlorenceBundleJs() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/dist/js/florence.bundle.js"
+	path := "/Users/jon/web/florence/dist/js/florence.bundle.js"
 	name := "../dist/js/florence.bundle.js"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -106,7 +106,7 @@ func DistJsFlorenceBundleJs() (*asset, error) {
 
 // DistManifestJson reads file data from disk. It returns an error on failure.
 func DistManifestJson() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/dist/manifest.json"
+	path := "/Users/jon/web/florence/dist/manifest.json"
 	name := "../dist/manifest.json"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -124,7 +124,7 @@ func DistManifestJson() (*asset, error) {
 
 // DistServiceWorkerJs reads file data from disk. It returns an error on failure.
 func DistServiceWorkerJs() (*asset, error) {
-	path := "/Users/crispinmerriman/Git/onsdigital/florence/dist/service-worker.js"
+	path := "/Users/jon/web/florence/dist/service-worker.js"
 	name := "../dist/service-worker.js"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
