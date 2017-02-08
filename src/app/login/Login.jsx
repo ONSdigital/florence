@@ -42,28 +42,33 @@ class Login extends Component {
     }
 
     getUserType(email) {
-        get(`/zebedee/permission?email=${email}`)
+        return get(`/zebedee/permission?email=${email}`)
             .then(userTypeResponse => {
-                this.setUserState(userTypeResponse);
+                return userTypeResponse;
             }).catch(error => {
-                console.log(error);
-                return error;
-            });
+                console.log(`Error getting user type on login \n${error}`);
+        });
+    }
+
+    postLoginCredentials(body) {
+        return post('/zebedee/login', body);
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        const postBody = {
+        const credentials = {
             email: this.state.email,
             password: this.state.password
         };
 
-        post('/zebedee/login', postBody)
-            .then(accessToken => {
-                this.setAccessTokenCookie(accessToken);
-                this.getUserType(this.state.email)
-            }).catch(error => {
+        this.postLoginCredentials(credentials).then(accessToken => {
+            this.setAccessTokenCookie(accessToken);
+            this.getUserType(this.state.email).then(userType => {
+                this.setUserState(userType);
+                browserHistory.push(this.props.location.query.redirect);
+            });
+        }).catch(error => {
             switch (error.status) {
                 case (404): {
                     this.setState({
@@ -84,7 +89,7 @@ class Login extends Component {
                     break;
                 }
             }
-            });
+        });
     }
 
     handleEmailChange(event) {

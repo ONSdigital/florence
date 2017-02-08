@@ -31,7 +31,9 @@ const store = createStore(
 const history = syncHistoryWithStore(baseHistory, store);
 
 const UserIsAuthenticated = UserAuthWrapper({
-    authSelector: state => state.user,
+    authSelector: state => {
+        return state.state.user.isAuthenticated ? state.state.user : {};
+    },
     redirectAction: routerActions.replace,
     wrapperDisplayName: 'UserIsAuthenticated',
     failureRedirectPath: '/florence/login'
