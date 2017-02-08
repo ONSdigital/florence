@@ -414,7 +414,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         $( "#annotation-chart" ).accordion( "refresh" );
         if(chart){
+        if(chart.annotations){
             $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );  
+        }
         }
         $('.chart-accordian .refresh-chart').on('change', refreshChart);
         $('.refresh-coords').on('change', refreshCoords);
