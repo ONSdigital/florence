@@ -539,6 +539,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.series = tsvJSONColNames(json);
         chart.categories = tsvJSONRowNames(json);
 
+        chart.yAxisMin = getMin(json);
         chart.yAxisMax = getMax(json);
 
         chart.xAxisPos = $('#position-x-axis').val();
@@ -620,6 +621,13 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         chart.chartType = $('#chart-type').val();
+
+        //set same axes for small multiples
+        if(chart.chartType==='small-multiples'){
+            chart.yMin = Math.min(chart.yAxisMin, chart.yMin);
+            chart.yMax = Math.max(chart.yAxisMax, chart.yMax);
+        }
+
         // if we change the chart type need to reload
         // and update select menu under the Advanced tab
         var html = templates.chartBuilderAdvancedSelect(chart);
@@ -817,9 +825,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     function tsvJSONHeaders(input) {
         var lines = input.split("\n"); //%0A - "\n"
         var headers = lines[0].split("\t"); //%09 - "\t"
-        if(headers.length>3){
-            console.warn('That\'s a lot of series. Do you want to use small multiples?');
-        }
         return headers;
     }
 
@@ -850,6 +855,21 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         }
         return max;
+    }
+    function getMin(input){
+        var min = 0;
+        var lines = input.split("\n");
+
+        for (var i = 1; i < lines.length; i++) {
+            var currentline = lines[i].split("\t");
+            for (var j = 1; j < currentline.length; j++) {
+                seriesMin = parseFloat(currentline[j]) 
+                if(seriesMin<min){
+                    min = seriesMin;
+                }
+            }
+        }
+        return min;
     }
 
     function exportToSVG(sourceSelector) {
