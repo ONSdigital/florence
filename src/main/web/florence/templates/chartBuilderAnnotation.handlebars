@@ -10,7 +10,7 @@
 
             <label for="show-plotline-{{@index}}" class="checkbox-label--small">Plotline</label>
             <input  class="refresh-chart" name="show-plotline-{{@index}}" id="is-plotline-{{@index}}" {{#if isPlotline}}checked{{/if}} type="checkbox">
-            Click the chart to set the plot line/band position
+            <br/>Click the chart to set the plot line/band position
 
             <div class="refresh-chart"> 
                 <label>Plotline orientation<br>
@@ -36,7 +36,7 @@
             <label for="chart-title" class="refresh-coords">Y Position 
                 <input type="text" id="note-y-{{@index}}" class="refresh-coords half" placeholder="[y]" value="{{y}}"/>
             </label>
-            (NB The coord system is different for plot lines and annotations)
+            <br/>(NB Plot lines use row and columns coords. Annotations use x and y coords.)
             <br/>
             <label for="chart-notes">Notes</label>
                 <textarea id="chart-notes-{{@index}}" class="refresh-chart" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
