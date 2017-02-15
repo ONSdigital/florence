@@ -672,6 +672,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         var device = $('#device').val();
         var itm = chart.annotations[id];
 
+        if(!id){
+            sweetAlert('Please select an annotation', "There must be an open annotation in order to store the changes");
+            return;
+        }
+
         if(!itm.devices){
             itm.devices = {};
         }
