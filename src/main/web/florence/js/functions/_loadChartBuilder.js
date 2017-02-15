@@ -292,7 +292,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('.refresh-chart').on('change', refreshChart);   
         // for TEXTFIELDS only update the chart when the text field lose focus
         $('.refresh-chart-text').on('blur', refreshChart);
-        $('.refresh-text').on('input', renderText);
+        $('.refresh-text').on('change', renderText);
         $('#add-annotation').on('click', addNotation);
         //device type
         $('.refresh-device').on('change', refreshDeviceDimensions);
@@ -303,7 +303,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     function clearFormListeners() {
         $('.refresh-chart').off('change', refreshChart);
         $('.refresh-chart-text').off('blur', refreshChart);
-        $('.refresh-text').off('input', renderText);
+        $('.refresh-text').off('change', renderText);
         $('#add-annotation').off('click', addNotation);
         $('.refresh-device').off('change', refreshDeviceDimensions);
         $('.refresh-aspect').off('change', refreshChartDimensions);
