@@ -6,12 +6,13 @@
                     <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
                     {{/if_eq}}
                     
-        
+            
                     <label for="show-marker" class="checkbox-label--small">Show marker points</label>
                     <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
 
                     <label for="connect-null" class="checkbox-label--small">Connect null points</label>
-                    <input id="connect-null" name="Connect Null" {{#if connectNull}}checked{{/if}} type="checkbox">
+                    <input id="connect-null" name="Connect Null" {{#if hasConnectNull}}checked{{/if}} type="checkbox">
+                    {{hasConnectNull}}
                 </span>
 
             
