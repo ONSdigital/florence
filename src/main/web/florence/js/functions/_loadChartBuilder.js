@@ -292,7 +292,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         $('.refresh-chart').on('change', refreshChart);   
         // for TEXTFIELDS only update the chart when the text field lose focus
         $('.refresh-chart-text').on('blur', refreshChart);
-        $('.refresh-text').on('input', renderText);
+        $('.refresh-text').on('change', renderText);
         $('#add-annotation').on('click', addNotation);
         //device type
         $('.refresh-device').on('change', refreshDeviceDimensions);
@@ -303,7 +303,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     function clearFormListeners() {
         $('.refresh-chart').off('change', refreshChart);
         $('.refresh-chart-text').off('blur', refreshChart);
-        $('.refresh-text').off('input', renderText);
+        $('.refresh-text').off('change', renderText);
         $('#add-annotation').off('click', addNotation);
         $('.refresh-device').off('change', refreshDeviceDimensions);
         $('.refresh-aspect').off('change', refreshChartDimensions);
@@ -539,6 +539,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.series = tsvJSONColNames(json);
         chart.categories = tsvJSONRowNames(json);
 
+        chart.yAxisMin = getMin(json);
         chart.yAxisMax = getMax(json);
 
         chart.xAxisPos = $('#position-x-axis').val();
@@ -620,6 +621,13 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         chart.chartType = $('#chart-type').val();
+
+        //set same axes for small multiples
+        if(chart.chartType==='small-multiples'){
+            chart.yMin = Math.min(chart.yAxisMin, chart.yMin);
+            chart.yMax = Math.max(chart.yAxisMax, chart.yMax);
+        }
+
         // if we change the chart type need to reload
         // and update select menu under the Advanced tab
         var html = templates.chartBuilderAdvancedSelect(chart);
@@ -664,6 +672,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         var device = $('#device').val();
         var itm = chart.annotations[id];
 
+        if(!id){
+            sweetAlert('Please select an annotation', "There must be an open annotation in order to store the changes");
+            return;
+        }
+
         if(!itm.devices){
             itm.devices = {};
         }
@@ -691,14 +704,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
     }
-/*
-    function setBoxPos(id, x,y) {
-    console.log("set box position");
-    // important! trigger the change event after setting the value
-        $('#note-x-'+id).val(x).change();
-        $('#note-y-'+id).val(y).change();
-    }
-*/
+
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
         var jqxhr = $.post("/chartconfig", {
@@ -707,24 +713,39 @@ function loadChartBuilder(pageData, onSave, chart) {
             },
             function () {
                 var chartConfig = window["chart-" + chart.filename];
-                
+
                 if (chartConfig) {
-                    chartConfig.chart.renderTo = "chart";
-                    var xchart = new Highcharts.Chart(chartConfig);
-                    // add listeners to chart here instead of in template
-                    $(xchart).bind('click', annotationClick);
-/*
-                //TODO loop through all annotations
-                    if(xchart.options.annotations[0]){
-                        xchart.options.annotations[0].events.mouseup = function(e){
-                            console.log('mouseUP');
-                            setBoxPosHandle(this.options.id, this.transX, this.transY);
-                        } ;
+                    //check for multiples
+                    if(chart.chartType==='small-multiples'){
+                        //loop through series and create mini-charts
+                        var div;
+                        var xchart
+                        var tempSeries = chartConfig.series;
 
+                        //clear holder   
+                        $("#holder").empty();
+
+                        $.each(chart.series, function(idx, itm){
+                            div = '<div id="chart' + idx + '" class="float-left"></div>';
+                            $("#holder").append(div);
+
+                            var name = 'chart' + idx;
+                            chartConfig.chart.renderTo = name;
+                            chartConfig.chart.height = 200;
+                            chartConfig.chart.width = 200;
+                            chartConfig.series = [tempSeries[idx]];
+
+                            xchart = new Highcharts.Chart(chartConfig);
+                        })
+                        // NB No annotations here for visual reasons
+                        // otherwise need to attach listeners to each chart
+
+                    }else{
+                        chartConfig.chart.renderTo = "chart";
+                        xchart = new Highcharts.Chart(chartConfig);
+                        // add listeners to chart here instead of in template
+                        $(xchart).bind('click', annotationClick);
                     }
-                    console.log(xchart.options);
-
-                   */
 
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
                 }
@@ -809,9 +830,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     function tsvJSONHeaders(input) {
         var lines = input.split("\n"); //%0A - "\n"
         var headers = lines[0].split("\t"); //%09 - "\t"
-        if(headers.length>3){
-            console.warn('That\'s a lot of series. Do you want to use small multiples?');
-        }
         return headers;
     }
 
@@ -842,6 +860,21 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         }
         return max;
+    }
+    function getMin(input){
+        var min = 0;
+        var lines = input.split("\n");
+
+        for (var i = 1; i < lines.length; i++) {
+            var currentline = lines[i].split("\t");
+            for (var j = 1; j < currentline.length; j++) {
+                seriesMin = parseFloat(currentline[j]) 
+                if(seriesMin<min){
+                    min = seriesMin;
+                }
+            }
+        }
+        return min;
     }
 
     function exportToSVG(sourceSelector) {
