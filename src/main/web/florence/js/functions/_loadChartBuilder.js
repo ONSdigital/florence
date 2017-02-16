@@ -329,7 +329,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     function refreshCoords(){
         var idx = $('#annotation-chart').accordion( "option", "active" );
-        var x = parseFloat( $('#note-x-'+idx).val() );
+        var x = parseInt( $('#note-x-'+idx).val() );
         var y = parseFloat( $('#note-y-'+idx).val() );
 
         updateAnnotationCoords(idx, x, y);
@@ -569,7 +569,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
                 itm.id = idx;
                 
-                itm.x = parseFloat( $('#note-x-'+idx).val() );
+                itm.x = parseInt( $('#note-x-'+idx).val() );
                 itm.y = parseFloat( $('#note-y-'+idx).val() );
 
                 itm.title = lines.join('<br/>');
@@ -580,7 +580,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                 itm.orientation = $('#orientation-axis-'+idx).val();
                 itm.bandWidth = parseInt( $('#band-width-'+idx).val() );
                 if(isNaN(itm.bandWidth))itm.bandWidth = 0;
-                console.log(itm.x, itm.y);
             }
         });
 
@@ -694,7 +693,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     function annotationClick(evt){
         var id = $('#annotation-chart').accordion( "option", "active" );
-        var x = parseFloat(evt.xAxis[0].value);
+        var x = parseInt(evt.xAxis[0].value);
         var y = parseFloat(evt.yAxis[0].value);
 
 
