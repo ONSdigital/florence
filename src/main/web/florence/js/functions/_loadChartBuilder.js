@@ -330,7 +330,7 @@ function loadChartBuilder(pageData, onSave, chart) {
     function refreshCoords(){
         var idx = $('#annotation-chart').accordion( "option", "active" );
         var x = parseInt( $('#note-x-'+idx).val() );
-        var y = parseInt( $('#note-y-'+idx).val() );
+        var y = parseFloat( $('#note-y-'+idx).val() );
 
         updateAnnotationCoords(idx, x, y);
         refreshChart();
@@ -414,9 +414,9 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         $( "#annotation-chart" ).accordion( "refresh" );
         if(chart){
-        if(chart.annotations){
-            $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );  
-        }
+            if(chart.annotations){
+                $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );  
+            }
         }
         $('.chart-accordian .refresh-chart').on('change', refreshChart);
         $('.refresh-coords').on('change', refreshCoords);
@@ -459,6 +459,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     // Builds, parses, and renders our chart in the chart editor
     function renderChart() {
+        console.log('render chart');
         //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
         // get device and its corresponding dims
@@ -557,30 +558,39 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         //loop though annotations and populate array from form
         $.each(chart.annotations, function(idx, itm){
-            var text = $('#chart-notes-'+idx).val();
+            itm.isPlotline = $('#is-plotline-'+idx).prop('checked');
+            $('#chart-notes-'+idx).toggle(!itm.isPlotline);
+
+            if(!itm.isPlotline){
+
+                var text = $('#chart-notes-'+idx).val();
                 var maxLength = 0;
-            if(text){
-                var lines = text.split('\n');
-                $.each(lines, function(idx, line){
-                    if (line.length>maxLength){
-                        maxLength = line.length;
-                    }
-                });
-
-                itm.id = idx;
-                
-                itm.x = parseInt( $('#note-x-'+idx).val() );
-                itm.y = parseInt( $('#note-y-'+idx).val() );
-
-                itm.title = lines.join('<br/>');
-                itm.isHidden = $('#is-hidden-'+idx).prop('checked');
-                itm.isPlotline = $('#is-plotline-'+idx).prop('checked');
+                if(text){
+                    var lines = text.split('\n');
+                    $.each(lines, function(idx, line){
+                        if (line.length>maxLength){
+                            maxLength = line.length;
+                        }
+                    });
+                    itm.title = lines.join('<br/>');
                 itm.width = parseInt( maxLength * 6.5) + 6 ;
                 itm.height = (lines.length+1)*12 + 10;
-                itm.orientation = $('#orientation-axis-'+idx).val();
-                itm.bandWidth = parseInt( $('#band-width-'+idx).val() );
-                if(isNaN(itm.bandWidth))itm.bandWidth = 0;
+                }
+
+            }else{
+                itm.title = '';
             }
+
+            itm.id = idx;
+            
+            itm.x = parseInt( $('#note-x-'+idx).val() );
+            itm.y = parseFloat( $('#note-y-'+idx).val() );
+
+            itm.isHidden = $('#is-hidden-'+idx).prop('checked');
+            itm.orientation = $('#orientation-axis-'+idx).val();
+            itm.bandWidth = parseInt( $('#band-width-'+idx).val() );
+
+            if(isNaN(itm.bandWidth))itm.bandWidth = 0;
         });
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
@@ -669,12 +679,14 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     function updateAnnotationCoords(id, x, y){
+
+        console.log("update ",x,y);
         var device = $('#device').val();
         var itm = chart.annotations[id];
 
         if(!id){
-            sweetAlert('Please select an annotation', "There must be an open annotation in order to store the changes");
-            return;
+            //sweetAlert('Please select an annotation', "There must be an open annotation in order to store the changes");
+            //return;
         }
 
         if(!itm.devices){
@@ -692,7 +704,8 @@ function loadChartBuilder(pageData, onSave, chart) {
     function annotationClick(evt){
         var id = $('#annotation-chart').accordion( "option", "active" );
         var x = parseInt(evt.xAxis[0].value);
-        var y = parseInt(evt.yAxis[0].value);
+        var y = parseFloat(evt.yAxis[0].value);
+
 
         //only update coords if its a plotline
         var isChecked = $('#is-plotline-'+id).is(':checked');
