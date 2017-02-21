@@ -45,7 +45,7 @@ node {
                     "--application-name ${appName}",
                     "--deployment-group-name ${group}",
                     "--s3-location bucket=${env.S3_REVISIONS_BUCKET}",
-                    "${appName}-${revision}.tar.gz",
+                    "${appName}-${revision[0]}.tar.gz",
             ])
         }
     }
@@ -59,7 +59,7 @@ def deploymentGroupsFor(branch) {
         return [env.CODEDEPLOY_DISCOVERY_PUBLISHING_DEPLOYMENT_GROUP]
     }
     if (branch == 'dd-master') {
-        return [env.env.CODEDEPLOY_DISCOVERY_ALPHA_PUBLISHING_DEPLOYMENT_GROUP]
+        return [env.CODEDEPLOY_DISCOVERY_ALPHA_PUBLISHING_DEPLOYMENT_GROUP]
     }
     return []
 }
