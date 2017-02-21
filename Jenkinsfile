@@ -10,7 +10,6 @@ node {
 
     def branch   = env.JOB_NAME.replaceFirst('.+/', '')
     def revision = revisionFrom(readFile('git-tag').trim(), readFile('git-commit').trim())
-    def registry = registry(branch, revision[0])
 
     stage('Build') {
         if (revision.size() > 1) writeVersion(revision[1, 2, 3])
@@ -19,21 +18,21 @@ node {
     }
 
     stage('Image') {
-        docker.withRegistry(registry['uri'], { ->
-            sh registry['login']
-            docker.build(registry['image']).push(registry['tag'])
+        docker.withRegistry("https://${env.ECR_REPOSITORY_URI}", { ->
+            docker.build('florence').push(revision[0])
         })
     }
 
     stage('Bundle') {
-        sh sprintf('sed -i -e %s -e %s -e %s -e %s appspec.yml scripts/codedeploy/*', [
+        sh sprintf('sed -i -e %s -e %s -e %s -e %s -e %s appspec.yml scripts/codedeploy/*', [
             "s/\\\${CODEDEPLOY_USER}/${env.CODEDEPLOY_USER}/g",
+            "s/^CONFIG_BUCKET=.*/CONFIG_BUCKET=${env.S3_CONFIGURATIONS_BUCKET}/",
             "s/^ECR_REPOSITORY_URI=.*/ECR_REPOSITORY_URI=${env.ECR_REPOSITORY_URI}/",
             "s/^GIT_COMMIT=.*/GIT_COMMIT=${revision[0]}/",
             "s/^AWS_REGION=.*/AWS_REGION=${env.AWS_DEFAULT_REGION}/",
         ])
         sh "tar -cvzf florence-${revision[0]}.tar.gz appspec.yml scripts/codedeploy"
-        sh "aws s3 cp florence-${revision[0]}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/florence-${revision[0]}.tar.gz"
+        sh "aws s3 cp florence-${revision[0]}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/"
     }
 
     if (branch != 'develop') return
@@ -46,23 +45,6 @@ node {
             "florence-${revision[0]}.tar.gz",
         ])
     }
-}
-
-def registry(branch, tag) {
-    [
-        hub: [
-            login: 'docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS',
-            image: "${env.DOCKERHUB_REPOSITORY}/florence",
-            tag: 'live',
-            uri: "https://${env.DOCKERHUB_REPOSITORY_URI}",
-        ],
-        ecr: [
-            login: '$(aws ecr get-login)',
-            image: 'florence',
-            tag: tag,
-            uri: "https://${env.ECR_REPOSITORY_URI}",
-        ],
-    ][branch == 'live' ? 'hub' : 'ecr']
 }
 
 @NonCPS
