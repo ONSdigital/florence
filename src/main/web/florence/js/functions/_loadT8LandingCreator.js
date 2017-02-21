@@ -111,6 +111,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
                 "relatedMethodologyArticle": [],
                 "topics": [],
                 "alerts": [],
+                "links": [],
                 type: pageType
             };
         }

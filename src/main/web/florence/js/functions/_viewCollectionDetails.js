@@ -28,10 +28,14 @@ function viewCollectionDetails(collectionId, $this) {
         ProcessPages(collection.reviewed);
 
         // Set collection approval state
-        var approvalStates = {inProgress: false, thrownError: false, completed: false};
+        var approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false};
         switch (collection.approvalStatus) {
             case (undefined): {
                 collection.approvalState = '';
+                break;
+            }
+            case ('NOT_STARTED'): {
+                approvalStates.notStarted = true;
                 break;
             }
             case ('IN_PROGRESS'): {
@@ -94,14 +98,21 @@ function viewCollectionDetails(collectionId, $this) {
         }
 
         var $approveBtn = $('.btn-collection-approve'),
-            $editBtn = $('.btn-collection-edit'),
+            $editBtn = $('.js-edit-collection'),
             $workOnBtn = $('.btn-collection-work-on'),
-            collectionIsApproved = collection.approvalState.inProgress || collection.approvalState.thrownError;
+            $restoreContentBtn = $('.js-restore-delete'),
+            $importBtn = $('.js-import');
 
-        if (collectionIsApproved) {
+        if (collection.approvalState.inProgress) {
             // Collection has been approved and is generating PDF, timeseries etc so disable buttons
             $workOnBtn.addClass('btn--disabled').attr('disabled', true);
             $approveBtn.addClass('btn--disabled').attr('disabled', true);
+        } else if (collection.approvalState.thrownError) {
+            // Collection has thrown error doing pre-publish tasks, give user option to retry approval
+            $workOnBtn.hide();
+            $approveBtn.text('Retry approval').show().one('click', function () {
+                postApproveCollection(collection.id);
+            });
         } else if (showApproveButton(collection)) {
             // Collection has been reviewed and is ready for approval, so show button and bind click
             $approveBtn.show().one('click', function () {
@@ -116,6 +127,17 @@ function viewCollectionDetails(collectionId, $this) {
         $editBtn.click(function () {
             editCollection(collection);
         });
+
+        // restore deleted content
+        $restoreContentBtn.click(function () {
+            viewRestoreDeleted(collection);
+        });
+
+        // import time series
+        $importBtn.click(function () {
+            importTsTitles(collection.id);
+        });
+
 
         //page-list
         $('.page__item:not(.delete-child)').click(function () {
