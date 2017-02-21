@@ -116,6 +116,17 @@
         }
     }
 
+    /* 50%, 25% and 25% width column table - used on restore deleted page list */
+    &--50-25-25 {
+        td, th {
+            width: 25%;
+        }
+
+        td:first-child, th:first-child {
+            width: 49%;
+        }
+    }
+
 
     /* Fixed height table - used in selectable tables in panels */
     &--fixed-height-27 tbody {
@@ -123,6 +134,13 @@
         overflow-y: scroll;
         display: block;
     }
+
+    &--fixed-height-24 tbody {
+        max-height: ($lineheight * 24);
+        overflow-y: scroll;
+        display: block;
+    }
+
     &--fixed-height-17 tbody {
         max-height: ($lineheight * 17);
         overflow-y: scroll;
