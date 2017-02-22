@@ -459,7 +459,6 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     // Builds, parses, and renders our chart in the chart editor
     function renderChart() {
-        console.log('render chart');
         //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
         // get device and its corresponding dims
@@ -679,8 +678,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     function updateAnnotationCoords(id, x, y){
-
-        console.log("update ",x,y);
         var device = $('#device').val();
         var itm = chart.annotations[id];
 
@@ -753,6 +750,10 @@ function loadChartBuilder(pageData, onSave, chart) {
                         // NB No annotations here for visual reasons
                         // otherwise need to attach listeners to each chart
 
+                    }else if (chart.chartType==='table'){
+                        $('#chart').empty();
+                        html = templates.chartBuilderTable(chart);
+                        $('#chart').append(html);
                     }else{
                         chartConfig.chart.renderTo = "chart";
                         xchart = new Highcharts.Chart(chartConfig);
@@ -765,6 +766,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             }, "script")
             .fail(function (data, err) {
                 console.error(err);
+                sweetAlert('Chart Configuration Error', 'There was an error loading the chart. Please check your data.');
                 console.log("Failed reading chart configuration from server", chart);
                 $("#chart").empty();
             });
