@@ -10,7 +10,6 @@ node {
 
     def branch   = env.JOB_NAME.replaceFirst('.+/', '')
     def revision = revisionFrom(readFile('git-tag').trim(), readFile('git-commit').trim())
-    def registry = registry(branch, revision[0])
 
     stage('Build') {
         if (revision.size() > 1) writeVersion(revision[1, 2, 3])
@@ -19,9 +18,8 @@ node {
     }
 
     stage('Image') {
-        docker.withRegistry(registry['uri'], { ->
-            if (registry.containsKey('login')) sh registry['login']
-            docker.build(registry['image']).push(registry['tag'])
+        docker.withRegistry("https://${env.ECR_REPOSITORY_URI}", { ->
+            docker.build('florence').push(revision[0])
         })
     }
 
@@ -37,32 +35,33 @@ node {
         sh "aws s3 cp florence-${revision[0]}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/"
     }
 
-    if (branch != 'develop') return
+    def deploymentGroups = deploymentGroupsFor(env.JOB_NAME.replaceFirst('.+/', ''))
+    if (deploymentGroups.size() < 1) return
 
     stage('Deploy') {
-        sh sprintf('aws deploy create-deployment %s %s %s,bundleType=tgz,key=%s', [
-            '--application-name florence',
-            "--deployment-group-name ${env.CODEDEPLOY_PUBLISHING_DEPLOYMENT_GROUP}",
-            "--s3-location bucket=${env.S3_REVISIONS_BUCKET}",
-            "florence-${revision[0]}.tar.gz",
-        ])
+        def appName = 'florence'
+        for (group in deploymentGroupsFor(branch)) {
+            sh sprintf('aws deploy create-deployment %s %s %s,bundleType=tgz,key=%s', [
+                    "--application-name ${appName}",
+                    "--deployment-group-name ${group}",
+                    "--s3-location bucket=${env.S3_REVISIONS_BUCKET}",
+                    "${appName}-${revision[0]}.tar.gz",
+            ])
+        }
     }
 }
 
-def registry(branch, tag) {
-    [
-        hub: [
-            login: 'docker --config .dockerhub login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS',
-            image: "${env.DOCKERHUB_REPOSITORY}/florence",
-            tag: 'live',
-            uri: "https://${env.DOCKERHUB_REPOSITORY_URI}",
-        ],
-        ecr: [
-            image: 'florence',
-            tag: tag,
-            uri: "https://${env.ECR_REPOSITORY_URI}",
-        ],
-    ][branch == 'live' ? 'hub' : 'ecr']
+def deploymentGroupsFor(branch) {
+    if (branch == 'develop') {
+        return [env.CODEDEPLOY_PUBLISHING_DEPLOYMENT_GROUP]
+    }
+    if (branch == 'dd-develop') {
+        return [env.CODEDEPLOY_DISCOVERY_PUBLISHING_DEPLOYMENT_GROUP]
+    }
+    if (branch == 'dd-master') {
+        return [env.CODEDEPLOY_DISCOVERY_ALPHA_PUBLISHING_DEPLOYMENT_GROUP]
+    }
+    return []
 }
 
 @NonCPS
