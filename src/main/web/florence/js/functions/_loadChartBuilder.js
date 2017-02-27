@@ -587,7 +587,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
             itm.isHidden = $('#is-hidden-'+idx).prop('checked');
             itm.orientation = $('#orientation-axis-'+idx).val();
-            itm.bandWidth = parseInt( $('#band-width-'+idx).val() );
+            itm.bandWidth = parseFloat( $('#band-width-'+idx).val() ).toFixed(2);
 
             if(isNaN(itm.bandWidth))itm.bandWidth = 0;
         });
