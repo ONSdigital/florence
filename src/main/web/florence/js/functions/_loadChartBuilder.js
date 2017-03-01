@@ -551,6 +551,8 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.showTooltip = $('#show-tooltip').prop('checked');
         chart.showMarker = $('#show-marker').prop('checked');
         chart.hasConnectNull = $('#connect-null').prop('checked');
+        //if check then find series with null values
+        console.log(chart.data);
 
         if(!chart.annotations){
             chart.annotations = [];
@@ -728,6 +730,8 @@ function loadChartBuilder(pageData, onSave, chart) {
                 var chartConfig = window["chart-" + chart.filename];
 
                 if (chartConfig) {
+                    //clear holder   
+                    $("#holder").empty();
                     //check for multiples
                     if(chart.chartType==='small-multiples'){
                         //loop through series and create mini-charts
@@ -735,8 +739,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                         var xchart
                         var tempSeries = chartConfig.series;
 
-                        //clear holder   
-                        $("#holder").empty();
 
                         $.each(chart.series, function(idx, itm){
                             div = '<div id="chart' + idx + '" class="float-left"></div>';
@@ -754,6 +756,8 @@ function loadChartBuilder(pageData, onSave, chart) {
                         // otherwise need to attach listeners to each chart
 
                     }else{
+                        div = '<div id="chart" class="float-left"></div>';
+                        $("#holder").append(div);
                         chartConfig.chart.renderTo = "chart";
                         xchart = new Highcharts.Chart(chartConfig);
                         // add listeners to chart here instead of in template
