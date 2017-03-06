@@ -51,17 +51,17 @@
 
                 </div>
                   <span class="refresh-chart">
-                    <legend>Colours</legend>
+                    <legend>Colours:{{ palette }}</legend>
  
-                        {{#if_eq palette 'blue'}}
+                    {{#if_eq palette 'blue'}}
                         <input type="radio" name="palette" id="default" value="default" />
                         <label for="default">Default</label>
                         <input type="radio" name="palette" id="colour" value="colour" />
                         <label for="colour">Colour</label>
                         <input type="radio" name="palette" id="blue" value="blue" checked="checked"/>
                         <label for="blue">Blue</label>
-                        {{else}}
-                            {{#if_eq palette 'color'}}
+                    {{else}}
+                            {{#if_eq palette 'colour'}}
                         <input type="radio" name="palette" id="default" value="default" />
                         <label for="default">Default</label>
                         <input type="radio" name="palette" id="colour" value="colour"  checked="checked"/>
@@ -76,6 +76,6 @@
                         <input type="radio" name="palette" id="blue" value="blue" />
                         <label for="blue">Blue</label>
                             {{/if_eq}}
-                        {{/if_eq}}
+                    {{/if_eq}}
 
                   </span>
