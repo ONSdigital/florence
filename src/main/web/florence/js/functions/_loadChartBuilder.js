@@ -195,6 +195,8 @@ function loadChartBuilder(pageData, onSave, chart) {
                 updateForm(res);
             },
             error: function(err){
+                sweetAlert('Chart Configuration Error', 'There was an error loading the chart. Please check your data.\n'+err);
+                
                 console.log(err);
             }
         });
@@ -551,7 +553,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.showMarker = $('#show-marker').prop('checked');
         chart.hasConnectNull = $('#connect-null').prop('checked');
         //if check then find series with null values
-        console.log(chart.data);
+        //console.log(chart.data);
 
         if(!chart.annotations){
             chart.annotations = [];
@@ -592,6 +594,11 @@ function loadChartBuilder(pageData, onSave, chart) {
             itm.bandWidth = parseFloat( $('#band-width-'+idx).val() ).toFixed(2);
 
             if(isNaN(itm.bandWidth))itm.bandWidth = 0;
+            if(parseInt(itm.bandWidth)===0){
+                itm.isPlotband = false;
+            }else{
+                itm.isPlotband = true;
+            }
         });
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
@@ -702,8 +709,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     function annotationClick(evt){
         var id = $('#annotation-chart').accordion( "option", "active" );
-        var x = parseInt(evt.xAxis[0].value);
-        var y = parseFloat(evt.yAxis[0].value);
+        var x = (evt.xAxis[0].value).toFixed(2);
+        var y = (evt.yAxis[0].value).toFixed(2);
 
 
         //only update coords if its a plotline
@@ -770,7 +777,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             }, "script")
             .fail(function (data, err) {
                 console.error(err);
-                sweetAlert('Chart Configuration Error', 'There was an error loading the chart. Please check your data.');
+                sweetAlert('Chart Configuration Error', 'There was an error loading the chart.\nPlease check your data.\n The error reported was: ' + err);
                 console.log("Failed reading chart configuration from server", chart);
                 $("#chart").empty();
             });
