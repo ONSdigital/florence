@@ -590,6 +590,12 @@ function loadChartBuilder(pageData, onSave, chart) {
             itm.bandWidth = parseFloat( $('#band-width-'+idx).val() ).toFixed(2);
 
             if(isNaN(itm.bandWidth))itm.bandWidth = 0;
+            if(parseInt(itm.bandWidth)===0){
+                itm.isPlotband = false;
+            }else{
+                itm.isPlotband = true;
+            }
+
         });
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
@@ -700,8 +706,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     function annotationClick(evt){
         var id = $('#annotation-chart').accordion( "option", "active" );
-        var x = parseInt(evt.xAxis[0].value);
-        var y = parseFloat(evt.yAxis[0].value);
+        var x = (evt.xAxis[0].value).toFixed(2);
+        var y = (evt.yAxis[0].value).toFixed(2);
 
 
         //only update coords if its a plotline
