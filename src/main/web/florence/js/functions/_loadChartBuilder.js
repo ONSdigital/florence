@@ -766,7 +766,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             }, "script")
             .fail(function (data, err) {
                 console.error(err);
-                sweetAlert('Chart Configuration Error', 'There was an error loading the chart. Please check your data.');
+                sweetAlert('Chart Configuration Error', 'There was an error loading the chart.\nPlease check your data.\n The error reported was: ' + err);
                 console.log("Failed reading chart configuration from server", chart);
                 $("#chart").empty();
             });
