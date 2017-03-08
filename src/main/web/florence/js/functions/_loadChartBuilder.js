@@ -68,8 +68,8 @@ function loadChartBuilder(pageData, onSave, chart) {
                 return templates.chartEditBarlineExtras;
             case 'dual-axis':
                 return templates.chartEditDualAxisExtras;
-            case 'line':
-                return templates.chartEditLineChartExtras;
+            case 'line':// not used
+                return ;//templates.chartEditLineChartExtras;
             case 'bar':
             case 'rotated':
                 return templates.chartEditBarChartExtras;
@@ -497,7 +497,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.notes = $('#chart-notes').val();
         chart.altText = $('#chart-alt-text').val();
         chart.xAxisLabel = $('#chart-x-axis-label').val();
-        chart.startFromZero = $('#start-from-zero').prop('checked');
+        chart.startFromZero = true;//$('#start-from-zero').prop('checked');
         chart.finishAtHundred = $('#finish-at-hundred').prop('checked');
 
         // handle negative min values without a break...
