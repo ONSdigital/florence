@@ -582,7 +582,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
             itm.id = idx;
             
-            itm.x = parseInt( $('#note-x-'+idx).val() );
+            itm.x = parseFloat( $('#note-x-'+idx).val() );
             itm.y = parseFloat( $('#note-y-'+idx).val() );
 
             itm.isHidden = $('#is-hidden-'+idx).prop('checked');
@@ -590,7 +590,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             itm.bandWidth = parseFloat( $('#band-width-'+idx).val() ).toFixed(2);
 
             if(isNaN(itm.bandWidth))itm.bandWidth = 0;
-            if(parseInt(itm.bandWidth)===0){
+            if(parseFloat(itm.bandWidth)===0){
                 itm.isPlotband = false;
             }else{
                 itm.isPlotband = true;
