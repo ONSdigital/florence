@@ -358,6 +358,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.devices[device].aspectRatio = $('#aspect-ratio').val();
         chart.devices[device].labelInterval = $('#chart-label-interval').val();
+        chart.labelInterval = $('#chart-label-interval').val();
         chart.devices[device].isHidden = $('#is-hidden').is(':checked');
         chart.isHidden = $('#is-hidden').is(':checked');
 
@@ -493,6 +494,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.decimalPlaces = $('#chart-decimal-places').val();
         chart.decimalPlacesYaxis = $('#chart-decimal-places-yaxis').val();
         chart.labelInterval = $('#chart-label-interval').val();
+        
 
         chart.notes = $('#chart-notes').val();
         chart.altText = $('#chart-alt-text').val();
@@ -520,6 +522,11 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.device = $('#device').val();
         chart.size = sizes[chart.device];
         chart.aspectRatio = $('#aspect-ratio').val();
+
+        // the label interval sits outside the devices?
+        if(chart.devices[chart.device]){
+            chart.labelInterval = chart.devices[chart.device].labelInterval;
+        }
 
         //TODO swap this around so the data is set elsewhere and this bit reads in the data
         // set ratio is done when the aspect ratio changes so recall existing aspect ratio
@@ -723,6 +730,8 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
+
+        console.log('render the chart object so redraw...');
         var jqxhr = $.post("/chartconfig", {
                 data: JSON.stringify(chart),
                 width: chartWidth
