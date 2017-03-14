@@ -11,6 +11,23 @@
       {{/select}}
     </select>
   </div>
+  <div class="select-wrap">
+    <select id="line-types_{{@index}}" class="col--5">
+      {{#select (lookup ../lineTypes this)}}
+        <option value="Solid">Solid</option>
+        <option value="Dash">Dash</option>
+        <option value="LongDash">LongDash</option>
+        <option value="Dot">Dot</option>
+        <option value="DashDot">DashDot</option>
+        <option value="ShortDash">ShortDash</option>
+        <option value="ShortDot">ShortDot</option>
+        <option value="ShortDashDot">ShortDashDot</option>
+        <option value="ShortDashDotDot">ShortDashDotDot</option>
+        <option value="LongDashDot">LongDashDot</option>
+        <option value="LongDashDotDot">LongDashDotDot</option>
+      {{/select}}
+    </select>
+  </div>
   <label for="{{this}}">Bar stack</label>
     <input id="{{this}}" name="group_check" value="{{this}}" type="checkbox"{{#ifContains this ../groups.[0]}} checked{{/ifContains}}>
   <br/>

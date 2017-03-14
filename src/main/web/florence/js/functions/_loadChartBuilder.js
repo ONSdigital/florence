@@ -607,6 +607,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
+            var lines = {};
             var groups = [];
             var group = [];
             var seriesData = chart.series;
@@ -615,9 +616,11 @@ function loadChartBuilder(pageData, onSave, chart) {
                 //custom series panel takes precedence
                 if( $('#series-types_' + index).val() ){
                     types[seriesData[index]] = $('#series-types_' + index).val();
+                    lines[seriesData[index]] = $('#line-types_' + index).val();
 
                 }else{
                     types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+                    lines[seriesData[index]] = 'Solid';
                     
                 }
             });
@@ -639,6 +642,7 @@ function loadChartBuilder(pageData, onSave, chart) {
             })();
             
             chart.chartTypes = types;
+            chart.lineTypes = lines;
             chart.groups = groups;
         }
 
