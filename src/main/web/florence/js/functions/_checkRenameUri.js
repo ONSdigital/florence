@@ -7,6 +7,12 @@
  */
 function checkRenameUri(collectionId, data, renameUri, onSave) {
 
+    // If Welsh page then don't rename - any edits to the Welsh title with override the main English path
+    if (Florence.globalVars.welsh) {
+        onSave(collectionId, data.uri, JSON.stringify(data));
+        return;
+    }
+
     if (renameUri && !data.description.language && !data.description.edition) {   // It will not change welsh url + do not rename content with edition.
         doRename();
     } else {
