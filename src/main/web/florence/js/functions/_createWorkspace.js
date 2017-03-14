@@ -1,4 +1,4 @@
-/**
+    /**
  * Handles the initial creation of the workspace screen.
  * @param path - path to iframe
  * @param collectionId
