@@ -462,6 +462,9 @@ function loadChartBuilder(pageData, onSave, chart) {
     function renderChart() {
         //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
+
+        //set isEditor to allow annotations to be moved
+        chart.isEditor = true;
         // get device and its corresponding dims
         var device = $('#device').val();
         var chartHeight = parseInt(chart.devices[device].aspectRatio * chart.size);
