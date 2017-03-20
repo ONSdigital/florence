@@ -493,6 +493,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.unit = $('#chart-unit').val();
         chart.source = $('#chart-source').val();
 
+        chart.isReversed = $('#isReversed').prop('checked');
         chart.isStacked = $('#isStacked').prop('checked');
         chart.decimalPlaces = $('#chart-decimal-places').val();
         chart.decimalPlacesYaxis = $('#chart-decimal-places-yaxis').val();
