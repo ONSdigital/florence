@@ -52,27 +52,27 @@
                   <span class="refresh-chart">
                     <legend>Colours</legend>
             {{#if_eq palette 'blue'}}
-                    <input type="radio" name="palette" id="default" value="default"/>
-                    <label for="default">Default</label>
                     <input type="radio" name="palette" id="colour" value="colour" />
                     <label for="colour">Colour</label>
                     <input type="radio" name="palette" id="blue" value="blue" checked="checked"/>
                     <label for="blue">Blue</label>
+                    <input type="radio" name="palette" id="legacy" value="legacy"/>
+                    <label for="legacy">Legacy</label>
             {{else}}
-                {{#if_eq palette 'colour'}}
-                    <input type="radio" name="palette" id="default" value="default"/>
-                    <label for="default">Default</label>
-                    <input type="radio" name="palette" id="colour" value="colour"  checked="checked"/>
-                    <label for="colour">Colour</label>
-                    <input type="radio" name="palette" id="blue" value="blue" checked="checked"/>
-                    <label for="blue">Blue</label>
-                {{else}}
-                    <input type="radio" name="palette" id="default" value="default" checked="checked"/>
-                    <label for="default">Default</label>
+                {{#if_eq palette 'legacy'}}
                     <input type="radio" name="palette" id="colour" value="colour" />
                     <label for="colour">Colour</label>
                     <input type="radio" name="palette" id="blue" value="blue" />
                     <label for="blue">Blue</label>
+                    <input type="radio" name="palette" id="legacy" value="legacy" checked="checked"/>
+                    <label for="legacy">Legacy</label>
+                {{else}}
+                    <input type="radio" name="palette" id="colour" value="colour" checked="checked"/>
+                    <label for="colour">Colour</label>
+                    <input type="radio" name="palette" id="blue" value="blue"/>
+                    <label for="blue">Blue</label>
+                    <input type="radio" name="palette" id="legacy" value="legacy"/>
+                    <label for="legacy">Legacy</label>
                 {{/if_eq}}
             {{/if_eq}}
                   </span>
