@@ -747,7 +747,18 @@ function loadChartBuilder(pageData, onSave, chart) {
             function () {
                 var chartConfig = window["chart-" + chart.filename];
 
+
+
                 if (chartConfig) {
+                    // remove the title, subtitle and any renderers for client side display
+                    // these are only used by the template for export/printing
+                    chartConfig.chart.height = chartConfig.chart.height-300;
+                    chartConfig.chart.marginTop = 50;
+                    chartConfig.chart.marginBottom = 50;
+                    chartConfig.chart.events = {};
+                    chartConfig.title = {text:''};
+                    chartConfig.subtitle = {text:''};
+                    chartConfig.legend.y = 0;
                     //check for multiples
                     if(chart.chartType==='small-multiples'){
                         //loop through series and create mini-charts
