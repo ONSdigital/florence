@@ -739,7 +739,6 @@ function loadChartBuilder(pageData, onSave, chart) {
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
-        console.log('render the chart object...');
         var jqxhr = $.post("/chartconfig", {
                 data: JSON.stringify(chart),
                 width: chartWidth
