@@ -592,9 +592,9 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
 
             itm.id = idx;
-            
-            itm.x = parseFloat( $('#note-x-'+idx).val() );
-            itm.y = parseFloat( $('#note-y-'+idx).val() );
+            //set the annotation x and y based on the device
+            itm.x = ( itm.devices[chart.device].x );
+            itm.y = ( itm.devices[chart.device].y );
 
             itm.isHidden = $('#is-hidden-'+idx).prop('checked');
             itm.orientation = $('#orientation-axis-'+idx).val();
@@ -739,15 +739,15 @@ function loadChartBuilder(pageData, onSave, chart) {
     // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
-        console.log('render the chart object so redraw...');
+        console.log('render the chart object...');
         var jqxhr = $.post("/chartconfig", {
                 data: JSON.stringify(chart),
                 width: chartWidth
             },
             function () {
                 var chartConfig = window["chart-" + chart.filename];
-
-
+                var div;
+                var xchart
 
                 if (chartConfig) {
                     // remove the title, subtitle and any renderers for client side display
@@ -755,29 +755,29 @@ function loadChartBuilder(pageData, onSave, chart) {
                     chartConfig.chart.height = chartConfig.chart.height-300;
                     chartConfig.chart.marginTop = 50;
                     chartConfig.chart.marginBottom = 50;
+                    //do not use renderer for Florence
                     chartConfig.chart.events = {};
                     chartConfig.title = {text:''};
                     chartConfig.subtitle = {text:''};
                     chartConfig.legend.y = 0;
+
+                    //clear holder   
+                    $("#holder").empty();
+
                     //check for multiples
                     if(chart.chartType==='small-multiples'){
                         //loop through series and create mini-charts
-                        var div;
-                        var xchart
                         var tempSeries = chartConfig.series;
-
-                        //clear holder   
-                        $("#holder").empty();
 
                         $.each(chart.series, function(idx, itm){
                             div = '<div id="chart' + idx + '" class="float-left"></div>';
                             $("#holder").append(div);
-
                             var name = 'chart' + idx;
                             chartConfig.chart.renderTo = name;
                             chartConfig.chart.height = 200;
                             chartConfig.chart.width = 200;
                             chartConfig.series = [tempSeries[idx]];
+                            chartConfig.annotations = [];
 
                             xchart = new Highcharts.Chart(chartConfig);
                         })
@@ -785,10 +785,18 @@ function loadChartBuilder(pageData, onSave, chart) {
                         // otherwise need to attach listeners to each chart
 
                     }else if (chart.chartType==='table'){
+                        div = '<div id="chart"></div>';
+                        $("#holder").append(div);
+
                         $('#chart').empty();
                         html = templates.chartBuilderTable(chart);
                         $('#chart').append(html);
                     }else{
+
+                        $('#holder').empty();
+
+                        div = '<div id="chart"></div>';
+                        $('#holder').append(div);
                         chartConfig.chart.renderTo = "chart";
                         xchart = new Highcharts.Chart(chartConfig);
                         // add listeners to chart here instead of in template
