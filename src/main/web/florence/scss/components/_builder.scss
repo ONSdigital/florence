@@ -12,6 +12,7 @@
     }
 
     &__editor {
+        position: relative;
         box-sizing: border-box;
         width: 30%;
         height: $lineheight * 33;
