@@ -68,8 +68,6 @@ function loadChartBuilder(pageData, onSave, chart) {
                 return templates.chartEditBarlineExtras;
             case 'dual-axis':
                 return templates.chartEditDualAxisExtras;
-            case 'line':// not used
-                return ;//templates.chartEditLineChartExtras;
             case 'bar':
             case 'rotated':
                 return templates.chartEditBarChartExtras;
