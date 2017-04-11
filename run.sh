@@ -2,7 +2,7 @@
 
 # Remote debug:
 export JAVA_OPTS="-Xdebug -Xmx256m -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
-export PORT="8081"
+export PORT="${PORT:-8081}"
 
 # File reloading:
 export RESTOLINO_STATIC="src/main/web"
