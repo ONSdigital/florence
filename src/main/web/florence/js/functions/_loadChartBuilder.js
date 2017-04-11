@@ -795,11 +795,9 @@ function loadChartBuilder(pageData, onSave, chart) {
                         div = '<div id="chart"></div>';
                         $('#holder').append(div);
                         chartConfig.chart.renderTo = "chart";
+                        // add listeners to chart here instead of in template
                         chartConfig.chart.events.click = annotationClick;
                         xchart = new Highcharts.Chart(chartConfig);
-                        // add listeners to chart here instead of in template
-                        console.log(xchart);
-                        // $(xchart).bind('click', annotationClick);
                     }
 
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
