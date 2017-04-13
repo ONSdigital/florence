@@ -1,0 +1,57 @@
+<div class="slider slider--background-primary">
+    <div class="slider__head">
+        <h2>{{name}}</h2>
+
+        <p>[NOT PUBLISHED]</p>
+    </div>
+    <div class="slider__content slider__content--fullwidth">
+        <div class="accordion js-accordion">
+            <div class="accordion__title js-accordion__title">
+                <h3>Event history</h3>
+            </div>
+            <div class="accordion__content js-accordion__content disable-animation">
+                {{#if events}}
+                    <table class="table table--section event-history-table">
+                        <thead>
+                        <tr>
+                            <th style="width:45%">Action</th>
+                            <th style="width:30%">User</th>
+                            <th style="width:25%">Date/time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each events}}
+                            <tr data-event-type="{{eventDetails.type}}">
+                                <td>{{eventDetails.description}}</td>
+                                <td>{{eventDetails.user}}</td>
+                                <td>{{formattedDate}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <ul class="event-meta">
+                                        {{#if uri}}
+                                            <li class="event-meta__item">URI: {{uri}}</li>
+                                        {{/if}}
+                                        {{#if exceptionText}}
+                                            <li class="event-meta__item">Error Text: {{exceptionText}}</li>
+                                        {{/if}}
+                                        {{#if eventDetails.metaData}}
+                                            {{#each eventDetails.metaData}}
+                                                <li class="event-meta__item">{{@key}}: {{this}}</li>
+                                            {{/each}}
+                                        {{/if}}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                {{else}} <p>Something went wrong - no events were returned.</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    <nav class="slider__nav">
+        <button class="btn btn-collection-cancel">Cancel</button>
+    </nav>
+</div>

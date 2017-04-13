@@ -1,0 +1,36 @@
+<section class="panel workspace-create">
+    <h1>New page details</h1>
+    <form>
+        <label for="pagetype" class="hidden">Page type</label>
+        <div class="select-wrap">
+            <select id="pagetype" required>
+                <option value="" name="">Select your option</option>
+                {{#if dataVis}}
+                    <option value="visualisation" name="visualisation" selected>Visualisation</option>
+                {{else}}
+                    <option value="bulletin" name="bulletin">Bulletin</option>
+                    <option value="article" name="article">Article</option>
+                    <option value="article_download" name="article_download">Article (PDF only)</option>
+                    <option value="dataset_landing_page" name="dataset_landing_page">Dataset</option>
+                    <option value="timeseries_landing_page" name="timeseries_landing_page">Timeseries dataset</option>
+                    <option value="compendium_landing_page" name="compendium_landing_page">Compendium</option>
+                    <option value="static_landing_page" name="static_landing_page">Static landing page</option>
+                    <option value="static_page" name="static_page">Generic static page</option>
+                    <option value="static_article" name="static_article">Static article</option>
+                    <option value="static_methodology" name="static_methodology">Methodology article</option>
+                    <option value="static_methodology_download" name="static_methodology_download">Methodology article (PDF
+                        only)
+                    </option>
+                    <option value="static_qmi" name="static_qmi">QMI</option>
+                    <option value="static_foi" name="static_foi">FOI</option>
+                    <option value="static_adhoc" name="static_adhoc">Ad hoc</option>
+                    <option value="release" name="release">Calendar entry</option>
+                {{/if}}
+            </select>
+        </div>
+        <div class="edition"></div>
+        <label for="pagename" class="hidden">Page name</label>
+        <input id="pagename" class="full" type="text" placeholder="Page name"/>
+        <button class="btn btn--positive margin-left--0 btn-page-create">Create page</button>
+    </form>
+</section>

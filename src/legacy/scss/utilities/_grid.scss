@@ -1,0 +1,62 @@
+$col--12: 100%;
+$col--11: 91.66%;
+$col--10: 83.33%;
+$col--9: 75%;
+$col--8: 66.66%;
+$col--7: 58.33%;
+$col--6: 50%;
+$col--5: 41.66%;
+$col--4: 33.33%;
+$col--3: 25%;
+$col--2: 16.66%;
+$col--1: 8.333%;
+
+
+.col {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  // padding: 15px;
+  float: left;
+  &--12 {
+    width: $col--12;
+  }
+  &--11 {
+    width: $col--11;
+  }
+  &--10 {
+    width: $col--10;
+  }
+  &--9 {
+    width: $col--9;
+  }
+  &--8 {
+    width: $col--8;
+  }
+  &--7 {
+    width: $col--7;
+  }
+  &--6 {
+    width: $col--6;
+  }
+  &--5 {
+    width: $col--5;
+  }
+  &--4 {
+     width: $col--4;
+  }
+  &--3 {
+    width: $col--3;
+  }
+  &--2 {
+    width: $col--2;
+  }
+  &--1 {
+    width: $col--1;
+  }
+}
+
+.row {
+  overflow: hidden;
+}
+
+
