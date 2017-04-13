@@ -1,0 +1,65 @@
+<section class="panel workspace-edit">
+    <div class="edit-accordion">
+        <div class="edit-section">
+            <div class="edit-section__head">
+                <h1>Metadata</h1>
+
+                <p id="metadata-d">Title | Unique ID</p>
+            </div>
+            <div class="edit-section__content">
+                <div id="metadata-list">
+                    <label for="title">Title
+                        <textarea class="auto-size" type="text" disabled id="title">{{this.description.title}}</textarea>
+                    </label>
+                    <label for="uid">
+                        Unique ID
+                        <textarea name="uid" id="uid" disabled>{{this.uid}}</textarea>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="edit-section">
+            <div class="edit-section__head">
+                <h1>Visualisation</h1>
+                <p>File upload</p>
+            </div>
+            <div class="edit-section__content">
+                <div id="visualisation">
+    {{!-- {{#if this.zipTitle}}
+        <form id="edit-vis">
+            <label for="disabled-vis">Existing ZIP
+                <textarea class="input__disabled" id="disabled-vis" type="text" disabled>{{this.zipTitle}}</textarea>
+            </label>
+            <button class="btn btn--secondary btn--inline-block">Update ZIP</button>
+        </form>
+    {{#if this.filenames}}
+         <label for="filenames">
+             Select index page
+             <div class="select-wrap flush">
+                 <select name="filenames" id="filenames">
+                     {{#each filenames}}
+                         <option value="{{this}}" {{#if_eq this ../../indexPage}}selected{{/if_eq}}>{{this}}</option>
+                     {{/each}}
+                 </select>
+
+             </div>
+         </label>
+     {{/if}}
+                    {{else}} --}}
+                        <form id="upload-vis">
+                            <label class="input__file" for="input-vis" data-file-title="{{#if this.zipTitle}}{{this.zipTitle}}{{else}}No file uploaded{{/if}}" >Upload ZIP
+                                <input type="file" name="input-vis" id="input-vis" accept=".zip">
+                            </label>
+                            <!--<button class="btn btn--primary btn--inline-block" type="submit" value="upload-vis">Submit</button>-->
+                        </form>
+                    {{!-- {{/if}} --}}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <nav class="edit-nav">
+        {{> editNav}}
+    </nav>
+</section>

@@ -1,0 +1,114 @@
+<section class="panel workspace-edit">
+    <div class="edit-accordion">
+        <div class="edit-section">
+            <div class="edit-section__head">
+                <h1>Metadata</h1>
+
+                <p id="metadata-d">Title | Summary | Release date | Next release | Contact | Summary | NS status |
+                    Cancel</p>
+            </div>
+            <div class="edit-section__content">
+                <div id="metadata-list">
+                    <div>
+                        <label for="title">Title
+                            <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
+                        </label>
+                    </div>
+                    <div id="summary-p">
+                        <label for="summary">Summary
+                            <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
+                        </label>
+                    </div>
+                    <div class="release-date">
+                        <label for="releaseDate">Release date and time
+                            <input id="releaseDate" type="text" placeholder="Day month year"
+                                   value="{{this.description.releaseDate}}"/>
+                        </label>
+
+                        <div class="select-wrap select-wrap--small">
+                            <select id="release-hour">
+                                {{> selectorHour}}
+                            </select>
+                        </div>
+                        <div class="select-wrap select-wrap--small">
+                            <select id="release-min">
+                                {{> selectorMinute}}
+                            </select>
+                        </div>
+                    </div>
+                    {{#if this.description.finalised}}
+                        <div></div>
+                    {{else}}
+                        <div class="provisional-date">
+                            <label for="provisionalDate">Provisional date range
+              <textarea class="auto-size" type="text"
+                        id="provisionalDate">{{this.description.provisionalDate}}</textarea>
+                            </label>
+                        </div>
+                        <div id="finalised">
+                            <label for="finalised" style="display: inline-block;">Finalise </label>
+                            <input type="checkbox" name="finalised" value="false" class="checkbox"/>
+                        </div>
+                    {{/if}}
+                    <div class="next-p">
+                        <label for="nextRelease">Next release
+                            <textarea class="auto-size" type="text"
+                                      id="nextRelease">{{this.description.nextRelease}}</textarea>
+                        </label>
+                    </div>
+                    <div>
+                        <label for="contactName">Contact name
+                            <textarea class="auto-size" type="text"
+                                      id="contactName">{{this.description.contact.name}}</textarea>
+                        </label>
+                    </div>
+                    <div>
+                        <label for="contactEmail">Contact email
+                            <textarea class="auto-size" type="text"
+                                      id="contactEmail">{{this.description.contact.email}}</textarea>
+                        </label>
+                    </div>
+                    <div>
+                        <label for="contactTelephone">Contact telephone
+              <textarea class="auto-size" type="text"
+                        id="contactTelephone">{{this.description.contact.telephone}}</textarea>
+                        </label>
+                    </div>
+                    <div id="natStat">
+                        <label for="natStat-checkbox">National statistic </label>
+                        <input id="natStat-checkbox" type="checkbox" name="natStat" value="false" class="checkbox"/>
+                    </div>
+                    <div id="cancelled">
+                        <label for="cancelled">Cancelled </label>
+                        <input type="checkbox" name="cancelled" value="false" class="checkbox"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="prerelease"></div>
+
+        <div id="cancellation"></div>
+
+        <div id="changeDate"></div>
+
+        <div id="link"></div>
+
+        <div class="edit-section">
+            <div class="edit-section__head">
+                <h1>Preview release content</h1>
+
+                <p>References</p>
+            </div>
+            <div class="edit-section__content">
+                <div class="text-center">
+                    <button class="btn btn--subtle btn-add-section" id="add-preview">Preview</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <nav class="edit-nav">
+        {{> editNav}}
+    </nav>
+</section>

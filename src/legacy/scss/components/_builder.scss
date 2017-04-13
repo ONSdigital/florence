@@ -1,0 +1,148 @@
+.builder {
+
+    &__inner {
+        background-color: $wild-sand;
+        height: $lineheight * 37;
+        width: $col--10;
+        margin-top: $lineheight * 5;
+        margin-right: auto;
+        margin-left: auto;
+        overflow: hidden;
+        position: relative;
+    }
+
+    &__editor {
+        position: relative;
+        box-sizing: border-box;
+        width: 30%;
+        height: $lineheight * 33;
+        float: left;
+        padding: 0px $gutter $lineheight $gutter;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        &--chart {
+            width: $col--6;
+        }
+
+    }
+
+    &__preview {
+        box-sizing: border-box;
+        width: 70%;
+        height: $lineheight * 33;
+        float: right;
+        padding: ($lineheight * 2) ($gutter * 2) ($lineheight * 4) ($gutter * 2);
+        overflow-y: scroll;
+        background-color: white;
+
+        &--chart {
+            width: $col--6;
+        }
+
+        h4{
+            clear:left;
+        }
+
+    }
+
+    &__footer {
+        height: $lineheight * 2;
+        width: 100%;
+        padding: $lineheight 0;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: $gray-chateau;
+
+        button {
+            margin-top: 0;
+            margin-right: 0;
+        }
+    }
+
+    form {
+        margin-top: 0;
+    }
+
+    input, select {
+        margin-top: 0;
+        //width: 100%;
+        //background-color: $white;
+    }
+
+    label {
+        display: inline-block;
+        width: $col--6 - .4%;
+        //margin-top: -5px;
+        //margin-bottom: 4px;
+    }
+
+    // Exception to label styling - make checkboxes only 15% width
+    & .checkbox-label {
+        width: 15%;
+    }    
+
+    & .checkbox-label--small {
+        width: 28%;
+    }
+    & .checkbox-label--half {
+        width: 50%;
+    }
+
+    textarea {
+        width: 100%;
+        border: 3px solid $scarpa-flow;
+        background-color: $white;
+        white-space: pre;
+        word-wrap: normal;
+    }
+
+    iframe {
+        width: 100%;
+        min-width: 700px;
+        height: ($lineheight * 25);
+        resize: horizontal;
+        overflow: auto;
+    }
+
+}
+
+.chart-accordian {
+
+    // If more than one accordion put a border between them
+    &:not(:first-of-type) {
+        border-top: 3px solid transparent;
+    }
+
+    div {
+        background-color: #b2b6c4;
+    }
+
+    &-header {
+        background: $pickled-bluewood;
+        overflow: hidden;
+        color: $cadet-blue;
+        font-size:21px;
+        margin: 10px 10px -10px 10px;
+        padding: 6px 6px 6px 6px;
+    }
+
+    &-body {
+        float: left;
+        padding: 10px;
+        margin: 10px;
+        overflow: hidden;
+        background-size: 30px auto;
+    }
+
+}
+
+.js-chart-builder-panel{
+    margin-top:10px;
+}
+.debug-links{
+    float:right;
+    margin:10px;
+
+}

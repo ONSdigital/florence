@@ -6,11 +6,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     context: path.resolve(__dirname),
     entry: {
-        app: './index.js',
+        app: './index.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'js/florence.bundle.js',
+        filename: 'js/[name].bundle.js',
     },
     module: {
         loaders: [
@@ -47,10 +47,12 @@ module.exports = {
     },
     plugins: [
         new CopyWebpackPlugin([
-            { from: 'index.html', to: 'index.html' },
+            { from: 'refactored.html', to: 'refactored.html' },
             { from: 'manifest.json', to: 'manifest.json' },
             { from: 'service-worker.js', to: 'service-worker.js' },
-            { from: 'img', to: 'img' }
+            { from: 'img', to: 'img' },
+            { from: 'legacy/assets', to: 'legacy-assets' },
+            { from: 'legacy/index.html', to: 'legacy-assets/index.html'}
         ]),
         new ExtractTextPlugin("css/main.css")
     ]

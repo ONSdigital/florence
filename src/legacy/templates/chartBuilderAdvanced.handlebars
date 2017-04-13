@@ -1,0 +1,86 @@
+                <span class="refresh-chart">
+                    <label for="show-tooltip" class="checkbox-label--small">Show tooltips</label>
+                    {{#if_eq showTooltip false}}
+                    <input id="show-tooltip" name="Show Tooltip" type="checkbox">
+                    {{else}}
+                    <input id="show-tooltip" name="Show Tooltip" checked type="checkbox">
+                    {{/if_eq}}
+                    <br/>
+                    <label for="show-marker" class="checkbox-label--small">Show marker points</label>
+                    <input id="show-marker" name="Show Marker" {{#if showMarker}}checked{{/if}} type="checkbox">
+                    <br/>
+                    <label for="connect-null" class="checkbox-label--small">Connect null points</label>
+                    <input id="connect-null" name="Connect Null" {{#if hasConnectNull}}checked{{/if}} type="checkbox">
+                </span>
+
+            
+
+                <br/>
+                <div class="refresh-chart"> 
+                <label>X-axis position<br>
+                    <div class="select-wrap">
+                        <select id="position-x-axis" class="">
+                            {{#select xAxisPos}}
+                                <option value="bottom">bottom</option>
+                                <option value="top">top</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
+                <label>Y-axis position{{ yAxisPos}}<br>
+                    <div class="select-wrap">
+                        <select id="position-y-axis" class="">
+                            {{#select yAxisPos}}
+                                <option value="left">left</option>
+                                <option value="right">right</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
+                </div>
+
+               <br/>
+
+
+
+                
+
+                <br/>
+
+ 
+                <div class="refresh-chart"> 
+                <label>Highlight Category<br>
+                    <div class="select-wrap">
+                        <select id="chart-highlight" class="">
+                            {{#if_eq chartType 'line'}}
+                            {{#select highlight}}
+                                <option value="No Highlight">No Highlight</option>
+                            {{#each series}}
+                                <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                            {{/select}}
+                            {{else}}
+                            {{#select highlight}}
+                                <option value="No Highlight">No Highlight</option>
+                            {{#each categories}}
+                                <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                            {{/select}}
+                            {{/if_eq}}
+                        </select>
+                    </div>
+                </label>
+                </div>
+
+                <br/>
+
+
+
+
+                <div class="refresh-chart">
+                <label>Use configuration from existing chart<br>
+                    <input type="text" id="chart-config-URL" class="loadExisting" placeholder="[URL]"
+                           value="{{labelURL}}"/>
+                </label>eg: 8bd65442, fc0d5bc1,
+                <br/> or /economy/grossdomesticproductgdp/articles/chartdemo/2017-01-05/27fabb49
+                </div>

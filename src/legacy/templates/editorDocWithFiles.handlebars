@@ -1,0 +1,8 @@
+{{#each this}}
+  <div id="correction_{{@index}}" class="edit-section__item">
+    <div class="edit-section__sortable-item--counter float-left">{{plus @index 1}}. </div>
+    <p id="correction-title_show_{{@index}}">{{title}}</p>
+    <p id="correction-filename_show_{{@index}}">{{file}}</p>
+    <button class="btn btn--primary btn-markdown-edit" id="correction-upload_{{@index}}">Upload new file</button>
+  </div>
+{{/each}}

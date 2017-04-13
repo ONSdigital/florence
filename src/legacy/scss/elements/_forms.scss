@@ -1,0 +1,39 @@
+/** FORMS **/
+
+.form {
+    /* Default form styling */
+    //TODO put default form styling in here
+
+    /* Form used when creating from one of the main screens (eg create collection or create user) */
+    &__container {
+        background: $iron-dark;
+        margin: 0 -20px;
+        padding: 0 20px;
+        position: relative;
+        overflow: visible;
+
+        &:after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 15px solid $iron-dark;
+        }
+
+        &--dark {
+            background: $silver-sand;
+        }
+
+        &--dark:after {
+            border-bottom-color: $silver-sand;
+        }
+
+        &--center-arrow:after {
+            left: 46%;
+        }
+    }
+}
