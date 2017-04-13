@@ -10,7 +10,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'js/[name].bundle.js',
+        filename: 'js/florence.bundle.js',
     },
     module: {
         loaders: [
