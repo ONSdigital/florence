@@ -1,0 +1,137 @@
+.slider {
+
+    /* Default slider */
+    background: $quill-gray;
+    height: 100%;
+
+    &--background-primary {
+        background: $pickled-bluewood;
+    }
+
+    &__head {
+        background-color: $pickled-bluewood;
+        overflow: hidden;
+        color: $cadet-blue;
+        padding-top: 0;
+        padding-bottom: $lineheight * 2;
+        padding-left: $col--2;
+        padding-right: $col--2;
+        p {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .edit{
+            float: right;
+            font-size: 14px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__options {
+        padding: $lineheight $col--2;
+        background-color: $gray-chateau;
+
+        h3 {
+            color: $iron-dark;
+            margin-top: 0;
+        }
+
+        button {
+            margin: 0 0 0 10px;
+            &:first-child {
+                margin: 0 0 0 20px;
+            }
+        }
+
+    }
+
+    &__content {
+        overflow-y: scroll;
+        padding: ($lineheight / 2) $col--2;
+        max-height: $lineheight * 27;
+        color: $emperor;
+
+        &--padded {
+
+            // horrible fix for edit collection elements to line up
+            // with stupid silently classes p and heading elements
+            #collection-editor-name,
+            #collection-editor-date,
+            .select-wrap,
+            label[for="collection-editor-scheduled"] {
+                margin-top: 0;
+                margin-left: $gutter;
+                max-width: 600px;
+            }
+
+        }
+
+        &--fullwidth {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        h3:first-of-type {
+            margin-top: 0;
+        }
+
+    }
+
+    &__banner {
+        background-color: $nevada;
+        padding: ($lineheight / 2) $col--2;
+        color: $iron-dark;
+
+        p {
+            margin-top: ($lineheight / 2);
+            margin-bottom: ($lineheight / 2);
+        }
+    }
+
+    &__nav {
+        box-sizing: border-box;
+        overflow: hidden;
+        padding-top: $lineheight;
+        padding-bottom: $lineheight;
+        padding-left: $col--2;
+        padding-right: $col--2;
+        background-color: $pickled-bluewood;
+        color: $cadet-blue;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: $lineheight * 5;
+
+        button {
+            margin-right: 0;
+            margin-left: 10px;
+            &:first-child {
+                margin-right: 0;
+                margin-left: 20px;
+            }
+        }
+    }
+
+    /* Collection details overlaid on 'Edit collection' */
+    &__modal {
+        background-color: $quill-gray;
+        width: 100%;
+        margin-top: $lineheight;
+        margin-right: auto;
+        margin-left: auto;
+        overflow: hidden;
+        position: absolute;
+        z-index: 1;
+
+        textarea {
+            border: 3px solid $scarpa-flow;
+        }
+    }
+}

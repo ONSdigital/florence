@@ -1,0 +1,276 @@
+[class^="icon-"]:before, [class*=" icon-"]:before {
+    font-family: "florence";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: .2em;
+    text-align: center;
+    /* opacity: .8; */
+
+    /* For safety - reset parent styles, that can break glyph codes*/
+    font-variant: normal;
+    text-transform: none;
+
+    /* fix buttons height, for twitter bootstrap */
+    line-height: 1em;
+
+    /* Animation center compensation - margins should be symmetric */
+    /* remove if not needed */
+    margin-left: .2em;
+
+    /* you can be more comfortable with increased icons size */
+    /* font-size: 120%; */
+
+    /* Uncomment for 3D effect */
+    /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.icon-toggle-off:before {
+    content: '\e800';
+}
+
+/* '' */
+.icon-toggle-on:before {
+    content: '\e801';
+}
+
+/* '' */
+.icon-edit:before {
+    content: '\e802';
+}
+
+/* '' */
+.icon-ccw:before {
+    content: '\e803';
+}
+
+/* '' */
+.icon-pencil-1:before {
+    content: '\e804';
+}
+
+/* '' */
+.icon-flow-tree:before {
+    content: '\e805';
+}
+
+/* '' */
+
+//style.scss ^ can be deleted later
+// @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800);
+// @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700);
+// @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic,700italic);
+// @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic,700italic);
+
+.class-for-30px {
+    font-size: 2.5000em; /* 30px */
+    line-height: 1.2000em; /* 36px */
+    margin-top: 0.6000em;
+    margin-bottom: 0.0000em;
+}
+
+.class-for-24px {
+    font-size: 2.0000em; /* 24px */
+    line-height: 1.5000em; /* 36px */
+    margin-top: 0.7500em;
+    margin-bottom: 0.0000em;
+}
+
+.class-for-22px {
+    font-size: 1.8333em; /* 22px */
+    line-height: 1.6364em; /* 36px */
+    margin-top: 0.8182em;
+    margin-bottom: 0.0000em;
+}
+
+.class-for-20px {
+    font-size: 1.6667em; /* 20px */
+    line-height: 1.8000em; /* 36px */
+    margin-top: 0.9000em;
+    margin-bottom: 0.0000em;
+}
+
+.class-for-18px {
+    font-size: 1.5000em; /* 18px */
+    line-height: 1.0000em; /* 18px */
+    margin-top: 1.0000em;
+    margin-bottom: 0.0000em;
+}
+
+.class-for-16px {
+    font-size: 1.3333em; /* 16px */
+    line-height: 1.1250em; /* 18px */
+    margin-top: 1.1250em;
+    margin-bottom: 0.0000em;
+}
+
+.class-for-14px {
+    font-size: 1.1667em; /* 14px */
+    line-height: 1.2857em; /* 18px */
+    margin-top: 1.2857em;
+    margin-bottom: 0.0000em;
+}
+
+$rembase: 62.5%;
+$lineheight: 21px;
+$magicnumber1: 7px;
+$magicnumber2: 3px;
+$gutter: 20px;
+
+.text-align-right {
+    text-align: right;
+}
+
+.text-align-left {
+    text-align: left;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+html {
+    font-size: $rembase;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    /*font-size: 1.4rem;*/
+    line-height: $lineheight;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+    /*font-size: 30px;*/
+    font-size: $magicnumber1 * 5;
+    line-height: $lineheight * 2;
+    margin-top: $lineheight * 3;
+    margin-bottom: $lineheight * 2;
+    margin-right: $gutter;
+    margin-left: $gutter;
+}
+
+h2 {
+    font-size: $magicnumber1 * 4;
+    padding-top: 4px;
+    margin-bottom: -4px;
+}
+
+h3 {
+    margin-top: $lineheight;
+    font-size: $magicnumber1 * 3;
+    padding-top: 10px;
+    margin-bottom: -10px;
+}
+
+h4 {
+    margin-top: $lineheight;
+    font-size: 18px;
+    padding-top: 10px;
+    margin-bottom: -10px;
+}
+
+p {
+    /*font-size: 15px;*/
+    line-height: $lineheight;
+    margin-top: $lineheight;
+    margin-bottom: $lineheight;
+    margin-right: $gutter;
+    margin-left: $gutter;
+}
+
+li {
+    /*font-size: 15px;*/
+    line-height: $lineheight;
+}
+
+button {
+    font-family: 'Roboto Slab', serif;
+    font-size: $magicnumber1 * 2;
+    font-weight: 300;
+    line-height: $lineheight;
+    margin-top: $lineheight / 2;
+    margin-bottom: 0;
+    margin-right: $gutter;
+    margin-left: $gutter;
+    padding: 10px $gutter;
+}
+
+table {
+    th {
+        font-size: 18px;
+    }
+
+    strong {
+        font-weight: 600;
+    }
+}
+
+::-webkit-input-placeholder {
+    font-style: italic;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+    font-style: italic;
+}
+
+::-moz-placeholder { /* Firefox 19+ */
+    font-style: italic;
+}
+
+:-ms-input-placeholder {
+    font-style: italic;
+}
+
+input {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: $lineheight + 1;
+}
+
+textarea {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: $lineheight;
+}
+
+select {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    padding: 7px;
+    line-height: $lineheight + 1;
+
+    select:first-child {
+        font-style: italic;
+    }
+}
+
+// Baseline grid ruler
+/*body:after {
+  position: absolute;
+  width: auto;
+  height: auto;
+  z-index: 9999;
+  content: '';
+  display: block;
+  pointer-events: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: url(../img/rule-21.png) repeat top left;
+}*/
+
+
+
+

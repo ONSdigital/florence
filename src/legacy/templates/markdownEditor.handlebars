@@ -1,0 +1,25 @@
+<div class="markdown-editor">
+    <div class="markdown-editor__header">
+        <h1>{{#if this.title}}{{this.title}}{{else}}Content Editor{{/if}}</h1>
+        <button id="js-editor--chart" class="markdown-editor__button markdown-editor__button--custom markdown-editor__button--chart" title="Build Chart"></button>
+        <button id="js-editor--table" class="markdown-editor__button markdown-editor__button--custom markdown-editor__button--table" title="Build Table"></button>
+        <button id="js-editor--image" class="markdown-editor__button markdown-editor__button--custom markdown-editor__button--image" title="Add image"></button>
+        <button id="js-editor--embed" class="markdown-editor__button markdown-editor__button--custom markdown-editor__button--embed" title="Add interactive"></button>
+        <button id="js-editor--equation" class="markdown-editor__button markdown-editor__button--custom markdown-editor__button--equation" title="Build equation"></button>
+        <div id="wmd-button-bar"></div>
+    </div>
+    <div class="markdown-editor__content">
+        <div id="wmd-preview" class="markdown-editor__preview wmd-panel wmd-preview"></div>
+        <div id="wmd-edit" class="markdown-editor__input wmd-panel wmd-edit">
+            <label for="wmd-input" class="markdown-editor__textarea-label">Markdown:</label>
+            <textarea class="markdown-editor__textarea wmd-input" title="wmd-input" name="wmd-input" id="wmd-input">{{this.markdown}}</textarea>
+
+            <div class="markdown-editor__line-numbers" id="markdown-editor-line-numbers"></div>
+        </div>
+    </div>
+    <div class="markdown-editor__footer">
+        <button class="btn btn--primary btn-markdown-editor-save">Save changes</button>
+        <button class="btn btn--positive btn-markdown-editor-exit">Save changes and exit</button>
+        <button class="btn btn-markdown-editor-cancel">Cancel</button>
+    </div>
+</div>

@@ -3,6 +3,9 @@
 .project
 .settings/
 
+#VS code
+.vscode
+
 # Intellij
 .idea/
 *.iml

@@ -1,0 +1,132 @@
+/** NAVS **/
+
+.nav {
+
+    /* Global nav */
+    &__list {
+        overflow: hidden;
+        background: $mine-shaft;
+        padding: 0 20px;
+        color: $gray-chateau;
+        height: $lineheight * 3;
+        text-align: right;
+        list-style: none;
+
+        &--workspace {
+            background-color: transparent;
+            height: 100%;
+            text-align: left;
+            padding: 0;
+        }
+    }
+
+    &__link {
+        color: $gray-chateau;
+        text-decoration: none;
+        padding: $lineheight $gutter;
+        display: block;
+        position: relative;
+
+        &.selected {
+            color: $white;
+            &:before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 100%;
+                height: 3px;
+                left: 0;
+                top: 0;
+                background-color: $white;
+            }
+        }
+    }
+
+    &__item {
+        display: inline-block;
+
+        // Workspace modifiers
+        &--lang > a {
+            color: $gray-chateau;
+            text-decoration: none;
+            padding: $lineheight $gutter;
+            display: block;
+        }
+
+        &--import {
+            position: absolute;
+            bottom: 0;
+            &:after {
+                display: none;
+            }
+        }
+
+        &--browse:after {
+            background-position: 0px -97px !important;
+        }
+
+        &--create:after {
+            background-position: 0px -27px !important;
+        }
+
+        &--edit:after {
+            background-position: 0px -61px !important;
+        }
+
+        &--review:after {
+            background-position: 0px -297px !important;
+        }
+
+        &--workspace {
+            display: block;
+            font-size: 12px;
+        }
+
+        &--workspace.selected {
+            background-color: $mirage;
+            position: relative;
+
+            & > a {
+                color: $white;
+            }
+
+            &:after {
+                content: '';
+                position: absolute;
+                right: $gutter / 2;
+                top: $lineheight / 2;
+                width: 30px;
+                height: $lineheight * 2;
+                background: transparent url(../../img/sprite.png);
+                background-size: 30px auto;
+            }
+
+            &:before {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 0;
+                top: $lineheight;
+                right: 0;
+                background-color: transparent;
+                border-top: 10px solid transparent;
+                border-bottom: 10px solid transparent;
+                border-right: 10px solid $quill-gray;
+            }
+        }
+    }
+
+
+    /* Workspace nav */
+    &--workspace {
+        background-color: $pickled-bluewood;
+    }
+}
+
+// Displays a message to show users are on dev or sandpit
+.environment-notification {
+    height: 21px;
+    float: left;
+    margin: $lineheight;
+    color: $focus;
+}

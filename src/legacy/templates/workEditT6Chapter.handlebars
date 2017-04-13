@@ -1,0 +1,11 @@
+{{#each this}}
+  <div id="{{@index}}" class="edit-section__sortable-item">
+    <div class="edit-section__sortable-item--counter float-left">{{plus @index 1}}.</div>
+    <div id="chapter-title_{{@index}}" class="edit-section__title">{{description.title}}</div>
+    <div class="edit-section__buttons">
+      <button class="btn btn--primary btn-markdown-edit" id="chapter-edit-label_{{@index}}">Rename</button>
+      <button class="btn btn--primary btn-markdown-edit" id="chapter-edit_{{@index}}">Edit</button>
+      <button class="btn btn--warning btn-page-delete" id="chapter-delete_{{@index}}">Delete</button>
+    </div>
+  </div>
+{{/each}}

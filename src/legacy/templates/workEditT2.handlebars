@@ -1,0 +1,45 @@
+<section class="panel workspace-edit">
+    <div class="edit-accordion">
+
+        <div class="edit-section">
+            <div class="edit-section__head">
+                <h1>Metadata</h1>
+                <p>Title | Summary | Keywords</p>
+            </div>
+            <div class="edit-section__content">
+                <div id="metadata-list">
+                    <div>
+                        <label for="title">Title
+                            <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
+                        </label>
+                    </div>
+                    <div id="summary-p">
+                        <label for="summary">Summary
+                            <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
+                        </label>
+                    </div>
+                    <div>
+                        <label for="keywords">Keywords
+                            <input name="tags" id="keywords" value="{{this.description.keywords}}"
+                                   style="display: none;">
+                        </label>
+                        <ul id="keywordsTag"></ul>
+                    </div>
+                    <div>
+                        <label for="metaDescription">Meta description
+                            <textarea class="auto-size" type="text"
+                                      id="metaDescription">{{this.description.metaDescription}}</textarea>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="highlights"></div>
+
+    <nav class="edit-nav">
+        {{> editNav}}
+    </nav>
+
+</section>
