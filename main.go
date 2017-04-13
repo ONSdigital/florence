@@ -1,12 +1,6 @@
 package main
 
 import (
-	"./assets"
-	"github.com/ONSdigital/go-ns/handlers/requestID"
-	"github.com/ONSdigital/go-ns/handlers/timeout"
-	"github.com/ONSdigital/go-ns/log"
-	"github.com/gorilla/pat"
-	"github.com/justinas/alice"
 	"mime"
 	"net"
 	"net/http"
@@ -16,6 +10,13 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/ONSdigital/florence/assets"
+	"github.com/ONSdigital/go-ns/handlers/requestID"
+	"github.com/ONSdigital/go-ns/handlers/timeout"
+	"github.com/ONSdigital/go-ns/log"
+	"github.com/gorilla/pat"
+	"github.com/justinas/alice"
 )
 
 var BindAddr = ":8081"
@@ -61,8 +62,9 @@ func main() {
 
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", indexFile)
-	router.HandleFunc("/florence{uri:(|/.*)}", indexFile)
+	router.HandleFunc("/florence", refactoredIndexFile)
+	router.HandleFunc("/florence/index.html", legacyIndexFile)
+	router.HandleFunc("/florence{uri:|/.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
@@ -99,10 +101,25 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 	w.Write(b)
 }
 
-func indexFile(w http.ResponseWriter, req *http.Request) {
-	log.Debug("Getting index.html", nil)
+func legacyIndexFile(w http.ResponseWriter, req *http.Request) {
+	log.Debug("Getting legacy HTML file", nil)
 
-	b, err := assets.Asset("../dist/index.html")
+	b, err := assets.Asset("../dist/legacy-assets/index.html")
+	if err != nil {
+		log.Error(err, nil)
+		w.WriteHeader(404)
+		return
+	}
+
+	w.Header().Set(`Content-Type`, "text/html")
+	w.WriteHeader(200)
+	w.Write(b)
+}
+
+func refactoredIndexFile(w http.ResponseWriter, req *http.Request) {
+	log.Debug("Getting refactored HTML file", nil)
+
+	b, err := assets.Asset("../dist/refactored.html")
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
