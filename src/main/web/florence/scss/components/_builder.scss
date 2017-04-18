@@ -12,11 +12,12 @@
     }
 
     &__editor {
+        position: relative;
         box-sizing: border-box;
         width: 30%;
         height: $lineheight * 33;
         float: left;
-        padding: ($lineheight * 2) $gutter $lineheight $gutter;
+        padding: 0px $gutter $lineheight $gutter;
         overflow-y: scroll;
         overflow-x: hidden;
 
@@ -37,6 +38,10 @@
 
         &--chart {
             width: $col--6;
+        }
+
+        h4{
+            clear:left;
         }
 
     }
@@ -76,6 +81,13 @@
     // Exception to label styling - make checkboxes only 15% width
     & .checkbox-label {
         width: 15%;
+    }    
+
+    & .checkbox-label--small {
+        width: 28%;
+    }
+    & .checkbox-label--half {
+        width: 50%;
     }
 
     textarea {
@@ -93,5 +105,44 @@
         resize: horizontal;
         overflow: auto;
     }
+
+}
+
+.chart-accordian {
+
+    // If more than one accordion put a border between them
+    &:not(:first-of-type) {
+        border-top: 3px solid transparent;
+    }
+
+    div {
+        background-color: #b2b6c4;
+    }
+
+    &-header {
+        background: $pickled-bluewood;
+        overflow: hidden;
+        color: $cadet-blue;
+        font-size:21px;
+        margin: 10px 10px -10px 10px;
+        padding: 6px 6px 6px 6px;
+    }
+
+    &-body {
+        float: left;
+        padding: 10px;
+        margin: 10px;
+        overflow: hidden;
+        background-size: 30px auto;
+    }
+
+}
+
+.js-chart-builder-panel{
+    margin-top:10px;
+}
+.debug-links{
+    float:right;
+    margin:10px;
 
 }
