@@ -2,7 +2,6 @@
 // sources:
 // ../dist/css/main.css
 // ../dist/img/sprite.png
-// ../dist/js/app.bundle.js
 // ../dist/js/florence.bundle.js
 // ../dist/legacy-assets/css/main.min.css
 // ../dist/legacy-assets/css/main.min.css.map
@@ -62,24 +61,6 @@ func DistCssMainCss() (*asset, error) {
 func DistImgSpritePng() (*asset, error) {
 	path := "/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/dist/img/sprite.png"
 	name := "../dist/img/sprite.png"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
-// DistJsAppBundleJs reads file data from disk. It returns an error on failure.
-func DistJsAppBundleJs() (*asset, error) {
-	path := "/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/dist/js/app.bundle.js"
-	name := "../dist/js/app.bundle.js"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -346,7 +327,6 @@ func AssetNames() []string {
 var _bindata = map[string]func() (*asset, error){
 	"../dist/css/main.css": DistCssMainCss,
 	"../dist/img/sprite.png": DistImgSpritePng,
-	"../dist/js/app.bundle.js": DistJsAppBundleJs,
 	"../dist/js/florence.bundle.js": DistJsFlorenceBundleJs,
 	"../dist/legacy-assets/css/main.min.css": DistLegacyAssetsCssMainMinCss,
 	"../dist/legacy-assets/css/main.min.css.map": DistLegacyAssetsCssMainMinCssMap,
@@ -409,7 +389,6 @@ var _bintree = &bintree{nil, map[string]*bintree{
 				"sprite.png": &bintree{DistImgSpritePng, map[string]*bintree{}},
 			}},
 			"js": &bintree{nil, map[string]*bintree{
-				"app.bundle.js": &bintree{DistJsAppBundleJs, map[string]*bintree{}},
 				"florence.bundle.js": &bintree{DistJsFlorenceBundleJs, map[string]*bintree{}},
 			}},
 			"legacy-assets": &bintree{nil, map[string]*bintree{
