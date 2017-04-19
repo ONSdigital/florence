@@ -23,6 +23,8 @@ var BindAddr = ":8081"
 var BabbageURL = "http://localhost:8080"
 var ZebedeeURL = "http://localhost:8082"
 
+var getAsset = assets.Asset
+
 func main() {
 
 	if v := os.Getenv("BIND_ADDR"); len(v) > 0 {
@@ -89,7 +91,7 @@ func main() {
 func staticFiles(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":uri")
 
-	b, err := assets.Asset("../dist/" + path)
+	b, err := getAsset("../dist/" + path)
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
@@ -104,7 +106,7 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 func legacyIndexFile(w http.ResponseWriter, req *http.Request) {
 	log.Debug("Getting legacy HTML file", nil)
 
-	b, err := assets.Asset("../dist/legacy-assets/index.html")
+	b, err := getAsset("../dist/legacy-assets/index.html")
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
@@ -119,7 +121,7 @@ func legacyIndexFile(w http.ResponseWriter, req *http.Request) {
 func refactoredIndexFile(w http.ResponseWriter, req *http.Request) {
 	log.Debug("Getting refactored HTML file", nil)
 
-	b, err := assets.Asset("../dist/refactored.html")
+	b, err := getAsset("../dist/refactored.html")
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
