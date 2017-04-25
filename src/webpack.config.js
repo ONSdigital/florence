@@ -51,8 +51,8 @@ module.exports = {
             { from: 'manifest.json', to: 'manifest.json' },
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' },
-            { from: 'legacy/assets', to: 'legacy-assets' },
-            { from: 'legacy/index.html', to: 'legacy-assets/index.html'}
+            // { from: 'legacy/assets', to: 'legacy-assets' },
+            // { from: 'legacy/index.html', to: 'legacy-assets/index.html'}
         ]),
         new ExtractTextPlugin("css/main.css")
     ]
