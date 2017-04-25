@@ -4,9 +4,8 @@
 // ../dist/img/sprite.png
 // ../dist/js/florence.bundle.js
 // ../dist/legacy-assets/css/main.min.css
-// ../dist/legacy-assets/css/main.min.css.map
 // ../dist/legacy-assets/index.html
-// ../dist/legacy-assets/js/jquery.min.js
+// ../dist/legacy-assets/jquery.min.js
 // ../dist/legacy-assets/js/main.js
 // ../dist/legacy-assets/js/templates.js
 // ../dist/legacy-assets/version.json
@@ -111,24 +110,6 @@ func DistLegacyAssetsCssMainMinCss() (*asset, error) {
 	return a, err
 }
 
-// DistLegacyAssetsCssMainMinCssMap reads file data from disk. It returns an error on failure.
-func DistLegacyAssetsCssMainMinCssMap() (*asset, error) {
-	path := "/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/dist/legacy-assets/css/main.min.css.map"
-	name := "../dist/legacy-assets/css/main.min.css.map"
-	bytes, err := bindataRead(path, name)
-	if err != nil {
-		return nil, err
-	}
-
-	fi, err := os.Stat(path)
-	if err != nil {
-		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
-	}
-
-	a := &asset{bytes: bytes, info: fi}
-	return a, err
-}
-
 // DistLegacyAssetsIndexHtml reads file data from disk. It returns an error on failure.
 func DistLegacyAssetsIndexHtml() (*asset, error) {
 	path := "/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/dist/legacy-assets/index.html"
@@ -147,10 +128,10 @@ func DistLegacyAssetsIndexHtml() (*asset, error) {
 	return a, err
 }
 
-// DistLegacyAssetsJsJqueryMinJs reads file data from disk. It returns an error on failure.
-func DistLegacyAssetsJsJqueryMinJs() (*asset, error) {
-	path := "/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/dist/legacy-assets/js/jquery.min.js"
-	name := "../dist/legacy-assets/js/jquery.min.js"
+// DistLegacyAssetsJqueryMinJs reads file data from disk. It returns an error on failure.
+func DistLegacyAssetsJqueryMinJs() (*asset, error) {
+	path := "/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/dist/legacy-assets/jquery.min.js"
+	name := "../dist/legacy-assets/jquery.min.js"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -329,9 +310,8 @@ var _bindata = map[string]func() (*asset, error){
 	"../dist/img/sprite.png": DistImgSpritePng,
 	"../dist/js/florence.bundle.js": DistJsFlorenceBundleJs,
 	"../dist/legacy-assets/css/main.min.css": DistLegacyAssetsCssMainMinCss,
-	"../dist/legacy-assets/css/main.min.css.map": DistLegacyAssetsCssMainMinCssMap,
 	"../dist/legacy-assets/index.html": DistLegacyAssetsIndexHtml,
-	"../dist/legacy-assets/js/jquery.min.js": DistLegacyAssetsJsJqueryMinJs,
+	"../dist/legacy-assets/jquery.min.js": DistLegacyAssetsJqueryMinJs,
 	"../dist/legacy-assets/js/main.js": DistLegacyAssetsJsMainJs,
 	"../dist/legacy-assets/js/templates.js": DistLegacyAssetsJsTemplatesJs,
 	"../dist/legacy-assets/version.json": DistLegacyAssetsVersionJson,
@@ -394,11 +374,10 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			"legacy-assets": &bintree{nil, map[string]*bintree{
 				"css": &bintree{nil, map[string]*bintree{
 					"main.min.css": &bintree{DistLegacyAssetsCssMainMinCss, map[string]*bintree{}},
-					"main.min.css.map": &bintree{DistLegacyAssetsCssMainMinCssMap, map[string]*bintree{}},
 				}},
 				"index.html": &bintree{DistLegacyAssetsIndexHtml, map[string]*bintree{}},
+				"jquery.min.js": &bintree{DistLegacyAssetsJqueryMinJs, map[string]*bintree{}},
 				"js": &bintree{nil, map[string]*bintree{
-					"jquery.min.js": &bintree{DistLegacyAssetsJsJqueryMinJs, map[string]*bintree{}},
 					"main.js": &bintree{DistLegacyAssetsJsMainJs, map[string]*bintree{}},
 					"templates.js": &bintree{DistLegacyAssetsJsTemplatesJs, map[string]*bintree{}},
 				}},
