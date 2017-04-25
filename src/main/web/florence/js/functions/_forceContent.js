@@ -9,6 +9,8 @@ function forceContent(collectionId) {
     var modal = templates.forceContentModal;
     $('.wrapper').append(modal);
 
+    logForceContentAction();
+
     // on save
     $('#force-content-json-form').submit(function (e) {
         e.preventDefault();
@@ -101,4 +103,22 @@ function forceJSONContent(code, collectionId) {
     }
 
     forceContent(collectionId)
+}
+
+function logForceContentAction() {
+
+    var logData = {
+        user: this.user = localStorage.getItem('loggedInAs'),
+        trigger: {
+            elementClasses: ["Force JSON Content function invoked"]
+        }
+    };
+
+    $.ajax({
+        url: "/zebedee/clickEventLog",
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify(logData),
+        async: true,
+    });
 }
