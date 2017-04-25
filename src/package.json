@@ -12,11 +12,9 @@
     "node-sass": "latest"
   },
   "scripts": {
-    "watch-css": "npm run build-css && ./node_modules/onchange/cli.js 'scss/*.scss' 'scss/*/*.scss' -v -- npm run build-css",
-    "build-css": "./node_modules/node-sass/bin/node-sass --output-style expanded --source-map assets/css scss/main.scss assets/css/main.min.css",
-    "watch": "node ./node_modules/webpack/bin/webpack.js --watch",
-    "postinstall": "npm run build",
-    "build": "node ./node_modules/webpack/bin/webpack.js"
+    "watch": "cd legacy && npm run watch & node ./node_modules/webpack/bin/webpack.js --watch",
+    "build": "cd legacy && npm run build && cd ../ && node ./node_modules/webpack/bin/webpack.js",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "babel-cli": "^6.18.0",
