@@ -5,7 +5,7 @@ The publishing platform used for the [ONS website](https://www.ons.gov.uk).
 
 ### Getting started
 
-To run Florence you must have [Golang](https://golang.org/), [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/) installed on a UNIX machine.
+To run Florence you must have [Golang](https://golang.org/) installed on a UNIX machine.
 
 Once you have installed those dependencies and cloned this repo you need to run the following:
 
@@ -18,8 +18,10 @@ cd florence
 make
 ```
 
-#### Optional
-3. Watch for JS, CSS and other source file changes
+#### Optional (for developing Florence)
+
+3. Install [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/)
+4. Watch for JS, CSS and other source file changes
 ```
 cd src && npm run watch
 ```
