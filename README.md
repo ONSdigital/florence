@@ -3,6 +3,8 @@ Florence
 
 The publishing platform used for the [ONS website](https://www.ons.gov.uk).
 
+![Florence screenshot](images/Florence screenshot.png)
+
 ### Getting started
 
 To run Florence you must have [Golang](https://golang.org/) installed on a UNIX machine.

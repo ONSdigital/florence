@@ -3,7 +3,7 @@
 .project
 .settings/
 
-#VS code
+#VSCode
 .vscode
 
 # Intellij
