@@ -5,13 +5,15 @@
     <title>Florence</title>
 
     <!--Allows user to save link to Florence to desktop -->
-    <link rel="manifest" href="/florence/dist/manifest.json">
+    <link rel="manifest" href="/florence/manifest.json">
 
-    <link href="https://cdn.ons.gov.uk/assets/florence/jquery-tag-it/jquery.tagit.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.ons.gov.uk/assets/florence/jquery-tag-it/tagit.ui-florence.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.ons.gov.uk/assets/florence/pagedown/pagedown.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.ons.gov.uk/vendor/sweetalert/1.0.0/sweetalert.css" rel="stylesheet" type="text/css">
-    <link href="/florence/dist/legacy-assets/css/main.min.css" rel="stylesheet" type="text/css">
+    <!-- <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"> -->
+    <link href="/florence/css/third-party/jquery.tagit.css" rel="stylesheet" type="text/css">
+    <!--<link href="/florence/css/third-party/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">-->
+    <link href="/florence/css/third-party/tagit.ui-florence.css" rel="stylesheet" type="text/css">
+    <link href="/florence/css/third-party/pagedown.css" rel="stylesheet" type="text/css">
+    <link href="/florence/css/third-party/sweetalert.css" rel="stylesheet" type="text/css">
+    <link href="/florence/assets/css/main.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <script type="text/x-mathjax-config">
@@ -28,33 +30,35 @@
 
 </script>
 
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/jquery/2.1.4/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/jquery-ui/1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/jquery-ui-timepicker-addon/1.6.1/jquery-ui-timepicker-addon.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/jquery-hotkeys/0.2.0/jquery.hotkeys.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/underscore/1.8.3/underscore-min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/handlebars/3.0.1/handlebars.runtime.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery.min.js"></script>
 
-<script type="text/javascript" src="/florence/dist/legacy-assets/js/templates.js"></script>
+<script type="text/javascript" src="js/third-party/jquery-ui.js"></script>
+<script type="text/javascript" src="js/third-party/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="js/third-party/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="js/third-party/underscore-min.js"></script>
+<script type="text/javascript" src="js/third-party/handlebars.runtime.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.ons.gov.uk/assets/florence/pagedown/Markdown.Converter.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/assets/florence/pagedown/Markdown.Editor.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/assets/florence/pagedown/Markdown.Extra.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/assets/florence/pagedown/Markdown.Sanitizer.min.js"></script>
+<script type="text/javascript" src="assets/js/templates.js"></script>
 
-<script type="text/javascript" src="https://code.highcharts.com/5.0.7/highcharts.js"></script>
-<script type="text/javascript" src="https://code.highcharts.com/5.0.7/highcharts-more.js"></script>
-<script type="text/javascript" src="https://code.highcharts.com/5.0.7/modules/broken-axis.js"></script>
-<script type="text/javascript" src="https://code.highcharts.com/5.0.7/modules/annotations.js"></script>
-<script type="text/javascript" src="https://code.highcharts.com/5.0.7/modules/heatmap.js"></script>
+<script type="text/javascript" src="js/third-party/Markdown.Converter.js"></script>
+<script type="text/javascript" src="js/third-party/Markdown.Editor.js"></script>
+<script type="text/javascript" src="js/third-party/Markdown.Extra.js"></script>
+<script type="text/javascript" src="js/third-party/Markdown.Sanitizer.js"></script>
 
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/jquery-textarea-autosize/0.4.2/jquery.textarea_autosize.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/sweetalert/1.0.0/sweetalert.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/mathjax/2.6.0/MathJax.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/clipboard-js/1.5.9/clipboard.min.js"></script>
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/jquery-tag-it/2.0/tag-it.min.js"></script>
+<script type="text/javascript" src="js/third-party/highcharts-5.0.7.js"></script>
+<script type="text/javascript" src="js/third-party/highcharts-more-5.0.7.js"></script>
+<script type="text/javascript" src="js/third-party/highcharts-broken-axis-5.0.7.js"></script>
+<script type="text/javascript" src="js/third-party/highcharts-annotations-5.0.7.js"></script>
+<script type="text/javascript" src="js/third-party/highcharts-heatmap-5.0.7.js"></script>
+<script type="text/javascript" src="js/third-party/highcharts-annotations.js"></script>
 
-<script type="text/javascript" src="/florence/dist/legacy-assets/js/main.js"></script>
+<script type="text/javascript" src="js/third-party/autosize.js"></script>
+<script type="text/javascript" src="js/third-party/sweetalert.min.js"></script>
+<script type="text/javascript" src="js/third-party/mathjax/MathJax.js"></script>
+<script type="text/javascript" src="js/third-party/clipboard.min.js"></script>
+<script type="text/javascript" src="js/third-party/tag-it.js"></script>
+
+<script type="text/javascript" src="assets/js/main.js"></script>
 
 </body>
 </html>
