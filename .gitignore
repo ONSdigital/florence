@@ -23,6 +23,3 @@ target/
 .sass-cache/
 node_modules
 npm-debug.log*
-
-# Dev project files
-dist
