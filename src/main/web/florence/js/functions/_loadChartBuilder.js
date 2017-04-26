@@ -1,17 +1,55 @@
 function loadChartBuilder(pageData, onSave, chart) {
-    var chart = chart;
-    var pageUrl = pageData.uri;
-    var html = templates.chartBuilder(chart);
-    $('body').append(html);
-    $('.js-chart-builder').css("display", "block");
 
-    if (chart) {
-        $('#chart-data').val(toTsv(chart));
-        refreshExtraOptions();
+    var chart;
+    var pageUrl;
+    var html;
+
+    const ALPHA = 0.6;
+    const SM  = 360;
+    const MD  = 520;
+    const LG  = 700;
+
+    const sizes = {sm:SM, md:MD, lg:LG}; // - phone, tablet, desktop
+
+
+    initialise(pageData, chart);
+
+
+    function initialise(pageData, _chart){
+        chart = _chart;
+        pageUrl = pageData.uri;
+        html = templates.chartBuilder(chart);
+        $('body').append(html);
+
+        loadTemplates();
+
+        $('.js-chart-builder').css("display", "block");
+
+        if (chart) {
+            $('#chart-data').val(toTsv(chart));
+            refreshExtraOptions();
+        }
+
+        initAccordian();
+
+        setPageListeners();
+        setFormListeners();
+        setShortcutGroup();
+
+        renderText();
+        renderNotes();
+        renderChart();
+
+        // reset the main size panel settings
+        // TODO remove high level aspect ratio etc
+        if(chart.devices && chart.device){       
+            $('#device').val(chart.device);
+            $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
+            $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
+        }
+        showTab( 'Metadata' );
+
     }
-
-    renderText();
-    renderChart();
 
     function refreshExtraOptions() {
         var template = getExtraOptionsTemplate(chart.chartType);
@@ -30,81 +68,359 @@ function loadChartBuilder(pageData, onSave, chart) {
                 return templates.chartEditBarlineExtras;
             case 'dual-axis':
                 return templates.chartEditDualAxisExtras;
-            case 'line':
-                return templates.chartEditLineChartExtras;
             case 'bar':
             case 'rotated':
                 return templates.chartEditBarChartExtras;
+            case 'scatter':
+                return templates.chartEditScatterExtras;
             default:
                 return;
         }
     }
 
-    $('.refresh-chart').on('input', function () {
-        chart = buildChartObject();
-        refreshExtraOptions();
-        renderChart();
-    });
 
-    $('.refresh-chart').on('change', ':checkbox', function () {
-        chart = buildChartObject();
-        refreshExtraOptions();
-        renderChart();
-    });
+    function showTab(tabName) {
+        $('.js-chart-builder-panel').hide();
+        switch (tabName) {
+            case 'Chart':
+                $('#chart-panel').show();
+                break;
+            case 'Metadata':
+                $('#metadata-panel').show();
+                break;
+            case 'Series':
+                var template = templates.chartBuilderSeries;
+                var html = template(chart);
+                $('#series-panel').html(html);
+                $('#series-panel').show();
+                break;
+            case 'Advanced':
+                $('#advanced-panel').show();
+                break;
+            case 'Annotation':
+                $('#annotation-panel').show();
 
-
-    $('.refresh-text').on('input', function () {
-        renderText();
-    });
-
-    $('.btn-chart-builder-cancel').on('click', function () {
-        $('.js-chart-builder').stop().fadeOut(200).remove();
-    });
-
-    $('.btn-chart-builder-create').on('click', function () {
-
-        chart = buildChartObject();
-
-        var jsonPath = chart.uri + ".json";
-        $.ajax({
-            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
-            type: 'POST',
-            data: JSON.stringify(chart),
-            processData: false,
-            contentType: 'application/json',
-            success: function (res) {
-
-                if (!pageData.charts) {
-                    pageData.charts = [];
-                }
-
-                existingChart = _.find(pageData.charts, function (existingChart) {
-                    return existingChart.filename === chart.filename;
+                $( "#annotation-chart" ).accordion({
+                  active: 0
                 });
 
-                if (existingChart) {
-                    existingChart.title = chart.title;
-                } else {
-                    pageData.charts.push({
-                        title: chart.title,
-                        filename: chart.filename,
-                        uri: chart.uri
-                    });
-                }
+                break;
+            default:
+                return;
+        }
+    }
 
-                if (onSave) {
-                    onSave(chart.filename, '<ons-chart path="' + chart.filename + '" />');
+
+    function setPageListeners() {
+        $('.tab__link').on('click', function () {
+            $('.tab__link').removeClass('tab__link--active');
+            $(this).addClass('tab__link--active');
+            showTab( $(this).text() );
+        });
+
+        $('.btn-chart-builder-cancel').on('click', function () {
+            $('.js-chart-builder').stop().fadeOut(200).remove();
+        });
+
+        $('.btn-chart-builder-create').on('click', function () {
+            chart = buildChartObject();
+            var jsonPath = chart.uri + ".json";
+            $.ajax({
+                url: "/zebedee/content/" + Florence.collection.id + "?uri=" + jsonPath,
+                type: 'POST',
+                data: JSON.stringify(chart),
+                processData: false,
+                contentType: 'application/json',
+                success: function (res) {
+
+                    if (!pageData.charts) {
+                        pageData.charts = [];
+                    }
+
+                    existingChart = _.find(pageData.charts, function (existingChart) {
+                        return existingChart.filename === chart.filename;
+                    });
+
+                    if (existingChart) {
+                        existingChart.title = chart.title;
+                    } else {
+                        pageData.charts.push({
+                            title: chart.title,
+                            filename: chart.filename,
+                            uri: chart.uri
+                        });
+                    }
+
+                    if (onSave) {
+                        onSave(chart.filename, '<ons-chart path="' + chart.filename + '" />');
+                    }
+                    $('.js-chart-builder').stop().fadeOut(200).remove();
                 }
-                $('.js-chart-builder').stop().fadeOut(200).remove();
+            });
+        });
+    }
+
+
+    
+    function setShortcutGroup() {
+        setShortcuts('#chart-title', renderText);
+        setShortcuts('#chart-subtitle', renderText);
+        setShortcuts('#chart-data', renderChart);
+        setShortcuts('#chart-x-axis-label', renderChart);
+        setShortcuts('#chart-notes', renderText);
+    }
+
+
+    function loadExisting(uri) {
+        // check uri for existing page url
+        // eg '/economy/grossdomesticproductgdp/articles/chartdemo/2017-01-05'
+        var slash = uri.indexOf("/");
+        var targetUri;
+        
+        if (slash >-1){
+            targetUri =  uri + "/data";
+        }else{
+            targetUri = pageUrl + "/" + uri + "/data";
+        }
+
+        $.ajax({
+            url: targetUri,
+            type: 'POST',
+            data: null,
+            contentType: "image/png",
+            processData: false,
+            success: function (res) {
+                updateForm(res);
+            },
+            error: function(err){
+                console.log(err);
             }
         });
-    });
+    }
 
-    setShortcuts('#chart-title', renderText);
-    setShortcuts('#chart-subtitle', renderText);
-    setShortcuts('#chart-data', renderChart);
-    setShortcuts('#chart-x-axis-label', renderChart);
-    setShortcuts('#chart-notes', renderText);
+
+    function loadTemplates(){
+        // loop and recreate panels
+        var panels = [
+            templates.chartBuilderChart,
+            templates.chartBuilderMetadata,
+            templates.chartBuilderSeries,
+            templates.chartBuilderAdvanced,
+            templates.chartBuilderAnnotation
+        ];
+
+        var targets= [
+            '#chart-panel',
+            '#metadata-panel',
+            '#series-panel',
+            '#advanced-panel',
+            '#annotation-chart',
+        ];
+
+        $.each(panels, function(index, val){
+            var template = val;
+            var html = template(chart);
+
+            $(targets[index]).empty();
+            $(targets[index]).append(html);
+        })
+    }
+
+
+    function updateForm(newData) {
+        // there some fields we don't want to update
+        // so store and restore
+        var original = {};
+        original.filename = chart.filename;
+        original.data = chart.data;
+        original.headers = chart.headers;
+        original.categories = chart.categories;
+        original.title = chart.title;
+        original.subtitle = chart.subtitle;
+        original.notes = chart.notes;
+        original.altText = chart.altText;
+
+        chart = newData;
+        chart.filename = original.filename;
+        chart.data = original.data;
+        chart.headers = original.headers;
+        chart.categories = original.categories;
+        chart.title = original.title;
+        chart.subtitle = original.subtitle;
+        chart.notes = original.notes;
+        chart.altText = original.altText;
+
+        clearFormListeners();
+
+        loadTemplates();
+
+        // add the chart dimensions back in
+        $('#chart-label-interval').val(chart.labelInterval);
+
+        if(chart.devices && chart.device){       
+            //$('#device').val(chart.devices[chart.device].type);
+            $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
+            $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
+        }
+
+        $('#chart-data').val(toTsv(chart));
+        refreshExtraOptions();
+
+        setFormListeners();
+        renderText();
+        renderChart();    
+    }
+
+
+    function initAccordian() {
+        try {
+            $('#annotation-chart').accordion({
+                header: '.chart-accordian-header',
+                active: 0,
+                collapsible: true
+            });
+        }
+        catch(err){
+            console.warn('Issue initialising ACCORDIAN');
+        }
+    }
+
+
+    function setFormListeners() {
+        $('.refresh-chart').on('change', refreshChart);   
+        // for TEXTFIELDS only update the chart when the text field lose focus
+        $('.refresh-chart-text').on('blur', refreshChart);
+        $('.refresh-text').on('change', renderText);
+        $('#add-annotation').on('click', addNotation);
+        //device type
+        $('.refresh-device').on('change', refreshDeviceDimensions);
+        $('.refresh-aspect').on('change', refreshChartDimensions);
+    }
+
+
+    function clearFormListeners() {
+        $('.refresh-chart').off('change', refreshChart);
+        $('.refresh-chart-text').off('blur', refreshChart);
+        $('.refresh-text').off('change', renderText);
+        $('#add-annotation').off('click', addNotation);
+        $('.refresh-device').off('change', refreshDeviceDimensions);
+        $('.refresh-aspect').off('change', refreshChartDimensions);
+    }
+
+
+
+    // event listeners /////////////////////////////////
+    function refreshChart(){
+        var existing = $('#chart-config-URL').val();
+        if (existing) {
+            console.warn("OVERWRITE ALL CONFIG!");
+            loadExisting(existing);
+        }else{
+            // NOTE need to refresh the chart object before refreshing the Extra options
+            chart = buildChartObject();
+            refreshExtraOptions();
+
+            renderChart();
+        }
+    }
+
+
+    function refreshCoords(){
+        var idx = $('#annotation-chart').accordion( "option", "active" );
+        var x = parseInt( $('#note-x-'+idx).val() );
+        var y = parseFloat( $('#note-y-'+idx).val() );
+
+        updateAnnotationCoords(idx, x, y);
+        refreshChart();
+    }
+
+    function refreshDeviceDimensions(){
+        var device = $('#device').val();
+        //update the annotations
+        $.each(chart.annotations, function(idx, itm){
+            if(itm.devices){
+                //only update if there is a value otherwise keep existing
+                if(itm.devices[device]){
+                    $('#note-x-'+idx).val(itm.devices[device].x);
+                    $('#note-y-'+idx).val(itm.devices[device].y);
+                }
+
+            }
+        });   
+        renderChart();
+    }
+
+
+    function refreshChartDimensions(){
+        var device = $('#device').val();
+
+        chart.devices[device].aspectRatio = $('#aspect-ratio').val();
+        chart.devices[device].labelInterval = $('#chart-label-interval').val();
+        chart.labelInterval = $('#chart-label-interval').val();
+        chart.devices[device].isHidden = $('#is-hidden').is(':checked');
+        chart.isHidden = $('#is-hidden').is(':checked');
+
+        chart = buildChartObject();
+        renderChart();
+    }
+
+    function addNotation(){
+        var obj = {   
+                title: 'Annotation ' + (chart.annotations.length+1) + ': Automagic', 
+                devices:{
+                    'sm':{x:200, y:150},
+                    'md':{x:50, y:50},
+                    'lg':{x:50, y:50}
+                }
+                , x:250, y:70
+                , isHidden:false
+                , isPlotline:false
+                , bandWidth:0
+            }
+        chart.annotations.push(obj);
+        renderNotes();
+        renderChart();
+    }
+
+
+    function onDelete(e) {
+        var target = parseInt(e.target.id.substring(18));
+        chart.annotations.splice(target,1);
+        renderNotes();
+        renderChart();
+    }
+
+    ////////////////////////////////////////////////////
+
+
+
+    //Renders annotation panel fields
+    function renderNotes() {
+
+        //remove existing events
+        $('.btn-delete-annotation').off('click', onDelete);
+        $('.chart-accordian .refresh-chart').off('change', refreshChart);
+        $('.refresh-coords').off('change', refreshCoords);
+
+        var template = templates.chartBuilderAnnotation;
+        var html = template(chart);
+        $('#annotation-chart').empty();
+        $('#annotation-chart').html(html);
+        $('#annotation-chart').show();
+
+        //update the delete button listeners
+        $('.btn-delete-annotation').on('click', onDelete);
+
+        $( "#annotation-chart" ).accordion( "refresh" );
+        if(chart){
+            if(chart.annotations){
+                $( "#annotation-chart" ).accordion( "option", "active", (chart.annotations.length-1) );  
+            }
+        }
+        $('.chart-accordian .refresh-chart').on('change', refreshChart);
+        $('.refresh-coords').on('change', refreshCoords);
+    }   
+
 
     //Renders html outside actual chart area (title, subtitle, source, notes etc.)
     function renderText() {
@@ -142,20 +458,32 @@ function loadChartBuilder(pageData, onSave, chart) {
 
     // Builds, parses, and renders our chart in the chart editor
     function renderChart() {
+        //TODO check we need to refresh this AGAIN!
         chart = buildChartObject();
-        var preview = $('#chart');
-        var chartHeight = preview.width() * chart.aspectRatio;
-        var chartWidth = preview.width();
+
+        //set isEditor to allow annotations to be moved
+        chart.isEditor = true;
+        // get device and its corresponding dims
+        var device = $('#device').val();
+        var chartHeight = parseInt(chart.devices[device].aspectRatio * chart.size);
+        var chartWidth = chart.size;
+
+        $("#chart-size").html('Size:' + chartWidth + ' x ' + chartHeight);
         renderChartObject('chart', chart, chartHeight, chartWidth);
     }
 
     function buildChartObject() {
         var json = $('#chart-data').val();
+        // catch any double quotes and replace with single for now...
+        // this stops them breaking the TSV transformation
+        json = json.replace(/["]/g,'\'');
+
         if (!chart) {
             chart = {};
         }
 
         chart.type = "chart";
+        chart.alpha = ALPHA;
         chart.title = $('#chart-title').val();
         chart.filename = chart.filename ? chart.filename : StringUtils.randomId(); //  chart.title.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
         chart.uri = pageUrl + "/" + chart.filename;
@@ -163,14 +491,53 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.unit = $('#chart-unit').val();
         chart.source = $('#chart-source').val();
 
+        chart.isReversed = $('#isReversed').prop('checked');
+        chart.isStacked = $('#isStacked').prop('checked');
         chart.decimalPlaces = $('#chart-decimal-places').val();
+        chart.decimalPlacesYaxis = $('#chart-decimal-places-yaxis').val();
         chart.labelInterval = $('#chart-label-interval').val();
+        
 
         chart.notes = $('#chart-notes').val();
         chart.altText = $('#chart-alt-text').val();
         chart.xAxisLabel = $('#chart-x-axis-label').val();
-        chart.startFromZero = $('#start-from-zero').prop('checked');
+        chart.startFromZero = true;//$('#start-from-zero').prop('checked');
         chart.finishAtHundred = $('#finish-at-hundred').prop('checked');
+
+        // handle negative min values without a break...
+        chart.hasLineBreak = false;
+        chart.yMin = $('#chart-min').val();
+        chart.yMax = $('#chart-max').val();
+
+        if(chart.yMin>0){
+            chart.hasLineBreak = true;
+        }
+        
+        // store the device and the respective aspect ratio
+        if(!chart.devices){
+            chart.devices = {
+                'sm':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                'md':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                'lg':{aspectRatio:'0.56', labelInterval:'', isHidden:false},
+                            };
+        }
+        chart.device = $('#device').val();
+        chart.size = sizes[chart.device];
+        chart.aspectRatio = $('#aspect-ratio').val();
+
+        // the label interval sits outside the devices?
+        if(chart.devices[chart.device]){
+            chart.labelInterval = chart.devices[chart.device].labelInterval;
+        }
+
+        //TODO swap this around so the data is set elsewhere and this bit reads in the data
+        // set ratio is done when the aspect ratio changes so recall existing aspect ratio
+        $('#aspect-ratio').val(chart.devices[chart.device].aspectRatio);
+        $('#chart-label-interval').val(chart.devices[chart.device].labelInterval);
+        $('#is-hidden').prop('checked',chart.devices[chart.device].isHidden);
+        $('#is-plotline').prop('checked',chart.devices[chart.device].isPlotline);
+        chart.isHidden = chart.devices[chart.device].isHidden;
+        
 
         if (chart.title === '') {
             chart.title = '[Title]'
@@ -181,16 +548,85 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.series = tsvJSONColNames(json);
         chart.categories = tsvJSONRowNames(json);
 
-        chart.aspectRatio = $('#aspect-ratio').val();
+        chart.yAxisMin = getMin(json);
+        chart.yAxisMax = getMax(json);
 
-        if (isShowBarLineSelection(chart.chartType)) {
+        chart.xAxisPos = $('#position-x-axis').val();
+        chart.yAxisPos = $('#position-y-axis').val();
+        chart.highlight = $('#chart-highlight option:selected').text();
+
+        chart.palette = $('input[name=palette]:checked').val();
+        chart.showTooltip = $('#show-tooltip').prop('checked');
+        chart.showMarker = $('#show-marker').prop('checked');
+        chart.hasConnectNull = $('#connect-null').prop('checked');
+
+        if(!chart.annotations){
+            chart.annotations = [];
+        }
+
+        //loop though annotations and populate array from form
+        $.each(chart.annotations, function(idx, itm){
+            itm.isPlotline = $('#is-plotline-'+idx).prop('checked');
+            $('#chart-notes-'+idx).toggle(!itm.isPlotline);
+
+            if(!itm.isPlotline){
+
+                var text = $('#chart-notes-'+idx).val();
+                var maxLength = 0;
+                if(text){
+                    var lines = text.split('\n');
+                    $.each(lines, function(idx, line){
+                        if (line.length>maxLength){
+                            maxLength = line.length;
+                        }
+                    });
+                    itm.title = lines.join('<br/>');
+                itm.width = parseInt( maxLength * 6.5) + 6 ;
+                itm.height = (lines.length+1)*12 + 10;
+                }
+
+            }else{
+                itm.title = '';
+            }
+
+            itm.id = idx;
+            //set the annotation x and y based on the device
+            itm.x = ( itm.devices[chart.device].x );
+            itm.y = ( itm.devices[chart.device].y );
+
+            itm.isHidden = $('#is-hidden-'+idx).prop('checked');
+            itm.orientation = $('#orientation-axis-'+idx).val();
+            itm.bandWidth = parseFloat( $('#band-width-'+idx).val() ).toFixed(2);
+
+            if(isNaN(itm.bandWidth))itm.bandWidth = 0;
+            if(parseFloat(itm.bandWidth)===0){
+                itm.isPlotband = false;
+            }else{
+                itm.isPlotband = true;
+            }
+
+        });
+
+        if (isShowBarLineSelection(chart.chartType) || chart.series.length>1) {
             var types = {};
+            var lines = {};
             var groups = [];
             var group = [];
             var seriesData = chart.series;
+            //bar line panel settings
             $.each(seriesData, function (index) {
-                types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+                //custom series panel takes precedence
+                if( $('#series-types_' + index).val() ){
+                    types[seriesData[index]] = $('#series-types_' + index).val();
+                    lines[seriesData[index]] = $('#line-types_' + index).val();
+
+                }else{
+                    types[seriesData[index]] = $('#types_' + index).val() || 'bar';
+                    lines[seriesData[index]] = 'Solid';
+                    
+                }
             });
+            
             (function () {
                 $('#extras input:checkbox:checked').each(function () {
                     group.push($(this).val());
@@ -198,26 +634,47 @@ function loadChartBuilder(pageData, onSave, chart) {
                 groups.push(group);
                 return groups;
             })();
+
+            (function () {
+                $('#series-panel input:checkbox:checked').each(function () {
+                    group.push($(this).val());
+                });
+                groups.push(group);
+                return groups;
+            })();
+            
             chart.chartTypes = types;
+            chart.lineTypes = lines;
             chart.groups = groups;
         }
 
         chart.chartType = $('#chart-type').val();
 
-        //console.log(chart);
+        //set same axes for small multiples
+        if(chart.chartType==='small-multiples'){
+            chart.yMin = Math.min(chart.yAxisMin, chart.yMin);
+            chart.yMax = Math.max(chart.yAxisMax, chart.yMax);
+        }
+
+        // if we change the chart type need to reload
+        // and update select menu under the Advanced tab
+        var html = templates.chartBuilderAdvancedSelect(chart);
+        $('#chart-highlight').empty();
+        $('#chart-highlight').append(html);
+
         parseChartObject(chart);
 
         chart.files = [];
-        //chart.files.push({ type:'download-png', filename:chart.filename + '-download.png' });
-        //chart.files.push({ type:'png', filename:chart.filename + '.png' });
 
         return chart;
     }
+
 
     //Determines if selected chart type is barline or rotated bar line
     function isShowBarLineSelection(chartType) {
         return (chartType === 'barline' || chartType === "rotated-barline" || chartType === "dual-axis");
     }
+
 
     function parseChartObject(chart) {
 
@@ -239,7 +696,45 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
     }
 
-    //// Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
+    function updateAnnotationCoords(id, x, y){
+        var device = $('#device').val();
+        var itm = chart.annotations[id];
+
+        if(!id){
+            //sweetAlert('Please select an annotation', "There must be an open annotation in order to store the changes");
+            //return;
+        }
+
+        if(!itm.devices){
+            itm.devices = {};
+        }
+
+        if(!itm.devices[device]){
+            itm.devices[device] = {};
+        }
+
+        itm.devices[device].x = x;
+        itm.devices[device].y = y;
+    }
+
+    function annotationClick(evt){
+        var id = $('#annotation-chart').accordion( "option", "active" );
+        var x = (evt.xAxis[0].value).toFixed(2);
+        var y = (evt.yAxis[0].value).toFixed(2);
+
+
+        //only update coords if its a plotline
+        var isChecked = $('#is-plotline-'+id).is(':checked');
+        if(isChecked){
+            updateAnnotationCoords(id, x, y);
+            // important! trigger the change event after setting the value
+            $('#note-x-'+id).val(x).change();
+            $('#note-y-'+id).val(y).change();
+        }
+
+    }
+
+    // Converts chart to highcharts configuration by posting Babbage /chartconfig endpoint and to the rendering with fetched configuration
     function renderChartObject(bindTag, chart, chartHeight, chartWidth) {
 
         var jqxhr = $.post("/chartconfig", {
@@ -248,15 +743,69 @@ function loadChartBuilder(pageData, onSave, chart) {
             },
             function () {
                 var chartConfig = window["chart-" + chart.filename];
-                console.debug("Refreshing the chart, config:", chartConfig);
+                var div;
+                var xchart
+
                 if (chartConfig) {
-                    chartConfig.chart.renderTo = "chart";
-                    new Highcharts.Chart(chartConfig);
+                    // remove the title, subtitle and any renderers for client side display
+                    // these are only used by the template for export/printing
+                    chartConfig.chart.height = chartConfig.chart.height-300;
+                    chartConfig.chart.marginTop = 50;
+                    chartConfig.chart.marginBottom = 50;
+                    //do not use renderer for Florence
+                    chartConfig.chart.events = {};
+                    chartConfig.title = {text:''};
+                    chartConfig.subtitle = {text:''};
+                    chartConfig.legend.y = 0;
+
+                    //clear holder   
+                    $("#holder").empty();
+
+                    //check for multiples
+                    if(chart.chartType==='small-multiples'){
+                        //loop through series and create mini-charts
+                        var tempSeries = chartConfig.series;
+
+                        $.each(chart.series, function(idx, itm){
+                            div = '<div id="chart' + idx + '" class="float-left"></div>';
+                            $("#holder").append(div);
+                            var name = 'chart' + idx;
+                            chartConfig.chart.renderTo = name;
+                            chartConfig.chart.height = 200;
+                            chartConfig.chart.width = 200;
+                            chartConfig.series = [tempSeries[idx]];
+                            chartConfig.annotations = [];
+
+                            xchart = new Highcharts.Chart(chartConfig);
+                        })
+                        // NB No annotations here for visual reasons
+                        // otherwise need to attach listeners to each chart
+
+                    }else if (chart.chartType==='table'){
+                        div = '<div id="chart"></div>';
+                        $("#holder").append(div);
+
+                        $('#chart').empty();
+                        html = templates.chartBuilderTable(chart);
+                        $('#chart').append(html);
+                    }else{
+
+                        $('#holder').empty();
+
+                        div = '<div id="chart"></div>';
+                        $('#holder').append(div);
+                        chartConfig.chart.renderTo = "chart";
+                        // add listeners to chart here instead of in template
+                        chartConfig.chart.events.click = annotationClick;
+                        xchart = new Highcharts.Chart(chartConfig);
+                    }
+
                     delete window["chart-" + chart.filename]; //clear data from window object after rendering
                 }
             }, "script")
             .fail(function (data, err) {
                 console.error(err);
+                sweetAlert('Chart Configuration Error', 'There was an error loading the chart.\nPlease check your data.\n The error reported was: ' + err);
                 console.log("Failed reading chart configuration from server", chart);
                 $("#chart").empty();
             });
@@ -292,6 +841,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         for (var i = 0; i < data.categories.length; i++) {
+
             output += "\n" + toTsvLine(data.data[i], data.headers);
         }
 
@@ -303,6 +853,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         var output = "";
 
         for (var i = 0; i < headers.length; i++) {
+
             if (i === headers.length - 1) {
                 output += data[headers[i]];
             } else {
@@ -331,9 +882,53 @@ function loadChartBuilder(pageData, onSave, chart) {
     }
 
     function tsvJSONHeaders(input) {
+        var lines = input.split("\n"); //%0A - "\n"
+        var headers = lines[0].split("\t"); //%09 - "\t"
+        return headers;
+    }
+
+    function tsvToSeries(input) {
+        var series = [];
         var lines = input.split("\n");
         var headers = lines[0].split("\t");
-        return headers;
+
+        for (var i = 1; i < headers.length; i++) {
+            var obj = {index:i, title: headers[i] + ': series'+(i+1), chartType:'line', isStacked:false, isHighlight:false};
+            series.push(obj);
+        }
+
+        return series;
+    }
+
+    function getMax(input){
+        var max = 0;
+        var lines = input.split("\n");
+
+        for (var i = 1; i < lines.length; i++) {
+            var currentline = lines[i].split("\t");
+            for (var j = 1; j < currentline.length; j++) {
+                seriesMax = parseFloat(currentline[j]) 
+                if(seriesMax>max){
+                    max = seriesMax;
+                }
+            }
+        }
+        return max;
+    }
+    function getMin(input){
+        var min = 0;
+        var lines = input.split("\n");
+
+        for (var i = 1; i < lines.length; i++) {
+            var currentline = lines[i].split("\t");
+            for (var j = 1; j < currentline.length; j++) {
+                seriesMin = parseFloat(currentline[j]) 
+                if(seriesMin<min){
+                    min = seriesMin;
+                }
+            }
+        }
+        return min;
     }
 
     function exportToSVG(sourceSelector) {
@@ -352,24 +947,10 @@ function loadChartBuilder(pageData, onSave, chart) {
             }
         }
 
-        //var style = document.createElementNS("http://www.w3.org/2000/svg", "style");
-        //$(style).textContent += "\n<![CDATA[\n" + styleContent + "\n]]>\n";
-        //
-        //svg.prepend(style);
-        //svg[0].getElementsByTagName("defs")[0].appendChild(style);
-
-
         svg.prepend("\n<style type='text/css'></style>");
         svg.find("style").textContent += "\n<![CDATA[" + styleContent + "]]>\n";
 
-
-        //if ($('#chart-type').val() === 'line') {
-        //  $('.c3 line').css("fill", "none");
-        //  console.log($('.c3 line'))
-        //}
-
         var source = (new XMLSerializer).serializeToString(svg[0]);
-        //console.log(source);
 
         //add name spaces.
         if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
@@ -455,6 +1036,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         var content = exportToSVG(sourceSelector).trim();
 
         var $canvas = $(canvasSelector);
+        
         $canvas.width(chartWidth);
         $canvas.height(chartHeight);
 
@@ -466,7 +1048,6 @@ function loadChartBuilder(pageData, onSave, chart) {
         // get data url from canvas.
         var dataUrl = canvas.toDataURL('image/png');
         var pngData = dataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
-        //console.log(dataUrl);
 
         var raw = window.atob(pngData);
         var rawLength = raw.length;
@@ -492,8 +1073,10 @@ function loadChartBuilder(pageData, onSave, chart) {
             contentType: "image/png",
             processData: false,
             success: function (res) {
-                //console.log('png uploaded!');
+                console.log('png uploaded!');
             }
         });
     }
+
+     
 }
