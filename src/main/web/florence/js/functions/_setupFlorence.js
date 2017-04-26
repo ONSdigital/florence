@@ -371,6 +371,10 @@ function setupFlorence() {
         // Get the latest version and alert user if it differs from version stored on load (but only if the user hasn't been warned already, so they don't get spammed after being warned already)
         if (!userWarned) {
             checkVersion().then(function (response) {
+                if (response instanceof TypeError) {
+                    // FIXME do something more useful with this
+                    return
+                }
                 if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
                     console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
                     swal({
