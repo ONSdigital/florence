@@ -25,7 +25,7 @@ make debug
 3. Install [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/)
 4. Watch for JS, CSS and other source file changes
 ```
-cd src && npm run watch
+make watch-src
 ```
 
 ### Configuration
