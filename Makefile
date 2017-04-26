@@ -6,7 +6,15 @@ debug:
 	go build -o build/florence
 	HUMAN_LOG=1 ./build/florence
 
+node-modules:
+	cd src; npm install
+	cd src/legacy; npm install
+
+watch-src:
+	make node-modules
+	cd src; npm run watch
+
 assets/bin-data.go:
 	go generate ./...
 
-.PHONY: build debug
+.PHONY: build debug watch-src
