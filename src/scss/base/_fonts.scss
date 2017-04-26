@@ -1,0 +1,172 @@
+/*Open Sans*/
+@font-face {
+    font-family: 'Open Sans';
+    src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Light.woff2') format('woff2'), /* Proper modern Browsers */
+    url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Light.woff') format('woff'); /* Modern Browsers */
+
+    font-style:   normal;
+    font-weight:  200;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-LightItalic.woff2') format('woff2'), /* Proper modern browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-LightItalic.woff') format('woff'); /* Modern Browsers */
+
+  font-style:   italic;
+  font-weight:  200;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Regular.woff2') format('woff2'), /* Proper Modern Browsers */
+       url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Regular.woff') format('woff'); /* Modern Browsers */
+
+  font-style:   normal;
+  font-weight:  400;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Italic.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Italic.woff') format('woff'); /* Modern Browsers */
+
+  font-style:   italic;
+  font-weight:  400;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Semibold.woff2') format('woff2'), /* Proper Modern Browsers */
+       url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Semibold.woff') format('woff'); /* Modern Browsers */
+
+  font-style:   normal;
+  font-weight:  600;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-SemiboldItalic.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-SemiboldItalic.woff') format('woff'); /* Modern Browsers */
+
+  font-style:   italic;
+  font-weight:  600;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Bold.woff2') format('woff2'), /* Proper Modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-Bold.woff') format('woff');
+
+  font-style:   normal;
+  font-weight:  700;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-BoldItalic.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-BoldItalic.woff') format('woff'); /* Modern Browsers */
+
+  font-style:   italic;
+  font-weight:  700;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-ExtraBold.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-ExtraBold.woff') format('woff'); /* Modern Browsers */
+
+  font-style:   normal;
+  font-weight:  800;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-ExtraBoldItalic.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/open-sans/OpenSans-ExtraBoldItalic.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   italic;
+  font-weight:  800;
+}
+
+
+
+
+/*Roboto Slab*/
+@font-face {
+  font-family: 'Roboto Slab';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/roboto-slab/RobotoSlab-Thin.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/roboto-slab/RobotoSlab-Thin.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   normal;
+  font-weight:  100;
+}
+
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url('https://cdn.ons.gov.uk/assets/fonts/roboto-slab/RobotoSlab-Light.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   normal;
+  font-weight:  300;
+}
+
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url('https://cdn.ons.gov.uk/assets/fonts/roboto-slab/RobotoSlab-Regular.woff2') format('woff2'), /* Proper Modern Browsers */
+       url('https://cdn.ons.gov.uk/assets/fonts/roboto-slab/RobotoSlab-Regular.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   normal;
+  font-weight:  400;
+}
+
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url('https://cdn.ons.gov.uk/assets/fonts/roboto-slab/RobotoSlab-Bold.woff2') format('woff2'), /* Proper Modern Browsers */
+       url('https://cdn.ons.gov.uk/assets/fonts/roboto-slab/RobotoSlab-Bold.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   normal;
+  font-weight:  700;
+}
+
+
+
+
+/*Ubuntu Mono*/
+@font-face {
+  font-family: 'Ubuntu Mono';
+  src: url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-Regular.woff2') format('woff2'), /* Proper Modern Browsers */
+       url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-Regular.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   normal;
+  font-weight:  400;
+}
+
+@font-face {
+  font-family: 'Ubuntu Mono';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-Italic.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-Italic.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   italic;
+  font-weight:  400;
+}
+
+@font-face {
+  font-family: 'Ubuntu Mono';
+  src: url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-Bold.woff2') format('woff2'), /* Proper Modern Browsers */
+       url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-Bold.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   normal;
+  font-weight:  700;
+}
+
+@font-face {
+  font-family: 'Ubuntu Mono';
+  src:  url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-BoldItalic.woff2') format('woff2'), /* Proper modern Browsers */
+        url('https://cdn.ons.gov.uk/assets/fonts/ubuntu-mono/UbuntuMono-BoldItalic.woff') format('woff'); /* Modern Browsers */
+       
+  font-style:   italic;
+  font-weight:  700;
+}
+
+
+

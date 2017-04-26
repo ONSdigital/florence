@@ -11,7 +11,7 @@ class NavBar extends Component {
 
     render() {
         return (
-            <ul className="nav__list">
+            <ul className="global-nav__list">
 
                 { this.renderNavItems() }
 
@@ -23,35 +23,35 @@ class NavBar extends Component {
         if (this.props.isAuthenticated) {
             return (
                 <span>
-                    <li className="nav__item">
-                        <Link to="/florence/collections" activeClassName="selected" className="nav__link">Collections</Link>
+                    <li className="global-nav__item">
+                        <Link to="/florence/collections" activeClassName="selected" className="global-nav__link">Collections</Link>
                     </li>
 
-                    <li className="nav__item">
-                        <a className="nav__link">Publishing queue</a>
+                    <li className="global-nav__item">
+                        <a className="global-nav__link">Publishing queue</a>
                     </li>
 
-                    <li className="nav__item">
-                        <a className="nav__link">Reports</a>
+                    <li className="global-nav__item">
+                        <a className="global-nav__link">Reports</a>
                         </li>
 
-                        <li className="nav__item">
-                        <a className="nav__link">Users and access</a>
+                        <li className="global-nav__item">
+                        <a className="global-nav__link">Users and access</a>
                     </li>
 
-                    <li className="nav__item">
-                        <a className="nav__link">Teams</a>
+                    <li className="global-nav__item">
+                        <a className="global-nav__link">Teams</a>
                     </li>
 
-                    <li className="nav__item">
-                        <a className="nav__link">Logout</a>
+                    <li className="global-nav__item">
+                        <a className="global-nav__link">Logout</a>
                     </li>
                 </span>
             )
         } else {
             return (
-                <li className="nav__item">
-                    <a className="nav__link">Login</a>
+                <li className="global-nav__item">
+                    <a className="global-nav__link">Login</a>
                 </li>
             )
         }
