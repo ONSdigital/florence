@@ -1092,6 +1092,7 @@ select {
   border-spacing: 0;
   /* Fully styled up table */
   /* 75% and 25% width column table - used on release calendar list */
+  /* 50%, 25% and 25% width column table - used on restore deleted page list */
   /* Fixed height table - used in selectable tables in panels */
   /* Selectable table (ie collections list) */
   /* Table in a slide-out section */ }
@@ -1160,6 +1161,10 @@ select {
     width: 25%; }
   .table--75-25 td:first-child, .table--75-25 th:first-child {
     width: 74%; }
+  .table--50-25-25 td, .table--50-25-25 th {
+    width: 25%; }
+  .table--50-25-25 td:first-child, .table--50-25-25 th:first-child {
+    width: 49%; }
   .table--fixed-height-27 tbody {
     max-height: 567px;
     overflow-y: scroll;
@@ -1506,17 +1511,41 @@ button {
     .slider__head p {
       margin-top: 0;
       margin-bottom: 10px; }
+    .slider__head .edit {
+      float: right;
+      font-size: 14px;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300; }
+      .slider__head .edit:hover {
+        cursor: pointer;
+        text-decoration: underline; }
+  .slider__options {
+    padding: 21px 16.66%;
+    background-color: #A1A3A5; }
+    .slider__options h3 {
+      color: #D1D2D4;
+      margin-top: 0; }
+    .slider__options button {
+      margin: 0 0 0 10px; }
+      .slider__options button:first-child {
+        margin: 0 0 0 20px; }
   .slider__content {
     overflow-y: scroll;
-    padding-top: 0;
-    padding-bottom: 42px;
-    padding-left: 16.66%;
-    padding-right: 16.66%;
+    padding: 10.5px 16.66%;
     max-height: 567px;
     color: #515151; }
+    .slider__content--padded #collection-editor-name,
+    .slider__content--padded #collection-editor-date,
+    .slider__content--padded .select-wrap,
+    .slider__content--padded label[for="collection-editor-scheduled"] {
+      margin-top: 0;
+      margin-left: 20px;
+      max-width: 600px; }
     .slider__content--fullwidth {
       padding-left: 0;
       padding-right: 0; }
+    .slider__content h3:first-of-type {
+      margin-top: 0; }
   .slider__banner {
     background-color: #6D6E70;
     padding: 10.5px 16.66%;
@@ -1567,11 +1596,12 @@ button {
   position: relative; }
 
 .builder__editor {
+  position: relative;
   box-sizing: border-box;
   width: 30%;
   height: 693px;
   float: left;
-  padding: 42px 20px 21px 20px;
+  padding: 0px 20px 21px 20px;
   overflow-y: scroll;
   overflow-x: hidden; }
   .builder__editor--chart {
@@ -1587,6 +1617,8 @@ button {
   background-color: white; }
   .builder__preview--chart {
     width: 50%; }
+  .builder__preview h4 {
+    clear: left; }
 
 .builder__footer {
   height: 42px;
@@ -1613,6 +1645,12 @@ button {
 .builder .checkbox-label {
   width: 15%; }
 
+.builder .checkbox-label--small {
+  width: 28%; }
+
+.builder .checkbox-label--half {
+  width: 50%; }
+
 .builder textarea {
   width: 100%;
   border: 3px solid #58585B;
@@ -1626,6 +1664,34 @@ button {
   height: 525px;
   resize: horizontal;
   overflow: auto; }
+
+.chart-accordian:not(:first-of-type) {
+  border-top: 3px solid transparent; }
+
+.chart-accordian div {
+  background-color: #b2b6c4; }
+
+.chart-accordian-header {
+  background: #343B59;
+  overflow: hidden;
+  color: #B2B6C4;
+  font-size: 21px;
+  margin: 10px 10px -10px 10px;
+  padding: 6px 6px 6px 6px; }
+
+.chart-accordian-body {
+  float: left;
+  padding: 10px;
+  margin: 10px;
+  overflow: hidden;
+  background-size: 30px auto; }
+
+.js-chart-builder-panel {
+  margin-top: 10px; }
+
+.debug-links {
+  float: right;
+  margin: 10px; }
 
 /** PAGES (including icons and list of pages) **/
 .page__item {
