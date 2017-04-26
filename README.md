@@ -17,7 +17,7 @@ cd florence
 ```
 2. Run the server
 ```
-make
+make debug
 ```
 
 #### Optional (for developing Florence)
