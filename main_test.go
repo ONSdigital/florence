@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/ONSdigital/florence/assets"
 	. "github.com/smartystreets/goconvey/convey"
@@ -84,5 +85,28 @@ func TestMain(t *testing.T) {
 		request.Header.Set("Accept-Language", "en")
 		refactoredIndexFile(recorder, request)
 		So(recorder.Code, ShouldEqual, 404)
+	})
+
+	Convey("Zebedee proxy director function trims '/zebedee' from the request URL", t, func() {
+		request, err := http.NewRequest("GET", "/zebedee/test", nil)
+		So(err, ShouldBeNil)
+		zebedeeDirector(request)
+		So(request.URL.String(), ShouldEqual, "/test")
+	})
+
+	Convey("Zebedee proxy director function sets 'X-Florence-Token' header when access_token cookie is available", t, func() {
+		cookie := http.Cookie{"access_token", "foo", "/", "http://localhost", time.Now().AddDate(0, 0, 1), time.Now().AddDate(0, 0, 1).Format(time.UnixDate), 0, false, true, "access_token=foo", []string{"access_token=foo"}}
+		request, err := http.NewRequest("GET", "", nil)
+		So(err, ShouldBeNil)
+		request.AddCookie(&cookie)
+		zebedeeDirector(request)
+		So(request.Header.Get("X-Florence-Token"), ShouldEqual, "foo")
+	})
+
+	Convey("Zebedee proxy director function doesn't set 'X-Florence-Token' header when no access_token cookie is available", t, func() {
+		request, err := http.NewRequest("GET", "", nil)
+		So(err, ShouldBeNil)
+		zebedeeDirector(request)
+		So(request.Header.Get("X-Florence-Token"), ShouldBeBlank)
 	})
 }
