@@ -1,3 +1,10 @@
+/* Spacing */
+$lineheight: 21px;
+$magicnumber1: 7px;
+$magicnumber2: 3px;
+$gutter: 20px;
+
+/* Colour palette */
 $black: #000000;
 $white: #FFFFFF;
 $mine-shaft: #323232;
@@ -35,3 +42,7 @@ $wild-sand: #F5F5F5;
 $tawny-port: #6D272B;
 $silver-sand: #BBBDC0;
 $focus: #ffbf47;
+
+/* Panel heights - TODO probably update with new grid */
+$panel-height-1-top-nav: 916px; // wrapper height minus navbar height
+$panel-height-2-top-nav: 853px; // wrapper height minus (navbar height * 2)
