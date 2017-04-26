@@ -72,17 +72,30 @@ form {
 }
 
 input {
+     box-sizing: border-box;
+     border: 3px solid $scarpa-flow;
+     border-radius: 4px;
+     margin-top: -3px;
+     display: inline-block;
+     width: 100%;
+     height: $lineheight * 2;
+     margin: $lineheight 0;
+     padding: 7px $gutter;
+     background: $white;
+ }
+
+// this is used for JSON content force
+#force-content-json-field {
     box-sizing: border-box;
     border: 3px solid $scarpa-flow;
     border-radius: 4px;
-    margin-top: -3px;
-    display: inline-block;
     width: 100%;
-    height: $lineheight * 2;
     margin: $lineheight 0;
     padding: 7px $gutter;
     background: $white;
 }
+
+
 
 // Focus styling
 input[type="text"]:focus,
