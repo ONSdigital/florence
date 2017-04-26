@@ -75,7 +75,10 @@ func main() {
 
 	s := server.New(bindAddr, router)
 
-	s.ListenAndServe()
+	if err := s.ListenAndServe(); err != nil {
+		log.Error(err, nil)
+		os.Exit(2)
+	}
 }
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
@@ -129,34 +132,3 @@ func zebedeeDirector(req *http.Request) {
 	}
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
-
-type transport struct {
-	http.RoundTripper
-}
-
-func (t *transport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
-	/* May need this to handle location later
-
-	resp, err = t.RoundTripper.RoundTrip(req)
-	if err != nil {
-		return nil, err
-	}
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	err = resp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-	b = bytes.Replace(b, []byte("server"), []byte("schmerver"), -1)
-	body := ioutil.NopCloser(bytes.NewReader(b))
-	resp.Body = body
-	resp.ContentLength = int64(len(b))
-	resp.Header.Set("Content-Length", strconv.Itoa(len(b)))
-	return resp, nil */
-
-	return t.RoundTripper.RoundTrip(req)
-}
-
-var _ http.RoundTripper = &transport{}
