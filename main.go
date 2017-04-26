@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/ONSdigital/florence/assets"
@@ -18,6 +19,7 @@ import (
 var bindAddr = ":8081"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
+var enableNewApp = false
 
 var getAsset = assets.Asset
 
@@ -32,12 +34,15 @@ func main() {
 	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
 		zebedeeURL = v
 	}
+	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
+		enableNewApp, _ = strconv.ParseBool(v)
+	}
 
 	log.Namespace = "florence"
 
 	/*
 		NOTE:
-		If there's any issues with this Florence server proxying redirects from either Babbage or Zebedee then the code in the previous Java Florence server might give some clues for a solution :- https://github.com/ONSdigital/florence/blob/b13df0708b30493b98e9ce239103c59d7f409f98/src/main/java/com/github/onsdigital/florence/filter/Proxy.java#L125-L135
+		If there's any issues with this Florence server proxying redirects from either Babbage or Zebedee then the code in the previous Java Florence server might give some clues for a solution: https://github.com/ONSdigital/florence/blob/b13df0708b30493b98e9ce239103c59d7f409f98/src/main/java/com/github/onsdigital/florence/filter/Proxy.java#L125-L135
 
 		The code has purposefully not been included in this Go replacement because we can't see what issue it's fixing and whether it's necessary.
 	*/
@@ -60,17 +65,24 @@ func main() {
 
 	router := pat.New()
 
+	newAppHandler := refactoredIndexFile
+
+	if !enableNewApp {
+		newAppHandler = legacyIndexFile
+	}
+
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", refactoredIndexFile)
+	router.HandleFunc("/florence", newAppHandler)
 	router.HandleFunc("/florence/index.html", legacyIndexFile)
-	router.HandleFunc("/florence{uri:|/.*}", refactoredIndexFile)
+	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
-		"bind_addr":   bindAddr,
-		"babbage_url": babbageURL,
-		"zebedee_url": zebedeeURL,
+		"bind_addr":      bindAddr,
+		"babbage_url":    babbageURL,
+		"zebedee_url":    zebedeeURL,
+		"enable_new_app": enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)
