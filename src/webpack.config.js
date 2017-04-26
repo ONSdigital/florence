@@ -32,7 +32,19 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract({ fallbackLoader: "style-loader", loader: "css-loader!sass-loader"})
+                use: ExtractTextPlugin.extract({ 
+                    fallbackLoader: "style-loader", 
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {sourceMap: true}
+                        },
+                        {
+                            loader: "sass-loader",
+                            options: {sourceMap: true}
+                        }
+                    ]
+                })
             },
             {
                 test: /\.(png|woff|woff2|eot|ttf|svg)$/,
@@ -40,7 +52,7 @@ module.exports = {
             }
         ]
     },
-    devtool: "eval-source-map",
+    devtool: "inline-source-map",
     resolve: {
         // implicitly tell babel to load jsx
         extensions: ['.js', '.jsx']
@@ -50,9 +62,7 @@ module.exports = {
             { from: 'refactored.html', to: 'refactored.html' },
             { from: 'manifest.json', to: 'manifest.json' },
             { from: 'service-worker.js', to: 'service-worker.js' },
-            { from: 'img', to: 'img' },
-            // { from: 'legacy/assets', to: 'legacy-assets' },
-            // { from: 'legacy/index.html', to: 'legacy-assets/index.html'}
+            { from: 'img', to: 'img' }
         ]),
         new ExtractTextPlugin("css/main.css")
     ]
