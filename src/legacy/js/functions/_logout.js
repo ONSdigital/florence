@@ -6,8 +6,9 @@ function logout() {
   delete_cookie('collection');
   localStorage.setItem("loggedInAs", "");
   localStorage.setItem("userType", "");
-  Florence.refreshAdminMenu();
-  viewController();
+  
+  // Redirect to refactored login page
+  window.location.pathname = "/florence";
 }
 
 function delete_cookie(name) {
