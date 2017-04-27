@@ -60,6 +60,22 @@
         }
     }
 
+    &--password {
+        background: none;
+        font-size: ($lineheight / 2 ) + 2;
+        float: right;
+        margin-top: -$lineheight * 2;
+
+        &:hover,
+        &:focus {
+            text-decoration: underline;
+
+            &:after {
+                background: none;
+            }
+        }
+    }
+
     /* Margin */
     &--flush {
         margin: 0 !important;
