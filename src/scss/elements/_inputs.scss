@@ -1,0 +1,15 @@
+.input {
+    box-sizing: border-box;
+    border: 3px solid $scarpa-flow;
+    border-radius: 4px;
+    display: inline-block;
+    width: 100%;
+    height: $lineheight * 2;
+    padding: 7px $gutter;
+    background: $white;
+
+    &:focus {
+        border: 3px solid $focus;
+    }
+
+}
