@@ -25,7 +25,8 @@ function viewController(view) {
         }
     }
     else {
-        viewLogIn();
+        // Redirect to refactored login screen
+        window.location.pathname = "/florence";
     }
 }
 
