@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
+import LoginForm from './LoginForm'
+
 import { get } from '../utilities/get'
 import { post } from '../utilities/post'
+import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence'
 
 import { userLoggedIn } from '../config/actions';
 
-class Login extends Component {
+class LoginController extends Component {
     constructor(props) {
         super(props);
 
@@ -66,7 +69,8 @@ class Login extends Component {
             this.setAccessTokenCookie(accessToken);
             this.getUserType(this.state.email).then(userType => {
                 this.setUserState(userType);
-                browserHistory.push(this.props.location.query.redirect);
+                //browserHistory.push(this.props.location.query.redirect);
+                redirectToOldFlorence();
             });
         }).catch(error => {
             switch (error.status) {
@@ -74,7 +78,7 @@ class Login extends Component {
                     this.setState({
                         error: {
                             inputID: "email",
-                            message: "Email address is not recognised"
+                            message: "Email address not recognised"
                         }
                     });
                     break;
@@ -95,7 +99,7 @@ class Login extends Component {
     handleEmailChange(event) {
         this.setState({email: event.target.value});
 
-        if (this.state.error.inputID === "email") {
+        if (this.state.error.inputID === "email")  {
             this.setState({
                 error: {
                     inputID: "",
@@ -120,36 +124,30 @@ class Login extends Component {
     }
 
     render() {
+        const formData = {
+            inputs: [
+                {
+                id: "email",
+                label: "Email",
+                type: "email",
+                onChange: this.handleEmailChange,
+            },{
+                id: "password",
+                label: "Password",
+                type: "password",
+                onChange: this.handlePasswordChange,
+                }
+            ],
+            error: this.state.error,
+            onSubmit: this.handleSubmit
+        };
+
         return (
-            <div className="col col--4 col--centred">
-                <h1>Login</h1>
-
-                <form className="form" onSubmit={this.handleSubmit}>
-                    <label htmlFor="email">Email:</label>
-                    {
-                        this.state.error.inputID === "email" ?
-                            <div className="form__error">{this.state.error.message}</div>
-                            :
-                            ""
-                    }
-                    <input id="email" type="email" className="input input__text" name="email" cols="40" rows="1" onChange={this.handleEmailChange}/>
-
-
-                    <label htmlFor="password">Password:</label>
-                    {
-                        this.state.error.inputID === "password" ?
-                            <div className="form__error">{this.state.error.message}</div>
-                            :
-                            ""
-                    }
-                    <input id="password" type="password" className="input input__text" name="password" cols="40" rows="1" onChange={this.handlePasswordChange}/>
-
-
-                    <button type="submit" className="btn btn--primary margin-top--1">Log in</button>
-                </form>
+            <div>
+                <LoginForm formData={formData} />
             </div>
         )
     }
 }
 
-export default connect()(Login);
+export default connect()(LoginController);
