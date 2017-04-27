@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
+import { connect } from 'react-redux';
+import { browserHistory } from 'react-router';
 
-import LoginForm from './LoginForm'
+import LoginForm from './LoginForm';
 
-import { get } from '../utilities/get'
-import { post } from '../utilities/post'
-import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence'
+import { get } from '../utilities/get';
+import { post } from '../utilities/post';
+import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
+import cookies from '../utilities/cookies';
 
 import { userLoggedIn } from '../config/actions';
 
@@ -40,10 +41,6 @@ class LoginController extends Component {
         this.props.dispatch(userLoggedIn(email, userType, isAdmin));
     }
 
-    setAccessTokenCookie(accessToken) {
-        document.cookie = "access_token=" + accessToken + ";path=/";
-    }
-
     getUserType(email) {
         return get(`/zebedee/permission?email=${email}`)
             .then(userTypeResponse => {
@@ -66,7 +63,7 @@ class LoginController extends Component {
         };
 
         this.postLoginCredentials(credentials).then(accessToken => {
-            this.setAccessTokenCookie(accessToken);
+            cookies.add("access_token", accessToken);
             this.getUserType(this.state.email).then(userType => {
                 this.setUserState(userType);
                 //browserHistory.push(this.props.location.query.redirect);

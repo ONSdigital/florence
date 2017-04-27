@@ -11,6 +11,21 @@ export default class cookies {
         return cookiesObject;
     }
 
+    static add(name, value, path) {
+        if (!name || typeof name !== 'string') {
+            console.error(`cookie.add() requires a cookie name (type=string) as an argument`);
+            return false;
+        }
+        if (!value) {
+            console.error(`cookie.add() requires a cookie value as an argument`);
+            return false;
+        }
+        if (!path) {
+            path = `/`
+        }
+        document.cookie = `${name}=${value};path=${path}`;
+    }
+
     static get(name) {
         if (!name || typeof name !== 'string') {
             console.error(`cookie.get() requires a cookie name (type=string) as an argument`);
