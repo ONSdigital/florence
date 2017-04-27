@@ -15762,7 +15762,8 @@ function viewCollectionDetails(collectionId, $this) {
         }
     }
     else {
-        viewLogIn();
+        // Redirect to refactored login screen
+        window.location.pathname = "/florence";
     }
 }
 
