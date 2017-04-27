@@ -3,7 +3,7 @@
 * Required legacy SCSS - to be refactored 
 */
 @import "../legacy/scss/partials/reset";
-@import "../legacy/scss/utilities/grid";
+// @import "../legacy/scss/utilities/grid";
 
 
 
@@ -13,6 +13,7 @@
 
 //Base styling
 @import "base/variables";
+@import "base/grid";
 @import "base/fonts";
 @import "base/typography";
 
