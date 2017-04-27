@@ -50,7 +50,7 @@ export default class App extends Component {
                 <Router history={ history }>
                     <Route component={ Layout }>
                         <Route path="/florence" component={ UserIsAuthenticated(Collections) } />
-                        <Route path="/florence/collections" component={ Collections } />
+                        <Route path="/florence/collections" component={ UserIsAuthenticated(Collections) } />
                         <Route path="/florence/login" component={ LoginController } />
                     </Route>
                 </Router>
