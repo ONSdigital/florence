@@ -8,7 +8,7 @@ import thunkMiddleware from 'redux-thunk';
 
 import Layout from './global/Layout'
 import Collections from './collections/Collections';
-import Login from './login/Login';
+import LoginController from './login/LoginController';
 
 import reducer from './config/reducer';
 
@@ -51,7 +51,7 @@ export default class App extends Component {
                     <Route component={ Layout }>
                         <Route path="/florence" component={ UserIsAuthenticated(Collections) } />
                         <Route path="/florence/collections" component={ Collections } />
-                        <Route path="/florence/login" component={ Login } />
+                        <Route path="/florence/login" component={ LoginController } />
                     </Route>
                 </Router>
             </Provider>
