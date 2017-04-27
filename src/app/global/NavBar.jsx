@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router'
-import { connect } from 'react-redux'
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import cookies from '../utilities/cookies';
 
 class NavBar extends Component {
 
     constructor(props) {
         super(props);
 
+        this.handleLogoutClick = this.handleLogoutClick.bind(this);
+    }
+
+    handleLogoutClick() {
+        const cookieRemoved = cookies.remove('access_token');
+        if (!cookieRemoved) {
+            console.warn(`Error trying to remove 'access_token' cookie`);
+        }
     }
 
     render() {
         return (
             <ul className="global-nav__list">
-
                 { this.renderNavItems() }
-
             </ul>
         )
     }
@@ -33,9 +40,9 @@ class NavBar extends Component {
 
                     <li className="global-nav__item">
                         <a className="global-nav__link">Reports</a>
-                        </li>
+                    </li>
 
-                        <li className="global-nav__item">
+                    <li className="global-nav__item">
                         <a className="global-nav__link">Users and access</a>
                     </li>
 
@@ -44,7 +51,7 @@ class NavBar extends Component {
                     </li>
 
                     <li className="global-nav__item">
-                        <a className="global-nav__link">Logout</a>
+                        <Link to="/florence/login" onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
                     </li>
                 </span>
             )
