@@ -27,6 +27,7 @@ const store = createStore(
     }),
     enhancer
 );
+const rootPath = store.getState().state.rootPath;
 
 const history = syncHistoryWithStore(baseHistory, store);
 
@@ -36,7 +37,7 @@ const UserIsAuthenticated = UserAuthWrapper({
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: 'UserIsAuthenticated',
-    failureRedirectPath: '/florence/login'
+    failureRedirectPath: `${rootPath}/login`
 });
 
 export default class App extends Component {
@@ -49,9 +50,9 @@ export default class App extends Component {
             <Provider store={ store }>
                 <Router history={ history }>
                     <Route component={ Layout }>
-                        <Route path="/florence" component={ UserIsAuthenticated(Collections) } />
-                        <Route path="/florence/collections" component={ UserIsAuthenticated(Collections) } />
-                        <Route path="/florence/login" component={ LoginController } />
+                        <Route path={rootPath} component={ UserIsAuthenticated(Collections) } />
+                        <Route path={`${rootPath}/collections`} component={ UserIsAuthenticated(Collections) } />
+                        <Route path={`${rootPath}/login`} component={ LoginController } />
                     </Route>
                 </Router>
             </Provider>
