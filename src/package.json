@@ -16,7 +16,8 @@
     "watch": "cd legacy && npm run watch & node ./node_modules/webpack/bin/webpack.js --watch",
     "build": "cd legacy && npm run build && cd ../ && node ./node_modules/webpack/bin/webpack.js",
     "postinstall": "npm run build",
-    "test": "jest"
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
   "dependencies": {
     "babel-cli": "^6.18.0",

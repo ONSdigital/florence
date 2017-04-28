@@ -5,7 +5,8 @@ const initialState = {
         email: '',
         userType: '',
         isAdmin: false
-    }
+    },
+    rootPath: "/florence"
 };
 
 export default function reducer(state = initialState, action) {
