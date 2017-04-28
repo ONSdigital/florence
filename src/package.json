@@ -6,15 +6,16 @@
     "url": "https://github.com/ONSdigital/florence"
   },
   "devDependencies": {
-    "cat": "latest",
-    "onchange": "latest",
-    "handlebars": "~3.0.1",
-    "node-sass": "latest"
+    "babel-jest": "^19.0.0",
+    "enzyme": "^2.8.2",
+    "jest": "^19.0.2",
+    "react-test-renderer": "^15.5.4"
   },
   "scripts": {
     "watch": "cd legacy && npm run watch & node ./node_modules/webpack/bin/webpack.js --watch",
     "build": "cd legacy && npm run build && cd ../ && node ./node_modules/webpack/bin/webpack.js",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "test": "jest"
   },
   "dependencies": {
     "babel-cli": "^6.18.0",
@@ -27,7 +28,6 @@
     "extract-text-webpack-plugin": "^2.0.0-beta",
     "file-loader": "^0.10.0",
     "install": "^0.8.7",
-    "npm": "^4.1.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
