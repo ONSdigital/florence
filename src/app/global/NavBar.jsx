@@ -31,7 +31,7 @@ class NavBar extends Component {
             return (
                 <span>
                     <li className="global-nav__item">
-                        <Link to="/florence/collections" activeClassName="selected" className="global-nav__link">Collections</Link>
+                        <Link to={`${this.props.rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
                     </li>
 
                     <li className="global-nav__item">
@@ -51,7 +51,7 @@ class NavBar extends Component {
                     </li>
 
                     <li className="global-nav__item">
-                        <Link to="/florence/login" onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
+                        <Link to={`${this.props.rootPath}/login`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
                     </li>
                 </span>
             )
@@ -68,9 +68,11 @@ class NavBar extends Component {
 
 function mapStateToProps(state) {
     const isAuthenticated = state.state.user.isAuthenticated;
+    const rootPath = state.state.rootPath;
 
     return {
-        isAuthenticated
+        isAuthenticated,
+        rootPath
     }
 }
 export default connect(mapStateToProps)(NavBar);
