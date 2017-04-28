@@ -14,7 +14,7 @@ export default class LoginForm extends Component {
 
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-4">
+                <div className="grid__col-3">
                     <h1>Login</h1>
 
                     <form className="form" onSubmit={this.props.formData.onSubmit}>
