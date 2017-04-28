@@ -28,7 +28,7 @@ export default class Input extends Component {
         e.preventDefault();
         e.stopPropagation();
         this.setState({
-            type: this.state.type === 'input' ? 'password' : 'input'
+            type: this.state.type === 'text' ? 'password' : 'text'
         })
     }
 
@@ -45,7 +45,7 @@ export default class Input extends Component {
                 <input id={this.props.id} type={this.state.type} className="input input__text" name={this.props.id} onChange={this.props.onChange}/>
                 {
                     this.state.displayShowHide ?
-                        <button className="btn btn--password" onClick={this.showHide}>{this.state.type === 'input' ? 'Hide' : 'Show'}</button>
+                        <button className="btn btn--password" onClick={this.showHide}>{this.state.type === 'text' ? 'Hide' : 'Show'}</button>
                         :
                         ""
                 }
