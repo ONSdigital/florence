@@ -7,9 +7,10 @@
   },
   "devDependencies": {
     "cat": "latest",
-    "onchange": "latest",
     "handlebars": "~3.0.1",
-    "node-sass": "latest"
+    "node-sass": "latest",
+    "onchange": "latest",
+    "prop-types": "^15.5.8"
   },
   "scripts": {
     "watch": "cd legacy && npm run watch & node ./node_modules/webpack/bin/webpack.js --watch",
