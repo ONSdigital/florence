@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import { userLoggedOut } from '../config/actions';
 import PropTypes from 'prop-types';
 
 import cookies from '../utilities/cookies';
 
 const propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
-    rootPath: PropTypes.string.isRequired
+    rootPath: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired
 }
 
 class NavBar extends Component {
@@ -22,7 +24,9 @@ class NavBar extends Component {
         const cookieRemoved = cookies.remove('access_token');
         if (!cookieRemoved) {
             console.warn(`Error trying to remove 'access_token' cookie`);
+            return
         }
+        this.props.dispatch(userLoggedOut());
     }
 
     renderNavItems() {
@@ -46,7 +50,7 @@ class NavBar extends Component {
                     </li>
 
                     <li className="global-nav__item">
-                        <a className="global-nav__link">Teams</a>
+                        <Link to={`${this.props.rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
                     </li>
 
                     <li className="global-nav__item">
