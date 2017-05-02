@@ -9,13 +9,19 @@
     "babel-jest": "^19.0.0",
     "enzyme": "^2.8.2",
     "enzyme-to-json": "^1.5.1",
+    "eslint": "^3.19.0",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
     "jest": "^19.0.2",
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4"
   },
   "scripts": {
-    "watch": "cd legacy && npm run watch & node ./node_modules/webpack/bin/webpack.js --watch",
-    "build": "cd legacy && npm run build && cd ../ && node ./node_modules/webpack/bin/webpack.js",
+    "watch": "cd legacy && npm run watch & npm run watch-refactored",
+    "watch-refactored": "node ./node_modules/webpack/bin/webpack.js --watch",
+    "build": "cd legacy && npm run build && cd ../ && npm run build-refactored",
+    "build-refactored": "node ./node_modules/webpack/bin/webpack.js",
     "postinstall": "npm run build",
     "test": "jest",
     "test-watch": "jest --watch"

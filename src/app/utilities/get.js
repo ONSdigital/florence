@@ -25,4 +25,4 @@ export function get(uri) {
             reject(fetchError);
         });
     });
-};
+}
