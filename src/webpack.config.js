@@ -15,32 +15,19 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015']
-                }
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'eslint-loader'
-            },
-            {
-                test: /\.jsx$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             },
             {
-                test: /\.jsx$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 loader: 'eslint-loader'
             },
             {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({ 
-                    fallbackLoader: "style-loader", 
+                    fallback: "style-loader", 
                     use: [
                         {
                             loader: "css-loader",
@@ -59,7 +46,6 @@ module.exports = {
             }
         ]
     },
-    devtool: "inline-source-map",
     resolve: {
         // implicitly tell babel to load jsx
         extensions: ['.js', '.jsx']
