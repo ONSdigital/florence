@@ -21,7 +21,8 @@
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
     "watch-refactored": "node ./node_modules/webpack/bin/webpack.js -d --watch",
     "build": "cd legacy && npm run build && cd ../ && npm run build-refactored",
-    "build-refactored": "node ./node_modules/webpack/bin/webpack.js -p",
+    "build-refactored": "NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
+    "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
     "postinstall": "npm run build",
     "test": "jest",
     "test-watch": "jest --watch"
