@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import NavBar from './NavBar';
 
-const propTypes = {
+Layout.propTypes = {
     children: PropTypes.Component.isRequired
 };
 
@@ -17,5 +17,3 @@ export default class Layout extends Component {
         )
     }
 }
-
-Layout.propTypes = propTypes;
