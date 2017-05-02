@@ -1,6 +1,20 @@
 import React, { Component } from 'react';
-import Input from '../components/Input'
+import PropTypes from 'prop-types';
 
+import Input from '../components/Input';
+
+LoginForm.propTypes = {
+    formData: PropTypes.shape({
+        inputs: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.string,
+            label: PropTypes.string,
+            type: PropTypes.string,
+            onChange: PropTypes.func,
+            error: PropTypes.string
+        })),
+        onSubmit: PropTypes.func
+    })
+}
 
 export default class LoginForm extends Component {
 
