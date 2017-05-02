@@ -1,13 +1,4 @@
-
-const initialState = {
-    user: {
-        isAuthenticated: false,
-        email: '',
-        userType: '',
-        isAdmin: false
-    },
-    rootPath: "/florence"
-};
+import initialState from './initialState';
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -24,7 +15,7 @@ export default function reducer(state = initialState, action) {
         case ('USER_LOGGED_OUT'): {
             return Object.assign({}, state, {
                 user: Object.assign({}, state.user, {
-                    authenticated: false
+                    isAuthenticated: false
                 })
             })
         }
