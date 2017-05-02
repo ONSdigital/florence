@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
     context: path.resolve(__dirname),
@@ -31,11 +32,11 @@ module.exports = {
                     use: [
                         {
                             loader: "css-loader",
-                            options: {sourceMap: true}
+                            options: {sourceMap: isProduction}
                         },
                         {
                             loader: "sass-loader",
-                            options: {sourceMap: true}
+                            options: {sourceMap: isProduction}
                         }
                     ]
                 })
