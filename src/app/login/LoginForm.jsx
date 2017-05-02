@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Input from '../components/Input';
 
-LoginForm.propTypes = {
+const propTypes = {
     formData: PropTypes.shape({
         inputs: PropTypes.arrayOf(PropTypes.shape({
             id: PropTypes.string,
@@ -45,3 +45,5 @@ export default class LoginForm extends Component {
         )
     }
 }
+
+LoginForm.propTypes = propTypes;

@@ -14,7 +14,7 @@ import cookies from '../utilities/cookies';
 
 import { userLoggedIn } from '../config/actions';
 
-LoginController.propTypes = {
+const propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
@@ -175,5 +175,7 @@ class LoginController extends Component {
         )
     }
 }
+
+LoginController.propTypes = propTypes;
 
 export default connect()(LoginController);
