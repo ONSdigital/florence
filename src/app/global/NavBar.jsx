@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import cookies from '../utilities/cookies';
 
-NavBar.propTypes = {
+const propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired
 }
@@ -82,4 +82,7 @@ function mapStateToProps(state) {
         rootPath
     }
 }
+
+NavBar.propTypes = propTypes;
+
 export default connect(mapStateToProps)(NavBar);

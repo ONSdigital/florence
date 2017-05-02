@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-Input.propTypes = {
+const propTypes = {
     id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     type: PropTypes.string,
@@ -9,7 +9,7 @@ Input.propTypes = {
     error: PropTypes.string
 };
 
-Input.defaultProps = {
+const defaultProps = {
     type: "text"
 };
 
@@ -54,3 +54,6 @@ export default class Input extends Component {
         )
     }
 }
+
+Input.propTypes = propTypes;
+Input.defaultProps = defaultProps;
