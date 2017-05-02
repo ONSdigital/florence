@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { browserHistory } from 'react-router';
+import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import LoginForm from './LoginForm';
@@ -15,7 +16,9 @@ import cookies from '../utilities/cookies';
 import { userLoggedIn } from '../config/actions';
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
+    rootPath: PropTypes.string.isRequired
 }
 
 class LoginController extends Component {
@@ -37,6 +40,13 @@ class LoginController extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
+    }
+
+
+    componentWillMount() {
+        if (this.props.isAuthenticated) {
+            this.props.dispatch(push(`${this.props.rootPath}/collections`));
+        }
     }
 
     setUserState(response) {
@@ -178,4 +188,11 @@ class LoginController extends Component {
 
 LoginController.propTypes = propTypes;
 
-export default connect()(LoginController);
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.state.user.isAuthenticated,
+        rootPath: state.state.rootPath
+    }
+}
+
+export default connect(mapStateToProps)(LoginController);
