@@ -15746,7 +15746,8 @@ function viewCollectionDetails(collectionId, $this) {
             viewUsers();
         }
         else if (view === 'teams') {
-            viewTeams();
+            // viewTeams();
+            window.location.pathname = "/florence/teams";
         }
         else if (view === 'login') {
             viewLogIn();
