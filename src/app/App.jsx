@@ -1,42 +1,48 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import { Router, Route } from 'react-router';
-import { routerActions } from 'react-router-redux';
-import { UserAuthWrapper } from 'redux-auth-wrapper';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import Layout from './global/Layout'
-import Collections from './collections/Collections';
-import LoginController from './login/LoginController';
+import { hasValidAuthToken } from './utilities/hasValidAuthToken';
+import { userLoggedIn } from './config/actions';
 
-import { store, history } from './config/store';
+const propTypes = {
+    children: PropTypes.node,
+    dispatch: PropTypes.func.isRequired
+}
 
-const rootPath = store.getState().state.rootPath;
-
-const UserIsAuthenticated = UserAuthWrapper({
-    authSelector: state => {
-        return state.state.user.isAuthenticated ? state.state.user : {};
-    },
-    redirectAction: routerActions.replace,
-    wrapperDisplayName: 'UserIsAuthenticated',
-    failureRedirectPath: `${rootPath}/login`
-});
-
-export default class App extends Component {
+class App extends Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            isCheckingAuthentication: false
+        }
+    }
+
+    componentWillMount() {
+        this.setState({isCheckingAuthentication: true});
+        hasValidAuthToken().then(isValid => {
+            if (isValid) {
+                this.props.dispatch(userLoggedIn("unknown", "unknown", "unknown"))
+            }
+            this.setState({isCheckingAuthentication: false});
+        })
     }
 
     render() {
         return (
-            <Provider store={ store }>
-                <Router history={ history }>
-                    <Route component={ Layout }>
-                        <Route path={rootPath} component={ UserIsAuthenticated(Collections) } />
-                        <Route path={`${rootPath}/collections`} component={ UserIsAuthenticated(Collections) } />
-                        <Route path={`${rootPath}/login`} component={ LoginController } />
-                    </Route>
-                </Router>
-            </Provider>
+            <div>
+                {   
+                    this.state.isCheckingAuthentication ?
+                        "Loading..."
+                        :
+                        this.props.children
+                }
+            </div>
         )
     }
 }
+
+App.propTypes = propTypes;
+
+export default connect()(App);
