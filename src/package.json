@@ -8,9 +8,10 @@
   "devDependencies": {
     "babel-jest": "^19.0.0",
     "enzyme": "^2.8.2",
+    "enzyme-to-json": "^1.5.1",
     "jest": "^19.0.2",
-    "react-test-renderer": "^15.5.4",
-    "prop-types": "^15.5.8"
+    "prop-types": "^15.5.8",
+    "react-test-renderer": "^15.5.4"
   },
   "scripts": {
     "watch": "cd legacy && npm run watch & node ./node_modules/webpack/bin/webpack.js --watch",
