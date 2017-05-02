@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+// import { browserHistory } from 'react-router';
+import PropTypes from 'prop-types';
 
 import LoginForm from './LoginForm';
-import Modal from '../components/Modal';
-import ChangePasswordController from '../components/change-password/ChangePasswordController';
+// import Modal from '../components/Modal';
+// import ChangePasswordController from '../components/change-password/ChangePasswordController';
 
 import { get } from '../utilities/get';
 import { post } from '../utilities/post';
@@ -12,6 +13,10 @@ import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
 import cookies from '../utilities/cookies';
 
 import { userLoggedIn } from '../config/actions';
+
+LoginController.propTypes = {
+    dispatch: PropTypes.func.isRequired
+}
 
 class LoginController extends Component {
     constructor(props) {
@@ -161,9 +166,9 @@ class LoginController extends Component {
 
                 {
                     this.state.requestPasswordChange ?
-                        <Modal sizeClass={"grid__col-3"}>
+                        {/*<Modal sizeClass={"grid__col-3"}>
                             <ChangePasswordController handleCancel={this.handlePasswordChangeCancel}/>
-                        </Modal>
+                        </Modal>*/}
                         : ""
                 }
             </div>
