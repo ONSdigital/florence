@@ -1,35 +1,16 @@
 import React, { Component } from 'react';
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux';
-import { Router, Route, browserHistory } from 'react-router';
-import { syncHistoryWithStore, routerReducer, routerActions, routerMiddleware, push } from 'react-router-redux';
+import { Router, Route } from 'react-router';
+import { routerActions } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
-import thunkMiddleware from 'redux-thunk';
 
 import Layout from './global/Layout'
 import Collections from './collections/Collections';
 import LoginController from './login/LoginController';
 
-import reducer from './config/reducer';
+import { store, history } from './config/store';
 
-const baseHistory = browserHistory;
-const routingMiddleware = routerMiddleware(baseHistory);
-
-const enhancer = compose(
-    applyMiddleware(thunkMiddleware, routingMiddleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
-const store = createStore(
-    combineReducers({
-        state: reducer,
-        routing: routerReducer
-    }),
-    enhancer
-);
 const rootPath = store.getState().state.rootPath;
-
-const history = syncHistoryWithStore(baseHistory, store);
 
 const UserIsAuthenticated = UserAuthWrapper({
     authSelector: state => {
