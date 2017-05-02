@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
 import LoginForm from './LoginForm';
+import Modal from '../components/Modal';
+import ChangePassword from '../components/change-password/ChangePasswordController';
 
 import { get } from '../utilities/get';
 import { post } from '../utilities/post';
@@ -21,7 +23,8 @@ class LoginController extends Component {
             error: {
                 inputID: "",
                 message: ""
-            }
+            },
+            requestPasswordChange: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -89,6 +92,12 @@ class LoginController extends Component {
                     });
                     break;
                 }
+                case (417): {
+                    this.setState({
+                        requestPasswordChange: true
+                    });
+                    break;
+                }
             }
         });
     }
@@ -120,6 +129,28 @@ class LoginController extends Component {
         }
     }
 
+    handleInputChange(event) {
+        console.log("ID:", event.target.id, "VALUE:", event.target.value);
+
+        const id = event.target.id;
+        const value = event.target.value;
+
+        switch(id) {
+            case ("email") : {
+                this.setState({email: value});
+                break;
+            }
+            case ("password") : {
+                this.setState({password: value});
+                break;
+            }
+        }
+
+
+
+        this.setState({value: id})
+    }
+
     render() {
         const formData = {
             inputs: [
@@ -127,7 +158,7 @@ class LoginController extends Component {
                 id: "email",
                 label: "Email",
                 type: "email",
-                onChange: this.handleEmailChange,
+                onChange: this.handleInputChange,
             },{
                 id: "password",
                 label: "Password",
@@ -142,6 +173,14 @@ class LoginController extends Component {
         return (
             <div>
                 <LoginForm formData={formData} />
+
+                {
+                    this.state.requestPasswordChange ?
+                        <Modal sizeClass={"grid__col-3"}>
+                            <ChangePassword/>
+                        </Modal>
+                        : ""
+                }
             </div>
         )
     }
