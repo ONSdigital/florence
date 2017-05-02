@@ -18,18 +18,19 @@ class LoginController extends Component {
         super(props);
 
         this.state = {
-            email: "",
-            password: "",
-            error: {
-                inputID: "",
-                message: ""
+            email: {
+                value: "",
+                errorMsg: ""
+            },
+            password: {
+                value: "",
+                errorMsg: ""
             },
             requestPasswordChange: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     setUserState(response) {
@@ -61,13 +62,13 @@ class LoginController extends Component {
         event.preventDefault();
 
         const credentials = {
-            email: this.state.email,
-            password: this.state.password
+            email: this.state.email.value,
+            password: this.state.password.value
         };
 
         this.postLoginCredentials(credentials).then(accessToken => {
             cookies.add("access_token", accessToken);
-            this.getUserType(this.state.email).then(userType => {
+            this.getUserType(this.state.email.value).then(userType => {
                 this.setUserState(userType);
                 // browserHistory.push(this.props.location.query.redirect);
                 redirectToOldFlorence();
@@ -75,20 +76,16 @@ class LoginController extends Component {
         }).catch(error => {
             switch (error.status) {
                 case (404): {
+                    const email = Object.assign({}, this.state.email, {errorMsg: "Email address not recognised"});
                     this.setState({
-                        error: {
-                            inputID: "email",
-                            message: "Email address not recognised"
-                        }
+                        email: email
                     });
                     break;
                 }
                 case (401): {
+                    const password = Object.assign({}, this.state.email, {errorMsg: "Incorrect password"});
                     this.setState({
-                        error: {
-                            inputID: "password",
-                            message: "Incorrect password"
-                        }
+                        password: password
                     });
                     break;
                 }
@@ -102,71 +99,49 @@ class LoginController extends Component {
         });
     }
 
-    handleEmailChange(event) {
-        this.setState({email: event.target.value});
-
-        if (this.state.error.inputID === "email")  {
-            this.setState({
-                error: {
-                    inputID: "",
-                    message: ""
-                }
-            })
-        }
-    }
-
-    handlePasswordChange(event) {
-        this.setState({password: event.target.value});
-
-        if (this.state.error.inputID === "password") {
-            this.setState({
-                error: {
-                    inputID: "",
-                    message: ""
-                }
-            })
-
-        }
-    }
-
     handleInputChange(event) {
-        console.log("ID:", event.target.id, "VALUE:", event.target.value);
-
         const id = event.target.id;
         const value = event.target.value;
 
         switch(id) {
             case ("email") : {
-                this.setState({email: value});
+                this.setState({
+                    email: {
+                        value: value,
+                        errorMsg: ""
+                    }
+                });
                 break;
             }
             case ("password") : {
-                this.setState({password: value});
+                this.setState({
+                    password: {
+                        value: value,
+                        errorMsg: ""
+                    }
+                });
                 break;
             }
         }
-
-
-
-        this.setState({value: id})
     }
 
     render() {
         const formData = {
             inputs: [
                 {
-                id: "email",
-                label: "Email",
-                type: "email",
-                onChange: this.handleInputChange,
-            },{
-                id: "password",
-                label: "Password",
-                type: "password",
-                onChange: this.handlePasswordChange,
+                    id: "email",
+                    label: "Email",
+                    type: "email",
+                    onChange: this.handleInputChange,
+                    error: this.state.email.errorMsg
+                },{
+                    id: "password",
+                    label: "Password",
+                    type: "password",
+                    onChange: this.handleInputChange,
+                    error: this.state.password.errorMsg
                 }
             ],
-            error: this.state.error,
             onSubmit: this.handleSubmit
         };
 
