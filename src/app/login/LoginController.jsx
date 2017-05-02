@@ -4,7 +4,7 @@ import { browserHistory } from 'react-router';
 
 import LoginForm from './LoginForm';
 import Modal from '../components/Modal';
-import ChangePassword from '../components/change-password/ChangePasswordController';
+import ChangePasswordController from '../components/change-password/ChangePasswordController';
 
 import { get } from '../utilities/get';
 import { post } from '../utilities/post';
@@ -31,6 +31,7 @@ class LoginController extends Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
     }
 
     setUserState(response) {
@@ -125,6 +126,15 @@ class LoginController extends Component {
         }
     }
 
+    handlePasswordChangeCancel(event) {
+        event.preventDefault();
+
+        this.setState({
+            requestPasswordChange: false
+        });
+
+    }
+
     render() {
         const formData = {
             inputs: [
@@ -152,7 +162,7 @@ class LoginController extends Component {
                 {
                     this.state.requestPasswordChange ?
                         <Modal sizeClass={"grid__col-3"}>
-                            <ChangePassword/>
+                            <ChangePasswordController handleCancel={this.handlePasswordChangeCancel}/>
                         </Modal>
                         : ""
                 }
