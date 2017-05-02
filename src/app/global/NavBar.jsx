@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import cookies from '../utilities/cookies';
+
+NavBar.propTypes = {
+    isAuthenticated: PropTypes.bool.isRequired,
+    rootPath: PropTypes.string.isRequired
+}
 
 class NavBar extends Component {
 
@@ -16,14 +23,6 @@ class NavBar extends Component {
         if (!cookieRemoved) {
             console.warn(`Error trying to remove 'access_token' cookie`);
         }
-    }
-
-    render() {
-        return (
-            <ul className="global-nav__list">
-                { this.renderNavItems() }
-            </ul>
-        )
     }
 
     renderNavItems() {
@@ -62,6 +61,14 @@ class NavBar extends Component {
                 </li>
             )
         }
+    }
+
+    render() {
+        return (
+            <ul className="global-nav__list">
+                { this.renderNavItems() }
+            </ul>
+        )
     }
 
 }
