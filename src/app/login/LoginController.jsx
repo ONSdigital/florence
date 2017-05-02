@@ -59,6 +59,7 @@ class LoginController extends Component {
         }
         const isAdmin = !!response.admin;
         this.props.dispatch(userLoggedIn(email, userType, isAdmin));
+        localStorage.setItem("loggedInAs", email);
     }
 
     getUserType(email) {
