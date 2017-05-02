@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { hasValidAuthToken } from './utilities/hasValidAuthToken';
 import { userLoggedIn } from './config/actions';
+import user from './utilities/user';
 
 const propTypes = {
     children: PropTypes.node,
@@ -23,7 +24,24 @@ class App extends Component {
         this.setState({isCheckingAuthentication: true});
         hasValidAuthToken().then(isValid => {
             if (isValid) {
-                this.props.dispatch(userLoggedIn("unknown", "unknown", "unknown"))
+                const email = localStorage.getItem("loggedInAs");
+                if (!email) {
+                    console.warn(`Unable to find item 'loggedInAs' from local storage`);
+                }
+                
+                //TODO - a lot of this is shared with login controller so should be abstracted out
+                user.get(email).then(userDetails => {
+                    let userType = '';
+                    if (userDetails.editor) {
+                        userType = 'EDITOR'
+                    } else {
+                        userType = 'DATA-VIS'
+                    }
+                    const isAdmin = !!userDetails.admin;
+                    this.props.dispatch(userLoggedIn(email, userType, isAdmin));
+                    this.setState({isCheckingAuthentication: false});
+                });
+                return;
             }
             this.setState({isCheckingAuthentication: false});
         })

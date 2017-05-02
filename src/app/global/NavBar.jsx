@@ -26,6 +26,7 @@ class NavBar extends Component {
             console.warn(`Error trying to remove 'access_token' cookie`);
             return
         }
+        localStorage.removeItem("loggedInAs");
         this.props.dispatch(userLoggedOut());
     }
 
