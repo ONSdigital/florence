@@ -20,8 +20,7 @@ export default class LoginForm extends Component {
 
                         {
                             inputs.map((input, index) => {
-                                let error = this.props.formData.error.inputID === input.id ? this.props.formData.error.message : false;
-                                return <Input key={index} {...input} error={error} />
+                                return <Input key={index} {...input} />
                             })
                         }
 
