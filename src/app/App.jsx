@@ -27,6 +27,7 @@ class App extends Component {
                 const email = localStorage.getItem("loggedInAs");
                 if (!email) {
                     console.warn(`Unable to find item 'loggedInAs' from local storage`);
+                    return;
                 }
                 
                 //TODO - a lot of this is shared with login controller so should be abstracted out
