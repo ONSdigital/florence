@@ -1,5 +1,9 @@
 import React, { Component} from 'react';
 
+const defaultProps = {
+    sizeClass: "grid__col-3"
+};
+
 export default class Modal extends Component {
 
     constructor(props) {
@@ -17,3 +21,5 @@ export default class Modal extends Component {
     }
 
 }
+
+Modal.defaultProps = defaultProps;
