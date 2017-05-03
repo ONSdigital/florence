@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { updateAllTeams } from '../config/actions';
 import teams from '../utilities/teams';
 
+import SelectableBoxController from '../components/selectable-box/SelectableBoxController';
+
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     allTeams: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -18,31 +20,60 @@ class TeamsController extends Component {
         this.state = {
             isUpdatingAllTeams: false
         };
+
+        this.handleTeamClick = this.handleTeamClick.bind(this);
     }
 
     componentWillMount() {
         this.setState({isUpdatingAllTeams: true});
         teams.getAll().then(allTeams => {
-            this.props.dispatch(updateAllTeams(allTeams.teams));
+            // Add any props (such as isSelected) to response from API
+            const allTeamsWithProps = allTeams.teams.map(team => {
+                return Object.assign({}, team, {
+                    isSelected: false
+                });
+            });
+            this.props.dispatch(updateAllTeams(allTeamsWithProps));
             this.setState({isUpdatingAllTeams: false});
         });
     }
 
-    renderAllTeams() {
-        const listOfTeams = this.props.allTeams.map(team => {
-            return (
-                <li key={team.id}>{team.name}</li>
-            )
+    handleTeamClick(clickedTeam) {
+        const allTeams = this.props.allTeams.map(team => {
+            // Deselect currently selected team
+            if (team.isSelected) {
+                return Object.assign({}, team, {
+                    isSelected: !team.isSelected
+                })
+            }
+
+            if (team.id !== clickedTeam.id) {
+                return team;
+            }
+
+            // Toggled isSelected bool on selected item
+            return Object.assign({}, team, {
+                isSelected: !team.isSelected
+            })
         });
-        const teams = <ul>{listOfTeams}</ul>
-        return teams;
+        this.props.dispatch(updateAllTeams(allTeams));
     }
 
     render() {
         return (
-            <div>
-                { this.state.isUpdatingAllTeams ? "Updating..." : "" }
-                { this.renderAllTeams() }
+            <div className="grid grid--justify-space-around">
+                <div className="grid__col-4">
+                    <h1>Select a team</h1>
+                    <SelectableBoxController 
+                        items={this.props.allTeams} 
+                        isUpdating={this.state.isUpdatingAllTeams} 
+                        heading="Name"
+                        handleItemClick={this.handleTeamClick}
+                    />
+                </div>
+                <div className="grid__col-4">
+                    <h1>Create a team</h1>
+                </div>
             </div>
         )
     }

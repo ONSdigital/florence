@@ -1,0 +1,49 @@
+.selectable-box {
+    border: 3px solid $pickled-bluewood;
+    border-radius: 4px;
+
+    &__heading {
+        font-size: ($magicnumber1 * 2) + $magicnumber2;
+        padding-top: $lineheight;
+        padding-bottom: $lineheight;
+        background-color: $pickled-bluewood;
+        color: $cadet-blue;
+        font-family: $base-font-family;
+        font-weight: 700;
+        padding-left: $gutter;
+        padding-right: $gutter;
+        line-height: normal;
+    }
+
+    &__list {
+        list-style: none;
+        max-height: $lineheight * 27;
+        overflow-y: scroll;
+    }
+
+    &__item {
+        cursor: pointer;
+        padding: $lineheight $gutter;
+
+        &:nth-child(even) {
+            background-color: $iron;
+        }
+        
+        &:nth-child(odd) {
+            background-color: $white;
+        }
+
+        &:hover {
+            background-color: $quill-gray;
+        }
+
+        &.selected {
+            background-color: $astral;
+            cursor: default;
+        }
+
+        &.select:hover {
+            background-color: $astral;
+        }
+    }
+}
