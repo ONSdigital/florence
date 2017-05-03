@@ -9,11 +9,11 @@ import user from './utilities/user';
 const propTypes = {
     children: PropTypes.node,
     dispatch: PropTypes.func.isRequired
-}
+};
 
 class App extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             isCheckingAuthentication: false
