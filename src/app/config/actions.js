@@ -10,7 +10,6 @@ export function userLoggedIn(email, userType, isAdmin) {
         email: email,
         userType: userType,
         isAdmin: isAdmin
-
     }
 }
 

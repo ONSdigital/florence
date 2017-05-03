@@ -1,12 +1,12 @@
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: $base-font-family;
     font-weight: 300;
     font-size: $magicnumber1 * 2;
     line-height: $lineheight;
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Roboto Slab', serif;
+    font-family: $heading-font-family;
     font-weight: 400;
     line-height: $lineheight * 2;
 }
@@ -15,6 +15,7 @@ h1 {
     font-size: $magicnumber1 * 5;
     margin-top: $lineheight * 3;
     margin-bottom: $lineheight * 2;
+    text-align: center;
 }
 
 h2 {
