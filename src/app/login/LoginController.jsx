@@ -5,8 +5,8 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import LoginForm from './LoginForm';
-// import Modal from '../components/Modal';
-// import ChangePasswordController from '../components/change-password/ChangePasswordController';
+import Modal from '../components/Modal';
+import ChangePasswordController from '../components/change-password/ChangePasswordController';
 
 import { get } from '../utilities/get';
 import { post } from '../utilities/post';
@@ -40,8 +40,8 @@ class LoginController extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
+        this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
     }
-
 
     componentWillMount() {
         if (this.props.isAuthenticated) {
@@ -142,6 +142,23 @@ class LoginController extends Component {
         }
     }
 
+    handlePasswordChangeSuccess(newPassword) {
+        const credentials = {
+            email: this.state.email.value,
+            password: newPassword
+        };
+
+        this.postLoginCredentials(credentials).then(accessToken => {
+            cookies.add("access_token", accessToken);
+            this.getUserType(this.state.email.value).then(userType => {
+                this.setUserState(userType);
+                // browserHistory.push(this.props.location.query.redirect);
+                redirectToOldFlorence();
+            });
+        })
+
+    }
+
     handlePasswordChangeCancel(event) {
         event.preventDefault();
 
@@ -177,9 +194,14 @@ class LoginController extends Component {
 
                 {
                     this.state.requestPasswordChange ?
-                        {/*<Modal sizeClass={"grid__col-3"}>
-                            <ChangePasswordController handleCancel={this.handlePasswordChangeCancel}/>
-                        </Modal>*/}
+                        <Modal sizeClass={"grid__col-3"}>
+                            <ChangePasswordController
+                                handleCancel={this.handlePasswordChangeCancel}
+                                handleSuccess={this.handlePasswordChangeSuccess}
+                                currentPassword={this.state.password.value}
+                                email={this.state.email.value}
+                            />
+                        </Modal>
                         : ""
                 }
             </div>
