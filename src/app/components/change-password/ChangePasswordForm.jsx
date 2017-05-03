@@ -1,5 +1,21 @@
 import React, { Component } from 'react';
 import Input from '../Input'
+import PropTypes from 'prop-types';
+
+const propTypes = {
+    formData: PropTypes.shape({
+        inputs: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            value: PropTypes.string,
+            label: PropTypes.string.isRequired,
+            type: PropTypes.string,
+            onChange: PropTypes.func,
+            error: PropTypes.string
+        })),
+        onSubmit: PropTypes.func.isRequired,
+        onCancel: PropTypes.func.isRequired
+    }).isRequired
+};
 
 export default class ChangePasswordForm extends Component {
 
@@ -33,3 +49,5 @@ export default class ChangePasswordForm extends Component {
         )
     }
 }
+
+ChangePasswordForm.propTypes = propTypes;
