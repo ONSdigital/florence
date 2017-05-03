@@ -19,6 +19,20 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case ('UPDATE_ALL_TEAMS'): {
+            return Object.assign({}, state, {
+                teams: Object.assign({}, state.teams, {
+                    all: action.allTeams
+                })
+            })
+        }
+        case ('UPDATE_ACTIVE_TEAM'): {
+            return Object.assign({}, state, {
+                teams: Object.assign({}, state.teams, {
+                    active: action.activeTeam
+                })
+            })
+        }
         default: {
             break;
         }
