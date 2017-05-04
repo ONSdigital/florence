@@ -19,7 +19,7 @@ generate: ${GOPATH}/bin/go-bindata
 	mv assets/debug.go.new assets/debug.go
 
 test:
-	go test
+	go test -tags 'production'
 
 node-modules:
 	cd src; npm install
