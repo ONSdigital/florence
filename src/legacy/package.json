@@ -5,7 +5,7 @@
         "type": "git",
         "url": "https://github.com/ONSdigital/florence"
     },
-    "devDependencies": {
+    "dependencies": {
         "cat": "latest",
         "onchange": "latest",
         "handlebars": "~3.0.1",
