@@ -14,11 +14,6 @@
 # Mac
 .DS_Store
 
-# Maven
-log/
-target/
-
-
 # NPM
 .sass-cache/
 node_modules

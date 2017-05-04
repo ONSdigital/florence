@@ -1,0 +1,50 @@
+
+{{#each this.annotations}}
+
+    <div id="annotation-{{@index}}" class="chart-accordian">
+    
+        <h3 class="chart-accordian-header edit-section__head accordian__title">Note {{plus @index 1}}:{{title}}&nbsp;</h3>
+        <div class="chart-accordian-body accordian__content" >
+           
+            <button class="btn btn--warning btn-delete-annotation" id="delete-annotation-{{@index}}">Delete</button>
+
+            <label for="show-plotline-{{@index}}" class="checkbox-label--small">Plotline</label>
+            <input  class="refresh-chart" name="show-plotline-{{@index}}" id="is-plotline-{{@index}}" {{#if isPlotline}}checked{{/if}} type="checkbox">
+            <br/>Click the chart to set the plot line/band position
+
+            <div class="refresh-chart"> 
+                <label>Plotline orientation<br>
+                    <div class="select-wrap">
+                        <select id="orientation-axis-{{@index}}" class="">
+                            {{#select orientation}}
+                                <option value="x-axis">x axis</option>
+                                <option value="y-axis">y axis</option>
+                            {{/select}}
+                        </select>
+                    </div>
+                </label>
+            </div>
+
+            <label for="chart-title" class="refresh-chart">Plot Band Width
+                <input type="text" id="band-width-{{@index}}" class="half" placeholder="[band width]" value="{{bandWidth}}"/>
+            </label>
+
+            <br/>
+            <label for="chart-title" class="refresh-coords">X Position (change these to set the plotline position)
+                <input type="text" id="note-x-{{@index}}" class="refresh-coords half" placeholder="[x]" value="{{x}}"/>
+            </label>
+            <label for="chart-title" class="refresh-coords">Y Position 
+                <input type="text" id="note-y-{{@index}}" class="refresh-coords half" placeholder="[y]" value="{{y}}"/>
+            </label>
+            <br/>(NB Plot lines use row and columns coords. Annotations use x and y coords.)
+            <br/>
+            <label for="chart-notes">Notes</label>
+                <textarea id="chart-notes-{{@index}}" class="refresh-chart" placeholder="Add annotation here" rows="4" cols="120">{{title}}</textarea>
+
+            <br/>
+            
+
+        </div>
+    </div>
+
+{{/each}}

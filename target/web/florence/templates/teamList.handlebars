@@ -1,0 +1,30 @@
+<section class="panel panel--padded col col--6">
+    <h1 class="text-align-center">Select a team</h1>
+    <table class="table table--primary table--fixed-height-27 js-selectable-table">
+        <thead>
+        <tr>
+            <th id="collection-name" scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+            {{#each this}}
+                <tr data-id="{{name}}">
+                    <td headers="name" class="collection-name">{{this.name}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</section>
+<section class="panel panel--padded col col--6">
+    <h1 class="text-align-center">Create a team</h1>
+
+    <form autocomplete="off" method="post" action="" class="form-create-team">
+        <input id="create-team-name" type="text" placeholder="Name" autocomplete="off"/>
+
+        <button class="btn btn--positive float-right margin-right--0 btn-collection-create">Create team</button>
+    </form>
+
+</section>
+<section class="panel panel--off-canvas col col--6">
+
+</section>

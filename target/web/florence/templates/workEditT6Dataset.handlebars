@@ -1,0 +1,11 @@
+{{#each this}}
+    <div id="{{@index}}" class="edit-section__item">
+        <p id="compendium-data-title_{{@index}}">{{description.title}}</p>
+
+        <div class="edit-section__buttons">
+            <button class="btn btn--primary btn-markdown-edit" id="compendium-data-edit-label_{{@index}}">Rename</button>
+            <button class="btn btn--primary btn-markdown-edit" id="compendium-data-edit_{{@index}}">Edit</button>
+            <button class="btn btn--warning btn-page-delete" id="compendium-data-delete_{{@index}}">Delete</button>
+        </div>
+    </div>
+{{/each}}
