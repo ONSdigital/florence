@@ -79,7 +79,7 @@ def revisionFrom(tag, commit) {
 }
 
 def writeVersion(versions) {
-    def file = 'src/main/web/florence/assets/version.json'
+    def file = 'dist/legacy-assets/version.json'
     def json = new groovy.json.JsonBuilder([major: versions[0], minor: versions[1], build: versions[2]]).toString()
     writeFile file: file, text: json
 }
