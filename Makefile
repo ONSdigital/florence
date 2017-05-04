@@ -8,6 +8,9 @@ debug:
 	go build -o build/florence
 	HUMAN_LOG=1 ENABLE_NEW_APP=${ENABLE_NEW_APP} ./build/florence
 
+test:
+	go test
+
 node-modules:
 	cd src; npm install
 	cd src/legacy; npm install
@@ -19,4 +22,4 @@ watch-src:
 assets/bin-data.go:
 	go generate ./...
 
-.PHONY: build debug watch-src
+.PHONY: build debug test watch-src
