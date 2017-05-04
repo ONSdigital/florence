@@ -1,0 +1,27 @@
+<div class="edit-section" id="file">
+    <div class="edit-section__head">
+        <h1>Upload files</h1>
+        <p>Title | Link</p>
+    </div>
+    <div class="edit-section__content">
+        <div id="sortable-file" class="edit-section__sortable">
+            {{#each list}}
+                <div id="{{@index}}" class="edit-section__sortable-item edit-section__sortable-item--summary">
+                    <div class="edit-section__sortable-item--counter float-left">{{plus @index 1}}. </div>
+                    <textarea id="file-title_{{@index}}" class="add-tooltip" placeholder="Type title here and click
+                    edit to add description">{{title}}</textarea>
+                    <textarea style="display: none;" id="file-summary_{{@index}}">{{fileDescription}}</textarea>
+                    <br>
+                    <div id="file-filename_show_{{@index}}">{{file}}</div>
+                    <div class="edit-section__buttons">
+                        <button class="btn btn--primary btn-markdown-edit" id="file-edit_{{@index}}">Edit description</button>
+                        <button class="btn btn--warning btn-page-delete" id="file-delete_{{@index}}">Delete</button>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+        <div class="text-center">
+            <button class="btn btn--subtle btn-add-section" id="add-file">Add file</button>
+        </div>
+    </div>
+</div>

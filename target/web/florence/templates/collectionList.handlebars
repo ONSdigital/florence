@@ -1,0 +1,87 @@
+<section class="panel panel--padded col col--6" xmlns="http://www.w3.org/1999/html">
+    <h1 class="text-align-center">Select a collection</h1>
+    <table class="table table--primary table--fixed-height-27 js-selectable-table">
+        <thead>
+        <tr>
+            <th id="collection-name" scope="col">Collection name</th>
+            <th id="collection-date" scope="col">Collection date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each response}}
+            <tr data-id="{{id}}" class=" {{#if approvalState.inProgress}}warning{{/if}} {{#if approvalState.thrownError}}error{{/if}}">
+                <td headers="collection-name" class="collection-name">{{name}}
+                    {{#if approvalState.inProgress}} [preparing publish]{{/if}}
+                    {{#if approvalState.thrownError}} [error whilst preparing publish]{{/if}}
+                </td>
+                <td headers="collection-date" class="collection-date">{{date}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</section>
+<section class="panel panel--padded col col--6">
+    <h1 class="text-align-center">Create a collection</h1>
+
+    <form method="post" action="" class="form form-create-collection">
+        <label for="collectionname" class="hidden">Scheduled publish</label>
+        <input id="collectionname" type="text" placeholder="Collection name"/>
+        <label for="team" class="hidden">Select the team the collection can be previewed by</label>
+        {{#unless isDataVis}}
+        	<div class="select-wrap">
+                <select id="team">
+                    <option selected disabled="disabled">Select the team the collection can be previewed by</option>
+                    {{#each teams}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <ul id="team-tag"></ul>
+            <input type="text" class="hidden" id="team-input">
+        {{/unless}}
+        <input type="radio" id="scheduledpublish" name="publishType" value="scheduled" checked><label
+            for="scheduledpublish">Scheduled publish</label>
+        <input type="radio" id="manualpublish" name="publishType" value="manual" required><label for="manualpublish">Manual
+        publish</label>
+        <br>
+
+        <div id="scheduledPublishOptions" class="form__container overflow-hidden">
+            <input type="radio" id="customschedule" name="scheduleType" value="custom" checked><label
+                for="customschedule">Custom
+            schedule</label>
+            <input type="radio" id="releaseschedule" name="scheduleType" value="release" required><label
+                for="releaseschedule">Calendar entry schedule</label>
+
+            <div id="customScheduleOptions" class="form__container form__container--dark padding-top--1 padding-bottom--1">
+                <div class="overflow-hidden">
+                    <label for="date" class="hidden">Date</label>
+                    <input id="date" type="text" placeholder="dd/mm/yyyy"/>
+                    <br>
+                    <label for="hour" class="hidden">Hour</label>
+                    <div class="select-wrap select-wrap--small">
+                        <select id="hour">
+                            {{> selectorHour}}
+                        </select>
+                    </div>
+                    <label for="min" class="hidden">Minutes</label>
+                    <div class="select-wrap select-wrap--small">
+                        <select id="min">
+                            {{> selectorMinute}}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="releaseScheduleOptions" class="form__container form__container--dark form__container--center-arrow padding-top--1 padding-bottom--1 overflow-hidden text-center hidden ">
+                <a href="javascript:void(0)" class="btn btn--primary btn--inline-block btn-select-release">Select a calendar entry</a>
+                <div class="margin-top--1 selected-release" style="display: none;"></div>
+            </div>
+
+        </div>
+
+        <button class="btn btn--positive margin-right--0 float-right btn-collection-create">Create collection</button>
+    </form>
+</section>
+<section class="panel panel--off-canvas col col--6">
+
+</section>

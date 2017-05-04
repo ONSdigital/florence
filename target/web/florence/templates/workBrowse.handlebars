@@ -1,0 +1,28 @@
+<section class="panel workspace-browse">
+    <nav class="tree-nav-holder js-browse">
+        <ul class="page-list page-list--tree">
+            <li class="js-browse__item" data-url="{{uri}}">
+                <div class="page__container selected">
+                    <span class="js-browse__item-title page__item{{#unless uri}} page__item--directory{{else}} page__item--{{type}}{{/unless}}">{{description.title}}</span>
+                    {{#if_eq collectionOwner "PUBLISHING_SUPPORT"}}
+                        <div class="page__buttons page__buttons--list selected">
+                            <button class="btn btn--primary btn-browse-edit">Edit</button>
+                            <button class="btn btn--positive btn-browse-create">Create</button>
+                            {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
+                        </div>
+                    {{/if_eq}}
+                </div>
+                {{#if children}} {{! Within the context of the current item }}
+                    <ul class="js-browse__children">
+                        {{#if_eq collectionOwner "PUBLISHING_SUPPORT"}}
+                            {{> browseNode}} {{! Recursively render the partial }}
+                        {{/if_eq}}
+                        {{#if_eq collectionOwner "DATA_VISUALISATION"}}
+                            {{> browseNodeDataVis}} {{! Recursively render the partial }}
+                        {{/if_eq}}
+                    </ul>
+                {{/if}}
+            </li>
+        </ul>
+    </nav>
+</section>

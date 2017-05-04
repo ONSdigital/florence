@@ -1,0 +1,39 @@
+<div class='modal'>
+  <div class='modal-box_t1'>
+    <div class='uri-input'>
+      <!--<label for='uri-width' class='uri-input__label'>Add size</label>-->
+      <!--<div class="select-wrap">-->
+        <!--<select name="uri-size" id="uri-size">-->
+          <!--<option value="size11" data-class="icon11">1:1</option>-->
+          <!--<option value="size12" data-class="icon12">1:2</option>-->
+          <!--<option value="size21" selected="selected" data-class="icon21">2:1</option>-->
+          <!--<option value="size22" data-class="icon22">2:2</option>-->
+          <!--<option value="size23" data-class="icon23">2:3</option>-->
+          <!--<option value="size24" data-class="icon24">2:4</option>-->
+        <!--</select>-->
+      <!--</div>-->
+      <label for='uri-input' class='uri-input__label'>Add url</label>
+      <input id='uri-input' placeholder='Enter URL' type='text' class='uri-input__input' value="{{block.uri}}">
+      <div class="modal-news">
+        <label for='uri-image' class='uri-input__label'>Add image</label>
+        <!--No image removes any image that was there before-->
+        <div class="select-wrap">
+          <select name="uri-image" id="uri-image">
+            <option value="-1" selected="selected" data-class="ui-icon-image">No image</option>
+            {{#each images}}
+              <option value="{{@index}}" data-class="ui-icon-image">{{title}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <label for='uri-title' class='uri-input__label'>Add title</label>
+        <input id='uri-title' placeholder='Enter title' type='text' class='uri-input__input' value="{{block.title}}">
+        <label for='uri-text' class='uri-input__label'>Add text</label>
+        <textarea class="auto-size uri-textarea" type="text" id="uri-text">{{block.text}}</textarea>
+      </div>
+    </div>
+    <div class='modal-nav_t1'>
+      <button class='btn-uri-get'>Save</button>
+      <button class='btn-uri-cancel'>Cancel</button>
+    </div>
+  </div>
+</div>
