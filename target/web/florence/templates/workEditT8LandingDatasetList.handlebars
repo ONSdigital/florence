@@ -1,8 +1,0 @@
-{{#each this}}
-  <div id="{{@index}}" class="edit-section__sortable-item">
-    <p id="edition_{{@index}}">{{this.description.edition}}</p>
-    {{!--<button class="btn-markdown-edit" id="edition-edit-label_{{@index}}">Rename</button>--}}
-    <button class="btn btn--primary btn-markdown-edit" id="edition-edit_{{@index}}">Update / Add supplementary file</button>
-    <button class="btn btn--warning btn-page-delete" id="edition-delete_{{@index}}">Delete file</button>
-  </div>
-{{/each}}
