@@ -16,6 +16,7 @@ node {
 
         stage('Build') {
             if (revision.size() > 1) writeVersion(revision[1, 2, 3])
+            sh 'npm install --no-bin-links --prefix ./src'
             sh "GOPATH=${gopath} make"
         }
 
