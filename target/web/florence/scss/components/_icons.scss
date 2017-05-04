@@ -1,0 +1,185 @@
+/** Hamburger icons - credit to callmenick.com for the brilliant animated icons **/
+
+// Variables
+$line-color: $gray-chateau;
+$background: transparent;
+$background--active: transparent;
+
+.hamburger-icon {
+    display: block;
+    position: relative;
+    //overflow: hidden;
+    z-index: 10;
+    overflow: visible;
+    margin: 0 !important;
+    padding: 0;
+    //width: 96px;
+    //height: 96px;
+    height: $lineheight;
+    width: $lineheight;
+    font-size: 0;
+    text-indent: -9999px;
+    appearance: none;
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    background-color: $background;
+
+    &:focus,
+    &:hover {
+        outline: none;
+
+        // Remove default button hover styling
+        &:after {
+            display: none;
+        }
+    }
+
+    &.active {
+        background-color: $background--active;
+    }
+
+    &--page-item {
+        position: absolute;
+        right: 1px;
+        top: 10px;
+    }
+
+    &__span {
+        display: block;
+        position: absolute;
+        //top: 44px;
+        top: 10px;
+        //left: 18px;
+        left: 0;
+        //right: 18px;
+        right: 0;
+        height: 2px;
+        background: $line-color;
+        transition: transform 0.3s;
+
+        &::before,
+        &::after {
+            position: absolute;
+            display: block;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: $line-color;
+            content: "";
+        }
+
+        &::before {
+            top: -6px;
+            transform-origin: top right;
+            transition: transform 0.3s, width 0.3s, top 0.3s;
+        }
+
+        &::after {
+            bottom: -6px;
+            transform-origin: bottom right;
+            transition: transform 0.3s, width 0.3s, bottom 0.3s;
+        }
+
+
+        // Active styling for span inside button
+        &.active {
+            transform: rotate(180deg);
+        }
+
+        &.active::before,
+        &.active::after {
+            width: 50%;
+        }
+
+        &.active::before {
+            top: -3px;
+            left: 7px;
+            transform: translateX(6px) translateY(4px) rotate(45deg);
+        }
+
+        &.active::after {
+            bottom: -3px;
+            left: 7px;
+            transform: translateX(6px) translateY(-4px) rotate(-45deg);
+        }
+
+    }
+}
+
+//.hamburger-icon:focus {
+//    outline: none;
+//}
+
+//.hamburger-icon--htra {
+//    background-color: #ff9650;
+//}
+//
+//.hamburger-icon--htra span {
+//    transition: transform 0.3s;
+//}
+
+//.hamburger-icon--htra span::before {
+//    transform-origin: top left;
+//    transition: transform 0.3s, width 0.3s, top 0.3s;
+//}
+
+//.hamburger-icon--htra span::after {
+//    transform-origin: bottom left;
+//    transition: transform 0.3s, width 0.3s, bottom 0.3s;
+//}
+
+//.c-hamburger span {
+//    display: block;
+//    position: absolute;
+//    top: 44px;
+//    left: 18px;
+//    right: 18px;
+//    height: 8px;
+//    background: white;
+//}
+
+//.c-hamburger span::before,
+//.c-hamburger span::after {
+//    position: absolute;
+//    display: block;
+//    left: 0;
+//    width: 100%;
+//    height: 8px;
+//    background-color: #fff;
+//    content: "";
+//}
+
+//.c-hamburger span::before {
+//    top: -20px;
+//}
+
+//.c-hamburger span::after {
+//    bottom: -20px;
+//}
+
+/* active state, i.e. menu open */
+//.hamburger-icon--htra.is-active {
+//    background-color: #e95d00;
+//}
+
+//.hamburger-icon--htra.is-active span {
+//    transform: rotate(180deg);
+//}
+
+//.hamburger-icon--htra.is-active span::before,
+//.hamburger-icon--htra.is-active span::after {
+//    width: 50%;
+//}
+
+//.hamburger-icon--htra.is-active span::before {
+//    top: 0;
+//    transform: translateX(-8px) translateY(4px) rotate(-45deg);
+//}
+
+//.hamburger-icon--htra.is-active span::after {
+//    bottom: 0;
+//    transform: translateX(-8px) translateY(-4px) rotate(45deg);
+//}

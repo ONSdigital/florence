@@ -1,0 +1,218 @@
+<div class="slider slider--background-primary">
+    <div class="slider__head">
+        <h2>{{name}}</h2>
+
+        <p>Planned:  {{date}}</p>
+
+        <p>Started at: {{starting}}</p>
+
+        <p>
+            Total time: <span {{#ifCond duration '<' '60000'}}
+        style="color: green; font-weight: 700;" {{/ifCond}} {{#ifCond
+        duration '>='
+        '60000'}} style="color:
+  red; font-weight: 700;"
+        {{/ifCond}}>{{duration}}</span> ms
+        </p>
+
+
+        {{!--
+        {{#ifCond verifyFailedCount '>' 0}}
+            <p style="color: red; font-weight: 700;">Verification failed for {{verifyFailedCount}}  file(s)</p>
+        {{/ifCond}}
+
+        {{#ifCond verifiedCount '>' 0}}
+            <p style="color: green; font-weight: 700;">Verified {{verifiedCount}} file(s) successfully </p>
+        {{/ifCond}}
+
+
+        {{#ifCond verifyInprogressCount '>' 0}}
+            <p style="color: yellow; font-weight: 700;">Verifying {{verifyInprogressCount}} file(s) </p>
+        {{/ifCond}}
+        --}}
+    </div>
+
+    {{#if success.error}}
+        <div class="slider__content">
+            <div class="accordion js-accordion">
+                <div class="collections-section">
+                    <div class="collections-section__head js-accordion__title">
+                        <h3 class="collection-name">Error list</h3>
+                    </div>
+                    <div class="collections-section__content js-accordion__content">
+                        <ul class="page-list">
+                            {{#each success.errors}}
+                                <li class="page-list__item">{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <div class="slider__content slider__content--fullwidth">
+            <div class="accordion js-accordion">
+                <div class="accordion__title js-accordion__title">
+                    <h3>Event history</h3>
+                </div>
+                <div class="accordion__content js-accordion__content disable-animation">
+                    {{#if events}}
+                        <table class="table table--section event-history-table">
+                            <thead>
+                            <tr>
+                                <th style="width:45%">Action</th>
+                                <th style="width:30%">User</th>
+                                <th style="width:25%">Date/time</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each events}}
+                                <tr data-event-type="{{eventDetails.type}}">
+                                    <td>{{eventDetails.description}}</td>
+                                    <td>{{eventDetails.user}}</td>
+                                    <td>{{formattedDate}}</td>
+                                </tr>
+                                {{#if eventDetails.metaData}}
+                                    <tr>
+                                        <td>
+                                            <ul class="event-meta">
+                                                {{#each eventDetails.metaData}}
+                                                    <li class="event-meta__item">{{@key}}: {{this}}</li>
+                                                {{/each}}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    {{else}}
+                        <p>Something went wrong - no events were returned.</p>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="accordion js-accordion">
+                <div class="accordion__title js-accordion__title">
+                    <h3>Publishing times</h3>
+                </div>
+                <div class="accordion__content js-accordion__content disable-animation">
+                    <table class="table table--section publish-times-table">
+                        <thead>
+                        <tr>
+                            <th class="file-name">Path</th>
+                            <th class="file-size">Size (B)</th>
+                            <th class="file-duration">Time (ms)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each success.transaction.uriInfos}}
+                            <tr {{#ifCond verificationStatus '===' 'failed'}}
+                            style="color: red;" {{/ifCond}}  {{#ifCond verificationStatus '===' 'verified'}}
+                            style="color: green;" {{/ifCond}} >
+                                <td class="file-name">{{uri}}</td>
+                                <td class="file-size">{{size}}</td>
+                                <td class="file-duration">{{duration}}</td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+
+    <nav class="slider__nav">
+        <button class="btn btn-collection-cancel">Cancel</button>
+    </nav>
+</div>
+{{!-- {{#if success.error}}
+     <div class="section-content">
+         <div class="collections-accordion js-accordion">
+             <div class="collections-section">
+                 <div class="collections-section__head js-accordion__title">
+                     <h3 class="collection-name">Error list</h3>
+                 </div>
+                 <div class="collections-section__content js-accordion__content">
+                     <ul class="page-list">
+                         {{#each success.errors}}
+                             <li>{{this}}</li>
+                         {{/each}}
+                     </ul>
+                 </div>
+             </div>
+         </div>
+     </div>
+ {{else}}
+     <div class="section-content section-content--fullwidth">
+         <div class="accordion js-accordion">
+             <div class="accordion__title js-accordion__title">
+                 <h3>Event history</h3>
+             </div>
+             <div class="accordion__content js-accordion__content disable-animation">
+                 {{#if events}}
+                     <table class="table table--section event-history-table">
+                         <thead>
+                         <tr>
+                             <th style="width:45%">Action</th>
+                             <th style="width:30%">User</th>
+                             <th style="width:25%">Date/time</th>
+                         </tr>
+                         </thead>
+                         <tbody>
+                         {{#each events}}
+                             <tr data-event-type="{{eventDetails.type}}">
+                                 <td>{{eventDetails.description}}</td>
+                                 <td>{{eventDetails.user}}</td>
+                                 <td>{{formattedDate}}</td>
+                             </tr>
+                             {{#if eventDetails.metaData}}
+                                 <tr>
+                                     <td>
+                                         <ul class="event-meta">
+                                             {{#each eventDetails.metaData}}
+                                                 <li class="event-meta__item">{{@key}}: {{this}}</li>
+                                             {{/each}}
+                                         </ul>
+                                     </td>
+                                 </tr>
+                             {{/if}}
+                         {{/each}}
+                         </tbody>
+                     </table>
+                 {{else}} <p>Something went wrong - no events were returned.</p>
+                 {{/if}}
+             </div>
+         </div>
+         <div class="accordion js-accordion">
+             <div class="accordion__title js-accordion__title">
+                 <h3>Publishing times</h3>
+             </div>
+             <div class="accordion__content js-accordion__content disable-animation">
+                 <table class="table table--section publish-times-table">
+                     <thead>
+                         <tr>
+                             <th class="file-name">Path</th>
+                             <th class="file-size">Size (B)</th>
+                             <th class="file-duration">Time (ms)</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                     {{#each success.transaction.uriInfos}}
+                         <tr {{#ifCond verificationStatus '===' 'failed'}}
+                         style="color: red;" {{/ifCond}}  {{#ifCond verificationStatus '===' 'verified'}}
+                         style="color: green;" {{/ifCond}} >
+                             <td class="file-name">{{uri}}</td>
+                             <td class="file-size">{{size}}</td>
+                             <td class="file-duration">{{duration}}</td>
+                         </tr>
+                     {{/each}}
+                     </tbody>
+                 </table>
+             </div>
+         </div>
+     </div>
+ {{/if}}
+
+ <nav class="section-nav">
+     <button class="btn-collection-cancel">Cancel</button>
+ </nav> --}}

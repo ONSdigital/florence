@@ -1,0 +1,25 @@
+/** PANELS **/
+
+.panel {
+    overflow: hidden;
+    height: $panel-height-1-top-nav;
+    display: block;
+
+    &--with-top-sub-menu {
+        height: $panel-height-2-top-nav;
+    }
+
+    &--padded {
+        padding: 0 $col--1;
+    }
+
+    &--centred {
+        margin-left: 25%;
+    }
+
+    &--off-canvas {
+        right: -50%;
+        position: absolute;
+        //background: $quill-gray;
+    }
+}
