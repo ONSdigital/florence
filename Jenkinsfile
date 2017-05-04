@@ -27,7 +27,7 @@ node {
 
         stage('Image') {
             docker.withRegistry("https://${env.ECR_REPOSITORY_URI}", { ->
-                docker.build('florence', '--no-cache --pull --rm .').push(revision)
+                docker.build('florence', '--no-cache --pull --rm .').push(revision[0])
             })
         }
 
