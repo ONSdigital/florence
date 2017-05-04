@@ -23,9 +23,9 @@
     "build": "cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
-    "postinstall": "npm run build",
     "test": "jest",
-    "test-watch": "jest --watch"
+    "test-watch": "jest --watch",
+    "postinstall": "npm run build-refactored"
   },
   "dependencies": {
     "babel-cli": "^6.18.0",
