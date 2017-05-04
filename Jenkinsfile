@@ -16,6 +16,8 @@ node {
 
         stage('Build') {
             if (revision.size() > 1) writeVersion(revision[1, 2, 3])
+            sh 'npm install --no-bin-links --prefix ./src'
+            sh 'npm install --no-bin-links --prefix ./src/legacy'
             sh "GOPATH=${gopath} make"
         }
 
@@ -25,7 +27,7 @@ node {
 
         stage('Image') {
             docker.withRegistry("https://${env.ECR_REPOSITORY_URI}", { ->
-                docker.build('florence', '--no-cache --pull --rm .').push(revision)
+                docker.build('florence', '--no-cache --pull --rm .').push(revision[0])
             })
         }
 
@@ -78,7 +80,7 @@ def revisionFrom(tag, commit) {
 }
 
 def writeVersion(versions) {
-    def file = 'src/main/web/florence/assets/version.json'
+    def file = 'dist/legacy-assets/version.json'
     def json = new groovy.json.JsonBuilder([major: versions[0], minor: versions[1], build: versions[2]]).toString()
     writeFile file: file, text: json
 }
