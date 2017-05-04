@@ -15,7 +15,6 @@ function loadEmbedIframe(onSave) {
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
         var fullWidth = $('input#full-width-checkbox').is(':checked');
-        console.log(fullWidth);
         if (!embedUrl) {
             console.log("No url added");
             sweetAlert('URL field is empty', 'Please add a url and save again');
