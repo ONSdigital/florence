@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllTeams } from '../config/actions';
+import { updateAllTeams, updateActiveTeam } from '../config/actions';
 import teams from '../utilities/teams';
+import safeURL from '../utilities/safeURL';
 
 import SelectableBoxController from '../components/selectable-box/SelectableBoxController';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     allTeams: PropTypes.arrayOf(PropTypes.object).isRequired,
-    activeTeam: PropTypes.object.isRequired
+    activeTeam: PropTypes.object,
+    rootPath: PropTypes.string.isRequired,
+    params: PropTypes.object
 }
 
 class TeamsController extends Component {
@@ -28,14 +32,26 @@ class TeamsController extends Component {
         this.setState({isUpdatingAllTeams: true});
         teams.getAll().then(allTeams => {
             // Add any props (such as isSelected) to response from API
-            const allTeamsWithProps = allTeams.teams.map(team => {
+            const allTeamsWithProps = allTeams.map(team => {
+                const path = safeURL(team.name + "_" + team.id);
                 return Object.assign({}, team, {
-                    isSelected: false
+                    path: path,
+                    isSelected: path === this.props.params.team ? true : false
                 });
             });
             this.props.dispatch(updateAllTeams(allTeamsWithProps));
             this.setState({isUpdatingAllTeams: false});
         });
+    }
+
+    shouldComponentUpdate(nextProps) {
+        // const activeTeam = nextProps.allTeams.find(team => {
+        //     return team.path === nextProps.params.team;
+        // });
+        // if (activeTeam) {
+        //     this.props.dispatch(updateActiveTeam(activeTeam));
+        // }
+        return true;
     }
 
     handleTeamClick(clickedTeam) {
@@ -51,11 +67,20 @@ class TeamsController extends Component {
                 return team;
             }
 
+            // Toggle clicked item isSelected bool if it is already selected
+            if (clickedTeam.isSelected) {
+                return Object.assign({}, team, {
+                    isSelected: !team.isSelected
+                })
+            }
+
             // Toggled isSelected bool on selected item
             return Object.assign({}, team, {
                 isSelected: !team.isSelected
             })
         });
+        const path = safeURL(clickedTeam.name + "_" + clickedTeam.id);
+        this.props.dispatch(push(`${this.props.rootPath}/teams/${path}`));
         this.props.dispatch(updateAllTeams(allTeams));
     }
 
@@ -84,7 +109,8 @@ TeamsController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         activeTeam: state.state.teams.active,
-        allTeams: state.state.teams.all
+        allTeams: state.state.teams.all,
+        rootPath: state.state.rootPath
     }
 }
 
