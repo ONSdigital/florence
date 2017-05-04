@@ -1,52 +1,59 @@
 #!groovy
 
 node {
-    stage('Checkout') {
-        checkout scm
-        sh 'git clean -dfx'
-        sh 'git rev-parse --short HEAD > git-commit'
-        sh 'set +e && (git describe --exact-match HEAD || true) > git-tag'
-    }
+    def gopath = pwd()
 
-    def branch   = env.JOB_NAME.replaceFirst('.+/', '')
-    def revision = revisionFrom(readFile('git-tag').trim(), readFile('git-commit').trim())
+    ws("${gopath}/src/github.com/ONSdigital/florence") {
+        stage('Checkout') {
+            checkout scm
+            sh 'git clean -dfx'
+            sh 'git rev-parse --short HEAD > git-commit'
+            sh 'set +e && (git describe --exact-match HEAD || true) > git-tag'
+        }
 
-    stage('Build') {
-        if (revision.size() > 1) writeVersion(revision[1, 2, 3])
-        sh 'npm install --no-bin-links --prefix ./src/main/web/florence'
-        sh "${tool 'm3'}/bin/mvn clean package dependency:copy-dependencies"
-    }
+        def branch   = env.JOB_NAME.replaceFirst('.+/', '')
+        def revision = revisionFrom(readFile('git-tag').trim(), readFile('git-commit').trim())
 
-    stage('Image') {
-        docker.withRegistry("https://${env.ECR_REPOSITORY_URI}", { ->
-            docker.build('florence').push(revision[0])
-        })
-    }
+        stage('Build') {
+            if (revision.size() > 1) writeVersion(revision[1, 2, 3])
+            sh "GOPATH=${gopath} make"
+        }
 
-    stage('Bundle') {
-        sh sprintf('sed -i -e %s -e %s -e %s -e %s -e %s appspec.yml scripts/codedeploy/*', [
-            "s/\\\${CODEDEPLOY_USER}/${env.CODEDEPLOY_USER}/g",
-            "s/^CONFIG_BUCKET=.*/CONFIG_BUCKET=${env.S3_CONFIGURATIONS_BUCKET}/",
-            "s/^ECR_REPOSITORY_URI=.*/ECR_REPOSITORY_URI=${env.ECR_REPOSITORY_URI}/",
-            "s/^GIT_COMMIT=.*/GIT_COMMIT=${revision[0]}/",
-            "s/^AWS_REGION=.*/AWS_REGION=${env.AWS_DEFAULT_REGION}/",
-        ])
-        sh "tar -cvzf florence-${revision[0]}.tar.gz appspec.yml scripts/codedeploy"
-        sh "aws s3 cp florence-${revision[0]}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/"
-    }
+        stage('Test') {
+            sh "GOPATH=${gopath} make test"
+        }
 
-    def deploymentGroups = deploymentGroupsFor(env.JOB_NAME.replaceFirst('.+/', ''))
-    if (deploymentGroups.size() < 1) return
+        stage('Image') {
+            docker.withRegistry("https://${env.ECR_REPOSITORY_URI}", { ->
+                docker.build('florence', '--no-cache --pull --rm .').push(revision)
+            })
+        }
 
-    stage('Deploy') {
-        def appName = 'florence'
-        for (group in deploymentGroupsFor(branch)) {
-            sh sprintf('aws deploy create-deployment %s %s %s,bundleType=tgz,key=%s', [
+        stage('Bundle') {
+            sh sprintf('sed -i -e %s -e %s -e %s -e %s -e %s appspec.yml scripts/codedeploy/*', [
+                "s/\\\${CODEDEPLOY_USER}/${env.CODEDEPLOY_USER}/g",
+                "s/^CONFIG_BUCKET=.*/CONFIG_BUCKET=${env.S3_CONFIGURATIONS_BUCKET}/",
+                "s/^ECR_REPOSITORY_URI=.*/ECR_REPOSITORY_URI=${env.ECR_REPOSITORY_URI}/",
+                "s/^GIT_COMMIT=.*/GIT_COMMIT=${revision}/",
+                "s/^AWS_REGION=.*/AWS_REGION=${env.AWS_DEFAULT_REGION}/",
+            ])
+            sh "tar -cvzf florence-${revision}.tar.gz appspec.yml scripts/codedeploy"
+            sh "aws s3 cp florence-${revision}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/"
+        }
+
+        def deploymentGroups = deploymentGroupsFor(env.JOB_NAME.replaceFirst('.+/', ''))
+        if (deploymentGroups.size() < 1) return
+
+        stage('Deploy') {
+            def appName = 'florence'
+            for (group in deploymentGroups) {
+                sh sprintf('aws deploy create-deployment %s %s %s,bundleType=tgz,key=%s', [
                     "--application-name ${appName}",
                     "--deployment-group-name ${group}",
                     "--s3-location bucket=${env.S3_REVISIONS_BUCKET}",
-                    "${appName}-${revision[0]}.tar.gz",
-            ])
+                    "${appName}-${revision}.tar.gz",
+                ])
+            }
         }
     }
 }
