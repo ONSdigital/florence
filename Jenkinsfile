@@ -36,11 +36,11 @@ node {
                 "s/\\\${CODEDEPLOY_USER}/${env.CODEDEPLOY_USER}/g",
                 "s/^CONFIG_BUCKET=.*/CONFIG_BUCKET=${env.S3_CONFIGURATIONS_BUCKET}/",
                 "s/^ECR_REPOSITORY_URI=.*/ECR_REPOSITORY_URI=${env.ECR_REPOSITORY_URI}/",
-                "s/^GIT_COMMIT=.*/GIT_COMMIT=${revision}/",
+                "s/^GIT_COMMIT=.*/GIT_COMMIT=${revision[0]}/",
                 "s/^AWS_REGION=.*/AWS_REGION=${env.AWS_DEFAULT_REGION}/",
             ])
-            sh "tar -cvzf florence-${revision}.tar.gz appspec.yml scripts/codedeploy"
-            sh "aws s3 cp florence-${revision}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/"
+            sh "tar -cvzf florence-${revision[0]}.tar.gz appspec.yml scripts/codedeploy"
+            sh "aws s3 cp florence-${revision[0]}.tar.gz s3://${env.S3_REVISIONS_BUCKET}/"
         }
 
         def deploymentGroups = deploymentGroupsFor(env.JOB_NAME.replaceFirst('.+/', ''))
@@ -53,7 +53,7 @@ node {
                     "--application-name ${appName}",
                     "--deployment-group-name ${group}",
                     "--s3-location bucket=${env.S3_REVISIONS_BUCKET}",
-                    "${appName}-${revision}.tar.gz",
+                    "${appName}-${revision[0]}.tar.gz",
                 ])
             }
         }
