@@ -182,8 +182,8 @@ function markdownEditor() {
     converter.hooks.chain("preBlockGamut", function (text) {
         var newText = text.replace(/(<ons-interactive\surl="([-A-Za-z0-9+&@#/%?=~_|!:,.;()*$]+)"\s?(?:\s?full-width="(.*[^"])")?\/>)/ig, function (match) {
             var path = $(match).attr('url');
-            var fullWidth = $(match).attr('full-width');
-            var fullWidthText = fullWidth ? 'display="full-width"' : '';
+            var fullWidth = $(match).attr('full-width') || "";
+            var fullWidthText = fullWidth == "true" ? 'display="full-width"' : '';
             return '[interactive url="' + path + '" ' + fullWidthText + ']';
         });
         return newText;
