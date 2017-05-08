@@ -17194,7 +17194,19 @@ if (navigator.serviceWorker) {
     }).catch(function(error) {
         console.log('ServiceWorker registration failed:', error);
     });
+
+    // Remove old service worker - this code should be able to removed in a month or two (once we know each user has logged into the Go Florence app)
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+            if (registration.scope === window.location.origin + "/florence/") {
+                registration.unregister();
+                console.log("Old service worker removed:", registration);
+            }
+        }
+    });
+
 }
+
 /**
  *  A simple jQuery accordion
  *  Requires a container ('js-accordion'), a title ('js-accordion__title) and the content ('js-accordion__content')
