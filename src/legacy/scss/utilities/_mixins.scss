@@ -1,0 +1,23 @@
+/* Create vertical utility classes - enough lineheight multiples to fill the height of Florence */
+@mixin verticalSpacingUtility($property) {
+    @for $i from 0 through 42 {
+        .#{$property}-top--#{$i} {
+            #{$property}-top: ($lineheight * $i) !important;
+        }
+        .#{$property}-bottom--#{$i} {
+            #{$property}-bottom: ($lineheight * $i) !important;
+        }
+    }
+}
+
+/* Create horizontal utility classes - a slightly random maximum used with a guesstimate of how much we'll need */
+@mixin horizontalSpacingUtility($property) {
+    @for $i from 0 through 50 {
+        .#{$property}-right--#{$i} {
+            #{$property}-right: ($gutter * $i) !important;
+        }
+        .#{$property}-left--#{$i} {
+            #{$property}-left: ($gutter * $i) !important;
+        }
+    }
+}

@@ -1,12 +1,7 @@
-FROM onsdigital/java-node-component
+FROM ubuntu:16.04
 
-# Add the build artifacts
-WORKDIR /usr/src
-ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
-ADD ./target/web /usr/src/target/web
+WORKDIR /app/
 
-# Set the entry point
-ENTRYPOINT java -Xmx2048m \
-          -Drestolino.files="target/web" \
-          -Drestolino.packageprefix=com.github.onsdigital.florence.api \
-          -jar target/*-jar-with-dependencies.jar
+COPY ./build/florence .
+
+ENTRYPOINT ./florence
