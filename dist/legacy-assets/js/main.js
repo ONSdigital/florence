@@ -4569,6 +4569,130 @@ function uploadFile(collectionId, data, field, idField, lastIndex, downloadExten
     });
 }
 
+function forceContent(collectionId) {
+
+    // check user is logged in. userType wont be set unless logged in
+    if (!localStorage.userType) {
+        return;
+    }
+
+    // open the modal
+    var modal = templates.forceContentModal;
+    $('.wrapper').append(modal);
+
+    logForceContentAction();
+
+    // on save
+    $('#force-content-json-form').submit(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var json = this[0].value;
+
+        if (!json) {
+            sweetAlert("Please insert JSON");
+            return;
+        }
+
+        // is it possible to parse the JSON to get the uri
+        if (!tryParseJSON(json)) {
+            return;
+        }
+        var content = JSON.parse(json);
+        var uri = content.uri;
+
+        // if no uri throw an alert
+        if (!uri) {
+            sweetAlert("It doesn't look like the JSON input contains a uri. Please check");
+            return;
+        }
+
+        var safePath = checkPathSlashes(uri);
+
+        $.ajax({
+            url: "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json",
+            dataType: 'json',
+            contentType: 'application/json',
+            type: 'POST',
+            data: json,
+            success: function () {
+                sweetAlert("Content created", "", "success");
+                $('.overlay').remove();
+                viewCollections(collectionId);
+
+                console.log('-----------------------------');
+                console.log('CONTENT CREATED \nuri: ', safePath + '\n', JSON.parse(json));
+                console.log('-----------------------------');
+
+            },
+            error: function(e) {
+                sweetAlert(e.responseJSON.message);
+            }
+        });
+    });
+
+    // cancel button
+    $('.btn-modal-cancel').off().click(function () {
+        $('.overlay').remove();
+    });
+
+}
+
+
+function tryParseJSON (jsonString){
+    try {
+        var o = JSON.parse(jsonString);
+
+        // Handle non-exception-throwing cases:
+        // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
+        // but... JSON.parse(null) returns null, and typeof null === "object",
+        // so we must check for that, too. Thankfully, null is falsey, so this suffices:
+        if (o && typeof o === "object") {
+            return o;
+        }
+    }
+    catch (e) {
+        sweetAlert("That doesn't look like valid JSON. Please check");
+    }
+
+    return false;
+};
+
+function forceJSONContent(code, collectionId) {
+    var d = new Date(),
+        e = new Date();
+    var minsSinceMidnight = parseInt(((e - d.setHours(0,0,0,0)) / 1000) / 60);
+
+    if (!code || !collectionId) {
+        console.error('Missing arguments! You should pass two arguments - code, collectionID');
+        return;
+    }
+
+    if (code != minsSinceMidnight) {
+        console.error('Code error');
+        return;
+    }
+
+    forceContent(collectionId)
+}
+
+function logForceContentAction() {
+
+    var logData = {
+        user: this.user = localStorage.getItem('loggedInAs'),
+        trigger: {
+            elementClasses: ["Force JSON Content function invoked"]
+        }
+    };
+
+    $.ajax({
+        url: "/zebedee/clickEventLog",
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify(logData),
+        async: true,
+    });
+}
 /**
  * Gives the last position when on a page
  */
@@ -6272,11 +6396,12 @@ function loadEmbedIframe(onSave) {
     }
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
+        var fullWidth = $('input#full-width-checkbox').is(':checked');
         if (!embedUrl) {
             console.log("No url added");
             sweetAlert('URL field is empty', 'Please add a url and save again');
         } else {
-            onSave('<ons-interactive url="' + embedUrl + '" />');
+            onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
             modal.remove();
         }
     }
@@ -7250,9 +7375,11 @@ function markdownEditor() {
 
     // output interactive tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {
-        var newText = text.replace(/(<ons-interactive\surl="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+        var newText = text.replace(/(<ons-interactive\surl="([-A-Za-z0-9+&@#/%?=~_|!:,.;()*$]+)"\s?(?:\s?full-width="(.*[^"])")?\/>)/ig, function (match) {
             var path = $(match).attr('url');
-            return '[interactive url="' + path + '" ]';
+            var fullWidth = $(match).attr('full-width') || "";
+            var fullWidthText = fullWidth == "true" ? 'display="full-width"' : '';
+            return '[interactive url="' + path + '" ' + fullWidthText + ']';
         });
         return newText;
     });
@@ -11488,7 +11615,7 @@ function setShortcuts(field, callback) {
     var runningVersion,
         userWarned = false;
     function checkVersion() {
-        return fetch('dist/legacy-assets/version.json')
+        return fetch('/florence/dist/legacy-assets/version.json')
             .then(function(response) {
                 return response.json();
             })
@@ -11509,6 +11636,10 @@ function setShortcuts(field, callback) {
         // Get the latest version and alert user if it differs from version stored on load (but only if the user hasn't been warned already, so they don't get spammed after being warned already)
         if (!userWarned) {
             checkVersion().then(function (response) {
+                if (response instanceof TypeError) {
+                    // FIXME do something more useful with this
+                    return
+                }
                 if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
                     console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
                     swal({
@@ -13195,7 +13326,7 @@ function compendiumDataEditor(collectionId, data) {
     var editNav = $('.edit-nav');
     editNav.off(); // remove any existing event handlers.
 
-    editNav.on('click', '#save', function () {
+    editNav.on('click', '.btn-edit-save', function () {
         save();
         updateContent(collectionId, data.uri, JSON.stringify(data));
     });
