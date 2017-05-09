@@ -42,9 +42,12 @@ func main() {
 
 	/*
 		NOTE:
-		If there's any issues with this Florence server proxying redirects from either Babbage or Zebedee then the code in the previous Java Florence server might give some clues for a solution: https://github.com/ONSdigital/florence/blob/b13df0708b30493b98e9ce239103c59d7f409f98/src/main/java/com/github/onsdigital/florence/filter/Proxy.java#L125-L135
+		If there's any issues with this Florence server proxying redirects
+		from either Babbage or Zebedee then the code in the previous Java
+		Florence server might give some clues for a solution: https://github.com/ONSdigital/florence/blob/b13df0708b30493b98e9ce239103c59d7f409f98/src/main/java/com/github/onsdigital/florence/filter/Proxy.java#L125-L135
 
-		The code has purposefully not been included in this Go replacement because we can't see what issue it's fixing and whether it's necessary.
+		The code has purposefully not been included in this Go replacement
+		because we can't see what issue it's fixing and whether it's necessary.
 	*/
 
 	babbageURL, err := url.Parse(babbageURL)
