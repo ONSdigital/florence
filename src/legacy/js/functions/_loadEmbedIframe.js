@@ -14,11 +14,12 @@ function loadEmbedIframe(onSave) {
     }
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
+        var fullWidth = $('input#full-width-checkbox').is(':checked');
         if (!embedUrl) {
             console.log("No url added");
             sweetAlert('URL field is empty', 'Please add a url and save again');
         } else {
-            onSave('<ons-interactive url="' + embedUrl + '" />');
+            onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
             modal.remove();
         }
     }

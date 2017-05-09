@@ -15,8 +15,7 @@ import (
 func TestMain(t *testing.T) {
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
-		rdr := bytes.NewReader([]byte(``))
-		request, err := http.NewRequest("GET", "/florence/dist/js/florence.bundle.js", rdr)
+		request, err := http.NewRequest("GET", "/florence/dist/js/florence.bundle.js", nil)
 		request.URL.RawQuery = ":uri=js/florence.bundle.js"
 		So(err, ShouldBeNil)
 		request.Header.Set("Accept-Language", "en")
