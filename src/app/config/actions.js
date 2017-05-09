@@ -28,7 +28,7 @@ export function updateAllTeams(allTeams) {
 
 export function updateActiveTeam(activeTeam) {
     return {
-        type: UPDATE_ALL_TEAMS,
+        type: UPDATE_ACTIVE_TEAM,
         activeTeam: activeTeam
     }
 }
