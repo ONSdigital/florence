@@ -45,19 +45,31 @@ class TeamsController extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        // const activeTeam = nextProps.allTeams.find(team => {
-        //     return team.path === nextProps.params.team;
-        // });
-        // if (activeTeam) {
-        //     this.props.dispatch(updateActiveTeam(activeTeam));
-        // }
+        // Don't update component if all teams haven't been fetched yet
+        if (!nextProps.allTeams) {
+            return false;
+        }
+
+        const activeTeam = nextProps.allTeams.find(team => {
+            return team.path === nextProps.params.team;
+        });
+
+        // Update with new active team
+        if (activeTeam && nextProps.activeTeam !== activeTeam) {
+            this.props.dispatch(updateActiveTeam(activeTeam));
+        }
         return true;
     }
 
     handleTeamClick(clickedTeam) {
+        // Make no change if selected an already selected team
+        if (clickedTeam.isSelected) {
+            return;
+        }
+
         const allTeams = this.props.allTeams.map(team => {
             // Deselect currently selected team
-            if (team.isSelected) {
+            if (team.isSelected && team.id !== clickedTeam.id) {
                 return Object.assign({}, team, {
                     isSelected: !team.isSelected
                 })
@@ -65,13 +77,6 @@ class TeamsController extends Component {
 
             if (team.id !== clickedTeam.id) {
                 return team;
-            }
-
-            // Toggle clicked item isSelected bool if it is already selected
-            if (clickedTeam.isSelected) {
-                return Object.assign({}, team, {
-                    isSelected: !team.isSelected
-                })
             }
 
             // Toggled isSelected bool on selected item
