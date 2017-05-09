@@ -1273,7 +1273,7 @@ templates['editorTopics'] = template({"1":function(depth0,helpers,partials,data,
     + "</button>\n    </div>\n  </div>\n</div>";
 },"useData":true,"useDepths":true});
 templates['embedIframe'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<div class='modal'>\n    <div class='modal-box'>\n        <form class=\"embed__form\">\n            <label for=\"embed-url\" class=\"embed__label\">Enter url of interactive content</label>\n            <input id=\"embed-url\" class=\"embed__input\" type=\"text\" placeholder=\"eg 'https://neighbourhood.statistics.gov.uk/interactive-chart.html'\">\n        </form>\n        <div class='modal-nav'>\n            <button class='btn btn--positive btn-embed-save'>Save</button>\n            <button class='btn btn-embed-cancel'>Cancel</button>\n        </div>\n    </div>\n</div>";
+    return "<div class='modal'>\n    <div class='modal-box'>\n        <form class=\"embed__form\">\n            <label for=\"embed-url\" class=\"embed__label\">Enter url of interactive content</label>\n            <input id=\"embed-url\" class=\"embed__input\" type=\"text\" placeholder=\"eg 'https://neighbourhood.statistics.gov.uk/interactive-chart.html'\">\n            <div>\n                <label for=\"full-width-checkbox\">Make interactive full (wrapper) width</label>\n                <input id=\"full-width-checkbox\" type=\"checkbox\" name=\"full-width\" />\n            </div>\n        </form>\n        <div class='modal-nav'>\n            <button class='btn btn--positive btn-embed-save'>Save</button>\n            <button class='btn btn-embed-cancel'>Cancel</button>\n        </div>\n    </div>\n</div>";
 },"useData":true});
 templates['equationBuilder'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
@@ -1286,6 +1286,9 @@ templates['equationBuilder'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main"
 },"useData":true});
 templates['florence'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class=\"wrapper\">\n  <nav class=\"js-nav\">\n  </nav>\n  <div class=\"section\" id=\"main\">\n  </div>\n</div>";
+},"useData":true});
+templates['forceContentModal'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"overlay\" id=\"js-modal-select\">\n    <div class='modal-select'>\n        <div class=\"modal-select__head\">\n            <h1 class=\"modal-select__title\" style=\"width:100%\">Insert JSON</h1>\n        </div>\n        <form id=\"force-content-json-form\">\n            <div style=\"box-sizing: border-box;width:100%;display:block;padding: 0 21px;\">\n                <div class='json-input'>\n                    <label for='force-content-json-field' class='uri-input__label'>JSON</label>\n                    <textarea id=\"force-content-json-field\" rows=\"24\" cols=\"50\"></textarea>\n                </div>\n            </div>\n            <div class='modal-nav'>\n                <button type=\"submit\" class='btn btn--primary btn-modal-save'>Save</button>\n                <button class='btn btn-modal-cancel'>Cancel</button>\n            </div>\n        </form>\n    </div>\n</div>";
 },"useData":true});
 templates['iframeNav'] = template({"1":function(depth0,helpers,partials,data) {
     return "    <label for='latest' class='latest__label'>Latest release</label>\n    <input id='latest' class='latest__checkbox' type='checkbox' value='value' checked='checked'>\n";
