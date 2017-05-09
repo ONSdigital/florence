@@ -35,12 +35,12 @@ test('Password show/hide button text toggles on click', () => {
     const component = shallow(
         <Input {...props}/>
     )
-    const buttonText = component.find('button').text();
-    component.find('button').simulate('click', { 
+    const buttonText = component.find('.btn--password').text();
+    component.find('.btn--password').simulate('click', { 
         stopPropagation: ()=> undefined,
         preventDefault: () => {}
     });
-    expect(component.find('button').text()).not.toEqual(buttonText);
+    expect(component.find('.btn--password').text()).not.toEqual(buttonText);
 });
 
 test('Password show/hide button toggles input type state between "password" and "text"', () => {
@@ -53,7 +53,7 @@ test('Password show/hide button toggles input type state between "password" and 
         <Input {...props}/>
     )
     expect(component.state("type")).toEqual("password");
-    component.find('button').simulate('click', { 
+    component.find('.btn--password').simulate('click', { 
         stopPropagation: ()=> undefined,
         preventDefault: () => {}
     });
