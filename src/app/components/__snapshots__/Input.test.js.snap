@@ -42,11 +42,14 @@ exports[`Password prop creates a password input 1`] = `
     onChange={undefined}
     type="password"
   />
-  <button
+  <span
     className="btn btn--password"
     onClick={[Function]}
+    onKeyPress={[Function]}
+    role="button"
+    tabIndex="0"
   >
     Show
-  </button>
+  </span>
 </div>
 `;
