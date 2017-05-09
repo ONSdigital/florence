@@ -350,7 +350,7 @@ function setupFlorence() {
     var runningVersion,
         userWarned = false;
     function checkVersion() {
-        return fetch('dist/legacy-assets/version.json')
+        return fetch('/florence/dist/legacy-assets/version.json')
             .then(function(response) {
                 return response.json();
             })
