@@ -1,4 +1,5 @@
 {
+  "name": "florence",
   "description": "Florence javascript build",
   "license": "MIT",
   "repository": {
@@ -14,7 +15,6 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
     "jest": "^19.0.2",
-    "pre-commit": "^1.2.2",
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4",
     "regenerator-runtime": "^0.10.5"
@@ -29,10 +29,6 @@
     "test-watch": "export NODE_ENV=testing && jest --watch --no-cache",
     "postinstall": "npm run build-refactored"
   },
-  "pre-commit": [
-    "build",
-    "test"
-  ],
   "dependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
