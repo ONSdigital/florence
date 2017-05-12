@@ -116,7 +116,7 @@ func DistCssMainCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/css/main.css", size: 218577, mode: os.FileMode(420), modTime: time.Unix(1494256536, 0)}
+	info := bindataFileInfo{name: "../dist/css/main.css", size: 218577, mode: os.FileMode(420), modTime: time.Unix(1494424852, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -136,7 +136,7 @@ func DistImgSpritePng() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/img/sprite.png", size: 9553, mode: os.FileMode(420), modTime: time.Unix(1494256536, 0)}
+	info := bindataFileInfo{name: "../dist/img/sprite.png", size: 9553, mode: os.FileMode(420), modTime: time.Unix(1494424852, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -156,7 +156,7 @@ func DistJsFlorenceBundleJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/js/florence.bundle.js", size: 3017796, mode: os.FileMode(420), modTime: time.Unix(1494256536, 0)}
+	info := bindataFileInfo{name: "../dist/js/florence.bundle.js", size: 3017796, mode: os.FileMode(420), modTime: time.Unix(1494424852, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -176,7 +176,7 @@ func DistLegacyAssetsCssMainMinCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/legacy-assets/css/main.min.css", size: 215631, mode: os.FileMode(420), modTime: time.Unix(1494256532, 0)}
+	info := bindataFileInfo{name: "../dist/legacy-assets/css/main.min.css", size: 215631, mode: os.FileMode(420), modTime: time.Unix(1494424848, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -196,7 +196,7 @@ func DistLegacyAssetsIndexHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/legacy-assets/index.html", size: 3801, mode: os.FileMode(420), modTime: time.Unix(1494256532, 0)}
+	info := bindataFileInfo{name: "../dist/legacy-assets/index.html", size: 3801, mode: os.FileMode(420), modTime: time.Unix(1494424848, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -236,7 +236,7 @@ func DistLegacyAssetsJsMainJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/legacy-assets/js/main.js", size: 619338, mode: os.FileMode(420), modTime: time.Unix(1494257137, 0)}
+	info := bindataFileInfo{name: "../dist/legacy-assets/js/main.js", size: 619338, mode: os.FileMode(420), modTime: time.Unix(1494577748, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -256,7 +256,7 @@ func DistLegacyAssetsJsTemplatesJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/legacy-assets/js/templates.js", size: 366718, mode: os.FileMode(420), modTime: time.Unix(1494256532, 0)}
+	info := bindataFileInfo{name: "../dist/legacy-assets/js/templates.js", size: 366718, mode: os.FileMode(420), modTime: time.Unix(1494512832, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -276,7 +276,7 @@ func DistLegacyAssetsVersionJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/legacy-assets/version.json", size: 50, mode: os.FileMode(420), modTime: time.Unix(1494256532, 0)}
+	info := bindataFileInfo{name: "../dist/legacy-assets/version.json", size: 50, mode: os.FileMode(420), modTime: time.Unix(1494424848, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -296,7 +296,7 @@ func DistManifestJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/manifest.json", size: 259, mode: os.FileMode(420), modTime: time.Unix(1494256536, 0)}
+	info := bindataFileInfo{name: "../dist/manifest.json", size: 259, mode: os.FileMode(420), modTime: time.Unix(1494424852, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -316,7 +316,7 @@ func DistRefactoredHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/refactored.html", size: 295, mode: os.FileMode(420), modTime: time.Unix(1494256536, 0)}
+	info := bindataFileInfo{name: "../dist/refactored.html", size: 295, mode: os.FileMode(420), modTime: time.Unix(1494424852, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -336,7 +336,7 @@ func DistServiceWorkerJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/service-worker.js", size: 139, mode: os.FileMode(420), modTime: time.Unix(1494256536, 0)}
+	info := bindataFileInfo{name: "../dist/service-worker.js", size: 139, mode: os.FileMode(420), modTime: time.Unix(1494424852, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
