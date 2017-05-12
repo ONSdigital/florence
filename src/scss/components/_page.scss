@@ -1,0 +1,346 @@
+/** PAGES (including icons and list of pages) **/
+
+.page {
+
+    &__item {
+        display: inline-block;
+        position: relative;
+        padding-left: $gutter + 10;
+        &:hover {
+            cursor: pointer;
+            color: $mine-shaft;
+            font-weight: 400;
+        }
+        &:after {
+            content: '';
+            width: 20px;
+            height: 22px;
+            position: absolute;
+            left: 0;
+            top: -5px;
+            background: transparent url(../img/sprite.png) no-repeat -7px 0;
+            background-size: 32px auto;
+            display: block;
+            font-size: 9px;
+            font-weight: normal;
+            color: #555;
+            padding: 6px 3px;
+        }
+
+        &--home_page {
+            &:after {
+                content: 'HO';
+            }
+        }
+        &--home_page_census {
+            &:after {
+                content: 'CS';
+            }
+        }
+        &--taxonomy_landing_page {
+            &:after {
+                content: 'LP';
+            }
+        }
+        &--product_page {
+            &:after {
+                content: 'PP';
+            }
+        }
+        &--article {
+            &:after {
+                content: 'AR';
+            }
+        }
+        &--article_download {
+            &:after {
+                content: 'AP';
+            }
+        }
+        &--bulletin {
+            &:after {
+                content: 'SB';
+            }
+        }
+        &--timeseries {
+            &:after {
+                content: 'TS';
+            }
+        }
+        &--compendium_landing_page {
+            &:after {
+                content: 'CO';
+            }
+        }
+        &--compendium_chapter {
+            &:after {
+                content: 'CH';
+            }
+        }
+        &--compendium_data {
+            &:after {
+                content: 'CD';
+            }
+        }
+        &--static_landing_page {
+            &:after {
+                content: 'SL';
+            }
+        }
+        &--static_page {
+            &:after {
+                content: 'SP';
+            }
+        }
+        &--static_article {
+            &:after {
+                content: 'SA';
+            }
+        }
+        &--static_qmi {
+            &:after {
+                content: 'QM';
+            }
+        }
+        &--static_foi {
+            &:after {
+                content: 'FO';
+            }
+        }
+        &--static_adhoc {
+            &:after {
+                content: 'AH';
+            }
+        }
+        &--static_methodology {
+            &:after {
+                content: 'ME';
+            }
+        }
+        &--static_methodology_download {
+            &:after {
+                content: 'MP';
+            }
+        }
+        &--dataset_landing_page {
+            &:after {
+                content: 'DA';
+            }
+        }
+        &--dataset {
+            &:after {
+                content: 'DS';
+            }
+        }
+        &--timeseries_dataset {
+            &:after {
+                content: 'DB';
+            }
+        }
+        &--release {
+            &:after {
+                content: 'RE';
+            }
+        }
+        &--visualisation {
+            &:after {
+                content: 'VIS';
+            }
+        }
+        &--directory {
+            &:after {
+                background: transparent url(../img/sprite.png) no-repeat -4px -418px;
+                background-size: 30px auto;
+                height: 15px;
+            }
+
+            &.selected:after {
+                background: transparent url(../img/sprite.png) no-repeat -4px -445px;
+                background-size: 30px auto;
+                height: 15px;
+            }
+        }
+    }
+
+    &__container {
+        &.selected {
+            padding: $lineheight $gutter;
+            background-color: $concrete;
+            color: $mine-shaft;
+            font-weight: 400;
+            display: block;
+            margin-left: -$gutter;
+
+            overflow: hidden;
+        }
+
+
+        /* Page is marked to be deleted */
+
+        // Shows in browse tree, not selected
+        &.deleted .page__item {
+            color: lighten($mine-shaft, 20%);
+            text-decoration: line-through;
+        }
+        // Selected and deleted
+        &.selected.deleted {
+            color: lighten($mine-shaft, 20%);
+            background-color: darken($concrete, 22%);
+        }
+        // Removed by JS once animation is finished - so we only animate during delete/undo delete toggle, not on every .selected item
+        &.selected.animating {
+            transition: all 0.3s ease;
+        }
+    }
+
+    &__buttons {
+        margin-top: $lineheight;
+        button {
+            margin-top: 0;
+            margin-right: $gutter;
+            margin-left: 0;
+            &:first-child {
+                margin-left: 0;
+            }
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        &--list {
+            display: none; // JS toggles to show when selected
+            position: relative; // for hamburger icon positioning
+
+            &.selected {
+                display: block !important;
+            }
+
+            &.deleted {
+                display: none !important;
+            }
+        }
+    }
+
+    &__children {
+        display: none;
+    }
+
+    &__menu {
+        position: absolute;
+        left: calc(-100% - #{$gutter*3});
+        transition: 0.5s ease-in-out;
+        top: -($lineheight / 2);
+        padding: ($lineheight / 2) $gutter;
+        //background-color: $iron;
+
+        &.active {
+            left: -$gutter;
+        }
+    }
+
+    // Any elements/buttons that need to be shifted to the side whilst the menu comes onto canvas
+    &__primary-buttons {
+        opacity: 1;
+        transition: 0.3s ease-in-out 0.1s;
+
+        &.active {
+            opacity: 0;
+            transition: 0.2s ease-in-out;
+        }
+    }
+}
+
+/* List of pages (eg collection details and browse tree) */
+.page-list {
+    position: relative;
+
+    &__item {
+        list-style: none;
+        margin: $lineheight 0;
+        padding: 0 $gutter;
+        position: relative;
+    }
+
+    &__item.selected {
+        margin-top: $lineheight - 4;
+        margin-right: -4px;
+        margin-left: -4px;
+        padding-top: $lineheight;
+        padding-bottom: $lineheight - 4;
+        padding-right: $gutter;
+        padding-left: $gutter;
+        background-color: $concrete;
+        color: $mine-shaft;
+        font-weight: 400;
+        border: 4px solid $gray-chateau;
+    }
+
+
+    // Kept as silent classing because it represents the structure needed for the browse tree easily
+    &--tree {
+
+        &.active {
+            display: block;
+        }
+
+        ul.active {
+            display: block;
+        }
+
+        li {
+            margin: 0;
+            padding: $lineheight 0 0 0;
+            list-style: none;
+
+            ul {
+                display: none;
+                position: relative;
+                padding-left: $gutter;
+                &.active > ul {
+                    display: block;
+                    padding-left: $gutter * 2;
+                }
+            }
+
+            &.selected {
+                padding-left: 0;
+            }
+
+            li.selected {
+                &:after {
+                    margin-left: -$gutter;
+                }
+            }
+
+            li li.selected {
+                &:after {
+                    margin-left: -$gutter * 2;
+                }
+            }
+
+            li li li.selected {
+                &:after {
+                    margin-left: -$gutter * 3;
+                }
+            }
+
+            li li li li.selected {
+                &:after {
+                    margin-left: -$gutter * 4;
+                }
+            }
+
+            li li li li li.selected {
+                &:after {
+                    margin-left: -$gutter * 5;
+                }
+            }
+
+            li li li li li li.selected {
+                &:after {
+                    margin-left: -$gutter * 6;
+                }
+            }
+        }
+    }
+}

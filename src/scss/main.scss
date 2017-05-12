@@ -1,0 +1,81 @@
+/** To be refactored **/
+
+@import "partials/reset";
+@import "partials/colour-palette";
+@import "partials/fonts";
+@import "elements/typography"; // In new directory
+@import "utilities/grid"; // In new directory
+//@import "partials/elements";
+@import "partials/base";
+//@import "partials/chart-builder";
+//@import "partials/utilities";
+
+//For code that needs refactoring - empty regularly
+@import "partials/shame";
+
+//Views
+@import "partials/collections";
+@import "partials/workspace";
+@import "partials/publish";
+
+//JQUI
+//@import "partials/jqui";
+
+/** Use these directories for refactored SCSS **/
+
+// Elements
+@import "elements/tables";
+@import "elements/nav";
+@import "elements/buttons";
+@import "elements/forms";
+@import "elements/inputs";
+
+// Components
+@import "components/accordion";
+@import "components/network-status";
+@import "components/slider";
+@import "components/builder";
+@import "components/page";
+// @import "components/tabs";
+@import "components/icons";
+@import "components/markdown-editor";
+// @import "components/modal";
+
+// Utilities
+@import "utilities/mixins";
+@import "utilities/panels";
+@import "utilities/padding";
+@import "utilities/margin";
+@import "utilities/display";
+@import "utilities/utilities";
+
+
+/* proposed structure:
+
+SCSS
+	Elements
+		buttons
+		tables
+		lists
+		inputs
+		type
+
+
+	Components
+		nav
+		iframe
+		utilities
+		icons
+		accordions
+		show/hide
+		tabs
+		tree
+		slider
+
+	Utilities
+		workspace??
+		grid
+		utilities
+		screens??
+
+*/
