@@ -53,6 +53,7 @@ func main() {
 			log.Debug("timeout too low, setting to 10s", log.Data{"timeout": timeoutSeconds})
 			timeoutSeconds = 10
 		}
+		log.Debug("setting HTTP timeout", log.Data{"timeout": timeoutSeconds})
 	}
 
 	log.Namespace = "florence"
