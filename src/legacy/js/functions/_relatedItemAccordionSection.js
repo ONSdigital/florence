@@ -167,15 +167,39 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         //Modal click events
         $('.btn-uri-cancel').off().one('click', function () {
             $('.modal').remove();
-            //createWorkspace(data.uri, collectionId, 'edit');
         });
 
         $('.btn-uri-get').click(function () {
-            var pastedUrl = $('#uri-input').val();
-            var dataUrl = checkPathParsed(pastedUrl);
+            var rawURL = $('#uri-input').val();
+            var isRelativeURL = (rawURL.indexOf('://') < 0);
+            var parsedURL = new URL(rawURL, location.origin);
+            var isExternal = parsedURL.hostname !== location.hostname || parsedURL.hostname.match("http(?:s?):\/\/(?:.+\.)?(?:ons\.gov\.uk|onsdigital\.co\.uk)(\/?.*)"); // Comparing location.hostname is needed so that localhost URLs can still work locally
             var latestCheck = $('input[id="latest"]').prop('checked');
-            getPage(data, templateData, field, latestCheck, dataUrl);
-            $('.modal').remove();
+
+            if (isExternal && !isRelativeURL) {
+                sweetAlert("Please only add links to the ONS website");
+                return;
+            }
+
+            getPage(data, templateData, field, latestCheck, parsedURL.pathname, function(error) {
+                // URL has failed to be found in published content, give user a decision on whether to still add the link
+                swal({
+                    title: "The URL you've added couldn't be found on the website",
+                    text: "This content is either unpublished or may not exist at all, would you like to add a link to it anyway?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, add the link",
+                    cancelButtonText: "No"
+                }, function(hasConfirmed) {
+                    if (hasConfirmed) {
+                        var templateTitle = "[Unpublished/broken]\n" + parsedURL.href;
+                        data[field].push({uri: parsedURL.pathname});
+                        templateData[field].push({uri: parsedURL.pathname, description: {title: templateTitle}});
+                        saveContentAndRefreshSection();
+                    }
+                    $('.modal').remove();
+                });
+            });
         });
 
         $('.btn-uri-browse').off().one('click', function () {
@@ -213,13 +237,14 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                 latestCheck = $('input[id="latest"]').prop('checked');
                 $('.iframe-nav').remove();
                 $('.modal-background').remove();
-                getPage(data, templateData, field, latestCheck, dataUrl);
+                getPage(data, templateData, field, latestCheck, dataUrl, function(error) {
+                    console.error('Error getting data for page \n' + dataUrl + '/data');
+                });
             });
         });
     }
 
-    function getPage(data, templateData, field, latestCheck, dataUrl) {
-
+    function getPage(data, templateData, field, latestCheck, dataUrl, onError) {
         var dataUrlData = dataUrl + "/data";
         var latestUrl;
         if (latestCheck) {
@@ -272,7 +297,6 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                 }
                 else {
                     sweetAlert("This is not a valid document");
-                    //createWorkspace(data.uri, collectionId, 'edit');
                     return;
                 }
 
@@ -293,11 +317,9 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                 templateData[field].push(viewModel);
 
                 saveContentAndRefreshSection();
-                //saveRelated(collectionId, data.uri, data, templateData, field, idField);
-
             },
-            error: function () {
-                console.log('No page data returned');
+            error: function(error) {
+                onError(error);
             }
         });
     }
@@ -319,7 +341,8 @@ function resolvePageTitlesThenRefresh(collectionId, data, templateData, field, i
                 dfd.resolve();
             },
             error = function () {
-                sweetAlert("Error", field + ' address: ' + eachUri + ' is not found.', "error");
+                console.warn("Couldn't resolve URI \n" + templateData[field][index].uri);
+                templateData[field][index].description.title = "[Unpublished/broken]\n" + location.host + templateData[field][index].uri;
                 dfd.resolve();
             }
         );
