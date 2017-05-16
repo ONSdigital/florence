@@ -10493,15 +10493,10 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
             var rawURL = $('#uri-input').val();
             var isRelativeURL = (rawURL.indexOf('://') < 0);
             var parsedURL = new URL(rawURL, location.origin);
-            var isExternal = parsedURL.hostname !== location.hostname || parsedURL.hostname.match("http(?:s?):\/\/(?:.+\.)?(?:ons\.gov\.uk|onsdigital\.co\.uk)(\/?.*)"); // Comparing location.hostname is needed so that localhost URLs can still work locally
+            var isExternal = parsedURL.hostname !== location.hostname && !parsedURL.href.match("http(?:s?):\/\/(?:.+\.)?(?:ons\.gov\.uk|onsdigital\.co\.uk)(\/?.*)"); // Comparing location.hostname is needed so that localhost URLs can still work locally
             var latestCheck = $('input[id="latest"]').prop('checked');
 
-            if (isExternal && !isRelativeURL) {
-                sweetAlert("Please only add links to the ONS website");
-                return;
-            }
-
-            getPage(data, templateData, field, latestCheck, parsedURL.pathname, function(error) {
+            function onError() {
                 // URL has failed to be found in published content, give user a decision on whether to still add the link
                 swal({
                     title: "The URL you've added couldn't be found on the website",
@@ -10512,14 +10507,25 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     cancelButtonText: "No"
                 }, function(hasConfirmed) {
                     if (hasConfirmed) {
-                        var templateTitle = "[Unpublished/broken]\n" + parsedURL.href;
+                        var templateTitle = "[Unpublished/broken]\n" + parsedURL.pathname;
                         data[field].push({uri: parsedURL.pathname});
                         templateData[field].push({uri: parsedURL.pathname, description: {title: templateTitle}});
                         saveContentAndRefreshSection();
                     }
                     $('.modal').remove();
                 });
-            });
+            }
+
+            function onSuccess() {
+                $('.modal').remove();
+            }
+
+            if (isExternal && !isRelativeURL) {
+                sweetAlert("Please only add links to the ONS website");
+                return;
+            }
+
+            getPage(data, templateData, field, latestCheck, parsedURL.pathname, onError, onSuccess);
         });
 
         $('.btn-uri-browse').off().one('click', function () {
@@ -10564,7 +10570,7 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         });
     }
 
-    function getPage(data, templateData, field, latestCheck, dataUrl, onError) {
+    function getPage(data, templateData, field, latestCheck, dataUrl, onError, onSuccess) {
         var dataUrlData = dataUrl + "/data";
         var latestUrl;
         if (latestCheck) {
@@ -10635,8 +10641,11 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     viewModel.description.edition = page.description.edition;
                 }
                 templateData[field].push(viewModel);
-
                 saveContentAndRefreshSection();
+
+                if (onSuccess) {
+                    onSuccess();
+                }
             },
             error: function(error) {
                 onError(error);
@@ -10662,7 +10671,7 @@ function resolvePageTitlesThenRefresh(collectionId, data, templateData, field, i
             },
             error = function () {
                 console.warn("Couldn't resolve URI \n" + templateData[field][index].uri);
-                templateData[field][index].description.title = "[Unpublished/broken]\n" + location.host + templateData[field][index].uri;
+                templateData[field][index].description.title = "[Unpublished/broken]\n" + templateData[field][index].uri;
                 dfd.resolve();
             }
         );
