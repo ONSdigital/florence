@@ -5598,6 +5598,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.hasLineBreak = false;
         chart.yMin = $('#chart-min').val();
         chart.yMax = $('#chart-max').val();
+        chart.yAxisInterval = $('#chart-interval').val();
 
         if(chart.yMin>0){
             chart.hasLineBreak = true;
@@ -5640,6 +5641,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.yAxisMin = getMin(json);
         chart.yAxisMax = getMax(json);
+        //chart.yAxisInterval = $('#chart-interval').val();
 
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
