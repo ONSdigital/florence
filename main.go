@@ -16,7 +16,7 @@ import (
 	"github.com/gorilla/pat"
 )
 
-var bindAddr = ":8081"
+var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var enableNewApp = false
