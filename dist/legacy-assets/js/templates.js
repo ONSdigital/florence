@@ -332,14 +332,24 @@ templates['chartBuilderAnnotation'] = template({"1":function(depth0,helpers,part
 templates['chartBuilderChart'] = template({"1":function(depth0,helpers,partials,data) {
     return "                                <option value=\"bar\">Bar Chart</option>\n                                <option value=\"rotated\">Bar Chart (rotated)</option>\n                                <option value=\"line\">Line Chart</option>\n                                <option value=\"area\">Area Chart</option>\n                                <option value=\"barline\">Bar + Line Chart</option>\n                                <option value=\"rotated-barline\">Bar + Line Chart (rotated)</option>\n                                <option value=\"dual-axis\">Dual Axis</option>\n                                <option value=\"scatter\">Scatter Plot Chart</option>\n                                <option value=\"pie\">Pie Chart</option>\n                                <option value=\"donut\">Donut Chart</option>\n                                <option value=\"population\">Population Pyramid</option>\n                                <option value=\"confidence-interval\">Confidence Interval</option>\n                                <option value=\"rotated-confidence-interval\">Confidence Interval (rotated)</option>\n                                <option value=\"confidence-interval-scatter\">Confidence Interval (Scatter)</option>\n                                <option value=\"box-and-whisker\">Box and Whisker</option>\n                                <option value=\"small-multiples\">Small Multiples</option>\n                                <option value=\"heatmap\">Heatmap</option>\n                                <option value=\"table\">Table</option>\n";
 },"3":function(depth0,helpers,partials,data) {
-    return "                    <input type=\"radio\" name=\"palette\" id=\"colour\" value=\"colour\" />\n                    <label for=\"colour\">Colour</label>\n                    <input type=\"radio\" name=\"palette\" id=\"blue\" value=\"blue\" checked=\"checked\"/>\n                    <label for=\"blue\">Blue</label>\n                    <input type=\"radio\" name=\"palette\" id=\"legacy\" value=\"legacy\"/>\n                    <label for=\"legacy\">Legacy</label>\n";
+    return "third";
 },"5":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing;
+
+  return "                        <label for=\"chart-interval\" class=\""
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.chartType : depth0),"line",{"name":"if_eq","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\">\n                            <input type=\"text\" id=\"chart-interval\" placeholder=\"[Interval]\" value=\""
+    + this.escapeExpression(((helper = (helper = helpers.yAxisInterval || (depth0 != null ? depth0.yAxisInterval : depth0)) != null ? helper : alias1),(typeof helper === "function" ? helper.call(depth0,{"name":"yAxisInterval","hash":{},"data":data}) : helper)))
+    + "\" class=\"refresh-chart\"/>\n                        </label>\n";
+},"7":function(depth0,helpers,partials,data) {
+    return "                    <input type=\"radio\" name=\"palette\" id=\"colour\" value=\"colour\" />\n                    <label for=\"colour\">Colour</label>\n                    <input type=\"radio\" name=\"palette\" id=\"blue\" value=\"blue\" checked=\"checked\"/>\n                    <label for=\"blue\">Blue</label>\n                    <input type=\"radio\" name=\"palette\" id=\"legacy\" value=\"legacy\"/>\n                    <label for=\"legacy\">Legacy</label>\n";
+},"9":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || helpers.helperMissing).call(depth0,(depth0 != null ? depth0.palette : depth0),"legacy",{"name":"if_eq","hash":{},"fn":this.program(6, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "");
-},"6":function(depth0,helpers,partials,data) {
+  return ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || helpers.helperMissing).call(depth0,(depth0 != null ? depth0.palette : depth0),"legacy",{"name":"if_eq","hash":{},"fn":this.program(10, data, 0),"inverse":this.program(12, data, 0),"data":data})) != null ? stack1 : "");
+},"10":function(depth0,helpers,partials,data) {
     return "                    <input type=\"radio\" name=\"palette\" id=\"colour\" value=\"colour\" />\n                    <label for=\"colour\">Colour</label>\n                    <input type=\"radio\" name=\"palette\" id=\"blue\" value=\"blue\" />\n                    <label for=\"blue\">Blue</label>\n                    <input type=\"radio\" name=\"palette\" id=\"legacy\" value=\"legacy\" checked=\"checked\"/>\n                    <label for=\"legacy\">Legacy</label>\n";
-},"8":function(depth0,helpers,partials,data) {
+},"12":function(depth0,helpers,partials,data) {
     return "                    <input type=\"radio\" name=\"palette\" id=\"colour\" value=\"colour\" checked=\"checked\"/>\n                    <label for=\"colour\">Colour</label>\n                    <input type=\"radio\" name=\"palette\" id=\"blue\" value=\"blue\"/>\n                    <label for=\"blue\">Blue</label>\n                    <input type=\"radio\" name=\"palette\" id=\"legacy\" value=\"legacy\"/>\n                    <label for=\"legacy\">Legacy</label>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
@@ -350,12 +360,18 @@ templates['chartBuilderChart'] = template({"1":function(depth0,helpers,partials,
     + alias3(((helper = (helper = helpers.decimalPlaces || (depth0 != null ? depth0.decimalPlaces : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"decimalPlaces","hash":{},"data":data}) : helper)))
     + "\"/>\n                    </label>\n                    <label>Decimal places (yAxis)<br>\n                        <input type=\"text\" id=\"chart-decimal-places-yaxis\" class=\"refresh-chart half\" placeholder=\"[Decimal places]\"\n                               value=\""
     + alias3(((helper = (helper = helpers.decimalPlacesYaxis || (depth0 != null ? depth0.decimalPlacesYaxis : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"decimalPlacesYaxis","hash":{},"data":data}) : helper)))
-    + "\"/>\n                    </label>\n                </div>\n                <span class=\"refresh-chart\">\n                    <label for=\"chart-min\">Overwrite y-axis\n                        <input type=\"text\" id=\"chart-min\" class=\"half\" placeholder=\"[Min]\" value=\""
+    + "\"/>\n                    </label>\n                </div>\n                <span class=\"refresh-chart\">\n                    <label for=\"chart-min\" class=\""
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.chartType : depth0),"line",{"name":"if_eq","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\">Overwrite y-axis\n                        <input type=\"text\" id=\"chart-min\" placeholder=\"[Min]\" value=\""
     + alias3(((helper = (helper = helpers.yMin || (depth0 != null ? depth0.yMin : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"yMin","hash":{},"data":data}) : helper)))
-    + "\"/>\n                    </label>\n                    <label for=\"chart-max\">\n                        <input type=\"text\" id=\"chart-max\" class=\"half\" placeholder=\"[Max]\" value=\""
+    + "\" class=\"refresh-chart\"/>\n                    </label>\n                    <label for=\"chart-max\" class=\""
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.chartType : depth0),"line",{"name":"if_eq","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\">\n                        <input type=\"text\" id=\"chart-max\" placeholder=\"[Max]\" value=\""
     + alias3(((helper = (helper = helpers.yMax || (depth0 != null ? depth0.yMax : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"yMax","hash":{},"data":data}) : helper)))
-    + "\"/>\n                    </label>\n                </span>\n\n\n                  <span class=\"refresh-chart\">\n                    <legend>Colours</legend>\n"
-    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.palette : depth0),"blue",{"name":"if_eq","hash":{},"fn":this.program(3, data, 0),"inverse":this.program(5, data, 0),"data":data})) != null ? stack1 : "")
+    + "\" class=\"refresh-chart\"/>\n                    </label>\n"
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.chartType : depth0),"line",{"name":"if_eq","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "                </span>\n\n\n                  <span class=\"refresh-chart\">\n                    <legend>Colours</legend>\n"
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.palette : depth0),"blue",{"name":"if_eq","hash":{},"fn":this.program(7, data, 0),"inverse":this.program(9, data, 0),"data":data})) != null ? stack1 : "")
     + "                  </span>\n";
 },"useData":true});
 templates['chartBuilderMetadata'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
