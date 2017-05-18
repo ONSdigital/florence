@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { browserHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,7 @@ import ChangePasswordController from '../components/change-password/ChangePasswo
 
 import { get } from '../utilities/get';
 import { post } from '../utilities/post';
+import user from '../utilities/user';
 import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
 import cookies from '../utilities/cookies';
 
@@ -19,7 +20,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired
-}
+};
 
 class LoginController extends Component {
     constructor(props) {
@@ -49,45 +50,16 @@ class LoginController extends Component {
         }
     }
 
-    setUserState(response) {
-        const email = response.email;
-        let userType = '';
-        if (response.editor) {
-            userType = 'EDITOR'
-        } else {
-            userType = 'DATA-VIS'
-        }
-        const isAdmin = !!response.admin;
-        this.props.dispatch(userLoggedIn(email, userType, isAdmin));
-        localStorage.setItem("loggedInAs", email);
-    }
-
-    getUserType(email) {
-        return get(`/zebedee/permission?email=${email}`)
-            .then(userTypeResponse => {
-                return userTypeResponse;
-            }).catch(error => {
-                console.log(`Error getting user type on login \n${error}`);
-        });
-    }
-
     postLoginCredentials(body) {
         return post('/zebedee/login', body);
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
-
-        const credentials = {
-            email: this.state.email.value,
-            password: this.state.password.value
-        };
-
+    handleLogin(credentials) {
         this.postLoginCredentials(credentials).then(accessToken => {
             cookies.add("access_token", accessToken);
-            this.getUserType(this.state.email.value).then(userType => {
-                this.setUserState(userType);
-                // browserHistory.push(this.props.location.query.redirect);
+            user.getPermissions(this.state.email.value).then(userType => {
+                user.setUserState(userType);
+                //browserHistory.push(this.props.location.query.redirect);
                 redirectToOldFlorence();
             });
         }).catch(error => {
@@ -114,6 +86,19 @@ class LoginController extends Component {
                 }
             }
         });
+
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+
+        const credentials = {
+            email: this.state.email.value,
+            password: this.state.password.value
+        };
+
+        this.handleLogin(credentials);
+
     }
 
     handleInputChange(event) {
@@ -148,14 +133,7 @@ class LoginController extends Component {
             password: newPassword
         };
 
-        this.postLoginCredentials(credentials).then(accessToken => {
-            cookies.add("access_token", accessToken);
-            this.getUserType(this.state.email.value).then(userType => {
-                this.setUserState(userType);
-                // browserHistory.push(this.props.location.query.redirect);
-                redirectToOldFlorence();
-            });
-        })
+        this.handleLogin(credentials)
 
     }
 
