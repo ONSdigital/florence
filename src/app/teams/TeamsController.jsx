@@ -14,10 +14,10 @@ const propTypes = {
     allTeams: PropTypes.arrayOf(PropTypes.object).isRequired,
     activeTeam: PropTypes.object,
     rootPath: PropTypes.string.isRequired,
-    params: PropTypes.object
+    params: PropTypes.object.isRequired
 }
 
-class TeamsController extends Component {
+export class TeamsController extends Component {
     constructor(props) {
         super(props);
 
@@ -29,6 +29,45 @@ class TeamsController extends Component {
     }
 
     componentWillMount() {
+        this.fetchTeams();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // Update with new active team
+        const activeTeam = nextProps.allTeams.find(team => {
+            return team.path === nextProps.params.team;
+        });
+        if (activeTeam && nextProps.activeTeam !== activeTeam && !this.state.isUpdatingAllTeams) {
+            this.props.dispatch(updateActiveTeam(activeTeam));
+            return;
+        }
+        
+        // No active team in parameter anymore
+        if (!nextProps.params.team && nextProps.activeTeam && nextProps.activeTeam.id) {
+            this.props.dispatch(emptyActiveTeam());
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        // Don't update component if all teams haven't been fetched yet
+        if (!nextProps.allTeams) {
+            return false;
+        }
+
+        // No change to props or state that needs to be rendered
+        if (this.props.allTeams === nextProps.allTeams && this.props.activeTeam === nextProps.activeTeam && !this.state.isUpdatingAllTeams) {
+            return false;
+        }
+
+        // Component is still fetching teams - don't render any changes
+        if (nextState.isUpdatingAllTeams) {
+            return false;
+        }
+
+        return true;
+    }
+
+    fetchTeams() {
         this.setState({isUpdatingAllTeams: true});
         teams.getAll().then(allTeams => {
             // Add any props (such as isSelected) to response from API
@@ -51,41 +90,6 @@ class TeamsController extends Component {
 
             this.setState({isUpdatingAllTeams: false});
         });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // Update with new active team
-        const activeTeam = nextProps.allTeams.find(team => {
-            return team.path === nextProps.params.team;
-        });
-        if (activeTeam && nextProps.activeTeam !== activeTeam && !this.state.isUpdatingAllTeams) {
-            this.props.dispatch(updateActiveTeam(activeTeam));
-            return;
-        }
-        
-        // No active team in parameter anymore
-        if (!nextProps.params.team && nextProps.activeTeam.id) {
-            this.props.dispatch(emptyActiveTeam());
-        }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        // Don't update component if all teams haven't been fetched yet
-        if (!nextProps.allTeams) {
-            return false;
-        }
-
-        // No change to props or state that needs to be rendered
-        if (this.props.allTeams === nextProps.allTeams && this.props.activeTeam === nextProps.activeTeam && !this.state.isUpdatingAllTeams) {
-            return false;
-        }
-
-        // Component is still fetching teams - don't render any changes
-        if (nextState.isUpdatingAllTeams) {
-            return false;
-        }
-
-        return true;
     }
 
     handleTeamClick(clickedTeam) {
