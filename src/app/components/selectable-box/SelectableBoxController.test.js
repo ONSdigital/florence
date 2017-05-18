@@ -1,7 +1,8 @@
 import React from 'react';
 import SelectableBoxController from './SelectableBoxController.jsx';
 import renderer from 'react-test-renderer';
-// import { shallow } from 'enzyme';
+
+//TODO add test to check handleItemClick function fires correctly
 
 test('Selectable box with items renders component with all items', () => {
     const items = [
