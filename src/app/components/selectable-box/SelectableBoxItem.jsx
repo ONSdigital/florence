@@ -30,7 +30,7 @@ export default class SelectableBoxItem extends Component {
         return (
             <li 
                 id={this.props.id} 
-                className={`selectable-box__item ${this.props.isSelected && "selected"}`} 
+                className={`selectable-box__item ${this.props.isSelected ? "selected" : ""}`} 
                 onClick={this.bindClick}>{this.props.name}
             </li>
         )
