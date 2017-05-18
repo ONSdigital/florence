@@ -18,10 +18,6 @@ export default class SelectableBoxController extends Component {
         this.bindItemClick = this.bindItemClick.bind(this);
     }
 
-    componentDidMount() {
-            debugger;
-    }
-
     bindItemClick(itemProps) {
         this.props.handleItemClick(itemProps);
     }
