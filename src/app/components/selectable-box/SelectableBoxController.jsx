@@ -6,6 +6,7 @@ import SelectableBoxItem from './SelectableBoxItem';
 const propTypes = {
     heading: PropTypes.string.isRequired,
     items: PropTypes.array,
+    activeItem: PropTypes.object,
     handleItemClick: PropTypes.func,
     isUpdating: PropTypes.bool
 }
@@ -15,6 +16,10 @@ export default class SelectableBoxController extends Component {
         super(props);
 
         this.bindItemClick = this.bindItemClick.bind(this);
+    }
+
+    componentDidMount() {
+            debugger;
     }
 
     bindItemClick(itemProps) {
@@ -29,7 +34,8 @@ export default class SelectableBoxController extends Component {
                         return (
                             <SelectableBoxItem 
                                 key={index} 
-                                {...item} 
+                                {...item}
+                                isSelected={this.props.activeItem && item.id === this.props.activeItem.id}
                                 handleClick={this.bindItemClick}
                             />
                         )
@@ -44,7 +50,7 @@ export default class SelectableBoxController extends Component {
            <div className="selectable-box">
                 <h2 className="selectable-box__heading">
                     Name
-                    { this.props.isUpdating ? "<span>Updating...</span>" : "" }
+                    { this.props.isUpdating && <span className="selectable-box__status loader"/> }
                 </h2>
                 { this.renderList() }
             </div> 
