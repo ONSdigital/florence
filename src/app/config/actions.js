@@ -32,3 +32,10 @@ export function updateActiveTeam(activeTeam) {
         activeTeam: activeTeam
     }
 }
+
+export function emptyActiveTeam() {
+    return {
+        type: UPDATE_ACTIVE_TEAM,
+        activeTeam: {}
+    }
+}

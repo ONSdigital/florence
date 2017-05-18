@@ -15,6 +15,10 @@
         line-height: normal;
     }
 
+    &__status {
+        float: right;
+    }
+
     &__list {
         list-style: none;
         max-height: $lineheight * 27;

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllTeams, updateActiveTeam } from '../config/actions';
+import { updateAllTeams, updateActiveTeam, emptyActiveTeam } from '../config/actions';
 import teams from '../utilities/teams';
 import safeURL from '../utilities/safeURL';
 
@@ -35,58 +35,66 @@ class TeamsController extends Component {
             const allTeamsWithProps = allTeams.map(team => {
                 const path = safeURL(team.name + "_" + team.id);
                 return Object.assign({}, team, {
-                    path: path,
-                    isSelected: path === this.props.params.team ? true : false
+                    path: path
                 });
             });
+            
+            // Update all teams and active team
+            const teamParameter = this.props.params.team;
             this.props.dispatch(updateAllTeams(allTeamsWithProps));
+            if (teamParameter) {
+                const activeTeam = allTeamsWithProps.find(team => {
+                    return team.path === teamParameter;
+                });
+                this.props.dispatch(updateActiveTeam(activeTeam));
+            }
+
             this.setState({isUpdatingAllTeams: false});
         });
     }
 
-    shouldComponentUpdate(nextProps) {
+    componentWillReceiveProps(nextProps) {
+        // Update with new active team
+        const activeTeam = nextProps.allTeams.find(team => {
+            return team.path === nextProps.params.team;
+        });
+        if (activeTeam && nextProps.activeTeam !== activeTeam && !this.state.isUpdatingAllTeams) {
+            this.props.dispatch(updateActiveTeam(activeTeam));
+            return;
+        }
+        
+        // No active team in parameter anymore
+        if (!nextProps.params.team && nextProps.activeTeam.id) {
+            this.props.dispatch(emptyActiveTeam());
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
         // Don't update component if all teams haven't been fetched yet
         if (!nextProps.allTeams) {
             return false;
         }
 
-        const activeTeam = nextProps.allTeams.find(team => {
-            return team.path === nextProps.params.team;
-        });
-
-        // Update with new active team
-        if (activeTeam && nextProps.activeTeam !== activeTeam) {
-            this.props.dispatch(updateActiveTeam(activeTeam));
+        // No change to props or state that needs to be rendered
+        if (this.props.allTeams === nextProps.allTeams && this.props.activeTeam === nextProps.activeTeam && !this.state.isUpdatingAllTeams) {
+            return false;
         }
+
+        // Component is still fetching teams - don't render any changes
+        if (nextState.isUpdatingAllTeams) {
+            return false;
+        }
+
         return true;
     }
 
     handleTeamClick(clickedTeam) {
-        // Make no change if selected an already selected team
+        // Make no change if clicked team is already the selected team
         if (clickedTeam.isSelected) {
             return;
         }
-
-        const allTeams = this.props.allTeams.map(team => {
-            // Deselect currently selected team
-            if (team.isSelected && team.id !== clickedTeam.id) {
-                return Object.assign({}, team, {
-                    isSelected: !team.isSelected
-                })
-            }
-
-            if (team.id !== clickedTeam.id) {
-                return team;
-            }
-
-            // Toggled isSelected bool on selected item
-            return Object.assign({}, team, {
-                isSelected: !team.isSelected
-            })
-        });
         const path = safeURL(clickedTeam.name + "_" + clickedTeam.id);
         this.props.dispatch(push(`${this.props.rootPath}/teams/${path}`));
-        this.props.dispatch(updateAllTeams(allTeams));
     }
 
     render() {
@@ -95,7 +103,8 @@ class TeamsController extends Component {
                 <div className="grid__col-4">
                     <h1>Select a team</h1>
                     <SelectableBoxController 
-                        items={this.props.allTeams} 
+                        items={this.props.allTeams}
+                        activeItem={this.props.activeTeam}
                         isUpdating={this.state.isUpdatingAllTeams} 
                         heading="Name"
                         handleItemClick={this.handleTeamClick}
