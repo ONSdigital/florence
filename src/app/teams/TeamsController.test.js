@@ -1,6 +1,5 @@
 import React from 'react';
 import { TeamsController } from './TeamsController';
-// import renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
 
 const listOfTeams = [
