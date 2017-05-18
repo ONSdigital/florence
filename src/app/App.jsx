@@ -29,18 +29,9 @@ class App extends Component {
                     console.warn(`Unable to find item 'loggedInAs' from local storage`);
                     return;
                 }
-                
-                //TODO - a lot of this is shared with login controller so should be abstracted out
-                user.get(email).then(userDetails => {
-                    let userType = '';
-                    if (userDetails.editor) {
-                        userType = 'EDITOR'
-                    } else {
-                        userType = 'DATA-VIS'
-                    }
-                    const isAdmin = !!userDetails.admin;
-                    this.props.dispatch(userLoggedIn(email, userType, isAdmin));
-                    this.setState({isCheckingAuthentication: false});
+
+                user.getPermissions(email).then(userType => {
+                    user.setUserState(userType);
                 });
                 return;
             }
