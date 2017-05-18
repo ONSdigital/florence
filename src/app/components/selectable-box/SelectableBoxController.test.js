@@ -1,24 +1,24 @@
 import React from 'react';
 import SelectableBoxController from './SelectableBoxController.jsx';
 import renderer from 'react-test-renderer';
+import { shallow } from 'enzyme';
 
-//TODO add test to check handleItemClick function fires correctly
+const items = [
+    {
+        name: "Item 1",
+        id: "1"
+    },
+    {
+        name: "Item 2",
+        id: "2"
+    },
+    {
+        name: "Item 3",
+        id: "3"
+    }
+]
 
 test('Selectable box with items renders component with all items', () => {
-    const items = [
-        {
-            name: "Item 1",
-            id: "1"
-        },
-        {
-            name: "Item 2",
-            id: "2"
-        },
-        {
-            name: "Item 3",
-            id: "3"
-        }
-    ];
     const props = {
         heading: "Selectable box test",
         items,
@@ -27,24 +27,28 @@ test('Selectable box with items renders component with all items', () => {
     const component = renderer.create(
         <SelectableBoxController {...props} />
     );
+
     expect(component.toJSON()).toMatchSnapshot();
 });
 
-test('Selectable box with active item renders correctly', () => {
-    const items = [
-        {
-            name: "Item 1",
-            id: "1"
-        },
-        {
-            name: "Item 2",
-            id: "2"
-        },
-        {
-            name: "Item 3",
-            id: "3"
+test('Clicking on a selectable item fire function from props to handle it', () => {
+    let itemHasBeenClicked = false;
+    const props = {
+        heading: "Selectable box test - handle item click",
+        items,
+        handleItemClick: function() {
+            !itemHasBeenClicked
         }
-    ];
+    }
+    const component = shallow(
+        <SelectableBoxController {...props} />
+    );
+    expect(itemHasBeenClicked).toBe(false);
+    component.find('#2').simulate('click');
+    expect(itemHasBeenClicked).toBe(true);
+});
+
+test('Selectable box with active item renders correctly', () => {
     const activeItem = {
         name: "Item 3",
         id: "3"
@@ -58,5 +62,6 @@ test('Selectable box with active item renders correctly', () => {
     const component = renderer.create(
         <SelectableBoxController {...props} />
     );
+
     expect(component.toJSON()).toMatchSnapshot();
 });
