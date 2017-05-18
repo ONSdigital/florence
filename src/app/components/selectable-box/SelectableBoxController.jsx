@@ -7,7 +7,7 @@ const propTypes = {
     heading: PropTypes.string.isRequired,
     items: PropTypes.array,
     activeItem: PropTypes.object,
-    handleItemClick: PropTypes.func,
+    handleItemClick: PropTypes.func.isRequired,
     isUpdating: PropTypes.bool
 }
 
