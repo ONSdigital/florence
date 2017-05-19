@@ -32,6 +32,7 @@ class App extends Component {
 
                 user.getPermissions(email).then(userType => {
                     user.setUserState(userType);
+                    this.setState({isCheckingAuthentication: false});
                 });
                 return;
             }
@@ -44,7 +45,9 @@ class App extends Component {
             <div>
                 {   
                     this.state.isCheckingAuthentication ?
-                        "Loading..."
+                        <div className="grid grid--align-center grid--align-self-center grid--full-height">
+                            <div className="loader loader--large loader--dark"></div>
+                        </div>
                         :
                         this.props.children
                 }
