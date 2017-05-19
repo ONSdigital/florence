@@ -20,7 +20,7 @@ const listOfTeams = [
 jest.mock('../utilities/teams.js', () => (
     {
         getAll: jest.fn().mockImplementation(() => {
-            return Promise.resolve()
+            return Promise.resolve([]);
         }
     )}
 ));
@@ -56,7 +56,7 @@ test('Renders updated list of teams', () => {
     expect(component.find('li').length).toBe(3);
 });
 
-test('Correctly renders when an new active team is changed', () => {
+test('Correctly renders when the active team is changed', () => {
     const props = {
         dispatch: function() {},
         rootPath: '/florence',
