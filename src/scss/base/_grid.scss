@@ -14,6 +14,11 @@
     width: 100%;
     max-width: $reflex-max-width;
 
+    // Added by ONS - makes the grid take the height viewport
+    &--full-height {
+        height: 100vh;
+    }
+
     @include setupWhitespace();
 
     &:before,
