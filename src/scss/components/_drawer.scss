@@ -38,14 +38,14 @@
 
     &__banner {
         padding: ($lineheight) ($gutter * 8);
-        background-color: $gray-chateau;
+        background-color: $grey-chateau;
     }
 
     &__body {
         // padding-left: $gutter * 8;
         // padding-right: $gutter * 8;
         padding: ($lineheight) ($gutter * 8);
-        background-color: $quill-gray;
+        background-color: $quill-grey;
         flex: 1;
         display: flex;
     }
