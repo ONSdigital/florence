@@ -16,6 +16,7 @@ const propTypes = {
     allTeams: PropTypes.arrayOf(PropTypes.object).isRequired,
     activeTeam: PropTypes.object,
     rootPath: PropTypes.string.isRequired,
+    userIsAdmin: PropTypes.bool.isRequired,
     params: PropTypes.object.isRequired
 }
 
@@ -163,7 +164,7 @@ export class TeamsController extends Component {
                 >
                     {
                         this.props.activeTeam && this.props.activeTeam.id ?
-                            <TeamDetails {...this.props.activeTeam} onCancel={this.handleDrawerCancelClick} />
+                            <TeamDetails {...this.props.activeTeam} userIsAdmin={this.props.userIsAdmin} onCancel={this.handleDrawerCancelClick} />
                             :
                             ""
                     }
@@ -179,6 +180,7 @@ function mapStateToProps(state) {
     return {
         activeTeam: state.state.teams.active,
         allTeams: state.state.teams.all,
+        userIsAdmin: state.state.user.isAdmin,
         rootPath: state.state.rootPath
     }
 }
