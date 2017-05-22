@@ -1,5 +1,6 @@
 import React from 'react';
 import { TeamsController } from './TeamsController';
+import renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
 
 const listOfTeams = [
@@ -30,7 +31,8 @@ test('Loading state shown when fetching all teams', () => {
         dispatch: function() {},
         rootPath: '/florence',
         allTeams: listOfTeams,
-        params: {}
+        params: {},
+        userIsAdmin: false
     }
     const component = mount(
         <TeamsController {...props}/>
@@ -45,7 +47,8 @@ test('Renders updated list of teams', () => {
         dispatch: function() {},
         rootPath: '/florence',
         allTeams: [],
-        params: {}
+        params: {},
+        userIsAdmin: false
     }
     const component = mount(
         <TeamsController {...props}/>
@@ -62,7 +65,8 @@ test('Correctly renders when the active team is changed', () => {
         rootPath: '/florence',
         allTeams: listOfTeams,
         params: {},
-        activeTeam: {}
+        activeTeam: {},
+        userIsAdmin: false
     }
     const component = mount(
         <TeamsController {...props}/>
@@ -81,3 +85,44 @@ test('Correctly renders when the active team is changed', () => {
     expect(component.find('.selected').length).toBe(0);
 });
 
+test("Non-admin users can't view option to edit teams", () => {
+    const props = {
+        dispatch: function() {},
+        rootPath: '/florence',
+        allTeams: listOfTeams,
+        params: {
+            team: "team_1_1"
+        },
+        activeTeam: {
+            name: "Team 1",
+            id: 1,
+            members: ["tester 1", "tester 2"]
+        },
+        userIsAdmin: false
+    }
+    const component = renderer.create(
+        <TeamsController {...props} />
+    );
+    expect(component.toJSON()).toMatchSnapshot();
+});
+
+test("Admin users have option to edit teams", () => {
+    const props = {
+        dispatch: function() {},
+        rootPath: '/florence',
+        allTeams: listOfTeams,
+        params: {
+            team: "team_1_1"
+        },
+        activeTeam: {
+            name: "Team 1",
+            id: 1,
+            members: ["tester 1", "tester 2"]
+        },
+        userIsAdmin: true
+    }
+    const component = renderer.create(
+        <TeamsController {...props} />
+    );
+    expect(component.toJSON()).toMatchSnapshot();
+});
