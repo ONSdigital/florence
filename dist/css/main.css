@@ -1322,6 +1322,10 @@ select {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
+.login__loader {
+  top: 6px;
+  left: 16px; }
+
 .drawer {
   position: absolute;
   top: 63px;
@@ -1386,13 +1390,15 @@ select {
     .btn--subtle:hover {
       opacity: 1;
       color: #343B59; }
-  .btn--disabled {
+  .btn--disabled, .btn:disabled {
     opacity: 0.65; }
     .btn--disabled:hover,
-    .btn--disabled :focus {
+    .btn--disabled :focus, .btn:disabled:hover,
+    .btn:disabled :focus {
       cursor: default; }
     .btn--disabled:hover:after,
-    .btn--disabled :focus:after {
+    .btn--disabled :focus:after, .btn:disabled:hover:after,
+    .btn:disabled :focus:after {
       display: none; }
   .btn:hover:after, .btn:focus:after {
     content: '';
@@ -1425,9 +1431,12 @@ select {
   width: 100%;
   height: 42px;
   padding: 7px 20px;
-  background: #FFFFFF; }
+  background-color: #FFFFFF; }
   .input:focus {
     border: 3px solid #ffbf47; }
+  .input:disabled {
+    border: 3px solid #AEA99C;
+    background-color: #CCCCCB; }
 
 .form__label {
   display: block;
