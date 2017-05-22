@@ -3,7 +3,7 @@
         overflow: hidden;
         background: $mine-shaft;
         padding: 0 20px;
-        color: $gray-chateau;
+        color: $grey-chateau;
         height: $lineheight * 3;
         text-align: right;
         list-style: none;
@@ -14,7 +14,7 @@
     }
 
     &__link {
-        color: $gray-chateau;
+        color: $grey-chateau;
         text-decoration: none;
         padding: $lineheight $gutter;
         display: block;
