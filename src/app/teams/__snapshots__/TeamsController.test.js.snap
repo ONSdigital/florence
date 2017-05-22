@@ -74,6 +74,7 @@ exports[`Admin users have option to edit teams 1`] = `
       >
         <button
           className="btn btn--primary"
+          onClick={[Function]}
         >
           Add / remove members
         </button>
