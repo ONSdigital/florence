@@ -6,10 +6,15 @@
     width: 100%;
     height: $lineheight * 2;
     padding: 7px $gutter;
-    background: $white;
+    background-color: $white;
 
     &:focus {
         border: 3px solid $focus;
+    }
+
+    &:disabled {
+        border: 3px solid $nappa;
+        background-color: $quill-grey;
     }
 
 }
