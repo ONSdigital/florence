@@ -5,6 +5,7 @@ const propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     members: PropTypes.arrayOf(PropTypes.string),
+    userIsAdmin: PropTypes.bool.isRequired,
     onCancel: PropTypes.func.isRequired
 }
 
@@ -56,9 +57,12 @@ class TeamDetails extends Component {
         return (
             <div className="drawer__container">
                 <h2 className="drawer__heading">{this.props.name}</h2>
-                <div className="drawer__banner">
-                    <button className="btn btn--primary">Add / remove members</button>
-                </div>
+                    {
+                        this.props.userIsAdmin && 
+                            <div className="drawer__banner">
+                                    <button className="btn btn--primary">Add / remove members</button>
+                            </div>
+                    }
                 <div className="drawer__body">
                     {
                         this.state.isFetchingTeam ? 
