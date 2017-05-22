@@ -72,7 +72,8 @@ test('Correctly renders when the active team is changed', () => {
     component.setProps({
         activeTeam: {
             name: "Team 1",
-            id: 1
+            id: 1,
+            members: ["tester 1", "tester 2"]
         }
     });
     expect(component.find('.selected').length).toBe(1);

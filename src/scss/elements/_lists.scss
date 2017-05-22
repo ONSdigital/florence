@@ -1,0 +1,11 @@
+.list {
+
+    &--neutral {
+        list-style: none;
+    }
+
+    &__item {
+        margin-bottom: $lineheight;
+    }
+
+}
