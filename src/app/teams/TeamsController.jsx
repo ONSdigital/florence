@@ -31,6 +31,7 @@ export class TeamsController extends Component {
         };
 
         this.handleTeamClick = this.handleTeamClick.bind(this);
+        this.handleMembersEditClick = this.handleMembersEditClick.bind(this);
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
     }
@@ -100,9 +101,13 @@ export class TeamsController extends Component {
         }
     }
 
+    handleMembersEditClick() {
+        console.log('hello');
+        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/edit`));
+    }
+
     handleDrawerCancelClick() {
         this.props.dispatch(push(`${this.props.rootPath}/teams`));
-        
     }
 
     fetchTeams() {
@@ -123,7 +128,12 @@ export class TeamsController extends Component {
                 const activeTeam = allTeamsWithProps.find(team => {
                     return team.path === teamParameter;
                 });
-                this.props.dispatch(updateActiveTeam(activeTeam));
+                if (!activeTeam) {
+                    console.error(`Team ${teamParameter} is not recognised - redirecting to all teams screen`);
+                    this.props.dispatch(push(`${this.props.rootPath}/teams`));
+                } else {
+                    this.props.dispatch(updateActiveTeam(activeTeam));
+                }
             }
 
             this.setState({isUpdatingAllTeams: false});
@@ -164,7 +174,12 @@ export class TeamsController extends Component {
                 >
                     {
                         this.props.activeTeam && this.props.activeTeam.id ?
-                            <TeamDetails {...this.props.activeTeam} userIsAdmin={this.props.userIsAdmin} onCancel={this.handleDrawerCancelClick} />
+                            <TeamDetails 
+                                {...this.props.activeTeam} 
+                                userIsAdmin={this.props.userIsAdmin} 
+                                onCancel={this.handleDrawerCancelClick}
+                                onEditMembers={this.handleMembersEditClick}
+                            />
                             :
                             ""
                     }

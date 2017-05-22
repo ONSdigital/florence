@@ -6,6 +6,7 @@ const propTypes = {
     name: PropTypes.string.isRequired,
     members: PropTypes.arrayOf(PropTypes.string),
     userIsAdmin: PropTypes.bool.isRequired,
+    onEditMembers: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired
 }
 
@@ -60,7 +61,7 @@ class TeamDetails extends Component {
                     {
                         this.props.userIsAdmin && 
                             <div className="drawer__banner">
-                                    <button className="btn btn--primary">Add / remove members</button>
+                                    <button onClick={this.props.onEditMembers} className="btn btn--primary">Add / remove members</button>
                             </div>
                     }
                 <div className="drawer__body">
