@@ -1,0 +1,214 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin users have option to edit teams 1`] = `
+<div>
+  <div
+    className="grid grid--justify-space-around"
+  >
+    <div
+      className="grid__col-4"
+    >
+      <h1>
+        Select a team
+      </h1>
+      <div
+        className="selectable-box"
+      >
+        <h2
+          className="selectable-box__heading"
+        >
+          Name
+          <span
+            className="selectable-box__status loader"
+          />
+        </h2>
+        <ul
+          className="selectable-box__list"
+        >
+          <li
+            className="selectable-box__item selected"
+            id={1}
+            onClick={[Function]}
+          >
+            Team 1
+          </li>
+          <li
+            className="selectable-box__item "
+            id={2}
+            onClick={[Function]}
+          >
+            Team 2
+          </li>
+          <li
+            className="selectable-box__item "
+            id={3}
+            onClick={[Function]}
+          >
+            Team 2
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="grid__col-4"
+    >
+      <h1>
+        Create a team
+      </h1>
+    </div>
+  </div>
+  <div
+    className="drawer visible"
+    onTransitionEnd={[Function]}
+  >
+    <div
+      className="drawer__container"
+    >
+      <h2
+        className="drawer__heading"
+      >
+        Team 1
+      </h2>
+      <div
+        className="drawer__banner"
+      >
+        <button
+          className="btn btn--primary"
+        >
+          Add / remove members
+        </button>
+      </div>
+      <div
+        className="drawer__body"
+      >
+        <ul
+          className="list list--neutral"
+        >
+          <li
+            className="list__item"
+          >
+            tester 1
+          </li>
+          <li
+            className="list__item"
+          >
+            tester 2
+          </li>
+        </ul>
+      </div>
+      <div
+        className="drawer__footer"
+      >
+        <button
+          className="btn"
+          onClick={[Function]}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Non-admin users can't view option to edit teams 1`] = `
+<div>
+  <div
+    className="grid grid--justify-space-around"
+  >
+    <div
+      className="grid__col-4"
+    >
+      <h1>
+        Select a team
+      </h1>
+      <div
+        className="selectable-box"
+      >
+        <h2
+          className="selectable-box__heading"
+        >
+          Name
+          <span
+            className="selectable-box__status loader"
+          />
+        </h2>
+        <ul
+          className="selectable-box__list"
+        >
+          <li
+            className="selectable-box__item selected"
+            id={1}
+            onClick={[Function]}
+          >
+            Team 1
+          </li>
+          <li
+            className="selectable-box__item "
+            id={2}
+            onClick={[Function]}
+          >
+            Team 2
+          </li>
+          <li
+            className="selectable-box__item "
+            id={3}
+            onClick={[Function]}
+          >
+            Team 2
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="grid__col-4"
+    >
+      <h1>
+        Create a team
+      </h1>
+    </div>
+  </div>
+  <div
+    className="drawer visible"
+    onTransitionEnd={[Function]}
+  >
+    <div
+      className="drawer__container"
+    >
+      <h2
+        className="drawer__heading"
+      >
+        Team 1
+      </h2>
+      <div
+        className="drawer__body"
+      >
+        <ul
+          className="list list--neutral"
+        >
+          <li
+            className="list__item"
+          >
+            tester 1
+          </li>
+          <li
+            className="list__item"
+          >
+            tester 2
+          </li>
+        </ul>
+      </div>
+      <div
+        className="drawer__footer"
+      >
+        <button
+          className="btn"
+          onClick={[Function]}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
