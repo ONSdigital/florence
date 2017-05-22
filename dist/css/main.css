@@ -1265,6 +1265,7 @@ select {
       background-color: #CCCCCB; }
     .selectable-box__item.selected {
       background-color: #337099;
+      color: #F5F6F7;
       cursor: default; }
     .selectable-box__item.select:hover {
       background-color: #337099; }
@@ -1320,6 +1321,46 @@ select {
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
+
+.drawer {
+  position: absolute;
+  top: 63px;
+  right: 0;
+  -webkit-transform: translateX(103%);
+  transform: translateX(103%);
+  will-change: transform;
+  width: 50%;
+  background-color: #343B59;
+  height: calc(100vh - 63px); }
+  .drawer.visible {
+    -webkit-transform: none;
+    transform: none; }
+  .drawer.animatable {
+    transition: all 130ms ease-in; }
+  .drawer.visible.animatable {
+    transition: all 330ms ease-out; }
+  .drawer__container {
+    display: flex;
+    flex-direction: column;
+    height: 100%; }
+  .drawer__heading {
+    padding-left: 160px;
+    padding-right: 160px;
+    color: #B2B6C4;
+    margin-top: 63px;
+    margin-bottom: 42px; }
+  .drawer__banner {
+    padding: 21px 160px;
+    background-color: #A1A3A5; }
+  .drawer__body {
+    padding: 21px 160px;
+    background-color: #CCCCCB;
+    flex: 1;
+    display: flex; }
+  .drawer__loader {
+    align-self: center; }
+  .drawer__footer {
+    padding: 21px 160px; }
 
 .btn {
   border-radius: 4px;
@@ -1400,3 +1441,9 @@ select {
   .form__input--error .error-msg {
     font-weight: 600;
     color: #AA354C; }
+
+.list--neutral {
+  list-style: none; }
+
+.list__item {
+  margin-bottom: 21px; }
