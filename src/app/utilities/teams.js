@@ -7,8 +7,17 @@ export default class teams {
             .then(response => {
                 return response.teams;
             }).catch(error => {
-                console.log(`Error getting all teams \n${error}`);
+                console.error(`Error getting all teams \n${error}`);
         });
+    }
+
+    static get(teamName) {
+        return get(`/zebedee/teams/${teamName}`)
+            .then(response => {
+                return response
+            }).catch(error => {
+                console.error(`Error getting team '${teamName}' \n${error}`);
+            })
     }
 
 }

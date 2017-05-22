@@ -1,7 +1,7 @@
 import React from 'react';
 import SelectableBoxController from './SelectableBoxController.jsx';
 import renderer from 'react-test-renderer';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 const items = [
     {
@@ -31,16 +31,16 @@ test('Selectable box with items renders component with all items', () => {
     expect(component.toJSON()).toMatchSnapshot();
 });
 
-test('Clicking on a selectable item fire function from props to handle it', () => {
+test('Clicking on a selectable item fires function from props to handle it', () => {
     let itemHasBeenClicked = false;
     const props = {
         heading: "Selectable box test - handle item click",
         items,
-        handleItemClick: function() {
-            !itemHasBeenClicked
+        handleItemClick: function(event) {
+            itemHasBeenClicked = true;
         }
     }
-    const component = shallow(
+    const component = mount(
         <SelectableBoxController {...props} />
     );
     expect(itemHasBeenClicked).toBe(false);
