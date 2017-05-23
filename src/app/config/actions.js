@@ -2,7 +2,9 @@ export const USER_LOGGED_IN = 'USER_LOGGED_IN';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
+export const UPDATE_USERS = 'UPDATE_USERS';
 export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
+export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
 export function userLoggedIn(email, userType, isAdmin) {
     return {
@@ -19,6 +21,13 @@ export function userLoggedOut() {
     }
 }
 
+export function updateUsers(users) {
+    return {
+        type: UPDATE_USERS,
+        users: users
+    }
+}
+
 export function updateAllTeams(allTeams) {
     return {
         type: UPDATE_ALL_TEAMS,
@@ -30,6 +39,13 @@ export function updateActiveTeam(activeTeam) {
     return {
         type: UPDATE_ACTIVE_TEAM,
         activeTeam: activeTeam
+    }
+}
+
+export function updateActiveTeamMembers(members) {
+    return {
+        type: UPDATE_ACTIVE_TEAM_MEMBERS,
+        members: members
     }
 }
 

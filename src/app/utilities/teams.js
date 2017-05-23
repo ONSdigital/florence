@@ -1,4 +1,6 @@
 import { get } from '../utilities/get';
+import { post } from '../utilities/post';
+import http from '../utilities/http';
 
 export default class teams {
 
@@ -14,9 +16,27 @@ export default class teams {
     static get(teamName) {
         return get(`/zebedee/teams/${teamName}`)
             .then(response => {
-                return response
+                return response;
             }).catch(error => {
                 console.error(`Error getting team '${teamName}' \n${error}`);
+            })
+    }
+
+    static addMember(teamName, email) {
+        return post(`/zebedee/teams/${teamName}?email=${email}`)
+            .then(response => {
+                return response;
+            }).catch(error => {
+                console.error(`Error adding '${email}' to team '${teamName}' \n${error}`);
+            })
+    }
+    
+    static removeMember(teamName, email) {
+        return http.delete(`/zebedee/teams/${teamName}?email=${email}`)
+            .then(response => {
+                return response;
+            }).catch(error => {
+                console.error(`Error removing '${email}' to team '${teamName}' \n${error}`);
             })
     }
 

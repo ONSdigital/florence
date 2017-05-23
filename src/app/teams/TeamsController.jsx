@@ -9,13 +9,16 @@ import safeURL from '../utilities/safeURL';
 
 import SelectableBoxController from '../components/selectable-box/SelectableBoxController';
 import Drawer from '../components/drawer/Drawer';
-import TeamDetails from './TeamDetails';
+import TeamDetails from './team-details/TeamDetails';
+import TeamEditController from './team-edit/TeamEditController';
+import Modal from '../components/Modal';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     allTeams: PropTypes.arrayOf(PropTypes.object).isRequired,
     activeTeam: PropTypes.object,
     rootPath: PropTypes.string.isRequired,
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     userIsAdmin: PropTypes.bool.isRequired,
     params: PropTypes.object.isRequired
 }
@@ -27,7 +30,8 @@ export class TeamsController extends Component {
         this.state = {
             isUpdatingAllTeams: false,
             drawerIsAnimatable: false,
-            clearActiveTeam: false
+            clearActiveTeam: false,
+            isEditingTeam: false
         };
 
         this.handleTeamClick = this.handleTeamClick.bind(this);
@@ -38,11 +42,6 @@ export class TeamsController extends Component {
 
     componentWillMount() {
         this.fetchTeams();
-
-        // Remove anything data left in activeTeam object from previous instance of Teams screen
-        if (this.props.activeTeam && this.props.activeTeam.id && !this.props.params.team) {
-            this.props.dispatch(emptyActiveTeam());
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -50,7 +49,7 @@ export class TeamsController extends Component {
         const activeTeam = nextProps.allTeams.find(team => {
             return team.path === nextProps.params.team;
         });
-        if (activeTeam && (nextProps.activeTeam !== activeTeam) && !this.state.isUpdatingAllTeams) {
+        if (activeTeam && (nextProps.activeTeam.id !== activeTeam.id)) {
             if (!this.props.params.team) {
                 this.setState({drawerIsAnimatable: true});   
             }
@@ -66,6 +65,11 @@ export class TeamsController extends Component {
                 clearActiveTeam: true
             });
         }
+
+        // Open edit team modal
+        if (nextProps.routes[nextProps.routes.length-1].path === "edit") {
+            this.setState({isEditingTeam: true});
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -74,22 +78,26 @@ export class TeamsController extends Component {
             return true;
         }
 
+        // Allow render because the team editing modal is being displayed
+        if (nextProps.routes[nextProps.routes.length-1].path === "edit" && nextState.isEditingTeam) {
+            return true;
+        }
+
         // Don't update component if all teams haven't been fetched yet
         if (!nextProps.allTeams) {
             return false;
         }
 
-        // No change to props or state that needs to be rendered
-        if ((this.props.allTeams === nextProps.allTeams) && (this.props.activeTeam === nextProps.activeTeam) && !this.state.isUpdatingAllTeams) {
-            return false;
-        }
-
-        // Component is still fetching teams - don't render any changes
-        if (nextState.isUpdatingAllTeams) {
+        // Component is still fetching teams and we don't have teams in Redux yet - don't render any changes
+        if (nextState.isUpdatingAllTeams && (nextProps.allTeams.length === 0)) {
             return false;
         }
 
         return true;
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(emptyActiveTeam());
     }
 
     handleDrawerTransitionEnd() {
@@ -102,7 +110,12 @@ export class TeamsController extends Component {
     }
 
     handleMembersEditClick() {
-        console.log('hello');
+        if (this.state.isUpdatingAllTeams) {
+            // TODO swap this out for our proper UI error/notification patterns
+            alert(`Sorry, you're not able to edit a team's members whilst the latest teams are being fetched`);
+            console.warn(`Attempt to edit team's members for ${this.props.activeTeam.path} whilst still fetching update to all teams`);
+            return;
+        }
         this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/edit`));
     }
 
@@ -113,7 +126,7 @@ export class TeamsController extends Component {
     fetchTeams() {
         this.setState({isUpdatingAllTeams: true});
         teams.getAll().then(allTeams => {
-            // Add any props (such as isSelected) to response from API
+            // Add any props (such as 'path') to response from API
             const allTeamsWithProps = allTeams.map(team => {
                 const path = safeURL(team.name + "_" + team.id);
                 return Object.assign({}, team, {
@@ -124,15 +137,20 @@ export class TeamsController extends Component {
             // Update all teams and active team
             const teamParameter = this.props.params.team;
             this.props.dispatch(updateAllTeams(allTeamsWithProps));
+
             if (teamParameter) {
                 const activeTeam = allTeamsWithProps.find(team => {
                     return team.path === teamParameter;
                 });
+                // Only update Redux if new active team is different from the current one
+                if (activeTeam && activeTeam !== this.props.activeTeam ) {
+                    this.props.dispatch(updateActiveTeam(activeTeam));
+                    return;
+                }
+                // Give error because the team in the URL can't be found in the data
                 if (!activeTeam) {
                     console.error(`Team ${teamParameter} is not recognised - redirecting to all teams screen`);
                     this.props.dispatch(push(`${this.props.rootPath}/teams`));
-                } else {
-                    this.props.dispatch(updateActiveTeam(activeTeam));
                 }
             }
 
@@ -147,6 +165,28 @@ export class TeamsController extends Component {
         }
         const path = safeURL(clickedTeam.name + "_" + clickedTeam.id);
         this.props.dispatch(push(`${this.props.rootPath}/teams/${path}`));
+    }
+
+    renderDrawer() {
+        return (
+            <Drawer
+                isVisible={this.props.activeTeam && this.props.activeTeam.id && !this.state.clearActiveTeam ? true : false} 
+                isAnimatable={this.state.drawerIsAnimatable} 
+                handleTransitionEnd={this.handleDrawerTransitionEnd}
+            >
+                {
+                    this.props.activeTeam && this.props.activeTeam.id ?
+                        <TeamDetails 
+                            {...this.props.activeTeam} 
+                            userIsAdmin={this.props.userIsAdmin} 
+                            onCancel={this.handleDrawerCancelClick}
+                            onEditMembers={this.handleMembersEditClick}
+                        />
+                        :
+                        ""
+                }
+            </Drawer>
+        )
     }
 
     render() {
@@ -167,23 +207,13 @@ export class TeamsController extends Component {
                         <h1>Create a team</h1>
                     </div>
                 </div>
-                <Drawer
-                    isVisible={this.props.activeTeam && this.props.activeTeam.id && !this.state.clearActiveTeam && this.props.params.team ? true : false} 
-                    isAnimatable={this.state.drawerIsAnimatable} 
-                    handleTransitionEnd={this.handleDrawerTransitionEnd}
-                >
-                    {
-                        this.props.activeTeam && this.props.activeTeam.id ?
-                            <TeamDetails 
-                                {...this.props.activeTeam} 
-                                userIsAdmin={this.props.userIsAdmin} 
-                                onCancel={this.handleDrawerCancelClick}
-                                onEditMembers={this.handleMembersEditClick}
-                            />
-                            :
-                            ""
-                    }
-                </Drawer>
+                {this.renderDrawer()}
+                {
+                    this.props.routes[this.props.routes.length-1].path === "edit" && this.props.activeTeam && this.props.activeTeam.id ?
+                    <Modal children={<TeamEditController {...this.props.activeTeam}/>} sizeClass="grid__col-8" />
+                    :
+                    ""
+                }
             </div>
         )
     }

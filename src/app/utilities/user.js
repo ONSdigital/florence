@@ -5,7 +5,7 @@ import { userLoggedIn } from '../config/actions';
 export default class user {
 
     static get(email) {
-        return get(`zebedee/users?email=${email}`)
+        return get(`/zebedee/users?email=${email}`)
             .then(response => {
                 return response;
             }).catch(error => {
@@ -14,7 +14,7 @@ export default class user {
     }
 
     static getAll() {
-        return get(`zebedee/users`)
+        return get(`/zebedee/users`)
             .then(response => {
                 return response;
             }).catch(error => {

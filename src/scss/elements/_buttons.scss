@@ -81,6 +81,12 @@
     &--flush {
         margin: 0 !important;
     }
+    &--margin-right {
+        margin-right: $gutter;
+    }
+    &--margin-left {
+        margin-left: $gutter;
+    }
 
     /* Display */
     &--inline-block {
