@@ -26,10 +26,26 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case ('UPDATE_USERS'): {
+            return Object.assign({}, state, {
+                teams: Object.assign({}, state.teams, {
+                    users: action.users
+                })
+            })
+        }
         case ('UPDATE_ACTIVE_TEAM'): {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     active: action.activeTeam
+                })
+            })
+        }
+        case ('UPDATE_ACTIVE_TEAM_MEMBERS'): {
+            return Object.assign({}, state, {
+                teams: Object.assign({}, state.teams, {
+                    active: Object.assign({}, state.teams.active, {
+                        members: action.members
+                    })
                 })
             })
         }
