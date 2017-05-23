@@ -8,6 +8,7 @@ export const initialState = {
     rootPath: "/florence",
     teams: {
         active: {},
-        all: []
+        all: [],
+        users: []
     }
 };

@@ -1,8 +1,14 @@
 import React, { Component} from 'react';
+import PropTypes from 'prop-types';
 
 const defaultProps = {
     sizeClass: "grid__col-3"
 };
+
+const propTypes = {
+    children: PropTypes.node,
+    sizeClass: PropTypes.string
+}
 
 export default class Modal extends Component {
 
@@ -22,4 +28,5 @@ export default class Modal extends Component {
 
 }
 
+Modal.propTypes = propTypes;
 Modal.defaultProps = defaultProps;

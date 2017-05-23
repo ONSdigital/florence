@@ -109,6 +109,7 @@ exports[`Admin users have option to edit teams 1`] = `
       </div>
     </div>
   </div>
+  
 </div>
 `;
 
@@ -211,5 +212,6 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
       </div>
     </div>
   </div>
+  
 </div>
 `;

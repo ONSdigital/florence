@@ -6,22 +6,41 @@ import { mount } from 'enzyme';
 const listOfTeams = [
     {
         name: "Team 1",
-        id: 1
+        id: 1,
+        path: "team_1_1"
     },
     {
         name: "Team 2",
-        id: 2
+        id: 2,
+        path: "team_2_2"
     },
     {
         name: "Team 2",
-        id: 3
+        id: 3,
+        path: "team_3_3"
     }
 ]
 
 jest.mock('../utilities/teams.js', () => (
     {
         getAll: jest.fn().mockImplementation(() => {
-            return Promise.resolve([]);
+            return Promise.resolve([
+                {
+                    name: "Team 1",
+                    id: 1,
+                    path: "team_1_1"
+                },
+                {
+                    name: "Team 2",
+                    id: 2,
+                    path: "team_2_2"
+                },
+                {
+                    name: "Team 2",
+                    id: 3,
+                    path: "team_3_3"
+                }
+            ]);
         }
     )}
 ));
@@ -32,7 +51,15 @@ test('Loading state shown when fetching all teams', () => {
         rootPath: '/florence',
         allTeams: listOfTeams,
         params: {},
-        userIsAdmin: false
+        userIsAdmin: false,
+        routes: [
+            {
+                path: "florence"
+            },
+            {
+                path: "teams"
+            }
+        ]
     }
     const component = mount(
         <TeamsController {...props}/>
@@ -48,7 +75,15 @@ test('Renders updated list of teams', () => {
         rootPath: '/florence',
         allTeams: [],
         params: {},
-        userIsAdmin: false
+        userIsAdmin: false,
+        routes: [
+            {
+                path: "florence"
+            },
+            {
+                path: "teams"
+            }
+        ]
     }
     const component = mount(
         <TeamsController {...props}/>
@@ -66,7 +101,15 @@ test('Correctly renders when the active team is changed', () => {
         allTeams: listOfTeams,
         params: {},
         activeTeam: {},
-        userIsAdmin: false
+        userIsAdmin: false,
+        routes: [
+            {
+                path: "florence"
+            },
+            {
+                path: "teams"
+            }
+        ]
     }
     const component = mount(
         <TeamsController {...props}/>
@@ -98,7 +141,15 @@ test("Non-admin users can't view option to edit teams", () => {
             id: 1,
             members: ["tester 1", "tester 2"]
         },
-        userIsAdmin: false
+        userIsAdmin: false,
+        routes: [
+            {
+                path: "florence"
+            },
+            {
+                path: "teams"
+            }
+        ]
     }
     const component = renderer.create(
         <TeamsController {...props} />
@@ -119,7 +170,15 @@ test("Admin users have option to edit teams", () => {
             id: 1,
             members: ["tester 1", "tester 2"]
         },
-        userIsAdmin: true
+        userIsAdmin: true,
+        routes: [
+            {
+                path: "florence"
+            },
+            {
+                path: "teams"
+            }
+        ]
     }
     const component = renderer.create(
         <TeamsController {...props} />
