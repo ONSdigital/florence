@@ -5,7 +5,6 @@
  * @returns {Promise} which returns the response body in JSON format
  */
 
-
 export function get(uri) {
 
     return new Promise(function(resolve, reject) {
