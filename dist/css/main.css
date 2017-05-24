@@ -1384,7 +1384,7 @@ select {
     margin-bottom: 21px; }
   .add-remove__loader {
     margin-left: 40px; }
-  .add-remove__list {
+  .add-remove__body {
     height: 525px;
     overflow-x: scroll; }
   .add-remove__item {
