@@ -1362,7 +1362,8 @@ select {
     flex: 1;
     display: flex; }
   .drawer__loader {
-    align-self: center; }
+    margin-left: 0;
+    margin-right: 0; }
   .drawer__footer {
     padding: 21px 160px; }
 
