@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     name: PropTypes.string.isRequired,
-    members: PropTypes.arrayOf(PropTypes.string).isRequired,
+    members: PropTypes.arrayOf(PropTypes.string),
     users: PropTypes.arrayOf(PropTypes.object),
     updatingAllUsers: PropTypes.bool.isRequired,
+    showingLoader: PropTypes.bool,
     onMembersChange: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired
 }
@@ -42,7 +43,7 @@ class TeamEdit extends Component {
                 <div className="grid__col-6">
                     <div className="add-remove__col">
                         <h2 className="add-remove__col-heading">All users</h2>
-                        {!this.props.updatingAllUsers ?
+                        {!this.props.updatingAllUsers &&
                             <ul className="add-remove__list list list--neutral">
                                 {this.props.users.map((user, index) => {
                                     return (
@@ -60,9 +61,11 @@ class TeamEdit extends Component {
                                     )
                                 })}
                             </ul>
-                            :
-                            <div className="add-remove__loader loader loader--dark"></div>
                         }
+
+                            {this.props.showingLoader && 
+                                <div className="add-remove__loader loader loader--dark"></div>
+                            }
                     </div>
                 </div>
                 <div className="grid__col-6">

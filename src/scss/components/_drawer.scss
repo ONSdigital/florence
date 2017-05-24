@@ -42,8 +42,6 @@
     }
 
     &__body {
-        // padding-left: $gutter * 8;
-        // padding-right: $gutter * 8;
         padding: ($lineheight) ($gutter * 8);
         background-color: $quill-grey;
         flex: 1;
@@ -51,7 +49,8 @@
     }
 
     &__loader {
-        align-self: center;
+        margin-left: 0;
+        margin-right: 0;
     }
 
     &__footer {
