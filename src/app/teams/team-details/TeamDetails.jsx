@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+// import { updateActiveTeamMembers } from '../../config/actions';
+// import teams from '../../utilities/teams';
 
 const propTypes = {
     id: PropTypes.number.isRequired,
@@ -7,40 +11,46 @@ const propTypes = {
     members: PropTypes.arrayOf(PropTypes.string),
     userIsAdmin: PropTypes.bool.isRequired,
     onEditMembers: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired
+    onCancel: PropTypes.func.isRequired,
+    isShowingLoader: PropTypes.bool
 }
 
 class TeamDetails extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            isFetchingTeam: false
-        };
+        // this.state = {
+        //     // isFetchingMembers: false,
+        //     showingLoader: false
+        // };
     }
 
     componentWillMount() {
-        // Members is currently fetched with all teams. TODO - only fetch team when TeamDetails component is mounted.
-        // The code in this conditional is in preparation for this change being made to the API response.
-        if (!this.props.members) {
-            this.fetchTeam();
-        }
+        // TODO remove this from TeamDetails and put in Teams controller instead - it currently breaks if you go directly to 'edit' screen on load because the responsibility for getting active team members is too specific to this component
+        // this.fetchMembers(this.props.name);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.id !== nextProps.id && !this.props.members) {
-            this.fetchTeam();
+        if (this.props.id !== nextProps.id) {
+            // this.fetchMembers(nextProps.name);
         }
     }
 
-    fetchTeam() {
-        // TODO - once API change is made edit this function to update Redux state activeTeam with team members
-        // this.setState({isFetchingTeam: true});
-        // teams.get(this.props.name).then(team => {
-        //     this.dispatch(updateActiveTeam(team));
-        //     this.setState({isFetchingTeam: false});
-        // });
-    }
+    // fetchMembers(teamName) {
+    //     const loaderTimer = window.setTimeout(() => {
+    //         this.setState({showingLoader: true});
+    //     }, 80); // Show a loader if request is taking longer than 80ms
+
+    //     this.setState({isFetchingMembers: true});
+    //     teams.get(teamName).then(team => {
+    //         window.clearTimeout(loaderTimer);
+    //         this.props.dispatch(updateActiveTeamMembers(team.members));
+    //         this.setState({
+    //             isFetchingMembers: false,
+    //             showingLoader: false
+    //         });
+    //     });
+    // }
 
     renderMembers() {
         const members = this.props.members;
@@ -65,12 +75,10 @@ class TeamDetails extends Component {
                             </div>
                     }
                 <div className="drawer__body">
-                    {
-                        this.state.isFetchingTeam ? 
-                            <div className="drawer__loader loader loader--large loader--dark"></div>
-                        :
-                            this.renderMembers()
-
+                    {this.props.isShowingLoader &&
+                            <div className="drawer__loader loader loader--dark"></div>}
+                    {this.props.members &&
+                        this.renderMembers()
                     }
                 </div>
                 <div className="drawer__footer">
@@ -83,4 +91,4 @@ class TeamDetails extends Component {
 
 TeamDetails.propTypes = propTypes;
 
-export default TeamDetails;
+export default connect()(TeamDetails);

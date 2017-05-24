@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllTeams, updateActiveTeam, emptyActiveTeam } from '../config/actions';
+import { updateAllTeams, updateActiveTeam, emptyActiveTeam, updateActiveTeamMembers } from '../config/actions';
 import teams from '../utilities/teams';
 import safeURL from '../utilities/safeURL';
 
@@ -29,6 +29,7 @@ export class TeamsController extends Component {
 
         this.state = {
             isUpdatingAllTeams: false,
+            isUpdatingTeamMembers: false,
             drawerIsAnimatable: false,
             clearActiveTeam: false,
             isEditingTeam: false
@@ -50,6 +51,8 @@ export class TeamsController extends Component {
             return team.path === nextProps.params.team;
         });
         if (activeTeam && (nextProps.activeTeam.id !== activeTeam.id)) {
+            this.fetchMembers(activeTeam.name);
+
             if (!this.props.params.team) {
                 this.setState({drawerIsAnimatable: true});   
             }
@@ -158,6 +161,22 @@ export class TeamsController extends Component {
         });
     }
 
+    fetchMembers(teamName) {
+        //const loaderTimer = window.setTimeout(() => {
+            // this.setState({showingLoader: true});
+        //}, 80); // Show a loader if request is taking longer than 80ms
+
+        this.setState({isUpdatingTeamMembers: true});
+        teams.get(teamName).then(team => {
+            //window.clearTimeout(loaderTimer);
+            this.props.dispatch(updateActiveTeamMembers(team.members));
+            this.setState({
+                isUpdatingTeamMembers: false,
+                // showingLoader: false
+            });
+        });
+    }
+
     handleTeamClick(clickedTeam) {
         // Make no change if clicked team is already the selected team
         if (clickedTeam.isSelected) {
@@ -181,6 +200,7 @@ export class TeamsController extends Component {
                             userIsAdmin={this.props.userIsAdmin} 
                             onCancel={this.handleDrawerCancelClick}
                             onEditMembers={this.handleMembersEditClick}
+                            isShowingLoader={this.state.isUpdatingTeamMembers}
                         />
                         :
                         ""
