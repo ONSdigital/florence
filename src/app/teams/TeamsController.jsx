@@ -162,17 +162,11 @@ export class TeamsController extends Component {
     }
 
     fetchMembers(teamName) {
-        //const loaderTimer = window.setTimeout(() => {
-            // this.setState({showingLoader: true});
-        //}, 80); // Show a loader if request is taking longer than 80ms
-
         this.setState({isUpdatingTeamMembers: true});
         teams.get(teamName).then(team => {
-            //window.clearTimeout(loaderTimer);
             this.props.dispatch(updateActiveTeamMembers(team.members));
             this.setState({
-                isUpdatingTeamMembers: false,
-                // showingLoader: false
+                isUpdatingTeamMembers: false
             });
         });
     }
@@ -230,7 +224,7 @@ export class TeamsController extends Component {
                 {this.renderDrawer()}
                 {
                     this.props.routes[this.props.routes.length-1].path === "edit" && this.props.activeTeam && this.props.activeTeam.id ?
-                    <Modal children={<TeamEditController {...this.props.activeTeam}/>} sizeClass="grid__col-8" />
+                    <Modal children={<TeamEditController {...this.props.activeTeam} isUpdatingMembers={this.state.isUpdatingTeamMembers}/>} sizeClass="grid__col-8" />
                     :
                     ""
                 }
