@@ -45,6 +45,27 @@ jest.mock('../utilities/teams.js', () => (
     )}
 ));
 
+jest.mock('../utilities/user.js', () => (
+    {
+        getAll: jest.fn().mockImplementation(() => {
+            return Promise.resolve([
+                {
+                    name: "User 1",
+                    email: "user.1@test.com"
+                },
+                {
+                    name: "User 2",
+                    email: "user.2@test.com"
+                },
+                {
+                    name: "User 3",
+                    email: "user.3@test.com"
+                }
+            ]);
+        }
+    )}
+));
+
 test('Loading state shown when fetching all teams', () => {
     const props = {
         dispatch: function() {},

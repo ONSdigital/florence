@@ -12,6 +12,8 @@ import TeamEdit from './TeamEdit';
 const propTypes = {
     name: PropTypes.string.isRequired,
     users: PropTypes.arrayOf(PropTypes.object),
+    members: PropTypes.arrayOf(PropTypes.string),
+    isUpdatingMembers: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
 }
 
@@ -22,8 +24,6 @@ class TeamEditController extends Component {
         this.state = {
             editedUsers: null,
             updatingAllUsers: false,
-            // updatingMembers: false,
-            showingLoader: false,
             parentPath: (location.pathname).split('/edit')[0]
         }
 
@@ -32,25 +32,18 @@ class TeamEditController extends Component {
     }
 
     componentWillMount() {
-        const loaderTimer = window.setTimeout(() => {
-            this.setState({showingLoader: true});
-        }, 80) // Show loader us request is taking longer than 80ms
         this.setState({
-            updatingAllUsers: true,
-            // updatingMembers: true
+            updatingAllUsers: true
         });
         user.getAll().then(users => {
             const editedUsers = users.filter(user => {
                 return this.props.members.indexOf(user.email) < 0
             });
 
-            window.clearTimeout(loaderTimer);
-
             this.props.dispatch(updateUsers(users));
             this.setState({
                 editedUsers: editedUsers,
-                updatingAllUsers: false,
-                showingLoader: false
+                updatingAllUsers: false
             });
         });
     }
@@ -125,6 +118,8 @@ class TeamEditController extends Component {
                 onMembersChange={this.handleMembersChange}
                 onDone={this.handleDone}
                 updatingAllUsers={this.state.updatingAllUsers}
+                updatingMembers={this.props.isUpdatingMembers}
+                showingLoaders={this.state.updatingAllUsers || this.props.isUpdatingMembers}
             />
         )
     }
