@@ -10,7 +10,7 @@ export default class teams {
                 return response.teams;
             }).catch(error => {
                 console.error(`Error getting all teams \n${error}`);
-        });
+            });
     }
 
     static get(teamName) {
@@ -26,8 +26,6 @@ export default class teams {
         return post(`/zebedee/teams/${teamName}?email=${email}`)
             .then(response => {
                 return response;
-            }).catch(error => {
-                console.error(`Error adding '${email}' to team '${teamName}' \n${error}`);
             })
     }
     
@@ -35,8 +33,6 @@ export default class teams {
         return http.delete(`/zebedee/teams/${teamName}?email=${email}`)
             .then(response => {
                 return response;
-            }).catch(error => {
-                console.error(`Error removing '${email}' to team '${teamName}' \n${error}`);
             })
     }
 
