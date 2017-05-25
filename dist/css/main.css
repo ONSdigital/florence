@@ -1398,6 +1398,8 @@ select {
       background-color: #FFFFFF; }
   .add-remove__item-title {
     flex-grow: 1; }
+    .add-remove__item-title.disabled {
+      color: #989898; }
   .add-remove__footer {
     background-color: #A1A3A5;
     padding: 21px 40px; }

@@ -24,7 +24,8 @@ class TeamEditController extends Component {
         this.state = {
             editedUsers: null,
             updatingAllUsers: false,
-            parentPath: (location.pathname).split('/edit')[0]
+            parentPath: (location.pathname).split('/edit')[0],
+            disabledUsers: new Map()
         }
 
         this.handleMembersChange = this.handleMembersChange.bind(this);
@@ -55,8 +56,9 @@ class TeamEditController extends Component {
     }
 
     handleMembersChange(userAttributes) {
-        const currentUsers = this.state.editedUsers;
-        const currentMembers = this.props.members;
+        const disabledUsers = this.state.disabledUsers;
+        disabledUsers.set(userAttributes.email, null);
+        this.setState({disabledUsers});
 
         function sortUsers(users) {
             return users.sort((userA, userB) => {
@@ -76,26 +78,46 @@ class TeamEditController extends Component {
 
         switch (userAttributes.action) {
             case ("remove"): {
-                const editedMembers = currentMembers.filter(member => {
-                    return member !== userAttributes.email
-                });
-                const editedUsers = [ ...currentUsers, {email: userAttributes.email}];
-                
                 teams.removeMember(this.props.name, userAttributes.email).then(() => {
-                    this.setState({editedUsers: sortUsers(editedUsers)});
+                    const editedMembers = this.props.members.filter(member => {
+                        return member !== userAttributes.email
+                    });
+                    const editedUsers = [ ...this.state.editedUsers, {email: userAttributes.email}];
+                    const disabledUsers = this.state.disabledUsers;
+                    disabledUsers.delete(userAttributes.email, null);
+
+                    this.setState({
+                        editedUsers: sortUsers(editedUsers),
+                        disabledUsers
+                    });
                     this.props.dispatch(updateActiveTeamMembers(sortMembers(editedMembers)));
+                }).catch(error => {
+                    const disabledUsers = this.state.disabledUsers;
+                    disabledUsers.delete(userAttributes.email, null);
+                    this.setState({disabledUsers});
+                    console.error(`Error removing user '${userAttributes.email}' from team '${this.props.name}'\nError:`, error);
                 });
                 break;
             }
             case ("add"): {
-                const editedMembers = [ ...currentMembers, userAttributes.email];
-                const editedUsers = currentUsers.filter(user => {
-                    return user.email !== userAttributes.email
-                });
-                
                 teams.addMember(this.props.name, userAttributes.email).then(() => {
-                    this.setState({editedUsers: sortUsers(editedUsers)});
+                    const editedMembers = [ ...this.props.members, userAttributes.email];
+                    const editedUsers = this.state.editedUsers.filter(user => {
+                        return user.email !== userAttributes.email
+                    });
+                    const disabledUsers = this.state.disabledUsers;
+                    disabledUsers.delete(userAttributes.email, null);
+
+                    this.setState({
+                        editedUsers: sortUsers(editedUsers),
+                        disabledUsers
+                    });
                     this.props.dispatch(updateActiveTeamMembers(sortMembers(editedMembers)));
+                }).catch(error => {
+                    const disabledUsers = this.state.disabledUsers;
+                    disabledUsers.delete(userAttributes.email, null);
+                    this.setState({disabledUsers});
+                    console.error(`Error adding user '${userAttributes.email}' to team '${this.props.name}'\nError:`, error);
                 });
                 break;
             }
@@ -120,6 +142,7 @@ class TeamEditController extends Component {
                 updatingAllUsers={this.state.updatingAllUsers}
                 updatingMembers={this.props.isUpdatingMembers}
                 showingLoaders={this.state.updatingAllUsers || this.props.isUpdatingMembers}
+                disabledUsers={this.state.disabledUsers}
             />
         )
     }
