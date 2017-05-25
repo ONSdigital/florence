@@ -1218,17 +1218,21 @@ select {
   width: 100%;
   height: 100%;
   top: 0;
-  z-index: 1000; }
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
 
 .modal__inner {
-  background-color: #F5F5F5;
-  margin: 100px auto 0 auto; }
+  background-color: #F5F5F5; }
 
 .modal__header {
-  padding: 20px; }
+  padding: 21px 20px;
+  margin-bottom: 10.5px; }
 
 .modal__body {
-  padding: 0 20px 20px 20px; }
+  padding: 0 20px 21px 20px;
+  margin-bottom: 10.5px; }
 
 .modal__footer {
   background-color: #A1A3A5;

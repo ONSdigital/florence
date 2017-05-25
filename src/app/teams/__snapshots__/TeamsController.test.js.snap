@@ -101,6 +101,12 @@ exports[`Admin users have option to edit teams 1`] = `
         className="drawer__footer"
       >
         <button
+          className="btn btn--warning btn--margin-right"
+          onClick={[Function]}
+        >
+          Delete team
+        </button>
+        <button
           className="btn"
           onClick={[Function]}
         >
@@ -109,6 +115,7 @@ exports[`Admin users have option to edit teams 1`] = `
       </div>
     </div>
   </div>
+  
   
 </div>
 `;
@@ -204,6 +211,12 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
         className="drawer__footer"
       >
         <button
+          className="btn btn--warning btn--margin-right"
+          onClick={[Function]}
+        >
+          Delete team
+        </button>
+        <button
           className="btn"
           onClick={[Function]}
         >
@@ -212,6 +225,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
       </div>
     </div>
   </div>
+  
   
 </div>
 `;

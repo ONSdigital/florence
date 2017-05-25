@@ -17,11 +17,13 @@
     }
 
     &__header {
-        padding: $gutter;
+        padding: $lineheight $gutter;
+        margin-bottom: $lineheight / 2;
 
     }
     &__body {
-        padding: 0 $gutter $gutter $gutter;
+        padding: 0 $gutter $lineheight $gutter;
+        margin-bottom: $lineheight / 2;
     }
 
     &__footer {
