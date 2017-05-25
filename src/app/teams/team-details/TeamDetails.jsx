@@ -8,6 +8,7 @@ const propTypes = {
     userIsAdmin: PropTypes.bool.isRequired,
     onEditMembers: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
     isShowingLoader: PropTypes.bool
 }
 
@@ -32,11 +33,10 @@ class TeamDetails extends Component {
         return (
             <div className="drawer__container">
                 <h2 className="drawer__heading">{this.props.name}</h2>
-                    {
-                        this.props.userIsAdmin && 
-                            <div className="drawer__banner">
-                                    <button onClick={this.props.onEditMembers} className="btn btn--primary">Add / remove members</button>
-                            </div>
+                    {this.props.userIsAdmin && 
+                        <div className="drawer__banner">
+                            <button onClick={this.props.onEditMembers} className="btn btn--primary">Add / remove members</button>
+                        </div>
                     }
                 <div className="drawer__body">
                     {this.props.isShowingLoader &&
@@ -46,6 +46,7 @@ class TeamDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
+                    <button className="btn btn--warning btn--margin-right" onClick={this.props.onDelete}>Delete team</button>
                     <button className="btn" onClick={this.props.onCancel}>Cancel</button>
                 </div>
             </div>

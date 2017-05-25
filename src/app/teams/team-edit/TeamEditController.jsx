@@ -152,6 +152,8 @@ TeamEditController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
+        name: state.state.teams.active.name,
+        members: state.state.teams.active.members,
         users: state.state.teams.users,
         rootPath: state.state.rootPath
     }
