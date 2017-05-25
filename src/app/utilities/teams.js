@@ -22,6 +22,13 @@ export default class teams {
             })
     }
 
+    static remove(teamName) {
+        return http.delete(`/zebedee/teams/${teamName}`)
+            .then(response => {
+                return response;
+            })
+    }
+
     static addMember(teamName, email) {
         return post(`/zebedee/teams/${teamName}?email=${email}`)
             .then(response => {
