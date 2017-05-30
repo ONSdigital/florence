@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import ChangePasswordForm from './ChangePasswordForm'
-import { post } from '../../utilities/post';
+import http from '../../utilities/http';
 
 export default class ChangePasswordController extends Component {
 
@@ -77,7 +77,7 @@ export default class ChangePasswordController extends Component {
     }
 
     postNewPassword(body) {
-        return post('/zebedee/password', body);
+        return http.post('/zebedee/password', body);
 
     }
 
