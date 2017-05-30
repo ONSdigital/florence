@@ -4,7 +4,7 @@
  * @returns {Promise} which returns a boolean value
  */
 
-import { post } from './post';
+import http from './http';
 import cookies from './cookies';
 
 export function hasValidAuthToken() {
@@ -14,7 +14,7 @@ export function hasValidAuthToken() {
             resolve(false);
         }
 
-        post('/zebedee/ping').then(response => {
+        http.post('/zebedee/ping').then(response => {
             if (!response.hasSession) {
                 resolve(false);
             }
