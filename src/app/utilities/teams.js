@@ -1,11 +1,9 @@
-import { get } from '../utilities/get';
-import { post } from '../utilities/post';
 import http from '../utilities/http';
 
 export default class teams {
 
     static getAll() {
-        return get(`/zebedee/teams`)
+        return http.get(`/zebedee/teams`)
             .then(response => {
                 return response.teams;
             }).catch(error => {
@@ -14,7 +12,7 @@ export default class teams {
     }
 
     static get(teamName) {
-        return get(`/zebedee/teams/${teamName}`)
+        return http.get(`/zebedee/teams/${teamName}`)
             .then(response => {
                 return response;
             }).catch(error => {
@@ -30,7 +28,7 @@ export default class teams {
     }
 
     static addMember(teamName, email) {
-        return post(`/zebedee/teams/${teamName}?email=${email}`)
+        return http.post(`/zebedee/teams/${teamName}?email=${email}`)
             .then(response => {
                 return response;
             })
