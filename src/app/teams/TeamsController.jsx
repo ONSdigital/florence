@@ -51,6 +51,8 @@ export class TeamsController extends Component {
         this.handleTeamDeleteClick = this.handleTeamDeleteClick.bind(this);
         this.handleTeamDeleteSuccess = this.handleTeamDeleteSuccess.bind(this);
         this.handleTeamCreateSuccess = this.handleTeamCreateSuccess.bind(this);
+        
+        this.addNotification = this.addNotification.bind(this);
     }
 
     componentWillMount() {
@@ -193,11 +195,9 @@ export class TeamsController extends Component {
                 // Give error because the team in the URL can't be found in the data
                 if (!activeTeam) {
                     // console.error(`Team ${teamParameter} is not recognised so you've been redirected to the teams screen`);
-                    const notificationID = Date.now();
                     const notification = {
                         message: `Team '${teamParameter}' is not recognised so you've been redirected to the teams screen`,
                         type: "neutral",
-                        id: notificationID,
                         // autoDismiss: 5000,
                         isDismissable: true
                     }
@@ -254,6 +254,15 @@ export class TeamsController extends Component {
         )
     }
 
+    addNotification() {
+        const notification = {
+            message: `Test notification ${Math.random() * (0 - 20) + 0}`,
+            type: "neutral",
+            isDismissable: true
+        }
+        notifications.add(notification)
+    }
+
     render() {
         return (
             <div>
@@ -267,6 +276,7 @@ export class TeamsController extends Component {
                             heading="Name"
                             handleItemClick={this.handleTeamClick}
                         />
+                        <button onClick={this.addNotification}>Add notification</button>
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a team</h1>
