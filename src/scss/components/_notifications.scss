@@ -1,0 +1,36 @@
+.notifications {
+    list-style: none;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+
+    &__item {
+        padding: $lineheight ($gutter * 8);
+        background-color: $nevada;
+        color: $iron;
+        margin-top: $magicnumber2;
+        -webkit-transform: translateY(103%);
+        transform: translateY(103%);
+        
+        &.visible {
+            transform: none;
+            transition: all 330ms ease-out;
+        }
+    }
+
+    &__button {
+        background-color: transparent;
+        color: $iron;
+        padding: 0;
+        margin-left: $gutter;
+        font-size: ($magicnumber1 * 2.5);
+
+        &:first-of-type {
+            margin-left: ($gutter * 2);
+        }
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

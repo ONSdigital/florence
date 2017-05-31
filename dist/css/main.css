@@ -1408,6 +1408,32 @@ select {
     background-color: #A1A3A5;
     padding: 21px 40px; }
 
+.notifications {
+  list-style: none;
+  position: absolute;
+  width: 100%;
+  bottom: 0; }
+  .notifications__item {
+    padding: 21px 160px;
+    background-color: #6D6E70;
+    color: #E7E8E9;
+    margin-top: 3px;
+    -webkit-transform: translateY(103%);
+    transform: translateY(103%); }
+    .notifications__item.visible {
+      transform: none;
+      transition: all 330ms ease-out; }
+  .notifications__button {
+    background-color: transparent;
+    color: #E7E8E9;
+    padding: 0;
+    margin-left: 20px;
+    font-size: 17.5px; }
+    .notifications__button:first-of-type {
+      margin-left: 40px; }
+    .notifications__button:hover {
+      text-decoration: underline; }
+
 .btn {
   border-radius: 4px;
   padding: 10px 20px;
