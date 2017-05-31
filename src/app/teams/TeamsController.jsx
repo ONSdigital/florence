@@ -195,10 +195,11 @@ export class TeamsController extends Component {
                     // console.error(`Team ${teamParameter} is not recognised so you've been redirected to the teams screen`);
                     const notificationID = Date.now();
                     const notification = {
-                        message: `Team ${teamParameter} is not recognised so you've been redirected to the teams screen`,
+                        message: `Team '${teamParameter}' is not recognised so you've been redirected to the teams screen`,
                         type: "neutral",
                         id: notificationID,
-                        autoDismiss: 5000
+                        // autoDismiss: 5000,
+                        isDismissable: true
                     }
 
                     notifications.add(notification);
