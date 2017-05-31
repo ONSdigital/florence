@@ -4,7 +4,7 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import teams from '../../utilities/teams';
-import { updateAllTeams, emptyActiveTeam } from '../../config/actions';
+import { updateAllTeams } from '../../config/actions';
 
 import TeamDeleteForm from './TeamDeleteForm';
 

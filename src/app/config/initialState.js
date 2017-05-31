@@ -10,5 +10,6 @@ export const initialState = {
         active: {},
         all: [],
         users: []
-    }
+    },
+    notifications: []
 };

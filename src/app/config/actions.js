@@ -6,6 +6,9 @@ export const UPDATE_USERS = 'UPDATE_USERS';
 export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
+export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
+export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
+
 export function userLoggedIn(email, userType, isAdmin) {
     return {
         type: USER_LOGGED_IN,
@@ -53,5 +56,19 @@ export function emptyActiveTeam() {
     return {
         type: UPDATE_ACTIVE_TEAM,
         activeTeam: {}
+    }
+}
+
+export function addNotification(notification) {
+    return {
+        type: ADD_NOTIFICATION,
+        notification
+    }
+}
+
+export function removeNotification(notificationID) {
+    return {
+        type: REMOVE_NOTIFICATION,
+        notificationID
     }
 }
