@@ -43,7 +43,7 @@ export default class Input extends Component {
                         :
                         ""
                 }
-                <input id={this.props.id} type={this.state.type} className="input input__text" name={this.props.id} onChange={this.props.onChange}/>
+                <input id={this.props.id} type={this.state.type} className="input input__text" name={this.props.id} onChange={this.props.onChange} />
                 {
                     this.state.displayShowHide ?
                         <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">{this.state.type === 'text' ? 'Hide' : 'Show'}</span>

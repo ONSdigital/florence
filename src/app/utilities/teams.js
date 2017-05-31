@@ -20,6 +20,13 @@ export default class teams {
             })
     }
 
+    static add(teamName) {
+        return http.post(`/zebedee/teams/${teamName}`)
+            .then(response => {
+                return response;
+            })
+    }
+
     static remove(teamName) {
         return http.delete(`/zebedee/teams/${teamName}`)
             .then(response => {
