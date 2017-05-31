@@ -3,9 +3,15 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllTeams, updateActiveTeam, emptyActiveTeam, updateActiveTeamMembers } from '../config/actions';
+import { 
+    updateAllTeams, 
+    updateActiveTeam, 
+    emptyActiveTeam, 
+    updateActiveTeamMembers,
+} from '../config/actions';
 import teams from '../utilities/teams';
 import safeURL from '../utilities/safeURL';
+import notifications from '../utilities/notifications';
 
 import SelectableBoxController from '../components/selectable-box/SelectableBoxController';
 import Drawer from '../components/drawer/Drawer';
@@ -186,7 +192,16 @@ export class TeamsController extends Component {
                 }
                 // Give error because the team in the URL can't be found in the data
                 if (!activeTeam) {
-                    console.error(`Team ${teamParameter} is not recognised - redirecting to all teams screen`);
+                    // console.error(`Team ${teamParameter} is not recognised so you've been redirected to the teams screen`);
+                    const notificationID = Date.now();
+                    const notification = {
+                        message: `Team ${teamParameter} is not recognised so you've been redirected to the teams screen`,
+                        type: "neutral",
+                        id: notificationID,
+                        autoDismiss: 5000
+                    }
+
+                    notifications.add(notification);
                     this.props.dispatch(push(`${this.props.rootPath}/teams`));
                 }
             }
