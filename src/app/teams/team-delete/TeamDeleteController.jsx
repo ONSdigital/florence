@@ -62,8 +62,8 @@ class TeamDeleteController extends Component {
             const newTeams = this.props.teams.filter(team => {
                 return team.name !== this.props.name;
             })
+            this.props.dispatch(updateAllTeams(newTeams));
             this.props.dispatch(push(`${this.props.rootPath}/teams`));
-            // this.props.dispatch(updateAllTeams(newTeams));
             this.props.onDeleteSuccess();
         }).catch(error => {
             console.log(`Error trying to remove team ${this.props.name}\nError:`, error);

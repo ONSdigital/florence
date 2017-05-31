@@ -9,6 +9,7 @@ import safeURL from '../utilities/safeURL';
 
 import SelectableBoxController from '../components/selectable-box/SelectableBoxController';
 import Drawer from '../components/drawer/Drawer';
+import TeamCreate from './team-create/TeamCreate';
 import TeamDetails from './team-details/TeamDetails';
 import TeamEditController from './team-edit/TeamEditController';
 import TeamDeleteController from './team-delete/TeamDeleteController';
@@ -43,6 +44,7 @@ export class TeamsController extends Component {
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
         this.handleTeamDeleteClick = this.handleTeamDeleteClick.bind(this);
         this.handleTeamDeleteSuccess = this.handleTeamDeleteSuccess.bind(this);
+        this.handleTeamCreateSuccess = this.handleTeamCreateSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -154,6 +156,10 @@ export class TeamsController extends Component {
         this.fetchTeams();
     }
 
+    handleTeamCreateSuccess() {
+        this.fetchTeams();
+    }
+
     fetchTeams() {
         this.setState({isUpdatingAllTeams: true});
         teams.getAll().then(allTeams => {
@@ -248,6 +254,7 @@ export class TeamsController extends Component {
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a team</h1>
+                        <TeamCreate onCreateSuccess={this.handleTeamCreateSuccess} />
                     </div>
                 </div>
                 {this.renderDrawer()}
