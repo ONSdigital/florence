@@ -1,11 +1,11 @@
-import { get } from '../utilities/get';
+import http from '../utilities/http';
 import { store } from '../config/store';
 import { userLoggedIn } from '../config/actions';
 
 export default class user {
 
     static get(email) {
-        return get(`/zebedee/users?email=${email}`)
+        return http.get(`/zebedee/users?email=${email}`)
             .then(response => {
                 return response;
             }).catch(error => {
@@ -14,7 +14,7 @@ export default class user {
     }
 
     static getAll() {
-        return get(`/zebedee/users`)
+        return http.get(`/zebedee/users`)
             .then(response => {
                 return response;
             }).catch(error => {
@@ -23,7 +23,7 @@ export default class user {
     }
 
     static getPermissions(email) {
-        return get(`/zebedee/permission?email=${email}`)
+        return http.get(`/zebedee/permission?email=${email}`)
             .then(response => {
                 return response;
             }).catch(error => {
