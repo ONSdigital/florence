@@ -49,6 +49,18 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case ('ADD_NOTIFICATION'): {
+            return Object.assign({}, state, {
+                notifications: [...state.notifications, action.notification]
+            })
+        }
+        case ('REMOVE_NOTIFICATION'): {
+            return Object.assign({}, state, {
+                notifications: state.notifications.filter(notification => {
+                    return notification.id !== action.notificationID
+                })
+            })
+        }
         default: {
             break;
         }
