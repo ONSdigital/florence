@@ -11,22 +11,32 @@ export default class notifications {
      *      type [oneOf(["neutral", "warning"])]
      *      message [String]
      *      autoDismiss [Number]
+     *      isDismissable [Bool]
+     *      buttons [Array of objects]
      * }
      */
     static add(notification) {
         const config = {
-            type: notification.type,
-            message: notification.message,
+            type: notification.type || "neutral",
+            message: notification.message || "",
             id: notification.id || Date.now(),
-            autoDismiss: notification.autoDismiss,
-            dismissable: notification.dismissable || false
+            buttons: notification.buttons || []
         }
 
-        if (config.autoDismiss && config.autoDismiss > 0) {
+        if (notification.autoDismiss && notification.autoDismiss > 0) {
             const timer = window.setTimeout(() => {
                 window.clearTimeout(timer);
                 this.remove(config.id);
-            }, config.autoDismiss);
+            }, notification.autoDismiss);
+        }
+
+        if (notification.isDismissable) {
+            config.buttons.push({
+                text: "Close",
+                onClick: function() {
+                    notifications.remove(config.id)
+                }
+            });
         }
 
         store.dispatch(addNotification(config));
