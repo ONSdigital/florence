@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { hasValidAuthToken } from './utilities/hasValidAuthToken';
 import user from './utilities/user';
 
-import Notifications from './global/Notifications';
+import Notifications from './global/notifications/Notifications';
 
 const propTypes = {
     children: PropTypes.node,
