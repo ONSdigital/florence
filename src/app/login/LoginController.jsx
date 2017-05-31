@@ -8,13 +8,10 @@ import LoginForm from './LoginForm';
 import Modal from '../components/Modal';
 import ChangePasswordController from '../components/change-password/ChangePasswordController';
 
-import { get } from '../utilities/get';
-import { post } from '../utilities/post';
+import http from '../utilities/http';
 import user from '../utilities/user';
 import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
 import cookies from '../utilities/cookies';
-
-import { userLoggedIn } from '../config/actions';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -51,7 +48,7 @@ class LoginController extends Component {
     }
 
     postLoginCredentials(body) {
-        return post('/zebedee/login', body);
+        return http.post('/zebedee/login', body);
     }
 
     handleLogin(credentials) {
