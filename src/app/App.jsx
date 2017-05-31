@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { hasValidAuthToken } from './utilities/hasValidAuthToken';
-import { userLoggedIn } from './config/actions';
 import user from './utilities/user';
+
+import Notifications from './global/Notifications';
 
 const propTypes = {
     children: PropTypes.node,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    notifications: PropTypes.arrayOf(PropTypes.object)
 };
 
 class App extends Component {
@@ -51,6 +53,7 @@ class App extends Component {
                         :
                         this.props.children
                 }
+                <Notifications notifications={this.props.notifications} />
             </div>
         )
     }
@@ -58,4 +61,10 @@ class App extends Component {
 
 App.propTypes = propTypes;
 
-export default connect()(App);
+function mapStateToProps(state) {
+    return {
+        notifications: state.state.notifications
+    }
+}
+
+export default connect(mapStateToProps)(App);
