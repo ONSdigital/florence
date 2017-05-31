@@ -55,6 +55,27 @@ exports[`Admin users have option to edit teams 1`] = `
       <h1>
         Create a team
       </h1>
+      <form
+        className="form"
+        onSubmit={[Function]}
+      >
+        <div
+          className="form__input"
+        >
+          <input
+            className="input input__text"
+            onChange={[Function]}
+            placeholder="Name"
+            type="text"
+            value=""
+          />
+        </div>
+        <button
+          className="btn btn--positive"
+        >
+          Create
+        </button>
+      </form>
     </div>
   </div>
   <div
@@ -175,6 +196,27 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
       <h1>
         Create a team
       </h1>
+      <form
+        className="form"
+        onSubmit={[Function]}
+      >
+        <div
+          className="form__input"
+        >
+          <input
+            className="input input__text"
+            onChange={[Function]}
+            placeholder="Name"
+            type="text"
+            value=""
+          />
+        </div>
+        <button
+          className="btn btn--positive"
+        >
+          Create
+        </button>
+      </form>
     </div>
   </div>
   <div
