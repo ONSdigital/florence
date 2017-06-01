@@ -3,6 +3,7 @@
     position: absolute;
     width: 100%;
     bottom: 0;
+    z-index: 3;
 
     &__item {
         padding: $lineheight ($gutter * 8);
