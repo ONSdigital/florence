@@ -11,7 +11,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-    type: "text"
+    type: "text",
+    disabled: false
 };
 
 export default class Input extends Component {
