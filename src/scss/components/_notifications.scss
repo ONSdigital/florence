@@ -6,8 +6,9 @@
 
     &__item {
         padding: $lineheight ($gutter * 8);
-        background-color: $nevada;
+        background-color: $ship-grey;
         color: $iron;
+        font-size: 16px;
         margin-top: $magicnumber2;
         -webkit-transform: translateY(103%);
         transform: translateY(103%);
@@ -28,7 +29,7 @@
         color: $iron;
         padding: 0;
         float: right;
-        // font-size: ($magicnumber1 * 2.5);
+        font-size: 16px;
         text-transform: uppercase;
 
         &:first-of-type {

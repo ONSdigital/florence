@@ -56,8 +56,8 @@ class LoginController extends Component {
             cookies.add("access_token", accessToken);
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);
-                //browserHistory.push(this.props.location.query.redirect);
-                redirectToOldFlorence();
+                browserHistory.push(this.props.location.query.redirect);
+                // redirectToOldFlorence();
             });
         }).catch(error => {
             switch (error.status) {
