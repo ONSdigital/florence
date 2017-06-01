@@ -19,11 +19,12 @@
                 font-weight: 600;
                 color: $night-shadz;
             }
-
-
         }
+    }
 
-
+    &__loader {
+        top: 6px;
+        left: 16px;
     }
 
 }

@@ -1325,10 +1325,6 @@ select {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
-.login__loader {
-  top: 6px;
-  left: 16px; }
-
 .drawer {
   position: fixed;
   top: 63px;
@@ -1537,6 +1533,10 @@ select {
   .form__input--error .error-msg {
     font-weight: 600;
     color: #AA354C; }
+
+.form__loader {
+  top: 6px;
+  left: 16px; }
 
 .list--neutral {
   list-style: none; }

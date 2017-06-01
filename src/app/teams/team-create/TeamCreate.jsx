@@ -59,7 +59,8 @@ class TeamCreate extends Component {
                 default: {
                     const notification = {
                         type: "warning",
-                        message: `An unexpected error has occured whilst tyring to create team '${newTeamName}'`
+                        message: `An unexpected error has occured whilst creating team '${newTeamName}'`,
+                        isDismissable: true
                     }
                     notifications.add(notification);
                     break;
@@ -109,12 +110,15 @@ class TeamCreate extends Component {
                 {/* Can't use <Input/> component because we need hidden labels
                  if this becomes a common use case can add to the input component */}
                 <div className="form__input">
-                    <input type="text" className="input input__text" placeholder="Name" value={this.state.input.value} onChange={this.handleFormInput}/>
+                    <input type="text" className="input input__text" disabled={this.state.isAwaitingResponse} placeholder="Name" value={this.state.input.value} onChange={this.handleFormInput}/>
                     {this.state.input.error && 
                         <div className="error-msg">{this.state.input.error}</div>
                     }
                 </div>
-                <button className="btn btn--positive">Create</button>
+                <button className="btn btn--positive" disabled={this.state.isAwaitingResponse}>Create</button>
+                {this.state.isAwaitingResponse &&
+                    <div className="form__loader loader loader--dark"></div>
+                }
             </form>
         )
     }

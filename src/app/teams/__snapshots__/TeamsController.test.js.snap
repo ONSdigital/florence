@@ -64,6 +64,7 @@ exports[`Admin users have option to edit teams 1`] = `
         >
           <input
             className="input input__text"
+            disabled={false}
             onChange={[Function]}
             placeholder="Name"
             type="text"
@@ -73,6 +74,7 @@ exports[`Admin users have option to edit teams 1`] = `
         </div>
         <button
           className="btn btn--positive"
+          disabled={false}
         >
           Create
         </button>
@@ -218,6 +220,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
         >
           <input
             className="input input__text"
+            disabled={false}
             onChange={[Function]}
             placeholder="Name"
             type="text"
@@ -227,6 +230,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
         </div>
         <button
           className="btn btn--positive"
+          disabled={false}
         >
           Create
         </button>
