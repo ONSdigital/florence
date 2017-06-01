@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import teams from '../../utilities/teams';
 import { updateAllTeams } from '../../config/actions';
+import notifications from '../../utilities/notifications';
 
 import TeamDeleteForm from './TeamDeleteForm';
 
@@ -40,7 +41,8 @@ class TeamDeleteController extends Component {
 
     handleFormInput(event) {
         const input = Object.assign({}, this.state.input, {
-               value: event.target.value
+               value: event.target.value,
+               error: ""
             });
         this.setState({input});
     }
@@ -66,7 +68,53 @@ class TeamDeleteController extends Component {
             this.props.dispatch(push(`${this.props.rootPath}/teams`));
             this.props.onDeleteSuccess();
         }).catch(error => {
-            console.log(`Error trying to remove team ${this.props.name}\nError:`, error);
+            switch(error.status) {
+                case(404): {
+                    const notification = {
+                        type: "warning",
+                        message: `The team '${this.props.name}' doesn't exist - another user may have deleted it`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: `An error occured whilst trying to delete team '${this.props.name}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: `A network error occured whilst trying to delete team '${this.props.name}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: `An unexpected error occured whilst trying to delete team '${this.props.name}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: `An unexpected error occured whilst trying to delete team '${this.props.name}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
         });
     }
 
