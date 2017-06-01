@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { updateUsers, updateActiveTeamMembers } from '../../config/actions';
 import user from '../../utilities/user';
 import teams from '../../utilities/teams';
+import notifications from '../../utilities/notifications';
 
 import TeamEdit from './TeamEdit';
 
@@ -95,7 +96,54 @@ class TeamEditController extends Component {
                     const disabledUsers = this.state.disabledUsers;
                     disabledUsers.delete(userAttributes.email, null);
                     this.setState({disabledUsers});
-                    console.error(`Error removing user '${userAttributes.email}' from team '${this.props.name}'\nError:`, error);
+                    
+                    switch(error.status) {
+                        case(404): {
+                            const notification = {
+                                type: "warning",
+                                message: `The team '${this.props.name}' doesn't exist - another user may have deleted it`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        case("RESPONSE_ERR"): {
+                            const notification = {
+                                type: "warning",
+                                message: `An error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        case("FETCH_ERR"): {
+                            const notification = {
+                                type: "warning",
+                                message: `A network error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        case("UNEXPECTED_ERR"): {
+                            const notification = {
+                                type: "warning",
+                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        default: {
+                            const notification = {
+                                type: "warning",
+                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break;
+                        }
+                    }
                 });
                 break;
             }
@@ -117,7 +165,54 @@ class TeamEditController extends Component {
                     const disabledUsers = this.state.disabledUsers;
                     disabledUsers.delete(userAttributes.email, null);
                     this.setState({disabledUsers});
-                    console.error(`Error adding user '${userAttributes.email}' to team '${this.props.name}'\nError:`, error);
+
+                    switch(error.status) {
+                        case(404): {
+                            const notification = {
+                                type: "warning",
+                                message: `The team '${this.props.name}' doesn't exist - another user may have deleted it`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        case("RESPONSE_ERR"): {
+                            const notification = {
+                                type: "warning",
+                                message: `An error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        case("FETCH_ERR"): {
+                            const notification = {
+                                type: "warning",
+                                message: `A network error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        case("UNEXPECTED_ERR"): {
+                            const notification = {
+                                type: "warning",
+                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break
+                        }
+                        default: {
+                            const notification = {
+                                type: "warning",
+                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                isDismissable: true
+                            }
+                            notifications.add(notification);
+                            break;
+                        }
+                    }
                 });
                 break;
             }
