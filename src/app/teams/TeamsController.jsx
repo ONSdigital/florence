@@ -136,17 +136,6 @@ export class TeamsController extends Component {
     }
 
     handleMembersEditClick() {
-        if (this.state.isUpdatingAllTeams) {
-            // TODO remove this notification and disable buttons with UI hint as to why they're disabled
-            const notification = {
-                type: "neutral",
-                message: "Sorry, you're not able to edit a team's members whilst the latest teams are still being fetched",
-                isDismissable: true,
-                autoDismiss: 20000
-            };
-            notifications.add(notification);
-            return;
-        }
         this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/edit`));
     }
 
@@ -155,17 +144,6 @@ export class TeamsController extends Component {
     }
 
     handleTeamDeleteClick() {
-        if (this.state.isUpdatingAllTeams) {
-            // TODO remove this notification and disable buttons with UI hint as to why they're disabled
-            const notification = {
-                type: "neutral",
-                message: "Sorry, you're not able to delete a team whilst the latest teams are still being fetched",
-                isDismissable: true,
-                autoDismiss: 20000
-            };
-            notifications.add(notification);
-            return;
-        }
         this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/delete`));
     }
 
@@ -188,10 +166,12 @@ export class TeamsController extends Component {
                 });
             });
             
-            // Update all teams and active team
+            // Update all teams
             const teamParameter = this.props.params.team;
             this.props.dispatch(updateAllTeams(allTeamsWithProps));
+            this.setState({isUpdatingAllTeams: false});
 
+            // Update active team
             if (teamParameter) {
                 const activeTeam = allTeamsWithProps.find(team => {
                     return team.path === teamParameter;
@@ -213,8 +193,6 @@ export class TeamsController extends Component {
                     this.props.dispatch(push(`${this.props.rootPath}/teams`));
                 }
             }
-
-            this.setState({isUpdatingAllTeams: false});
         }).catch(error => {
             switch(error.status) {
                 // TODO any 401s on http request could be handled globally
@@ -340,6 +318,7 @@ export class TeamsController extends Component {
                             onDelete={this.handleTeamDeleteClick}
                             onEditMembers={this.handleMembersEditClick}
                             isShowingLoader={this.state.isUpdatingTeamMembers}
+                            isReadOnly={this.state.isUpdatingAllTeams}
                         />
                         :
                         ""
