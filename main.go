@@ -1,43 +1,26 @@
 package main
 
 import (
+	"math/rand"
 	"mime"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ONSdigital/florence/assets"
+	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/gorilla/pat"
 )
 
-var bindAddr = ":8080"
-var babbageURL = "http://localhost:8080"
-var zebedeeURL = "http://localhost:8082"
-var enableNewApp = false
-
 var getAsset = assets.Asset
 
 func main() {
-
-	if v := os.Getenv("BIND_ADDR"); len(v) > 0 {
-		bindAddr = v
-	}
-	if v := os.Getenv("BABBAGE_URL"); len(v) > 0 {
-		babbageURL = v
-	}
-	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
-		zebedeeURL = v
-	}
-	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
-		enableNewApp, _ = strconv.ParseBool(v)
-	}
-
 	log.Namespace = "florence"
 
 	/*
@@ -50,7 +33,7 @@ func main() {
 		because we can't see what issue it's fixing and whether it's necessary.
 	*/
 
-	babbageURL, err := url.Parse(babbageURL)
+	babbageURL, err := url.Parse(config.BabbageURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
@@ -58,7 +41,7 @@ func main() {
 
 	babbageProxy := reverseProxy.Create(babbageURL, nil)
 
-	zebedeeURL, err := url.Parse(zebedeeURL)
+	zebedeeURL, err := url.Parse(config.ZebedeeURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
@@ -70,7 +53,7 @@ func main() {
 
 	newAppHandler := refactoredIndexFile
 
-	if !enableNewApp {
+	if !config.EnableNewApp {
 		newAppHandler = legacyIndexFile
 	}
 
@@ -81,14 +64,28 @@ func main() {
 	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
 	router.Handle("/{uri:.*}", babbageProxy)
 
-	log.Debug("Starting server", log.Data{
-		"bind_addr":      bindAddr,
-		"babbage_url":    babbageURL,
-		"zebedee_url":    zebedeeURL,
-		"enable_new_app": enableNewApp,
-	})
+	log.Debug("Starting server", nil)
+	s := server.New(config.BindAddr, router)
 
-	s := server.New(bindAddr, router)
+	if config.ChaosPanda.Enabled {
+		s.Middleware["ChaosPanda"] = func(h http.Handler) http.Handler {
+			return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				if i := rand.Intn(100); i < config.ChaosPanda.InternalServerErrorRate {
+					log.DebugR(req, "chaos monkey internal server error", log.Data{"rand": i})
+					w.WriteHeader(500)
+					w.Write([]byte(`Chaos Panda says no!`))
+					return
+				}
+				if i := rand.Intn(100); i < config.ChaosPanda.ResponseDelayRate {
+					ms := rand.Intn(config.ChaosPanda.ResponseDelayMaxMS)
+					log.DebugR(req, "chaos monkey response delay", log.Data{"sleep": ms})
+					time.Sleep(time.Duration(ms) * time.Millisecond)
+				}
+				h.ServeHTTP(w, req)
+			})
+		}
+		s.MiddlewareOrder = append([]string{"ChaosPanda"}, s.MiddlewareOrder...)
+	}
 
 	if err := s.ListenAndServe(); err != nil {
 		log.Error(err, nil)

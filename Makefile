@@ -9,6 +9,10 @@ debug: generate
 	go build -tags 'debug' -o $(BINPATH)/florence
 	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} ENABLE_NEW_APP=${ENABLE_NEW_APP} $(BINPATH)/florence
 
+chaos: generate
+	go build -tags 'debug' -o $(BINPATH)/florence
+	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} ENABLE_NEW_APP=${ENABLE_NEW_APP} CHAOS_PANDA_ENABLED=true CHAOS_PANDA_INTERNAL_SERVER_ERROR_RATE=20 CHAOS_PANDA_RESPONSE_DELAY_RATE=10 CHAOS_PANDA_RESPONSE_DELAY_MAX_MS=1000 $(BINPATH)/florence
+
 generate: ${GOPATH}/bin/go-bindata
 	# build the production version
 	cd assets; ${GOPATH}/bin/go-bindata -o prod.go -pkg assets ../dist/...
