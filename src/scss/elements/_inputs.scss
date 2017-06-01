@@ -14,7 +14,14 @@
 
     &:disabled {
         border: 3px solid $nappa;
+        color: $nappa;
         background-color: $quill-grey;
+        position: relative;
+
+        &:-webkit-autofill {
+            -webkit-text-fill-color: $nappa;
+        }
+
     }
 
 }
