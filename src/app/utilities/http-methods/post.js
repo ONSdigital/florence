@@ -1,13 +1,9 @@
-import backoff from 'backoff';
 import { HttpError } from './error';
 
-const fibonacciBackoff = backoff.fibonacci({
-    randomisationFactor: 0,
-    initialDelay: 100,
-    //maxDelay: 300
-});
-
-fibonacciBackoff.failAfter(4);
+const baseInterval = 50;
+let interval = baseInterval;
+const maxRetries = 5;
+let reTryCount = 0;
 
 export function httpPost(uri, body, reTry) {
 
@@ -28,7 +24,6 @@ export function httpPost(uri, body, reTry) {
             if (response.headers.get('content-type').match(/application\/json/)) {
                 return response.json().then(data => {
                     if (response.ok) {
-                        fibonacciBackoff.reset();
                         return data;
                     } else {
                         reject({status: response.status, message: data.message});
@@ -43,15 +38,16 @@ export function httpPost(uri, body, reTry) {
         }).catch(fetchError => {
 
             if (reTry) {
+
                 // retry post
-                fibonacciBackoff.on('ready', function (number, delay) {
-                    //console.log(number + ' ' + delay + 'ms');
-                    doPost(resolve, reject, uri, body);
-                });
+                if (reTryCount < maxRetries) {
+                    setTimeout(function() { doPost(resolve, reject, uri, body, reTry) }, interval);
+                    reTryCount++;
+                    interval = interval * 2;
+                    console.log(reTryCount, maxRetries, interval);
+                } else {
 
-                // pass error back to caller when max number of retries is met
-                fibonacciBackoff.on('fail', function() {
-
+                    // pass error back to caller when max number of retries is met
                     if (fetchError instanceof TypeError) {
                         // connection failed
                         reject({status: 'FETCH_ERR', error: fetchError});
@@ -63,13 +59,13 @@ export function httpPost(uri, body, reTry) {
                         reject({status: 'UNEXPECTED_ERR', error: fetchError})
                     }
 
-                });
+                    reTryCount = 0;
+                    interval = baseInterval;
 
+                }
             }
 
         });
-
-        fibonacciBackoff.backoff();
 
     }
 
