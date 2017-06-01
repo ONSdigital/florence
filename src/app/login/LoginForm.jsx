@@ -12,7 +12,8 @@ const propTypes = {
             onChange: PropTypes.func,
             error: PropTypes.string
         })),
-        onSubmit: PropTypes.func
+        onSubmit: PropTypes.func,
+        isSubmitting: PropTypes.bool
     })
 }
 
@@ -44,7 +45,7 @@ export default class LoginForm extends Component {
                         </button>
 
 
-                        {isSubmitting ? <div className="login__loader loader loader--dark margin-left--1"></div> : ""}
+                        {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                     </form>
                 </div>
             </div>

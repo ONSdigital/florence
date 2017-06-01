@@ -63,6 +63,19 @@ export function httpPost(uri, body, reTry) {
                     interval = baseInterval;
 
                 }
+                return;
+            }
+
+            // pass error back to caller when max number of retries is met
+            if (fetchError instanceof TypeError) {
+                // connection failed
+                reject({status: 'FETCH_ERR', error: fetchError});
+            } else if (fetchError instanceof HttpError) {
+                // unexpected response
+                reject({status: 'RESPONSE_ERR', error: fetchError})
+            } else {
+                // unexpected error
+                reject({status: 'UNEXPECTED_ERR', error: fetchError})
             }
 
         });
