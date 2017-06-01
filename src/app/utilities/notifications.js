@@ -60,7 +60,7 @@ export default class notifications {
         const animationTimer = window.setTimeout(() => {
             store.dispatch(removeNotification(notificationID));
             window.clearTimeout(animationTimer);
-        }, 30);
+        }, 50);
     }
 
 }

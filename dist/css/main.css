@@ -1143,7 +1143,6 @@ li {
   line-height: 21px; }
 
 button {
-  font-family: 'Roboto Slab', serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 21px; }
@@ -1421,6 +1420,8 @@ select {
     -webkit-transform: translateY(103%);
     transform: translateY(103%);
     transition: all 100ms ease-out; }
+    .notifications__item--warning {
+      background-color: #AA354C; }
     .notifications__item.visible {
       transform: none;
       transition: all 250ms ease-out; }
@@ -1428,14 +1429,15 @@ select {
     background-color: transparent;
     color: #E7E8E9;
     padding: 0;
-    margin-left: 20px;
-    font-size: 17.5px; }
+    float: right;
+    text-transform: uppercase; }
     .notifications__button:first-of-type {
       margin-left: 40px; }
     .notifications__button:hover {
       text-decoration: underline; }
 
 .btn {
+  font-family: 'Roboto Slab', serif;
   border-radius: 4px;
   padding: 10px 20px;
   text-decoration: none;
