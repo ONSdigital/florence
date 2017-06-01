@@ -1143,7 +1143,6 @@ li {
   line-height: 21px; }
 
 button {
-  font-family: 'Roboto Slab', serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 21px; }
@@ -1218,17 +1217,21 @@ select {
   width: 100%;
   height: 100%;
   top: 0;
-  z-index: 1000; }
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
 
 .modal__inner {
-  background-color: #F5F5F5;
-  margin: 100px auto 0 auto; }
+  background-color: #F5F5F5; }
 
 .modal__header {
-  padding: 20px; }
+  padding: 21px 20px;
+  margin-bottom: 10.5px; }
 
 .modal__body {
-  padding: 0 20px 20px 20px; }
+  padding: 0 20px 21px 20px;
+  margin-bottom: 10.5px; }
 
 .modal__footer {
   background-color: #A1A3A5;
@@ -1327,7 +1330,7 @@ select {
   left: 16px; }
 
 .drawer {
-  position: absolute;
+  position: fixed;
   top: 63px;
   right: 0;
   -webkit-transform: translateX(103%);
@@ -1398,11 +1401,43 @@ select {
       background-color: #FFFFFF; }
   .add-remove__item-title {
     flex-grow: 1; }
+    .add-remove__item-title.disabled {
+      color: #989898; }
   .add-remove__footer {
     background-color: #A1A3A5;
     padding: 21px 40px; }
 
+.notifications {
+  list-style: none;
+  position: absolute;
+  width: 100%;
+  bottom: 0; }
+  .notifications__item {
+    padding: 21px 160px;
+    background-color: #6D6E70;
+    color: #E7E8E9;
+    margin-top: 3px;
+    -webkit-transform: translateY(103%);
+    transform: translateY(103%);
+    transition: all 100ms ease-out; }
+    .notifications__item--warning {
+      background-color: #AA354C; }
+    .notifications__item.visible {
+      transform: none;
+      transition: all 250ms ease-out; }
+  .notifications__button {
+    background-color: transparent;
+    color: #E7E8E9;
+    padding: 0;
+    float: right;
+    text-transform: uppercase; }
+    .notifications__button:first-of-type {
+      margin-left: 40px; }
+    .notifications__button:hover {
+      text-decoration: underline; }
+
 .btn {
+  font-family: 'Roboto Slab', serif;
   border-radius: 4px;
   padding: 10px 20px;
   text-decoration: none;

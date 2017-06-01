@@ -38,6 +38,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/teams`} component={ UserIsAuthenticated(TeamsController) }>
                                 <Route path={`:team`} component={ UserIsAuthenticated(TeamsController) }>
                                     <Route path={`edit`} component={ UserIsAuthenticated(TeamsController) }/>
+                                    <Route path={`delete`} component={ UserIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/login`} component={ LoginController } />
