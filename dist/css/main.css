@@ -1419,10 +1419,11 @@ select {
     color: #E7E8E9;
     margin-top: 3px;
     -webkit-transform: translateY(103%);
-    transform: translateY(103%); }
+    transform: translateY(103%);
+    transition: all 100ms ease-out; }
     .notifications__item.visible {
       transform: none;
-      transition: all 330ms ease-out; }
+      transition: all 250ms ease-out; }
   .notifications__button {
     background-color: transparent;
     color: #E7E8E9;

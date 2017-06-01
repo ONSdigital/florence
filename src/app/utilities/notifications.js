@@ -1,4 +1,4 @@
-import { addNotification, removeNotification } from '../config/actions';
+import { addNotification, removeNotification, toggleNotificationVisibility } from '../config/actions';
 import { store } from '../config/store';
 
 export default class notifications {
@@ -20,7 +20,8 @@ export default class notifications {
             type: notification.type || "neutral",
             message: notification.message || "",
             id: notification.id || Date.now(),
-            buttons: notification.buttons || []
+            buttons: notification.buttons || [],
+            isVisible: false
         }
 
         if (notification.autoDismiss && notification.autoDismiss > 0) {
@@ -40,6 +41,12 @@ export default class notifications {
         }
 
         store.dispatch(addNotification(config));
+        
+        // Set a timeout so browser doesn't try to render component without the animation
+        const animationTimer = window.setTimeout(() => {
+            store.dispatch(toggleNotificationVisibility(config.id));
+            window.clearTimeout(animationTimer);
+        }, 10);
     }
 
     /**
@@ -47,7 +54,13 @@ export default class notifications {
      * @param {string} notificationID 
      */
     static remove(notificationID) {
-        store.dispatch(removeNotification(notificationID));
+        store.dispatch(toggleNotificationVisibility(notificationID));
+
+        // Set a timeout so browser doesn't try to render component without the animation
+        const animationTimer = window.setTimeout(() => {
+            store.dispatch(removeNotification(notificationID));
+            window.clearTimeout(animationTimer);
+        }, 30);
     }
 
 }

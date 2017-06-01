@@ -12,26 +12,18 @@ const propTypes = {
     isVisible: PropTypes.bool
 }
 
+const defaultProps = {
+    isVisible: false
+}
+
 class NotificationItem extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            isVisible: false
-        };
-    }
-
-    componentDidMount() {
-        // Set a timeout so browser doesn't try to render component without the animation
-        const animationTimer = window.setTimeout(() => {
-            this.setState({isVisible: true});
-            window.clearTimeout(animationTimer);
-        }, 10);
     }
 
     render() {
         return (
-            <li className={`notifications__item ${this.state.isVisible ? "visible" : ""}`}>
+            <li className={`notifications__item ${this.props.isVisible ? "visible" : ""}`}>
                 {this.props.message}
                 {this.props.buttons.map((button, index) => {
                     return ( 
@@ -50,5 +42,6 @@ class NotificationItem extends Component {
 }
 
 NotificationItem.propTypes = propTypes;
+NotificationItem.defaultProps = defaultProps;
 
 export default NotificationItem;
