@@ -63,7 +63,7 @@ class TeamEdit extends Component {
                     })}
                 </ul>
             :
-                <p>This team has no members</p>
+                <p className="add-remove__text">This team has no members</p>
         )
     }
 
