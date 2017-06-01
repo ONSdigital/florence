@@ -3,6 +3,8 @@
  *
  */
 
+import { httpPost } from './http-methods/post'
+
 export default class http {
     
     /**
@@ -58,33 +60,11 @@ export default class http {
     /**
      * @param uri - URI that the request is being sent to
      * @param body - body contents of request
+     * @param reTry - boolean flag whether to re-try request on failure
      * @returns {Promise} which returns the response body in JSON format
      */
-    static post(uri, body) {
-
-        return new Promise(function(resolve, reject) {
-
-            fetch(uri, {
-                credentials: "include",
-                method: "POST",
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify((body || {}))
-            }).then(response => {
-                return response.json().then(data => {
-                    if (response.ok) {
-                        return data
-                    } else {
-                        reject({status: response.status, message: data.message})
-                    }
-                });
-            }).then(responseJSON => {
-                resolve(responseJSON);
-            }).catch(fetchError => {
-                reject(fetchError);
-            });
-
-        });
-
+    static post(uri, body, reTry) {
+        return httpPost(uri, body, reTry)
     }
 
 
