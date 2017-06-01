@@ -1393,6 +1393,8 @@ select {
   .add-remove__body {
     height: 525px;
     overflow-x: scroll; }
+  .add-remove__text {
+    padding: 10.5px 40px; }
   .add-remove__item {
     padding: 10.5px 40px;
     display: flex;
