@@ -46,7 +46,7 @@ export default class notifications {
         const animationTimer = window.setTimeout(() => {
             store.dispatch(toggleNotificationVisibility(config.id));
             window.clearTimeout(animationTimer);
-        }, 10);
+        }, 50);
     }
 
     /**
