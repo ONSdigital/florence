@@ -15,12 +15,12 @@ export default class SelectableBoxItem extends Component {
         this.bindClick = this.bindClick.bind(this);
     }
 
-    shouldComponentUpdate(nextProps) {
-        if (nextProps.isSelected !== this.props.isSelected) {
-            return true;
-        }
-        return false;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     if (nextProps.isSelected !== this.props.isSelected) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     bindClick() {
         this.props.handleClick(this.props);

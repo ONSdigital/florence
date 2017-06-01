@@ -66,6 +66,14 @@ jest.mock('../utilities/user.js', () => (
     )}
 ));
 
+jest.mock('../utilities/notifications.js', () => (
+    {
+        getAll: jest.fn().mockImplementation(() => {
+            return Promise.resolve([]);
+        }
+    )}
+));
+
 test('Loading state shown when fetching all teams', () => {
     const props = {
         dispatch: function() {},
