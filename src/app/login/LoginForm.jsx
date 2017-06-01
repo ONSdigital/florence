@@ -24,6 +24,7 @@ export default class LoginForm extends Component {
 
     render() {
         const inputs = this.props.formData.inputs;
+        const isSubmitting = this.props.formData.isSubmitting;
 
         return (
             <div className="grid grid--justify-center">
@@ -34,11 +35,16 @@ export default class LoginForm extends Component {
 
                         {
                             inputs.map((input, index) => {
-                                return <Input key={index} {...input} />
+                                return <Input key={index} {...input} disabled={isSubmitting}/>
                             })
                         }
 
-                        <button type="submit" className="btn btn--primary margin-top--1">Log in</button>
+                        <button type="submit" className="btn btn--primary margin-top--1" disabled={isSubmitting}>
+                            Log in
+                        </button>
+
+
+                        {isSubmitting ? <div className="login__loader loader loader--dark margin-left--1"></div> : ""}
                     </form>
                 </div>
             </div>
