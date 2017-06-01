@@ -49,6 +49,29 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case ('ADD_NOTIFICATION'): {
+            return Object.assign({}, state, {
+                notifications: [...state.notifications, action.notification]
+            })
+        }
+        case ('REMOVE_NOTIFICATION'): {
+            return Object.assign({}, state, {
+                notifications: state.notifications.filter(notification => {
+                    return notification.id !== action.notificationID
+                })
+            })
+        }
+        case ('TOGGLE_NOTIFICATION_VISIBILITY'): {
+            return Object.assign({}, state, {
+                notifications: state.notifications.map(notification => {
+                    if (notification.id !== action.notificationID) {
+                        return notification;
+                    }
+                    notification.isVisible = !notification.isVisible;
+                    return notification;
+                })
+            })
+        }
         default: {
             break;
         }

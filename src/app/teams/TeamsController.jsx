@@ -3,14 +3,22 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllTeams, updateActiveTeam, emptyActiveTeam, updateActiveTeamMembers } from '../config/actions';
+import { 
+    updateAllTeams, 
+    updateActiveTeam, 
+    emptyActiveTeam, 
+    updateActiveTeamMembers,
+} from '../config/actions';
 import teams from '../utilities/teams';
 import safeURL from '../utilities/safeURL';
+import notifications from '../utilities/notifications';
 
 import SelectableBoxController from '../components/selectable-box/SelectableBoxController';
 import Drawer from '../components/drawer/Drawer';
+import TeamCreate from './team-create/TeamCreate';
 import TeamDetails from './team-details/TeamDetails';
 import TeamEditController from './team-edit/TeamEditController';
+import TeamDeleteController from './team-delete/TeamDeleteController';
 import Modal from '../components/Modal';
 
 const propTypes = {
@@ -32,13 +40,17 @@ export class TeamsController extends Component {
             isUpdatingTeamMembers: false,
             drawerIsAnimatable: false,
             clearActiveTeam: false,
-            isEditingTeam: false
+            isEditingTeam: false,
+            isDeletingTeam: false
         };
 
         this.handleTeamClick = this.handleTeamClick.bind(this);
         this.handleMembersEditClick = this.handleMembersEditClick.bind(this);
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
+        this.handleTeamDeleteClick = this.handleTeamDeleteClick.bind(this);
+        this.handleTeamDeleteSuccess = this.handleTeamDeleteSuccess.bind(this);
+        this.handleTeamCreateSuccess = this.handleTeamCreateSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -73,6 +85,11 @@ export class TeamsController extends Component {
         if (nextProps.routes[nextProps.routes.length-1].path === "edit") {
             this.setState({isEditingTeam: true});
         }
+
+        // Open delete team modal
+        if (nextProps.routes[nextProps.routes.length-1].path === "delete") {
+            this.setState({isDeletingTeam: true});
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -83,6 +100,11 @@ export class TeamsController extends Component {
 
         // Allow render because the team editing modal is being displayed
         if (nextProps.routes[nextProps.routes.length-1].path === "edit" && nextState.isEditingTeam) {
+            return true;
+        }
+        
+        // Allow render because the team editing modal is being displayed
+        if (nextProps.routes[nextProps.routes.length-1].path === "delete" && nextState.isDeletingTeam) {
             return true;
         }
 
@@ -126,6 +148,24 @@ export class TeamsController extends Component {
         this.props.dispatch(push(`${this.props.rootPath}/teams`));
     }
 
+    handleTeamDeleteClick() {
+        if (this.state.isUpdatingAllTeams) {
+            // TODO swap this out for our proper UI error/notification patterns
+            alert(`Sorry, you're not able to delete a team whilst the latest teams are being fetched`);
+            console.warn(`Attempt to edit team's members for ${this.props.activeTeam.path} whilst still fetching update to all teams`);
+            return;
+        }
+        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/delete`));
+    }
+
+    handleTeamDeleteSuccess() {
+        this.fetchTeams();
+    }
+
+    handleTeamCreateSuccess() {
+        this.fetchTeams();
+    }
+
     fetchTeams() {
         this.setState({isUpdatingAllTeams: true});
         teams.getAll().then(allTeams => {
@@ -152,7 +192,15 @@ export class TeamsController extends Component {
                 }
                 // Give error because the team in the URL can't be found in the data
                 if (!activeTeam) {
-                    console.error(`Team ${teamParameter} is not recognised - redirecting to all teams screen`);
+                    // console.error(`Team ${teamParameter} is not recognised so you've been redirected to the teams screen`);
+                    const notification = {
+                        message: `Team '${teamParameter}' is not recognised so you've been redirected to the teams screen`,
+                        type: "neutral",
+                        // autoDismiss: 5000,
+                        isDismissable: true
+                    }
+
+                    notifications.add(notification);
                     this.props.dispatch(push(`${this.props.rootPath}/teams`));
                 }
             }
@@ -193,6 +241,7 @@ export class TeamsController extends Component {
                             {...this.props.activeTeam} 
                             userIsAdmin={this.props.userIsAdmin} 
                             onCancel={this.handleDrawerCancelClick}
+                            onDelete={this.handleTeamDeleteClick}
                             onEditMembers={this.handleMembersEditClick}
                             isShowingLoader={this.state.isUpdatingTeamMembers}
                         />
@@ -219,12 +268,23 @@ export class TeamsController extends Component {
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a team</h1>
+                        <TeamCreate onCreateSuccess={this.handleTeamCreateSuccess} />
                     </div>
                 </div>
                 {this.renderDrawer()}
                 {
                     this.props.routes[this.props.routes.length-1].path === "edit" && this.props.activeTeam && this.props.activeTeam.id ?
-                    <Modal children={<TeamEditController {...this.props.activeTeam} isUpdatingMembers={this.state.isUpdatingTeamMembers}/>} sizeClass="grid__col-8" />
+                    <Modal sizeClass="grid__col-8">
+                        <TeamEditController isUpdatingMembers={this.state.isUpdatingTeamMembers}/>
+                    </Modal>
+                    :
+                    ""
+                }
+                {
+                    this.props.routes[this.props.routes.length-1].path === "delete" && this.props.activeTeam && this.props.activeTeam.id ?
+                    <Modal sizeClass="grid__col-3">
+                        <TeamDeleteController name={this.props.activeTeam.name} onDeleteSuccess={this.handleTeamDeleteSuccess}/>
+                    </Modal>
                     :
                     ""
                 }

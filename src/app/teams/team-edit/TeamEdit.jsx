@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import TeamEditItem from './TeamEditItem';
+
 const propTypes = {
     name: PropTypes.string.isRequired,
     members: PropTypes.arrayOf(PropTypes.string),
     users: PropTypes.arrayOf(PropTypes.object),
+    disabledUsers: PropTypes.object.isRequired,
     updatingAllUsers: PropTypes.bool.isRequired,
     updatingMembers: PropTypes.bool.isRequired,
     showingLoaders: PropTypes.bool,
@@ -15,8 +18,6 @@ const propTypes = {
 class TeamEdit extends Component {
     constructor(props) {
         super(props);
-
-        this.handleMembersChange = this.handleMembersChange.bind(this);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -27,12 +28,43 @@ class TeamEdit extends Component {
         return true;
     }
 
-    handleMembersChange(event) {
-        const attributes = {
-            email: event.target.getAttribute('data-email'),
-            action: event.target.getAttribute('data-action')
-        }
-        this.props.onMembersChange(attributes);
+    renderUsers() {
+        return (
+            <ul className="list list--neutral">
+                {this.props.users.map((user, index) => {
+                    return (
+                        <TeamEditItem 
+                            key={index} 
+                            action="add"
+                            onClick={this.props.onMembersChange}
+                            email={user.email}
+                            isDisabled={this.props.disabledUsers.has(user.email)}
+                        />
+                    )
+                })}
+            </ul>
+        )
+    }
+
+    renderMembers() {
+        return (
+            this.props.members.length > 0 ?
+                <ul className="list list--neutral">
+                    {this.props.members.map((member, index) => {
+                        return (
+                            <TeamEditItem 
+                                key={index} 
+                                action="remove" 
+                                onClick={this.props.onMembersChange}
+                                email={member}
+                                isDisabled={this.props.disabledUsers.has(member)}
+                            />
+                        )
+                    })}
+                </ul>
+            :
+                <p>This team has no members</p>
+        )
     }
 
     render() {
@@ -46,23 +78,7 @@ class TeamEdit extends Component {
                         <h2 className="add-remove__col-heading">All users</h2>
                         <div className="add-remove__body ">
                             {!this.props.updatingAllUsers &&
-                                <ul className="list list--neutral">
-                                    {this.props.users.map((user, index) => {
-                                        return (
-                                            <li key={index} className="add-remove__item">
-                                                <span className="add-remove__item-title">{user.email}</span>
-                                                <button 
-                                                    onClick={this.handleMembersChange} 
-                                                    className="btn btn--positive" 
-                                                    data-email={user.email}
-                                                    data-action="add"
-                                                >
-                                                    Add
-                                                </button>
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
+                                this.renderUsers()
                             }
                             {this.props.showingLoaders && 
                                 <div className="add-remove__loader loader loader--dark"></div>
@@ -75,26 +91,7 @@ class TeamEdit extends Component {
                         <h2 className="add-remove__col-heading">Team members</h2>
                         <div className="add-remove__body">
                             {!this.props.updatingAllUsers &&
-                                this.props.members.length > 0 ?
-                                <ul className="list list--neutral">
-                                    {this.props.members.map((member, index) => {
-                                        return (
-                                            <li key={index} className="add-remove__item">
-                                                <span className="add-remove__item-title">{member}</span>
-                                                <button 
-                                                    onClick={this.handleMembersChange} 
-                                                    className="btn"  
-                                                    data-email={member}
-                                                    data-action="remove"
-                                                >
-                                                    Remove
-                                                </button>
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
-                                :
-                                <p>This team has no members</p>
+                                this.renderMembers()
                             }
                             {this.props.showingLoaders && 
                                 <div className="add-remove__loader loader loader--dark"></div>
@@ -104,7 +101,13 @@ class TeamEdit extends Component {
                 </div>
                 <div className="grid__col-12">
                     <div className="add-remove__footer">
-                        <button className="btn btn--primary" onClick={this.props.onDone}>Done</button>
+                        <button 
+                            className="btn btn--primary" 
+                            onClick={this.props.onDone}
+                            disabled={this.props.disabledUsers.size > 0}
+                        >   
+                            Done
+                        </button>
                     </div>
                 </div>
             </div>

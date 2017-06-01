@@ -49,6 +49,10 @@
 
     &__item-title {
         flex-grow: 1;
+
+        &.disabled {
+            color: $dusty-grey;
+        }
     }
 
     &__footer {
