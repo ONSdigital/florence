@@ -1330,7 +1330,7 @@ select {
   left: 16px; }
 
 .drawer {
-  position: absolute;
+  position: fixed;
   top: 63px;
   right: 0;
   -webkit-transform: translateX(103%);
