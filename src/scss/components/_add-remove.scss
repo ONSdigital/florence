@@ -32,6 +32,10 @@
         overflow-x: scroll
     }
 
+    &__text {
+        padding: ($lineheight / 2) ($gutter * 2);
+    }
+
     &__item {
         padding: ($lineheight / 2) ($gutter * 2);
         display: flex;
