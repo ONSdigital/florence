@@ -42,12 +42,10 @@ export function httpPost(uri, body, reTry) {
             resolve(responseJSON);
         }).catch(fetchError => {
 
-            console.log(fetchError);
-
             if (reTry) {
                 // retry post
                 fibonacciBackoff.on('ready', function (number, delay) {
-                    console.log(number + ' ' + delay + 'ms');
+                    //console.log(number + ' ' + delay + 'ms');
                     doPost(resolve, reject, uri, body);
                 });
 
