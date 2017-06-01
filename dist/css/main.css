@@ -1217,11 +1217,7 @@ select {
   width: 100%;
   height: 100%;
   top: 0;
-<<<<<<< HEAD
   z-index: 2;
-=======
-  z-index: 1000;
->>>>>>> react-with-error-handling
   display: flex;
   align-items: center;
   justify-content: center; }
@@ -1420,7 +1416,6 @@ select {
   list-style: none;
   position: absolute;
   width: 100%;
-<<<<<<< HEAD
   bottom: 0;
   z-index: 3; }
   .notifications__item {
@@ -1428,13 +1423,6 @@ select {
     background-color: #404041;
     color: #E7E8E9;
     font-size: 16px;
-=======
-  bottom: 0; }
-  .notifications__item {
-    padding: 21px 160px;
-    background-color: #6D6E70;
-    color: #E7E8E9;
->>>>>>> react-with-error-handling
     margin-top: 3px;
     -webkit-transform: translateY(103%);
     transform: translateY(103%);
@@ -1449,10 +1437,7 @@ select {
     color: #E7E8E9;
     padding: 0;
     float: right;
-<<<<<<< HEAD
     font-size: 16px;
-=======
->>>>>>> react-with-error-handling
     text-transform: uppercase; }
     .notifications__button:first-of-type {
       margin-left: 40px; }
