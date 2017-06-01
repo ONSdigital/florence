@@ -1476,7 +1476,11 @@ select {
     border: 3px solid #ffbf47; }
   .input:disabled {
     border: 3px solid #AEA99C;
-    background-color: #CCCCCB; }
+    color: #AEA99C;
+    background-color: #CCCCCB;
+    position: relative; }
+    .input:disabled:-webkit-autofill {
+      -webkit-text-fill-color: #AEA99C; }
 
 .form__label {
   display: block;

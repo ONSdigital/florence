@@ -8,10 +8,13 @@ import LoginForm from './LoginForm';
 import Modal from '../components/Modal';
 import ChangePasswordController from '../components/change-password/ChangePasswordController';
 
-import http from '../utilities/http';
+import { get } from '../utilities/get';
+import { post } from '../utilities/post';
 import user from '../utilities/user';
 import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
 import cookies from '../utilities/cookies';
+
+
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -32,7 +35,8 @@ class LoginController extends Component {
                 value: "",
                 errorMsg: ""
             },
-            requestPasswordChange: false
+            requestPasswordChange: false,
+            isSubmitting: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -48,11 +52,12 @@ class LoginController extends Component {
     }
 
     postLoginCredentials(body) {
-        return http.post('/zebedee/login', body);
+        return post('/zebedee/login', body, true);
     }
 
     handleLogin(credentials) {
         this.postLoginCredentials(credentials).then(accessToken => {
+            debugger;
             cookies.add("access_token", accessToken);
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);
@@ -60,28 +65,33 @@ class LoginController extends Component {
                 redirectToOldFlorence();
             });
         }).catch(error => {
-            switch (error.status) {
-                case (404): {
-                    const email = Object.assign({}, this.state.email, {errorMsg: "Email address not recognised"});
-                    this.setState({
-                        email: email
-                    });
-                    break;
-                }
-                case (401): {
-                    const password = Object.assign({}, this.state.email, {errorMsg: "Incorrect password"});
-                    this.setState({
-                        password: password
-                    });
-                    break;
-                }
-                case (417): {
-                    this.setState({
-                        requestPasswordChange: true
-                    });
-                    break;
+            if (error) {
+                switch (error.status) {
+                    case (404): {
+                        const email = Object.assign({}, this.state.email, {errorMsg: "Email address not recognised"});
+                        this.setState({
+                            email: email,
+                            isSubmitting: false
+                        });
+                        break;
+                    }
+                    case (401): {
+                        const password = Object.assign({}, this.state.email, {errorMsg: "Incorrect password"});
+                        this.setState({
+                            password: password,
+                            isSubmitting: false
+                        });
+                        break;
+                    }
+                    case (417): {
+                        this.setState({
+                            requestPasswordChange: true
+                        });
+                        break;
+                    }
                 }
             }
+            this.setState({isSubmitting: false});
         });
 
     }
@@ -93,6 +103,8 @@ class LoginController extends Component {
             email: this.state.email.value,
             password: this.state.password.value
         };
+
+        this.setState({ isSubmitting: true });
 
         this.handleLogin(credentials);
 
@@ -160,7 +172,8 @@ class LoginController extends Component {
                     error: this.state.password.errorMsg
                 }
             ],
-            onSubmit: this.handleSubmit
+            onSubmit: this.handleSubmit,
+            isSubmitting: this.state.isSubmitting
         };
 
         return (
