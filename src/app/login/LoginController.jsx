@@ -8,8 +8,9 @@ import LoginForm from './LoginForm';
 import Modal from '../components/Modal';
 import ChangePasswordController from '../components/change-password/ChangePasswordController';
 
-import { get } from '../utilities/get';
-import { post } from '../utilities/post';
+import http from '../utilities/http';
+import { errCodes } from '../utilities/errorCodes'
+import { post } from '../utilities/http-methods/post';
 import user from '../utilities/user';
 import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
 import cookies from '../utilities/cookies';
@@ -52,12 +53,11 @@ class LoginController extends Component {
     }
 
     postLoginCredentials(body) {
-        return post('/zebedee/login', body, true);
+        return http.post('/zebedee/login', body, true);
     }
 
     handleLogin(credentials) {
         this.postLoginCredentials(credentials).then(accessToken => {
-            debugger;
             cookies.add("access_token", accessToken);
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);
@@ -87,6 +87,18 @@ class LoginController extends Component {
                         this.setState({
                             requestPasswordChange: true
                         });
+                        break;
+                    }
+                    case ('UNEXPECTED_ERR'): {
+                        console.error(errCodes.UNEXPECTED_ERR);
+                        break;
+                    }
+                    case ('RESPONSE_ERR'): {
+                        console.error(errCodes.RESPONSE_ERR);
+                        break;
+                    }
+                    case ('FETCH_ERR'): {
+                        console.error(errCodes.FETCH_ERR);
                         break;
                     }
                 }
