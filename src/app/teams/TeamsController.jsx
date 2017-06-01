@@ -244,6 +244,11 @@ export class TeamsController extends Component {
     fetchMembers(teamName) {
         this.setState({isUpdatingTeamMembers: true});
         teams.get(teamName).then(team => {
+            // A new team is now active, don't do anything with the fetched data
+            if (teamName !== this.props.activeTeam.name) {
+                return;
+            }
+            
             this.props.dispatch(updateActiveTeamMembers(team.members));
             this.setState({isUpdatingTeamMembers: false});
         }).catch(error => {
