@@ -1,6 +1,6 @@
 import http from '../utilities/http';
 import { store } from '../config/store';
-import { userLoggedIn } from '../config/actions';
+import { userLoggedIn, userLoggedOut } from '../config/actions';
 
 export default class user {
 
@@ -42,6 +42,10 @@ export default class user {
         const isAdmin = !!user.admin;
         store.dispatch(userLoggedIn(email, userType, isAdmin));
         localStorage.setItem("loggedInAs", email);
+    }
+
+    static logOut() {
+        store.dispatch(userLoggedOut());
     }
 
 }

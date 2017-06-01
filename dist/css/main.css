@@ -1414,8 +1414,9 @@ select {
   bottom: 0; }
   .notifications__item {
     padding: 21px 160px;
-    background-color: #6D6E70;
+    background-color: #404041;
     color: #E7E8E9;
+    font-size: 16px;
     margin-top: 3px;
     -webkit-transform: translateY(103%);
     transform: translateY(103%);
@@ -1430,6 +1431,7 @@ select {
     color: #E7E8E9;
     padding: 0;
     float: right;
+    font-size: 16px;
     text-transform: uppercase; }
     .notifications__button:first-of-type {
       margin-left: 40px; }
