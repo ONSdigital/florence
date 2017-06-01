@@ -7,9 +7,10 @@ import {
     updateAllTeams, 
     updateActiveTeam, 
     emptyActiveTeam, 
-    updateActiveTeamMembers,
+    updateActiveTeamMembers
 } from '../config/actions';
 import teams from '../utilities/teams';
+import user from '../utilities/user';
 import safeURL from '../utilities/safeURL';
 import notifications from '../utilities/notifications';
 
@@ -136,9 +137,14 @@ export class TeamsController extends Component {
 
     handleMembersEditClick() {
         if (this.state.isUpdatingAllTeams) {
-            // TODO swap this out for our proper UI error/notification patterns
-            alert(`Sorry, you're not able to edit a team's members whilst the latest teams are being fetched`);
-            console.warn(`Attempt to edit team's members for ${this.props.activeTeam.path} whilst still fetching update to all teams`);
+            // TODO remove this notification and disable buttons with UI hint as to why they're disabled
+            const notification = {
+                type: "neutral",
+                message: "Sorry, you're not able to edit a team's members whilst the latest teams are still being fetched",
+                isDismissable: true,
+                autoDismiss: 20000
+            };
+            notifications.add(notification);
             return;
         }
         this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/edit`));
@@ -150,9 +156,14 @@ export class TeamsController extends Component {
 
     handleTeamDeleteClick() {
         if (this.state.isUpdatingAllTeams) {
-            // TODO swap this out for our proper UI error/notification patterns
-            alert(`Sorry, you're not able to delete a team whilst the latest teams are being fetched`);
-            console.warn(`Attempt to edit team's members for ${this.props.activeTeam.path} whilst still fetching update to all teams`);
+            // TODO remove this notification and disable buttons with UI hint as to why they're disabled
+            const notification = {
+                type: "neutral",
+                message: "Sorry, you're not able to delete a team whilst the latest teams are still being fetched",
+                isDismissable: true,
+                autoDismiss: 20000
+            };
+            notifications.add(notification);
             return;
         }
         this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/delete`));
@@ -192,20 +203,63 @@ export class TeamsController extends Component {
                 }
                 // Give error because the team in the URL can't be found in the data
                 if (!activeTeam) {
-                    // console.error(`Team ${teamParameter} is not recognised so you've been redirected to the teams screen`);
                     const notification = {
                         message: `Team '${teamParameter}' is not recognised so you've been redirected to the teams screen`,
                         type: "neutral",
-                        // autoDismiss: 5000,
+                        autoDismiss: 15000,
                         isDismissable: true
                     }
-
                     notifications.add(notification);
                     this.props.dispatch(push(`${this.props.rootPath}/teams`));
                 }
             }
 
             this.setState({isUpdatingAllTeams: false});
+        }).catch(error => {
+            switch(error.status) {
+                // TODO any 401s on http request could be handled globally
+                case(401): {
+                    const notification = {
+                        type: "neutral",
+                        message: "It seems as though you're not logged in so you've been redirected to the login screen",
+                        isDismissable: true,
+                        autoDismiss: 20000
+                    }
+                    user.logOut();
+                    this.props.dispatch(push(`${this.props.rootPath}/login?redirect=${this.props.rootPath}/teams`));
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An error's occurred whilst trying to get teams. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+
+            console.error("Error fetching all teams:\n", error);
         });
     }
 
@@ -213,9 +267,51 @@ export class TeamsController extends Component {
         this.setState({isUpdatingTeamMembers: true});
         teams.get(teamName).then(team => {
             this.props.dispatch(updateActiveTeamMembers(team.members));
-            this.setState({
-                isUpdatingTeamMembers: false
-            });
+            this.setState({isUpdatingTeamMembers: false});
+        }).catch(error => {
+            switch(error.status) {
+                // TODO any 401s on http request could be handled globally
+                case(401): {
+                    const notification = {
+                        type: "neutral",
+                        message: "It seems as though you're not logged in so you've been redirected to the login screen",
+                        isDismissable: true,
+                        autoDismiss: 20000
+                    }
+                    user.logOut();
+                    this.props.dispatch(push(`${this.props.rootPath}/login?redirect=${this.props.rootPath}/teams/${this.props.activeTeam.path}`));
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: `An error's occurred whilst trying to get the members for the team '${teamName}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: `An unexpected error's occurred whilst trying to get the members for the team '${teamName}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: `There's been a network error whilst trying to get the members for the team '${teamName}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error(`Error fetching team '${teamName}':\n`, error);
         });
     }
 
