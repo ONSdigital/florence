@@ -11,10 +11,11 @@
         margin-top: $magicnumber2;
         -webkit-transform: translateY(103%);
         transform: translateY(103%);
+        transition: all 100ms ease-out;
         
         &.visible {
             transform: none;
-            transition: all 330ms ease-out;
+            transition: all 250ms ease-out;
         }
     }
 
