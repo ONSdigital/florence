@@ -12,6 +12,10 @@
         -webkit-transform: translateY(103%);
         transform: translateY(103%);
         transition: all 100ms ease-out;
+
+        &--warning {
+            background-color: $night-shadz;
+        }
         
         &.visible {
             transform: none;
@@ -23,8 +27,9 @@
         background-color: transparent;
         color: $iron;
         padding: 0;
-        margin-left: $gutter;
-        font-size: ($magicnumber1 * 2.5);
+        float: right;
+        // font-size: ($magicnumber1 * 2.5);
+        text-transform: uppercase;
 
         &:first-of-type {
             margin-left: ($gutter * 2);
