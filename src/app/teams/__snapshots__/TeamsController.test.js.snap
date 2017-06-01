@@ -56,7 +56,11 @@ exports[`Admin users have option to edit teams 1`] = `
         Create a team
       </h1>
       <form
+<<<<<<< HEAD
         className="form "
+=======
+        className="form"
+>>>>>>> react-with-error-handling
         onSubmit={[Function]}
       >
         <div
