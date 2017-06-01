@@ -1359,6 +1359,9 @@ select {
   .drawer__banner {
     padding: 21px 160px;
     background-color: #A1A3A5; }
+    .drawer__banner--dark {
+      background-color: #515151;
+      color: #E7E8E9; }
   .drawer__body {
     padding: 21px 160px;
     background-color: #CCCCCB;

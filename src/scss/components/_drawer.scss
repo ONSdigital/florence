@@ -39,6 +39,11 @@
     &__banner {
         padding: ($lineheight) ($gutter * 8);
         background-color: $grey-chateau;
+
+        &--dark {
+            background-color: $emperor;
+            color: $iron;
+        }
     }
 
     &__body {

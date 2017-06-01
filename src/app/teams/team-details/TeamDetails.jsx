@@ -9,7 +9,8 @@ const propTypes = {
     onEditMembers: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-    isShowingLoader: PropTypes.bool
+    isShowingLoader: PropTypes.bool,
+    isReadOnly: PropTypes.bool
 }
 
 class TeamDetails extends Component {
@@ -33,11 +34,17 @@ class TeamDetails extends Component {
         return (
             <div className="drawer__container">
                 <h2 className="drawer__heading">{this.props.name}</h2>
-                    {this.props.userIsAdmin && 
-                        <div className="drawer__banner">
-                            <button onClick={this.props.onEditMembers} className="btn btn--primary">Add / remove members</button>
-                        </div>
-                    }
+                {this.props.isReadOnly &&
+                    <div className="drawer__banner drawer__banner--dark">
+                        <h3>Read only</h3>
+                        <p>The list of teams if still being fetched so you can't edit or delete a team</p>
+                    </div>
+                }
+                {this.props.userIsAdmin && 
+                    <div className="drawer__banner">
+                        <button onClick={this.props.onEditMembers} disabled={this.props.isReadOnly} className="btn btn--primary">Add / remove members</button>
+                    </div>
+                }
                 <div className="drawer__body">
                     {this.props.isShowingLoader &&
                             <div className="drawer__loader loader loader--dark"></div>}
@@ -46,7 +53,7 @@ class TeamDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn btn--warning btn--margin-right" onClick={this.props.onDelete}>Delete team</button>
+                    <button className="btn btn--warning btn--margin-right" disabled={this.props.isReadOnly} onClick={this.props.onDelete}>Delete team</button>
                     <button className="btn" onClick={this.props.onCancel}>Cancel</button>
                 </div>
             </div>
