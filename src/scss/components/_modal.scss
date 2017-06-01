@@ -7,19 +7,23 @@
         height: 100%;
         top: 0;
         z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     &__inner {
         background-color: $wild-sand;
-        margin: 100px auto 0 auto;
     }
 
     &__header {
-        padding: $gutter;
+        padding: $lineheight $gutter;
+        margin-bottom: $lineheight / 2;
 
     }
     &__body {
-        padding: 0 $gutter $gutter $gutter;
+        padding: 0 $gutter $lineheight $gutter;
+        margin-bottom: $lineheight / 2;
     }
 
     &__footer {
