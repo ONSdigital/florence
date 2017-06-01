@@ -1,4 +1,5 @@
 import backoff from 'backoff';
+import { HttpError } from './error';
 
 const fibonacciBackoff = backoff.fibonacci({
     randomisationFactor: 0,
@@ -8,15 +9,13 @@ const fibonacciBackoff = backoff.fibonacci({
 
 fibonacciBackoff.failAfter(4);
 
-function PostError(response) {
-    this.name = 'POST_ERR';
-    this.message = response || {};
-    this.stack = (new Error()).stack;
-}
-PostError.prototype = Object.create(Error.prototype);
-PostError.prototype.constructor = PostError;
+export function httpPost(uri, body, reTry) {
 
-export function post(uri, body, reTry) {
+    if (reTry !== true) {reTry = false}
+
+    return new Promise(function(resolve, reject) {
+        doPost(resolve, reject, uri, body, reTry);
+    });
 
     function doPost(resolve, reject, uri, body, reTry) {
 
@@ -37,11 +36,13 @@ export function post(uri, body, reTry) {
                 });
             }
 
-            throw new PostError(response);
+            throw new HttpError(response);
 
         }).then(responseJSON => {
             resolve(responseJSON);
         }).catch(fetchError => {
+
+            console.log(fetchError);
 
             if (reTry) {
                 // retry post
@@ -56,7 +57,7 @@ export function post(uri, body, reTry) {
                     if (fetchError instanceof TypeError) {
                         // connection failed
                         reject({status: 'FETCH_ERR', error: fetchError});
-                    } else if (fetchError instanceof PostError) {
+                    } else if (fetchError instanceof HttpError) {
                         // unexpected response
                         reject({status: 'RESPONSE_ERR', error: fetchError})
                     } else {
@@ -73,9 +74,5 @@ export function post(uri, body, reTry) {
         fibonacciBackoff.backoff();
 
     }
-
-    return new Promise(function(resolve, reject) {
-        doPost(resolve, reject, uri, body, reTry);
-    });
 
 }
