@@ -19,9 +19,23 @@ export default class notifications {
         const config = {
             type: notification.type || "neutral",
             message: notification.message || "",
-            id: notification.id || Date.now(),
+            id: notification.id || createUID(),
             buttons: notification.buttons || [],
-            isVisible: false
+            isVisible: false,
+            isDismissable: notification.isDismissable != null ? notification.isDismissable : true
+        }
+
+        function createUID() {
+            const date = Date.now();
+            const IDisDuplicate = store.getState().state.notifications.find(notification => {
+                return notification.id === date;
+            });
+
+            if (!IDisDuplicate) {
+                return date;
+            }
+
+            return date+1;
         }
 
         if (notification.autoDismiss && notification.autoDismiss > 0) {
@@ -31,7 +45,7 @@ export default class notifications {
             }, notification.autoDismiss);
         }
 
-        if (notification.isDismissable) {
+        if (config.isDismissable) {
             config.buttons.push({
                 text: "Close",
                 onClick: function() {
