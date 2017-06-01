@@ -56,7 +56,7 @@ exports[`Admin users have option to edit teams 1`] = `
         Create a team
       </h1>
       <form
-        className="form"
+        className="form "
         onSubmit={[Function]}
       >
         <div
@@ -69,6 +69,7 @@ exports[`Admin users have option to edit teams 1`] = `
             type="text"
             value=""
           />
+          
         </div>
         <button
           className="btn btn--positive"
@@ -91,10 +92,21 @@ exports[`Admin users have option to edit teams 1`] = `
         Team 1
       </h2>
       <div
+        className="drawer__banner drawer__banner--dark"
+      >
+        <h3>
+          Read only
+        </h3>
+        <p>
+          The list of teams if still being fetched so you can't edit or delete a team
+        </p>
+      </div>
+      <div
         className="drawer__banner"
       >
         <button
           className="btn btn--primary"
+          disabled={true}
           onClick={[Function]}
         >
           Add / remove members
@@ -123,6 +135,7 @@ exports[`Admin users have option to edit teams 1`] = `
       >
         <button
           className="btn btn--warning btn--margin-right"
+          disabled={true}
           onClick={[Function]}
         >
           Delete team
@@ -197,7 +210,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
         Create a team
       </h1>
       <form
-        className="form"
+        className="form "
         onSubmit={[Function]}
       >
         <div
@@ -210,6 +223,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
             type="text"
             value=""
           />
+          
         </div>
         <button
           className="btn btn--positive"
@@ -231,6 +245,16 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
       >
         Team 1
       </h2>
+      <div
+        className="drawer__banner drawer__banner--dark"
+      >
+        <h3>
+          Read only
+        </h3>
+        <p>
+          The list of teams if still being fetched so you can't edit or delete a team
+        </p>
+      </div>
       <div
         className="drawer__body"
       >
@@ -254,6 +278,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
       >
         <button
           className="btn btn--warning btn--margin-right"
+          disabled={true}
           onClick={[Function]}
         >
           Delete team
