@@ -13,7 +13,8 @@ const propTypes = {
 }
 
 const defaultProps = {
-    isVisible: false
+    isVisible: false,
+    buttons: []
 }
 
 class NotificationItem extends Component {
