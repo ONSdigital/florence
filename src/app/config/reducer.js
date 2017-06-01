@@ -61,6 +61,17 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case ('TOGGLE_NOTIFICATION_VISIBILITY'): {
+            return Object.assign({}, state, {
+                notifications: state.notifications.map(notification => {
+                    if (notification.id !== action.notificationID) {
+                        return notification;
+                    }
+                    notification.isVisible = !notification.isVisible;
+                    return notification;
+                })
+            })
+        }
         default: {
             break;
         }
