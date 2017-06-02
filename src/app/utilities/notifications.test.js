@@ -37,26 +37,8 @@ jest.mock('../config/actions', () => (
                 return notification
             })
         })
-
     }
 ));
-
-test("Notifications are given unique ID on creation by default", () => {
-    const mockNotifications = [
-        {
-            message: "Message 1"
-        },
-        {
-            message: "Message 2"
-        }
-    ]
-    notifications.add(mockNotifications[0]);
-    notifications.add(mockNotifications[1]);
-    expect(mockNotificationsState[0].id).not.toBe(mockNotificationsState[1].id);
-    
-    // Reset mock variables
-    mockNotificationsState = [];
-});
 
 test("Auto dismiss configuration option automatically removes notification from state", () => {
     const mockNotifications = [
