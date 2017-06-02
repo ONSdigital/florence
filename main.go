@@ -12,6 +12,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+<<<<<<< HEAD
+=======
+
+	mgo "gopkg.in/mgo.v2"
+>>>>>>> 41f63c1f... optionally write to mongo
 
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
@@ -25,12 +30,13 @@ var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var enableNewApp = false
+var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
 var upgrader = websocket.Upgrader{}
+var session *mgo.Session
 
 func main() {
-
 	if v := os.Getenv("BIND_ADDR"); len(v) > 0 {
 		bindAddr = v
 	}
@@ -42,6 +48,13 @@ func main() {
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
+	}
+	if v := os.Getenv("MONGO_URI"); len(v) > 0 {
+		if v == "-" {
+			mongoURI = ""
+		} else {
+			mongoURI = v
+		}
 	}
 
 	log.Namespace = "florence"
@@ -55,6 +68,15 @@ func main() {
 		The code has purposefully not been included in this Go replacement
 		because we can't see what issue it's fixing and whether it's necessary.
 	*/
+
+	var err error
+	if len(mongoURI) > 0 {
+		session, err = mgo.Dial(mongoURI)
+		if err != nil {
+			panic(err)
+		}
+		defer session.Close()
+	}
 
 	babbageURL, err := url.Parse(babbageURL)
 	if err != nil {
@@ -221,12 +243,25 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 type florenceLogEvent struct {
-	Type       string      `json:"type"`
-	Location   string      `json:"location"`
-	InstanceID int         `json:"instanceID"`
-	Payload    interface{} `json:"payload"`
+	Created         time.Time   `json:"-"`
+	ClientTimestamp time.Time   `json:"clientTimestamp"`
+	Type            string      `json:"type"`
+	Location        string      `json:"location"`
+	InstanceID      int         `json:"instanceID"`
+	Payload         interface{} `json:"payload"`
 }
 
 func writeToDB(e florenceLogEvent) {
-	log.Debug("FLORENCE LOG EVENT!", log.Data{"event": e})
+	e.Created = time.Now()
+
+	if session == nil {
+		log.Debug("FLORENCE LOG EVENT!", log.Data{"event": e})
+		return
+	}
+
+	s := session.New()
+	defer s.Close()
+	if err := s.DB("florence").C("client_log").Insert(&e); err != nil {
+		log.Error(err, log.Data{"event": e})
+	}
 }
