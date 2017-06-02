@@ -94,7 +94,6 @@ test("Click 'dismiss' button removes that notfication from state", () => {
     const mockNotifications = [
         {
             message: "Message 1",
-            id: 1,
             isDismissable: true
         }
     ]

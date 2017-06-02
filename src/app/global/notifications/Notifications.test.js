@@ -7,12 +7,12 @@ test("Editing a notifications prop updates the number of notifications displayed
         {
             type: "neutral",
             message: "message 1",
-            id: 1
+            id: "1"
         },
         {
             type: "neutral",
             message: "message 2",
-            id: 2
+            id: "2"
         }
     ];
     const component = mount(
@@ -23,7 +23,7 @@ test("Editing a notifications prop updates the number of notifications displayed
         notifications: [...notifications, {
             type: "warning",
             message: "Message 3",
-            id: 3
+            id: "3"
         }]
     });
     expect(component.find('li').length).toBe(3);
@@ -39,7 +39,7 @@ test("Button renders and onClick event calls back to caller", () => {
         {
             type: "neutral",
             message: "Message 1",
-            id: 1,
+            id: "1",
             buttons: [
                 {
                     text: "Close",
@@ -52,7 +52,7 @@ test("Button renders and onClick event calls back to caller", () => {
         {
             type: "neutral",
             message: "Message 2",
-            id: 2
+            id: "2"
         }
     ];
     const component = mount(
