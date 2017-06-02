@@ -13,6 +13,7 @@ exports[`Input without type renders a text input 1`] = `
   </label>
   
   <input
+    autoFocus={false}
     className="input input__text"
     disabled={false}
     id="test-input"
@@ -37,6 +38,7 @@ exports[`Password prop creates a password input 1`] = `
   </label>
   
   <input
+    autoFocus={false}
     className="input input__text"
     disabled={false}
     id="test-password-input"

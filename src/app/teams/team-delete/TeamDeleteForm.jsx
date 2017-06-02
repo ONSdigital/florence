@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 import Input from '../../components/Input';
@@ -34,6 +35,7 @@ class TeamDeleteForm extends Component {
                             id="team-name"
                             error={this.props.input.error}
                             onChange={this.props.onFormInput}
+                            isFocused={true}
                         />
                     </div>
                 </div>
