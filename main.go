@@ -14,6 +14,7 @@ import (
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/gorilla/pat"
+	"github.com/gorilla/websocket"
 )
 
 var bindAddr = ":8080"
@@ -22,6 +23,7 @@ var zebedeeURL = "http://localhost:8082"
 var enableNewApp = false
 
 var getAsset = assets.Asset
+var upgrader = websocket.Upgrader{}
 
 func main() {
 
@@ -78,6 +80,7 @@ func main() {
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", newAppHandler)
 	router.HandleFunc("/florence/index.html", legacyIndexFile)
+	router.HandleFunc("/florence/websocket", websocketHandler)
 	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
 	router.Handle("/{uri:.*}", babbageProxy)
 
@@ -89,6 +92,16 @@ func main() {
 	})
 
 	s := server.New(bindAddr, router)
+
+	// FIXME temporary hack to remove timeout middleware (doesn't support hijacker interface)
+	mo := s.MiddlewareOrder
+	var newMo []string
+	for _, mw := range mo {
+		if mw != "Timeout" {
+			newMo = append(newMo, mw)
+		}
+	}
+	s.MiddlewareOrder = newMo
 
 	if err := s.ListenAndServe(); err != nil {
 		log.Error(err, nil)
@@ -146,4 +159,30 @@ func zebedeeDirector(req *http.Request) {
 		req.Header.Set(`X-Florence-Token`, c.Value)
 	}
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
+}
+
+func websocketHandler(w http.ResponseWriter, req *http.Request) {
+	c, err := upgrader.Upgrade(w, req, nil)
+	if err != nil {
+		log.ErrorR(req, err, nil)
+		return
+	}
+
+	defer c.Close()
+
+	for {
+		mt, message, err := c.ReadMessage()
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			break
+		}
+
+		log.DebugR(req, "websocket recv", log.Data{"message": string(message)})
+
+		err = c.WriteMessage(mt, message)
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			break
+		}
+	}
 }
