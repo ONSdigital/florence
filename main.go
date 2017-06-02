@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
+	"encoding/json"
 	"mime"
 	"net/http"
 	"net/url"
@@ -177,18 +180,53 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 	defer c.Close()
 
 	for {
-		mt, message, err := c.ReadMessage()
+		_, message, err := c.ReadMessage()
 		if err != nil {
 			log.ErrorR(req, err, nil)
 			break
 		}
 
-		log.DebugR(req, "websocket recv", log.Data{"message": string(message)})
+		log.DebugR(req, "websocket recv", log.Data{"data": string(message)})
 
-		err = c.WriteMessage(mt, message)
+		rdr := bufio.NewReader(bytes.NewReader(message))
+		b, err := rdr.ReadBytes(':')
 		if err != nil {
 			log.ErrorR(req, err, nil)
-			break
+			continue
 		}
+
+		eventType := string(b[:len(b)-1])
+		eventData := message[len(eventType)+1:]
+
+		switch eventType {
+		case "event":
+			log.DebugR(req, "event", log.Data{"type": eventType, "data": string(eventData)})
+			var e florenceLogEvent
+			err = json.Unmarshal(eventData, &e)
+			if err != nil {
+				log.ErrorR(req, err, nil)
+				continue
+			}
+			writeToDB(e)
+		default:
+			log.DebugR(req, "unknown event type", log.Data{"type": eventType, "data": string(eventData)})
+		}
+
+		// err = c.WriteMessage(mt, message)
+		// if err != nil {
+		// 	log.ErrorR(req, err, nil)
+		// 	break
+		// }
 	}
+}
+
+type florenceLogEvent struct {
+	Type       string      `json:"type"`
+	Location   string      `json:"location"`
+	InstanceID int         `json:"instanceID"`
+	Payload    interface{} `json:"payload"`
+}
+
+func writeToDB(e florenceLogEvent) {
+	log.Debug("FLORENCE LOG EVENT!", log.Data{"event": e})
 }
