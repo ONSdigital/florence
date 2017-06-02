@@ -7,12 +7,14 @@ const propTypes = {
     type: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    isFocused: PropTypes.bool
 };
 
 const defaultProps = {
     type: "text",
-    disabled: false
+    disabled: false,
+    isFocused: false
 };
 
 export default class Input extends Component {
@@ -45,12 +47,15 @@ export default class Input extends Component {
                         :
                         ""
                 }
-                <input id={this.props.id}
-                       type={this.state.type}
-                       className="input input__text"
-                       name={this.props.id}
-                       disabled={this.props.disabled}
-                       onChange={this.props.onChange}/>
+                <input 
+                    id={this.props.id}
+                    type={this.state.type}
+                    className="input input__text"
+                    name={this.props.id}
+                    disabled={this.props.disabled}
+                    onChange={this.props.onChange}
+                    autoFocus={this.props.isFocused}
+                />
                 {
                     this.state.displayShowHide ?
                         <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">{this.state.type === 'text' ? 'Hide' : 'Show'}</span>
