@@ -199,7 +199,7 @@ export class TeamsController extends Component {
                 case(401): {
                     const notification = {
                         type: "neutral",
-                        message: "It seems as though you're not logged in so you've been redirected to the login screen",
+                        message: "Your session has expired so you've been redirected to the login screen",
                         isDismissable: true,
                         autoDismiss: 20000
                     }
@@ -257,7 +257,7 @@ export class TeamsController extends Component {
                 case(401): {
                     const notification = {
                         type: "neutral",
-                        message: "It seems as though you're not logged in so you've been redirected to the login screen",
+                        message: "Your session has expired so you've been redirected to the login screen",
                         isDismissable: true,
                         autoDismiss: 20000
                     }
