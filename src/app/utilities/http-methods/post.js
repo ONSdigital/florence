@@ -1,4 +1,6 @@
 import { HttpError } from './error';
+import log, { eventTypes } from '../log';
+import uuid from 'uuid/v4';
 
 const baseInterval = 50;
 let interval = baseInterval;
@@ -14,15 +16,29 @@ export function httpPost(uri, body, reTry) {
     });
 
     function doPost(resolve, reject, uri, body, reTry) {
+        const UID = uuid();
+        const logEventPayload = {
+            method: "POST",
+            requestID: UID,
+            retry: reTry,
+            retryCount: reTryCount
+        };
 
+        log.add(eventTypes.REQUEST_SENT, logEventPayload);
         fetch(uri, {
             credentials: "include",
             method: "POST",
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Request-ID': UID
+            },
             body: JSON.stringify((body || {}))
         }).then(response => {
             if (response.headers.get('content-type').match(/application\/json/)) {
                 return response.json().then(data => {
+                    logEventPayload.status = response.status;
+                    logEventPayload.message = response.message;
+                    log.add(eventTypes.REQUEST_RECEIVED, logEventPayload);
                     if (response.ok) {
                         return data;
                     } else {
