@@ -49,13 +49,6 @@ func main() {
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
 	}
-	if v := os.Getenv("MONGO_URI"); len(v) > 0 {
-		if v == "-" {
-			mongoURI = ""
-		} else {
-			mongoURI = v
-		}
-	}
 
 	log.Namespace = "florence"
 
@@ -68,15 +61,6 @@ func main() {
 		The code has purposefully not been included in this Go replacement
 		because we can't see what issue it's fixing and whether it's necessary.
 	*/
-
-	var err error
-	if len(mongoURI) > 0 {
-		session, err = mgo.Dial(mongoURI)
-		if err != nil {
-			panic(err)
-		}
-		defer session.Close()
-	}
 
 	babbageURL, err := url.Parse(babbageURL)
 	if err != nil {
@@ -229,7 +213,7 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 				log.ErrorR(req, err, nil)
 				continue
 			}
-			writeToDB(e)
+			log.Debug("client log", log.Data{"data": e})
 		default:
 			log.DebugR(req, "unknown event type", log.Data{"type": eventType, "data": string(eventData)})
 		}
@@ -249,19 +233,4 @@ type florenceLogEvent struct {
 	Location        string      `json:"location"`
 	InstanceID      int         `json:"instanceID"`
 	Payload         interface{} `json:"payload"`
-}
-
-func writeToDB(e florenceLogEvent) {
-	e.Created = time.Now()
-
-	if session == nil {
-		log.Debug("FLORENCE LOG EVENT!", log.Data{"event": e})
-		return
-	}
-
-	s := session.New()
-	defer s.Close()
-	if err := s.DB("florence").C("client_log").Insert(&e); err != nil {
-		log.Error(err, log.Data{"event": e})
-	}
 }
