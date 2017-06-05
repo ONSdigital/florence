@@ -7,7 +7,7 @@ build: generate
 
 debug: generate
 	go build -tags 'debug' -o $(BINPATH)/florence
-	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} ENABLE_NEW_APP=${ENABLE_NEW_APP} $(BINPATH)/florence
+	MONGO_URI=${MONGO_URI} HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} ENABLE_NEW_APP=${ENABLE_NEW_APP} $(BINPATH)/florence
 
 generate: ${GOPATH}/bin/go-bindata
 	# build the production version
