@@ -44,7 +44,7 @@ export default class notifications {
             });
         }
 
-        log.add(eventTypes.SHOWN_NOTIFICATION);
+        log.add(eventTypes.shownNotification);
 
         store.dispatch(addNotification(config));
         

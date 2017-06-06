@@ -3,22 +3,22 @@ import { browserHistory } from 'react-router';
 const instanceID = Math.floor(Math.random() * 10000) + 1;
 
 export const eventTypes = {
-    SHOWN_NOTIFICATION: "SHOWN_NOTIFICATION",
-    SHOWN_WARNING: "SHOWN_WARNING",
-    CHANGED_ROUTE: "CHANGED_ROUTE",
-    APP_INITIALISED: "APP_INITIALISED",
-    REQUEST_SENT: "REQUEST_SENT",
-    REQUEST_RECEIVED: "REQUEST_RECEIVED"
+    shownNotification: "SHOWN_NOTIFICATION",
+    shownWarning: "SHOWN_WARNING",
+    changedRoute: "CHANGED_ROUTE",
+    appInitialised: "APP_INITIALISED",
+    requestSent: "REQUEST_SENT",
+    requestReceived: "REQUEST_RECEIVED"
 }
 
 browserHistory.listen(location => {
-    log.add(eventTypes.CHANGED_ROUTE, {...location})
+    log.add(eventTypes.changedRoute, {...location})
 });
 
 const socket = new WebSocket('ws://localhost:8081/florence/websocket');
 
 socket.onopen = () => {
-    log.add(eventTypes.APP_INITIALISED);
+    log.add(eventTypes.appInitialised);
 }
 
 export default class log {

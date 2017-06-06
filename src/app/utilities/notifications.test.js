@@ -5,7 +5,7 @@ let mockNotificationsState = [];
 jest.mock('../config/store', () => (
     {
         store: {
-            dispatch: jest.fn().mockImplementation(updatedConfig => {
+            dispatch: jest.fn().mockImplementation(() => {
                 // nothing needed here
             }),
             getState: jest.fn().mockImplementation(() => {
@@ -18,6 +18,17 @@ jest.mock('../config/store', () => (
         }
     }
 ))
+
+jest.mock('./log', () => {
+    return {
+        add: function() {
+            // do nothing
+        },
+        eventTypes: {
+            shownNotification: "SHOWN_NOTIFICATION"
+        }
+    }
+})
 
 jest.mock('../config/actions', () => (
     {
