@@ -53,7 +53,15 @@ class TeamDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn btn--warning btn--margin-right" disabled={this.props.isReadOnly} onClick={this.props.onDelete}>Delete team</button>
+                    {this.props.userIsAdmin &&
+                        <button 
+                            className="btn btn--warning btn--margin-right" 
+                            disabled={this.props.isReadOnly} 
+                            onClick={this.props.onDelete}
+                        >
+                            Delete team
+                        </button>
+                    }
                     <button className="btn" onClick={this.props.onCancel}>Cancel</button>
                 </div>
             </div>
