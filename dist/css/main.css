@@ -1425,6 +1425,8 @@ select {
     transition: all 100ms ease-out; }
     .notifications__item--warning {
       background-color: #AA354C; }
+    .notifications__item--positive {
+      background-color: #49725D; }
     .notifications__item.visible {
       transform: none;
       transition: all 250ms ease-out; }
