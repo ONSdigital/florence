@@ -18,6 +18,10 @@
         &--warning {
             background-color: $night-shadz;
         }
+
+        &--positive {
+            background-color: $como;
+        }
         
         &.visible {
             transform: none;
