@@ -148,6 +148,13 @@ export class TeamsController extends Component {
     }
 
     handleTeamDeleteSuccess() {
+        const notification = {
+            type: 'positive',
+            message: 'Team successfully deleted',
+            isDismissable: true,
+            autoDismiss: 15000
+        }
+        notifications.add(notification);
         this.fetchTeams();
     }
 
