@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-    type: PropTypes.oneOf(["neutral", "warning"]).isRequired,
+    type: PropTypes.oneOf(["neutral", "warning", "positive"]).isRequired,
     message: PropTypes.string,
     id: PropTypes.string.isRequired,
     buttons: PropTypes.arrayOf(PropTypes.shape({
@@ -24,7 +24,7 @@ class NotificationItem extends Component {
 
     render() {
         return (
-            <li className={`notifications__item ${this.props.isVisible ? "visible" : ""} ${this.props.type === "warning" ? "notifications__item--warning" : ""}`}>
+            <li className={`notifications__item ${this.props.isVisible ? "visible" : ""} ${this.props.type === "warning" ? "notifications__item--warning" : ""} ${this.props.type === "positive" ? "notifications__item--positive" : ""}`}>
                 {this.props.message}
                 {this.props.buttons.map((button, index) => {
                     return ( 
