@@ -24,7 +24,7 @@ export function httpPost(uri, body, reTry) {
             retryCount: reTryCount
         };
 
-        log.add(eventTypes.REQUEST_SENT, logEventPayload);
+        log.add(eventTypes.requestSent, logEventPayload);
         fetch(uri, {
             credentials: "include",
             method: "POST",
@@ -38,7 +38,7 @@ export function httpPost(uri, body, reTry) {
                 return response.json().then(data => {
                     logEventPayload.status = response.status;
                     logEventPayload.message = response.message;
-                    log.add(eventTypes.REQUEST_RECEIVED, logEventPayload);
+                    log.add(eventTypes.requestReceived, logEventPayload);
                     if (response.ok) {
                         return data;
                     } else {

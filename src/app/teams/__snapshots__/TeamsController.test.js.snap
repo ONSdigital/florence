@@ -281,13 +281,6 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
         className="drawer__footer"
       >
         <button
-          className="btn btn--warning btn--margin-right"
-          disabled={true}
-          onClick={[Function]}
-        >
-          Delete team
-        </button>
-        <button
           className="btn"
           onClick={[Function]}
         >
