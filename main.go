@@ -36,7 +36,12 @@ var getAsset = assets.Asset
 var upgrader = websocket.Upgrader{}
 var session *mgo.Session
 
+// Version is set by the make target
+var Version string
+
 func main() {
+	log.Debug("florence version", log.Data{"version": Version})
+
 	if v := os.Getenv("BIND_ADDR"); len(v) > 0 {
 		bindAddr = v
 	}
@@ -185,6 +190,12 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 
 	defer c.Close()
 
+	err = c.WriteJSON(florenceServerEvent{"version", florenceVersionPayload{Version: Version}})
+	if err != nil {
+		log.ErrorR(req, err, nil)
+		return
+	}
+
 	for {
 		_, message, err := c.ReadMessage()
 		if err != nil {
@@ -234,4 +245,13 @@ type florenceLogEvent struct {
 	Location        string      `json:"location"`
 	InstanceID      int         `json:"instanceID"`
 	Payload         interface{} `json:"payload"`
+}
+
+type florenceServerEvent struct {
+	Type    string      `json:"type"`
+	Payload interface{} `json:"payload"`
+}
+
+type florenceVersionPayload struct {
+	Version string `json:"version"`
 }
