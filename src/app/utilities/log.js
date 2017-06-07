@@ -32,7 +32,7 @@ export default class log {
             payload: payload || null
         }
 
-        console.log(event);
+        // console.log(event);
 
         // Socket isn't open yet but something has been loged, wait until it is open to send it
         if (socket.readyState === 0) {
