@@ -1,8 +1,8 @@
 /**
  * Makaes a safe URL by removing non a-z and 0-9 characters, replacing them with an '_'
  * 
- * @param - String of proposed URL or URL part
- * @returns - String
+ * @param {string} - String of proposed URL or URL part
+ * @returns {string}
  */
 
 export default function safeURL(url) {
