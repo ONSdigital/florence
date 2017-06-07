@@ -10,7 +10,6 @@ import ChangePasswordController from '../components/change-password/ChangePasswo
 
 import http from '../utilities/http';
 import { errCodes } from '../utilities/errorCodes'
-import { post } from '../utilities/http-methods/post';
 import user from '../utilities/user';
 import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
 import cookies from '../utilities/cookies';
@@ -53,7 +52,7 @@ class LoginController extends Component {
     }
 
     postLoginCredentials(body) {
-        return http.post('/zebedee/login', body, true);
+        return http.post('/zebedee/login', body);
     }
 
     handleLogin(credentials) {
