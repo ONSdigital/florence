@@ -5,35 +5,40 @@ import uuid from 'uuid/v4';
 const baseInterval = 50;
 let interval = baseInterval;
 const maxRetries = 5;
-let reTryCount = 0;
+let retryCount = 0;
 
-export function httpPost(uri, body, reTry) {
+export default function request(method, uri, willRetry, body) {
 
-    if (reTry !== true) {reTry = false}
+    willRetry = willRetry || true;
 
     return new Promise(function(resolve, reject) {
-        doPost(resolve, reject, uri, body, reTry);
+        tryFetch(resolve, reject, uri, willRetry, body);
     });
 
-    function doPost(resolve, reject, uri, body, reTry) {
+    function tryFetch(resolve, reject, uri, willRetry, body) {
         const UID = uuid();
         const logEventPayload = {
-            method: "POST",
+            method: method,
             requestID: UID,
-            retry: reTry,
-            retryCount: reTryCount
+            willRetry,
+            retryCount
         };
-
-        log.add(eventTypes.requestSent, logEventPayload);
-        fetch(uri, {
+         const fetchConfig = {
+            method,
             credentials: "include",
-            method: "POST",
-            headers: {
+            header: {
                 'Content-Type': 'application/json',
                 'Request-ID': UID
-            },
-            body: JSON.stringify((body || {}))
-        }).then(response => {
+            }
+        }
+
+        if (method === "POST") {
+            fetchConfig.body = JSON.stringify(body || {});
+        }
+
+        log.add(eventTypes.requestSent, logEventPayload);
+
+        fetch(uri, fetchConfig).then(response => {
             if (response.headers.get('content-type').match(/application\/json/)) {
                 return response.json().then(data => {
                     logEventPayload.status = response.status;
@@ -53,14 +58,14 @@ export function httpPost(uri, body, reTry) {
             resolve(responseJSON);
         }).catch(fetchError => {
 
-            if (reTry) {
+            if (willRetry) {
 
                 // retry post
-                if (reTryCount < maxRetries) {
-                    setTimeout(function() { doPost(resolve, reject, uri, body, reTry) }, interval);
-                    reTryCount++;
+                if (retryCount < maxRetries) {
+                    setTimeout(function() { tryFetch(resolve, reject, uri, willRetry, body) }, interval);
+                    retryCount++;
                     interval = interval * 2;
-                    console.log(reTryCount, maxRetries, interval);
+                    console.log(retryCount, maxRetries, interval);
                 } else {
 
                     // pass error back to caller when max number of retries is met
@@ -75,7 +80,7 @@ export function httpPost(uri, body, reTry) {
                         reject({status: 'UNEXPECTED_ERR', error: fetchError})
                     }
 
-                    reTryCount = 0;
+                    retryCount = 0;
                     interval = baseInterval;
 
                 }
@@ -95,7 +100,5 @@ export function httpPost(uri, body, reTry) {
             }
 
         });
-
     }
-
 }
