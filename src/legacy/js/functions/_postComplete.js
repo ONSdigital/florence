@@ -4,6 +4,7 @@ function saveAndCompleteContent(collectionId, path, content, recursive, redirect
         recursive = false;
     }
 
+    isUpdatingModal.add();
     putContent(collectionId, path, content,
         success = function () {
             Florence.Editor.isDirty = false;
@@ -46,6 +47,7 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -59,6 +61,7 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function (response) {
+            isUpdatingModal.remove();
             handleApiError(response);
         }
     });
