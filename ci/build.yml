@@ -12,5 +12,8 @@ inputs:
   - name: florence
     path: go/src/github.com/ONSdigital/florence
 
+outputs:
+  - name: build
+
 run:
-  path: go/src/github.com/ONSdigital/florence/ci/scripts/unit.sh
+  path: go/src/github.com/ONSdigital/florence/ci/scripts/build.sh
