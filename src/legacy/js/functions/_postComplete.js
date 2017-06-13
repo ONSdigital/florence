@@ -4,7 +4,6 @@ function saveAndCompleteContent(collectionId, path, content, recursive, redirect
         recursive = false;
     }
 
-    isUpdatingModal.add();
     putContent(collectionId, path, content,
         success = function () {
             Florence.Editor.isDirty = false;
@@ -41,6 +40,7 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Update content
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',

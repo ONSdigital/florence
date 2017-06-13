@@ -4,7 +4,6 @@ function saveAndReviewContent(collectionId, path, content, recursive, redirectTo
         recursive = false;
     }
 
-    isUpdatingModal.add();
     putContent(collectionId, path, content,
         success = function () {
             Florence.Editor.isDirty = false;
@@ -41,6 +40,7 @@ function postReview(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Open the file for editing
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
