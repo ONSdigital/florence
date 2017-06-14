@@ -50,13 +50,13 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
 
         /* Setup preview */
-        if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-            // Disable preview for data vis
-            $('#browser-location').show();
-            $('.browser').addClass('disabled');
-            updateBrowserURL("/");
-            $('#iframe').attr('src', Florence.babbageBaseUrl);
-        } else {
+        // if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
+        //     // Disable preview for data vis
+        //     $('#browser-location').show();
+        //     $('.browser').addClass('disabled');
+        //     updateBrowserURL("/");
+        //     $('#iframe').attr('src', Florence.babbageBaseUrl);
+        // } else {
             // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
             detectPreviewClick();
 
@@ -65,7 +65,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
             // Update preview URL on initial load of workspace
             updateBrowserURL(path);
-        }
+        // }
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -240,11 +240,11 @@ function detectPreviewClick() {
 }
 
 function processPreviewLoad(collectionId, collectionData) {
-    if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-        // iframe is blacked out on browse for data vis content
-        $('#iframe').empty();
+    // if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
+    //     // iframe is blacked out on browse for data vis content
+    //     $('#iframe').empty();
 
-    } else {
+    // } else {
         // Collection of functions to run on iframe load
         onIframeLoad(function (event) {
             var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
@@ -276,7 +276,7 @@ function processPreviewLoad(collectionId, collectionData) {
                 }
             }
         });
-    }
+    // }
 }
 
 // Reusable iframe startload event - uses message sent up form babbage on window.load
