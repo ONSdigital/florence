@@ -16,7 +16,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         dataType: 'json',
         type: 'GET',
         success: function (response) {
-            
             // Stubbed data changes until Zebedee is updated - this should never be here in production!!!
             response = mock.browseTree;
             var modifiedResponse = response.children.map(item => {
@@ -40,6 +39,13 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             if (click) {
                 var url = getPreviewUrl();
+                var urlParts = url.split('/');
+
+                // Attempting to find page but this is a visualisation HTML file.
+                // So, remove the HTML page from the end of the URL and just look at the JSON page.
+                if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
+                    url = "/" + urlParts[1] + "/" + urlParts[2];
+                }
                 treeNodeSelect(url === "/blank" ? "/" : url);
             } else {
                 treeNodeSelect('/');
