@@ -257,8 +257,13 @@ function processPreviewLoad(collectionId, collectionData) {
                     var safeUrl = checkPathSlashes(newUrl),
                         selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
 
+
                     Florence.globalVars.pagePath = safeUrl;
 
+                    if (safeUrl.split('/')[1] === "visualisations") {
+                        return;
+                    }
+                    
                     if ($('.workspace-edit').length || $('.workspace-create').length) {
 
                         // Switch to browse screen if navigating around preview whilst on create or edit tab
@@ -313,6 +318,18 @@ function updateBrowserURL(url) {
         url = Florence.globalVars.pagePath;
     }
     $('.browser-location').val(Florence.babbageBaseUrl + url);
+
+    // Disable preview for visualisations
+    var isVisualisation = url.split('/')[1] === "visualisations";
+    if (isVisualisation && $('#browse.selected').length > 0) {
+        $('.browser').addClass('disabled');
+        return;
+    }
+
+    // Enable the preview if we're viewing a normal page and the preview is currently disabled
+    if ($('.browser.disabled').length > 0) {
+        $('.browser.disabled').removeClass('disabled');
+    }
 }
 
 // toggle delete button from 'delete' to 'revert' for content marked as to be deleted and remove/show other buttons in item

@@ -39795,8 +39795,13 @@ function processPreviewLoad(collectionId, collectionData) {
                     var safeUrl = checkPathSlashes(newUrl),
                         selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
 
+
                     Florence.globalVars.pagePath = safeUrl;
 
+                    if (safeUrl.split('/')[1] === "visualisations") {
+                        return;
+                    }
+                    
                     if ($('.workspace-edit').length || $('.workspace-create').length) {
 
                         // Switch to browse screen if navigating around preview whilst on create or edit tab
@@ -39851,6 +39856,18 @@ function updateBrowserURL(url) {
         url = Florence.globalVars.pagePath;
     }
     $('.browser-location').val(Florence.babbageBaseUrl + url);
+
+    // Disable preview for visualisations
+    var isVisualisation = url.split('/')[1] === "visualisations";
+    if (isVisualisation && $('#browse.selected').length > 0) {
+        $('.browser').addClass('disabled');
+        return;
+    }
+
+    // Enable the preview if we're viewing a normal page and the preview is currently disabled
+    if ($('.browser.disabled').length > 0) {
+        $('.browser.disabled').removeClass('disabled');
+    }
 }
 
 // toggle delete button from 'delete' to 'revert' for content marked as to be deleted and remove/show other buttons in item
@@ -43420,7 +43437,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         dataType: 'json',
         type: 'GET',
         success: function (response) {
-            
             // Stubbed data changes until Zebedee is updated - this should never be here in production!!!
             response = mock.browseTree;
             var modifiedResponse = response.children.map(item => {
@@ -43444,6 +43460,13 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             if (click) {
                 var url = getPreviewUrl();
+                var urlParts = url.split('/');
+
+                // Attempting to find page but this is a visualisation HTML file.
+                // So, remove the HTML page from the end of the URL and just look at the JSON page.
+                if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
+                    url = "/" + urlParts[1] + "/" + urlParts[2];
+                }
                 treeNodeSelect(url === "/blank" ? "/" : url);
             } else {
                 treeNodeSelect('/');
@@ -49766,7 +49789,6 @@ function setShortcuts(field, callback) {
 }function setupFlorence() {
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
-    Handlebars.registerPartial("browseNodeDataVis", templates.browseNodeDataVis);
     Handlebars.registerPartial("editNav", templates.editNav);
     Handlebars.registerPartial("editNavChild", templates.editNavChild);
     Handlebars.registerPartial("selectorHour", templates.selectorHour);
@@ -53782,11 +53804,6 @@ function transfer(source, destination, uri) {
 function treeNodeSelect(url) {
     var urlPart = url.replace(Florence.babbageBaseUrl, '');
 
-    // BEING REMOVED BECAUSE BABBAGE IS NOW RENDERING SAME AS NORMAL PAGE - Remove the trailing slash on visualisations so the node select works as expected (unless at root)
-    // if (urlPart !== '/') {
-    //     urlPart = urlPart.replace(/\/+$/, '');
-    // }
-
     var $selectedListItem = $('[data-url="' + urlPart + '"]'); //get first li with data-url with url
     $('.js-browse__item.selected').removeClass('selected');
     $selectedListItem.addClass('selected');
@@ -55524,12 +55541,14 @@ function visualisationEditor(collectionId, data) {
     });
 
     // Disable preview when navigating back to browse tab
-    $('#browse').click(function() {
+    $('#browse').one('click', function() {
         $selectWrapper.hide();
         $('#browser-location').show();
         $('.browser').addClass('disabled');
-        updateBrowserURL("/");
-        $('#iframe').attr('src', Florence.babbageBaseUrl);
+        var browseURL = data.uri;
+        $('#iframe').attr('src', Florence.babbageBaseUrl + browseURL);
+        updateBrowserURL(browseURL);
+        treeNodeSelect(browseURL);
     });
 
     // Submit new ZIP file
