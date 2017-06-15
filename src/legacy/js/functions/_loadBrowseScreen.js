@@ -27,7 +27,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             checkAndAddDeleteFlag(response, collectionData);
 
-            // var browserContent = $('#iframe')[0].contentWindow;
             var html = templates.workBrowse(response);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
@@ -41,7 +40,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 var url = getPreviewUrl();
                 var urlParts = url.split('/');
 
-                // Attempting to find page but this is a visualisation HTML file.
+                // It's attempting to find a page but this is a visualisation HTML file.
                 // So, remove the HTML page from the end of the URL and just look at the JSON page.
                 if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
                     url = "/" + urlParts[1] + "/" + urlParts[2];
