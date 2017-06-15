@@ -39,12 +39,14 @@ function visualisationEditor(collectionId, data) {
     });
 
     // Disable preview when navigating back to browse tab
-    $('#browse').click(function() {
+    $('#browse').one('click', function() {
         $selectWrapper.hide();
         $('#browser-location').show();
         $('.browser').addClass('disabled');
-        updateBrowserURL("/");
-        $('#iframe').attr('src', Florence.babbageBaseUrl);
+        var browseURL = data.uri;
+        $('#iframe').attr('src', Florence.babbageBaseUrl + browseURL);
+        updateBrowserURL(browseURL);
+        treeNodeSelect(browseURL);
     });
 
     // Submit new ZIP file
