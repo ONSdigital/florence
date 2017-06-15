@@ -46,7 +46,6 @@ function visualisationEditor(collectionId, data) {
         var browseURL = data.uri;
         $('#iframe').attr('src', Florence.babbageBaseUrl + browseURL);
         updateBrowserURL(browseURL);
-        treeNodeSelect(browseURL);
     });
 
     // Submit new ZIP file
