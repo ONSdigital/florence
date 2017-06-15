@@ -240,11 +240,6 @@ function detectPreviewClick() {
 }
 
 function processPreviewLoad(collectionId, collectionData) {
-    // if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-    //     // iframe is blacked out on browse for data vis content
-    //     $('#iframe').empty();
-
-    // } else {
         // Collection of functions to run on iframe load
         onIframeLoad(function (event) {
             var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing

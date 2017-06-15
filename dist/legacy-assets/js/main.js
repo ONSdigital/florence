@@ -39778,11 +39778,6 @@ function detectPreviewClick() {
 }
 
 function processPreviewLoad(collectionId, collectionData) {
-    // if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-    //     // iframe is blacked out on browse for data vis content
-    //     $('#iframe').empty();
-
-    // } else {
         // Collection of functions to run on iframe load
         onIframeLoad(function (event) {
             var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
@@ -43448,7 +43443,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             checkAndAddDeleteFlag(response, collectionData);
 
-            // var browserContent = $('#iframe')[0].contentWindow;
             var html = templates.workBrowse(response);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
@@ -43462,7 +43456,7 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 var url = getPreviewUrl();
                 var urlParts = url.split('/');
 
-                // Attempting to find page but this is a visualisation HTML file.
+                // It's attempting to find a page but this is a visualisation HTML file.
                 // So, remove the HTML page from the end of the URL and just look at the JSON page.
                 if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
                     url = "/" + urlParts[1] + "/" + urlParts[2];
@@ -55548,7 +55542,6 @@ function visualisationEditor(collectionId, data) {
         var browseURL = data.uri;
         $('#iframe').attr('src', Florence.babbageBaseUrl + browseURL);
         updateBrowserURL(browseURL);
-        treeNodeSelect(browseURL);
     });
 
     // Submit new ZIP file
