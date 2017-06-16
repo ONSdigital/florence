@@ -17,13 +17,13 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         type: 'GET',
         success: function (response) {
             // Stubbed data changes until Zebedee is updated - this should never be here in production!!!
-            response = mock.browseTree;
-            var modifiedResponse = response.children.map(item => {
-                if (!item.uri && item.contentPath === "/visualisations") {
-                    item.isVisualisationsDirectory = true;
-                }
-                return item;
-            });
+            // response = mock.browseTree;
+            // var modifiedResponse = response.children.map(item => {
+            //     if (!item.uri && item.contentPath === "/visualisations") {
+            //         item.isVisualisationsDirectory = true;
+            //     }
+            //     return item;
+            // });
 
             checkAndAddDeleteFlag(response, collectionData);
 
