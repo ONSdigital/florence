@@ -50,22 +50,14 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
 
         /* Setup preview */
-        // if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-        //     // Disable preview for data vis
-        //     $('#browser-location').show();
-        //     $('.browser').addClass('disabled');
-        //     updateBrowserURL("/");
-        //     $('#iframe').attr('src', Florence.babbageBaseUrl);
-        // } else {
-            // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
-            detectPreviewClick();
+        // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
+        detectPreviewClick();
 
-            // Detect changes to preview and handle accordingly
-            processPreviewLoad(collectionId, collectionData);
+        // Detect changes to preview and handle accordingly
+        processPreviewLoad(collectionId, collectionData);
 
-            // Update preview URL on initial load of workspace
-            updateBrowserURL(path);
-        // }
+        // Update preview URL on initial load of workspace
+        updateBrowserURL(path);
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
