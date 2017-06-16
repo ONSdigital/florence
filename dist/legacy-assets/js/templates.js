@@ -1835,7 +1835,7 @@ templates['userList'] = template({"1":function(depth0,helpers,partials,data) {
     + alias3(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"email","hash":{},"data":data}) : helper)))
     + "</td>\n            </tr>\n";
 },"3":function(depth0,helpers,partials,data) {
-    return "                <input type=\"radio\" id=\"admin-type\" name=\"type\" value=\"admin\" required><label\n                    for=\"admin-type\">Administrator</label>\n                <input type=\"radio\" id=\"publisher-type\" name=\"type\" value=\"publisher\" required><label\n                    for=\"publisher-type\">Publisher</label>\n                <input type=\"radio\" id=\"data-vis-type\" name=\"type\" value=\"dataVisPublisher\" required><label\n                    for=\"data-vis-type\">Visualisation publisher</label>\n";
+    return "                <input type=\"radio\" id=\"admin-type\" name=\"type\" value=\"admin\" required><label\n                    for=\"admin-type\">Administrator</label>\n                <input type=\"radio\" id=\"publisher-type\" name=\"type\" value=\"publisher\" required><label\n                    for=\"publisher-type\">Publisher</label>\n";
 },"5":function(depth0,helpers,partials,data) {
     return "                <input type=\"radio\" id=\"viewer-type\" name=\"type\" value=\"viewer\" checked><label\n                    for=\"viewer-type\">Viewer</label>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
