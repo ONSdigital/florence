@@ -94,7 +94,7 @@ func main() {
 	s.Server.IdleTimeout = 120 * time.Second
 	s.Server.WriteTimeout = 120 * time.Second
 	s.Server.ReadTimeout = 30 * time.Second
-	delete(s.Middleware, "Timeout")
+	s.MiddlewareOrder = []string{"RequestID", "Log"}
 
 	if err := s.ListenAndServe(); err != nil {
 		log.Error(err, nil)
