@@ -48499,11 +48499,9 @@ function getPublisherType(permission) {
     // Store in localStorage publisher type
     if (permission.admin) {
         localStorage.setItem("userType", "PUBLISHING_SUPPORT");
-    } else if (permission.editor && !permission.dataVisPublisher) {
+    } else if (permission.editor) {
         localStorage.setItem("userType", "PUBLISHING_SUPPORT");
-    } else if (permission.editor && permission.dataVisPublisher) {
-        localStorage.setItem("userType", "DATA_VISUALISATION");
-    } else if (!permission.admin && !permission.editor && !permission.dataVisPublisher) {
+    } else if (!permission.admin && !permission.editor) {
         localStorage.setItem("userType", "VIEWER");
     }
 }
@@ -55290,13 +55288,12 @@ function viewUserDetails(email, $this) {
         email
     );
 
-    var isAdmin, isEditor, isVisPublisher;
+    var isAdmin, isEditor;
     function populateUserDetails(user, email, $this) {
         getUserPermission(
             function (permission) {
                 isAdmin = permission.admin;
                 isEditor = permission.editor;
-                isVisPublisher = permission.dataVisPublisher;
 
                 addPermissionToJSON(user);
 
@@ -55358,7 +55355,7 @@ function viewUserDetails(email, $this) {
      * @param user - JSON object
      */
     function addPermissionToJSON (user) {
-        user['permission'] = permissionStr(isAdmin, isEditor, isVisPublisher);
+        user['permission'] = permissionStr(isAdmin, isEditor);
     }
 
 
@@ -55368,11 +55365,10 @@ function viewUserDetails(email, $this) {
      * @param isEditor - true/false
      * @return the user's role as string
      */
-    function permissionStr (isAdmin, isEditor, isVisPublisher) {
+    function permissionStr (isAdmin, isEditor) {
         var permissionStr;
         if (!isAdmin && !isEditor) {permissionStr = 'viewer';}
-        if (isEditor && !isVisPublisher) {permissionStr = 'publisher';}
-        if (isEditor && isVisPublisher) {permissionStr = 'visualisation publisher';}
+        if (isEditor) {permissionStr = 'publisher';}
         if (isAdmin) {permissionStr = "admin";}
 
         return permissionStr;
