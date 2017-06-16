@@ -12,7 +12,6 @@ import (
 
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
-	"github.com/ONSdigital/go-ns/handlers/timeout"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/gorilla/pat"
@@ -22,7 +21,6 @@ var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var enableNewApp = false
-var timeoutSeconds = 30
 
 var getAsset = assets.Asset
 
@@ -39,21 +37,6 @@ func main() {
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
-	}
-	if v := os.Getenv("TIMEOUT"); len(v) > 0 {
-		var err error
-		if timeoutSeconds, err = strconv.Atoi(v); err != nil {
-			log.Error(err, nil)
-			os.Exit(1)
-		}
-		if timeoutSeconds > 120 {
-			log.Debug("timeout too high, setting to 120s", log.Data{"timeout": timeoutSeconds})
-			timeoutSeconds = 120
-		} else if timeoutSeconds < 0 {
-			log.Debug("timeout too low, setting to 10s", log.Data{"timeout": timeoutSeconds})
-			timeoutSeconds = 10
-		}
-		log.Debug("setting HTTP timeout", log.Data{"timeout": timeoutSeconds})
 	}
 
 	log.Namespace = "florence"
@@ -107,7 +90,11 @@ func main() {
 	})
 
 	s := server.New(bindAddr, router)
-	s.Middleware["Timeout"] = timeout.Handler(time.Second * time.Duration(timeoutSeconds))
+	// TODO need to reconsider default go-ns server timeouts
+	s.Server.IdleTimeout = 120 * time.Second
+	s.Server.WriteTimeout = 120 * time.Second
+	s.Server.ReadTimeout = 30 * time.Second
+	delete(s.Middleware, "Timeout")
 
 	if err := s.ListenAndServe(); err != nil {
 		log.Error(err, nil)
