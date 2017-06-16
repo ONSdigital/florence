@@ -11,7 +11,7 @@ To run Florence you must have [Golang](https://golang.org/) installed on a UNIX 
 
 Once you have installed those dependencies and cloned this repo you need to run the following:
 
-1. Move into the correct directory 
+1. Move into the correct directory
 ```
 cd florence
 ```
@@ -19,6 +19,13 @@ cd florence
 ```
 make debug
 ```
+
+3. Browse to the Florence homepage http://localhost:8081/florence/index.html
+
+4. If you are running Florence for the first time you will need to login with the setup credentials. You will be asked to change this password.
+
+Username: florence@magicroundabout.ons.gov.uk
+Password: Doug4l
 
 #### Optional (for developing Florence)
 

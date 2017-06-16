@@ -4923,6 +4923,33 @@ function validatePageName(customSelector) {
     
     return bool
 }
+var isUpdatingModal = {
+    modal: function() {
+        return (
+            "<div class='florence-disable'>" + 
+            "<p>Saving update</p>" +
+            "<div class='loader loader--large'></div>" +
+            "</div>"
+        )
+    },
+    add: function() {
+        console.log('Disable Florence');
+        if ($('.florence-disable').length) {
+            console.warn("Attempt to add Florence's disabled modal but it already exists");
+            return;
+        }
+        $('#main').append(this.modal);
+    },
+    remove: function() {
+        console.log('Enable Florence');
+        var $disabledModal = $('.florence-disable')
+        if ($disabledModal.length === 0) {
+            console.warn("Attempt to remove Florence's disabled modal before it's in the DOM");
+            return;
+        }
+        $disabledModal.remove();
+    }
+}
 function loadBrowseScreen(collectionId, click, collectionData) {
 
     // Get collection data if it's undefined and re-run the function once request has returned
@@ -5598,6 +5625,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.hasLineBreak = false;
         chart.yMin = $('#chart-min').val();
         chart.yMax = $('#chart-max').val();
+        chart.yAxisInterval = $('#chart-interval').val();
 
         if(chart.yMin>0){
             chart.hasLineBreak = true;
@@ -5640,6 +5668,7 @@ function loadChartBuilder(pageData, onSave, chart) {
 
         chart.yAxisMin = getMin(json);
         chart.yAxisMax = getMax(json);
+        //chart.yAxisInterval = $('#chart-interval').val();
 
         chart.xAxisPos = $('#position-x-axis').val();
         chart.yAxisPos = $('#position-y-axis').val();
@@ -9837,12 +9866,14 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Update content
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -9856,6 +9887,7 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function (response) {
+            isUpdatingModal.remove();
             handleApiError(response);
         }
     });
@@ -9871,6 +9903,8 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
  * @param error
  */
 function postContent(collectionId, path, content, overwriteExisting, recursive, success, error) {
+      isUpdatingModal.add();
+
     // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
     postToLocalStorage(collectionId, path, content);
 
@@ -9899,10 +9933,12 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         type: 'POST',
         data: content,
         success: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             success(response);
         },
         error: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             if (error) {
                 error(response);
@@ -10071,12 +10107,14 @@ function postReview(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Open the file for editing
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -10090,6 +10128,7 @@ function postReview(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function () {
+            isUpdatingModal.remove();
             console.log('Error');
         }
     });
@@ -10493,15 +10532,10 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
             var rawURL = $('#uri-input').val();
             var isRelativeURL = (rawURL.indexOf('://') < 0);
             var parsedURL = new URL(rawURL, location.origin);
-            var isExternal = parsedURL.hostname !== location.hostname || parsedURL.hostname.match("http(?:s?):\/\/(?:.+\.)?(?:ons\.gov\.uk|onsdigital\.co\.uk)(\/?.*)"); // Comparing location.hostname is needed so that localhost URLs can still work locally
+            var isExternal = parsedURL.hostname !== location.hostname && !parsedURL.href.match("http(?:s?):\/\/(?:.+\.)?(?:ons\.gov\.uk|onsdigital\.co\.uk)(\/?.*)"); // Comparing location.hostname is needed so that localhost URLs can still work locally
             var latestCheck = $('input[id="latest"]').prop('checked');
 
-            if (isExternal && !isRelativeURL) {
-                sweetAlert("Please only add links to the ONS website");
-                return;
-            }
-
-            getPage(data, templateData, field, latestCheck, parsedURL.pathname, function(error) {
+            function onError() {
                 // URL has failed to be found in published content, give user a decision on whether to still add the link
                 swal({
                     title: "The URL you've added couldn't be found on the website",
@@ -10512,14 +10546,25 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     cancelButtonText: "No"
                 }, function(hasConfirmed) {
                     if (hasConfirmed) {
-                        var templateTitle = "[Unpublished/broken]\n" + parsedURL.href;
+                        var templateTitle = "[Unpublished/broken]\n" + parsedURL.pathname;
                         data[field].push({uri: parsedURL.pathname});
                         templateData[field].push({uri: parsedURL.pathname, description: {title: templateTitle}});
                         saveContentAndRefreshSection();
                     }
                     $('.modal').remove();
                 });
-            });
+            }
+
+            function onSuccess() {
+                $('.modal').remove();
+            }
+
+            if (isExternal && !isRelativeURL) {
+                sweetAlert("Please only add links to the ONS website");
+                return;
+            }
+
+            getPage(data, templateData, field, latestCheck, parsedURL.pathname, onError, onSuccess);
         });
 
         $('.btn-uri-browse').off().one('click', function () {
@@ -10564,7 +10609,7 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         });
     }
 
-    function getPage(data, templateData, field, latestCheck, dataUrl, onError) {
+    function getPage(data, templateData, field, latestCheck, dataUrl, onError, onSuccess) {
         var dataUrlData = dataUrl + "/data";
         var latestUrl;
         if (latestCheck) {
@@ -10635,8 +10680,11 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     viewModel.description.edition = page.description.edition;
                 }
                 templateData[field].push(viewModel);
-
                 saveContentAndRefreshSection();
+
+                if (onSuccess) {
+                    onSuccess();
+                }
             },
             error: function(error) {
                 onError(error);
@@ -10662,7 +10710,7 @@ function resolvePageTitlesThenRefresh(collectionId, data, templateData, field, i
             },
             error = function () {
                 console.warn("Couldn't resolve URI \n" + templateData[field][index].uri);
-                templateData[field][index].description.title = "[Unpublished/broken]\n" + location.host + templateData[field][index].uri;
+                templateData[field][index].description.title = "[Unpublished/broken]\n" + templateData[field][index].uri;
                 dfd.resolve();
             }
         );
