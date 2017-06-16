@@ -7,8 +7,8 @@ function viewCollections(collectionId) {
             url: "/zebedee/collections",
             type: "get",
             success: function (data) {
-                // result.data = data;
-                result.data = mock.collections;
+                result.data = data;
+                // result.data = mock.collections;
             },
             error: function (jqxhr) {
                 handleApiError(jqxhr);
