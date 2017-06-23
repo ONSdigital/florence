@@ -154,13 +154,25 @@ templates['browseNodeDataVis'] = template({"1":function(depth0,helpers,partials,
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"usePartial":true,"useData":true});
 templates['changePassword'] = template({"1":function(depth0,helpers,partials,data) {
+    return "\n              Change password\n";
+},"3":function(depth0,helpers,partials,data) {
+    return "              Create password\n              ";
+},"5":function(depth0,helpers,partials,data) {
     return "              <label for=\"password-old\">Current password:</label><input id=\"password-old\" type=\"password\" cols=\"40\"\n                                                                        rows=\"1\"/>\n";
+},"7":function(depth0,helpers,partials,data) {
+    return "              Update password\n";
+},"9":function(depth0,helpers,partials,data) {
+    return "              Set password\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"change-password-overlay builder overlay\">\n  <div class=\"change-password-overlay__inner\">\n      <form>\n          <h1>Change password</h1>\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.authenticate : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "          <label for=\"password-new\">New password:</label><input id=\"password-new\" type=\"password\" cols=\"40\" rows=\"1\"/>\n          <label for=\"password-confirm\">Confirm new password:</label><input id=\"password-confirm\" type=\"password\"\n                                                                            cols=\"40\"\n                                                                            rows=\"1\"/>\n          <button id=\"update-password\" class=\"btn btn--positive btn-florence-login fl-panel--user-and-access__login \">\n              Update password\n          </button>\n          <button id=\"update-password-cancel\" class=\"btn\">Cancel</button>\n      </form>\n    </div>\n  </div>\n</div>";
+  return "<div class=\"change-password-overlay builder overlay\">\n  <div class=\"change-password-overlay__inner\">\n      <form>\n          <h1>"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.updatePassword : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "")
+    + "</h1>\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.authenticate : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "          <label for=\"password-new\">New password:</label><input id=\"password-new\" type=\"password\" cols=\"40\" rows=\"1\"/>\n          <label for=\"password-confirm\">Confirm new password:</label><input id=\"password-confirm\" type=\"password\"\n                                                                            cols=\"40\"\n                                                                            rows=\"1\"/>\n          <button id=\"update-password\" class=\"btn btn--positive btn-florence-login fl-panel--user-and-access__login \">\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.updatePassword : depth0),{"name":"if","hash":{},"fn":this.program(7, data, 0),"inverse":this.program(9, data, 0),"data":data})) != null ? stack1 : "")
+    + "          </button>\n          <button id=\"update-password-cancel\" class=\"btn\">Cancel</button>\n      </form>\n    </div>\n  </div>\n</div>";
 },"useData":true});
 templates['chartBuilder'] = template({"1":function(depth0,helpers,partials,data) {
     return "                                    <option value=\"lg\">Desktop</option>\n                                    <option value=\"md\">Tablet</option>\n                                    <option value=\"sm\">Mobile</option>\n";
@@ -1826,22 +1838,26 @@ templates['uploadFileForm'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":
     + "\" class=\"edit-section__item\">\n    <form id=\"UploadForm\">\n        <input type=\"file\" title=\"Select a file and click Submit\" name=\"files\">\n        <br>\n        <button class=\"btn btn--primary\" type=\"submit\" form=\"UploadForm\" value=\"submit\">Submit</button>\n        <button class=\"btn btn-page-cancel\" id=\"file-cancel\">Cancel</button>\n    </form>\n    <div id=\"response\"></div>\n    <ul id=\"list\"></ul>\n</div>";
 },"useData":true});
 templates['userDetails'] = template({"1":function(depth0,helpers,partials,data) {
-    return "n";
+    return "        <div class=\"slider__options\">\n            <button class=\"btn btn--primary btn-user-change-password\">Change password</button>\n        </div>\n";
 },"3":function(depth0,helpers,partials,data) {
+    return "n";
+},"5":function(depth0,helpers,partials,data) {
     return "            <p id=\"temp-password\">This user has not updated their temporary password.</p>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing;
 
   return "<div class=\"slider\">\n    <div class=\"slider__head\">\n        <h2>"
-    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</h2>\n    </div>\n\n    <div class=\"slider__options\">\n        <button class=\"btn btn--primary btn-user-change-password\">Change password</button>\n    </div>\n\n    <div class=\"slider__content\">\n        <p>"
-    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</h2>\n    </div>\n\n"
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias3).call(depth0,((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.email : stack1),(depth0 != null ? depth0.loggedUser : depth0),{"name":"if_eq","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n    <div class=\"slider__content\">\n        <p>"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
     + " is a"
-    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.permission : depth0),"admin",{"name":"if_eq","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias3).call(depth0,((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.permission : stack1),"admin",{"name":"if_eq","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + " <strong>"
-    + alias3(((helper = (helper = helpers.permission || (depth0 != null ? depth0.permission : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"permission","hash":{},"data":data}) : helper)))
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.permission : stack1), depth0))
     + "</strong>.</p>\n\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.temporaryPassword : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.temporaryPassword : stack1),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n\n    <nav class=\"slider__nav\">\n        <button class=\"btn btn--warning btn-user-delete\">Delete user</button>\n        <button class=\"btn btn-user-cancel\">Cancel</button>\n    </nav>\n</div>\n";
 },"useData":true});
 templates['userList'] = template({"1":function(depth0,helpers,partials,data) {
@@ -1863,7 +1879,7 @@ templates['userList'] = template({"1":function(depth0,helpers,partials,data) {
 
   return "<section class=\"panel panel--padded col col--6\">\n    <h1 class=\"text-align-center\">Select a user</h1>\n    <table class=\"table table--primary table--fixed-height-27 js-selectable-table\">\n        <thead>\n        <tr>\n            <th id=\"collection-name\" scope=\"col\">Name</th>\n            <th id=\"collection-name\" scope=\"col\">Email</th>\n        </tr>\n        </thead>\n        <tbody>\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.data : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </tbody>\n    </table>\n</section>\n<section class=\"panel panel--padded col col--6\">\n    <h1 class=\"text-align-center\">Create a user</h1>\n\n    <form autocomplete=\"off\" method=\"post\" action=\"\" class=\"form-create-user\">\n        <input id=\"create-user-username\" type=\"text\" placeholder=\"Username\" autocomplete=\"off\"/>\n        <input id=\"create-user-email\" type=\"text\" placeholder=\"Email\" autocomplete=\"off\"/>\n        <input id=\"create-user-password\" type=\"password\" placeholder=\"Password\" autocomplete=\"off\"/>\n        <div class=\"radioBtnDiv\">\n"
+    + "        </tbody>\n    </table>\n</section>\n<section class=\"panel panel--padded col col--6\">\n    <h1 class=\"text-align-center\">Create a user</h1>\n\n    <form autocomplete=\"off\" method=\"post\" action=\"\" class=\"form-create-user\">\n        <input id=\"create-user-username\" type=\"text\" placeholder=\"Name\" autocomplete=\"off\"/>\n        <input id=\"create-user-email\" type=\"text\" placeholder=\"Email\" autocomplete=\"off\"/>\n        <input id=\"create-user-email-owner\" type=\"text\" placeholder=\"Owner email\" autocomplete=\"off\"/>\n        <div class=\"radioBtnDiv\">\n"
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.permission : depth0)) != null ? stack1.admin : stack1),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.permission : depth0)) != null ? stack1.editor : stack1),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "            <br>\n        </div>\n        <button class=\"btn btn--positive margin-right--0 float-right btn-collection-create\">Create user</button>\n    </form>\n</section>\n<section class=\"panel panel--off-canvas col col--6\">\n\n</section>";

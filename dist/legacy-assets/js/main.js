@@ -10026,25 +10026,36 @@ function postLogin(email, password) {
                 function (permission) {
                     // Only allow access to editors and admin
                     if (permission.admin || permission.editor) {
+                        if(window.verificationAttempted) {
+                            window.location.replace("/florence/index.html");
+                            return;
+                        }
                         getPublisherType(permission);
                         Florence.refreshAdminMenu();
                         viewController();
-
                     } else {
                         logout();
+                        if(window.verificationAttempted) {
+                            sweetAlert("Your email address has been verified. You can now login to Ermintrude.");
+                            window.location.replace("/florence/index.html");
+                            return;
+                        }
                         sweetAlert("You do not have the permissions to enter here. Please contact an administrator");
                     }
                 },
                 function (error) {
                     logout();
-                    sweetAlert("There is a problem with permissions. Please contact an administrator");
+                    sweetAlert("An error has occured, please try again.");
                 },
                 email
             );
         },
         error: function (response) {
             if (response.status === 417) {
-                viewChangePassword(email, true);
+                viewChangePassword(email, true, password);
+            } else if (response.status == 403) {
+                logout();
+                sweetAlert("You need to verify your email address before continuing.");
             } else {
                 handleLoginApiError(response);
             }
@@ -10209,7 +10220,7 @@ function postTeamMember(name, email) {
         }
     }
 }
-function postUser(name, email, password, isAdmin, isEditor, isDataVisPublisher) {
+function postUser(name, email, ownerEmail, isAdmin, isEditor, isDataVisPublisher) {
 
     var html = templates.loadingAnimation({dark: true, large: true});
     sweetAlert({
@@ -10226,31 +10237,17 @@ function postUser(name, email, password, isAdmin, isEditor, isDataVisPublisher) 
         type: 'POST',
         data: JSON.stringify({
             name: name,
-            email: email
+            email: email,
+            ownerEmail: ownerEmail
         }),
         success: function () {
             console.log('User created');
-            setPassword();
+            setPermissions();
         },
         error: function (response) {
             handleUserPostError(response);
         }
     });
-
-    /**
-     * Once the user is created do a separate post to the zebedee API
-     * to set the password.
-     */
-    function setPassword() {
-        postPassword(
-            success = function () {
-                console.log('Password set');
-                setPermissions();
-            },
-            error = null,
-            email,
-            password);
-    }
 
     /**
      * Once the user is created and the password is set, set the permissions for the user.
@@ -15445,19 +15442,24 @@ function loadingBtn(selector) {
  * Show the change password screen to change the password for the given email.
  * @param email - The email address of the user to change the password for.
  * @param authenticate - true if the existing password for the user needs to be entered.
+ * @param oldPassword - the existing password or verification code used to login.
  */
-function viewChangePassword(email, authenticate) {
+function viewChangePassword(email, authenticate, oldPassword) {
 
   var viewModel = {
-    authenticate: authenticate
+    authenticate: oldPassword.length == 0,
+    updatePassword: !email.startsWith("<verify>:")
   };
+
+  if(email.startsWith("<verify>:")) {
+    email = email.substring("<verify>:".length);
+  }
   
   $('body').append(templates.changePassword(viewModel));
 
   $('.change-password-overlay__inner input:first').focus(); // Put focus on first input
 
   $('#update-password').on('click', function () {
-    var oldPassword = $('#password-old').val();
     var newPassword = $('#password-new').val();
     var confirmPassword = $('#password-confirm').val();
 
@@ -15968,6 +15970,24 @@ function viewCollectionDetails(collectionId, $this) {
 }
 
 function viewLogIn() {
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    var verification_code = getParameterByName("verify");
+    if(verification_code && !window.verificationAttempted) {
+        var email = getParameterByName("email");
+        window.verificationAttempted = true;
+        postLogin("<verify>:"+email, verification_code);
+        return;
+    }
 
     var login_form = templates.login;
     $('.section').html(login_form);
@@ -16848,11 +16868,11 @@ function viewTeams(selectTableRowAndDisplayTeamDetails) {
  * @param email
  * @param $this = jQuery object of selected table item
  */
-function viewUserDetails(email, $this) {
+function viewUserDetails(email, $this, loggedUser) {
 
     getUsers(
         success = function (user) {
-            populateUserDetails(user, email, $this);
+            populateUserDetails(user, email, $this, loggedUser);
         },
         error = function (response) {
             handleApiError(response);
@@ -16861,7 +16881,7 @@ function viewUserDetails(email, $this) {
     );
 
     var isAdmin, isEditor, isVisPublisher;
-    function populateUserDetails(user, email, $this) {
+    function populateUserDetails(user, email, $this, loggedUser) {
         getUserPermission(
             function (permission) {
                 isAdmin = permission.admin;
@@ -16871,7 +16891,7 @@ function viewUserDetails(email, $this) {
                 addPermissionToJSON(user);
 
                 var showPanelOptions = {
-                    html: window.templates.userDetails(user)
+                    html: window.templates.userDetails({user: user, loggedUser: loggedUser})
                 };
                 showPanel($this, showPanelOptions);
 
@@ -16979,7 +16999,7 @@ function viewUserDetails(email, $this) {
 
         $('.js-selectable-table tbody tr').click(function () {
             var userId = $(this).attr('data-id');
-            viewUserDetails(userId, $(this));
+            viewUserDetails(userId, $(this), loggedUser);
         });
 
         $('.radioBtnDiv').change(function () {
@@ -17010,7 +17030,7 @@ function viewUserDetails(email, $this) {
 
             var username = $('#create-user-username').val();
             var email = $('#create-user-email').val();
-            var password = $('#create-user-password').val();
+            var ownerEmail = $('#create-user-email-owner').val();
 
             if (username.length < 1) {
                 sweetAlert("Please enter a user name.");
@@ -17022,11 +17042,7 @@ function viewUserDetails(email, $this) {
                 return;
             }
 
-            if (password.length < 1) {
-                sweetAlert("Please enter a password.");
-                return;
-            }
-            postUser(username, email, password, isAdmin, isEditor, isDataVisPublisher);
+            postUser(username, email, ownerEmail, isAdmin, isEditor, isDataVisPublisher);
             viewUsers();
         });
     }

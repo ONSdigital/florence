@@ -2,19 +2,24 @@
  * Show the change password screen to change the password for the given email.
  * @param email - The email address of the user to change the password for.
  * @param authenticate - true if the existing password for the user needs to be entered.
+ * @param oldPassword - the existing password or verification code used to login.
  */
-function viewChangePassword(email, authenticate) {
+function viewChangePassword(email, authenticate, oldPassword) {
 
   var viewModel = {
-    authenticate: authenticate
+    authenticate: oldPassword.length == 0,
+    updatePassword: !email.startsWith("<verify>:")
   };
+
+  if(email.startsWith("<verify>:")) {
+    email = email.substring("<verify>:".length);
+  }
   
   $('body').append(templates.changePassword(viewModel));
 
   $('.change-password-overlay__inner input:first').focus(); // Put focus on first input
 
   $('#update-password').on('click', function () {
-    var oldPassword = $('#password-old').val();
     var newPassword = $('#password-new').val();
     var confirmPassword = $('#password-confirm').val();
 
