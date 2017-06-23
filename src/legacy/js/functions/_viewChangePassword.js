@@ -6,8 +6,12 @@
  */
 function viewChangePassword(email, authenticate, oldPassword) {
 
+  if(oldPassword && oldPassword.length > 0) {
+    authenticate = false;
+  }
+
   var viewModel = {
-    authenticate: (oldPassword && oldPassword.length == 0) || authenticate,
+    authenticate: authenticate,
     updatePassword: !email.startsWith("<verify>:")
   };
 
