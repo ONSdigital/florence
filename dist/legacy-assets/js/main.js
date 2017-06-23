@@ -10037,7 +10037,6 @@ function postLogin(email, password) {
                         logout();
                         if(window.verificationAttempted) {
                             sweetAlert("Your email address has been verified. You can now login to Ermintrude.");
-                            window.location.replace("/florence/index.html");
                             return;
                         }
                         sweetAlert("You do not have the permissions to enter here. Please contact an administrator");
@@ -15447,7 +15446,7 @@ function loadingBtn(selector) {
 function viewChangePassword(email, authenticate, oldPassword) {
 
   var viewModel = {
-    authenticate: oldPassword.length == 0,
+    authenticate: (oldPassword && oldPassword.length == 0) || authenticate,
     updatePassword: !email.startsWith("<verify>:")
   };
 
@@ -15460,6 +15459,9 @@ function viewChangePassword(email, authenticate, oldPassword) {
   $('.change-password-overlay__inner input:first').focus(); // Put focus on first input
 
   $('#update-password').on('click', function () {
+    if(viewModel.authenticate) {
+      oldPassword = $('#password-old').val();
+    }
     var newPassword = $('#password-new').val();
     var confirmPassword = $('#password-confirm').val();
 

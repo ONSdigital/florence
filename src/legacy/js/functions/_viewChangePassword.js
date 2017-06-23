@@ -7,7 +7,7 @@
 function viewChangePassword(email, authenticate, oldPassword) {
 
   var viewModel = {
-    authenticate: oldPassword.length == 0,
+    authenticate: (oldPassword && oldPassword.length == 0) || authenticate,
     updatePassword: !email.startsWith("<verify>:")
   };
 
@@ -20,6 +20,9 @@ function viewChangePassword(email, authenticate, oldPassword) {
   $('.change-password-overlay__inner input:first').focus(); // Put focus on first input
 
   $('#update-password').on('click', function () {
+    if(viewModel.authenticate) {
+      oldPassword = $('#password-old').val();
+    }
     var newPassword = $('#password-new').val();
     var confirmPassword = $('#password-confirm').val();
 
