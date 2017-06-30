@@ -4734,6 +4734,14 @@ function networkStatus(ping) {
         $poor.css({"opacity": "0.2"});
         $veryPoor.css({"opacity": "1.0"});
     }
+}function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }function getParentPage (url) {
   var checkedUrl = checkPathSlashes(url);
   var contentUrlTmp = checkedUrl.split('/');
@@ -15445,12 +15453,13 @@ function loadingBtn(selector) {
  */
 function viewChangePassword(email, authenticate, oldPassword) {
 
+  authenticate2 = authenticate;
   if(oldPassword && oldPassword.length > 0) {
-    authenticate = false;
+    authenticate2 = false;
   }
 
   var viewModel = {
-    authenticate: authenticate,
+    authenticate: authenticate2,
     updatePassword: !email.startsWith("<verify>:")
   };
 
@@ -15946,6 +15955,10 @@ function viewCollectionDetails(collectionId, $this) {
     });
 }function viewController(view) {
 
+    if(getParameterByName("verify") && Florence.Authentication.loggedInEmail) {
+        logout();
+    }
+
     if (Florence.Authentication.isAuthenticated()) {
 
         if (view === 'collections') {
@@ -15976,17 +15989,6 @@ function viewCollectionDetails(collectionId, $this) {
 }
 
 function viewLogIn() {
-
-    function getParameterByName(name, url) {
-        if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, "\\$&");
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-            results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return '';
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
-
     var verification_code = getParameterByName("verify");
     if(verification_code && !window.verificationAttempted) {
         var email = getParameterByName("email");

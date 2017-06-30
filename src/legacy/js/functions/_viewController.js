@@ -1,5 +1,9 @@
 function viewController(view) {
 
+    if(getParameterByName("verify") && Florence.Authentication.loggedInEmail) {
+        logout();
+    }
+
     if (Florence.Authentication.isAuthenticated()) {
 
         if (view === 'collections') {
