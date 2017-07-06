@@ -39715,6 +39715,8 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var dest = '/visualisations';
             var type = 'visualisation';
             Florence.globalVars.pagePath = dest;
+            $navItem.removeClass('selected');
+            $("#create").addClass('selected');
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
 
@@ -43441,7 +43443,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             $('.workspace-browse').css("overflow", "scroll");
 
-            // Bind click event for browse tree item
             bindBrowseTreeClick();
 
             if (click) {

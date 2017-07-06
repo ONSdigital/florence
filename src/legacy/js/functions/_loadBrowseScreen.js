@@ -33,7 +33,6 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 
             $('.workspace-browse').css("overflow", "scroll");
 
-            // Bind click event for browse tree item
             bindBrowseTreeClick();
 
             if (click) {
