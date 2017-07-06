@@ -43424,18 +43424,18 @@ function loadBrowseScreen(collectionId, click, collectionData) {
         dataType: 'json',
         type: 'GET',
         success: function (response) {
-            // Stubbed data changes until Zebedee is updated - this should never be here in production!!!
-            // response = mock.browseTree;
-            // var modifiedResponse = response.children.map(item => {
-            //     if (!item.uri && item.contentPath === "/visualisations") {
-            //         item.isVisualisationsDirectory = true;
-            //     }
-            //     return item;
-            // });
+            
+            var browseData = response;
+            browseData.children = response.children.map(item => {
+                if (!item.uri && item.contentPath === "/visualisations") {
+                    item.isVisualisationsDirectory = true;
+                }
+                return item;
+            });
 
-            checkAndAddDeleteFlag(response, collectionData);
+            checkAndAddDeleteFlag(browseData, collectionData);
 
-            var html = templates.workBrowse(response);
+            var html = templates.workBrowse(browseData);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
 
@@ -43448,9 +43448,9 @@ function loadBrowseScreen(collectionId, click, collectionData) {
                 var url = getPreviewUrl();
                 var urlParts = url.split('/');
 
+                if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
                 // It's attempting to find a page but this is a visualisation HTML file.
                 // So, remove the HTML page from the end of the URL and just look at the JSON page.
-                if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
                     url = "/" + urlParts[1] + "/" + urlParts[2];
                 }
                 treeNodeSelect(url === "/blank" ? "/" : url);
