@@ -177,6 +177,8 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var dest = '/visualisations';
             var type = 'visualisation';
             Florence.globalVars.pagePath = dest;
+            $navItem.removeClass('selected');
+            $("#create").addClass('selected');
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
 
