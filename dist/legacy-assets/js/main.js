@@ -4923,6 +4923,33 @@ function validatePageName(customSelector) {
     
     return bool
 }
+var isUpdatingModal = {
+    modal: function() {
+        return (
+            "<div class='florence-disable'>" + 
+            "<p>Saving update</p>" +
+            "<div class='loader loader--large'></div>" +
+            "</div>"
+        )
+    },
+    add: function() {
+        console.log('Disable Florence');
+        if ($('.florence-disable').length) {
+            console.warn("Attempt to add Florence's disabled modal but it already exists");
+            return;
+        }
+        $('#main').append(this.modal);
+    },
+    remove: function() {
+        console.log('Enable Florence');
+        var $disabledModal = $('.florence-disable')
+        if ($disabledModal.length === 0) {
+            console.warn("Attempt to remove Florence's disabled modal before it's in the DOM");
+            return;
+        }
+        $disabledModal.remove();
+    }
+}
 function loadBrowseScreen(collectionId, click, collectionData) {
 
     // Get collection data if it's undefined and re-run the function once request has returned
@@ -9839,12 +9866,14 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Update content
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -9858,6 +9887,7 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function (response) {
+            isUpdatingModal.remove();
             handleApiError(response);
         }
     });
@@ -9873,6 +9903,8 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
  * @param error
  */
 function postContent(collectionId, path, content, overwriteExisting, recursive, success, error) {
+      isUpdatingModal.add();
+
     // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
     postToLocalStorage(collectionId, path, content);
 
@@ -9901,10 +9933,12 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         type: 'POST',
         data: content,
         success: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             success(response);
         },
         error: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             if (error) {
                 error(response);
@@ -10073,12 +10107,14 @@ function postReview(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Open the file for editing
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -10092,6 +10128,7 @@ function postReview(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function () {
+            isUpdatingModal.remove();
             console.log('Error');
         }
     });
