@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
@@ -89,6 +90,11 @@ func main() {
 	})
 
 	s := server.New(bindAddr, router)
+	// TODO need to reconsider default go-ns server timeouts
+	s.Server.IdleTimeout = 120 * time.Second
+	s.Server.WriteTimeout = 120 * time.Second
+	s.Server.ReadTimeout = 30 * time.Second
+	s.MiddlewareOrder = []string{"RequestID", "Log"}
 
 	if err := s.ListenAndServe(); err != nil {
 		log.Error(err, nil)

@@ -2,6 +2,21 @@
 * This file is used for SCSS that you write knowing that it need refactoring - the shame file should be emptied regularly
 */
 
+.florence-disable {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    background-color: black;
+    opacity: 0.6;
+    color: $white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10000;
+}
+
 //Modal styling - probably need some refactoring but mainly needs correct location in sass files
 .modal {
     display: block;
