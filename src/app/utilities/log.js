@@ -15,7 +15,7 @@ browserHistory.listen(location => {
     log.add(eventTypes.changedRoute, {...location})
 });
 
-const socket = new WebSocket('ws://localhost:8081/florence/websocket');
+const socket = new WebSocket(`ws://${window.location.host}/florence/websocket`);
 
 socket.onopen = () => {
     log.add(eventTypes.appInitialised);
