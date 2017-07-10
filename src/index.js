@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route } from 'react-router';
+import { Router, Route, Redirect } from 'react-router';
 import { routerActions } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 
 import App from './app/App';
 import Layout from './app/global/Layout'
-import Collections from './app/collections/Collections';
 import LoginController from './app/login/LoginController';
 import TeamsController from './app/teams/TeamsController';
 
@@ -26,6 +25,14 @@ const UserIsAuthenticated = UserAuthWrapper({
     failureRedirectPath: `${rootPath}/login`
 });
 
+class UnknownRoute extends Component {
+    render() {
+        return (
+            <h1>Sorry, this page couldn't be found</h1>
+        )
+    }
+}
+
 class Index extends Component {
     render() {
         return (
@@ -33,8 +40,7 @@ class Index extends Component {
                 <Router history={ history }>
                     <Route component={ App }>
                         <Route component={ Layout }>
-                            <Route path={rootPath} component={ UserIsAuthenticated(Collections) } />
-                            <Route path={`${rootPath}/collections`} component={ UserIsAuthenticated(Collections) } />
+                            <Redirect exact from={rootPath} to={`${rootPath}/collections`}/>
                             <Route path={`${rootPath}/teams`} component={ UserIsAuthenticated(TeamsController) }>
                                 <Route path={`:team`} component={ UserIsAuthenticated(TeamsController) }>
                                     <Route path={`edit`} component={ UserIsAuthenticated(TeamsController) }/>
@@ -42,6 +48,7 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/login`} component={ LoginController } />
+                            <Route path={`*`} component={ UnknownRoute } />
                         </Route>
                     </Route>
                 </Router>
