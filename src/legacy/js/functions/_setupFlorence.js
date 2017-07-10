@@ -149,7 +149,14 @@ function setupFlorence() {
             return 'You have unsaved changes.';
         }
     };
-    viewController();
+    var path = (location.pathname).replace('/florence/', '');
+    var mapPathToControllerViews = {
+        "collections": "collections",
+        "publishing-queue": "publish",
+        "reports": "reports",
+        "users-and-access": "users"
+    };
+    viewController(mapPathToControllerViews[path]);
 
 
     function processMenuClick(clicked) {
