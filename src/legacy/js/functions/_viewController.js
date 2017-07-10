@@ -1,5 +1,4 @@
 function viewController(view) {
-    console.log(view);
 
     if (Florence.Authentication.isAuthenticated()) {
 
@@ -14,7 +13,8 @@ function viewController(view) {
             window.location.pathname = "/florence/teams";
         }
         else if (view === 'login') {
-            viewLogIn();
+            // viewLogIn();
+            window.location.pathname = "/florence/login";
         }
         else if (view === 'publish') {
             viewPublish();
@@ -28,7 +28,7 @@ function viewController(view) {
     }
     else {
         // Redirect to refactored login screen
-        window.location.pathname = "/florence";
+        window.location.pathname = "/florence/login";
     }
 }
 

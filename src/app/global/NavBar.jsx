@@ -35,19 +35,19 @@ class NavBar extends Component {
             return (
                 <span>
                     <li className="global-nav__item">
-                        <Link to={`${this.props.rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                        <a className="global-nav__link" href="/florence/collections">Collections</a>
                     </li>
 
                     <li className="global-nav__item">
-                        <a className="global-nav__link">Publishing queue</a>
+                        <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
                     </li>
 
                     <li className="global-nav__item">
-                        <a className="global-nav__link">Reports</a>
+                        <a className="global-nav__link" href="/florence/reports">Reports</a>
                     </li>
 
                     <li className="global-nav__item">
-                        <a className="global-nav__link">Users and access</a>
+                        <a className="global-nav__link" href="/florence/users-and-access">Users and access</a>
                     </li>
 
                     <li className="global-nav__item">

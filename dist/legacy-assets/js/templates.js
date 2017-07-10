@@ -1352,10 +1352,8 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.environment : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n\n"
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections "
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.Authentication : depth0)) != null ? stack1.isAuthenticated : stack1),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n"
-    + ((stack1 = (helpers.if_ne || (depth0 && depth0.if_ne) || alias1).call(depth0,(((stack1 = (depth0 && depth0.Authentication)) && stack1.userType) || alias1).call(depth0,{"name":"this.Authentication.userType","hash":{},"data":data}),"DATA_VISUALISATION",{"name":"if_ne","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n"
+    + ((stack1 = (helpers.if_ne || (depth0 && depth0.if_ne) || alias1).call(depth0,(((stack1 = (depth0 && depth0.Authentication)) && stack1.userType) || alias1).call(depth0,{"name":"this.Authentication.userType","hash":{},"data":data}),"DATA_VISUALISATION",{"name":"if_ne","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--logout\" href=\"javascript:void(0)\">Logout</a></li>\n";
 },"2":function(depth0,helpers,partials,data) {
     var stack1;
@@ -1370,20 +1368,14 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
     + "</a></li>\n";
 },"6":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers.unless.call(depth0,((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1),{"name":"unless","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
-},"7":function(depth0,helpers,partials,data) {
-    return "selected";
-},"9":function(depth0,helpers,partials,data) {
     return "            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--reports\" href=\"javascript:void(0)\">Reports</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--users\" href=\"javascript:void(0)\">Users and access</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--teams\" href=\"javascript:void(0)\">Teams</a></li>\n";
-},"11":function(depth0,helpers,partials,data) {
+},"8":function(depth0,helpers,partials,data) {
     return "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--login selected\" href=\"javascript:void(0)\">Login</a></li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
   return "<ul class=\"nav__list\">\n    <li id=\"network-status\" class=\"icon-status\">\n        <div class=\"icon-status--very-poor\"></div>\n        <div class=\"icon-status--poor\"></div>\n        <div class=\"icon-status--ok\"></div>\n        <div class=\"icon-status--good\"></div>\n    </li>\n\n"
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.Authentication : depth0)) != null ? stack1.isAuthenticated : stack1),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(11, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.Authentication : depth0)) != null ? stack1.isAuthenticated : stack1),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "")
     + "</ul>\n";
 },"useData":true});
 templates['markdownEditor'] = template({"1":function(depth0,helpers,partials,data) {
