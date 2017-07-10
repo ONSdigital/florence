@@ -10171,7 +10171,7 @@ function postTeamMember(name, email) {
         }
     }
 }
-function postUser(name, email, password, isAdmin, isEditor, isDataVisPublisher) {
+function postUser(name, email, verify, isAdmin, isEditor, isDataVisPublisher) {
 
     var html = templates.loadingAnimation({dark: true, large: true});
     sweetAlert({
@@ -10188,31 +10188,17 @@ function postUser(name, email, password, isAdmin, isEditor, isDataVisPublisher) 
         type: 'POST',
         data: JSON.stringify({
             name: name,
-            email: email
+            email: email,
+            verificationEmail: verify
         }),
         success: function () {
             console.log('User created');
-            setPassword();
+            setPermissions();
         },
         error: function (response) {
             handleUserPostError(response);
         }
     });
-
-    /**
-     * Once the user is created do a separate post to the zebedee API
-     * to set the password.
-     */
-    function setPassword() {
-        postPassword(
-            success = function () {
-                console.log('Password set');
-                setPermissions();
-            },
-            error = null,
-            email,
-            password);
-    }
 
     /**
      * Once the user is created and the password is set, set the permissions for the user.
@@ -16996,7 +16982,7 @@ function viewUserDetails(email, $this) {
 
             var username = $('#create-user-username').val();
             var email = $('#create-user-email').val();
-            var password = $('#create-user-password').val();
+            var verify = $('#create-user-verify').val();
 
             if (username.length < 1) {
                 sweetAlert("Please enter a user name.");
@@ -17008,11 +16994,11 @@ function viewUserDetails(email, $this) {
                 return;
             }
 
-            if (password.length < 1) {
-                sweetAlert("Please enter a password.");
-                return;
+            if (verify.length < 1) {
+                verify = email;
             }
-            postUser(username, email, password, isAdmin, isEditor, isDataVisPublisher);
+
+            postUser(username, email, verify, isAdmin, isEditor, isDataVisPublisher);
             viewUsers();
         });
     }

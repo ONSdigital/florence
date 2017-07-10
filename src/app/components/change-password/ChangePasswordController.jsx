@@ -12,7 +12,7 @@ export default class ChangePasswordController extends Component {
             newPassword: {
                 value: "",
                 errorMsg: ""
-            }
+            },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -65,7 +65,8 @@ export default class ChangePasswordController extends Component {
         const postBody = {
             password: this.state.newPassword.value,
             email: this.props.email,
-            oldPassword: this.props.currentPassword
+            oldPassword: this.props.currentPassword,
+            verify: this.props.code,
         };
 
         this.postNewPassword(postBody).then(result => {
@@ -96,7 +97,7 @@ export default class ChangePasswordController extends Component {
             onCancel: this.props.handleCancel
         };
         return (
-            <ChangePasswordForm formData={formData} />
+            <ChangePasswordForm formData={formData} createPassword={this.props.createPassword} />
         )
     }
 

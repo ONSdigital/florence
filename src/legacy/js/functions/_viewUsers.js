@@ -61,7 +61,7 @@ function viewUsers(view) {
 
             var username = $('#create-user-username').val();
             var email = $('#create-user-email').val();
-            var password = $('#create-user-password').val();
+            var verify = $('#create-user-verify').val();
 
             if (username.length < 1) {
                 sweetAlert("Please enter a user name.");
@@ -73,11 +73,11 @@ function viewUsers(view) {
                 return;
             }
 
-            if (password.length < 1) {
-                sweetAlert("Please enter a password.");
-                return;
+            if (verify.length < 1) {
+                verify = email;
             }
-            postUser(username, email, password, isAdmin, isEditor, isDataVisPublisher);
+
+            postUser(username, email, verify, isAdmin, isEditor, isDataVisPublisher);
             viewUsers();
         });
     }

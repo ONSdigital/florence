@@ -23,7 +23,7 @@
     <form autocomplete="off" method="post" action="" class="form-create-user">
         <input id="create-user-username" type="text" placeholder="Username" autocomplete="off"/>
         <input id="create-user-email" type="text" placeholder="Email" autocomplete="off"/>
-        <input id="create-user-password" type="password" placeholder="Password" autocomplete="off"/>
+        <input id="create-user-verify" type="text" placeholder="Verification email (optional)" autocomplete="off"/>
         <div class="radioBtnDiv">
             {{#if permission.admin}}
                 <input type="radio" id="admin-type" name="type" value="admin" required><label

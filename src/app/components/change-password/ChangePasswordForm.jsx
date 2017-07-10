@@ -14,7 +14,8 @@ const propTypes = {
         })),
         onSubmit: PropTypes.func.isRequired,
         onCancel: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    createPassword: PropTypes.bool,
 };
 
 export default class ChangePasswordForm extends Component {
@@ -30,7 +31,7 @@ export default class ChangePasswordForm extends Component {
         return (
             <div>
                 <div className="modal__header">
-                    <h2>Change password</h2>
+                    <h2>{ this.props.createPassword ? "New" : "Change" } password</h2>
                 </div>
                 <form onSubmit={this.props.formData.onSubmit}>
                     <div className="modal__body">
@@ -41,7 +42,7 @@ export default class ChangePasswordForm extends Component {
                         }
                     </div>
                     <div className="modal__footer">
-                        <button className="btn btn--positive" onClick={this.props.formData.onSubmit}>Update password</button>
+                        <button className="btn btn--positive" onClick={this.props.formData.onSubmit}>{ this.props.createPassword ? "Set" : "Update" } password</button>
                         <button className="btn" onClick={this.props.formData.onCancel}>Cancel</button>
                     </div>
                 </form>

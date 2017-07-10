@@ -9,6 +9,7 @@ import App from './app/App';
 import Layout from './app/global/Layout'
 import LoginController from './app/login/LoginController';
 import TeamsController from './app/teams/TeamsController';
+import VerifyController from './app/verify/VerifyController';
 
 import './scss/main.scss';
 
@@ -48,6 +49,7 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/login`} component={ LoginController } />
+                            <Route path={`${rootPath}/verify`} component={ VerifyController } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
                     </Route>
