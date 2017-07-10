@@ -8,7 +8,7 @@ class Collections extends Component {
 
     render () {
         return (
-            <div>This is collections list</div>
+            <div>This is a collections list</div>
         )
     }
 }

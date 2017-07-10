@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
@@ -11,8 +10,8 @@ import ChangePasswordController from '../components/change-password/ChangePasswo
 import http from '../utilities/http';
 import { errCodes } from '../utilities/errorCodes'
 import user from '../utilities/user';
-import { redirectToOldFlorence } from '../utilities/redirectToOldFlorence';
 import cookies from '../utilities/cookies';
+import redirectToMainScreen from '../utilities/redirectToMainScreen';
 
 
 
@@ -60,8 +59,7 @@ class LoginController extends Component {
             cookies.add("access_token", accessToken);
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);
-                browserHistory.push(this.props.location.query.redirect);
-                // redirectToOldFlorence();
+                redirectToMainScreen(this.props.location.query.redirect);
             });
         }).catch(error => {
             if (error) {
