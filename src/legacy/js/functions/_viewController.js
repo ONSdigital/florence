@@ -1,4 +1,5 @@
 function viewController(view) {
+    console.log(view);
 
     if (Florence.Authentication.isAuthenticated()) {
 

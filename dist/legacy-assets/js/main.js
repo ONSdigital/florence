@@ -11447,7 +11447,14 @@ function setShortcuts(field, callback) {
             return 'You have unsaved changes.';
         }
     };
-    viewController();
+    var path = (location.pathname).replace('/florence/', '');
+    var mapPathToControllerViews = {
+        "collections": "collections",
+        "publishing-queue": "publish",
+        "reports": "reports",
+        "users-and-access": "users"
+    };
+    viewController(mapPathToControllerViews[path]);
 
 
     function processMenuClick(clicked) {
@@ -15899,6 +15906,7 @@ function viewCollectionDetails(collectionId, $this) {
         });
     });
 }function viewController(view) {
+    console.log(view);
 
     if (Florence.Authentication.isAuthenticated()) {
 

@@ -90,8 +90,12 @@ func main() {
 
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", newAppHandler)
-	router.HandleFunc("/florence/index.html", legacyIndexFile)
+	router.HandleFunc("/florence", legacyIndexFile)
+	router.HandleFunc("/florence/index.html", redirectToFlorence)
+	router.HandleFunc("/florence/collections", legacyIndexFile)
+	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
+	router.HandleFunc("/florence/reports", legacyIndexFile)
+	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
 	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
 	router.Handle("/{uri:.*}", babbageProxy)
@@ -119,6 +123,10 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(2)
 	}
+}
+
+func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
+	http.Redirect(w, req, "/florence", 301)
 }
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
