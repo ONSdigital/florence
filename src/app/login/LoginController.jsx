@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import LoginForm from './LoginForm';
 import Modal from '../components/Modal';
 import ChangePasswordController from '../components/change-password/ChangePasswordController';
+import notifications from '../utilities/notifications';
 
 import http from '../utilities/http';
 import { errCodes } from '../utilities/errorCodes'
@@ -63,6 +64,12 @@ class LoginController extends Component {
             });
         }).catch(error => {
             if (error) {
+                const notification = {
+                    type: 'warning',
+                    isDismissable: true,
+                    autoDismiss: 15000
+                };
+
                 switch (error.status) {
                     case (404): {
                         const email = Object.assign({}, this.state.email, {errorMsg: "Email address not recognised"});
@@ -88,14 +95,20 @@ class LoginController extends Component {
                     }
                     case ('UNEXPECTED_ERR'): {
                         console.error(errCodes.UNEXPECTED_ERR);
+                        notification.message = errCodes.UNEXPECTED_ERR;
+                        notifications.add(notification);
                         break;
                     }
                     case ('RESPONSE_ERR'): {
                         console.error(errCodes.RESPONSE_ERR);
+                        notification.message = errCodes.RESPONSE_ERR;
+                        notifications.add(notification);
                         break;
                     }
                     case ('FETCH_ERR'): {
                         console.error(errCodes.FETCH_ERR);
+                        notification.message = errCodes.FETCH_ERR;
+                        notifications.add(notification);
                         break;
                     }
                 }
