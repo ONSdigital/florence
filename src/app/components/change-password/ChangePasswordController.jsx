@@ -13,6 +13,10 @@ export default class ChangePasswordController extends Component {
                 value: "",
                 errorMsg: ""
             },
+            oldPassword: {
+                value: "",
+                errorMsg: ""
+            },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -27,6 +31,15 @@ export default class ChangePasswordController extends Component {
             case ("new-password") : {
                 this.setState({
                     newPassword: {
+                        value: value,
+                        errorMsg: ""
+                    }
+                });
+                break;
+            }
+            case ("old-password") : {
+                this.setState({
+                    oldPassword: {
                         value: value,
                         errorMsg: ""
                     }
@@ -65,7 +78,7 @@ export default class ChangePasswordController extends Component {
         const postBody = {
             password: this.state.newPassword.value,
             email: this.props.email,
-            oldPassword: this.props.currentPassword,
+            oldPassword: this.props.changePassword ? this.state.oldPassword.value : this.props.currentPassword,
             verify: this.props.code,
         };
 
@@ -91,13 +104,24 @@ export default class ChangePasswordController extends Component {
                     type: "password",
                     onChange: this.handleInputChange,
                     error: this.state.newPassword.errorMsg
-                }
+                },
             ],
-            onSubmit: this.handleSubmit,
-            onCancel: this.props.handleCancel
+            onSubmit: this.handleSubmit
         };
+        if (this.props.changePassword) {
+            formData.inputs.unshift(
+                {
+                    id: "old-password",
+                    label: "Old Password",
+                    type: "password",
+                    onChange: this.handleInputChange,
+                    error: this.state.oldPassword.errorMsg
+                }
+            );
+        }
+
         return (
-            <ChangePasswordForm formData={formData} createPassword={this.props.createPassword} />
+            <ChangePasswordForm formData={formData} />
         )
     }
 

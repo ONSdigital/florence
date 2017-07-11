@@ -55,6 +55,10 @@ class NavBar extends Component {
                     </li>
 
                     <li className="global-nav__item">
+                        <Link to={`${this.props.rootPath}/password`} activeClassName="selected" className="global-nav__link">Password</Link>
+                    </li>
+
+                    <li className="global-nav__item">
                         <Link to={`${this.props.rootPath}/login`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
                     </li>
                 </span>

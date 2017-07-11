@@ -41,7 +41,6 @@ class LoginController extends Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
         this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
     }
 
@@ -168,15 +167,6 @@ class LoginController extends Component {
 
     }
 
-    handlePasswordChangeCancel(event) {
-        event.preventDefault();
-
-        this.setState({
-            requestPasswordChange: false
-        });
-
-    }
-
     render() {
         const formData = {
             inputs: [
@@ -206,7 +196,6 @@ class LoginController extends Component {
                     this.state.requestPasswordChange ?
                         <Modal sizeClass={"grid__col-3"}>
                             <ChangePasswordController
-                                handleCancel={this.handlePasswordChangeCancel}
                                 handleSuccess={this.handlePasswordChangeSuccess}
                                 currentPassword={this.state.password.value}
                                 email={this.state.email.value}

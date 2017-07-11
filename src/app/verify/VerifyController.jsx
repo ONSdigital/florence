@@ -31,7 +31,6 @@ class VerifyController extends Component {
             code: this.props.location.query.code,
         };
 
-        this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
         this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
     }
 
@@ -184,15 +183,6 @@ class VerifyController extends Component {
 
     }
 
-    handlePasswordChangeCancel(event) {
-        event.preventDefault();
-
-        this.setState({
-            requestPasswordChange: false
-        });
-
-    }
-
     render() {
         return (
             <div>
@@ -200,7 +190,6 @@ class VerifyController extends Component {
                     this.state.requestPasswordChange ?
                         <Modal sizeClass={"grid__col-3"}>
                             <ChangePasswordController
-                                handleCancel={this.handlePasswordChangeCancel}
                                 handleSuccess={this.handlePasswordChangeSuccess}
                                 code={this.state.code}
                                 email={this.state.email}

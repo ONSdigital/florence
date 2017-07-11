@@ -191,6 +191,9 @@ function setupFlorence() {
         } else if (menuItem.hasClass("js-nav-item--teams")) {
             window.history.pushState({}, "", "/florence/teams");
             viewController('teams');
+        } else if (menuItem.hasClass("js-nav-item--password")) {
+            window.history.pushState({}, "", "/florence/password");
+            viewController('password');
         } else if (menuItem.hasClass("js-nav-item--publish")) {
             window.history.pushState({}, "", "/florence/publishing-queue");
             viewController('publish');

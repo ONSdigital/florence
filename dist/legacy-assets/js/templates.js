@@ -1384,7 +1384,7 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
     + "</a></li>\n";
 },"6":function(depth0,helpers,partials,data) {
-    return "            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--reports\" href=\"javascript:void(0)\">Reports</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--users\" href=\"javascript:void(0)\">Users and access</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--teams\" href=\"javascript:void(0)\">Teams</a></li>\n";
+    return "            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--reports\" href=\"javascript:void(0)\">Reports</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--users\" href=\"javascript:void(0)\">Users and access</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--teams\" href=\"javascript:void(0)\">Teams</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--password\" href=\"javascript:void(0)\">Password</a></li>\n";
 },"8":function(depth0,helpers,partials,data) {
     return "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--login selected\" href=\"javascript:void(0)\">Login</a></li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {

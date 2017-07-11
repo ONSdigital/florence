@@ -10,10 +10,9 @@ const propTypes = {
             label: PropTypes.string.isRequired,
             type: PropTypes.string,
             onChange: PropTypes.func,
-            error: PropTypes.string
+            error: PropTypes.string,
         })),
         onSubmit: PropTypes.func.isRequired,
-        onCancel: PropTypes.func.isRequired
     }).isRequired,
     createPassword: PropTypes.bool,
 };
@@ -43,7 +42,6 @@ export default class ChangePasswordForm extends Component {
                     </div>
                     <div className="modal__footer">
                         <button className="btn btn--positive" onClick={this.props.formData.onSubmit}>{ this.props.createPassword ? "Set" : "Update" } password</button>
-                        <button className="btn" onClick={this.props.formData.onCancel}>Cancel</button>
                     </div>
                 </form>
             </div>
