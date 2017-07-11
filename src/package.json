@@ -7,6 +7,7 @@
     "url": "https://github.com/ONSdigital/florence"
   },
   "devDependencies": {
+    "awesome-typescript-loader": "^3.2.1",
     "babel-jest": "^19.0.0",
     "enzyme": "^2.8.2",
     "enzyme-to-json": "^1.5.1",
@@ -19,7 +20,9 @@
     "jest-fetch-mock": "^1.2.0",
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4",
-    "regenerator-runtime": "^0.10.5"
+    "regenerator-runtime": "^0.10.5",
+    "source-map-loader": "^0.2.1",
+    "typescript": "^2.4.1"
   },
   "scripts": {
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
