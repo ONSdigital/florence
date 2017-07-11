@@ -40,12 +40,17 @@
                     </label>
                 </div>
                 <span class="refresh-chart">
-                    <label for="chart-min">Overwrite y-axis
-                        <input type="text" id="chart-min" class="half" placeholder="[Min]" value="{{yMin}}"/>
+                    <label for="chart-min" class="{{#if_eq chartType "line"}}third{{/if_eq}}">Overwrite y-axis
+                        <input type="text" id="chart-min" placeholder="[Min]" value="{{yMin}}" class="refresh-chart"/>
                     </label>
-                    <label for="chart-max">
-                        <input type="text" id="chart-max" class="half" placeholder="[Max]" value="{{yMax}}"/>
+                    <label for="chart-max" class="{{#if_eq chartType "line"}}third{{/if_eq}}">
+                        <input type="text" id="chart-max" placeholder="[Max]" value="{{yMax}}" class="refresh-chart"/>
                     </label>
+                    {{#if_eq chartType "line"}}
+                        <label for="chart-interval" class="{{#if_eq chartType "line"}}third{{/if_eq}}">
+                            <input type="text" id="chart-interval" placeholder="[Interval]" value="{{yAxisInterval}}" class="refresh-chart"/>
+                        </label>
+                    {{/if_eq}}
                 </span>
 
 

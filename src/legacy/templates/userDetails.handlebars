@@ -3,16 +3,12 @@
         <h2>{{name}}</h2>
     </div>
 
-    <div class="slider__options">
-        <button class="btn btn--primary btn-user-change-password">Change password</button>
-    </div>
-
     <div class="slider__content">
         <p>{{name}} is a{{#if_eq permission 'admin'}}n{{/if_eq}} <strong>{{permission}}</strong>.</p>
 
-        {{#if temporaryPassword}}
-            <p id="temp-password">This user has not updated their temporary password.</p>
-        {{/if}}
+        {{#unless verifiedEmail}}
+            <p id="temp-password">This user has not verified their email address.</p>
+        {{/unless}}
     </div>
 
     <nav class="slider__nav">

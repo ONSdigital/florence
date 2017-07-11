@@ -5,10 +5,12 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: maven
+    repository: golang
+    tag: 1.8.3
 
 inputs:
   - name: florence
+    path: go/src/github.com/ONSdigital/florence
 
 run:
-  path: florence/ci/scripts/unit.sh
+  path: go/src/github.com/ONSdigital/florence/ci/scripts/unit.sh
