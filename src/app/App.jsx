@@ -28,6 +28,7 @@ class App extends Component {
             if (isValid) {
                 const email = localStorage.getItem("loggedInAs");
                 if (!email) {
+                    //FIXME This leaves the loading spinner on screen forever - we need to either display a message, retry or do something else more graceful?
                     console.warn(`Unable to find item 'loggedInAs' from local storage`);
                     return;
                 }
