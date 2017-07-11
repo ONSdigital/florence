@@ -97,7 +97,7 @@ func main() {
 	router.HandleFunc("/florence/reports", legacyIndexFile)
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:/.*}", newAppHandler)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
