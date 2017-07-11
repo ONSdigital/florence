@@ -14,7 +14,9 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
+    "isomorphic-fetch": "^2.2.1",
     "jest": "^19.0.2",
+    "jest-fetch-mock": "^1.2.0",
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4",
     "regenerator-runtime": "^0.10.5"
