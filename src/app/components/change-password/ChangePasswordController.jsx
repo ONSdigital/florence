@@ -86,6 +86,7 @@ export default class ChangePasswordController extends Component {
             this.props.handleSuccess(this.state.newPassword.value);
         }).catch(error => {
             console.error(error);
+            this.props.handleFailure(error);
         });
 
     }

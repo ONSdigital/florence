@@ -12,6 +12,9 @@ function viewController(view) {
             // viewTeams();
             window.location.pathname = "/florence/teams";
         }
+        else if (view === 'password') {
+            window.location.pathname = "/florence/password";
+        }
         else if (view === 'login') {
             // viewLogIn();
             window.location.pathname = "/florence/login";

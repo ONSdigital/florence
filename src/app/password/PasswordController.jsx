@@ -26,10 +26,12 @@ class PasswordController extends Component {
         super(props);
 
         this.state = {
-            requestPasswordChange: true
+            requestPasswordChange: true,
+            passwordChangeComplete: false
         };
 
         this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
+        this.handlePasswordChangeFailure = this.handlePasswordChangeFailure.bind(this);
     }
 
     handlePasswordChangeSuccess(newPassword) {
@@ -38,17 +40,23 @@ class PasswordController extends Component {
             password: newPassword
         };
 
-        this.handleLogin(credentials)
+        this.setState({passwordChangeComplete: true});
+    }
 
+    handlePasswordChangeFailure(error) {
+        this.setState({passwordChangeError: error});
     }
 
     render() {
         return (
             <div>
+                { this.state.passwordChangeError ? "Error changing password: " + this.state.passwordChangeError.message : ""}
                 {
+                    this.state.passwordChangeComplete ? "Your password has been updated" : 
                     <div className="grid__col-3">
                         <ChangePasswordController
                             handleSuccess={this.handlePasswordChangeSuccess}
+                            handleFailure={this.handlePasswordChangeFailure}
                             email={this.props.email}
                             changePassword={true}
                         />
