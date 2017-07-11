@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+        "jsx": "react",
+        "target": "es5",
+        "module": "es6"
+    },
+    "include": [
+        "./app/**/*"
+    ]
+}
