@@ -2,7 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { CheckerPlugin } = require('awesome-typescript-loader')
 const isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
@@ -17,21 +16,15 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.(ts|tsx|js|jsx)?$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             },
             {
-                test: /\.(ts|tsx|js|jsx)?$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 loader: 'eslint-loader'
             },
-            {
-                test: /\.(ts|tsx)?$/,
-                exclude: /node_modules/,
-                loader: 'awesome-typescript-loader'
-            },
-            
             {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({ 
@@ -56,7 +49,7 @@ module.exports = {
     },
     resolve: {
         // implicitly tell babel to load jsx
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
+        extensions: ['.js', '.jsx']
     },
     plugins: [
         new CopyWebpackPlugin([
@@ -65,7 +58,6 @@ module.exports = {
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' }
         ]),
-        new ExtractTextPlugin("css/main.css"),
-        new CheckerPlugin()
+        new ExtractTextPlugin("css/main.css")
     ]
 };
