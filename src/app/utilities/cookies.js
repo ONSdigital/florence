@@ -35,7 +35,6 @@ export default class cookies {
         const cookie = allCookies[name];
 
         if (!cookie) {
-            console.error(`Unable to find '${name}' cookie`);
             return false; 
         }
 
