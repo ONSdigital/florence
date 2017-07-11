@@ -3,40 +3,24 @@
  *
  */
 
-// import httpPost from './http-methods/post';
-// import httpGet from './http-methods/get';
 import request from './http-methods/request';
 
 export default class http {
     
     /**
-    * @param uri - URI that the request is being sent to
+    * @param {string} uri - URI that the request is being sent to
+    * @param {boolean} willRetry - boolean flag whether to retry request on failure
+    *
     * @returns {Promise} which returns the response body in JSON format
     */
-    static delete(uri) {
-        return new Promise(function(resolve, reject) {
-            fetch(uri, {
-                credentials: "include",
-                method: "DELETE"
-            }).then(response => {
-                return response.json().then(data => {
-                    if (response.ok) {
-                        return data
-                    } else {
-                        reject({status: response.status, message: data.message})
-                    }
-                });
-            }).then(responseJSON => {
-                resolve(responseJSON);
-            }).catch(fetchError => {
-                reject(fetchError);
-            });
-        });
+    static delete(uri, willRetry) {
+        return request("DELETE", uri, willRetry);
     }
 
     /**
      * @param {string} uri - URI that the request is being sent to
-     * @param {boolean} retry - Flag whether to enable retrying requests on failure
+     * @param {boolean} willRetry - boolean flag whether to retry request on failure
+     * 
      * @returns {Promise} which returns the response body in JSON format
      */
     static get(uri, willRetry) {
@@ -46,10 +30,32 @@ export default class http {
     /**
      * @param uri - URI that the request is being sent to
      * @param body - body contents of request
-     * @param reTry - boolean flag whether to re-try request on failure
+     * @param willRetry - boolean flag whether to retry request on failure
+     * 
      * @returns {Promise} which returns the response body in JSON format
      */
     static post(uri, body, willRetry) {
-        return request("POST", uri, willRetry, body)
+        return request("POST", uri, willRetry, null, body)
+    }
+    
+    /**
+     * @param uri - URI that the request is being sent to
+     * @param body - body contents of request
+     * @param willRetry - boolean flag whether to retry request on failure
+     * 
+     * @returns {Promise} which returns the response body in JSON format
+     */
+    static put(uri, body, willRetry) {
+        return request("PUT", uri, willRetry, body)
+    }
+    
+    /**
+     * @param uri - URI that the request is being sent to
+     * @param willRetry - boolean flag whether to retry request on failure
+     * 
+     * @returns {Promise} which returns the response body in JSON format
+     */
+    static head(uri, body, willRetry) {
+        return request("HEAD", uri, willRetry, body)
     }
 }

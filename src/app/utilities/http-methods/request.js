@@ -2,20 +2,28 @@ import { HttpError } from './error';
 import log, { eventTypes } from '../log';
 import uuid from 'uuid/v4';
 
-const baseInterval = 50;
-let interval = baseInterval;
-const maxRetries = 5;
-let retryCount = 0;
+/**
+ * 
+ * @param {string} method - must match an HTTP method (eg "GET")
+ * @param {string} URI - URI to make a request to
+ * @param {boolean} willRetry - (default = true) if true then this function will retry the connection on failure 
+ * @param {object} body - JSON of the request body (if it's an applicable HTTP method)
+ * @param {function} onRetry - Runs whenever the request is going to be retried. Added for use in unit tests, so that we can run our mocked timeOuts (or else the async test breaks)
+ * 
+ * @returns {Promise} which returns the response body in JSON format
+ */
 
-export default function request(method, uri, willRetry, body) {
-
-    willRetry = willRetry || true;
+export default function request(method, URI, willRetry = true, onRetry = function(){}, body) {
+    const baseInterval = 50;
+    let interval = baseInterval;
+    const maxRetries = 5;
+    let retryCount = 0;
 
     return new Promise(function(resolve, reject) {
-        tryFetch(resolve, reject, uri, willRetry, body);
+        tryFetch(resolve, reject, URI, willRetry, body);
     });
 
-    function tryFetch(resolve, reject, uri, willRetry, body) {
+    function tryFetch(resolve, reject, URI, willRetry, body) {
         const UID = uuid();
         const logEventPayload = {
             method: method,
@@ -32,13 +40,13 @@ export default function request(method, uri, willRetry, body) {
             }
         }
 
-        if (method === "POST") {
+        if (method === "POST" || method === "PUT") {
             fetchConfig.body = JSON.stringify(body || {});
         }
 
         log.add(eventTypes.requestSent, logEventPayload);
 
-        fetch(uri, fetchConfig).then(response => {
+        fetch(URI, fetchConfig).then(response => {
             if (response.headers.get('content-type').match(/application\/json/)) {
                 return response.json().then(data => {
                     logEventPayload.status = response.status;
@@ -62,10 +70,10 @@ export default function request(method, uri, willRetry, body) {
 
                 // retry post
                 if (retryCount < maxRetries) {
-                    setTimeout(function() { tryFetch(resolve, reject, uri, willRetry, body) }, interval);
+                    setTimeout(function() { tryFetch(resolve, reject, URI, willRetry, body) }, interval);
                     retryCount++;
                     interval = interval * 2;
-                    console.log(retryCount, maxRetries, interval);
+                    onRetry(retryCount);
                 } else {
 
                     // pass error back to caller when max number of retries is met
