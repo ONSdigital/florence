@@ -51,7 +51,7 @@ class Index extends Component {
                             </Route>
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/verify`} component={ VerifyController } />
-                            <Route path={`${rootPath}/password`} component={ UserIsAuthenticated(PasswordController) } />
+                            <Route path={`${rootPath}/password`} component={ PasswordController } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
                     </Route>

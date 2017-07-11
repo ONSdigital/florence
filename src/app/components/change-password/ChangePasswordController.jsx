@@ -9,6 +9,10 @@ export default class ChangePasswordController extends Component {
         super(props);
 
         this.state = {
+            email: {
+                value: this.props.email,
+                errorMsg: ""
+            },
             newPassword: {
                 value: "",
                 errorMsg: ""
@@ -28,6 +32,15 @@ export default class ChangePasswordController extends Component {
         const value = event.target.value;
 
         switch(id) {
+            case ("email") : {
+                this.setState({
+                    email: {
+                        value: value,
+                        errorMsg: ""
+                    }
+                });
+                break;
+            }
             case ("new-password") : {
                 this.setState({
                     newPassword: {
@@ -98,19 +111,24 @@ export default class ChangePasswordController extends Component {
 
     render() {
         const formData = {
-            inputs: [
-                {
-                    id: "new-password",
-                    label: "New Password",
-                    type: "password",
-                    onChange: this.handleInputChange,
-                    error: this.state.newPassword.errorMsg
-                },
-            ],
+            inputs: [],
             onSubmit: this.handleSubmit
-        };
+        }
+
+        if (!this.props.email) {
+            formData.inputs.push(
+                {
+                    id: "email",
+                    label: "Email",
+                    type: "text",
+                    onChange: this.handleInputChange,
+                    error: this.state.email.errorMsg
+                }
+            );
+        }
+
         if (this.props.changePassword) {
-            formData.inputs.unshift(
+            formData.inputs.push(
                 {
                     id: "old-password",
                     label: "Old Password",
@@ -120,6 +138,17 @@ export default class ChangePasswordController extends Component {
                 }
             );
         }
+
+        formData.inputs.push(
+            {
+                id: "new-password",
+                label: "New Password",
+                type: "password",
+                onChange: this.handleInputChange,
+                error: this.state.newPassword.errorMsg
+            }
+        );
+        
 
         return (
             <ChangePasswordForm formData={formData} />

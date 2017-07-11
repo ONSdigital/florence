@@ -27,7 +27,8 @@ class PasswordController extends Component {
 
         this.state = {
             requestPasswordChange: true,
-            passwordChangeComplete: false
+            passwordChangeComplete: false,
+            email: this.props.location.query.email ? this.props.location.query.email : this.props.email
         };
 
         this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
@@ -57,7 +58,7 @@ class PasswordController extends Component {
                         <ChangePasswordController
                             handleSuccess={this.handlePasswordChangeSuccess}
                             handleFailure={this.handlePasswordChangeFailure}
-                            email={this.props.email}
+                            email={this.state.email}
                             changePassword={true}
                         />
                     </div>
