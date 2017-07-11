@@ -202,17 +202,8 @@ export class TeamsController extends Component {
             }
         }).catch(error => {
             switch(error.status) {
-                // TODO any 401s on http request could be handled globally
                 case(401): {
-                    const notification = {
-                        type: "neutral",
-                        message: "Your session has expired so you've been redirected to the login screen",
-                        isDismissable: true,
-                        autoDismiss: 20000
-                    }
-                    user.logOut();
-                    this.props.dispatch(push(`${this.props.rootPath}/login?redirect=${this.props.rootPath}/teams`));
-                    notifications.add(notification);
+                    // This is handle by the request function, so do nothing here
                     break;
                 }
                 case("RESPONSE_ERR"): {
@@ -260,17 +251,8 @@ export class TeamsController extends Component {
             this.setState({isUpdatingTeamMembers: false});
         }).catch(error => {
             switch(error.status) {
-                // TODO any 401s on http request could be handled globally
                 case(401): {
-                    const notification = {
-                        type: "neutral",
-                        message: "Your session has expired so you've been redirected to the login screen",
-                        isDismissable: true,
-                        autoDismiss: 20000
-                    }
-                    user.logOut();
-                    this.props.dispatch(push(`${this.props.rootPath}/login?redirect=${this.props.rootPath}/teams/${this.props.activeTeam.path}`));
-                    notifications.add(notification);
+                    // This is handle by the request function, so do nothing here
                     break;
                 }
                 case("RESPONSE_ERR"): {
