@@ -190,7 +190,7 @@ class LoginController extends Component {
 
         return (
             <div>
-                <LoginForm formData={formData} />
+                <LoginForm formData={formData} rootPath={this.props.rootPath} />
 
                 {
                     this.state.requestPasswordChange ?

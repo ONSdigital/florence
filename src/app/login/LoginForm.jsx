@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { Link } from 'react-router';
 import Input from '../components/Input';
 
 const propTypes = {
@@ -43,6 +44,7 @@ export default class LoginForm extends Component {
                         <button type="submit" className="btn btn--primary margin-top--1" disabled={isSubmitting}>
                             Log in
                         </button>
+                        <Link to={`${this.props.rootPath}/forgotten-password`}>I've forgotten my password</Link>
 
 
                         {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
