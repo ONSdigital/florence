@@ -56,6 +56,19 @@ Florence.Authentication = {
     }
 };
 
+Florence.ping = {
+    get: function() {
+        return this.entries[this.latestEntryIndex-1];
+    },
+    add: function(ping, timeStamp) {
+        this.entries[this.latestEntryIndex] = {timeStamp, ping};
+        this.latestEntryIndex++;
+        if (this.latestEntryIndex >= this.entries.length) this.latestEntryIndex=0;
+    },
+    latestEntryIndex: 0,
+    entries: new Array(200)
+}
+
 Florence.Handler = function (e) {
     if (Florence.Editor.isDirty) {
         var result = confirm("You have unsaved changes. Are you sure you want to continue?");

@@ -71,6 +71,19 @@ Florence.Authentication = {
     }
 };
 
+Florence.ping = {
+    get: function() {
+        return this.entries[this.latestEntryIndex-1];
+    },
+    add: function(ping, timeStamp) {
+        this.entries[this.latestEntryIndex] = {timeStamp, ping};
+        this.latestEntryIndex++;
+        if (this.latestEntryIndex >= this.entries.length) this.latestEntryIndex=0;
+    },
+    latestEntryIndex: 0,
+    entries: new Array(200)
+}
+
 Florence.Handler = function (e) {
     if (Florence.Editor.isDirty) {
         var result = confirm("You have unsaved changes. Are you sure you want to continue?");
@@ -11533,7 +11546,7 @@ function setShortcuts(field, callback) {
     var pingTimes = [];
 
     function doPing() {
-        var start = new Date().getTime();
+        var start = performance.now();
         $.ajax({
             url: "/zebedee/ping",
             dataType: 'json',
@@ -11547,31 +11560,25 @@ function setShortcuts(field, callback) {
                 // Handle session information
                 checkSessionTimeout(response);
 
-                var end = new Date().getTime();
-                var time = end - start;
+                var end = performance.now();
+                var time = Math.round(end - start);
 
                 lastPingTime = time;
-                pingTimes.push(time);
-                if (pingTimes.length > 5)
-                    pingTimes.shift();
-
-                var sum = 0;
-                for (var i = 0; i < pingTimes.length; ++i) {
-                    sum += pingTimes[i];
-                }
-
-                var averagePingTime = sum / pingTimes.length;
 
                 networkStatus(lastPingTime);
 
-                if (averagePingTime < 100) {
-                    console.log("ping time: pretty good! " + time + " average: " + averagePingTime + " " + pingTimes);
-                } else if (averagePingTime < 300) {
-                    console.log("ping time: not so good! " + time + " average: " + averagePingTime + " " + pingTimes);
-                } else {
-                    console.log("ping time: really bad! " + time);
-                }
+                var date = new Date();
+                Florence.ping.add(time, date)
 
+                pingTimer = setTimeout(function () {
+                    doPing();
+                }, 10000);
+            },
+            error: function() {
+                Florence.ping.add({
+                    average: "ERROR",
+                    times: "ERROR"
+                });
                 pingTimer = setTimeout(function () {
                     doPing();
                 }, 10000);
