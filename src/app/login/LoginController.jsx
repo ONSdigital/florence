@@ -22,7 +22,7 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired
 };
 
-class LoginController extends Component {
+export class LoginController extends Component {
     constructor(props) {
         super(props);
 
