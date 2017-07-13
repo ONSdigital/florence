@@ -31,7 +31,9 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
     var url = url + '&overwriteExisting=' + overwriteExisting;
     var url = url + '&recursive=' + recursive;
 
-    console.log("Post page content: \n", JSON.parse(content));
+    var date = new Date();
+    date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+    console.log("[" + date + "] Post page content: \n", JSON.parse(content));
 
     $.ajax({
         url: url,
