@@ -75,7 +75,8 @@ Florence.ping = {
     get: function() {
         return this.entries[this.latestEntryIndex-1];
     },
-    add: function(ping, timeStamp) {
+    add: function(ping) {
+        var timeStamp = new Date();
         this.entries[this.latestEntryIndex] = {timeStamp, ping};
         this.latestEntryIndex++;
         if (this.latestEntryIndex >= this.entries.length) this.latestEntryIndex=0;
@@ -11567,16 +11568,14 @@ function setShortcuts(field, callback) {
 
                 networkStatus(lastPingTime);
 
-                var date = new Date();
-                Florence.ping.add(time, date)
+                Florence.ping.add(time)
 
                 pingTimer = setTimeout(function () {
                     doPing();
                 }, 10000);
             },
             error: function() {
-                var date = new Date();
-                Florence.ping.add(0, date);
+                Florence.ping.add(0);
                 console.error("Error during POST to ping endpoint on Zebedee");
                 pingTimer = setTimeout(function () {
                     doPing();
