@@ -210,16 +210,14 @@ function setupFlorence() {
 
                 networkStatus(lastPingTime);
 
-                var date = new Date();
-                Florence.ping.add(time, date)
+                Florence.ping.add(time)
 
                 pingTimer = setTimeout(function () {
                     doPing();
                 }, 10000);
             },
             error: function() {
-                var date = new Date();
-                Florence.ping.add(0, date);
+                Florence.ping.add(0);
                 console.error("Error during POST to ping endpoint on Zebedee");
                 pingTimer = setTimeout(function () {
                     doPing();
