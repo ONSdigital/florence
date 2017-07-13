@@ -60,7 +60,8 @@ Florence.ping = {
     get: function() {
         return this.entries[this.latestEntryIndex-1];
     },
-    add: function(ping, timeStamp) {
+    add: function(ping) {
+        var timeStamp = new Date();
         this.entries[this.latestEntryIndex] = {timeStamp, ping};
         this.latestEntryIndex++;
         if (this.latestEntryIndex >= this.entries.length) this.latestEntryIndex=0;
