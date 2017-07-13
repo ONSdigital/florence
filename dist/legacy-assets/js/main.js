@@ -11575,10 +11575,9 @@ function setShortcuts(field, callback) {
                 }, 10000);
             },
             error: function() {
-                Florence.ping.add({
-                    average: "ERROR",
-                    times: "ERROR"
-                });
+                var date = new Date();
+                Florence.ping.add(0, date);
+                console.error("Error during POST to ping endpoint on Zebedee: \n", error);
                 pingTimer = setTimeout(function () {
                     doPing();
                 }, 10000);
