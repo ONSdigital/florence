@@ -8,7 +8,9 @@ export const eventTypes = {
     changedRoute: "CHANGED_ROUTE",
     appInitialised: "APP_INITIALISED",
     requestSent: "REQUEST_SENT",
-    requestReceived: "REQUEST_RECEIVED"
+    requestReceived: "REQUEST_RECEIVED",
+    passwordChangeSuccess: "PASSWORD_CHANGE_SUCCESS",
+    passwordChangeError: "PASSWORD_CHANGE_ERROR"
 }
 
 browserHistory.listen(location => {

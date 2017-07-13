@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import ChangePasswordForm from './ChangePasswordForm'
 import http from '../../utilities/http';
+import log, { eventTypes } from '../../utilities/log';
+
+const propTypes = {
+    email: PropTypes.string.isRequired,
+    currentPassword: PropTypes.string.isRequired,
+    handleSuccess: PropTypes.func.isRequired,
+    handleCancel: PropTypes.func.isRequired
+};
 
 export default class ChangePasswordController extends Component {
 
@@ -38,17 +47,13 @@ export default class ChangePasswordController extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-
         const newPassword = this.state.newPassword.value;
-
-        console.log(newPassword.length);
 
         if (!newPassword.match(/.+\s.+\s.+\s.+/)) {
             const newPassword = Object.assign({}, this.state.newPassword, {errorMsg: "Passphrases must contain 4 words, separated by spaces"});
             this.setState({
                 newPassword: newPassword
             });
-
             return;
         }
 
@@ -58,7 +63,6 @@ export default class ChangePasswordController extends Component {
             this.setState({
                 newPassword: newPassword
             });
-
             return;
         }
 
@@ -69,8 +73,15 @@ export default class ChangePasswordController extends Component {
         };
 
         this.postNewPassword(postBody).then(result => {
+            console.log(result);
             this.props.handleSuccess(this.state.newPassword.value);
+            const eventPayload = {
+                email: this.props.email
+            };
+            log.add(eventTypes.passwordChangeSuccess, eventPayload);
+            // ADD NOTIFICATION
         }).catch(error => {
+            // HANDLE THE ERRORS PROPERLY
             console.error(error);
         });
 
@@ -101,3 +112,5 @@ export default class ChangePasswordController extends Component {
     }
 
 }
+
+ChangePasswordController.propTypes = propTypes;
