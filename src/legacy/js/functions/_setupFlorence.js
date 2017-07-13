@@ -220,7 +220,7 @@ function setupFlorence() {
             error: function() {
                 var date = new Date();
                 Florence.ping.add(0, date);
-                console.error("Error during POST to ping endpoint on Zebedee: \n", error);
+                console.error("Error during POST to ping endpoint on Zebedee");
                 pingTimer = setTimeout(function () {
                     doPing();
                 }, 10000);
