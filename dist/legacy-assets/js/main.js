@@ -7433,7 +7433,7 @@ function markdownEditor() {
     markDownEditorSetLines();
 }
 
-/**
+ /**
  * Editor data loader
  * @param path
  * @param collectionId
@@ -7466,6 +7466,7 @@ function loadPageDataIntoEditor(path, collectionId, click) {
     ajaxRequests.push(
         getPageData(collectionId, pageUrlData,
             success = function (response) {
+                console.log("Get page content: \n", response);
                 pageData = response;
             },
             error = function (response) {
@@ -9908,7 +9909,6 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
     // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
     postToLocalStorage(collectionId, path, content);
 
-
     var safePath = checkPathSlashes(path);
     if (safePath === '/') {
         safePath = '';          // edge case for home
@@ -9925,6 +9925,8 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
 
     var url = url + '&overwriteExisting=' + overwriteExisting;
     var url = url + '&recursive=' + recursive;
+
+    console.log("Post page content: \n", JSON.parse(content));
 
     $.ajax({
         url: url,
@@ -9953,9 +9955,7 @@ function postToLocalStorage(collectionId, path, content) {
     var newSaveTime = new Date();
     var newId = collectionId;
     var newPath = path;
-    var newContent = JSON.parse(content);
-
-    console.log(newContent);
+    var newContent = JSON.parse(content); 
     
     var localBackup = localStorage.getItem('localBackup');
 

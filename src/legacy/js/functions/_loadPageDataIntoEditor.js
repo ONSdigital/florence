@@ -1,4 +1,4 @@
-/**
+ /**
  * Editor data loader
  * @param path
  * @param collectionId
@@ -31,6 +31,7 @@ function loadPageDataIntoEditor(path, collectionId, click) {
     ajaxRequests.push(
         getPageData(collectionId, pageUrlData,
             success = function (response) {
+                console.log("Get page content: \n", response);
                 pageData = response;
             },
             error = function (response) {
