@@ -108,6 +108,11 @@ func main() {
 	})
 
 	s := server.New(bindAddr, router)
+	// TODO need to reconsider default go-ns server timeouts
+	s.Server.IdleTimeout = 120 * time.Second
+	s.Server.WriteTimeout = 120 * time.Second
+	s.Server.ReadTimeout = 30 * time.Second
+	s.MiddlewareOrder = []string{"RequestID", "Log"}
 
 	// FIXME temporary hack to remove timeout middleware (doesn't support hijacker interface)
 	mo := s.MiddlewareOrder

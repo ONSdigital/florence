@@ -1,0 +1,7 @@
+FROM ubuntu:16.04
+
+WORKDIR /app/
+
+ADD florence .
+
+CMD ./florence
