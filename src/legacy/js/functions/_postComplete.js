@@ -40,12 +40,14 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Update content
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -59,6 +61,7 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function (response) {
+            isUpdatingModal.remove();
             handleApiError(response);
         }
     });
