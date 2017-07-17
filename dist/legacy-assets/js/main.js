@@ -603,7 +603,39 @@ function postRestoreDeletedPage(deleteID, collectionId, onSuccess) {
     }
   );
 }
-function addDeleteMarker(uri, title, success) {
+/**
+ * HTTP post to the zebedee API to set a new password
+ * @param success - function to run on success
+ * @param error - function to run on error
+ * @param email - the email address of the user to change the password for
+ * @param password - the password to set
+ * @param oldPassword - the current password of the user if they are not already authenticated
+ */
+function postPassword(success, error, email, password, oldPassword) {
+  $.ajax({
+    url: "/zebedee/password",
+    dataType: 'json',
+    contentType: 'application/json',
+    type: 'POST',
+    data: JSON.stringify({
+      password: password,
+      email: email,
+      oldPassword: oldPassword
+    }),
+    success: function () {
+      if(success) {
+        success();
+      }
+    },
+    error: function (response) {
+      if(error) {
+        error(response);
+      } else {
+        handleApiError(response);
+      }
+    }
+  });
+}function addDeleteMarker(uri, title, success) {
 
     var deleteTarget = {
         uri: uri,
@@ -15452,6 +15484,51 @@ function loadingBtn(selector) {
         }
     );
 }
+function updateUser(email, verificationEmail) {
+
+    var html = templates.loadingAnimation({dark: true, large: true});
+    sweetAlert({
+        title: "User being updated...",
+        text: html,
+        showConfirmButton: false,
+        html: true
+    });
+
+    $.ajax({
+        url: "/zebedee/users?email=" + email,
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'PUT',
+        data: JSON.stringify({
+            verificationEmail: verificationEmail
+        }),
+        success: function () {
+            console.log('User updated');
+            sweetAlert("User updated", "User '" + email + "' has been updated", "success");
+            $('.change-verification-email-overlay').stop().fadeOut(200).remove();
+            viewController('users');
+        },
+        error: function (response) {
+            handleUserPostError(response);
+        }
+    });
+
+    /**
+     * Handle error response from creating the user.
+     * @param response
+     */
+    function handleUserPostError(response) {
+        if (response.status === 403 || response.status === 401) {
+            sweetAlert("You are not permitted to update users.");
+        }
+        else if (response.status === 409) {
+            sweetAlert("Error", response.responseJSON.message, "error");
+        } else {
+            handleApiError(response);
+        }
+    }
+}
+
 /**
  * Show the change password screen to change the password for the given email.
  * @param email - The email address of the user to change the password for.
@@ -15511,6 +15588,30 @@ function viewChangePassword(email, authenticate) {
       newPassword,
       oldPassword);
   }
+}
+
+/**
+ * Show the change verification email screen to change the verification email for the given login email.
+ * @param loginEmail - The email address of the user to change the verification email for.
+ */
+function viewChangeVerificationEmail(loginEmail) {
+
+  var viewModel = {
+    email: "test@test.com"
+  };
+  
+  $('body').append(templates.changeVerificationEmail(viewModel));
+
+  $('.change-verification-email-overlay__inner input:first').focus(); // Put focus on first input
+
+  $('#update-verification-email').on('click', function () {
+    var newEmail = $('#email').val();
+    updateUser(loginEmail, newEmail);
+  });
+
+  $('#update-verification-email-cancel').on('click', function () {
+    $('.change-verification-email-overlay').stop().fadeOut(200).remove();
+  });
 }
 
 function viewCollectionDetails(collectionId, $this) {
@@ -16888,18 +16989,15 @@ function viewUserDetails(email, $this) {
                 addPermissionToJSON(user);
 
                 var showPanelOptions = {
-                    html: window.templates.userDetails(user)
+                    html: window.templates.userDetails({
+                        user: user,
+                        userIsAdmin: localStorage.getItem("userIsAdmin")
+                    })
                 };
                 showPanel($this, showPanelOptions);
 
-                $('.btn-user-change-password').click(function () {
-                    var currentPasswordRequired = false;
-
-                    if (email == Florence.Authentication.loggedInEmail()) {
-                        currentPasswordRequired = true;
-                    }
-
-                    viewChangePassword(email, currentPasswordRequired);
+                $('.btn-user-change-verification-email').click(function () {
+                    viewChangeVerificationEmail(email);
                 });
 
                 $('.btn-user-delete').click(function () {

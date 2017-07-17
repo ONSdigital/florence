@@ -162,6 +162,13 @@ templates['changePassword'] = template({"1":function(depth0,helpers,partials,dat
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.authenticate : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "          <label for=\"password-new\">New password:</label><input id=\"password-new\" type=\"password\" cols=\"40\" rows=\"1\"/>\n          <label for=\"password-confirm\">Confirm new password:</label><input id=\"password-confirm\" type=\"password\"\n                                                                            cols=\"40\"\n                                                                            rows=\"1\"/>\n          <button id=\"update-password\" class=\"btn btn--positive btn-florence-login fl-panel--user-and-access__login \">\n              Update password\n          </button>\n          <button id=\"update-password-cancel\" class=\"btn\">Cancel</button>\n      </form>\n    </div>\n  </div>\n</div>";
 },"useData":true});
+templates['changeVerificationEmail'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "<div class=\"change-verification-email-overlay builder overlay\">\n  <div class=\"change-verification-email-overlay__inner\">\n      <form>\n          <h1>Change verification email</h1>\n\n          <p>\n              <strong>Warning:</strong> The user will be required to verify the new email address to continue using Florence\n          </p>\n\n          <label for=\"email\">Verification email:</label><input id=\"email\" value=\""
+    + this.escapeExpression(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"email","hash":{},"data":data}) : helper)))
+    + "\" cols=\"40\" rows=\"1\"/>\n\n          <button id=\"update-verification-email\" class=\"btn btn--positive btn-florence-login fl-panel--user-and-access__login \">\n              Update verification email\n          </button>\n          <button id=\"update-verification-email-cancel\" class=\"btn\">Cancel</button>\n      </form>\n    </div>\n  </div>\n</div>";
+},"useData":true});
 templates['chartBuilder'] = template({"1":function(depth0,helpers,partials,data) {
     return "                                    <option value=\"lg\">Desktop</option>\n                                    <option value=\"md\">Tablet</option>\n                                    <option value=\"sm\">Mobile</option>\n";
 },"3":function(depth0,helpers,partials,data) {
@@ -1818,22 +1825,30 @@ templates['uploadFileForm'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":
     + "\" class=\"edit-section__item\">\n    <form id=\"UploadForm\">\n        <input type=\"file\" title=\"Select a file and click Submit\" name=\"files\">\n        <br>\n        <button class=\"btn btn--primary\" type=\"submit\" form=\"UploadForm\" value=\"submit\">Submit</button>\n        <button class=\"btn btn-page-cancel\" id=\"file-cancel\">Cancel</button>\n    </form>\n    <div id=\"response\"></div>\n    <ul id=\"list\"></ul>\n</div>";
 },"useData":true});
 templates['userDetails'] = template({"1":function(depth0,helpers,partials,data) {
-    return "n";
+    return "    <div class=\"slider__options\">\n        <button class=\"btn btn--primary btn-user-change-verification-email\">Update verification email</button>\n    </div>\n";
 },"3":function(depth0,helpers,partials,data) {
+    return "n";
+},"5":function(depth0,helpers,partials,data) {
     return "            <p id=\"temp-password\">This user has not verified their email address.</p>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
   return "<div class=\"slider\">\n    <div class=\"slider__head\">\n        <h2>"
-    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</h2>\n    </div>\n\n    <div class=\"slider__content\">\n        <p>"
-    + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</h2>\n    </div>\n\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.userIsAdmin : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n    <div class=\"slider__content\">\n        <p>"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
     + " is a"
-    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.permission : depth0),"admin",{"name":"if_eq","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || helpers.helperMissing).call(depth0,((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.permission : stack1),"admin",{"name":"if_eq","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + " <strong>"
-    + alias3(((helper = (helper = helpers.permission || (depth0 != null ? depth0.permission : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"permission","hash":{},"data":data}) : helper)))
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.permission : stack1), depth0))
+    + "</strong>.</p>\n        <p>"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
+    + " verification email is <strong>"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.verificationEmail : stack1), depth0))
     + "</strong>.</p>\n\n"
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.verifiedEmail : depth0),{"name":"unless","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.unless.call(depth0,((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.verifiedEmail : stack1),{"name":"unless","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n\n    <nav class=\"slider__nav\">\n        <button class=\"btn btn--warning btn-user-delete\">Delete user</button>\n        <button class=\"btn btn-user-cancel\">Cancel</button>\n    </nav>\n</div>\n";
 },"useData":true});
 templates['userList'] = template({"1":function(depth0,helpers,partials,data) {

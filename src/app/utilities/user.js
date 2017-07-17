@@ -42,6 +42,7 @@ export default class user {
         const isAdmin = !!user.admin;
         store.dispatch(userLoggedIn(email, userType, isAdmin));
         localStorage.setItem("loggedInAs", email);
+        localStorage.setItem("userIsAdmin", isAdmin);
     }
 
     static logOut() {

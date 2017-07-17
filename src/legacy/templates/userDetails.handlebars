@@ -1,12 +1,19 @@
 <div class="slider">
     <div class="slider__head">
-        <h2>{{name}}</h2>
+        <h2>{{user.name}}</h2>
     </div>
 
-    <div class="slider__content">
-        <p>{{name}} is a{{#if_eq permission 'admin'}}n{{/if_eq}} <strong>{{permission}}</strong>.</p>
+    {{#if userIsAdmin}}
+    <div class="slider__options">
+        <button class="btn btn--primary btn-user-change-verification-email">Update verification email</button>
+    </div>
+    {{/if}}
 
-        {{#unless verifiedEmail}}
+    <div class="slider__content">
+        <p>{{user.name}} is a{{#if_eq user.permission 'admin'}}n{{/if_eq}} <strong>{{user.permission}}</strong>.</p>
+        <p>{{user.name}} verification email is <strong>{{user.verificationEmail}}</strong>.</p>
+
+        {{#unless user.verifiedEmail}}
             <p id="temp-password">This user has not verified their email address.</p>
         {{/unless}}
     </div>

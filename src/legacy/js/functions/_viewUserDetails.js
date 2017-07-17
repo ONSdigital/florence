@@ -27,18 +27,15 @@ function viewUserDetails(email, $this) {
                 addPermissionToJSON(user);
 
                 var showPanelOptions = {
-                    html: window.templates.userDetails(user)
+                    html: window.templates.userDetails({
+                        user: user,
+                        userIsAdmin: localStorage.getItem("userIsAdmin")
+                    })
                 };
                 showPanel($this, showPanelOptions);
 
-                $('.btn-user-change-password').click(function () {
-                    var currentPasswordRequired = false;
-
-                    if (email == Florence.Authentication.loggedInEmail()) {
-                        currentPasswordRequired = true;
-                    }
-
-                    viewChangePassword(email, currentPasswordRequired);
+                $('.btn-user-change-verification-email').click(function () {
+                    viewChangeVerificationEmail(email);
                 });
 
                 $('.btn-user-delete').click(function () {
