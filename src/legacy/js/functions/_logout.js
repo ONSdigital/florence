@@ -6,6 +6,7 @@ function logout() {
   delete_cookie('collection');
   localStorage.setItem("loggedInAs", "");
   localStorage.setItem("userType", "");
+  localStorage.setItem("userIsAdmin", "");
   
   // Redirect to refactored login page
   window.location.pathname = "/florence";

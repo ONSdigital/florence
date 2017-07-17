@@ -5,7 +5,7 @@
 function viewChangeVerificationEmail(loginEmail) {
 
   var viewModel = {
-    email: "test@test.com"
+    email: loginEmail
   };
   
   $('body').append(templates.changeVerificationEmail(viewModel));

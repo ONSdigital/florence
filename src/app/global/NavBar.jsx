@@ -27,6 +27,7 @@ class NavBar extends Component {
             return
         }
         localStorage.removeItem("loggedInAs");
+        localStorage.removeItem("userIsAdmin");
         this.props.dispatch(userLoggedOut());
     }
 

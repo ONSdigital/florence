@@ -29,7 +29,7 @@ function viewUserDetails(email, $this) {
                 var showPanelOptions = {
                     html: window.templates.userDetails({
                         user: user,
-                        userIsAdmin: localStorage.getItem("userIsAdmin")
+                        userIsAdmin: localStorage.getItem("userIsAdmin") == "true"
                     })
                 };
                 showPanel($this, showPanelOptions);
