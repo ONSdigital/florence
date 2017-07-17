@@ -1,4 +1,4 @@
-/**
+ /**
  * Editor data loader
  * @param path
  * @param collectionId

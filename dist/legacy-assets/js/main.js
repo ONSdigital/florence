@@ -71,6 +71,20 @@ Florence.Authentication = {
     }
 };
 
+Florence.ping = {
+    get: function() {
+        return this.entries[this.latestEntryIndex-1];
+    },
+    add: function(ping) {
+        var timeStamp = new Date();
+        this.entries[this.latestEntryIndex] = {timeStamp, ping};
+        this.latestEntryIndex++;
+        if (this.latestEntryIndex >= this.entries.length) this.latestEntryIndex=0;
+    },
+    latestEntryIndex: 0,
+    entries: new Array(200)
+}
+
 Florence.Handler = function (e) {
     if (Florence.Editor.isDirty) {
         var result = confirm("You have unsaved changes. Are you sure you want to continue?");
@@ -295,6 +309,9 @@ function getPageData(collectionId, path, success, error) {
     dataType: 'json',
     type: 'GET',
     success: function (response) {
+      var date = new Date();
+      date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+      console.log("[" + date + "] Get page content: \n", response);
       if (success)
         success(response);
     },
@@ -4933,7 +4950,9 @@ var isUpdatingModal = {
         )
     },
     add: function() {
-        console.log('Disable Florence');
+        var date = new Date();
+        date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+        console.log('[' + date + '] Disable Florence');
         if ($('.florence-disable').length) {
             console.warn("Attempt to add Florence's disabled modal but it already exists");
             return;
@@ -4941,7 +4960,9 @@ var isUpdatingModal = {
         $('#main').append(this.modal);
     },
     remove: function() {
-        console.log('Enable Florence');
+        var date = new Date();
+        date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+        console.log('[' + date + '] Enable Florence');
         var $disabledModal = $('.florence-disable')
         if ($disabledModal.length === 0) {
             console.warn("Attempt to remove Florence's disabled modal before it's in the DOM");
@@ -7433,7 +7454,7 @@ function markdownEditor() {
     markDownEditorSetLines();
 }
 
-/**
+ /**
  * Editor data loader
  * @param path
  * @param collectionId
@@ -9908,7 +9929,6 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
     // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
     postToLocalStorage(collectionId, path, content);
 
-
     var safePath = checkPathSlashes(path);
     if (safePath === '/') {
         safePath = '';          // edge case for home
@@ -9925,6 +9945,10 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
 
     var url = url + '&overwriteExisting=' + overwriteExisting;
     var url = url + '&recursive=' + recursive;
+
+    var date = new Date();
+    date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+    console.log("[" + date + "] Post page content: \n", JSON.parse(content));
 
     $.ajax({
         url: url,
@@ -9953,9 +9977,7 @@ function postToLocalStorage(collectionId, path, content) {
     var newSaveTime = new Date();
     var newId = collectionId;
     var newPath = path;
-    var newContent = JSON.parse(content);
-
-    console.log(newContent);
+    var newContent = JSON.parse(content); 
     
     var localBackup = localStorage.getItem('localBackup');
 
@@ -11525,7 +11547,7 @@ function setShortcuts(field, callback) {
     var pingTimes = [];
 
     function doPing() {
-        var start = new Date().getTime();
+        var start = performance.now();
         $.ajax({
             url: "/zebedee/ping",
             dataType: 'json',
@@ -11539,31 +11561,22 @@ function setShortcuts(field, callback) {
                 // Handle session information
                 checkSessionTimeout(response);
 
-                var end = new Date().getTime();
-                var time = end - start;
+                var end = performance.now();
+                var time = Math.round(end - start);
 
                 lastPingTime = time;
-                pingTimes.push(time);
-                if (pingTimes.length > 5)
-                    pingTimes.shift();
-
-                var sum = 0;
-                for (var i = 0; i < pingTimes.length; ++i) {
-                    sum += pingTimes[i];
-                }
-
-                var averagePingTime = sum / pingTimes.length;
 
                 networkStatus(lastPingTime);
 
-                if (averagePingTime < 100) {
-                    console.log("ping time: pretty good! " + time + " average: " + averagePingTime + " " + pingTimes);
-                } else if (averagePingTime < 300) {
-                    console.log("ping time: not so good! " + time + " average: " + averagePingTime + " " + pingTimes);
-                } else {
-                    console.log("ping time: really bad! " + time);
-                }
+                Florence.ping.add(time)
 
+                pingTimer = setTimeout(function () {
+                    doPing();
+                }, 10000);
+            },
+            error: function() {
+                Florence.ping.add(0);
+                console.error("Error during POST to ping endpoint on Zebedee");
                 pingTimer = setTimeout(function () {
                     doPing();
                 }, 10000);
