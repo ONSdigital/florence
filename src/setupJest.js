@@ -1,1 +1,1 @@
-global.fetch = require('jest-fetch-mock');
+window.fetch = require('jest-fetch-mock');
