@@ -11,6 +11,7 @@ import LoginController from './app/login/LoginController';
 import TeamsController from './app/teams/TeamsController';
 import VerifyController from './app/verify/VerifyController';
 import PasswordController from './app/password/PasswordController';
+import ForgottenPasswordController from './app/password/ForgottenPasswordController';
 
 import './scss/main.scss';
 
@@ -52,6 +53,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/verify`} component={ VerifyController } />
                             <Route path={`${rootPath}/password`} component={ PasswordController } />
+                            <Route path={`${rootPath}/forgotten-password`} component={ ForgottenPasswordController } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
                     </Route>

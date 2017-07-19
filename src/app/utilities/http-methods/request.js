@@ -50,12 +50,14 @@ export default function request(method, uri, willRetry, body) {
                         reject({status: response.status, message: data.message});
                     }
                 });
+            } else if (response.headers.get('content-type').match(/text\/plain/)) {
+                return response.text();
             }
 
             throw new HttpError(response);
 
-        }).then(responseJSON => {
-            resolve(responseJSON);
+        }).then(responseData => {
+            resolve(responseData);
         }).catch(fetchError => {
 
             if (willRetry) {

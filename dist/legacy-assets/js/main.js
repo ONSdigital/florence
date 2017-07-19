@@ -16966,7 +16966,7 @@ function viewUserDetails(email, $this) {
                 showPanel($this, showPanelOptions);
 
                 $('.btn-user-change-verification-email').click(function () {
-                    viewChangeVerificationEmail(email);
+                    viewChangeVerificationEmail(user.verificationEmail);
                 });
 
                 $('.btn-user-delete').click(function () {
