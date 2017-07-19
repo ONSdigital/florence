@@ -1181,6 +1181,15 @@ select {
   select select:first-child {
     font-style: italic; }
 
+.block {
+  display: block; }
+
+.inline {
+  display: inline; }
+
+.inline-block {
+  display: inline-block; }
+
 .global-nav__list {
   overflow: hidden;
   background: #323232;
@@ -1545,3 +1554,6 @@ select {
 
 .list__item {
   margin-bottom: 21px; }
+
+.link {
+  color: #58585B; }
