@@ -15563,10 +15563,10 @@ function viewChangePassword(email, authenticate) {
  * Show the change verification email screen to change the verification email for the given login email.
  * @param loginEmail - The email address of the user to change the verification email for.
  */
-function viewChangeVerificationEmail(loginEmail) {
+function viewChangeVerificationEmail(loginEmail, verificationEmail) {
 
   var viewModel = {
-    email: loginEmail
+    email: verificationEmail
   };
   
   $('body').append(templates.changeVerificationEmail(viewModel));
@@ -16966,7 +16966,7 @@ function viewUserDetails(email, $this) {
                 showPanel($this, showPanelOptions);
 
                 $('.btn-user-change-verification-email').click(function () {
-                    viewChangeVerificationEmail(user.verificationEmail);
+                    viewChangeVerificationEmail(user.email, user.verificationEmail);
                 });
 
                 $('.btn-user-delete').click(function () {
