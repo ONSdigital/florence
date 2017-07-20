@@ -1,3 +1,13 @@
 .link {
     color: $scarpa-flow;
+
+    &:hover {
+        color: $black;
+    }
+
+    &:focus {
+        color: $black;
+        outline: 3px solid $focus;
+    }
+
 }
