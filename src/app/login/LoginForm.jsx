@@ -40,9 +40,10 @@ export default class LoginForm extends Component {
                                 return <Input key={index} {...input} disabled={isSubmitting}/>
                             })
                         }
-                        <Link className="link block" to={`${this.props.rootPath}/forgotten-password`}>I've forgotten my password</Link><br/>
 
-                        <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+                        <Link className="link inline-block" to={`${this.props.rootPath}/forgotten-password`}>I've forgotten my password</Link><br/>
+
+                        <button type="submit" className="btn btn--primary btn--margin-top" disabled={isSubmitting}>
                             Log in
                         </button>
 

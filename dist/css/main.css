@@ -1499,15 +1499,26 @@ select {
     background: none;
     font-size: 12.5px;
     float: right;
-    margin-top: -42px; }
+    margin-top: -42px;
+    width: 70px;
+    text-align: center; }
     .btn--password:hover, .btn--password:focus {
-      text-decoration: underline; }
+      text-decoration: underline;
+      cursor: pointer; }
       .btn--password:hover:after, .btn--password:focus:after {
         background: none; }
+    .btn--password:focus {
+      color: #000000;
+      border: none;
+      outline: 3px solid #ffbf47; }
   .btn--flush {
     margin: 0 !important; }
+  .btn--margin-top {
+    margin-top: 20px; }
   .btn--margin-right {
     margin-right: 20px; }
+  .btn--margin-bottom {
+    margin-bottom: 20px; }
   .btn--margin-left {
     margin-left: 20px; }
   .btn--inline-block {
@@ -1522,6 +1533,8 @@ select {
   height: 42px;
   padding: 7px 20px;
   background-color: #FFFFFF; }
+  .input--has-toggle {
+    padding-right: 90px; }
   .input:focus {
     border: 3px solid #ffbf47; }
   .input:disabled {
@@ -1557,3 +1570,8 @@ select {
 
 .link {
   color: #58585B; }
+  .link:hover {
+    color: #000000; }
+  .link:focus {
+    color: #000000;
+    outline: 3px solid #ffbf47; }
