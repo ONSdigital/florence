@@ -25,6 +25,20 @@ export default class user {
     static getPermissions(email) {
         return http.get(`/zebedee/permission?email=${email}`)
             .then(response => {
+
+                // TAKEN FROM OLD FLORENCE
+                // Store the user type in localStorage. Used in old Florence
+                // where views can depend on user type. e.g. Browse tree
+                if (response.admin) {
+                    localStorage.setItem("userType", "PUBLISHING_SUPPORT");
+                } else if (response.editor && !response.dataVisPublisher) {
+                    localStorage.setItem("userType", "PUBLISHING_SUPPORT");
+                } else if (response.editor && response.dataVisPublisher) {
+                    localStorage.setItem("userType", "DATA_VISUALISATION");
+                } else if (!response.admin && !response.editor && !response.dataVisPublisher) {
+                    localStorage.setItem("userType", "VIEWER");
+                }
+
                 return response;
             }).catch(error => {
                 console.error(`Error getting user permissions for ${email} \n${error}`);
