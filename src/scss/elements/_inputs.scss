@@ -8,6 +8,10 @@
     padding: 7px $gutter;
     background-color: $white;
 
+    &--has-toggle {
+        padding-right: ($magicnumber1 * 10) + $gutter;
+    }
+
     &:focus {
         border: 3px solid $focus;
     }
