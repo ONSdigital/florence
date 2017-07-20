@@ -9,7 +9,7 @@
     background-color: $white;
 
     &--has-toggle {
-        padding-right: ($magicnumber1 * 10) + $gutter;
+        padding-right: $magicnumber1 * 10;
     }
 
     &:focus {

@@ -41,13 +41,15 @@ export default class LoginForm extends Component {
                             })
                         }
 
-                        <Link className="link inline-block" to={`${this.props.rootPath}/forgotten-password`}>I've forgotten my password</Link><br/>
-
-                        <button type="submit" className="btn btn--primary btn--margin-top" disabled={isSubmitting}>
+                        <button type="submit" className="btn btn--primary btn--margin-bottom" disabled={isSubmitting}>
                             Log in
                         </button>
 
                         {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
+
+                        <br/>
+
+                        <Link className="link inline-block" to={`${this.props.rootPath}/forgotten-password`}>I've forgotten my password</Link>
 
                     </form>
                 </div>
