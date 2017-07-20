@@ -67,23 +67,39 @@
         font-size: ($lineheight / 2 ) + 2;
         float: right;
         margin-top: -$lineheight * 2;
+        width: $magicnumber1 * 10;
+        text-align: center;
 
         &:hover,
         &:focus {
             text-decoration: underline;
+            cursor: pointer;
 
             &:after {
                 background: none;
             }
         }
+
+        &:focus {
+            color: $black;
+            border: none;
+            outline: 3px solid $focus;
+        }
+
     }
 
     /* Margin */
     &--flush {
         margin: 0 !important;
     }
+    &--margin-top {
+        margin-top: $gutter;
+    }
     &--margin-right {
         margin-right: $gutter;
+    }
+    &--margin-bottom {
+        margin-bottom: $gutter;
     }
     &--margin-left {
         margin-left: $gutter;
