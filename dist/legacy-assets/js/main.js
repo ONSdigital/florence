@@ -7341,27 +7341,55 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         var $input = $('#wmd-input');
         var selectionStart = $input[0].selectionStart;
         var selectionEnd = $input[0].selectionEnd;
-        var selection;
+        var beforeCursor = $input.val().substring(0, selectionStart).split("\n");
+        var afterCursor = $input.val().substring(selectionStart).split("\n");
+        var newInputValue;
+        var hasCloseTag;
+        var removeTag = false;
+
+        beforeCursor.forEach(function(line, index) {
+            if (line.indexOf("</box>") >= 0) {
+                hasCloseTag = true;
+                return;
+            }
+            if (line.indexOf("<box") >= 0 && !hasCloseTag) {
+                removeTag = true;
+                beforeCursor.splice(index, 1);
+                return;
+            }
+        })
+
+        if (removeTag) {
+            var closingTagRemoved = false;
+            afterCursor.forEach(function(line, index) {
+                if (closingTagRemoved === true) {
+                    return;
+                }
+                if (line.indexOf("</box>") >= 0) {
+                    console.log(afterCursor[index]);
+                    afterCursor.splice(index, 1);
+                    return;
+                }
+            })
+            console.log(afterCursor);
+            newInputValue = beforeCursor.join("\n") + afterCursor.join("\n");
+            $input.val(newInputValue);
+            return;
+        }
 
         if (selectionStart === selectionEnd) {
             var eachLine = $input.val().split("\n");
-            var beforeCursor = $input.val().substring(0, selectionStart).split("\n");
-            var afterCursor = $input.val().substring(selectionStart).split("\n")[0];
-            selection = beforeCursor[beforeCursor.length-1] + afterCursor;
-
+            var selection = beforeCursor[beforeCursor.length-1] + afterCursor[0];
             var wrappedSelection = "<box align=>\n" + selection + "\n</box>";
-
             eachLine[beforeCursor.length-1] = wrappedSelection;
-
-            $input.val(eachLine.join("\n"));
+            newInputValue = eachLine.join("\n");
 
         } else {
             selection = $input.val().substring(selectionStart, selectionEnd)
             newInputValue = $input.val().slice(0, selectionStart) + "<box align=>\n" + selection + "\n</box>" + $input.val().slice(selectionEnd);
-            $input.val(newInputValue);
         }
 
-        console.log(selection);
+        $input.val(newInputValue);
     });
 
     $("#wmd-input").on('click', function () {
