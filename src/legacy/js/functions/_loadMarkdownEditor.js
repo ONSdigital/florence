@@ -102,35 +102,35 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         var hasCloseTag;
         var removeTag = false;
 
-        // beforeCursor.forEach(function(line, index) {
-        //     if (line.indexOf("</ons-box>") >= 0) {
-        //         hasCloseTag = true;
-        //         return;
-        //     }
-        //     if (line.indexOf("<ons-box") >= 0 && !hasCloseTag) {
-        //         removeTag = true;
-        //         beforeCursor.splice(index, 1);
-        //         return;
-        //     }
-        // })
-        //
-        // if (removeTag) {
-        //     var closingTagRemoved = false;
-        //     afterCursor.forEach(function(line, index) {
-        //         if (closingTagRemoved === true) {
-        //             return;
-        //         }
-        //         if (line.indexOf("</ons-box>") >= 0) {
-        //             console.log(afterCursor[index]);
-        //             afterCursor.splice(index, 1);
-        //             return;
-        //         }
-        //     });
-        //     console.log(afterCursor);
-        //     newInputValue = beforeCursor.join("\n") + afterCursor.join("\n");
-        //     $input.val(newInputValue);
-        //     return;
-        // }
+        beforeCursor.forEach(function(line, index) {
+            if (line.indexOf("</ons-box>") >= 0) {
+                hasCloseTag = true;
+                return;
+            }
+            if (line.indexOf("<ons-box") >= 0 && !hasCloseTag) {
+                removeTag = true;
+                beforeCursor.splice(index, 1);
+                return;
+            }
+        })
+        
+        if (removeTag) {
+            var closingTagRemoved = false;
+            afterCursor.forEach(function(line, index) {
+                if (closingTagRemoved === true) {
+                    return;
+                }
+                if (line.indexOf("</ons-box>") >= 0) {
+                    console.log(afterCursor[index]);
+                    afterCursor.splice(index, 1);
+                    return;
+                }
+            });
+            console.log(afterCursor);
+            newInputValue = beforeCursor.join("\n") + afterCursor.join("\n");
+            $input.val(newInputValue);
+            return;
+        }
 
         if (selectionStart === selectionEnd) {
             var eachLine = $input.val().split("\n");
@@ -144,6 +144,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
             newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
         }
         $input.val(newInputValue);
+        $('#wmd-input').trigger('input');
         Florence.Editor.markdownEditor.refreshPreview();
     });
 
