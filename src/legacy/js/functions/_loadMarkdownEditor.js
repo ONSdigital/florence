@@ -1,5 +1,8 @@
 /**
  * Manages markdown editor
+ * 
+ * Uses pagedown markdown librart - https://github.com/ujifgc/pagedown
+ * 
  * @param content
  * @param onSave
  * @param pageData
