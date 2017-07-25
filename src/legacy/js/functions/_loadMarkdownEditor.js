@@ -102,6 +102,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         var hasCloseTag;
         var removeTag = false;
 
+        beforeCursor.reverse();
         beforeCursor.forEach(function(line, index) {
             if (line.indexOf("</ons-box>") >= 0) {
                 hasCloseTag = true;
@@ -113,6 +114,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
                 return;
             }
         })
+        beforeCursor.reverse();
         
         if (removeTag) {
             var closingTagRemoved = false;
@@ -121,12 +123,11 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
                     return;
                 }
                 if (line.indexOf("</ons-box>") >= 0) {
-                    console.log(afterCursor[index]);
                     afterCursor.splice(index, 1);
+                    closingTagRemoved = true;
                     return;
                 }
             });
-            console.log(afterCursor);
             newInputValue = beforeCursor.join("\n") + afterCursor.join("\n");
             $input.val(newInputValue);
             return;
@@ -145,6 +146,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         }
         $input.val(newInputValue);
         $('#wmd-input').trigger('input');
+        $input[0].setSelectionRange(selectionStart, selectionEnd);
         Florence.Editor.markdownEditor.refreshPreview();
     });
 
