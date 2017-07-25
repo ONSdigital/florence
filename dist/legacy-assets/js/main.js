@@ -7347,49 +7347,49 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         var hasCloseTag;
         var removeTag = false;
 
-        beforeCursor.forEach(function(line, index) {
-            if (line.indexOf("</box>") >= 0) {
-                hasCloseTag = true;
-                return;
-            }
-            if (line.indexOf("<box") >= 0 && !hasCloseTag) {
-                removeTag = true;
-                beforeCursor.splice(index, 1);
-                return;
-            }
-        })
-
-        if (removeTag) {
-            var closingTagRemoved = false;
-            afterCursor.forEach(function(line, index) {
-                if (closingTagRemoved === true) {
-                    return;
-                }
-                if (line.indexOf("</box>") >= 0) {
-                    console.log(afterCursor[index]);
-                    afterCursor.splice(index, 1);
-                    return;
-                }
-            })
-            console.log(afterCursor);
-            newInputValue = beforeCursor.join("\n") + afterCursor.join("\n");
-            $input.val(newInputValue);
-            return;
-        }
+        // beforeCursor.forEach(function(line, index) {
+        //     if (line.indexOf("</ons-box>") >= 0) {
+        //         hasCloseTag = true;
+        //         return;
+        //     }
+        //     if (line.indexOf("<ons-box") >= 0 && !hasCloseTag) {
+        //         removeTag = true;
+        //         beforeCursor.splice(index, 1);
+        //         return;
+        //     }
+        // })
+        //
+        // if (removeTag) {
+        //     var closingTagRemoved = false;
+        //     afterCursor.forEach(function(line, index) {
+        //         if (closingTagRemoved === true) {
+        //             return;
+        //         }
+        //         if (line.indexOf("</ons-box>") >= 0) {
+        //             console.log(afterCursor[index]);
+        //             afterCursor.splice(index, 1);
+        //             return;
+        //         }
+        //     });
+        //     console.log(afterCursor);
+        //     newInputValue = beforeCursor.join("\n") + afterCursor.join("\n");
+        //     $input.val(newInputValue);
+        //     return;
+        // }
 
         if (selectionStart === selectionEnd) {
             var eachLine = $input.val().split("\n");
             var selection = beforeCursor[beforeCursor.length-1] + afterCursor[0];
-            var wrappedSelection = "<box align=>\n" + selection + "\n</box>";
+            var wrappedSelection = '<ons-box align="full">\n' + selection + '\n</ons-box>';
             eachLine[beforeCursor.length-1] = wrappedSelection;
             newInputValue = eachLine.join("\n");
 
         } else {
-            selection = $input.val().substring(selectionStart, selectionEnd)
-            newInputValue = $input.val().slice(0, selectionStart) + "<box align=>\n" + selection + "\n</box>" + $input.val().slice(selectionEnd);
+            selection = $input.val().substring(selectionStart, selectionEnd);
+            newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
         }
-
         $input.val(newInputValue);
+        Florence.Editor.markdownEditor.refreshPreview();
     });
 
     $("#wmd-input").on('click', function () {
@@ -7454,6 +7454,7 @@ function markdownEditor() {
     // output chart tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {
         var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+            console.log("ONS Chart tag found", match);
             var path = $(match).attr('path');
             return '[chart path="' + path + '" ]';
         });
@@ -7485,6 +7486,16 @@ function markdownEditor() {
             var fullWidth = $(match).attr('full-width') || "";
             var fullWidthText = fullWidth == "true" ? 'display="full-width"' : '';
             return '[interactive url="' + path + '" ' + fullWidthText + ']';
+        });
+        return newText;
+    });
+
+    // output box tag as text instead of the actual tag.
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/<ons-box\salign="([a-zA-Z]*)">((?:.|\n)*?)<\/ons-box>/igm, function (match) {
+            var align = $(match).attr('align') || "";
+            var content = $(match)[0].innerHTML;
+            return '[box align="' + align + '" ]' + content + '[/box]';
         });
         return newText;
     });
