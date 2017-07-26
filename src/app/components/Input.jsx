@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
     disabled: PropTypes.bool,
-    isFocused: PropTypes.bool
+    isFocused: PropTypes.bool,
+    inline: PropTypes.bool
 };
 
 const defaultProps = {
@@ -39,8 +40,10 @@ export default class Input extends Component {
 
     render() {
         return (
-            <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
-                <label className="form__label" htmlFor={this.props.id}>{this.props.label}: </label>
+            <div className={"form__input" + (this.props.error ? " form__input--error" : "") + (this.props.inline ? " form__input--flush" : "")}>
+                { !this.props.inline &&
+                    <label className="form__label" htmlFor={this.props.id}>{this.props.label}: </label>
+                }
                 {
                     this.props.error ?
                         <div className="error-msg">{this.props.error}</div>
@@ -55,6 +58,7 @@ export default class Input extends Component {
                     disabled={this.props.disabled}
                     onChange={this.props.onChange}
                     autoFocus={this.props.isFocused}
+                    placeholder={this.props.inline ? this.props.label : ""}
                 />
                 {
                     this.state.displayShowHide ?

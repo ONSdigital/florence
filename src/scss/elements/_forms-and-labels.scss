@@ -20,6 +20,10 @@
                 color: $night-shadz;
             }
         }
+
+        &--flush {
+            margin: 0;
+        }
     }
 
     &__loader {
