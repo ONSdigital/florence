@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import TeamEditItem from './TeamEditItem';
+import Input from '../../components/Input';
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -11,8 +12,10 @@ const propTypes = {
     updatingAllUsers: PropTypes.bool.isRequired,
     updatingMembers: PropTypes.bool.isRequired,
     showingLoaders: PropTypes.bool,
+    onUsersSearch: PropTypes.func,
     onMembersChange: PropTypes.func.isRequired,
-    onDone: PropTypes.func.isRequired
+    onDone: PropTypes.func.isRequired,
+    searchTerm: PropTypes.string
 }
 
 class TeamEdit extends Component {
@@ -30,19 +33,28 @@ class TeamEdit extends Component {
 
     renderUsers() {
         return (
-            <ul className="list list--neutral">
-                {this.props.users.map((user, index) => {
-                    return (
-                        <TeamEditItem 
-                            key={index} 
-                            action="add"
-                            onClick={this.props.onMembersChange}
-                            email={user.email}
-                            isDisabled={this.props.disabledUsers.has(user.email)}
-                        />
-                    )
-                })}
-            </ul>
+            this.props.users.length > 0 ?
+                <ul className="list list--neutral">
+                    {this.props.users.map((user, index) => {
+                        return (
+                            <TeamEditItem 
+                                key={index} 
+                                action="add"
+                                onClick={this.props.onMembersChange}
+                                email={user.email}
+                                isDisabled={this.props.disabledUsers.has(user.email)}
+                            />
+                        )
+                    })}
+                </ul>
+            :
+                <p className="add-remove__text">
+                    {this.props.searchTerm.length > 0 ?
+                        <span>No users match the term "<strong>{this.props.searchTerm}</strong>"</span>
+                    :
+                        "No users to display"
+                    }
+                </p>
         )
     }
 
@@ -75,7 +87,17 @@ class TeamEdit extends Component {
                 </div>
                 <div className="grid__col-6">
                     <div className="add-remove__col">
-                        <h2 className="add-remove__col-heading">All users</h2>
+                        <div className="grid add-remove__col-heading">
+                            <h2 className="grid__col-6">All users</h2>
+                            <div className="grid__col-6 add-remove__search">
+                                <Input 
+                                    id="users-search" 
+                                    label="Search for an email address" 
+                                    inline={true} 
+                                    onChange={this.props.onUsersSearch}
+                                />
+                            </div>
+                        </div>
                         <div className="add-remove__body ">
                             {!this.props.updatingAllUsers &&
                                 this.renderUsers()
