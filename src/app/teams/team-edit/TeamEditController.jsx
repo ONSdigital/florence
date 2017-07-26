@@ -26,9 +26,11 @@ class TeamEditController extends Component {
             editedUsers: null,
             updatingAllUsers: false,
             parentPath: (location.pathname).split('/edit')[0],
-            disabledUsers: new Map()
+            disabledUsers: new Map(),
+            searchTerm: ""
         }
 
+        this.handleUsersSearch = this.handleUsersSearch.bind(this);
         this.handleMembersChange = this.handleMembersChange.bind(this);
         this.handleDone = this.handleDone.bind(this);
     }
@@ -54,6 +56,24 @@ class TeamEditController extends Component {
         if (nextProps.users !== this.props.users) {
             this.setState({editedUsers: nextProps.users})
         }
+    }
+
+    handleUsersSearch(event) {
+        const searchTerm = event.target.value.toLowerCase();
+        const filteredUsers = this.props.users.filter(user => {
+            const isTeamMember = this.props.members.some(member => {
+                return member === user.email
+            });
+            return (
+                user.email.toLowerCase().search(searchTerm) !== -1 
+                && 
+                !isTeamMember
+            );
+        });
+        this.setState({
+            editedUsers: filteredUsers,
+            searchTerm
+        });
     }
 
     handleMembersChange(userAttributes) {
@@ -232,12 +252,14 @@ class TeamEditController extends Component {
                 name={this.props.name}
                 users={this.state.editedUsers} 
                 members={this.props.members}
+                onUsersSearch={this.handleUsersSearch}
                 onMembersChange={this.handleMembersChange}
                 onDone={this.handleDone}
                 updatingAllUsers={this.state.updatingAllUsers}
                 updatingMembers={this.props.isUpdatingMembers}
                 showingLoaders={this.state.updatingAllUsers || this.props.isUpdatingMembers}
                 disabledUsers={this.state.disabledUsers}
+                searchTerm={this.state.searchTerm}
             />
         )
     }
