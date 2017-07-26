@@ -19,6 +19,7 @@ exports[`Input without type renders a text input 1`] = `
     id="test-input"
     name="test-input"
     onChange={undefined}
+    placeholder=""
     type="text"
   />
   
@@ -44,6 +45,7 @@ exports[`Password prop creates a password input 1`] = `
     id="test-password-input"
     name="test-password-input"
     onChange={undefined}
+    placeholder=""
     type="password"
   />
   <span
