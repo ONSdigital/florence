@@ -292,7 +292,7 @@ function markdownEditor() {
         var newText = text.replace(/<ons-box\salign="([a-zA-Z]*)">((?:.|\n)*?)<\/ons-box>/igm, function (match) {
             var align = $(match).attr('align') || "";
             var content = $(match)[0].innerHTML;
-            return '[box align="' + align + '" ]' + content + '[/box]';
+            return '[box align="' + align + '"]' + content + '[/box]';
         });
         return newText;
     });
