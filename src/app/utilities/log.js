@@ -10,7 +10,8 @@ export const eventTypes = {
     requestSent: "REQUEST_SENT",
     requestReceived: "REQUEST_RECEIVED",
     passwordChangeSuccess: "PASSWORD_CHANGE_SUCCESS",
-    passwordChangeError: "PASSWORD_CHANGE_ERROR"
+    passwordChangeError: "PASSWORD_CHANGE_ERROR",
+    editedTeamMembers: "EDITED_TEAM_MEMBERS"
 }
 
 browserHistory.listen(location => {
