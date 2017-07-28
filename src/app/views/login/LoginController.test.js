@@ -22,7 +22,7 @@ jest.mock('../../utilities/log.js', () => {
     }
 });
 
-jest.mock('../../utilities/user.js', () => {
+jest.mock('../../utilities/APIs/user.js', () => {
     return {
         setUserState: function () {
             // do nothing
