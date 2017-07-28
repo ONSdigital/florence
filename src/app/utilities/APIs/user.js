@@ -1,6 +1,6 @@
-import http from '../utilities/http';
-import { store } from '../config/store';
-import { userLoggedIn, userLoggedOut } from '../config/actions';
+import http from '../http';
+import { store } from '../../config/store';
+import { userLoggedIn, userLoggedOut } from '../../config/actions';
 
 export default class user {
 
