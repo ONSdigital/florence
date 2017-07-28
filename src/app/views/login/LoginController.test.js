@@ -3,7 +3,7 @@ import { LoginController } from './LoginController';
 import renderer from 'react-test-renderer';
 import { mount, shallow } from 'enzyme';
 
-jest.mock('../utilities/notifications.js', () => {
+jest.mock('../../utilities/notifications.js', () => {
     return {
         add: function() {
             // do nothing
@@ -11,7 +11,7 @@ jest.mock('../utilities/notifications.js', () => {
     }
 });
 
-jest.mock('../utilities/log.js', () => {
+jest.mock('../../utilities/log.js', () => {
     return {
         add: function() {
             // do nothing
@@ -22,7 +22,7 @@ jest.mock('../utilities/log.js', () => {
     }
 });
 
-jest.mock('../utilities/user.js', () => {
+jest.mock('../../utilities/user.js', () => {
     return {
         setUserState: function () {
             // do nothing
@@ -32,7 +32,7 @@ jest.mock('../utilities/user.js', () => {
         }
     }
 });
-jest.mock('../utilities/redirectToMainScreen.js', () => {
+jest.mock('../../utilities/redirectToMainScreen.js', () => {
     return {
         redirectToMainScreen: function () {
             // do nothing

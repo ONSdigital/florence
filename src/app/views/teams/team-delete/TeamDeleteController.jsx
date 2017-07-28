@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import teams from '../../utilities/teams';
-import { updateAllTeams } from '../../config/actions';
-import notifications from '../../utilities/notifications';
+import teams from '../../../utilities/teams';
+import { updateAllTeams } from '../../../config/actions';
+import notifications from '../../../utilities/notifications';
 
 import TeamDeleteForm from './TeamDeleteForm';
 

@@ -2,14 +2,14 @@ import React from 'react';
 import { TeamEditController } from './TeamEditController';
 import { mount, shallow } from 'enzyme';
 
-jest.mock('../../utilities/notifications.js', () => (
+jest.mock('../../../utilities/notifications.js', () => (
     {
         add: jest.fn().mockImplementation(() => {
         }
     )}
 ));
 
-jest.mock('../../utilities/log.js', () => (
+jest.mock('../../../utilities/log.js', () => (
     {
         add: jest.fn().mockImplementation(() => {
             console.log('Log added');
@@ -17,7 +17,7 @@ jest.mock('../../utilities/log.js', () => (
     )}
 ));
 
-jest.mock('../../utilities/log.js', () => (
+jest.mock('../../../utilities/log.js', () => (
     {
         add: jest.fn().mockImplementation(() => {
             // do nothing
@@ -28,7 +28,7 @@ jest.mock('../../utilities/log.js', () => (
     }
 ));
 
-jest.mock('../../utilities/user.js', () => (
+jest.mock('../../../utilities/user.js', () => (
     {
         getAll: jest.fn().mockImplementation(() => {
             return Promise.resolve([
@@ -57,7 +57,7 @@ jest.mock('../../utilities/user.js', () => (
     )}
 ));
 
-jest.mock('../../utilities/teams.js', () => (
+jest.mock('../../../utilities/teams.js', () => (
     {
         addMember: jest.fn().mockImplementation(() => {
             return Promise.resolve();
