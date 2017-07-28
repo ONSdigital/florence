@@ -68,10 +68,24 @@ jest.mock('../utilities/user.js', () => (
 
 jest.mock('../utilities/notifications.js', () => (
     {
-        getAll: jest.fn().mockImplementation(() => {
+        add: jest.fn().mockImplementation(() => {
             return Promise.resolve([]);
+        }),
+        eventTypes: {
+            editedTeamMembers: ""
         }
-    )}
+    }
+));
+
+jest.mock('../utilities/log.js', () => (
+    {
+        add: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        eventTypes: {
+            editedTeamMembers: ""
+        }
+    }
 ));
 
 test('Loading state shown when fetching all teams', () => {

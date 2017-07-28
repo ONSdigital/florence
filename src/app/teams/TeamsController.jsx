@@ -10,7 +10,6 @@ import {
     updateActiveTeamMembers
 } from '../config/actions';
 import teams from '../utilities/teams';
-import user from '../utilities/user';
 import safeURL from '../utilities/safeURL';
 import notifications from '../utilities/notifications';
 
