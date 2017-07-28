@@ -28,7 +28,7 @@ jest.mock('../../../utilities/log.js', () => (
     }
 ));
 
-jest.mock('../../../utilities/user.js', () => (
+jest.mock('../../../utilities/APIs/user.js', () => (
     {
         getAll: jest.fn().mockImplementation(() => {
             return Promise.resolve([
@@ -57,7 +57,7 @@ jest.mock('../../../utilities/user.js', () => (
     )}
 ));
 
-jest.mock('../../../utilities/teams.js', () => (
+jest.mock('../../../utilities/APIs/teams.js', () => (
     {
         addMember: jest.fn().mockImplementation(() => {
             return Promise.resolve();

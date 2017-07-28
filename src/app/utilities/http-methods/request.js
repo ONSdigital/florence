@@ -1,9 +1,7 @@
 import { HttpError } from './error';
 import log, { eventTypes } from '../log';
 import uuid from 'uuid/v4';
-import { store } from '../../config/store';
-import { push } from 'react-router-redux';
-import user from '../user';
+import user from '../APIs/user';
 import notifications from '../notifications';
 
 /**
