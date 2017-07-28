@@ -7,6 +7,7 @@ import { updateUsers, updateActiveTeamMembers } from '../../config/actions';
 import user from '../../utilities/user';
 import teams from '../../utilities/teams';
 import notifications from '../../utilities/notifications';
+import log, { eventTypes } from '../../utilities/log';
 
 import TeamEdit from './TeamEdit';
 
@@ -18,7 +19,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
-class TeamEditController extends Component {
+export class TeamEditController extends Component {
     constructor(props) {
         super(props);
 
@@ -77,6 +78,8 @@ class TeamEditController extends Component {
     }
 
     handleMembersChange(userAttributes) {
+        log.add(eventTypes.editedTeamMembers, {action: userAttributes.action, team: this.props.name, user: userAttributes.email})
+
         const disabledUsers = this.state.disabledUsers;
         disabledUsers.set(userAttributes.email, null);
         this.setState({disabledUsers});
@@ -271,7 +274,6 @@ function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
         members: state.state.teams.active.members,
-        users: state.state.teams.users,
         rootPath: state.state.rootPath
     }
 }
