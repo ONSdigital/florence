@@ -8,18 +8,18 @@ import {
     updateActiveTeam, 
     emptyActiveTeam, 
     updateActiveTeamMembers
-} from '../config/actions';
-import teams from '../utilities/teams';
-import safeURL from '../utilities/safeURL';
-import notifications from '../utilities/notifications';
+} from '../../config/actions';
+import teams from '../../utilities/teams';
+import safeURL from '../../utilities/safeURL';
+import notifications from '../../utilities/notifications';
 
-import SelectableBoxController from '../components/selectable-box/SelectableBoxController';
-import Drawer from '../components/drawer/Drawer';
+import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
+import Drawer from '../../components/drawer/Drawer';
 import TeamCreate from './team-create/TeamCreate';
 import TeamDetails from './team-details/TeamDetails';
 import TeamEditController from './team-edit/TeamEditController';
 import TeamDeleteController from './team-delete/TeamDeleteController';
-import Modal from '../components/Modal';
+import Modal from '../../components/Modal';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,

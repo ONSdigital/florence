@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateUsers, updateActiveTeamMembers } from '../../config/actions';
-import user from '../../utilities/user';
-import teams from '../../utilities/teams';
-import notifications from '../../utilities/notifications';
-import log, { eventTypes } from '../../utilities/log';
+import { updateUsers, updateActiveTeamMembers } from '../../../config/actions';
+import user from '../../../utilities/user';
+import teams from '../../../utilities/teams';
+import notifications from '../../../utilities/notifications';
+import log, { eventTypes } from '../../../utilities/log';
 
 import TeamEdit from './TeamEdit';
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import TeamEditItem from './TeamEditItem';
-import Input from '../../components/Input';
+import Input from '../../../components/Input';
 
 const propTypes = {
     name: PropTypes.string.isRequired,

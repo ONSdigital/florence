@@ -7,8 +7,9 @@ import { UserAuthWrapper } from 'redux-auth-wrapper';
 
 import App from './app/App';
 import Layout from './app/global/Layout'
-import LoginController from './app/login/LoginController';
-import TeamsController from './app/teams/TeamsController';
+import LoginController from './app/views/login/LoginController';
+import TeamsController from './app/views/teams/TeamsController';
+import DatasetController from './app/views/datasets/DatasetsController';
 
 import './scss/main.scss';
 
@@ -47,6 +48,7 @@ class Index extends Component {
                                     <Route path={`delete`} component={ UserIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
+                             <Route path={`${rootPath}/datasets`} component={ UserIsAuthenticated(DatasetController) }/> 
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
