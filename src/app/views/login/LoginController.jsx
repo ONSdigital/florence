@@ -4,15 +4,15 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import LoginForm from './LoginForm';
-import Modal from '../components/Modal';
-import ChangePasswordController from '../components/change-password/ChangePasswordController';
-import notifications from '../utilities/notifications';
+import Modal from '../../components/Modal';
+import ChangePasswordController from '../../components/change-password/ChangePasswordController';
+import notifications from '../../utilities/notifications';
 
-import http from '../utilities/http';
-import { errCodes } from '../utilities/errorCodes'
-import user from '../utilities/user';
-import cookies from '../utilities/cookies';
-import redirectToMainScreen from '../utilities/redirectToMainScreen';
+import http from '../../utilities/http';
+import { errCodes } from '../../utilities/errorCodes'
+import user from '../../utilities/user';
+import cookies from '../../utilities/cookies';
+import redirectToMainScreen from '../../utilities/redirectToMainScreen';
 
 
 

@@ -9,6 +9,7 @@ import cookies from '../utilities/cookies';
 const propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
+    location: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
 }
 
@@ -31,7 +32,18 @@ class NavBar extends Component {
     }
 
     renderNavItems() {
-        if (this.props.isAuthenticated) {
+        if(!this.props.isAuthenticated) {
+            return (
+                <li className="global-nav__item">
+                    <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">Login</Link>
+                </li>
+            )
+        }
+
+        const route = this.props.location.pathname;
+        const rootPath = this.props.rootPath;
+
+        if ( `${rootPath}/collections`.indexOf(route) >= 0 || `${rootPath}/publishing-queue`.indexOf(route) >= 0 || `${rootPath}/reports`.indexOf(route) >= 0 || `${rootPath}/users-and-access`.indexOf(route) >= 0 || `${rootPath}/teams`.indexOf(route) >= 0 ) {
             return (
                 <span>
                     <li className="global-nav__item">
@@ -51,19 +63,26 @@ class NavBar extends Component {
                     </li>
 
                     <li className="global-nav__item">
-                        <Link to={`${this.props.rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
+                        <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
                     </li>
 
                     <li className="global-nav__item">
-                        <Link to={`${this.props.rootPath}/login`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
+                        <Link to={`${rootPath}/login`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
                     </li>
                 </span>
             )
-        } else {
+        }
+
+        if ( `${rootPath}/datasets`.indexOf(route) >= 0) {
             return (
-                <li className="global-nav__item">
-                    <a className="global-nav__link">Login</a>
-                </li>
+                <span>
+                    <li className="global-nav__item">
+                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Dataset upload</Link>
+                    </li>
+                    <li className="global-nav__item">
+                        <Link to={`${rootPath}/login?redirect=${rootPath}/datasets`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
+                    </li>
+                </span>
             )
         }
     }

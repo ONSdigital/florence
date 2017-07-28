@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Input from '../components/Input';
+import Input from '../../components/Input';
 
 const propTypes = {
     formData: PropTypes.shape({

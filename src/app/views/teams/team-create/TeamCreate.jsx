@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import teams from '../../utilities/teams';
-import notifications from '../../utilities/notifications';
+import teams from '../../../utilities/teams';
+import notifications from '../../../utilities/notifications';
 
 const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired

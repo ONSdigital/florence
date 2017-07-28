@@ -21,7 +21,7 @@ const listOfTeams = [
     }
 ]
 
-jest.mock('../utilities/teams.js', () => (
+jest.mock('../../utilities/teams.js', () => (
     {
         getAll: jest.fn().mockImplementation(() => {
             return Promise.resolve([
@@ -45,7 +45,7 @@ jest.mock('../utilities/teams.js', () => (
     )}
 ));
 
-jest.mock('../utilities/user.js', () => (
+jest.mock('../../utilities/user.js', () => (
     {
         getAll: jest.fn().mockImplementation(() => {
             return Promise.resolve([
@@ -66,7 +66,7 @@ jest.mock('../utilities/user.js', () => (
     )}
 ));
 
-jest.mock('../utilities/notifications.js', () => (
+jest.mock('../../utilities/notifications.js', () => (
     {
         add: jest.fn().mockImplementation(() => {
             return Promise.resolve([]);
@@ -77,7 +77,7 @@ jest.mock('../utilities/notifications.js', () => (
     }
 ));
 
-jest.mock('../utilities/log.js', () => (
+jest.mock('../../utilities/log.js', () => (
     {
         add: jest.fn().mockImplementation(() => {
             // do nothing
