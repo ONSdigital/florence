@@ -19,7 +19,8 @@ import redirectToMainScreen from '../../utilities/redirectToMainScreen';
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
-    rootPath: PropTypes.string.isRequired
+    rootPath: PropTypes.string.isRequired,
+    location: PropTypes.object
 };
 
 export class LoginController extends Component {
