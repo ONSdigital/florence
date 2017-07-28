@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import teams from '../../../utilities/teams';
+import teams from '../../../utilities/APIs/teams';
 import notifications from '../../../utilities/notifications';
 
 const propTypes = {

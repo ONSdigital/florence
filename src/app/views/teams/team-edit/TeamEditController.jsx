@@ -4,8 +4,8 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import { updateUsers, updateActiveTeamMembers } from '../../../config/actions';
-import user from '../../../utilities/user';
-import teams from '../../../utilities/teams';
+import user from '../../../utilities/APIs/user';
+import teams from '../../../utilities/APIs/teams';
 import notifications from '../../../utilities/notifications';
 import log, { eventTypes } from '../../../utilities/log';
 

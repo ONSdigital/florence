@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { hasValidAuthToken } from './utilities/hasValidAuthToken';
-import user from './utilities/user';
+import user from './utilities/APIs/user';
 
 import Notifications from './global/notifications/Notifications';
 

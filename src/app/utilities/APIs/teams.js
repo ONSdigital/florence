@@ -1,4 +1,4 @@
-import http from '../utilities/http';
+import http from '../http';
 
 export default class teams {
 
