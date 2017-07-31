@@ -1,7 +1,7 @@
 import { HttpError } from './error';
 import log, { eventTypes } from '../log';
 import uuid from 'uuid/v4';
-import user from '../APIs/user';
+import user from '../api-clients/user';
 import notifications from '../notifications';
 
 /**
@@ -15,7 +15,7 @@ import notifications from '../notifications';
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry = function(){}, body) {
+export default function request(method, URI, willRetry = true, onRetry, body) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
@@ -80,6 +80,9 @@ export default function request(method, URI, willRetry = true, onRetry = functio
             resolve(responseJSON);
         }).catch(fetchError => {
 
+            logEventPayload.error = fetchError;
+            log.add(eventTypes.requestFailed, logEventPayload);
+
             if (willRetry) {
 
                 // retry post
@@ -87,7 +90,9 @@ export default function request(method, URI, willRetry = true, onRetry = functio
                     setTimeout(function() { tryFetch(resolve, reject, URI, willRetry, body) }, interval);
                     retryCount++;
                     interval = interval * 2;
-                    onRetry(retryCount);
+                    if (onRetry) {
+                        onRetry(retryCount);
+                    }
                 } else {
 
                     // pass error back to caller when max number of retries is met
