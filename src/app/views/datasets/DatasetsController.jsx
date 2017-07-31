@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import { updateAllDatasets } from '../../config/actions';
 import recipes from '../../utilities/api-clients/recipes';
+import notifications from '../../utilities/notifications';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -39,7 +40,44 @@ class DatasetsController extends Component {
             this.props.dispatch(updateAllDatasets(allDatasets));
             this.setState({isFetchingDatasets: false});
         }).catch(error => {
-            console.error("Error getting recipes: ", error);
+            switch (error.status) {
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get all available datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get all available datasets. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to get all available datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get all available datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
             this.setState({isFetchingDatasets: false});
         });
     }
