@@ -202,7 +202,7 @@ export class TeamsController extends Component {
         }).catch(error => {
             switch(error.status) {
                 case(401): {
-                    // This is handle by the request function, so do nothing here
+                    // This is handled by the request function, so do nothing here
                     break;
                 }
                 case("RESPONSE_ERR"): {
