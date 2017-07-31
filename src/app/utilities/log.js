@@ -9,6 +9,7 @@ export const eventTypes = {
     appInitialised: "APP_INITIALISED",
     requestSent: "REQUEST_SENT",
     requestReceived: "REQUEST_RECEIVED",
+    requestFailed: "REQUEST_FAILED",
     passwordChangeSuccess: "PASSWORD_CHANGE_SUCCESS",
     passwordChangeError: "PASSWORD_CHANGE_ERROR",
     editedTeamMembers: "EDITED_TEAM_MEMBERS"

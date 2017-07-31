@@ -34,7 +34,7 @@ export default class http {
      * 
      * @returns {Promise} which returns the response body in JSON format
      */
-    static post(uri, body, willRetry) {
+    static post(uri, body ,willRetry) {
         return request("POST", uri, willRetry, null, body)
     }
     
@@ -46,7 +46,7 @@ export default class http {
      * @returns {Promise} which returns the response body in JSON format
      */
     static put(uri, body, willRetry) {
-        return request("PUT", uri, willRetry, body)
+        return request("PUT", uri, willRetry, null, body)
     }
     
     /**

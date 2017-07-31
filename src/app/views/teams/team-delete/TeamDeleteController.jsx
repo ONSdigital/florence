@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import teams from '../../../utilities/APIs/teams';
+import teams from '../../../utilities/api-clients/teams';
 import { updateAllTeams } from '../../../config/actions';
 import notifications from '../../../utilities/notifications';
 
