@@ -1528,6 +1528,9 @@ select {
     position: relative; }
     .input:disabled:-webkit-autofill {
       -webkit-text-fill-color: #AEA99C; }
+  .input__textarea {
+    height: auto;
+    min-height: 105px; }
 
 .form__label {
   display: block;
