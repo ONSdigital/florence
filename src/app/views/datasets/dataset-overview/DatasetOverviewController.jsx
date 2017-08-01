@@ -33,7 +33,7 @@ class DatasetOverviewController extends Component {
         super(props);
 
         this.state = {
-            isFetchingDatasets: false,
+            isFetchingDataset: false,
             jobID: "",
             textareaTimer: null
         }
@@ -44,13 +44,60 @@ class DatasetOverviewController extends Component {
     
     componentWillMount() {
         if (!this.props.datasets || this.props.datasets.length === 0) {
-            this.setState({isFetchingDatasets: true});
+            this.setState({isFetchingDataset: true});
             recipes.get(this.props.params.dataset).then(response => {
                 this.props.dispatch(updateActiveDataset(response));
-                this.setState({isFetchingDatasets: false});
+                this.setState({isFetchingDataset: false});
             }).catch(error => {
-                console.error("Error getting datasets from recipe API: ", error);
-                this.setState({isFetchingDatasets: false});
+                switch (error.status) {
+                    case(404): {
+                        const notification = {
+                            "type": "neutral",
+                            "message": "This dataset was not recognised, so you've been redirect to the main screen.",
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                        break;
+                    }
+                    case("RESPONSE_ERR"):{
+                        const notification = {
+                            "type": "warning",
+                            "message": "An error's occurred whilst trying to get this dataset.",
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                    case("FETCH_ERR"): {
+                        const notification = {
+                            type: "warning",
+                            message: "There's been a network error whilst trying to get this dataset. Please check you internet connection and try again in a few moments.",
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                    case("UNEXPECTED_ERR"): {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error has occurred whilst trying to get this dataset.",
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error's occurred whilst trying to get this dataset.",
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+                this.setState({isFetchingDataset: false});
             })
         } else {
             const activeDataset = this.props.datasets.find(dataset => {
@@ -90,6 +137,81 @@ class DatasetOverviewController extends Component {
         datasetImport.addFile(this.state.jobID, formData).then(response => {
             console.log(response);
         }).catch(error => {
+            switch (error.status) {
+                case(400): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "There was an error with the file you tried to upload. Please fix any errors and attempt to re-upload it.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        "type": "neutral",
+                        "message": "This job was not recognised, so you've been redirected to the main screen.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                    break;
+                }
+                case(413): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error occurred because this file was too big.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(415): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error occurred because this file-type is not supported.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to upload this file.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to upload this file. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to upload this file.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to upload this file.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
             console.error(`Error adding file to job "${this.state.jobID}": `, error);
         });
     }
@@ -125,7 +247,7 @@ class DatasetOverviewController extends Component {
                 <div className="grid__col-6">
                     <h1>Upload new file(s)</h1>
                     <Link to={`${this.props.rootPath}/datasets`}>Save and return</Link>
-                    {this.state.isFetchingDatasets &&
+                    {this.state.isFetchingDataset &&
                         <div className="grid--align-center grid--align-self-center"> 
                             <div className="loader loader--large loader--dark"></div>
                         </div>
