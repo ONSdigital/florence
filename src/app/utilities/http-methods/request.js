@@ -49,32 +49,39 @@ export default function request(method, URI, willRetry = true, onRetry, body) {
         log.add(eventTypes.requestSent, logEventPayload);
 
         fetch(URI, fetchConfig).then(response => {
-            if (response.headers.get('content-type').match(/application\/json/)) {
-                return response.json().then(data => {
-                    logEventPayload.status = response.status;
-                    logEventPayload.message = response.message;
-                    log.add(eventTypes.requestReceived, logEventPayload);
-                    if (response.ok) {
-                        return data;
-                    } else if (response.status === 401) {
-                        // To save doing this exact same function throughout the app we handle a 401 
-                        // here (ie at the lowest level possible)
-                        const notification = {
-                            type: "neutral",
-                            message: "Your session has expired so you've been redirected to the login screen",
-                            isDismissable: true,
-                            autoDismiss: 20000
-                        }
-                        user.logOut();
-                        notifications.add(notification);
-                        reject({status: response.status, message: data.message});
-                    } else {
-                        reject({status: response.status, message: data.message});
-                    }
-                });
+            logEventPayload.status = response.status;
+            logEventPayload.message = response.message;
+            log.add(eventTypes.requestReceived, logEventPayload);
+
+            if (response.status >= 500) {
+                throw new HttpError(response);
             }
 
-            throw new HttpError(response);
+            if (response.status === 401) {
+                // To save doing this exact same function throughout the app we handle a 401 
+                // here (ie at the lowest level possible)
+                const notification = {
+                    type: "neutral",
+                    message: "Your session has expired so you've been redirected to the login screen",
+                    isDismissable: true,
+                    autoDismiss: 20000
+                }
+                user.logOut();
+                notifications.add(notification);
+                reject({status: response.status, message: response.statusText});
+                return;
+            }
+
+            if (!response.ok) {
+                reject({status: response.status, message: response.statusText});
+                return;
+            }
+
+            if (!response.headers.get('content-type').match(/application\/json/)) {
+                throw new HttpError(response);
+            }
+
+            return response.json();
 
         }).then(responseJSON => {
             resolve(responseJSON);
