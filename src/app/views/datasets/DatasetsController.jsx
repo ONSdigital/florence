@@ -41,10 +41,19 @@ class DatasetsController extends Component {
             this.setState({isFetchingDatasets: false});
         }).catch(error => {
             switch (error.status) {
+                case(403):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "You do not permission to view all datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
                 case("RESPONSE_ERR"):{
                     const notification = {
                         "type": "warning",
-                        "message": "An error's occurred whilst trying to get all available datasets.",
+                        "message": "An error's occurred whilst trying to get all datasets.",
                         isDismissable: true
                     }
                     notifications.add(notification)
@@ -53,7 +62,7 @@ class DatasetsController extends Component {
                 case("FETCH_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "There's been a network error whilst trying to get all available datasets. Please check you internet connection and try again in a few moments.",
+                        message: "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -62,7 +71,7 @@ class DatasetsController extends Component {
                 case("UNEXPECTED_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "An unexpected error has occurred whilst trying to get all available datasets.",
+                        message: "An unexpected error has occurred whilst trying to get all datasets.",
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -71,7 +80,7 @@ class DatasetsController extends Component {
                 default: {
                     const notification = {
                         type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get all available datasets.",
+                        message: "An unexpected error's occurred whilst trying to get all datasets.",
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -84,12 +93,12 @@ class DatasetsController extends Component {
 
     renderDatasets() {
         return this.props.datasets.map(dataset => {
-                return (
-                    <Link to={`${this.props.rootPath}/datasets/${dataset.id}`} key={dataset.id}>
-                        {dataset.alias}
-                    </Link>
-                )
-            })
+            return (
+                <Link to={`${this.props.rootPath}/datasets/${dataset.id}`} key={dataset.id}>
+                    {dataset.alias}
+                </Link>
+            )
+        })
     }
 
     render() {
