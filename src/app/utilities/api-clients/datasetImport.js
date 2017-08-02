@@ -18,6 +18,13 @@ export default class datasetImport {
             })
     }
 
+    static getAll() {
+        return http.get(`/import/jobs`, true)
+            .then(response => {
+                return response;
+            })
+    }
+
     static get(jobID) {
         return http.get(`/import/jobs/${jobID}`, true)
             .then(response => {
