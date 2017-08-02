@@ -63,6 +63,16 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case ('ADD_NEW_JOB'): {
+            return Object.assign({}, state, {
+                datasets: Object.assign({}, state.datasets, {
+                    jobs: [
+                        ...state.datasets.jobs,
+                        action.job
+                    ]
+                })
+            })
+        }
         case ('UPDATE_ACTIVE_DATASET'): {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
@@ -70,15 +80,6 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
-        // case ('UPDATE_ACTIVE_DATASET_JOB_ID'): {
-        //     return Object.assign({}, state, {
-        //         datasets: Object.assign({}, state.datasets, {
-        //             active: Object.assign({}, state.datasets.active, {
-        //                 jobID: action.jobID
-        //             })
-        //         })
-        //     })
-        // }
         case ('ADD_NOTIFICATION'): {
             return Object.assign({}, state, {
                 notifications: [...state.notifications, action.notification]

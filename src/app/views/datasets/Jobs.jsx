@@ -22,19 +22,25 @@ class Jobs extends Component {
     render() {
         return (
             <div>
-                {this.props.jobs.map(job => {
-                    const recipe = this.props.datasets.find(dataset => {
-                        return dataset.id === job.recipe;
-                    });
-                    return (
-                        <div className="grid grid--justify-space-between" key={job.job_id}>
-                            <Link to={`${this.props.rootPath}/datasets/${job.recipe}/jobs/${job.job_id}`}>
-                                {recipe.alias}
-                            </Link>
-                            <span>{job.state}</span>
-                        </div>
-                    )
-                })}
+                {this.props.jobs.length > 0 ?
+                    <ul className="list">
+                        {this.props.jobs.map(job => {
+                            const recipe = this.props.datasets.find(dataset => {
+                                return dataset.id === job.recipe;
+                            });
+                            return (
+                                <li className="list__item list__item--separated grid grid--justify-space-between" key={job.job_id}>
+                                    <Link to={`${this.props.rootPath}/datasets/${job.recipe}/jobs/${job.job_id}`}>
+                                        {recipe.alias}
+                                    </Link>
+                                    <span>{job.state}</span>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                :
+                    <p>No dataset uploads in progress</p>
+                }
             </div>
         )
     }
