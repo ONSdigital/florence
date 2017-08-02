@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllDatasets, updateAllJobs } from '../../config/actions';
+import { updateAllDatasets, updateAllJobs, addNewJob } from '../../config/actions';
 import recipes from '../../utilities/api-clients/recipes';
 import datasetImport from '../../utilities/api-clients/datasetImport';
 import notifications from '../../utilities/notifications';
 
-import Datasets from './Datasets';
+import DatasetItem from './DatasetItem';
 import Jobs from './Jobs';
 
 const propTypes = {
@@ -29,8 +29,9 @@ class DatasetsController extends Component {
         super(props);
 
         this.state = {
-            isFetchingData: false
-        }
+            isFetchingData: false,
+            disabledDataset: ""
+        };
 
         this.handleNewVersionClick = this.handleNewVersionClick.bind(this);
     }
@@ -109,24 +110,13 @@ class DatasetsController extends Component {
 
     handleNewVersionClick(event) {
         const recipeID = event.target.getAttribute('data-recipe-id');
-        console.log(recipeID);
-        // datasetImport.create(recipeID).then(response => {
-
-        // }).catch(error => {
-        //     console.error("Error creating new import job: ", error);
-        // });
-    }
-
-    renderJobs() {
-        return this.props.jobs.map(job => {
-            const recipe = this.props.datasets.find(dataset => {
-                return dataset.id === job.recipe
-            });
-            return (
-                <Link to={`${this.props.rootPath}/datasets/${job.recipe}/jobs/${job.job_id}`} key={job.job_id}>
-                    {recipe.alias}
-                </Link>
-            )
+        this.setState({disabledDataset: recipeID});
+        datasetImport.create(recipeID).then(response => {
+            this.props.dispatch(addNewJob(response));
+            this.props.dispatch(push(`${this.props.rootPath}/datasets/${recipeID}/jobs/${response.job_id}`));
+        }).catch(error => {
+            this.setState({disabledDataset: ""});
+            console.error("Error creating new import job: ", error);
         });
     }
 
@@ -135,23 +125,36 @@ class DatasetsController extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
                     <h1>All datasets</h1>
-                    <h2>In progress</h2>
-                    {this.state.isFetchingData &&
-                        <div className="grid--align-self-start"> 
-                            <div className="loader loader--dark"></div>
-                        </div> 
-                    }
-                    {!this.state.isFetchingData &&
-                        <Jobs jobs={this.props.jobs} datasets={this.props.datasets} rootPath={this.props.rootPath} />
-                    }
-                    <h2>Datasets available to you</h2>
+                    <h2 className="margin-bottom--1">In progress</h2>
+                    <div className="margin-bottom--2">
+                        {this.state.isFetchingData &&
+                            <div className="grid--align-self-start"> 
+                                <div className="loader loader--dark"></div>
+                            </div> 
+                        }
+                        {!this.state.isFetchingData &&
+                            <Jobs jobs={this.props.jobs} datasets={this.props.datasets} rootPath={this.props.rootPath} />
+                        }
+                    </div>
+                    <h2 className="margin-bottom--1">Datasets available to you</h2>
                     {this.state.isFetchingData &&
                         <div className="grid--align-self-start"> 
                             <div className="loader loader--dark"></div>
                         </div>
                     }
                     {this.props.datasets.length > 0 &&
-                        <Datasets datasets={this.props.datasets} onNewVersionClick={this.handleNewVersionClick} />
+                        <ul className="list">
+                            {this.props.datasets.map(dataset => {
+                                return (
+                                    <DatasetItem 
+                                        key={dataset.id} 
+                                        dataset={dataset} 
+                                        onNewVersionClick={this.handleNewVersionClick} 
+                                        isLoading={dataset.id === this.state.disabledDataset}
+                                    />
+                                )
+                            })}
+                        </ul>
                     }
                 </div>
             </div>

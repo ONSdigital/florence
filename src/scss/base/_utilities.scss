@@ -1,0 +1,17 @@
+
+
+.margin {
+
+    @for $i from 1 through 5 {
+        $margin: $lineheight * $i;
+
+        &-top--#{$i} {
+            margin-top: $margin;
+        }
+        
+        &-bottom--#{$i} {
+            margin-bottom: $margin;
+        }
+    }
+
+}
