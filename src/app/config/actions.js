@@ -7,7 +7,9 @@ export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
 export const UPDATE_ALL_DATASETS = 'UPDATE_ALL_DATASETS';
+export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
 export const UPDATE_ACTIVE_DATASET = 'UPDATE_ACTIVE_DATASET';
+// export const UPDATE_ACTIVE_DATASET_JOB_ID = 'UPDATE_ACTIVE_DATASET_JOB_IDT';
 
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
@@ -42,12 +44,26 @@ export function updateAllDatasets(allDatasets) {
     }
 }
 
+export function updateAllJobs(allJobs) {
+    return {
+        type: UPDATE_ALL_JOBS,
+        allJobs
+    }
+}
+
 export function updateActiveDataset(dataset) {
     return {
         type: UPDATE_ACTIVE_DATASET,
         dataset
     }
 }
+
+// export function updateActiveDatasetJobID(jobID) {
+//     return {
+//         type: UPDATE_ACTIVE_DATASET_JOB_ID,
+//         jobID
+//     }
+// }
 
 export function updateAllTeams(allTeams) {
     return {

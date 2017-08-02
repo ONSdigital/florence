@@ -14,16 +14,25 @@ import Input from '../../../components/Input';
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
-    datasets: PropTypes.arrayOf(PropTypes.object),
+    datasets: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        alias: PropTypes.string.isRequired
+    })),
+    jobs: PropTypes.arrayOf(PropTypes.shape({
+        job_id: PropTypes.string.isRequired,
+        recipe: PropTypes.string.isRequired
+    })),
     activeDataset: PropTypes.shape({
-        id: PropTypes.string,
+        recipeID: PropTypes.string,
+        jobID: PropTypes.string,
         alias: PropTypes.string,
         files: PropTypes.arrayOf(PropTypes.shape({
-            description: PropTypes.string.isRequired
+            alias_name: PropTypes.string.isRequired
         }))
     }),
     params: PropTypes.shape({
-        dataset: PropTypes.string.isRequired
+        dataset: PropTypes.string.isRequired,
+        job: PropTypes.string
     }).isRequired
 }
 
@@ -34,21 +43,24 @@ class DatasetOverviewController extends Component {
 
         this.state = {
             isFetchingDataset: false,
-            jobID: "",
+            // jobID: this.props.params.job || "",
             textareaTimer: null
         }
 
         this.handleFileChange = this.handleFileChange.bind(this);
-        this.handleMetadataChange = this.handleMetadataChange.bind(this);
     }
     
     componentWillMount() {
         if (!this.props.datasets || this.props.datasets.length === 0) {
             this.setState({isFetchingDataset: true});
-            recipes.get(this.props.params.dataset).then(response => {
-                this.props.dispatch(updateActiveDataset(response));
+            const recipesFetch = recipes.get(this.props.params.dataset);
+            const jobFetch = datasetImport.get(this.props.params.job);
+            Promise.all([recipesFetch, jobFetch]).then(response => {
+                const activeDataset = this.mapAPIResponsesToState(response);
+                this.props.dispatch(updateActiveDataset(activeDataset));
                 this.setState({isFetchingDataset: false});
             }).catch(error => {
+                this.setState({isFetchingDataset: false});
                 switch (error.status) {
                     case(404): {
                         const notification = {
@@ -97,12 +109,17 @@ class DatasetOverviewController extends Component {
                         break;
                     }
                 }
-                this.setState({isFetchingDataset: false});
+                console.error('Error getting job and recipe data: ', error);
             })
         } else {
-            const activeDataset = this.props.datasets.find(dataset => {
-                return dataset.id === this.props.params.dataset
+            const recipe = this.props.datasets.find(dataset => {
+                return dataset.id === this.props.params.dataset;
             });
+            const job = this.props.jobs.find(job => {
+                return job.job_id === this.props.params.job
+            });
+
+            const activeDataset = this.mapAPIResponsesToState({0: recipe, 1: job});
 
             if (!activeDataset) {
                 const notification = {
@@ -119,17 +136,41 @@ class DatasetOverviewController extends Component {
         }
     }
 
+    mapAPIResponsesToState(response) {
+        const recipeAPIResponse = response[0];
+        const jobAPIResponse = response[1];
+
+        return Object.assign({}, recipeAPIResponse, {
+            recipeID: recipeAPIResponse.id,
+            jobID: jobAPIResponse.job_id,
+            alias: recipeAPIResponse.alias,
+            format: recipeAPIResponse.format,
+            files: recipeAPIResponse.files.map(recipeFile => {
+                return {
+                    alias_name: recipeFile.description,
+                    url: jobAPIResponse.files.find(jobFile => {
+                        if (jobFile.alias_name === recipeFile.alias_name) {
+                            return jobFile.url
+                        }
+                        return false;
+                    })
+                }
+            }),
+            status: jobAPIResponse.state
+        })
+    }
+
     handleFileChange(event) {
 
-        if (this.state.jobID.length === 0) {
-            datasetImport.create(this.props.activeDataset.id).then(response => {
-                console.log(response);
-                this.setState({jobID: response.job_id});
-            }).catch(error => {
-                console.error("Error creating new job: ", error);
-            });
-            return;
-        }
+        // if (this.state.jobID.length === 0) {
+        //     datasetImport.create(this.props.activeDataset.recipeID).then(response => {
+        //         console.log(response);
+        //         this.setState({jobID: response.job_id});
+        //     }).catch(error => {
+        //         console.error("Error creating new job: ", error);
+        //     });
+        //     return;
+        // }
 
         const formData = new FormData();
         formData.append('url', event.target.files[0]);
@@ -216,27 +257,24 @@ class DatasetOverviewController extends Component {
         });
     }
 
-    handleMetadataChange(event) {
-        //FIXME once the API exists this needs to be making a POST/PUT to that API.
-        console.log(event.target.value);
-    }
-
     renderFileInputs() {
         if (!this.props.activeDataset || objectIsEmpty(this.props.activeDataset)) {
             return;
         }
 
         return this.props.activeDataset.files.map((file, index) => {
-            return (
-                <Input 
-                    label={file.description}
-                    type="file"
-                    id={"dataset-upload-" + index.toString()}
-                    key={index}
-                    onChange={this.handleFileChange}
-                    accept=".xls, .xlsx, .csv"
-                />
-            )
+            if (!file.jobID) {
+                return (
+                    <Input 
+                        label={file.description}
+                        type="file"
+                        id={"dataset-upload-" + index.toString()}
+                        key={index}
+                        onChange={this.handleFileChange}
+                        accept=".xls, .xlsx, .csv"
+                    />
+                )
+            }
         })
         
     }
@@ -260,12 +298,6 @@ class DatasetOverviewController extends Component {
                         }
                     </h2>
                     { this.renderFileInputs() }
-                    <Input 
-                        type="textarea"
-                        label="What has changed in this version?"
-                        id="metadata-upload"
-                        onChange={this.handleMetadataChange}
-                    />
                 </div>
             </div>
         )
@@ -277,6 +309,7 @@ DatasetOverviewController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         datasets: state.state.datasets.all,
+        jobs: state.state.datasets.jobs,
         activeDataset: state.state.datasets.active,
         rootPath: state.state.rootPath
     }
