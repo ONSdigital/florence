@@ -28,6 +28,10 @@ class Jobs extends Component {
                             const recipe = this.props.datasets.find(dataset => {
                                 return dataset.id === job.recipe;
                             });
+                            if (!recipe) {
+                                console.warn(`Attempt to render job for an unrecognised recipe ID: "${job.recipe}"` );
+                                return ""
+                            }
                             return (
                                 <li className="list__item list__item--separated grid grid--justify-space-between" key={job.job_id}>
                                     <Link to={`${this.props.rootPath}/datasets/${job.recipe}/jobs/${job.job_id}`}>
