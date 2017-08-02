@@ -100,7 +100,7 @@ export class DatasetsController extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         
-        // Don't render all the jobs yet because they haven't been added to the state yet
+        // Don't render all the jobs and datasets yet because the jobs haven't been added to the state yet
         if (nextProps.datasets.length > 0 && !nextProps.jobs && !nextState.isFetchingData) {
             return false;
         }
