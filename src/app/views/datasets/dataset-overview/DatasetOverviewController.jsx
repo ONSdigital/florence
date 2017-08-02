@@ -43,7 +43,6 @@ class DatasetOverviewController extends Component {
 
         this.state = {
             isFetchingDataset: false,
-            // jobID: this.props.params.job || "",
             textareaTimer: null
         }
 
@@ -162,16 +161,6 @@ class DatasetOverviewController extends Component {
 
     handleFileChange(event) {
 
-        // if (this.state.jobID.length === 0) {
-        //     datasetImport.create(this.props.activeDataset.recipeID).then(response => {
-        //         console.log(response);
-        //         this.setState({jobID: response.job_id});
-        //     }).catch(error => {
-        //         console.error("Error creating new job: ", error);
-        //     });
-        //     return;
-        // }
-
         const formData = new FormData();
         formData.append('url', event.target.files[0]);
         formData.append('alias_name', '');
@@ -284,7 +273,9 @@ class DatasetOverviewController extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-6">
                     <h1>Upload new file(s)</h1>
-                    <Link to={`${this.props.rootPath}/datasets`}>Save and return</Link>
+                    <span>
+                        &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                    </span>
                     {this.state.isFetchingDataset &&
                         <div className="grid--align-center grid--align-self-center"> 
                             <div className="loader loader--large loader--dark"></div>
