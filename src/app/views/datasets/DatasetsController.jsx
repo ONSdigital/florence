@@ -24,7 +24,7 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired
 }
 
-class DatasetsController extends Component {
+export class DatasetsController extends Component {
     constructor(props) {
         super(props);
 
@@ -116,6 +116,62 @@ class DatasetsController extends Component {
             this.props.dispatch(push(`${this.props.rootPath}/datasets/${recipeID}/jobs/${response.job_id}`));
         }).catch(error => {
             this.setState({disabledDataset: ""});
+            switch (error.status) {
+                case(403):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "You do not have permission to upload a new version of this dataset.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case(404):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "This dataset was not recognised.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to create a new version of this dataset.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to create a new version of this dataset. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to create a new version of this dataset.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to create a new version of this dataset.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
             console.error("Error creating new import job: ", error);
         });
     }
