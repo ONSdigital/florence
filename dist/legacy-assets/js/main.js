@@ -15045,6 +15045,7 @@ function staticPageEditor(collectionId, data) {
 }
 
 function datasetEditor(collectionId, data) {
+  debugger;
 
   var newFiles = [];
   var setActiveTab, getActiveTab;
