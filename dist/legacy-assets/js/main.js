@@ -8803,6 +8803,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
                     "datasetId": "",
                     "keywords": [],
                     "metaDescription": "",
+                    "metaCmd": "",
                     "nationalStatistic": false,
                     "title": ""
                 },
@@ -8825,7 +8826,6 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
         }
     }
 }
-
 function loadTableBuilder(pageData, onSave, table) {
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
@@ -15179,7 +15179,10 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
-
+  $("#metaCmd").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.metaCmd = $(this).val();
+  });
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
@@ -15199,6 +15202,7 @@ function datasetEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save(updateContent);
+    console.log(data);
   });
 
   // completed to review
@@ -15363,7 +15367,6 @@ function addEditionEditButton(collectionId, data, templateData) {
 
   sortableSections();
 }
-
 function transfer(source, destination, uri) {
   var transferRequest = {
     source: source,

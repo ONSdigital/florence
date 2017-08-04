@@ -98,6 +98,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
                     "datasetId": "",
                     "keywords": [],
                     "metaDescription": "",
+                    "metaCmd": "",
                     "nationalStatistic": false,
                     "title": ""
                 },
@@ -120,4 +121,3 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
         }
     }
 }
-
