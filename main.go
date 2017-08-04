@@ -28,6 +28,7 @@ var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
+var uploadAPIURL = "http://localhost:3000"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 
@@ -100,6 +101,13 @@ func main() {
 	}
 	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirectory)
 
+	uploadAPIURL, err := url.Parse(uploadAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	uploadAPIProxy := reverseProxy.Create(uploadAPIURL, nil)
+
 	router := pat.New()
 
 	newAppHandler := refactoredIndexFile
@@ -111,6 +119,7 @@ func main() {
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
+	router.Handle("/upload", uploadAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
@@ -128,6 +137,7 @@ func main() {
 		"zebedee_url":    zebedeeURL,
 		"recipe_api_url": recipeAPIURL,
 		"import_api_url": importAPIURL,
+		"upload_api_url": uploadAPIURL,
 		"enable_new_app": enableNewApp,
 	})
 

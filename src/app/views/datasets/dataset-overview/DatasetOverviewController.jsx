@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
+import Resumable from 'resumeablejs';
 import objectIsEmpty from 'is-empty-object';
 import { updateActiveDataset } from '../../../config/actions';
 import recipes from '../../../utilities/api-clients/recipes';
@@ -135,6 +136,45 @@ class DatasetOverviewController extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        
+        // Don't update if the props for activeDataset has changed but the state still thinks it's fetching datasets
+        // It will re-render once the state has been updated, which saves us one extra render
+        if (this.props.activeDataset !== nextProps.activeDataset && nextState.isFetchingDataset) {
+            return false;
+        }
+        
+        return true;
+
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.activeDataset || objectIsEmpty(prevProps.activeDataset)) {
+            return;
+        }
+
+        const r = new Resumable({
+            target: "/upload"
+        })
+
+        document.querySelectorAll("input").forEach(input => {
+            r.assignBrowse(input);
+            r.on('fileAdded', (file) => {
+                r.upload();
+            });
+            r.on('fileProgress', file => {
+                console.log(file.progress());
+            });
+            r.on('fileError', (file, message) => {
+                // console.log({file, message});
+            });
+            r.on('fileSuccess', (file, message) => {
+                // console.log({file, message});
+            });
+        })
+
+    }
+
     mapAPIResponsesToState(response) {
         const recipeAPIResponse = response[0];
         const jobAPIResponse = response[1];
@@ -252,6 +292,7 @@ class DatasetOverviewController extends Component {
         }
 
         return this.props.activeDataset.files.map((file, index) => {
+
             if (!file.jobID) {
                 return (
                     <Input 
@@ -259,7 +300,6 @@ class DatasetOverviewController extends Component {
                         type="file"
                         id={"dataset-upload-" + index.toString()}
                         key={index}
-                        onChange={this.handleFileChange}
                         accept=".xls, .xlsx, .csv"
                     />
                 )
@@ -288,7 +328,9 @@ class DatasetOverviewController extends Component {
                             ""
                         }
                     </h2>
-                    { this.renderFileInputs() }
+                    <form>
+                        { this.renderFileInputs() }
+                    </form>
                 </div>
             </div>
         )
