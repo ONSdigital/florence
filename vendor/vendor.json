@@ -33,6 +33,12 @@
 			"revisionTime": "2017-07-17T12:56:40Z"
 		},
 		{
+			"checksumSHA1": "ST3iiJ6vhtfZDnujuW/HGXQCtZM=",
+			"path": "github.com/golang/mock/gomock",
+			"revision": "9e3cfa9279f269a4c4d703dacd64b05184cec28e",
+			"revisionTime": "2017-06-14T19:52:02Z"
+		},
+		{
 			"checksumSHA1": "g/V4qrXjUGG9B+e3hB+4NAYJ5Gs=",
 			"path": "github.com/gorilla/context",
 			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
@@ -104,6 +110,12 @@
 			"path": "github.com/smartystreets/goconvey/convey/reporting",
 			"revision": "7befa7fd6e2e8ca28d2b94f2d39111929904b08d",
 			"revisionTime": "2016-09-28T20:55:23Z"
+		},
+		{
+			"checksumSHA1": "Wgg12N5XhSfpwPNF6KqjaAe6UsQ=",
+			"path": "gopkg.in/amz.v1/aws",
+			"revision": "ad23e96a31d28364dc0290f44b1a922aba379e18",
+			"revisionTime": "2015-01-11T12:32:59Z"
 		}
 	],
 	"rootPath": "github.com/ONSdigital/florence"
