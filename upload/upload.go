@@ -90,8 +90,6 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.Debug("info", log.Data{"resum": resum})
-
 	m, err := u.bucket.Multi(resum.Identifier, resum.Type, "public-read")
 	if err != nil {
 		log.ErrorR(req, err, nil)
@@ -154,8 +152,6 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	log.Debug("info2", log.Data{"resum": resum})
 
 	// If there is only one chunk to upload there is no point creating a multi part upload to s3
 	if resum.TotalChunks == 1 {
