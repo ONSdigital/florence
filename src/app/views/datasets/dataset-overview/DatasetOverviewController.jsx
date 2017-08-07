@@ -154,7 +154,8 @@ class DatasetOverviewController extends Component {
         }
 
         const r = new Resumable({
-            target: "/upload"
+            target: "/upload",
+            chunkSize: 5 * 1024 * 1024,
         })
 
         document.querySelectorAll("input").forEach(input => {
