@@ -121,6 +121,7 @@ func main() {
 
 	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
 	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
+	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
 
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)

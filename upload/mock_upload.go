@@ -57,6 +57,18 @@ func (_mr *MockBucketMockRecorder) Put(arg0, arg1, arg2, arg3 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Put", arg0, arg1, arg2, arg3)
 }
 
+// URL mocks base method
+func (_m *MockBucket) URL(path string) string {
+	ret := _m.ctrl.Call(_m, "URL", path)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// URL indicates an expected call of URL
+func (_mr *MockBucketMockRecorder) URL(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "URL", arg0)
+}
+
 // MockMulti is a mock of Multi interface
 type MockMulti struct {
 	ctrl     *gomock.Controller

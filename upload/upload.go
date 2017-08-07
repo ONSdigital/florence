@@ -2,6 +2,7 @@ package upload
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -17,6 +18,7 @@ import (
 type Bucket interface {
 	Multi(key, contType string, perm s3.ACL) (Multi, error)
 	Put(path string, data []byte, contType string, perm s3.ACL) error
+	URL(path string) string
 }
 
 // Multi represents a multi part upload to s3
@@ -36,6 +38,11 @@ type S3Bucket struct {
 func (b S3Bucket) Multi(key, contType string, perm s3.ACL) (Multi, error) {
 	m, err := b.bucket.Multi(key, contType, perm)
 	return Multi(m), err
+}
+
+// URL calls the s3 bucket url method
+func (b S3Bucket) URL(path string) string {
+	return b.bucket.URL(path)
 }
 
 // Put calls the s3 bucket put method
@@ -196,6 +203,28 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	if len(parts) == resum.TotalChunks {
 		completeS3MultiUpload(w, req, resum, parts, m)
 	}
+}
+
+// GetS3URL returns an s3 url
+func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
+	path := req.URL.Query().Get(":id")
+
+	url := u.bucket.URL(path)
+
+	body := struct {
+		URL string `json:"url"`
+	}{
+		URL: url,
+	}
+
+	b, err := json.Marshal(body)
+	if err != nil {
+		log.ErrorR(req, err, nil)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(b)
 }
 
 func completeS3MultiUpload(w http.ResponseWriter, req *http.Request, resum *Resumable, parts []s3.Part, m Multi) {
