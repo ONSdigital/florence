@@ -73,13 +73,6 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
-        case ('UPDATE_ACTIVE_DATASET'): {
-            return Object.assign({}, state, {
-                datasets: Object.assign({}, state.datasets, {
-                    active: action.dataset
-                })
-            })
-        }
         case ('ADD_NOTIFICATION'): {
             return Object.assign({}, state, {
                 notifications: [...state.notifications, action.notification]

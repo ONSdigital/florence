@@ -5,12 +5,9 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import Resumable from 'resumeablejs';
-// import objectIsEmpty from 'is-empty-object';
-import { updateActiveDataset } from '../../../config/actions';
 import recipes from '../../../utilities/api-clients/recipes';
 import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
-import Input from '../../../components/Input';
 import FileUpload from '../../../components/file-upload/FileUpload';
 
 const propTypes = {
@@ -24,14 +21,6 @@ const propTypes = {
         job_id: PropTypes.string.isRequired,
         recipe: PropTypes.string.isRequired
     })),
-    // activeDataset: PropTypes.shape({
-    //     recipeID: PropTypes.string,
-    //     jobID: PropTypes.string,
-    //     alias: PropTypes.string,
-    //     files: PropTypes.arrayOf(PropTypes.shape({
-    //         alias_name: PropTypes.string.isRequired
-    //     }))
-    // }),
     params: PropTypes.shape({
         dataset: PropTypes.string.isRequired,
         job: PropTypes.string
@@ -48,7 +37,7 @@ class DatasetOverviewController extends Component {
             activeDataset: null
         }
 
-        this.handleFileChange = this.handleFileChange.bind(this);
+        // this.handleFileChange = this.handleFileChange.bind(this);
     }
     
     componentWillMount() {
@@ -58,8 +47,6 @@ class DatasetOverviewController extends Component {
             const jobFetch = datasetImport.get(this.props.params.job);
             Promise.all([recipesFetch, jobFetch]).then(response => {
                 const activeDataset = this.mapAPIResponsesToState(response);
-                // this.props.dispatch(updateActiveDataset(activeDataset));
-                
                 this.setState({activeDataset, isFetchingDataset: false});
             }).catch(error => {
                 this.setState({isFetchingDataset: false});
@@ -134,22 +121,9 @@ class DatasetOverviewController extends Component {
                 return;
             }
 
-            // this.props.dispatch(updateActiveDataset(activeDataset));
             this.setState({activeDataset});
         }
     }
-
-    // shouldComponentUpdate(nextProps, nextState) {
-        
-    //     // Don't update if the props for activeDataset has changed but the state still thinks it's fetching datasets
-    //     // It will re-render once the state has been updated, which saves us one extra render
-    //     if (this.props.activeDataset !== nextProps.activeDataset && nextState.isFetchingDataset) {
-    //         return false;
-    //     }
-        
-    //     return true;
-
-    // }
 
     componentDidUpdate() {
         if (!this.state.activeDataset) {
@@ -162,16 +136,16 @@ class DatasetOverviewController extends Component {
 
         document.querySelectorAll("input").forEach(input => {
             r.assignBrowse(input);
-            r.on('fileAdded', (file) => {
+            r.on('fileAdded', () => {
                 r.upload();
             });
             r.on('fileProgress', file => {
                 console.log(file.isUploading());
             });
-            r.on('fileError', (file, message) => {
+            // r.on('fileError', (file, message) => {
                 // console.log({file, message});
-            });
-            r.on('fileSuccess', (file, message) => {
+            // });
+            r.on('fileSuccess', () => {
                 const files = this.state.activeDataset.files.map(file => {
                     return file;
                 });
@@ -349,7 +323,6 @@ function mapStateToProps(state) {
     return {
         datasets: state.state.datasets.all,
         jobs: state.state.datasets.jobs,
-        // activeDataset: state.state.datasets.active,
         rootPath: state.state.rootPath
     }
 }
