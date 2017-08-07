@@ -16,6 +16,7 @@ import (
 	mgo "gopkg.in/mgo.v2"
 
 	"github.com/ONSdigital/florence/assets"
+	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
@@ -28,7 +29,7 @@ var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
-var uploadAPIURL = "http://localhost:3000"
+var uploadBucketName = "dp-frontend-florence-file-uploads"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 
@@ -53,6 +54,9 @@ func main() {
 	}
 	if v := os.Getenv("RECIPE_API_URL"); len(v) > 0 {
 		recipeAPIURL = v
+	}
+	if v := os.Getenv("UPLOAD_BUCKET_NAME"); len(v) > 0 {
+		uploadBucketName = v
 	}
 	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
 		recipeAPIURL = v
@@ -101,13 +105,6 @@ func main() {
 	}
 	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirectory)
 
-	uploadAPIURL, err := url.Parse(uploadAPIURL)
-	if err != nil {
-		log.Error(err, nil)
-		os.Exit(1)
-	}
-	uploadAPIProxy := reverseProxy.Create(uploadAPIURL, nil)
-
 	router := pat.New()
 
 	newAppHandler := refactoredIndexFile
@@ -116,10 +113,18 @@ func main() {
 		newAppHandler = legacyIndexFile
 	}
 
+	uploader, err := upload.New(uploadBucketName)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+
+	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
+	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
+
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
-	router.Handle("/upload", uploadAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
@@ -137,7 +142,6 @@ func main() {
 		"zebedee_url":    zebedeeURL,
 		"recipe_api_url": recipeAPIURL,
 		"import_api_url": importAPIURL,
-		"upload_api_url": uploadAPIURL,
 		"enable_new_app": enableNewApp,
 	})
 
