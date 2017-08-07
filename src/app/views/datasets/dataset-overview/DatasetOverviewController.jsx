@@ -5,12 +5,10 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import Resumable from 'resumeablejs';
-import objectIsEmpty from 'is-empty-object';
-import { updateActiveDataset } from '../../../config/actions';
 import recipes from '../../../utilities/api-clients/recipes';
 import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
-import Input from '../../../components/Input';
+import FileUpload from '../../../components/file-upload/FileUpload';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -23,14 +21,6 @@ const propTypes = {
         job_id: PropTypes.string.isRequired,
         recipe: PropTypes.string.isRequired
     })),
-    activeDataset: PropTypes.shape({
-        recipeID: PropTypes.string,
-        jobID: PropTypes.string,
-        alias: PropTypes.string,
-        files: PropTypes.arrayOf(PropTypes.shape({
-            alias_name: PropTypes.string.isRequired
-        }))
-    }),
     params: PropTypes.shape({
         dataset: PropTypes.string.isRequired,
         job: PropTypes.string
@@ -44,10 +34,10 @@ class DatasetOverviewController extends Component {
 
         this.state = {
             isFetchingDataset: false,
-            textareaTimer: null
+            activeDataset: null
         }
 
-        this.handleFileChange = this.handleFileChange.bind(this);
+        // this.handleFileChange = this.handleFileChange.bind(this);
     }
     
     componentWillMount() {
@@ -57,8 +47,7 @@ class DatasetOverviewController extends Component {
             const jobFetch = datasetImport.get(this.props.params.job);
             Promise.all([recipesFetch, jobFetch]).then(response => {
                 const activeDataset = this.mapAPIResponsesToState(response);
-                this.props.dispatch(updateActiveDataset(activeDataset));
-                this.setState({isFetchingDataset: false});
+                this.setState({activeDataset, isFetchingDataset: false});
             }).catch(error => {
                 this.setState({isFetchingDataset: false});
                 switch (error.status) {
@@ -132,24 +121,12 @@ class DatasetOverviewController extends Component {
                 return;
             }
 
-            this.props.dispatch(updateActiveDataset(activeDataset));
+            this.setState({activeDataset});
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        
-        // Don't update if the props for activeDataset has changed but the state still thinks it's fetching datasets
-        // It will re-render once the state has been updated, which saves us one extra render
-        if (this.props.activeDataset !== nextProps.activeDataset && nextState.isFetchingDataset) {
-            return false;
-        }
-        
-        return true;
-
-    }
-
-    componentDidUpdate(prevProps) {
-        if (!prevProps.activeDataset || objectIsEmpty(prevProps.activeDataset)) {
+    componentDidUpdate() {
+        if (!this.state.activeDataset) {
             return;
         }
 
@@ -160,17 +137,24 @@ class DatasetOverviewController extends Component {
 
         document.querySelectorAll("input").forEach(input => {
             r.assignBrowse(input);
-            r.on('fileAdded', (file) => {
+            r.on('fileAdded', () => {
                 r.upload();
             });
             r.on('fileProgress', file => {
-                console.log(file.progress());
+                console.log(file.isUploading());
             });
-            r.on('fileError', (file, message) => {
+            // r.on('fileError', (file, message) => {
                 // console.log({file, message});
-            });
-            r.on('fileSuccess', (file, message) => {
-                // console.log({file, message});
+            // });
+            r.on('fileSuccess', () => {
+                const files = this.state.activeDataset.files.map(file => {
+                    return file;
+                });
+                const activeDataset = {
+                    ...this.state.activeDataset,
+                    files
+                };
+                console.log(activeDataset);
             });
         })
 
@@ -200,111 +184,109 @@ class DatasetOverviewController extends Component {
         })
     }
 
-    handleFileChange(event) {
+    // handleFileChange(event) {
 
-        const formData = new FormData();
-        formData.append('url', event.target.files[0]);
-        formData.append('alias_name', '');
-        datasetImport.addFile(this.state.jobID, formData).then(response => {
-            console.log(response);
-        }).catch(error => {
-            switch (error.status) {
-                case(400): {
-                    const notification = {
-                        "type": "warning",
-                        "message": "There was an error with the file you tried to upload. Please fix any errors and attempt to re-upload it.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        "type": "neutral",
-                        "message": "This job was not recognised, so you've been redirected to the main screen.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/datasets`));
-                    break;
-                }
-                case(413): {
-                    const notification = {
-                        "type": "warning",
-                        "message": "An error occurred because this file was too big.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(415): {
-                    const notification = {
-                        "type": "warning",
-                        "message": "An error occurred because this file-type is not supported.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("RESPONSE_ERR"):{
-                    const notification = {
-                        "type": "warning",
-                        "message": "An error's occurred whilst trying to upload this file.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "There's been a network error whilst trying to upload this file. Please check you internet connection and try again in a few moments.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("UNEXPECTED_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error has occurred whilst trying to upload this file.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error's occurred whilst trying to upload this file.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            console.error(`Error adding file to job "${this.state.jobID}": `, error);
-        });
-    }
+    //     const formData = new FormData();
+    //     formData.append('url', event.target.files[0]);
+    //     formData.append('alias_name', '');
+    //     datasetImport.addFile(this.state.jobID, formData).then(response => {
+    //         console.log(response);
+    //     }).catch(error => {
+    //         switch (error.status) {
+    //             case(400): {
+    //                 const notification = {
+    //                     "type": "warning",
+    //                     "message": "There was an error with the file you tried to upload. Please fix any errors and attempt to re-upload it.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 break;
+    //             }
+    //             case(404): {
+    //                 const notification = {
+    //                     "type": "neutral",
+    //                     "message": "This job was not recognised, so you've been redirected to the main screen.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+    //                 break;
+    //             }
+    //             case(413): {
+    //                 const notification = {
+    //                     "type": "warning",
+    //                     "message": "An error occurred because this file was too big.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 break;
+    //             }
+    //             case(415): {
+    //                 const notification = {
+    //                     "type": "warning",
+    //                     "message": "An error occurred because this file-type is not supported.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 break;
+    //             }
+    //             case("RESPONSE_ERR"):{
+    //                 const notification = {
+    //                     "type": "warning",
+    //                     "message": "An error's occurred whilst trying to upload this file.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 break;
+    //             }
+    //             case("FETCH_ERR"): {
+    //                 const notification = {
+    //                     type: "warning",
+    //                     message: "There's been a network error whilst trying to upload this file. Please check you internet connection and try again in a few moments.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 break;
+    //             }
+    //             case("UNEXPECTED_ERR"): {
+    //                 const notification = {
+    //                     type: "warning",
+    //                     message: "An unexpected error has occurred whilst trying to upload this file.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 break
+    //             }
+    //             default: {
+    //                 const notification = {
+    //                     type: "warning",
+    //                     message: "An unexpected error's occurred whilst trying to upload this file.",
+    //                     isDismissable: true
+    //                 }
+    //                 notifications.add(notification);
+    //                 break;
+    //             }
+    //         }
+    //         console.error(`Error adding file to job "${this.state.jobID}": `, error);
+    //     });
+    // }
 
     renderFileInputs() {
-        if (!this.props.activeDataset || objectIsEmpty(this.props.activeDataset)) {
+        if (!this.state.activeDataset) {
             return;
         }
 
-        return this.props.activeDataset.files.map((file, index) => {
-
-            if (!file.jobID) {
-                return (
-                    <Input 
-                        label={file.description}
-                        type="file"
-                        id={"dataset-upload-" + index.toString()}
-                        key={index}
-                        accept=".xls, .xlsx, .csv"
-                    />
-                )
-            }
+        return this.state.activeDataset.files.map((file, index) => {
+            return (
+                <FileUpload 
+                    label={file.alias_name}
+                    type="file"
+                    id={"dataset-upload-" + index.toString()}
+                    key={index}
+                    accept=".xls, .xlsx, .csv"
+                    url={file.url || null}
+                />
+            )
         })
         
     }
@@ -323,10 +305,8 @@ class DatasetOverviewController extends Component {
                         </div>
                     }
                     <h2>
-                        {!objectIsEmpty(this.props.datasets) && this.props.activeDataset ?
-                            this.props.activeDataset.alias
-                            :
-                            ""
+                        {this.state.activeDataset &&
+                            this.state.activeDataset.alias
                         }
                     </h2>
                     <form>
@@ -344,7 +324,6 @@ function mapStateToProps(state) {
     return {
         datasets: state.state.datasets.all,
         jobs: state.state.datasets.jobs,
-        activeDataset: state.state.datasets.active,
         rootPath: state.state.rootPath
     }
 }
