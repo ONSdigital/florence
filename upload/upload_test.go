@@ -158,6 +158,7 @@ func TestUnitUpload(t *testing.T) {
 			up.GetS3URL(w, req)
 			So(w.Code, ShouldEqual, 200)
 			So(w.Body.String(), ShouldEqual, `{"url":"https://s3-eu-west-1.amazonaws.com/dp-frontend-florence-file-uploads/173849-helloworldtxt"}`)
+			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json")
 		})
 	})
 
