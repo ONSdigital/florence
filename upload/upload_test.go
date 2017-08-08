@@ -145,6 +145,22 @@ func TestUnitUpload(t *testing.T) {
 		})
 	})
 
+	Convey("test GetS3URL", t, func() {
+		Convey("test GetS3URL forms an s3 url and returns status 200", func() {
+			w := httptest.NewRecorder()
+			req, err := http.NewRequest("GET", "/upload?:id=173849-helloworldtxt", nil)
+			So(err, ShouldBeNil)
+
+			mockBucket := NewMockBucket(mockCtrl)
+			mockBucket.EXPECT().URL("173849-helloworldtxt").Return("https://s3-eu-west-1.amazonaws.com/dp-frontend-florence-file-uploads/173849-helloworldtxt")
+			up := Uploader{mockBucket}
+
+			up.GetS3URL(w, req)
+			So(w.Code, ShouldEqual, 200)
+			So(w.Body.String(), ShouldEqual, `{"url":"https://s3-eu-west-1.amazonaws.com/dp-frontend-florence-file-uploads/173849-helloworldtxt"}`)
+		})
+	})
+
 }
 
 func createTestFileUploadPart() (*http.Request, error) {
