@@ -49,7 +49,6 @@
     "css-loader": "^0.26.1",
     "extract-text-webpack-plugin": "^2.0.0-beta",
     "file-loader": "^0.10.0",
-    "filesize": "^3.5.10",
     "install": "^0.8.7",
     "is-empty-object": "^1.1.1",
     "node-sass": "^4.5.3",
