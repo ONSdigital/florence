@@ -224,6 +224,7 @@ func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	w.Write(b)
 }
 
