@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import filesize from 'filesize';
 import Input from '../Input';
 
 const propTypes = {
     label: PropTypes.string,
     id: PropTypes.string.isRequired,
     url: PropTypes.string,
-    size: PropTypes.number,
     error: PropTypes.string,
     extension: PropTypes.string,
     accept: PropTypes.string
@@ -38,9 +36,6 @@ class FileUpload extends Component {
                     {this.props.label}
                 </div>
                 <a href={this.props.url} target="_blank" rel="noopener noreferrer">{this.props.url}</a> 
-                {this.props.size &&
-                    <span> ({filesize(this.props.size)})</span>
-                }
             </div>
         )
     }

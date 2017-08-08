@@ -176,7 +176,6 @@ class DatasetOverviewController extends Component {
                     const files = this.state.activeDataset.files.map(currentFile => {
                         if (currentFile.alias_name === inputLabel) {
                             currentFile.url = response.url;
-                            currentFile.size = file.size;
                         }
                         return currentFile;
                     });
@@ -343,7 +342,6 @@ class DatasetOverviewController extends Component {
                     key={index}
                     accept=".xls, .xlsx, .csv"
                     url={file.url || null}
-                    size={file.size || null}
                     extension={file.extension || null}
                     error={file.error || null}
                 />
