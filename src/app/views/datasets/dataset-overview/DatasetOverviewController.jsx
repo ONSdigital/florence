@@ -364,7 +364,7 @@ class DatasetOverviewController extends Component {
                             "Submitted to publishing"
                         }
                     </h1>
-                    <span>
+                    <span className="margin-bottom--1">
                         &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
                     </span>
                     {this.state.isFetchingDataset &&
@@ -372,11 +372,11 @@ class DatasetOverviewController extends Component {
                             <div className="loader loader--large loader--dark"></div>
                         </div>
                     }
-                    <h2>
-                        {this.state.activeDataset &&
-                            this.state.activeDataset.alias
-                        }
-                    </h2>
+                    {this.state.activeDataset &&
+                        <h2 className="margin-bottom--1">
+                            {this.state.activeDataset.alias}
+                        </h2>
+                    }
                     <form onSubmit={this.handleFormSubmit}>
                         { this.renderFileInputs() }
                         {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
