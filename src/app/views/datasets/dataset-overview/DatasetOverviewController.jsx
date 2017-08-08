@@ -37,6 +37,8 @@ class DatasetOverviewController extends Component {
             isFetchingDataset: false,
             activeDataset: null
         }
+
+        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
     
     componentWillMount() {
@@ -209,31 +211,32 @@ class DatasetOverviewController extends Component {
     mapAPIResponsesToState(response) {
         const recipeAPIResponse = response[0];
         const jobAPIResponse = response[1];
+        const fileURLs = new Map();
+        jobAPIResponse.files.forEach(jobFile => {
+            if (jobFile.url) {
+                fileURLs.set(jobFile.alias_name, jobFile.url);
+            }
+        });
+
+        const files = recipeAPIResponse.files.map(recipeFile => {
+            return {
+                alias_name: recipeFile.description,
+                url: fileURLs.get(recipeFile.description)
+            }
+        })
 
         return Object.assign({}, recipeAPIResponse, {
             recipeID: recipeAPIResponse.id,
             jobID: jobAPIResponse.job_id,
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
-            files: recipeAPIResponse.files.map(recipeFile => {
-                return {
-                    alias_name: recipeFile.description,
-                    url: jobAPIResponse.files.find(jobFile => {
-                        if (jobFile.alias_name === recipeFile.alias_name) {
-                            return jobFile.url
-                        }
-                        return false;
-                    })
-                }
-            }),
-            status: jobAPIResponse.state
+            status: jobAPIResponse.state,
+            files
         })
     }
 
     addUploadedFileToJob(fileAlias, fileURL) {
-        datasetImport.addFile(this.state.activeDataset.jobID, fileAlias, fileURL).then(response => {
-            console.log(response);
-        }).catch(error => {
+        datasetImport.addFile(this.state.activeDataset.jobID, fileAlias, fileURL).then().catch(error => {
             switch (error.status) {
                 case(400): {
                     const notification = {
@@ -313,6 +316,19 @@ class DatasetOverviewController extends Component {
         });
     }
 
+    handleFormSubmit(event) {
+        event.preventDefault();
+        datasetImport.updateStatus(this.state.activeDataset.jobID, "submitted").then(() => {
+            const activeDataset = {
+                ...this.state.activeDataset,
+                status: "submitted"
+            }
+            this.setState({activeDataset});
+        }).catch(error => {
+            console.error(`Error updating status of job '${this.state.activeDataset.id}': `, error);
+        });
+    }
+
     renderFileInputs() {
         if (!this.state.activeDataset) {
             return;
@@ -337,10 +353,17 @@ class DatasetOverviewController extends Component {
     }
 
     render() {
+        console.log(this.state.activeDataset);
         return(
             <div className="grid grid--justify-center">
                 <div className="grid__col-6">
-                    <h1>Upload new file(s)</h1>
+                    <h1>
+                        {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
+                            "Upload new file(s)"
+                        :
+                            "Submitted to publishing"
+                        }
+                    </h1>
                     <span>
                         &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
                     </span>
@@ -354,8 +377,13 @@ class DatasetOverviewController extends Component {
                             this.state.activeDataset.alias
                         }
                     </h2>
-                    <form>
+                    <form onSubmit={this.handleFormSubmit}>
                         { this.renderFileInputs() }
+                        {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
+                            <button className="btn btn--primary" type="submit">Submit to publishing</button>
+                        :
+                            ""
+                        }
                     </form>
                 </div>
             </div>
