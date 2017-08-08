@@ -53,6 +53,8 @@ export default function request(method, URI, willRetry = true, onRetry, body) {
             logEventPayload.message = response.message;
             log.add(eventTypes.requestReceived, logEventPayload);
 
+            const responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+
             if (response.status >= 500) {
                 throw new HttpError(response);
             }
@@ -77,11 +79,18 @@ export default function request(method, URI, willRetry = true, onRetry, body) {
                 return;
             }
 
-            if (!response.headers.get('content-type').match(/application\/json/)) {
-                throw new HttpError(response);
+            if (!responseIsJSON) {
+                resolve();
             }
 
-            return response.json();
+            if (responseIsJSON) {
+                try {
+                    return response.json();
+                } catch (error) {
+                    console.error("Error trying to parse request body as JSON: ", error);
+                    reject({status: response.status, message: "JSON response body couldn't be parsed"});
+                }
+            }
 
         }).then(responseJSON => {
             resolve(responseJSON);
