@@ -11,8 +11,12 @@ export default class datasetImport {
             })
     }
 
-    static addFile(jobID, file) {
-        return http.put(`/import/jobs/${jobID}/files`, file, true)
+    static addFile(jobID, fileAlias, fileURL) {
+        const body = {
+            alias_name: fileAlias,
+            url: fileURL
+        }
+        return http.put(`/import/jobs/${jobID}/files`, body, true)
             .then(response => {
                 return response;
             })
