@@ -22,6 +22,18 @@ export default class datasetImport {
             })
     }
 
+    static updateStatus(jobID, status) {
+        if (!jobID) {
+            console.warn("No job ID given to update status for. Request cancelled");
+            return Promise.reject();
+        }
+
+        return http.put(`/import/jobs/${jobID}`, {state: status}, true)
+            .then(response => {
+                return response;
+            })
+    }
+
     static getAll() {
         return http.get(`/import/jobs`, true)
             .then(response => {

@@ -34,7 +34,13 @@ class FileUpload extends Component {
     renderLink() {
         return (
             <div>
-                <a href={this.props.url} target="_blank" rel="noopener noreferrer">{this.props.url}</a> ({filesize(this.props.size)})
+                <div>
+                    {this.props.label}
+                </div>
+                <a href={this.props.url} target="_blank" rel="noopener noreferrer">{this.props.url}</a> 
+                {this.props.size &&
+                    <span> ({filesize(this.props.size)})</span>
+                }
             </div>
         )
     }
@@ -42,13 +48,13 @@ class FileUpload extends Component {
     render() {
         return (
             <div className="grid">
-                <div className="grid__col-6">
                     {this.props.url && !this.props.error ?
                         this.renderLink()
                     :
-                        this.renderInput()
+                        <div className="grid__col-6">
+                            {this.renderInput()}
+                        </div>
                     }
-                </div>
             </div>
         )
     }
