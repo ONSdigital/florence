@@ -171,7 +171,6 @@ class DatasetOverviewController extends Component {
                 this.setState({activeDataset});
             });
             r.on('fileProgress', file => {
-                console.log(file.resumableObj.opts);
                 const progressPercentage = file.progress() * 100;
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
