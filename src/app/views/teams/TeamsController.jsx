@@ -9,7 +9,7 @@ import {
     emptyActiveTeam, 
     updateActiveTeamMembers
 } from '../../config/actions';
-import teams from '../../utilities/APIs/teams';
+import teams from '../../utilities/api-clients/teams';
 import safeURL from '../../utilities/safeURL';
 import notifications from '../../utilities/notifications';
 
@@ -202,7 +202,7 @@ export class TeamsController extends Component {
         }).catch(error => {
             switch(error.status) {
                 case(401): {
-                    // This is handle by the request function, so do nothing here
+                    // This is handled by the request function, so do nothing here
                     break;
                 }
                 case("RESPONSE_ERR"): {
