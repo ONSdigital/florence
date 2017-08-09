@@ -1478,6 +1478,16 @@ select {
     .notifications__button:hover {
       text-decoration: underline; }
 
+.progress {
+  background-color: #C5C1B6;
+  padding: 4px;
+  width: 100%; }
+  .progress__bar {
+    height: 10.5px;
+    background-color: #49725D;
+    transition: 0.4s linear;
+    transition-property: width; }
+
 .btn {
   font-family: 'Roboto Slab', serif;
   border-radius: 4px;

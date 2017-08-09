@@ -61,6 +61,7 @@ type Resumable struct {
 	FileName         string `schema:"resumableFilename"`
 	RelativePath     string `schema:"resumableRelativePath"`
 	TotalChunks      int    `schema:"resumableTotalChunks"`
+	AliasName        string `schema:"aliasName"`
 }
 
 // New creates a new instance of Uploader using provided s3
