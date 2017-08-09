@@ -50,9 +50,7 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/datasets`} component={ UserIsAuthenticated(DatasetController) } />
-                            <Route path={`${rootPath}/datasets/:dataset`} component={ UserIsAuthenticated(DatasetOverviewController) }>
-                                <Route path={`jobs/:job`} component={ UserIsAuthenticated(DatasetOverviewController) } />
-                            </Route>
+                            <Route path={`${rootPath}/datasets/:job`} component={ UserIsAuthenticated(DatasetOverviewController) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>

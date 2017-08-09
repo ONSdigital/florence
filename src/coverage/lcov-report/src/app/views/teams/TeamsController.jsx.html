@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/app/views/teams/TeamsController.jsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">All files</a> / <a href="index.html">src/app/views/teams</a> TeamsController.jsx
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">40.38% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>42/104</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">51.39% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>37/72</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">45.83% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>11/24</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">40.38% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>42/104</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import PropTypes from 'prop-types';
+&nbsp;
+import { 
+    updateAllTeams, 
+    updateActiveTeam, 
+    emptyActiveTeam, 
+    updateActiveTeamMembers
+} from '../../config/actions';
+import teams from '../../utilities/api-clients/teams';
+import safeURL from '../../utilities/safeURL';
+import notifications from '../../utilities/notifications';
+&nbsp;
+import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
+import Drawer from '../../components/drawer/Drawer';
+import TeamCreate from './team-create/TeamCreate';
+import TeamDetails from './team-details/TeamDetails';
+import TeamEditController from './team-edit/TeamEditController';
+import TeamDeleteController from './team-delete/TeamDeleteController';
+import Modal from '../../components/Modal';
+&nbsp;
+const propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    allTeams: PropTypes.arrayOf(PropTypes.object).isRequired,
+    activeTeam: PropTypes.object,
+    rootPath: PropTypes.string.isRequired,
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    userIsAdmin: PropTypes.bool.isRequired,
+    params: PropTypes.object.isRequired
+}
+&nbsp;
+export class TeamsController extends Component {
+    constructor(props) {
+        super(props);
+&nbsp;
+        this.state = {
+            isUpdatingAllTeams: false,
+            isUpdatingTeamMembers: false,
+            drawerIsAnimatable: false,
+            clearActiveTeam: false,
+            isEditingTeam: false,
+            isDeletingTeam: false
+        };
+&nbsp;
+        this.handleTeamClick = this.handleTeamClick.bind(this);
+        this.handleMembersEditClick = this.handleMembersEditClick.bind(this);
+        this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
+        this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
+        this.handleTeamDeleteClick = this.handleTeamDeleteClick.bind(this);
+        this.handleTeamDeleteSuccess = this.handleTeamDeleteSuccess.bind(this);
+        this.handleTeamCreateSuccess = this.handleTeamCreateSuccess.bind(this);
+    }
+&nbsp;
+    componentWillMount() {
+        this.fetchTeams();
+    }
+&nbsp;
+    componentWillReceiveProps(nextProps) {
+        // Update with new active team
+        const activeTeam = nextProps.allTeams.find(team =&gt; {
+            return team.path === nextProps.params.team;
+        });
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (activeTeam &amp;&amp; (<span class="branch-1 cbranch-no" title="branch not covered" >nextProps.activeTeam.id !== activeTeam.id)</span>) {
+<span class="cstat-no" title="statement not covered" >            this.fetchMembers(activeTeam.name);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!this.props.params.team) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setState({drawerIsAnimatable: true});   </span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.props.dispatch(updateActiveTeam(activeTeam));</span>
+<span class="cstat-no" title="statement not covered" >            return;</span>
+        }
+        
+        // No active team in parameter anymore
+        if (!nextProps.params.team &amp;&amp; nextProps.activeTeam &amp;&amp; nextProps.activeTeam.id) {
+            this.setState({
+                drawerIsAnimatable: true,
+                clearActiveTeam: true
+            });
+        }
+&nbsp;
+        // Open edit team modal
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (nextProps.routes[nextProps.routes.length-1].path === "edit") {
+<span class="cstat-no" title="statement not covered" >            this.setState({isEditingTeam: true});</span>
+        }
+&nbsp;
+        // Open delete team modal
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (nextProps.routes[nextProps.routes.length-1].path === "delete") {
+<span class="cstat-no" title="statement not covered" >            this.setState({isDeletingTeam: true});</span>
+        }
+    }
+&nbsp;
+    shouldComponentUpdate(nextProps, nextState) {
+        // Allow render because drawer animtation flag has changed
+        if (this.state.drawerIsAnimatable !== nextState.drawerIsAnimatable) {
+            return true;
+        }
+&nbsp;
+        // Allow render because the team editing modal is being displayed
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (nextProps.routes[nextProps.routes.length-1].path === "edit" &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >nextState.isEditingTeam)</span> {
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+        
+        // Allow render because the team editing modal is being displayed
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (nextProps.routes[nextProps.routes.length-1].path === "delete" &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >nextState.isDeletingTeam)</span> {
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+&nbsp;
+        // Don't update component if all teams haven't been fetched yet
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!nextProps.allTeams) {
+<span class="cstat-no" title="statement not covered" >            return false;</span>
+        }
+&nbsp;
+        // Component is still fetching teams and we don't have teams in Redux yet - don't render any changes
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (nextState.isUpdatingAllTeams &amp;&amp; (nextProps.allTeams.length === 0)) {
+<span class="cstat-no" title="statement not covered" >            return false;</span>
+        }
+&nbsp;
+        return true;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    co</span>mponentWillUnmount() {
+<span class="cstat-no" title="statement not covered" >        this.props.dispatch(emptyActiveTeam());</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    ha</span>ndleDrawerTransitionEnd() {
+<span class="cstat-no" title="statement not covered" >        this.setState({drawerIsAnimatable: false});</span>
+        
+<span class="cstat-no" title="statement not covered" >        if (this.state.clearActiveTeam) {</span>
+<span class="cstat-no" title="statement not covered" >            this.setState({clearActiveTeam: false});</span>
+<span class="cstat-no" title="statement not covered" >            this.props.dispatch(emptyActiveTeam());</span>
+        }
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    ha</span>ndleMembersEditClick() {
+<span class="cstat-no" title="statement not covered" >        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/edit`));</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    ha</span>ndleDrawerCancelClick() {
+<span class="cstat-no" title="statement not covered" >        this.props.dispatch(push(`${this.props.rootPath}/teams`));</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    ha</span>ndleTeamDeleteClick() {
+<span class="cstat-no" title="statement not covered" >        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/delete`));</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    ha</span>ndleTeamDeleteSuccess() {
+        const notification = <span class="cstat-no" title="statement not covered" >{</span>
+            type: 'positive',
+            message: `Team '${this.props.activeTeam.name}' successfully deleted`,
+            isDismissable: true,
+            autoDismiss: 15000
+        }
+<span class="cstat-no" title="statement not covered" >        notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >        this.fetchTeams();</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    ha</span>ndleTeamCreateSuccess() {
+<span class="cstat-no" title="statement not covered" >        this.fetchTeams();</span>
+    }
+&nbsp;
+    fetchTeams() {
+        this.setState({isUpdatingAllTeams: true});
+        teams.getAll().then(allTeams =&gt; {
+            // Add any props (such as 'path') to response from API
+            const allTeamsWithProps = allTeams.map(team =&gt; {
+                const path = safeURL(team.name + "_" + team.id);
+                return Object.assign({}, team, {
+                    path: path
+                });
+            });
+            
+            // Update all teams
+            const teamParameter = this.props.params.team;
+            this.props.dispatch(updateAllTeams(allTeamsWithProps));
+            this.setState({isUpdatingAllTeams: false});
+&nbsp;
+            // Update active team
+            if (teamParameter) {
+                const activeTeam = allTeamsWithProps.find(team =&gt; {
+                    return team.path === teamParameter;
+                });
+                // Only update Redux if new active team is different from the current one
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (activeTeam &amp;&amp; activeTeam !== this.props.activeTeam ) {
+                    this.props.dispatch(updateActiveTeam(activeTeam));
+                    return;
+                }
+                // Give error because the team in the URL can't be found in the data
+<span class="cstat-no" title="statement not covered" >                if (!activeTeam) {</span>
+                    const notification = <span class="cstat-no" title="statement not covered" >{</span>
+                        message: `Team '${teamParameter}' is not recognised so you've been redirected to the teams screen`,
+                        type: "neutral",
+                        autoDismiss: 15000,
+                        isDismissable: true
+                    }
+<span class="cstat-no" title="statement not covered" >                    notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >                    this.props.dispatch(push(`${this.props.rootPath}/teams`));</span>
+                }
+            }
+        }).catch(<span class="fstat-no" title="function not covered" >er</span>ror =&gt; {
+<span class="cstat-no" title="statement not covered" >            switch(error.status) {</span>
+                case(401): {
+                    // This is handled by the request function, so do nothing here
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = <span class="cstat-no" title="statement not covered" >{</span>
+                        type: "warning",
+                        message: "An error's occurred whilst trying to get teams. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        isDismissable: true
+                    }
+<span class="cstat-no" title="statement not covered" >                    notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = <span class="cstat-no" title="statement not covered" >{</span>
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        isDismissable: true
+                    }
+<span class="cstat-no" title="statement not covered" >                    notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+                case("FETCH_ERR"): {
+                    const notification = <span class="cstat-no" title="statement not covered" >{</span>
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members",
+                        isDismissable: true
+                    }
+<span class="cstat-no" title="statement not covered" >                    notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            console.error("Error fetching all teams:\n", error);</span>
+        });
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    fe</span>tchMembers(teamName) {
+<span class="cstat-no" title="statement not covered" >        this.setState({isUpdatingTeamMembers: true});</span>
+<span class="cstat-no" title="statement not covered" >        teams.get(teamName).then(<span class="fstat-no" title="function not covered" >te</span>am =&gt; {</span>
+            // A new team is now active, don't do anything with the fetched data
+<span class="cstat-no" title="statement not covered" >            if (teamName !== this.props.activeTeam.name) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+            
+<span class="cstat-no" title="statement not covered" >            this.props.dispatch(updateActiveTeamMembers(team.members));</span>
+<span class="cstat-no" title="statement not covered" >            this.setState({isUpdatingTeamMembers: false});</span>
+        }).catch(<span class="fstat-no" title="function not covered" >er</span>ror =&gt; {
+<span class="cstat-no" title="statement not covered" >            switch(error.status) {</span>
+                case(401): {
+                    // This is handle by the request function, so do nothing here
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = <span class="cstat-no" title="statement not covered" >{</span>
+                        type: "warning",
+                        message: `An error's occurred whilst trying to get the members for the team '${teamName}'`,
+                        isDismissable: true
+                    }
+<span class="cstat-no" title="statement not covered" >                    notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = <span class="cstat-no" title="statement not covered" >{</span>
+                        type: "warning",
+                        message: `An unexpected error's occurred whilst trying to get the members for the team '${teamName}'`,
+                        isDismissable: true
+                    }
+<span class="cstat-no" title="statement not covered" >                    notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+                case("FETCH_ERR"): {
+                    const notification = <span class="cstat-no" title="statement not covered" >{</span>
+                        type: "warning",
+                        message: `There's been a network error whilst trying to get the members for the team '${teamName}'`,
+                        isDismissable: true
+                    }
+<span class="cstat-no" title="statement not covered" >                    notifications.add(notification);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            console.error(`Error fetching team '${teamName}':\n`, error);</span>
+        });
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    ha</span>ndleTeamClick(clickedTeam) {
+        // Make no change if clicked team is already the selected team
+<span class="cstat-no" title="statement not covered" >        if (clickedTeam.isSelected) {</span>
+<span class="cstat-no" title="statement not covered" >            return;</span>
+        }
+        const path = <span class="cstat-no" title="statement not covered" >safeURL(clickedTeam.name + "_" + clickedTeam.id);</span>
+<span class="cstat-no" title="statement not covered" >        this.props.dispatch(push(`${this.props.rootPath}/teams/${path}`));</span>
+    }
+&nbsp;
+    renderDrawer() {
+        return (
+            &lt;Drawer
+                isVisible={this.props.activeTeam &amp;&amp; this.props.activeTeam.id &amp;&amp; !this.state.clearActiveTeam ? true : false} 
+                isAnimatable={this.state.drawerIsAnimatable} 
+                handleTransitionEnd={this.handleDrawerTransitionEnd}
+            &gt;
+                {
+                    this.props.activeTeam &amp;&amp; this.props.activeTeam.id ?
+                        &lt;TeamDetails 
+                            {...this.props.activeTeam} 
+                            userIsAdmin={this.props.userIsAdmin} 
+                            onCancel={this.handleDrawerCancelClick}
+                            onDelete={this.handleTeamDeleteClick}
+                            onEditMembers={this.handleMembersEditClick}
+                            isShowingLoader={this.state.isUpdatingTeamMembers}
+                            isReadOnly={this.state.isUpdatingAllTeams}
+                        /&gt;
+                        :
+                        ""
+                }
+            &lt;/Drawer&gt;
+        )
+    }
+&nbsp;
+    render() {
+        return (
+            &lt;div&gt;
+                &lt;div className="grid grid--justify-space-around"&gt;
+                    &lt;div className="grid__col-4"&gt;
+                        &lt;h1&gt;Select a team&lt;/h1&gt;
+                        &lt;SelectableBoxController 
+                            items={this.props.allTeams}
+                            activeItem={this.props.activeTeam}
+                            isUpdating={this.state.isUpdatingAllTeams} 
+                            heading="Name"
+                            handleItemClick={this.handleTeamClick}
+                        /&gt;
+                    &lt;/div&gt;
+                    &lt;div className="grid__col-4"&gt;
+                        &lt;h1&gt;Create a team&lt;/h1&gt;
+                        &lt;TeamCreate onCreateSuccess={this.handleTeamCreateSuccess} /&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                {this.renderDrawer()}
+                {
+                    this.props.routes[this.props.routes.length-1].path === "edit" &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >this.props.activeTeam </span>&amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >this.props.activeTeam.id </span>?
+<span class="branch-0 cbranch-no" title="branch not covered" >                    &lt;Modal sizeClass="grid__col-8"&gt;</span>
+                        &lt;TeamEditController isUpdatingMembers={this.state.isUpdatingTeamMembers}/&gt;
+                    &lt;/Modal&gt;
+                    :
+                    ""
+                }
+                {
+                    this.props.routes[this.props.routes.length-1].path === "delete" &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >this.props.activeTeam </span>&amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >this.props.activeTeam.id </span>?
+<span class="branch-0 cbranch-no" title="branch not covered" >                    &lt;Modal sizeClass="grid__col-3"&gt;</span>
+                        &lt;TeamDeleteController name={this.props.activeTeam.name} onDeleteSuccess={this.handleTeamDeleteSuccess}/&gt;
+                    &lt;/Modal&gt;
+                    :
+                    ""
+                }
+            &lt;/div&gt;
+        )
+    }
+}
+&nbsp;
+TeamsController.propTypes = propTypes;
+&nbsp;
+function <span class="fstat-no" title="function not covered" >mapStateToProps(</span>state) {
+<span class="cstat-no" title="statement not covered" >    return {</span>
+        activeTeam: state.state.teams.active,
+        allTeams: state.state.teams.all,
+        userIsAdmin: state.state.user.isAdmin,
+        rootPath: state.state.rootPath
+    }
+}
+&nbsp;
+export default connect(mapStateToProps)(TeamsController);</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Aug 09 2017 09:26:50 GMT+0100 (BST)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

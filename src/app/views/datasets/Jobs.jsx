@@ -34,7 +34,7 @@ class Jobs extends Component {
                             }
                             return (
                                 <li className="list__item list__item--separated grid grid--justify-space-between" key={job.job_id}>
-                                    <Link to={`${this.props.rootPath}/datasets/${job.recipe}/jobs/${job.job_id}`}>
+                                    <Link to={`${this.props.rootPath}/datasets/${job.job_id}`}>
                                         {recipe.alias}
                                     </Link>
                                     <span>{job.state}</span>

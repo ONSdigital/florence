@@ -23,7 +23,6 @@ const propTypes = {
         recipe: PropTypes.string.isRequired
     })),
     params: PropTypes.shape({
-        dataset: PropTypes.string.isRequired,
         job: PropTypes.string
     }).isRequired
 }
@@ -44,10 +43,13 @@ class DatasetOverviewController extends Component {
     componentWillMount() {
         if (!this.props.datasets || this.props.datasets.length === 0) {
             this.setState({isFetchingDataset: true});
-            const recipesFetch = recipes.get(this.props.params.dataset);
-            const jobFetch = datasetImport.get(this.props.params.job);
-            Promise.all([recipesFetch, jobFetch]).then(response => {
-                const activeDataset = this.mapAPIResponsesToState(response);
+            const APIResponses = {};
+            datasetImport.get(this.props.params.job).then(job => {
+                APIResponses.job = job;
+                return recipes.get(job.recipe);
+            }).then(recipe => {
+                APIResponses.recipe = recipe;
+                const activeDataset = this.mapAPIResponsesToState({recipe: APIResponses.recipe, job: APIResponses.job});
                 this.setState({activeDataset, isFetchingDataset: false});
             }).catch(error => {
                 this.setState({isFetchingDataset: false});
@@ -102,14 +104,14 @@ class DatasetOverviewController extends Component {
                 console.error('Error getting job and recipe data: ', error);
             })
         } else {
-            const recipe = this.props.datasets.find(dataset => {
-                return dataset.id === this.props.params.dataset;
-            });
             const job = this.props.jobs.find(job => {
                 return job.job_id === this.props.params.job
             });
+            const recipe = this.props.datasets.find(dataset => {
+                return dataset.id === job.recipe;
+            });
 
-            const activeDataset = this.mapAPIResponsesToState({0: recipe, 1: job});
+            const activeDataset = this.mapAPIResponsesToState({recipe, job});
 
             if (!activeDataset) {
                 const notification = {
@@ -141,23 +143,51 @@ class DatasetOverviewController extends Component {
     }
 
     bindInputs() {
-        const r = new Resumable({
-            target: "/upload",
-            chunkSize: 5 * 1024 * 1024,
-        });
 
         document.querySelectorAll("input").forEach(input => {
+            const r = new Resumable({
+                target: "/upload",
+                chunkSize: 5 * 1024 * 1024,
+                query: {
+                    aliasName: ""
+                }
+            });
             r.assignBrowse(input);
             r.assignDrop(input);
-            r.on('fileAdded', () => {
+            r.on('fileAdded', file => {
+                const aliasName = file.container.labels[0].textContent
+                r.opts.query.aliasName = aliasName;
                 r.upload();
+                const files = this.state.activeDataset.files.map(currentFile => {
+                    if (currentFile.alias_name === aliasName) {
+                        currentFile.progress = 0;                      
+                    }
+                    return currentFile;
+                });
+                const activeDataset = {
+                    ...this.state.activeDataset,
+                    files
+                };
+                this.setState({activeDataset});
             });
-            // r.on('fileProgress', file => {
-            //     console.log(file.isUploading());
-            // });
+            r.on('fileProgress', file => {
+                console.log(file.resumableObj.opts);
+                const progressPercentage = file.progress() * 100;
+                const files = this.state.activeDataset.files.map(currentFile => {
+                    if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
+                        currentFile.progress = progressPercentage;                      
+                    }
+                    return currentFile;
+                });
+                const activeDataset = {
+                    ...this.state.activeDataset,
+                    files
+                };
+                this.setState({activeDataset});
+            });
             r.on('fileError', file => {
                 const files = this.state.activeDataset.files.map(currentFile => {
-                    if (currentFile.alias_name === file.alias_name) {
+                    if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
                         currentFile.error = "An error occurred whilst uploading this file"                        
                     }
                     return currentFile;
@@ -171,10 +201,11 @@ class DatasetOverviewController extends Component {
                 this.setState({activeDataset});
             });
             r.on('fileSuccess', file => {
-                const inputLabel = file.container.labels[0].textContent;
+                const aliasName = file.resumableObj.opts.query.aliasName;
                 http.get(`/upload/${file.uniqueIdentifier}`).then(response => {
                     const files = this.state.activeDataset.files.map(currentFile => {
-                        if (currentFile.alias_name === inputLabel) {
+                        if (currentFile.alias_name === aliasName) {
+                            currentFile.progress = null;
                             currentFile.url = response.url;
                         }
                         return currentFile;
@@ -186,11 +217,11 @@ class DatasetOverviewController extends Component {
 
                     this.setState({activeDataset});
 
-                    this.addUploadedFileToJob(inputLabel, response.url);
+                    this.addUploadedFileToJob(aliasName, response.url);
 
                 }).catch(error => {
                     const files = this.state.activeDataset.files.map(currentFile => {
-                        if (currentFile.alias_name === inputLabel) {
+                        if (currentFile.alias_name === aliasName) {
                             currentFile.error = "An error occurred whilst uploading this file"                        
                         }
                         return currentFile;
@@ -207,9 +238,9 @@ class DatasetOverviewController extends Component {
         });
     }
 
-    mapAPIResponsesToState(response) {
-        const recipeAPIResponse = response[0];
-        const jobAPIResponse = response[1];
+    mapAPIResponsesToState(APIResponse) {
+        const recipeAPIResponse = APIResponse.recipe;
+        const jobAPIResponse = APIResponse.job;
         const fileURLs = new Map();
         jobAPIResponse.files.forEach(jobFile => {
             if (jobFile.url) {
@@ -224,14 +255,14 @@ class DatasetOverviewController extends Component {
             }
         })
 
-        return Object.assign({}, recipeAPIResponse, {
+        return {
             recipeID: recipeAPIResponse.id,
             jobID: jobAPIResponse.job_id,
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
             files
-        })
+        }
     }
 
     addUploadedFileToJob(fileAlias, fileURL) {
@@ -344,6 +375,7 @@ class DatasetOverviewController extends Component {
                     url={file.url || null}
                     extension={file.extension || null}
                     error={file.error || null}
+                    progress={file.progress >= 0 ? file.progress : null}
                 />
             )
         })
@@ -351,7 +383,6 @@ class DatasetOverviewController extends Component {
     }
 
     render() {
-        console.log(this.state.activeDataset);
         return(
             <div className="grid grid--justify-center">
                 <div className="grid__col-6">
