@@ -9,7 +9,8 @@ const propTypes = {
     url: PropTypes.string,
     error: PropTypes.string,
     extension: PropTypes.string,
-    accept: PropTypes.string
+    accept: PropTypes.string,
+    progress: PropTypes.number
 }
 
 class FileUpload extends Component {
@@ -19,13 +20,28 @@ class FileUpload extends Component {
 
     renderInput() {
         return (
-            <Input 
-                label={this.props.label}
-                id={this.props.id}
-                type="file"
-                accept={this.props.accept}
-                error={this.props.error}
-            />
+            <div>
+                {/* Checking whether it is a number because 0 usually equals false 
+                    but we want it (and all other numbers) to resolve to true */}
+                {typeof this.props.progress === "number" ?
+                    <div className="margin-bottom--1">
+                        <p>{this.props.label}</p>
+                        <p>Progress: {(this.props.progress > 0 ? this.props.progress : 1) + "%"}</p>
+                        <div className="progress">
+                            <div className="progress__bar" style={{width: (this.props.progress > 0 ? this.props.progress : 1) + "%"}}>
+                            </div>
+                        </div>
+                    </div>
+                :
+                    <Input 
+                        label={this.props.label}
+                        id={this.props.id}
+                        type="file"
+                        accept={this.props.accept}
+                        error={this.props.error}
+                    />
+                }
+            </div>
         )
     }
 
@@ -46,6 +62,9 @@ class FileUpload extends Component {
                     {this.props.url && !this.props.error ?
                         this.renderLink()
                     :
+                        ""
+                    }
+                    {!this.props.url &&
                         <div className="grid__col-6 margin-bottom--1">
                             {this.renderInput()}
                         </div>
