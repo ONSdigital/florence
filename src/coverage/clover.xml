@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1502287672260" clover="3.2.0">
+  <project timestamp="1502287672260" name="All files">
+    <metrics statements="11" coveredstatements="10" conditionals="4" coveredconditionals="3" methods="4" coveredmethods="4" elements="19" coveredelements="17" complexity="0" loc="11" ncloc="11" packages="2" files="2" classes="2">
+      <package name="src">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <file name="setupJest.js" path="/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/src/setupJest.js">
+          <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+          <line num="1" count="1" type="stmt"/>
+        </file>
+      </package>
+      <package name="src.app.views.datasets">
+        <metrics statements="10" coveredstatements="9" conditionals="4" coveredconditionals="3" methods="4" coveredmethods="4"/>
+        <file name="Jobs.jsx" path="/Users/crispinmerriman/Dev/src/github.com/ONSdigital/florence/src/app/views/datasets/Jobs.jsx">
+          <metrics statements="10" coveredstatements="9" conditionals="4" coveredconditionals="3" methods="4" coveredmethods="4"/>
+          <line num="5" count="1" type="stmt"/>
+          <line num="19" count="3" type="stmt"/>
+          <line num="23" count="4" type="stmt"/>
+          <line num="28" count="13" type="stmt"/>
+          <line num="29" count="18" type="stmt"/>
+          <line num="31" count="13" type="cond" truecount="2" falsecount="0"/>
+          <line num="32" count="1" type="stmt"/>
+          <line num="33" count="0" type="stmt"/>
+          <line num="35" count="12" type="stmt"/>
+          <line num="53" count="1" type="stmt"/>
+        </file>
+      </package>
+    </metrics>
+  </project>
+</coverage>
