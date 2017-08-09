@@ -9,10 +9,10 @@ exports[`Input without type renders a text input 1`] = `
     htmlFor="test-input"
   >
     Test input
-    : 
   </label>
   
   <input
+    accept={undefined}
     autoFocus={false}
     className="input input__text"
     disabled={false}
@@ -35,10 +35,10 @@ exports[`Password prop creates a password input 1`] = `
     htmlFor="test-password-input"
   >
     Password
-    : 
   </label>
   
   <input
+    accept={undefined}
     autoFocus={false}
     className="input input__text"
     disabled={false}

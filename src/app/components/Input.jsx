@@ -9,7 +9,8 @@ const propTypes = {
     error: PropTypes.string,
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
-    inline: PropTypes.bool
+    inline: PropTypes.bool,
+    accept: PropTypes.string
 };
 
 const defaultProps = {
@@ -42,7 +43,7 @@ export default class Input extends Component {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "") + (this.props.inline ? " form__input--flush" : "")}>
                 { !this.props.inline &&
-                    <label className="form__label" htmlFor={this.props.id}>{this.props.label}: </label>
+                    <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
                 }
                 {
                     this.props.error ?
@@ -50,16 +51,30 @@ export default class Input extends Component {
                         :
                         ""
                 }
-                <input 
-                    id={this.props.id}
-                    type={this.state.type}
-                    className="input input__text"
-                    name={this.props.id}
-                    disabled={this.props.disabled}
-                    onChange={this.props.onChange}
-                    autoFocus={this.props.isFocused}
-                    placeholder={this.props.inline ? this.props.label : ""}
-                />
+                {this.props.type !== "textarea" ?
+                    <input 
+                        id={this.props.id}
+                        type={this.state.type}
+                        className="input input__text"
+                        name={this.props.id}
+                        disabled={this.props.disabled}
+                        onChange={this.props.onChange}
+                        autoFocus={this.props.isFocused}
+                        placeholder={this.props.inline ? this.props.label : ""}
+                        accept={this.props.accept}
+                    />
+                :
+                    <textarea
+                        id={this.props.id}
+                        className="input input__textarea"
+                        name={this.props.id}
+                        disabled={this.props.disabled}
+                        onChange={this.props.onChange}
+                        autoFocus={this.props.isFocused}
+                        placeholder={this.props.inline ? this.props.label : ""}
+                    >
+                    </textarea>
+                }
                 {
                     this.state.displayShowHide ?
                         <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">{this.state.type === 'text' ? 'Hide' : 'Show'}</span>
