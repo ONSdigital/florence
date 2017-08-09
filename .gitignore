@@ -24,4 +24,4 @@ assets/debug.go
 build/florence
 
 #Jest
-# src/coverage
+src/coverage
