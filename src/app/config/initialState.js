@@ -11,5 +11,9 @@ export const initialState = {
         all: [],
         users: []
     },
+    datasets: {
+        all: [],
+        jobs: []
+    },
     notifications: []
 };
