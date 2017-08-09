@@ -9,7 +9,7 @@ job "florence" {
   }
 
   group "publishing" {
-    count = 1
+    count = "{{PUBLISHING_TASK_COUNT}}"
 
     constraint {
       attribute = "${node.class}"
@@ -42,8 +42,8 @@ job "florence" {
       }
 
       resources {
-        cpu    = 500
-        memory = 512
+        cpu    = "{{PUBLISHING_RESOURCE_CPU}}"
+        memory = "{{PUBLISHING_RESOURCE_MEM}}"
 
         network {
           port "http" {}

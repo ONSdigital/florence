@@ -14,6 +14,9 @@ function getPageData(collectionId, path, success, error) {
     dataType: 'json',
     type: 'GET',
     success: function (response) {
+      var date = new Date();
+      date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+      console.log("[" + date + "] Get page content: \n", response);
       if (success)
         success(response);
     },
