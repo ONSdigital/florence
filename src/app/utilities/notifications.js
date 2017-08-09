@@ -19,6 +19,11 @@ export default class notifications {
      * @returns {string} unique ID of the generated notification, in case the caller needs to refer to the specific notification itself
      */
     static add(notification) {
+        if (!notification) {
+            console.warn("Couldn't show notification - no notification data supplied");
+            return;
+        }
+
         const config = {
             type: notification.type || "neutral",
             message: notification.message || "",

@@ -4,8 +4,8 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import { updateUsers, updateActiveTeamMembers } from '../../../config/actions';
-import user from '../../../utilities/APIs/user';
-import teams from '../../../utilities/APIs/teams';
+import user from '../../../utilities/api-clients/user';
+import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
 import log, { eventTypes } from '../../../utilities/log';
 
@@ -133,7 +133,7 @@ export class TeamEditController extends Component {
                         case("RESPONSE_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `An error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -142,7 +142,7 @@ export class TeamEditController extends Component {
                         case("FETCH_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `A network error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `A network error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -151,7 +151,7 @@ export class TeamEditController extends Component {
                         case("UNEXPECTED_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -160,7 +160,7 @@ export class TeamEditController extends Component {
                         default: {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -202,7 +202,7 @@ export class TeamEditController extends Component {
                         case("RESPONSE_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `An error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -211,7 +211,7 @@ export class TeamEditController extends Component {
                         case("FETCH_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `A network error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `A network error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -220,7 +220,7 @@ export class TeamEditController extends Component {
                         case("UNEXPECTED_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -229,7 +229,7 @@ export class TeamEditController extends Component {
                         default: {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
