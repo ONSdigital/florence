@@ -8,7 +8,9 @@ var isUpdatingModal = {
         )
     },
     add: function() {
-        console.log('Disable Florence');
+        var date = new Date();
+        date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+        console.log('[' + date + '] Disable Florence');
         if ($('.florence-disable').length) {
             console.warn("Attempt to add Florence's disabled modal but it already exists");
             return;
@@ -16,7 +18,9 @@ var isUpdatingModal = {
         $('#main').append(this.modal);
     },
     remove: function() {
-        console.log('Enable Florence');
+        var date = new Date();
+        date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+        console.log('[' + date + '] Enable Florence');
         var $disabledModal = $('.florence-disable')
         if ($disabledModal.length === 0) {
             console.warn("Attempt to remove Florence's disabled modal before it's in the DOM");
