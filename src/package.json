@@ -12,7 +12,10 @@
       "./setupJest.js"
     ],
     "collectCoverage": true,
-    "coverageFormats": ["json", "html"]
+    "coverageFormats": [
+      "json",
+      "html"
+    ]
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",
