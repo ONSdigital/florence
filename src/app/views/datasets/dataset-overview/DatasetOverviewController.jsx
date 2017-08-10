@@ -430,7 +430,7 @@ class DatasetOverviewController extends Component {
                 </ul>
                 <h2 className="margin-bottom--1">
                     Dimensions 
-                    {this.state.activeDataset.dimensions && 
+                    {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0) && 
                         <span> ({this.state.activeDataset.dimensions.length})</span>
                     }
                 </h2>
@@ -446,6 +446,9 @@ class DatasetOverviewController extends Component {
                         <p className="margin-bottom--1">Loading dimensions for this dataset...</p>
                         <span className="loader loader--dark"></span>
                     </div>
+                }
+                {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length === 0) &&
+                    <p>Dimensions are currently being processed. This could take some time.</p>
                 }
                 </div>
                 <Link className="btn btn--primary" to={`${this.props.rootPath}/datasets`}>Your datasets</Link>
