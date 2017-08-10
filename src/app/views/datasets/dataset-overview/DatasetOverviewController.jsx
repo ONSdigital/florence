@@ -160,7 +160,8 @@ class DatasetOverviewController extends Component {
                 r.upload();
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === aliasName) {
-                        currentFile.progress = 0;                      
+                        currentFile.progress = 0;
+                        currentFile.error = null;
                     }
                     return currentFile;
                 });
@@ -171,7 +172,7 @@ class DatasetOverviewController extends Component {
                 this.setState({activeDataset});
             });
             r.on('fileProgress', file => {
-                const progressPercentage = file.progress() * 100;
+                const progressPercentage = Math.round(Number(file.progress() * 100));
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
                         currentFile.progress = progressPercentage;                      
@@ -347,6 +348,31 @@ class DatasetOverviewController extends Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
+        let filesWithoutURLS = [];
+
+        for (var index = 0; index < this.state.activeDataset.files.length; index++) {
+            const file = this.state.activeDataset.files[index]
+            if (!file.url) {
+                filesWithoutURLS.push(file.alias_name)
+            }
+        }
+
+        if (filesWithoutURLS.length > 0) {
+            const files = this.state.activeDataset.files.map(currentFile => {
+                if (filesWithoutURLS.indexOf(currentFile.alias_name) >= 0) {
+                    currentFile.error = "You must upload this file before submitting to publishing"                        
+                }
+                return currentFile;
+            });
+            const activeDataset = {
+                ...this.state.activeDataset,
+                files
+            };
+
+            this.setState({activeDataset});
+            return;
+        }
+
         datasetImport.updateStatus(this.state.activeDataset.jobID, "submitted").then(() => {
             const activeDataset = {
                 ...this.state.activeDataset,
@@ -381,17 +407,83 @@ class DatasetOverviewController extends Component {
         
     }
 
+    renderSubmittedScreen() {
+        return (
+            <div>
+                <p className="margin-bottom--2">Your files have been processed and are available to the publishing team</p>
+                <h2 className="margin-bottom--1">What happens now?</h2>
+                <ul className="list margin-bottom--2">
+                    <li className="list__item">Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any questions.</li>
+                    <li className="list__item">The publishing team can prepare the dataset landing page which includes the files and associated metadata.</li>
+                </ul>
+                <Link className="btn btn--primary" to={`${this.props.rootPath}/datasets`}>Your datasets</Link>
+            </div>
+        )
+    }
+
+    renderDatasetState() {
+        switch (this.state.activeDataset.status) {
+            case "created": {
+                return (
+                    <div>
+                        <h1>Upload new file(s)</h1>
+                        <div className="margin-bottom--1">
+                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                        </div>
+                        <h2 className="margin-bottom--1">
+                            {this.state.activeDataset.alias}
+                        </h2>
+                        <form onSubmit={this.handleFormSubmit}>
+                            { this.renderFileInputs() }
+                            <button className="btn btn--positive" type="submit">Submit to publishing</button>
+                        </form>
+                    </div>
+                )
+            }
+            case "submitted": {
+                return (
+                    <div>
+                        <h1>Your dataset has been submitted</h1>
+                        <div className="margin-bottom--1">
+                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                        </div>
+                        {this.renderSubmittedScreen()}
+                    </div>
+                )
+            }
+            case "error": {
+                return (
+                    <div>
+                        <h1>An error has occurred</h1>
+                        <div className="margin-bottom--1">
+                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                        </div>
+                        <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
+                        <p>Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error</p>
+                    </div>
+                )
+            }
+        }
+    }
+
     render() {
         return(
             <div className="grid grid--justify-center">
                 <div className="grid__col-6">
-                    <h1>
-                        {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
-                            "Upload new file(s)"
+                    {this.state.activeDataset &&
+                        this.renderDatasetState()
+                    }
+                    {this.state.isFetchingDataset &&
+                        <div className="grid--align-center grid--align-self-center"> 
+                            <div className="loader loader--large loader--dark"></div>
+                        </div>
+                    }
+                    
+                        {/* {(this.state.activeDataset && this.state.activeDataset.status !== "submitted") ?
+                            <h1>Upload new file(s)</h1>
                         :
-                            "Submitted to publishing"
+                            <h1>Your dataset has been submitted</h1>
                         }
-                    </h1>
                     <span className="margin-bottom--1">
                         &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
                     </span>
@@ -400,19 +492,19 @@ class DatasetOverviewController extends Component {
                             <div className="loader loader--large loader--dark"></div>
                         </div>
                     }
-                    {this.state.activeDataset &&
+                    {(this.state.activeDataset && this.state.activeDataset.status !== "submitted") &&
                         <h2 className="margin-bottom--1">
                             {this.state.activeDataset.alias}
                         </h2>
                     }
-                    <form onSubmit={this.handleFormSubmit}>
-                        { this.renderFileInputs() }
-                        {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
-                            <button className="btn btn--primary" type="submit">Submit to publishing</button>
-                        :
-                            ""
-                        }
-                    </form>
+                    {this.state.activeDataset && this.state.activeDataset.status === "submitted" ?
+                        this.renderSubmittedScreen()
+                    :
+                        <form onSubmit={this.handleFormSubmit}>
+                            { this.renderFileInputs() }
+                            <button className="btn btn--positive" type="submit">Submit to publishing</button>
+                        </form>
+                    } */}
                 </div>
             </div>
         )
