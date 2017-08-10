@@ -47,4 +47,24 @@ export default class datasetImport {
                 return response;
             })
     }
+
+    static getDimensions(instanceID) {
+        /* Uncomment this is you need to stub this data */
+        // return Promise.resolve([
+        //     {
+        //         dimension_id: `${instanceID}-time`,
+        //         value: "Time",
+        //         node_id: "id-thing"
+        //     },
+        //     {
+        //         dimension_id: `${instanceID}-special-aggregate`,
+        //         value: "Special aggregate",
+        //         node_id: "id-thing-2"
+        //     }
+        // ])
+        return http.get(`/import/instances/${instanceID}/dimensions`, true)
+            .then(response => {
+                return response;
+            })
+    }
 }
