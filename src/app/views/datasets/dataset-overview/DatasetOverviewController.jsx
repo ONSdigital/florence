@@ -139,6 +139,16 @@ class DatasetOverviewController extends Component {
         if (!this.state.activeDataset) {
             return;
         }
+        
+        if (this.state.activeDataset.status === "submitted" && !this.state.activeDataset.dimensions) {
+            datasetImport.getDimensions(this.state.activeDataset.instanceID).then(response => {
+                const activeDataset = {
+                    ...this.state.activeDataset,
+                    dimensions: response
+                }
+                this.setState({activeDataset});
+            })
+        }
         this.bindInputs();
     }
 
@@ -241,6 +251,7 @@ class DatasetOverviewController extends Component {
     mapAPIResponsesToState(APIResponse) {
         const recipeAPIResponse = APIResponse.recipe;
         const jobAPIResponse = APIResponse.job;
+        const instanceURL = jobAPIResponse.links.instance_ids[0];
         const fileURLs = new Map();
         jobAPIResponse.files.forEach(jobFile => {
             if (jobFile.url) {
@@ -261,6 +272,7 @@ class DatasetOverviewController extends Component {
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
+            instanceID: instanceURL.substring(instanceURL.lastIndexOf('/')+1),
             files
         }
     }
@@ -380,7 +392,7 @@ class DatasetOverviewController extends Component {
             }
             this.setState({activeDataset});
         }).catch(error => {
-            console.error(`Error updating status of job '${this.state.activeDataset.id}': `, error);
+            console.error(`Error updating status of job '${this.state.activeDataset.jobID}': `, error);
         });
     }
 
@@ -416,6 +428,26 @@ class DatasetOverviewController extends Component {
                     <li className="list__item">Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any questions.</li>
                     <li className="list__item">The publishing team can prepare the dataset landing page which includes the files and associated metadata.</li>
                 </ul>
+                <h2 className="margin-bottom--1">
+                    Dimensions 
+                    {this.state.activeDataset.dimensions && 
+                        <span> ({this.state.activeDataset.dimensions.length})</span>
+                    }
+                </h2>
+                <div className="margin-bottom--2">
+                {this.state.activeDataset.dimensions ?
+                    <ul className="list">
+                    {this.state.activeDataset.dimensions.map((dimension, index) => {
+                        return <li key={index} className="list__item">{dimension.value}</li>
+                    })}
+                    </ul>
+                :
+                    <div> 
+                        <p className="margin-bottom--1">Loading dimensions for this dataset...</p>
+                        <span className="loader loader--dark"></span>
+                    </div>
+                }
+                </div>
                 <Link className="btn btn--primary" to={`${this.props.rootPath}/datasets`}>Your datasets</Link>
             </div>
         )
@@ -478,33 +510,6 @@ class DatasetOverviewController extends Component {
                             <div className="loader loader--large loader--dark"></div>
                         </div>
                     }
-                    
-                        {/* {(this.state.activeDataset && this.state.activeDataset.status !== "submitted") ?
-                            <h1>Upload new file(s)</h1>
-                        :
-                            <h1>Your dataset has been submitted</h1>
-                        }
-                    <span className="margin-bottom--1">
-                        &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
-                    </span>
-                    {this.state.isFetchingDataset &&
-                        <div className="grid--align-center grid--align-self-center"> 
-                            <div className="loader loader--large loader--dark"></div>
-                        </div>
-                    }
-                    {(this.state.activeDataset && this.state.activeDataset.status !== "submitted") &&
-                        <h2 className="margin-bottom--1">
-                            {this.state.activeDataset.alias}
-                        </h2>
-                    }
-                    {this.state.activeDataset && this.state.activeDataset.status === "submitted" ?
-                        this.renderSubmittedScreen()
-                    :
-                        <form onSubmit={this.handleFormSubmit}>
-                            { this.renderFileInputs() }
-                            <button className="btn btn--positive" type="submit">Submit to publishing</button>
-                        </form>
-                    } */}
                 </div>
             </div>
         )
