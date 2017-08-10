@@ -60,6 +60,14 @@ export default function request(method, URI, willRetry = true, onRetry, body) {
             }
 
             if (response.status === 401) {
+
+                // If 401 is returned when attempting a login then credentials will be incorrect
+                // so return to caller without session notification  
+                if (URI === "/zebedee/login") {
+                    reject({status: response.status, message: response.statusText});
+                    return;
+                }
+
                 // To save doing this exact same function throughout the app we handle a 401 
                 // here (ie at the lowest level possible)
                 const notification = {
