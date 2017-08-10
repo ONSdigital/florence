@@ -65,6 +65,12 @@ For example:
 make debug BIND_ADDR=:20000
 ```
 
+AWS configurations are needed for the dataset file upload process, so add the following lines to your `.bashrc` file:
+```
+export AWS_ACCESS_KEY_ID=<ACCESS_KEY>
+export AWS_SECRET_ACCESS_KEY=<SECRET_KEY>`
+```
+
 ### Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for details.
