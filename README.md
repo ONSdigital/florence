@@ -27,6 +27,17 @@ make debug
 Username: florence@magicroundabout.ons.gov.uk
 Password: Doug4l
 
+#### Dependencies
+
+There are other ONS digital applications that you'll need to run to allow Florence to work end-to-end:
+
+- Preview: [Babbage](https://github.com/ONSdigital/babbage)
+- API: [Zebedee CMS](https://github.com/ONSdigital/zebedee)
+- Preview: [Sixteens](https://github.com/ONSdigital/sixteens)
+- Publishing: [The Train](https://github.com/ONSdigital/sixteens)
+- Dataset upload: [Import API](https://github.com/ONSdigital/dp-import-api)
+- Dataset upload: [Recipes API](https://github.com/ONSdigital/dp-recipe-api)
+
 #### Optional (for developing Florence)
 
 3. Install [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/)
@@ -39,16 +50,25 @@ make watch-src
 
 The following environment variables are available when running the Go server.
 
-| Environment variable | Default               | Description                                                                                                                              |
-|----------------------|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| BIND_ADDR            | :8080                 | Host and port to bind to                                                                                                                 |
-| BABBAGE_URL          | http://localhost:8080 | URL that Babbage can be accessed on                                                                                                      |
-| ZEBEDEE_URL          | http://localhost:8081 | The URL that Zebedee can be accessed on                                                                                                  |
-| ENABLE_NEW_APP       | false                 | When true the refactored Florence JS application will be available on `/florence`, otherwise it'll host the current Florence application |
+| Environment variable | Default                           | Description                                                                                                                              |
+|----------------------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| BIND_ADDR            | :8080                             | Host and port to bind to                                                                                                                 |
+| BABBAGE_URL          | http://localhost:8080             | URL that [Babbage](https://github.com/ONSdigital/babbage) can be accessed on                                                                                                      |
+| ZEBEDEE_URL          | http://localhost:8081             | URL that [Zebedee](https://github.com/ONSdigital/zebedee) can be accessed on                                                                                                      |
+| IMPORT_API_URL       | http://localhost:21800            | URL that the [dataset import API](https://github.com/ONSdigital/dp-import-api) can be accessed on                                                                                       |
+| RECIPE_API_URL       | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                                                                      |
+| UPLOAD_BUCKET_NAME   | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                      |
+| ENABLE_NEW_APP       | false                             | When true the refactored Florence JS application will be available on `/florence`, otherwise it'll host the current Florence application |
 
 For example:
 ```
 make debug BIND_ADDR=:20000
+```
+
+AWS configurations are needed for the dataset file upload process, so add the following lines to your `.bashrc` file:
+```
+export AWS_ACCESS_KEY_ID=<ACCESS_KEY>
+export AWS_SECRET_ACCESS_KEY=<SECRET_KEY>`
 ```
 
 ### Contributing
