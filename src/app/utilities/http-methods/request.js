@@ -11,11 +11,12 @@ import notifications from '../notifications';
  * @param {boolean} willRetry - (default = true) if true then this function will retry the connection on failure 
  * @param {object} body - JSON of the request body (if it's an applicable HTTP method)
  * @param {function} onRetry - Runs whenever the request is going to be retried. Added for use in unit tests, so that we can run our mocked timeOuts (or else the async test breaks)
+ * @param {boolean} callerHandles401 - Flag to decide whether caller or global handler is to handle 401 responses 
  * 
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry, body) {
+export default function request(method, URI, willRetry = true, onRetry, body, callerHandles401) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
@@ -61,9 +62,7 @@ export default function request(method, URI, willRetry = true, onRetry, body) {
 
             if (response.status === 401) {
 
-                // If 401 is returned when attempting a login then credentials will be incorrect
-                // so return to caller without session notification  
-                if (URI === "/zebedee/login") {
+                if (callerHandles401) {
                     reject({status: response.status, message: response.statusText});
                     return;
                 }
