@@ -251,7 +251,6 @@ class DatasetOverviewController extends Component {
     mapAPIResponsesToState(APIResponse) {
         const recipeAPIResponse = APIResponse.recipe;
         const jobAPIResponse = APIResponse.job;
-        const instanceURL = jobAPIResponse.links.instance_ids[0];
         const fileURLs = new Map();
         jobAPIResponse.files.forEach(jobFile => {
             if (jobFile.url) {
@@ -272,7 +271,7 @@ class DatasetOverviewController extends Component {
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
-            instanceID: instanceURL.substring(instanceURL.lastIndexOf('/')+1),
+            instanceID: jobAPIResponse.instances[0].id,
             files
         }
     }
