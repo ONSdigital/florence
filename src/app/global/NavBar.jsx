@@ -43,7 +43,7 @@ class NavBar extends Component {
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
 
-        if ( `${rootPath}/collections`.indexOf(route) >= 0 || `${rootPath}/publishing-queue`.indexOf(route) >= 0 || `${rootPath}/reports`.indexOf(route) >= 0 || `${rootPath}/users-and-access`.indexOf(route) >= 0 || `${rootPath}/teams`.indexOf(route) >= 0 ) {
+        if (route.indexOf(`${rootPath}/collections`) >= 0 || route.indexOf(`${rootPath}/publishing-queue`) >= 0 || route.indexOf(`${rootPath}/reports`) >= 0 || route.indexOf(`${rootPath}/users-and-access`) >= 0 || route.indexOf(`${rootPath}/teams`) >= 0 ) {
             return (
                 <span>
                     <li className="global-nav__item">
