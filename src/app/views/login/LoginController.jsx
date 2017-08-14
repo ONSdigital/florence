@@ -53,7 +53,7 @@ export class LoginController extends Component {
     }
 
     postLoginCredentials(body) {
-        return http.post('/zebedee/login', body);
+        return http.post('/zebedee/login', body, true, true);
     }
 
     handleLogin(credentials) {
