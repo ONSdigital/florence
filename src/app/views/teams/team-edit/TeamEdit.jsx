@@ -8,7 +8,7 @@ const propTypes = {
     name: PropTypes.string.isRequired,
     members: PropTypes.arrayOf(PropTypes.string),
     users: PropTypes.arrayOf(PropTypes.object),
-    disabledUsers: PropTypes.object.isRequired,
+    disabledUsers: PropTypes.array.isRequired,
     updatingAllUsers: PropTypes.bool.isRequired,
     updatingMembers: PropTypes.bool.isRequired,
     showingLoaders: PropTypes.bool,
@@ -42,7 +42,7 @@ class TeamEdit extends Component {
                                 action="add"
                                 onClick={this.props.onMembersChange}
                                 email={user.email}
-                                isDisabled={this.props.disabledUsers.has(user.email)}
+                                isDisabled={(this.props.disabledUsers).indexOf(user.email) !== -1}
                             />
                         )
                     })}
@@ -69,7 +69,7 @@ class TeamEdit extends Component {
                                 action="remove" 
                                 onClick={this.props.onMembersChange}
                                 email={member}
-                                isDisabled={this.props.disabledUsers.has(member)}
+                                isDisabled={(this.props.disabledUsers).indexOf(member) !== -1}
                             />
                         )
                     })}
