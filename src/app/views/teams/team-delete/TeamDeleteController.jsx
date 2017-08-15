@@ -11,13 +11,19 @@ import TeamDeleteForm from './TeamDeleteForm';
 
 const propTypes = {
     name: PropTypes.string.isRequired,
-    teams: PropTypes.arrayOf(PropTypes.object),
+    teams: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string.isRequired,
+        members: PropTypes.arrayOf(PropTypes.string),
+        path: PropTypes.string
+    })),
     dispatch: PropTypes.func.isRequired,
     onDeleteSuccess: PropTypes.func.isRequired,
-    rootPath: PropTypes.string.isRequired
+    rootPath: PropTypes.string.isRequired,
+    pathname: PropTypes.string.isRequired
 }
 
-class TeamDeleteController extends Component {
+export class TeamDeleteController extends Component {
     constructor(props) {
         super(props);
 
@@ -27,7 +33,7 @@ class TeamDeleteController extends Component {
                 value: "",
                 error: ""
             },
-            parentPath: (location.pathname).split('/delete')[0]
+            parentPath: (this.props.pathname).substr(0, this.props.pathname.lastIndexOf('/delete'))
         }
 
         this.handleCancel = this.handleCancel.bind(this);
@@ -68,6 +74,7 @@ class TeamDeleteController extends Component {
             this.props.dispatch(push(`${this.props.rootPath}/teams`));
             this.props.onDeleteSuccess();
         }).catch(error => {
+            this.setState({formIsPosting: false});
             switch(error.status) {
                 case(404): {
                     const notification = {
@@ -81,7 +88,7 @@ class TeamDeleteController extends Component {
                 case("RESPONSE_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: `An error occured whilst trying to delete team '${this.props.name}'`,
+                        message: `An error occurred whilst trying to delete team '${this.props.name}'`,
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -90,7 +97,7 @@ class TeamDeleteController extends Component {
                 case("FETCH_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: `A network error occured whilst trying to delete team '${this.props.name}'`,
+                        message: `A network error occurred whilst trying to delete team '${this.props.name}'`,
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -99,7 +106,7 @@ class TeamDeleteController extends Component {
                 case("UNEXPECTED_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: `An unexpected error occured whilst trying to delete team '${this.props.name}'`,
+                        message: `An unexpected error occurred whilst trying to delete team '${this.props.name}'`,
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -108,7 +115,7 @@ class TeamDeleteController extends Component {
                 default: {
                     const notification = {
                         type: "warning",
-                        message: `An unexpected error occured whilst trying to delete team '${this.props.name}'`,
+                        message: `An unexpected error occurred whilst trying to delete team '${this.props.name}'`,
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -138,7 +145,8 @@ function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
         teams: state.state.teams.all,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        pathname: state.routing.locationBeforeTransitions.pathname
     }
 }
 
