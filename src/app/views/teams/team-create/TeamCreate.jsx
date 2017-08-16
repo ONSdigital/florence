@@ -65,10 +65,6 @@ class TeamCreate extends Component {
                     });
                     break;
                 }
-                case(401): {
-                    // This is handle by the request function, so do nothing here
-                    break;
-                }
                 default: {
                     const notification = {
                         type: "warning",
