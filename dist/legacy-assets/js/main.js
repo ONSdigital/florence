@@ -7957,6 +7957,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 "images": [],
                 "alerts": [],
                 "versions": [],
+                "isPrototypeArticle": false,
                 type: pageType
             };
         }
@@ -12730,18 +12731,12 @@ function articleEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
-   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
-  var checkBoxStatus = function () {
-    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
-      return false;
-    } else {
-      return true;
-    }
-  };
+  $("#natStat-checkbox").click(function () {
+      data.description.nationalStatistic = $("#natStat-checkbox").prop('checked') ? true : false;
+  });
 
-  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  $("#articleType-checkbox").click(function () {
+      data.isPrototypeArticle = $("#articleType-checkbox").prop('checked') ? true : false;
   });
 
   // Save
@@ -12749,6 +12744,7 @@ function articleEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
+    console.log(data);
     save(updateContent);
   });
 
