@@ -1,0 +1,111 @@
+.timeseries-modal-container {
+    position: relative;
+}
+
+.timeseries {
+
+    &__basket {
+        //border: none;
+        border-radius: 0;
+        //background: $iron-light;
+        background: $abbey;
+        color: $iron-light;
+        //padding: 5px ($col / 2) 3px ($col / 2);
+        min-height: ($baseline * 5);
+        //margin: ($baseline * 3) 0 0 ($col * 14);
+        width: ($col * 7);
+        font-size: 14px;
+        position: absolute;
+        border: 1px solid $ship-grey;
+        top: ($baseline * 2);
+        right: 0;
+
+        &--active {
+            outline: none;
+            background: $salem;
+            color: $white;
+        }
+
+        &:hover,
+        &:focus,
+        &--focus {
+            background-color: $ship-grey;
+            outline: none;
+        }
+    }
+
+    &__list {
+        max-height: ($baseline * 58);
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding-left: $col;
+
+        &-container {
+            display: none;
+            position: absolute;
+            width: ($col * 28);
+            background: $iron-light;
+            top: ($baseline * 11);
+            //left: 0;
+            right: 0;
+            z-index: 1000;
+            //padding: ($baseline * 4) $col ($baseline * 3) $col;
+            padding: $baseline 0 ($baseline * 3) 0;
+            color: $iron-light;
+            background: $ship-grey;
+
+            @include breakpoint(sm) {
+                width: ($col * 18);
+            }
+
+            &:after {
+                content: "";
+                width: 0;
+                height: 0;
+                border-left: 16px solid transparent;
+                border-right: 16px solid transparent;
+                border-bottom: 16px solid $ship-grey;
+                position: absolute;
+                top: -16px;
+                right: ($col * 2.5);
+            }
+        }
+
+        &--exit {
+            cursor: pointer;
+            position: absolute;
+            right: $col;
+            top: 8px;
+
+            &:hover,
+            &:focus {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__download {
+        border-top: 1px solid $iron;
+        margin: -1px $col 0 $col;
+        display: none;
+    }
+
+    &__empty {
+        text-align: center;
+        //display: none;
+    }
+
+    &__select {
+        margin-top: 27px;
+    }
+
+    &__remember {
+        display: none;
+        margin-bottom: ($baseline * 2);
+        padding: 6px $col 2px $col;
+
+        label {
+            cursor: pointer;
+        }
+    }
+}

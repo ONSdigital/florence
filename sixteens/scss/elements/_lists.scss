@@ -1,0 +1,24 @@
+//_lists.scss
+
+.list {
+
+	&--neutral {
+		list-style: none;
+		padding: 0;
+
+		& > li {
+			padding: 0;
+		}
+	}
+
+	&--inline {
+		display: inline-block;
+
+		li {
+    		display: inline-block;
+    		//margin: 0 $col 0 0;
+		}
+	}
+
+
+}

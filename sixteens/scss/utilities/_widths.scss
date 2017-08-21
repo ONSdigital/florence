@@ -1,0 +1,26 @@
+//height
+@mixin width-util {
+    .width {
+        @for $i from 0 through 50 { //
+            &--#{$i} {
+                width: ($col * $i) !important;
+            }
+            @include breakpoint(lg) {
+                &-lg--#{$i} {
+                    width: ($col * $i) !important;
+                }
+            }
+            @include breakpoint(md) {
+                &-md--#{$i} {
+                    width: ($col * $i) !important;
+                }
+            }
+            @include breakpoint(sm) {
+                &-sm--#{$i} {
+                    width: ($col * $i) !important;
+                }
+            }
+        }
+    }
+}
+@include width-util;

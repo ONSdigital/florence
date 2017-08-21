@@ -1,0 +1,52 @@
+//_meta.scss
+
+.meta {
+	&-wrap {
+		background: $mercury;
+		border-top: 1px solid $iron;
+		margin-top: -1px;
+		padding-top: ($baseline * 3);
+		// padding-bottom: ($baseline * 3);
+
+		h2 {
+		  	font-size: 21px;
+			margin-top: 0;
+		}
+
+		address {
+			padding: 6px 0 2px 0;
+		}
+
+		&--gallery {
+			background: $gallery;
+			border-top: 1px solid $iron;
+			margin-top: -1px;
+			position: relative;
+		}
+	}
+
+	&__item {
+		// border-right: 1px solid $iron;
+		padding-left: $col;
+		margin-top: 0;
+		margin-bottom: ($baseline * 3);
+	  	min-height: ($baseline * 8);
+
+		@include breakpoint(sm) {
+			margin-bottom: $baseline;
+		}
+		@include breakpoint(md) {
+			border-right: 1px solid $iron;
+		}
+		@include breakpoint(lg) {
+			border-right: 1px solid $iron;
+		}
+	}
+
+	&__image {
+		height: 47px;
+		float: left;
+		margin-right: 16px;
+	}
+
+}

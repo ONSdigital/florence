@@ -1,0 +1,258 @@
+//_charrt-area.scss
+
+// create styling for the up arrow on top of the download time series box
+@mixin triangle($size, $colour, $animation) {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+    border-bottom: $size solid $colour;
+    position: absolute;
+    top: -15px;
+
+    @if $animation {
+        -webkit-animation-name: fade-in;
+        -webkit-animation-duration: 0.5s;
+        animation-name: fade-in;
+        animation-duration: 0.5s;
+        @-webkit-keyframes fade-in {
+            0% {
+                border-bottom: 15px solid rgba(0, 0, 0, 0);
+            }
+            100% {
+                border-bottom: 15px solid $colour;
+            }
+        }
+        @keyframes fade-in {
+            0% {
+                border-bottom: 15px solid rgba(0, 0, 0, 0);
+            }
+            100% {
+                border-bottom: 15px solid $colour;
+            }
+        }
+
+    }
+}
+
+.chart-area {
+
+    &__controls__custom--active {
+        margin-top: ($baseline * 2);
+        background-color: $nevada;
+        // overflow: hidden;
+        position: relative;
+
+        &:before {
+            @include triangle(15px, $nevada, false);
+            top: -15px;
+
+            @include breakpoint(sm) {
+                left: 225px;
+            }
+
+            @include breakpoint(md) {
+                right: 15px;
+            }
+
+            @include breakpoint(lg) {
+                right: 30px;
+            }
+
+        }
+
+        fieldset {
+            width: ($col * 10);
+            display: block;
+            float: left;
+            border: 0;
+            padding: 0;
+            margin: 0 0 ($baseline * 2) 0;
+        }
+
+        legend {
+            color: $iron-light;
+            padding: 6px 0 2px 0;
+        }
+
+    }
+
+    &__controls__custom__container {
+        overflow: hidden;
+        padding: 0 $col;
+        color: $iron-light;
+
+        p {
+            margin: 0;
+        }
+    }
+
+    &__controls__custom__errors {
+        background-color: $poppy;
+
+        p {
+            margin: 0;
+            padding: 6px $col 10px $col;
+            color: $white;
+        }
+    }
+
+    &__timeseries {
+        * {
+            font-family: $base-font-family;
+        }
+    }
+
+    &__controls__download {
+        background-color: $nevada;
+        margin-top: ($baseline * 2);
+        position: relative;
+
+        &--unfiltered {
+
+            &:before {
+                @include triangle(15px, $nevada, true);
+                left: 75px;
+
+            }
+        }
+
+        &--filtered {
+
+            &:before {
+                //@extend .controls__download__arrow;
+                @include triangle(15px, $nevada, true);
+                right: 75px;
+            }
+        }
+    }
+}
+
+#custom-tooltip {
+    display: block;
+    border: 1px solid $iron;
+    background-color: $gallery;
+    position: relative;
+    z-index: 999;
+}
+
+.maintext {
+    padding: ($baseline * 2) $col;
+    display: inline-block;
+    height: 100%;
+    color: $base-text-colour;
+    font-family: $base-font-family;
+
+    &__fixed-width {
+        width: 218px;
+    }
+
+    &__title {
+        font-family: $base-font-family;
+        font-weight: 700;
+        color: $base-text-colour;
+        margin-bottom: 5px;
+    }
+}
+
+.sidebar {
+    display: none;
+    height: ($baseline * 6);
+    padding: ($baseline * 2) $col;
+}
+
+.circle {
+    margin: 0px;
+    // margin-left: 9px;
+    padding: 0px;
+    height: 14px;
+    font-size: 22px;
+    color: #8FBED8;
+    line-height: 13px;
+    clear: both;
+    display: none;
+}
+
+.square {
+    margin: 0px;
+    // margin-left: 9px;
+    padding: 0px;
+    height: 21px;
+    font-size: 20px;
+    color: #5296C3;
+    line-height: 21px;
+    clear: both;
+    display: none;
+}
+
+.diamond {
+    margin: 0px;
+    // margin-left: 10px;
+    padding: 0px;
+    height: 19px;
+    font-size: 20px;
+    color: #1377B2;
+    line-height: 19px;
+    clear: both;
+    display: none;
+}
+
+.triangle {
+    margin: 0px;
+    // margin-left: 9px;
+    padding: 0px;
+    height: 16px;
+    font-size: 14px;
+    color: #1673AC;
+    line-height: 20px;
+    clear: both;
+    display: none;
+}
+
+.tip {
+    padding: 0px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.tiptext {
+    margin: 0px;
+    padding: 0px;
+    padding-top: 1px;
+    left: 0px;
+    text-align: left;
+    white-space: normal;
+}
+
+.tooltip-right {
+    position: relative;
+}
+
+.tooltip-right:after {
+    content: "";
+    border-color: transparent transparent transparent $iron;
+    border-style: solid;
+    border-width: 15px;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 10px;
+    left: 219px
+}
+
+.tooltip-left {
+    position: relative;
+}
+
+.tooltip-left:after {
+    content: "";
+    border-color: transparent $iron transparent transparent;
+    border-style: solid;
+    border-width: 15px;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 10px;
+    left: -30px
+}

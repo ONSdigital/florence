@@ -1,0 +1,9 @@
+# Mac
+*.DS_Store
+*.idea
+
+.sass-cache/
+dist/css/
+dist/js/
+node_modules/
+npm-debug.log.*

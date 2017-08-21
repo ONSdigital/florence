@@ -1,0 +1,131 @@
+$old-ie: false;
+
+@import "utilities/colours";
+
+@media print {
+
+    * {
+        font-family: Tahoma, Verdana, Arial, sans-serif !important;
+    }
+
+    h2, h3, h4, h5 {
+        page-break-after: avoid !important;
+    }
+
+    li {
+        font-size: 11px !important;
+        line-height: 18px !important;
+        padding: 6px 0 6px 11px !important;
+    }
+
+    p {
+        font-size: 12px !important;
+        line-height: 16px !important;
+        margin: 8px 0 !important;
+        padding: 3px 0 5px 0 !important;
+        page-break-inside: avoid !important;
+    }
+
+    table {
+        font-size: 12px !important;
+        page-break-inside: avoid !important;
+    }
+
+    li > p {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .main-logo {
+        margin-left: 16px !important;
+        margin-bottom: 8px;
+    }
+
+    .page-intro {
+        background-color: $gallery !important;
+        border-top: 1px solid $iron;
+
+        &__title {
+            margin: 0 16px !important;
+        }
+
+        &__content {
+            margin: 0 16px !important;
+        }
+
+        &__type {
+            color: $salem !important;
+        }
+    }
+
+    .page-content {
+        margin: 0 16px !important;
+        border: 0 !important;
+    }
+
+    .table-of-contents {
+        page-break-inside: avoid !important;
+        page-break-after: always !important;
+        border: 0;
+
+        &__item {
+            margin: 0 0 0 24px;
+            font-size: 13px !important;
+        }
+    }
+
+    .meta-wrap {
+        margin-top: 24px;
+        padding-top: 8px;
+        background-color: $iron-light !important;
+        border-top: 1px solid $iron;
+        border-bottom: 1px solid $iron;
+
+        > div {
+            margin: 0 16px !important;
+        }
+    }
+
+    .meta__item {
+        min-height: 48px;
+        width: 32% !important;
+        display: inline-block !important;
+    }
+
+    a.btn {
+        display: none;
+    }
+
+    // Remove links printing out href attribute - inherited from print styling
+    a:after {
+        content: "" !important;
+    }
+
+    .print--hide {
+        display: none;
+    }
+
+    section {
+        border-top: 0 !important;
+        border-bottom: 0 !important;
+    }
+
+    .markdown-chart-container {
+        page-break-inside: avoid !important;
+    }
+
+    .tiles {
+        &__item {
+            page-break-before: always !important;
+
+            h3 {
+                min-height: 0 !important;
+            }
+        }
+
+        &__content--nav {
+            border: 0 !important;
+        }
+    }
+
+}

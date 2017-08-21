@@ -1,0 +1,55 @@
+.side-bar {
+
+    &__item {
+        margin: 0;
+        margin-bottom: $baseline;
+        padding: $baseline 0;
+        display: block;
+
+        &:hover {
+            cursor: pointer;
+            //background-color: $ship-grey;
+            //color: $white;
+        }
+
+    }
+
+    &__link {
+        display: inline-block;
+        padding: $baseline 0 $baseline $col;
+        //width: 100%
+    }
+
+    &__active {
+        background-color: lighten($matisse, 50%);
+        font-weight: 400;
+    }
+}
+
+.viewport-md .affix,
+.viewport-lg .affix {
+    position: fixed;
+    top: 0;
+
+    @include breakpoint(md) {
+        width: ($col * 13);
+    }
+
+    @include breakpoint(lg) {
+        width: ($col * 17);
+    }
+
+    &-bottom {
+        position: absolute;
+
+        @include breakpoint(md) {
+            width: ($col * 13);
+        }
+
+        @include breakpoint(lg) {
+            width: ($col * 17);
+        }
+
+    }
+
+}

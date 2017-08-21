@@ -1,0 +1,191 @@
+//_type.scss
+
+//--[vars]--
+$base-font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+//$base-font-family: Helvetica, sans-serif;
+$base-font-size: 14px;
+$base-line-height: $baseline * 3;
+$base-font-weight: 400;
+$base-text-colour: $ship-grey;
+
+//--[vars end]--
+
+body {
+    font-family: $base-font-family;
+    font-size: $base-font-size;
+    font-weight: $base-font-weight;
+    line-height: $base-line-height;
+    color: $base-text-colour;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+    font-size: 35px;
+    font-weight: $base-font-weight;
+    line-height: 48px;
+    margin: ($baseline * 6) 0;
+    padding: 2px 0 6px 0;
+
+    // Alternative H1 for census landing page
+    &--census {
+        color: $census;
+        font-weight: 700;
+    }
+
+    @include breakpoint(sm) {
+        font-size: 29px;
+        line-height: 40px;
+        padding: 0;
+    }
+
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: $base-font-weight;
+    line-height: 24px;
+    margin: ($baseline * 5) 0 0 0;
+    padding: 3px 0 5px 0;
+
+    @include breakpoint(sm) {
+        font-size: 22px;
+    }
+}
+
+h3 {
+    font-size: 21px;
+    font-weight: $base-font-weight;
+    line-height: 24px;
+    margin: ($baseline * 2) 0 0 0;
+    padding: 3px 0 5px 0;
+
+    @include breakpoint(sm) {
+        font-size: 20px;
+        padding: 4px 0px;
+    }
+}
+
+h4 {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 24px;
+    margin: ($baseline * 2) 0;
+    padding: 5px 0 3px 0;
+}
+
+h5 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: ($baseline * 2) 0;
+}
+
+h6 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: ($baseline * 2) 0 0 0;
+}
+
+p {
+    font-size: 14px;
+    font-weight: $base-font-weight;
+    line-height: 24px;
+    margin: ($baseline * 2) 0;
+    padding: 6px 0 10px 0;
+}
+
+ul, ol {
+    margin: ($baseline * 2) 0;
+    padding-left: ($col * 1);
+}
+
+li {
+    font-size: 14px;
+    font-weight: $base-font-weight;
+    line-height: 24px;
+    margin: ($baseline * 2) 0;
+    padding: 6px 0 10px 16px;
+}
+
+cite {
+    //
+}
+
+a {
+    text-decoration: none;
+    color: $matisse;
+    word-wrap: break-word;
+
+    &:hover,
+    &:focus {
+        text-decoration: underline;
+    }
+}
+
+address {
+    font-style: normal;
+}
+
+strong {
+    font-weight: 700;
+}
+
+// Mixin for silent styling to bunch up spacing between elements in big blocks of text (ie markdown)
+@mixin markdown {
+    overflow: visible;
+
+    h4 {
+        font-weight: 700;
+    }
+
+    a {
+        text-decoration: underline;
+    }
+
+
+    p {
+        margin-top: 0;
+    }
+
+    ul {
+        margin-top: 0;
+    }
+
+    img {
+        max-width: ($col * 38);
+    }
+
+    li {
+        margin: 0;
+
+        // li with only one p shouldn't have padding (spacing looks excessive)
+        p:first-of-type {
+            margin: 0;
+            padding: 0;
+        }
+
+        // to offset above styling second p in an li should have extra margin on the top (giving it the same styling as an ordinary p)
+        p:nth-of-type(2) {
+            @extend p;
+            margin-top: ($baseline * 2);
+        }
+
+    }
+}
+
+.markdown {
+    @include markdown
+}
+
+@mixin font-heading-util {
+    .font-size {
+        @for $i from 1 through 6 {
+            //
+            &--h#{$i} {
+                @extend h#{$i};
+            }
+        }
+    }
+}
+
+@include font-heading-util;
