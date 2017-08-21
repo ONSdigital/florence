@@ -1,0 +1,97 @@
+//height
+@mixin height-util {
+    .height {
+        @for $i from 0 through 50 {
+            @include breakpoint(sm) {
+                &-sm--#{$i} {
+                    height: ($baseline * $i);
+
+                    &-ellipsis {
+                        @include multiline-ellipsis(($baseline * $i));
+                    }
+
+                    &-indented-ellipsis {
+                        @include multiline-ellipsis(($baseline * $i), $col);
+                    }
+                }
+            }
+        }
+        @for $i from 0 through 50 {
+            @include breakpoint(md) {
+                &-md--#{$i} {
+                    height: ($baseline * $i);
+
+                    &-ellipsis {
+                        @include multiline-ellipsis(($baseline * $i));
+                    }
+
+                    &-indented-ellipsis {
+                        @include multiline-ellipsis(($baseline * $i), $col);
+                    }
+                }
+            }
+        }
+        @for $i from 0 through 50 {
+            @include breakpoint(lg) {
+                &-lg--#{$i} {
+                    height: ($baseline * $i);
+
+                    &-ellipsis {
+                        @include multiline-ellipsis(($baseline * $i));
+                    }
+
+                    &-indented-ellipsis {
+                        @include multiline-ellipsis(($baseline * $i), $col);
+                    }
+                }
+            }
+        }
+        @for $i from 0 through 50 {
+            &--#{$i} {
+                height: ($baseline * $i);
+
+                &-ellipsis {
+                    @include multiline-ellipsis(($baseline * $i));
+                }
+
+                &-indented-ellipsis {
+                    @include multiline-ellipsis(($baseline * $i), $col);
+                }
+            }
+        }
+    }
+}
+@include height-util;
+
+
+@mixin min-height-util {
+    .min-height {
+        @for $i from 0 through 50 {
+            @include breakpoint(sm) {
+                &-sm--#{$i} {
+                    min-height: ($baseline * $i);
+                }
+            }
+        }
+        @for $i from 0 through 50 {
+            @include breakpoint(md) {
+                &-md--#{$i} {
+                    min-height: ($baseline * $i);
+                }
+            }
+        }
+        @for $i from 0 through 50 {
+            @include breakpoint(lg) {
+                &-lg--#{$i} {
+                    min-height: ($baseline * $i);
+                }
+            }
+        }
+        @for $i from 0 through 50 { //
+            &--#{$i} {
+                min-height: ($baseline * $i);
+            }
+        }
+    }
+}
+@include min-height-util;

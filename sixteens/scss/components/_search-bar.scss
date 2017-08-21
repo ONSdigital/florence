@@ -1,0 +1,130 @@
+//SEARCH
+
+.search {
+
+    @include breakpoint(sm) {
+        background-color: $abbey;
+    }
+
+    @include breakpoint(md) {
+        background-color: $ship-grey;
+        font-size: 17px;
+        height: 80px;
+    }
+
+    &--results-page {
+        height: ($baseline * 24);
+
+        h1 {
+            color: $iron-light;
+            margin: ($baseline * 2) 0 $baseline 0;
+        }
+
+        @if $old-ie == false {
+            @include breakpoint(sm) {
+                height: auto;
+                h1 {
+                    font-size: 21px;
+                    line-height: ($baseline * 4);
+                }
+            }
+        }
+    }
+
+    &__form {
+        font-family: $base-font-family;
+        font-weight: $base-font-weight;
+        line-height: $base-line-height;
+        color: $iron-light;
+        padding: ($baseline * 2) 0 ($baseline * 2) ($baseline * 2);
+        overflow: initial;
+
+        @if $old-ie == false {
+            @include breakpoint(sm) {
+                padding: ($baseline * 3) 0;
+            }
+        }
+    }
+
+    &__label {
+        font-family: $base-font-family;
+        font-weight: $base-font-weight;
+        line-height: $base-line-height;
+        font-size: 17px;
+        color: $iron-light;
+        padding: 12px $col 12px $col;
+        background-color: $abbey;
+        position: relative;
+
+        @if $old-ie == false {
+            @include breakpoint(sm) {
+                display: none;
+            }
+        }
+    }
+
+    &__input {
+        font-family: $base-font-family;
+        font-weight: $base-font-weight;
+        line-height: $base-line-height;
+        font-size: 17px;
+        color: $ship-grey;
+        border: none;
+        padding: 6px $col 4px $col;
+        height: ($baseline * 6);
+        background: lighten($primary, 65%);
+        -webkit-appearance: textfield; // Fix for safari hiding 'x' behind padding
+
+        &:focus {
+            outline: 3px solid $carrot;
+            outline-offset: 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        @if $old-ie == false {
+            @include breakpoint(sm) {
+                width: 80%;
+                font-size: 14px;
+                padding: 12px $col/2 8px $col/2;
+
+            }
+        }
+
+        &--results-page {
+            height: ($baseline * 5);
+        }
+    }
+
+    &__button {
+        font-family: $base-font-family;
+        font-weight: $base-font-weight;
+        line-height: $base-line-height;
+        font-size: 17px;
+        color: $white;
+        border: none;
+        padding: 0;
+        background-color: $primary;
+        height: ($baseline * 6);
+        position: relative;
+
+        &:hover,
+        &:focus {
+            background-color: darken($primary, 8%);
+        }
+
+        @if $old-ie == false {
+            @include breakpoint(sm) {
+                width: 20%;
+                font-size: 14px;
+                padding-left: $col/2;
+                padding-right: $col/2;
+            }
+        }
+
+        &--results-page {
+            height: ($baseline * 5);
+            padding-top: ($baseline / 2);
+        }
+    }
+}

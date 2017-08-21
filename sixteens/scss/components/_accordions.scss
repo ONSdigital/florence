@@ -1,0 +1,75 @@
+//_accordions.scss
+
+.js .accordion {
+	box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+	border-bottom: 2px solid $iron;
+	margin-bottom: -2px;
+	padding-bottom: 0;
+
+
+	//Keeping 'title' so JS from old PL still works.
+	&__title {
+		position: relative;
+		margin: 0;
+		padding: 11px 32px 13px 0;
+		cursor: pointer;
+		cursor: hand; //IE8 fix
+	}
+
+
+	&:first-of-type {
+    	border-top: 2px solid $iron;
+    	margin-top: ($baseline * 2)-2px;
+  	}
+
+
+  	&:last-of-type {
+  		margin-bottom: $baseline * 2;
+  	}
+
+
+  	&.is-collapsed {
+
+		.accordion__title {
+
+			// Arrow icon
+			&:after {
+				position: absolute;
+				right: 0;
+				top: 10px;
+				content: "";
+				@extend .icon;
+				@extend .icon-arrow-down--dark;
+			}
+		}
+
+  		.accordion__content {
+			display: none;
+		}
+	}
+
+
+	&.is-expanded {
+
+		.accordion__title {
+
+			// Arrow icon
+			&:after {
+				position: absolute;
+				right: 0;
+				top: 10px;
+				content: "";
+				@extend .icon;
+				@extend .icon-arrow-up--dark;
+			}
+		}
+
+		.accordion__content {
+			display: block;
+		}
+
+	}
+
+}

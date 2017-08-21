@@ -1,0 +1,459 @@
+// _header.scss
+
+// PRIMARY NAVIGATION
+
+.primary-nav {
+
+    background-color: $abbey;
+    position: relative;
+
+    @include breakpoint(md) {
+        border-top: 1px solid $thunder;
+        border-bottom: 1px solid $thunder;
+        height: 88px;
+    }
+
+    @include breakpoint(lg) {
+        height: 64px;
+    }
+
+    &__list {
+        list-style: none;
+        margin: 0;
+        overflow: hidden;
+
+        @include breakpoint(sm) {
+            padding: $baseline 0;
+        }
+
+        padding: 0; // fix for IE8
+    }
+
+    &__item {
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+
+        @include breakpoint(sm) {
+            height: $baseline * 6;
+        }
+
+        @include breakpoint(md) {
+            float: left;
+            height: 86px;
+
+            &:nth-child(6) a {
+                border-right: 1px solid $thunder;
+            }
+        }
+
+        @include breakpoint(lg) {
+            height: 62px;
+        }
+
+        //children show on hover
+        &:hover > ul,
+        &--focus > ul {
+            @include breakpoint(md) {
+                background-color: $thunder;
+                color: $white;
+                text-decoration: none;
+                left: auto; //resets child-items to appear on-screen
+                top: 86px; //2px less to cover borders on parent
+            }
+
+            @include breakpoint(lg) {
+                top: 62px;  //2px less to cover borders on parent
+            }
+        }
+
+        //set hover styling - done on link so it works on keyboard tab
+        &:hover > a,
+        &:focus > a,
+        &--focus > a {
+            @include breakpoint(md) {
+                border-left: 1px solid $thunder;
+                background-color: $thunder;
+                color: $white;
+                text-decoration: none;
+            }
+        }
+
+        &--active {
+            @include breakpoint(sm) {
+                & > a {
+                    background-color: $active;
+                }
+            }
+
+            @include breakpoint(md) {
+                background-color: $active;
+            }
+
+            & > a {
+                color: $white;
+            }
+        }
+
+    }
+
+    &__link {
+        color: $iron-light;
+        text-decoration: none;
+
+        @include breakpoint(sm) {
+            height: ($baseline * 6);
+            padding: 14px 0 10px $col;
+        }
+
+        @include breakpoint(md) {
+            display: inline-block;
+            padding: 5px $baseline*2 3px $baseline*2;
+            border-left: 1px solid $thunder;
+            height: 86px;
+            font-size: 13px; // smaller font on medium for retina screens
+        }
+
+        @include breakpoint(lg) {
+            height: 62px;
+            font-size: 14px;
+        }
+
+        //set focus styling - has to be on link to work (hover styling on li)
+        &:focus {
+            @include breakpoint(md) {
+                border-left: 1px solid $thunder;
+                background-color: $thunder;
+                color: $white;
+                text-decoration: none;
+            }
+        }
+
+        //show sub-menu on keyboard focus of link
+        &:focus + ul {
+            @include breakpoint(md) {
+                background-color: $thunder;
+                text-decoration: none;
+                left: auto; //resets child-items to appear on-screen
+                top: 86px; //2px less to cover same colour border on parent <li>
+            }
+
+            @include breakpoint(lg) {
+                top: 62px;
+            }
+        }
+
+        &:focus.hide-children + ul {
+            left: -99999px // override class to hide menu even when expandable item has focus
+        }
+
+    }
+
+    //NAVIGATION CHILDREN
+
+    &__child-list {
+        list-style: none;
+        color: $white;
+        margin: 0;
+
+        @include breakpoint(sm) {
+            //display: none; //done with js-nav-hidden class
+            background-color: $ship-grey;
+            padding: 0;
+        }
+
+        @include breakpoint(md) {
+            position: absolute;
+            padding: 0;
+            z-index: 10;
+            left: -99999px; //used instead of display:none so it's accessible to screen readers
+            border: 1px solid $thunder;
+        }
+    }
+
+    &__child-item {
+        display: block;
+        margin: 0;
+        padding: 0;
+
+        &--active {
+            background-color: $cod-gray;
+        }
+    }
+
+    &__child-link {
+        display: block;
+        color: $white;
+
+        @include breakpoint(sm) {
+            height: 48px;
+            padding: 14px 0 12px $col;
+        }
+
+        @include breakpoint(md) {
+            padding: 14px 0 10px $col;
+
+            &:hover,
+            &:focus {
+                outline: 0;
+                background-color: $iron;
+                text-decoration: none;
+                color: $abbey;
+            }
+        }
+    }
+
+    // SECONDARY NAV CONTENT - ONLY SHOW ON MOBILE
+
+    //&--secondary {
+    //
+    //
+    //	&__list {
+    //
+    //		@include breakpoint(sm) {
+    //			padding: 0 0 $baseline 0;
+    //			margin: 0;
+    //		}
+    //
+    //		@include breakpoint(md) {
+    //			display: none;
+    //		}
+    //	}
+    //
+    //	&__item {
+    //
+    //		@include breakpoint(sm) {
+    //			display: block;
+    //			padding: 0;
+    //			margin: 0;
+    //			height: $baseline * 6;
+    //			cursor: pointer;
+    //		}
+    //	}
+    //
+    //	&__link {
+    //		@include breakpoint(sm) {
+    //			display: block;
+    //			height: $baseline * 6;
+    //			padding: 14px 0 10px $col;
+    //			color: $iron-light;
+    //		}
+    //	}
+    //}
+}
+
+//JQUERY EXPANDABLE MOBILE MENU - temporary until we write our own JS in new library
+
+.js-nav-hidden {
+    @include breakpoint(sm) {
+        display: none;
+    }
+}
+
+.js-expandable-active {
+    @include breakpoint(sm) {
+        & > a {
+            background-color: $thunder;
+            //border-bottom: 1px solid $thunder;
+        }
+
+        & ul {
+            display: block !important;
+        }
+    }
+}
+
+.nav__top-level-duplicate {
+    @extend .primary-nav__child-item;
+
+    & > a {
+        @extend .primary-nav__child-link;
+    }
+
+    @include breakpoint(md) {
+        display: none;
+    }
+}
+
+//Add plus symbol - class used for JS too
+.js-expandable {
+    @include breakpoint(sm) {
+        & > a {
+            &:before {
+                position: absolute;
+                color: $iron-light;
+                content: '+';
+                left: $col;
+
+                @if $old-ie == true {
+                    content: '';
+
+                }
+            }
+        }
+
+        &-active {
+            & > a {
+                &:before {
+                    content: '';
+                }
+            }
+        }
+    }
+}
+
+//Menu and search controls - TODO rewrite with mobile
+.nav--controls {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include breakpoint(md) {
+        display: none;
+    }
+
+    &__item {
+        padding: 0;
+        margin: 0;
+    }
+
+    &__menu {
+        background-color: $ship-grey;
+        font-size: 17px;
+        float: left;
+        width: 50%;
+        //padding-left: $col;
+        padding: $baseline*2 $col;
+        color: $iron-light;
+        border-right: 1px solid $thunder;
+    }
+
+    &__no-search {
+      width:100%;
+    }
+
+    &__search {
+        background-color: $ship-grey;
+        font-size: 17px;
+        float: left;
+        width: 50%;
+        //padding-left: $col;
+        padding: $baseline*2 $col;
+        color: $iron-light;
+        // border-bottom: 1px solid $ship-grey;
+        // margin-bottom: -1px;
+    }
+}
+
+.menu-is-expanded {
+    & > a {
+        background-color: $abbey;
+    }
+}
+
+.search-is-expanded {
+    & > a {
+        background-color: $abbey;
+    }
+}
+
+.nav-main--hidden {
+    @include breakpoint(sm) {
+        display: none;
+    }
+    display: block;
+}
+
+.nav-search--hidden {
+    @include breakpoint(sm) {
+        display: none;
+    }
+    display: block;
+}
+
+// HEADER - LOGO, LANGUAGE SELECTION AND SECONDARY NAV LINKS
+
+// Header
+.header {
+    padding: 15px 0 9px 0;
+    position: relative; // So language toggle has relative parent
+    height: ($baseline * 9);
+}
+
+// Logo
+.logo {
+    display: block;
+
+    @include breakpoint(sm) {
+        height: $baseline * 6;
+        padding: 2px 0 6px 0; //off-grid on mobile otherwise
+    }
+
+    @include breakpoint(md) {
+        height: 39px;
+        margin-top: 2px;
+    }
+}
+
+// Secondary navigation list
+.secondary-nav {
+
+    // Fix for old-ie hiding mobile--hide class
+    @if $old-ie == false {
+        @include breakpoint(sm) {
+            display: none;
+        }
+    }
+
+    &__list {
+        float: right;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__item {
+        //display: inline-block;
+        float: left;
+        margin: 0;
+        padding: 0;
+
+        &:last-child a {
+            padding-right: 0;
+            border-right: 0 solid;
+        }
+
+    }
+
+    &__link {
+        padding: 0 8px 0 8px;
+        border-right: 1px solid $iron-light;
+
+        &--active {
+            @include breakpoint(sm) {
+                background-color: $active;
+            }
+        }
+    }
+
+}
+
+// 'Skip to main content' keyboard tabbable link
+.skiplink {
+    position: absolute;
+    left: -99999px;
+
+    &:focus {
+        background: $ship-grey;
+        color: $white;
+        top: 0;
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+        z-index: 10;
+        width: ($col * 10);
+        padding: 6px 0 10px 0;
+        font-size: 14px;
+        text-align: center;
+    }
+}

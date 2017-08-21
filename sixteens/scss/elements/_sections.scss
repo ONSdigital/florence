@@ -1,0 +1,139 @@
+.section {
+
+	&__title {
+		margin-top: $baseline * 6;
+		margin-bottom: 0;
+	}
+
+	&__subtitle {
+		margin-top: $col;
+		margin-bottom: $baseline;
+	}
+
+	&__content {
+
+		&-number {
+			position: relative;
+			margin-left: ($col * -3);
+			//padding-left: 6px;
+			//width: ($col * 3);
+			display: block;
+			float: left;
+
+			@include breakpoint(sm) {
+				margin-right: $col;
+				margin-left: 0;
+			}
+
+		}
+
+		&--markdown {
+
+			@include breakpoint(sm) {
+				padding: 0;
+			}
+
+			@include breakpoint(md) {
+				padding: 0 0 0 ($col * 3);
+				margin-right: ($col * 3);
+			}
+
+			@include breakpoint(lg) {
+				margin-right: ($col * 4);
+			}
+
+			@include markdown;
+
+			position: relative;
+
+			.markdown-chart-container, .markdown-table-container {
+				margin-bottom: ($baseline * 4);
+
+
+				//On mobile remove grey border
+				@include breakpoint(sm) {
+						border-left:0px
+					}
+
+				&--error {
+					height: ($baseline * 36);
+					font-size: 17px;
+					font-weight: 600;
+					position: relative;
+					text-align: center;
+				}
+
+				&--error__message {
+					position: absolute;
+					top: ($baseline * 16);
+					left: 0;
+					width: 100%;
+					text-align: center;
+					padding: 5px 0 3px 0;
+				}
+
+
+				.markdown-table-wrap {
+					//Charts take up extra space when available (ie on desktop/tablet)
+					width: 700px;
+					
+					// Slightly smaller on medium so that table right column isn't cut off
+					@include breakpoint(md) {
+						width: 670px;
+					}
+
+					//On mobile then go 100% width
+					@include breakpoint(sm) {
+						width: 100%;
+					}
+				}
+				.markdown-chart{
+					//Charts take up extra space when available (ie on desktop/tablet)
+					width: 700px;
+
+					//On tablet
+					@include breakpoint(md) {
+						width: 520px;
+					}
+					//On mobile 
+					@include breakpoint(sm) {
+						width: 360px;
+					}
+				}
+				.sm-multiple-holder {
+					// set the holder to max width: 3 small line charts
+					width: 700px;
+					/*
+					// 2 small line chart on tablet?
+					@include breakpoint(md) {
+						width: 500px;
+					}
+					*/
+				}
+
+				.sm-multiple {
+					padding-top:4px;
+					width: 230px;
+					float:left;
+				}
+			}
+
+			.markdown-chart-container{
+				padding-left:0;
+			}
+		}
+
+		&--static-markdown {
+			@include markdown;
+
+			margin-top: ($baseline * 3);
+
+			ol {
+				margin: $col 0 $col $col;
+			}
+
+		}
+
+	}
+
+}

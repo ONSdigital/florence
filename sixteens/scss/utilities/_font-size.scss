@@ -1,0 +1,53 @@
+//$font-sizes: (
+//    14: 14px,
+//    16: 16px,
+//    17: 17px,
+//    21: 21px,
+//    24: 24px,
+//    35: 35px
+//);
+//
+//@function font-size($key) {
+//    @if map_has_key($font-sizes, $key) {
+//        @return map_get($font-sizes, $key)
+//    }
+//    @warn "Unknown `#{$key}` in $font-sizes.";
+//    @return null;
+//}
+//
+//@mixin font-size-util {
+//    .font-size {
+//        @each $font-size, $font-size-px in $font-sizes {
+//            &--#{$font-size} {
+//                font-size: $font-size-px;
+//            }
+//        }
+//    }
+//}
+//
+//@include font-size-util;
+
+
+.font-size {
+    &--0 {
+        font-size: 0 !important;
+    }
+    &--14 {
+        font-size: 14px !important;
+    }
+    &--16 {
+        font-size: 16px !important;
+    }
+    &--17 {
+        font-size: 17px !important;
+    }
+    &--21 {
+        font-size: 21px !important;
+    }
+    &--24 {
+        font-size: 24px !important;
+    }
+    &--35 {
+        font-size: 35px !important;
+    }
+}

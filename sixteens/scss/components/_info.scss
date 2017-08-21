@@ -1,0 +1,18 @@
+.info-box {
+
+    background-color: $astral;
+    color: $haze;
+    position: relative;
+
+    a {
+        color: $white;
+        text-decoration: underline;
+
+        &:not(.btn):focus {
+            background-color: $haze;
+            color: $astral;
+        }
+
+    }
+
+}
