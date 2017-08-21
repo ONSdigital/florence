@@ -1,0 +1,55 @@
+//footer.scss
+
+.footer {
+	background-color: $ship-grey;
+	color: $iron-light;
+
+	a {
+		color: $iron;
+		text-decoration: underline;
+
+		&:hover {
+			color: $white;
+		}
+		&:focus {
+			color: $ship-grey;
+			background-color: $white;
+		}
+
+	}
+
+	&-nav {
+		padding: 0 0 $col*2.5 0;
+
+		&__heading {
+			margin-top: ($baseline * 4);
+			margin-bottom: 0;
+		}
+
+		&__list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		&__item {
+			margin: 0;
+			padding: 6px 0 2px 0;
+		}
+
+	}
+
+	&-license {
+		border-top: 1px solid $silver;
+		padding: $col*2 0 $col 0;
+
+			&__img {
+				display: inline-block;
+			}
+
+			&__text {
+				display: inline-block;
+				margin: $col 0 $col $col;
+			}
+	}
+}

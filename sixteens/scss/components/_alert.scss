@@ -1,0 +1,174 @@
+//_alert.scss
+
+.alert {
+    background-color: $abbey;
+    padding: ($baseline * 2) 0 ($baseline * 3) 0;
+    color: $iron;
+
+    @media print {
+        display: none;
+    }
+
+    &__title {
+        font-size: 24px;
+        line-height: 24px;
+        margin-top: 0;
+        margin-bottom: ($baseline * 1);
+        padding: 3px 0 5px 0;
+
+        a {
+            color: $iron;
+
+            &:hover {
+                color: $white;
+            }
+
+        }
+
+    }
+
+    &__link {
+        color: $iron;
+        font-size: 16px;
+        text-decoration: underline;
+        padding: 5px 0 3px 0;
+        display: inline-block;
+        
+        &:hover {
+            color: $white;
+        }
+
+        &:focus {
+            color: $thunder;
+            background: $iron;
+        }
+    }
+
+    &__content {
+        font-size: 14px;
+        margin: 0;
+
+        &--large {
+            font-size: 17px;
+            margin: 0;
+        }
+    }
+
+    &__date {
+        padding: 5px 0 10px 0;
+        margin: 0;
+        font-size: 17px
+    }
+
+    &--warning {
+
+        padding: $baseline 0;
+
+        //&__icon {
+        //	position: absolute;
+        //	height: ($baseline * 6);
+        //	width: ($col * 3);
+        //	border-radius: $col * 2;
+        //	display: inline-block;
+        //	border: 2px solid $white;
+        //	color: $white;
+        //	font-size: 26px;
+        //	padding: 10px 20px;
+        //	margin: 0 $col;
+        //
+        //	&:after {
+        //       content: "i";
+        //   }
+        //}
+
+        &__title {
+            //display: inline-block;
+            padding-left: ($col * 4);
+            margin: $baseline 0;
+            text-align: left; //IE9 fix, puts text centre aligned
+        }
+
+        &__content {
+
+            @include breakpoint(sm) {
+                margin: 0 $col
+            }
+
+            @include breakpoint(md) {
+                margin: 0 $col * 4;
+            }
+        }
+    }
+}
+
+// show and hide (used for corrections and notices)
+//&--show-hide {
+//
+//	border-top: 1px solid $iron;
+//	//padding-top: ($baseline);
+//	margin-top: ($baseline * 2);
+//
+//	&__title {
+//
+//		//width: $col * 29;
+//		padding: $baseline 0 $baseline $col;
+//		width: inherit;
+//		background-color: $ship-grey;
+//
+//		button {
+//			padding: 3px 0 5px 0;
+//		}
+//
+//
+//		button[aria-expanded=false] {
+//			//Plus symbol before expanded
+//			&:after {
+//				content: '+';
+//				display: inline-block;
+//				width: $col;
+//				height: 24px;
+//				float: right;
+//				border-left: 1px solid $nevada;
+//				padding: 0 $col;
+//			}
+//
+//		}
+//
+//		button[aria-expanded=true] {
+//			//Plus symbol before expanded
+//			&:after {
+//				content: '\2212';
+//				display: inline-block;
+//				width: $col;
+//				height: 24px;
+//				float: right;
+//				border-left: 1px solid $nevada;
+//				padding: 0 $col;
+//			}
+//
+//			//background-color: $ship-grey;
+//		}
+//
+//		button:focus {
+//			outline: none;
+//		}
+//
+//	}
+//
+//	&__content {
+//		padding: $baseline $col;
+//		background-color: $nevada;
+//	}
+//}
+//
+//&--correction {
+//
+//}
+//
+//&--notice {
+//	background-color: $ship-grey;
+//
+//	&__date {
+//		margin: 0;
+//	}
+//}

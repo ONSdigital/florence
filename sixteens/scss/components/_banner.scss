@@ -1,0 +1,43 @@
+.banner {
+    background-color: $astral;
+    color: $white;
+
+    &__icon {
+        vertical-align: middle;
+
+        @include breakpoint(sm) {
+            display: none;
+        }
+    }
+
+    &__body {
+        display: inline-block;
+        padding-top: $baseline;
+        padding-bottom: $baseline;
+
+        @include breakpoint(md) {
+            margin-left: $col;
+        }
+    }
+
+    @media print {
+        display: none;
+    }
+
+    p {
+        margin: 0;
+        font-size: 16px;
+
+        & > a {
+            color: $white;
+            text-decoration: underline;
+
+            &:focus {
+                background-color: $white;
+                color: $ship-grey;
+            }
+        }
+    }
+
+       
+}

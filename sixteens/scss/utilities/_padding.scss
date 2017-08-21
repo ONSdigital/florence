@@ -1,0 +1,122 @@
+// padding mixin
+
+@mixin padding-util {
+    .padding {
+        //
+        &-top {
+            @for $i from 0 through 24 {
+                @include breakpoint(sm) {
+                    &-sm--#{$i} {
+                        padding-top: ($baseline * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 24 {
+                @include breakpoint(md) {
+                    &-md--#{$i} {
+                        padding-top: ($baseline * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 24 {
+                @include breakpoint(lg) {
+                    &-lg--#{$i} {
+                        padding-top: ($baseline * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 24 {
+                &--#{$i} {
+                    padding-top: ($baseline * $i) !important;
+                }
+            }
+        }
+        &-bottom {
+            @for $i from 0 through 24 {
+                @include breakpoint(sm) {
+                    &-sm--#{$i} {
+                        padding-bottom: ($baseline * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 24 {
+                @include breakpoint(md) {
+                    &-md--#{$i} {
+                        padding-bottom: ($baseline * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 24 {
+                @include breakpoint(lg) {
+                    &-lg--#{$i} {
+                        padding-bottom: ($baseline * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 24 {
+                &--#{$i} {
+                    padding-bottom: ($baseline * $i) !important;
+                }
+            }
+        }
+
+        &-left {
+            @for $i from 0 through 59 {
+                @include breakpoint(sm) {
+                    &-sm--#{$i} {
+                        padding-left: ($col * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 59 {
+                @include breakpoint(md) {
+                    &-md--#{$i} {
+                        padding-left: ($col * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 59 {
+                @include breakpoint(lg) {
+                    &-lg--#{$i} {
+                        padding-left: ($col * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 59 {
+                &--#{$i} {
+                    padding-left: ($col * $i) !important;
+                }
+            }
+        }
+        &-right {
+            @for $i from 0 through 59 {
+                @include breakpoint(sm) {
+                    &-sm--#{$i} {
+                        padding-right: ($col * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 59 {
+                @include breakpoint(md) {
+                    &-md--#{$i} {
+                        padding-right: ($col * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 59 {
+                @include breakpoint(lg) {
+                    &-lg--#{$i} {
+                        padding-right: ($col * $i) !important;
+                    }
+                }
+            }
+            @for $i from 0 through 59 {
+                &--#{$i} {
+                    padding-right: ($col * $i) !important;
+                }
+            }
+        }
+    }
+}
+
+@include padding-util;

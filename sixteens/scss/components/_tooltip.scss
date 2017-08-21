@@ -1,0 +1,53 @@
+// _tooltip.scss
+
+
+// -npl (new pattern library) added to stop conflict with old pattern library that fires javascript for tooltip class
+
+.tooltip {
+    display: inline;
+    position: absolute;
+
+    &:hover:before,
+    &:focus:before {
+        border: solid;
+        border-color: $abbey transparent;
+        border-width: 6px 6px 0 6px;
+        bottom: 25px;
+        content: "";
+        left: 50%;
+        position: absolute;
+        z-index: 99;
+    }
+
+    &:hover:after,
+    &:focus:after{
+        background: $abbey;
+        bottom: 31px;
+        color: $iron;
+        content: attr(title);
+        padding: $baseline $col;
+        position: absolute;
+        z-index: 98;
+        width: 220px;
+        left: -190px;
+        box-sizing: border-box;
+
+        @include breakpoint(sm) {
+             left: -80px;
+        }
+
+        @include breakpoint(md) {
+            width: ($col * 12) + 1px; // 1px makes up for border on meta item
+            left: -118px;
+        }
+
+        @include breakpoint(lg) {
+            width: ($col * 15) + 1px; // 1px makes up for border on meta item
+            left: -119px;
+        }
+
+    }
+
+}
+
+

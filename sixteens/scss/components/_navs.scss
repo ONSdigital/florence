@@ -1,0 +1,83 @@
+// nav.scss
+
+.nav-tile-holder {
+
+	&__heading {
+		margin-bottom: $baseline * 3;
+	}
+
+	&__list {
+		padding: 0;
+		// margin: 0;
+		list-style: none;
+	}
+
+	&__item {
+		padding: 6px 0 10px 0;
+	}
+}
+
+.nav {
+	&-primary {
+		//move primary nav items here...
+	}
+	&-secondary-wrap {
+		background: $mercury;
+		border-top: 1px solid $iron;
+		margin-top: -1px;
+		padding-top: ($baseline * 2);
+	}
+
+	&-secondary {
+		// margin-top: ($baseline * 3);
+		margin-bottom: ($baseline * 2);
+
+		&--border-right-lg {
+			@include breakpoint(lg) {
+				border-right: 1px solid $iron;
+			}
+		}
+
+		&--border-left-lg {
+			@include breakpoint(lg) {
+				border-left: 1px solid $iron;
+			}
+		}
+
+		&__title {
+			margin: 0 0 0 0;
+		}
+
+		&__list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		&__item {
+			display: inline-block;
+			margin: 0;
+			padding: 11px 0 5px 0;
+			line-height: 16px;
+
+			&:after {
+				content: '|';
+				padding: 0px 0 0 8px;
+			}
+
+			&:last-child:after {
+				content: '';
+				padding: 0px 0 0 0px;
+			}
+
+		}
+
+		&--census {
+			color: $iron-light;
+			a {
+				color: $iron-light;
+			}
+		}
+	}
+
+}

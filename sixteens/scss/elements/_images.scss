@@ -1,0 +1,25 @@
+//_images.scss
+
+a img {
+    border: 0;
+}
+
+.image-responsive {
+  width: 100%;
+}
+
+.image-background {
+    &--mercury {
+        background-color: $mercury;
+    }
+}
+
+// Accessibility fixes
+//a:focus > img {
+//    outline: $matisse dotted 1px;
+//}
+//
+//a:focus > img.main-logo {
+//    outline: $matisse dotted 1px;
+//    margin: 2px 0 2px 0; //without extra margin outline doesn't show
+//}

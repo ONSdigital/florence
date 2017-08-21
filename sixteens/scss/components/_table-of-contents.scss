@@ -1,0 +1,102 @@
+// table of contents (including sticky version)
+.table-of-contents {
+
+	&__title {
+		// remove some margin
+	}
+
+	&__list {
+		//border-bottom: 1px solid $iron;
+		padding: 6px 0 18px 0;
+		margin-top: $baseline;
+
+		@include breakpoint(lg) {
+			-webkit-column-count: 2;
+			-moz-column-count: 2;
+			-ms-column-count: 2;
+			column-count: 2;
+		}
+	}
+
+	&__item {
+		margin: 0 0 0 ($baseline * 4);
+		padding: 0;
+		-webkit-column-break-inside:avoid;
+		-moz-column-break-inside:avoid;
+		-o-column-break-inside:avoid;
+		-ms-column-break-inside:avoid;
+		column-break-inside:avoid;
+	}
+
+	&--sticky {
+
+		&__wrap {
+			overflow: hidden;
+			background: $ship-grey;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: 0;
+			padding: 0;
+			z-index: 100;
+
+			& > .wrapper {
+				padding: ($baseline * 2) 0;
+			}
+
+			a {
+				color: $alabaster;
+			}
+
+		}
+
+		&__heading {
+			margin: 0 0 ($baseline) 0;
+			color: $white;
+			display: block;
+		}
+
+		&__select-wrap {
+			position: relative;
+			height: ($baseline * 5);
+			display: inline-block;
+			width: 90%;
+			background: lighten($primary, 65%);
+
+			&:before {
+				content: '';
+				width: 42px;
+				height: ($baseline * 5);
+				position: absolute;
+				top: 0;
+				right: 0;
+				//background: $primary url($sprite) no-repeat -11px -735px;
+				//background-size: 30px auto;
+				background-color: $primary;
+				background-image: url($svg);
+				background-size: 150px auto;
+				background-position: 5px -857px;
+			}
+		}
+
+		&__select {
+			width: 100%;
+			font-size: 14px;
+			color: $ship-grey;
+			border: none;
+			padding: 6px ($col * 3) 4px $col;
+			height: ($baseline * 5);
+			border-radius: 0;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+			//padding: 7px 62px 7px 20px;
+			background: transparent;
+			position: relative;
+			cursor: pointer;
+		}
+
+	}
+
+}

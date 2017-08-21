@@ -1,0 +1,111 @@
+//_inputs-and-labels.scss
+
+
+// RESET FIELDSET AND LEGEND - credit to http://thatemil.com/blog/2015/01/03/reset-your-fieldset/
+legend {
+	padding: 0;
+	//display: table;
+}
+
+fieldset {
+	border: 0;
+	padding: 0.01em 0 0 0;
+	margin: 0;
+	min-width: 0;
+}
+
+//body:not(:-moz-handler-blocked) fieldset {
+//	display: table-cell;
+//}
+
+
+label {
+    //Attempt to fix inputs not taking font size and family
+    font-family: "Open Sans", sans-serif;
+    font-weight: $base-font-weight;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/* on grid forms */
+//label{
+//    display:inline-block;
+//    padding:7px 0 9px 0;
+//}
+//input{
+//    font-size:14px;
+//    padding-bottom: 2px;
+//}
+//legend {
+//    padding: 6px 0 2px 0;
+//}
+//textarea {
+//    display: block;
+//    font-size: 14px;
+//    color: #414042;
+//    font-weight: 300;
+//    margin-bottom: 2px;
+//    line-height: 16px;
+//}
+
+input, select {
+    font-family: $base-font-family;
+    font-size: $base-font-size;
+}
+
+.label {
+
+	&--inline {
+		display: inline;
+	}
+
+	//Attempt to fix inputs not taking font size and family
+    &--chart {
+        font-size: 12px;
+    }
+
+}
+
+.input {
+    background-color: white;
+    width: 100%;
+    height: 32px;
+    border: 1px solid $iron;
+    padding: ($baseline) ($col / 2);
+
+
+    &[type=search] {
+        -webkit-appearance: none; // Fix for Safari not accepting element height
+    }
+
+    &:focus {
+        outline: 3px solid $carrot;
+    }
+
+	&--focus {
+		//outline: 1px dashed $nevada;
+		//outline-offset: -1px;
+
+		overflow: auto;
+		position: absolute;
+		box-shadow: 0px 0px 6px 5px $nevada;
+		-webkit-box-shadow: 0px 0px 6px 5px $nevada;
+		-moz-box-shadow: 0px 1px 3px $abbey;
+
+	}
+
+	&__wrapper {
+        padding: 2px 0 2px 0;
+    }
+}
+
+.select {
+    background-color: white;
+    border: 1px solid $iron;
+}
+
+.width-auto {
+    width: auto !important;
+}
+
+
