@@ -1,0 +1,72 @@
+// _tabs.scss
+
+.tab {
+
+    //@include breakpoint(md){
+	//	margin-top: ($baseline *6);
+	//}
+
+    //border-bottom: 1px solid $iron;
+    //margin-bottom: -1px;
+    //background: $ship-grey;
+
+    &__item {
+        margin: 0;
+        vertical-align: bottom;
+        display: inline-block;
+
+        @include breakpoint(sm) {
+            max-width: 32%;
+        }
+    }
+
+    &__link {
+
+        font-size: 21px;
+        height: ($baseline * 6);
+        background: $aluminium;
+        color: $ship-grey;
+        padding: 12px $col;
+        margin: 0;
+        display: block;
+
+        @include breakpoint(sm) {
+            padding: 9px ($col/2) 3px ($col/2);
+            font-size: 14px;
+            word-wrap: normal;
+            line-height: 18px;
+            height: ($baseline * 7);
+        }
+
+        &:hover,
+        &:focus {
+            cursor: pointer;
+            background: darken($aluminium, 15%);
+        }
+
+        &--active {
+            padding-top: 20px;
+            padding-bottom: 12px;
+            background: $white;
+            color: $ship-grey;
+            height: ($baseline * 7);
+
+            @include breakpoint(sm) {
+                padding-top: 17px;
+                height: ($baseline * 8);
+            }
+
+            &:hover,
+            &:focus {
+                cursor: default;
+                background-color: $white;
+                text-decoration: none;
+            }
+
+        }
+
+
+    }
+
+
+}

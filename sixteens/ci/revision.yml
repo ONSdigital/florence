@@ -1,0 +1,18 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: onsdigital/dp-concourse-tools-git
+
+inputs:
+  - name: dist
+  - name: sixteens
+
+outputs:
+  - name: artifacts
+
+run:
+  path: sixteens/ci/scripts/revision.sh

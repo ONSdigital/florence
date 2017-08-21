@@ -1,0 +1,84 @@
+//_page.scss
+
+.page {
+	&-intro {
+
+		&__type {
+			display: block;
+			font-size: 21px;
+			font-weight: $base-font-weight;
+			color: $ship-grey;
+			padding: 5px 0 3px 0;
+		}
+
+		&__title {
+			margin-top: ($baseline * 2);
+			margin-bottom: ($baseline * 1);
+
+			&--home {
+				font-size: 36px;
+
+				@include breakpoint(sm) {
+					font-size: 22px;
+				}
+
+				&-big {
+					font-size: 60px;
+					line-height: 64px;
+					display: block;
+					margin-bottom: 0;
+
+					@include breakpoint(sm) {
+						font-size: 36px;
+						line-height: 40px;
+					}
+				}
+			}
+		}
+		&__content {
+			font-size: 21px;
+			margin-top: ($baseline * 0);
+			margin-bottom: ($baseline * 6);
+			padding: 7px 0 9px 0;
+			line-height: 32px;
+
+			@include breakpoint(sm) {
+				font-size: 17px;
+				padding: 9px 0 7px 0;
+				margin-bottom: ($baseline * 4);
+			}
+
+			&--home-big {
+				font-size: 24px;
+				margin-top: 16px;
+				margin-bottom: ($baseline * 6);
+
+				@include breakpoint(sm) {
+					font-size: 17px;
+					margin-top: 0;
+					margin-bottom: ($baseline * 2);
+				}
+
+			}
+		}
+	}
+	&-content {
+		//border-top: 1px solid $iron;
+		//margin-top: -1px;
+        min-height: ($baseline * 24); //Stop page balance looking wrong if page has very little content
+
+		&__main-content {
+			overflow: visible;
+		}
+	}
+	&-footer {}
+}
+
+.highlighted {
+
+	&-wrap {
+		border-top: 1px solid $iron;
+		margin-top: -1px;
+	}
+
+}

@@ -1,0 +1,69 @@
+//_search results.scss
+
+.search {
+
+    &-page {
+
+        &__title {
+            margin: $col 0 0 0;
+        }
+
+        &__results-text {
+            font-size: 14px;
+            font-weight: $base-font-weight;
+            line-height: 24px;
+            margin: ($baseline * 3) 0 $baseline 0;
+            padding: 6px 0 10px 0;
+
+            &--timeseries {
+                @include breakpoint(sm) {
+                    max-width: 170px;
+                }
+            }
+        }
+
+    }
+
+    &-results {
+
+        &__headline {
+            overflow: auto;
+            margin-bottom: ($baseline * 2);
+        }
+
+        &__item {
+            margin: 0 0 ($baseline * 4) 0;
+
+        }
+
+        &__title {
+            margin: 0;
+        }
+
+        &__meta {
+            padding: 0;
+            color: $salem;
+            font-size: 14px;
+            margin: -1px 0 1px 0;
+
+            &:first-letter {
+                text-transform: capitalize;
+            }
+        }
+
+        &__summary {
+
+            p {
+                margin: 0;
+                padding: 6px 0 2px 0;
+            }
+
+        }
+
+        &__keywords {
+            margin: 0;
+        }
+
+    }
+
+}

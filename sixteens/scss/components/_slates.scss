@@ -1,0 +1,48 @@
+// slates
+
+.slate {
+
+	&--thunder {
+		background-color: $thunder;
+		color:	$iron-light;
+	}
+
+	&--ship-grey {
+		background-color: $ship-grey;
+		color: $iron-light;
+	}
+
+	&--abbey {
+		background-color: $abbey;
+		color:	$iron-light;
+	}
+
+	&--silver {
+		background-color: $silver;
+	}
+
+	&--iron {
+		background-color: $iron;
+	}
+
+	&--iron-light {
+		background-color: $iron-light;
+	}
+
+	&--mercury {
+		background-color: $mercury;
+	}
+
+	&--gallery {
+		background-color: $gallery;
+	}
+
+	&--aluminium {
+		background-color: $aluminium;
+	}
+
+	&--alabaster {
+		background-color: $alabaster;
+	}
+
+}
