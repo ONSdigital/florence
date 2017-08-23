@@ -6,7 +6,7 @@
  * @param parentUrl
  */
 
-function loadT8CmdCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
+function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
     var releaseDate = null;             //overwrite scheduled collection date
     var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
     var parentUrlData = parentUrl + "/data";
