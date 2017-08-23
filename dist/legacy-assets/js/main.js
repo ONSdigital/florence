@@ -6390,8 +6390,8 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
             else if (pageType === 'dataset_landing_page' || pageType === 'timeseries_landing_page') {
                 loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
             }
-            else if (pageType === 'cmd_dataset_landing_page') {
-                loadT8CmdCreator(collectionId, releaseDate, pageType, parentUrl);
+            else if (pageType === 'api_dataset_landing_page') {
+                loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl);
             }
             else if (pageType === 'visualisation') {
                 console.log('Visualisation');
@@ -8666,7 +8666,7 @@ function loadT8CmdCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
         });
 
         $('form').off().submit(function (e) {
-            var getPageName = $('#cmdDatasetName').val();
+            var getPageName = $('#apiDatasetName').val();
             $('#pagename').val(getPageName);
             var nameValid = validatePageName();
             if (!nameValid) {
@@ -8676,8 +8676,8 @@ function loadT8CmdCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             pageData = pageTypeDataT8(pageType);
             pageTitle = $('#pagename').val();
             pageData.description.title = pageTitle;
-            cmdDatsetID = $('#cmdDatasetId span').text();
-            pageData.cmdDatasetId = cmdDatsetID;
+            apiDatsetID = $('#apiDatasetId span').text();
+            pageData.apiDatasetId = apiDatsetID;
             uriSection = "datasets";
             pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
             newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
@@ -8729,11 +8729,11 @@ function loadT8CmdCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
         $('.btn-get-recipes, .dataset-list').remove();
         $('.btn-page-create').show();
         $('.edition').append(
-          '<div id="cmdDatasetId">Imported dataset ID: <span>'+getDatasetID+'</span></div>' +
-          '<label for="cmdDatasetName">Dataset name</label>' +
-          '<input id="cmdDatasetName" type="text" value="'+getDatasetName+'" />'+
+          '<div id="apiDatasetId">Imported dataset ID: <span>'+getDatasetID+'</span></div>' +
+          '<label for="apiDatasetName">Dataset name</label>' +
+          '<input id="apiDatasetName" type="text" value="'+getDatasetName+'" />'+
           // Hidden input for #pagename so it can be validated
-          // Populated with #cmdDatasetName value on submit
+          // Populated with #apiDatasetName value on submit
           '<input id="pagename" type="hidden" value="" />'
         );
         $('#js-modal-recipe').remove();
@@ -8744,9 +8744,9 @@ function loadT8CmdCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
 
     function pageTypeDataT8(pageType) {
               // Add the data to the page data in Zebedee
-              if (pageType === "cmd_dataset_landing_page") {
+              if (pageType === "api_dataset_landing_page") {
                   return {
-                      "cmdDatasetId": "",
+                      "apiDatasetId": "",
                       "description": {
                         "title": ""
                       },
@@ -11286,7 +11286,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         datasetLandingEditor(collectionId, pageData);
     }
 
-    else if (pageData.type === 'cmd_dataset_landing_page') {
+    else if (pageData.type === 'api_dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
