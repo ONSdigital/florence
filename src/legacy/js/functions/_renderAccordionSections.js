@@ -367,7 +367,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         datasetLandingEditor(collectionId, pageData);
     }
 
-    else if (pageData.type === 'cmd_dataset_landing_page') {
+    else if (pageData.type === 'api_dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
