@@ -44,7 +44,11 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
             }
             else if (pageType === 'dataset_landing_page' || pageType === 'timeseries_landing_page') {
                 loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
-            } else if (pageType === 'visualisation') {
+            }
+            else if (pageType === 'api_dataset_landing_page') {
+                loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl);
+            }
+            else if (pageType === 'visualisation') {
                 console.log('Visualisation');
 
             } else if (pageType === 'release') {
@@ -56,6 +60,3 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
         });
     }
 }
-
-
-
