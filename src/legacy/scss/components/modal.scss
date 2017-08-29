@@ -51,4 +51,34 @@
             margin: 0 auto;
         }
     }
+
+    &-recipe {
+      // Duplicate of builder__inner, which should later be migrated over to use modal classing
+      background-color: lighten( $pickled-bluewood, 10% );
+      border:3px solid $pickled-bluewood;
+      width: $col--6;
+      margin-top: $lineheight * 5;
+      margin-right: auto;
+      margin-left: auto;
+      overflow: hidden;
+      position: relative;
+
+      &__body {
+        padding: 20px;
+        ul {
+          list-style:none;
+          border:$white;
+          li:not(:last-child) {
+            padding:0 0 20px;
+            margin:0 0 20px;
+            border-bottom:1px solid $white;
+          }
+          h1 {
+            color:$white;
+            font-size:16px;
+            margin:0;
+          }
+        }
+      }
+    }
 }
