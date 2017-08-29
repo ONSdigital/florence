@@ -16,8 +16,10 @@ import (
 	mgo "gopkg.in/mgo.v2"
 
 	"github.com/ONSdigital/florence/assets"
+	"github.com/ONSdigital/florence/healthcheck"
 	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
+	hc "github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/gorilla/pat"
@@ -66,6 +68,11 @@ func main() {
 	}
 
 	log.Namespace = "florence"
+
+	zc := healthcheck.New(zebedeeURL, "zebedee")
+	bc := healthcheck.New(babbageURL, "babbage")
+	rc := healthcheck.New(recipeAPIURL, "recipe-api")
+	ic := healthcheck.New(importAPIURL, "import-api")
 
 	/*
 		NOTE:
@@ -118,6 +125,18 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
+
+	go func() {
+		for {
+			timer := time.NewTimer(time.Second * 60)
+
+			hc.MonitorExternal(bc, zc, ic, rc)
+
+			<-timer.C
+		}
+	}()
+
+	router.Path("/healthcheck").HandlerFunc(hc.Do)
 
 	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
 	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
