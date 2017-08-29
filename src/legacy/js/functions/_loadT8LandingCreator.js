@@ -84,40 +84,40 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
 
     function pageTypeDataT8(pageType) {
 
-        if (pageType === "dataset_landing_page") {
-            return {
-                "description": {
-                    "releaseDate": "",
-                    "nextRelease": "",
-                    "contact": {
-                        "name": "",
-                        "email": "",
-                        "telephone": ""
-                    },
-                    "summary": "",
-                    "datasetId": "",
-                    "keywords": [],
-                    "metaDescription": "",
-                    "metaCmd": "",
-                    "nationalStatistic": false,
-                    "title": ""
-                },
-                "timeseries": false,
-                "datasets": [],
-                "section": {},      //notes
-                "corrections": [],
-                "relatedDatasets": [],
-                "relatedDocuments": [],
-                "relatedMethodology": [],
-                "relatedMethodologyArticle": [],
-                "topics": [],
-                "alerts": [],
-                "links": [],
-                type: pageType
-            };
-        }
-        else {
-            sweetAlert('Unsupported page type. This is not a dataset type');
-        }
+              if (pageType === "dataset_landing_page") {
+                  return {
+                      "description": {
+                          "releaseDate": "",
+                          "nextRelease": "",
+                          "contact": {
+                              "name": "",
+                              "email": "",
+                              "telephone": ""
+                          },
+                          "summary": "",
+                          "datasetId": "",
+                          "keywords": [],
+                          "metaDescription": "",
+                          "metaCmd": "",
+                          "nationalStatistic": false,
+                          "title": ""
+                      },
+                      "timeseries": false,
+                      "datasets": [],
+                      "section": {},      //notes
+                      "corrections": [],
+                      "relatedDatasets": [],
+                      "relatedDocuments": [],
+                      "relatedMethodology": [],
+                      "relatedMethodologyArticle": [],
+                      "topics": [],
+                      "alerts": [],
+                      "links": [],
+                      type: pageType
+                  };
+              }
+              else {
+                  sweetAlert('Unsupported page type. This is not a dataset type');
+              }
     }
 }
