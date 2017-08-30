@@ -10,6 +10,7 @@ import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
 import http from '../../../utilities/http';
 import FileUpload from '../../../components/file-upload/FileUpload';
+import Select from '../../../components/Select';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -38,8 +39,9 @@ class DatasetOverviewController extends Component {
         }
 
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
-    
+
     componentWillMount() {
         if (!this.props.datasets || this.props.datasets.length === 0) {
             this.setState({isFetchingDataset: true});
@@ -104,13 +106,13 @@ class DatasetOverviewController extends Component {
                 console.error('Error getting job and recipe data: ', error);
             })
         } else {
+
             const job = this.props.jobs.find(job => {
                 return job.job_id === this.props.params.job
             });
             const recipe = this.props.datasets.find(dataset => {
                 return dataset.id === job.recipe;
             });
-
             const activeDataset = this.mapAPIResponsesToState({recipe, job});
 
             if (!activeDataset) {
@@ -160,7 +162,7 @@ class DatasetOverviewController extends Component {
                 r.upload();
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === aliasName) {
-                        currentFile.progress = 0;                      
+                        currentFile.progress = 0;
                     }
                     return currentFile;
                 });
@@ -174,7 +176,7 @@ class DatasetOverviewController extends Component {
                 const progressPercentage = file.progress() * 100;
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.progress = progressPercentage;                      
+                        currentFile.progress = progressPercentage;
                     }
                     return currentFile;
                 });
@@ -187,7 +189,7 @@ class DatasetOverviewController extends Component {
             r.on('fileError', file => {
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.error = "An error occurred whilst uploading this file"                        
+                        currentFile.error = "An error occurred whilst uploading this file"
                     }
                     return currentFile;
                 });
@@ -221,7 +223,7 @@ class DatasetOverviewController extends Component {
                 }).catch(error => {
                     const files = this.state.activeDataset.files.map(currentFile => {
                         if (currentFile.alias_name === aliasName) {
-                            currentFile.error = "An error occurred whilst uploading this file"                        
+                            currentFile.error = "An error occurred whilst uploading this file"
                         }
                         return currentFile;
                     });
@@ -254,13 +256,22 @@ class DatasetOverviewController extends Component {
             }
         })
 
+        const editionsList = recipeAPIResponse.output_instances.map((output, i) => {
+          const editions = recipeAPIResponse.output_instances[i].editions;
+          return editions;
+        })
+
+        const editionOverride = recipeAPIResponse.output_instances.editions_override;
+
         return {
             recipeID: recipeAPIResponse.id,
             jobID: jobAPIResponse.job_id,
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
-            files
+            files,
+            editionsList,
+            editionOverride
         }
     }
 
@@ -358,6 +369,14 @@ class DatasetOverviewController extends Component {
         });
     }
 
+    handleSelect(value){
+      const activeDataset = {
+          ...this.state.activeDataset,
+          edition: value
+      }
+      this.setState({activeDataset});
+    }
+
     renderFileInputs() {
         if (!this.state.activeDataset) {
             return;
@@ -365,7 +384,7 @@ class DatasetOverviewController extends Component {
 
         return this.state.activeDataset.files.map((file, index) => {
             return (
-                <FileUpload 
+                <FileUpload
                     label={file.alias_name}
                     type="file"
                     id={"dataset-upload-" + index.toString()}
@@ -378,12 +397,11 @@ class DatasetOverviewController extends Component {
                 />
             )
         })
-        
-    }
 
+    }
     render() {
         return(
-            <div className="grid grid--justify-center">
+          <div className="grid grid--justify-center">
                 <div className="grid__col-6">
                     <h1>
                         {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
@@ -396,15 +414,25 @@ class DatasetOverviewController extends Component {
                         &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
                     </span>
                     {this.state.isFetchingDataset &&
-                        <div className="grid--align-center grid--align-self-center"> 
+                        <div className="grid--align-center grid--align-self-center">
                             <div className="loader loader--large loader--dark"></div>
                         </div>
                     }
+
                     {this.state.activeDataset &&
                         <h2 className="margin-bottom--1">
-                            {this.state.activeDataset.alias}
+                        {this.state.activeDataset.alias}
                         </h2>
                     }
+
+                     {this.state.activeDataset &&
+                      <Select
+                        editionsListArray={this.state.activeDataset.editionsList}
+                        editionOverride={true}
+                        onChange={this.handleSelect}
+                      />
+                    }
+
                     <form onSubmit={this.handleFormSubmit}>
                         { this.renderFileInputs() }
                         {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
