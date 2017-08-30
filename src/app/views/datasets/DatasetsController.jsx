@@ -199,7 +199,7 @@ export class DatasetsController extends Component {
                         </div>
                     }
                     {this.props.datasets.length > 0 &&
-                        <ul className="list">
+                        <ul className="list list--neutral">
                             {this.props.datasets.map(dataset => {
                                 return (
                                     <DatasetItem 
