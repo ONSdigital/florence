@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"mime"
 	"net/http"
@@ -127,26 +128,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	go func() {
-		stop := make(chan os.Signal, 1)
-		signal.Notify(stop, os.Interrupt, os.Kill)
-
-		for {
-			hc.MonitorExternal(bc, zc, ic, rc)
-
-			timer := time.NewTimer(time.Second * 60)
-
-			select {
-			case <-timer.C:
-				continue
-			case <-stop:
-				log.Info("shutting service down gracefully", nil)
-				timer.Stop()
-				return
-			}
-		}
-	}()
-
 	router.Path("/healthcheck").HandlerFunc(hc.Do)
 
 	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
@@ -181,6 +162,7 @@ func main() {
 	s.Server.IdleTimeout = 120 * time.Second
 	s.Server.WriteTimeout = 120 * time.Second
 	s.Server.ReadTimeout = 30 * time.Second
+	s.HandleOSSignals = false
 	s.MiddlewareOrder = []string{"RequestID", "Log"}
 
 	// FIXME temporary hack to remove timeout middleware (doesn't support hijacker interface)
@@ -193,9 +175,34 @@ func main() {
 	}
 	s.MiddlewareOrder = newMo
 
-	if err := s.ListenAndServe(); err != nil {
-		log.Error(err, nil)
-		os.Exit(2)
+	go func() {
+		if err := s.ListenAndServe(); err != nil {
+			log.Error(err, nil)
+			os.Exit(2)
+		}
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, os.Kill)
+
+	for {
+		hc.MonitorExternal(bc, zc, ic, rc)
+
+		timer := time.NewTimer(time.Second * 60)
+
+		select {
+		case <-timer.C:
+			continue
+		case <-stop:
+			log.Info("shutting service down gracefully", nil)
+			timer.Stop()
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			if err := s.Server.Shutdown(ctx); err != nil {
+				log.Error(err, nil)
+			}
+			return
+		}
 	}
 }
 
