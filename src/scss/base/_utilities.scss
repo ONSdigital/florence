@@ -1,8 +1,7 @@
 
-
 .margin {
 
-    @for $i from 1 through 5 {
+    @for $i from 0 through 5 {
         $margin: $lineheight * $i;
 
         &-top--#{$i} {

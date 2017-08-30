@@ -16,7 +16,7 @@ import notifications from '../notifications';
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry, body, callerHandles401) {
+export default function request(method, URI, willRetry = true, onRetry = function(){}, body, callerHandles401) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
@@ -113,9 +113,7 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
                     setTimeout(function() { tryFetch(resolve, reject, URI, willRetry, body) }, interval);
                     retryCount++;
                     interval = interval * 2;
-                    if (onRetry) {
-                        onRetry(retryCount);
-                    }
+                    onRetry(retryCount);
                 } else {
 
                     // pass error back to caller when max number of retries is met
