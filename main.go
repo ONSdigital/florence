@@ -91,6 +91,7 @@ func main() {
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
+	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
 	router.HandleFunc("/florence/collections", legacyIndexFile)
 	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
