@@ -1572,6 +1572,15 @@ select {
     height: auto;
     min-height: 105px; }
 
+select.select {
+  background-color: white;
+  border: 3px solid #58585B;
+  -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  appearance: menulist;
+  padding: 5px 10px;
+  min-width: 50%; }
+
 .form__label {
   display: block;
   margin-bottom: 7px; }
