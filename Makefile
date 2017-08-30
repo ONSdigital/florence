@@ -24,6 +24,7 @@ generate: ${GOPATH}/bin/go-bindata
 
 test:
 	go test -cover $(shell go list ./... | grep -v /vendor/) -tags 'production'
+	cd src; npm run test
 
 node-modules:
 	cd src; npm install
