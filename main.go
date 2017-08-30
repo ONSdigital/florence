@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -127,12 +128,22 @@ func main() {
 	}
 
 	go func() {
-		for {
-			timer := time.NewTimer(time.Second * 60)
+		stop := make(chan os.Signal, 1)
+		signal.Notify(stop, os.Interrupt, os.Kill)
 
+		for {
 			hc.MonitorExternal(bc, zc, ic, rc)
 
-			<-timer.C
+			timer := time.NewTimer(time.Second * 60)
+
+			select {
+			case <-timer.C:
+				continue
+			case <-stop:
+				log.Info("shutting service down gracefully", nil)
+				timer.Stop()
+				return
+			}
 		}
 	}()
 
