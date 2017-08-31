@@ -23,7 +23,7 @@ class Jobs extends Component {
         return (
             <div>
                 {this.props.jobs.length > 0 ?
-                    <ul className="list">
+                    <ul className="list list--neutral">
                         {this.props.jobs.map(job => {
                             const recipe = this.props.datasets.find(dataset => {
                                 return dataset.id === job.recipe;
