@@ -146,7 +146,7 @@ class DatasetOverviewController extends Component {
 
     bindInputs() {
 
-        document.querySelectorAll("input").forEach(input => {
+        document.querySelectorAll('input[type="file"]').forEach(input => {
             const r = new Resumable({
                 target: "/upload",
                 chunkSize: 5 * 1024 * 1024,
@@ -370,11 +370,15 @@ class DatasetOverviewController extends Component {
     }
 
     handleSelect(value){
-      const activeDataset = {
-          ...this.state.activeDataset,
-          edition: value
-      }
-      this.setState({activeDataset});
+      datasetImport.addEdition(this.state.activeDataset.jobID, value).then(() => {
+        const activeDataset = {
+            ...this.state.activeDataset,
+            edition: value
+        }
+        this.setState({activeDataset});
+      }).catch(error => {
+          console.error(`Error updating edition of job '${this.state.activeDataset.id}': `, error);
+      });
     }
 
     renderFileInputs() {
@@ -425,10 +429,14 @@ class DatasetOverviewController extends Component {
                         </h2>
                     }
 
-                     {this.state.activeDataset &&
+                    {this.state.activeDataset &&
                       <Select
-                        editionsListArray={this.state.activeDataset.editionsList}
-                        editionOverride={true}
+                        contents={this.state.activeDataset.editionsList}
+                        label="Select an edition"
+                        id="edition-select"
+                        override={this.state.activeDataset.editionOverride}
+                        overrideLabel="Enter an edition name"
+                        overrideId="edition-input"
                         onChange={this.handleSelect}
                       />
                     }
