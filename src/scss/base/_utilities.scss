@@ -8,10 +8,14 @@
         &-top--#{$i} {
             margin-top: $margin;
         }
-        
+
         &-bottom--#{$i} {
             margin-bottom: $margin;
         }
     }
 
+}
+
+.block {
+  display: block;
 }
