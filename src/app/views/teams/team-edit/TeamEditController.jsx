@@ -4,8 +4,8 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import { updateUsers, updateActiveTeamMembers } from '../../../config/actions';
-import user from '../../../utilities/APIs/user';
-import teams from '../../../utilities/APIs/teams';
+import user from '../../../utilities/api-clients/user';
+import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
 import log, { eventTypes } from '../../../utilities/log';
 
@@ -27,7 +27,7 @@ export class TeamEditController extends Component {
             editedUsers: null,
             updatingAllUsers: false,
             parentPath: (location.pathname).split('/edit')[0],
-            disabledUsers: new Map(),
+            disabledUsers: [],
             searchTerm: ""
         }
 
@@ -44,7 +44,7 @@ export class TeamEditController extends Component {
             const editedUsers = users.filter(user => {
                 return this.props.members.indexOf(user.email) < 0
             });
-
+            
             this.props.dispatch(updateUsers(users));
             this.setState({
                 editedUsers: editedUsers,
@@ -77,28 +77,27 @@ export class TeamEditController extends Component {
         });
     }
 
+    sortUsers(users) {
+        return users.sort((userA, userB) => {
+            if (userA.email < userB.email) return -1;
+            if (userA.email > userB.email) return 1;
+            return 0;
+        });
+    }
+
+    sortMembers(members) {
+        return members.sort((memberA, memberB) => {
+            if (memberA < memberB) return -1;
+            if (memberA > memberB) return 1;
+            return 0;
+        });
+    }
+
     handleMembersChange(userAttributes) {
         log.add(eventTypes.editedTeamMembers, {action: userAttributes.action, team: this.props.name, user: userAttributes.email})
 
-        const disabledUsers = this.state.disabledUsers;
-        disabledUsers.set(userAttributes.email, null);
+        const disabledUsers = [...this.state.disabledUsers, userAttributes.email];
         this.setState({disabledUsers});
-
-        function sortUsers(users) {
-            return users.sort((userA, userB) => {
-                    if (userA.email < userB.email) return -1;
-                    if (userA.email > userB.email) return 1;
-                    return 0;
-                });
-        }
-
-        function sortMembers(members) {
-            return members.sort((memberA, memberB) => {
-                    if (memberA < memberB) return -1;
-                    if (memberA > memberB) return 1;
-                    return 0;
-                });
-        }
 
         switch (userAttributes.action) {
             case ("remove"): {
@@ -107,17 +106,17 @@ export class TeamEditController extends Component {
                         return member !== userAttributes.email
                     });
                     const editedUsers = [ ...this.state.editedUsers, {email: userAttributes.email}];
-                    const disabledUsers = this.state.disabledUsers;
-                    disabledUsers.delete(userAttributes.email, null);
+                    const disabledUsers = [...this.state.disabledUsers];
+                    disabledUsers.splice(disabledUsers.indexOf(userAttributes.email), 1);
 
                     this.setState({
-                        editedUsers: sortUsers(editedUsers),
+                        editedUsers: this.sortUsers(editedUsers),
                         disabledUsers
                     });
-                    this.props.dispatch(updateActiveTeamMembers(sortMembers(editedMembers)));
+                    this.props.dispatch(updateActiveTeamMembers(this.sortMembers(editedMembers)));
                 }).catch(error => {
-                    const disabledUsers = this.state.disabledUsers;
-                    disabledUsers.delete(userAttributes.email, null);
+                    const disabledUsers = [...this.state.disabledUsers];
+                    disabledUsers.splice(disabledUsers.indexOf(userAttributes.email), 1);
                     this.setState({disabledUsers});
                     
                     switch(error.status) {
@@ -133,7 +132,7 @@ export class TeamEditController extends Component {
                         case("RESPONSE_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `An error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -142,7 +141,7 @@ export class TeamEditController extends Component {
                         case("FETCH_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `A network error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `A network error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -151,7 +150,7 @@ export class TeamEditController extends Component {
                         case("UNEXPECTED_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -160,7 +159,7 @@ export class TeamEditController extends Component {
                         default: {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -176,17 +175,17 @@ export class TeamEditController extends Component {
                     const editedUsers = this.state.editedUsers.filter(user => {
                         return user.email !== userAttributes.email
                     });
-                    const disabledUsers = this.state.disabledUsers;
-                    disabledUsers.delete(userAttributes.email, null);
+                    const disabledUsers = [...this.state.disabledUsers];
+                    disabledUsers.splice(disabledUsers.indexOf(userAttributes.email), 1);
 
                     this.setState({
-                        editedUsers: sortUsers(editedUsers),
+                        editedUsers: this.sortUsers(editedUsers),
                         disabledUsers
                     });
-                    this.props.dispatch(updateActiveTeamMembers(sortMembers(editedMembers)));
+                    this.props.dispatch(updateActiveTeamMembers(this.sortMembers(editedMembers)));
                 }).catch(error => {
-                    const disabledUsers = this.state.disabledUsers;
-                    disabledUsers.delete(userAttributes.email, null);
+                    const disabledUsers = [...this.state.disabledUsers];
+                    disabledUsers.splice(disabledUsers.indexOf(userAttributes.email), 1);
                     this.setState({disabledUsers});
 
                     switch(error.status) {
@@ -202,7 +201,7 @@ export class TeamEditController extends Component {
                         case("RESPONSE_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `An error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -211,7 +210,7 @@ export class TeamEditController extends Component {
                         case("FETCH_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `A network error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `A network error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -220,7 +219,7 @@ export class TeamEditController extends Component {
                         case("UNEXPECTED_ERR"): {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -229,7 +228,7 @@ export class TeamEditController extends Component {
                         default: {
                             const notification = {
                                 type: "warning",
-                                message: `An unexpected error occured whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
+                                message: `An unexpected error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
                                 isDismissable: true
                             }
                             notifications.add(notification);
@@ -238,9 +237,6 @@ export class TeamEditController extends Component {
                     }
                 });
                 break;
-            }
-            default: {
-                console.error(`Unrecognised action attribute on team members editing screen\n`, userAttributes);
             }
         }
     }
@@ -274,7 +270,8 @@ function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
         members: state.state.teams.active.members,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        users: state.state.teams.users
     }
 }
 

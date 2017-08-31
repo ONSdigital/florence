@@ -24,4 +24,9 @@
 
     }
 
+    &__textarea {
+        height: auto;
+        min-height: ($lineheight * 5);
+    }
+
 }
