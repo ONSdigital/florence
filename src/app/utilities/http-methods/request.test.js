@@ -1,5 +1,6 @@
 import request from './request';
 import 'isomorphic-fetch';
+import notifications from '../notifications';
 
 jest.mock('../log', () => {
     return {
@@ -53,6 +54,24 @@ test("Request back-off resolves as soon as a fetch is successful", async () => {
         expect(e);
     }
     expect(fetch).toHaveBeenCalledTimes(4);
+})
+
+test("Request returns to caller to handle 401 if callerHandles401 flag is set", async () => {
+    fetch.mockResponse(JSON.stringify({}),
+        {
+            "headers": new Headers({
+                'content-type': "application/json"
+            }),
+            "status": 401
+        }        
+    ),
+    fetch.mockReject();
+    
+    expect(fetch).toHaveBeenCalledTimes(0);
+    request('POST', '/foobar', false, null, null, true);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).reject;
 })
 
 test("Request back-off won't retry failed fetch if willRetry flag is set to false and reject with an error status", async () => {

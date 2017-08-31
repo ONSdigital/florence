@@ -59,5 +59,8 @@ module.exports = {
             { from: 'img', to: 'img' }
         ]),
         new ExtractTextPlugin("css/main.css")
-    ]
+    ],
+    externals: {
+        resumeablejs: "Resumable"
+    }
 };
