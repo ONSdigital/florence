@@ -1,7 +1,7 @@
 import { HttpError } from './error';
 import log, { eventTypes } from '../log';
 import uuid from 'uuid/v4';
-import user from '../APIs/user';
+import user from '../api-clients/user';
 import notifications from '../notifications';
 
 /**
@@ -11,11 +11,12 @@ import notifications from '../notifications';
  * @param {boolean} willRetry - (default = true) if true then this function will retry the connection on failure 
  * @param {object} body - JSON of the request body (if it's an applicable HTTP method)
  * @param {function} onRetry - Runs whenever the request is going to be retried. Added for use in unit tests, so that we can run our mocked timeOuts (or else the async test breaks)
+ * @param {boolean} callerHandles401 - Flag to decide whether caller or global handler is to handle 401 responses 
  * 
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry = function(){}, body) {
+export default function request(method, URI, willRetry = true, onRetry, body, callerHandles401) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
@@ -49,36 +50,61 @@ export default function request(method, URI, willRetry = true, onRetry = functio
         log.add(eventTypes.requestSent, logEventPayload);
 
         fetch(URI, fetchConfig).then(response => {
-            if (response.headers.get('content-type').match(/application\/json/)) {
-                return response.json().then(data => {
-                    logEventPayload.status = response.status;
-                    logEventPayload.message = response.message;
-                    log.add(eventTypes.requestReceived, logEventPayload);
-                    if (response.ok) {
-                        return data;
-                    } else if (response.status === 401) {
-                        // To save doing this exact same function throughout the app we handle a 401 
-                        // here (ie at the lowest level possible)
-                        const notification = {
-                            type: "neutral",
-                            message: "Your session has expired so you've been redirected to the login screen",
-                            isDismissable: true,
-                            autoDismiss: 20000
-                        }
-                        user.logOut();
-                        notifications.add(notification);
-                        reject({status: response.status, message: data.message});
-                    } else {
-                        reject({status: response.status, message: data.message});
-                    }
-                });
+            logEventPayload.status = response.status;
+            logEventPayload.message = response.message;
+            log.add(eventTypes.requestReceived, logEventPayload);
+
+            const responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+
+            if (response.status >= 500) {
+                throw new HttpError(response);
             }
 
-            throw new HttpError(response);
+            if (response.status === 401) {
+
+                if (callerHandles401) {
+                    reject({status: response.status, message: response.statusText});
+                    return;
+                }
+
+                // To save doing this exact same function throughout the app we handle a 401 
+                // here (ie at the lowest level possible)
+                const notification = {
+                    type: "neutral",
+                    message: "Your session has expired so you've been redirected to the login screen",
+                    isDismissable: true,
+                    autoDismiss: 20000
+                }
+                user.logOut();
+                notifications.add(notification);
+                reject({status: response.status, message: response.statusText});
+                return;
+            }
+
+            if (!response.ok) {
+                reject({status: response.status, message: response.statusText});
+                return;
+            }
+
+            if (!responseIsJSON) {
+                resolve();
+            }
+
+            if (responseIsJSON) {
+                try {
+                    return response.json();
+                } catch (error) {
+                    console.error("Error trying to parse request body as JSON: ", error);
+                    reject({status: response.status, message: "JSON response body couldn't be parsed"});
+                }
+            }
 
         }).then(responseJSON => {
             resolve(responseJSON);
         }).catch(fetchError => {
+
+            logEventPayload.error = fetchError;
+            log.add(eventTypes.requestFailed, logEventPayload);
 
             if (willRetry) {
 
@@ -87,7 +113,9 @@ export default function request(method, URI, willRetry = true, onRetry = functio
                     setTimeout(function() { tryFetch(resolve, reject, URI, willRetry, body) }, interval);
                     retryCount++;
                     interval = interval * 2;
-                    onRetry(retryCount);
+                    if (onRetry) {
+                        onRetry(retryCount);
+                    }
                 } else {
 
                     // pass error back to caller when max number of retries is met

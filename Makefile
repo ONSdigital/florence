@@ -23,7 +23,8 @@ generate: ${GOPATH}/bin/go-bindata
 	mv assets/debug.go.new assets/debug.go
 
 test:
-	go test -tags 'production'
+	go test -cover $(shell go list ./... | grep -v /vendor/) -tags 'production'
+	cd src; npm run test
 
 node-modules:
 	cd src; npm install

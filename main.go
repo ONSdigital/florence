@@ -16,6 +16,7 @@ import (
 	mgo "gopkg.in/mgo.v2"
 
 	"github.com/ONSdigital/florence/assets"
+	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
@@ -26,6 +27,9 @@ import (
 var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
+var recipeAPIURL = "http://localhost:22300"
+var importAPIURL = "http://localhost:21800"
+var uploadBucketName = "dp-frontend-florence-file-uploads"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 
@@ -48,6 +52,15 @@ func main() {
 	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
 		zebedeeURL = v
 	}
+	if v := os.Getenv("RECIPE_API_URL"); len(v) > 0 {
+		recipeAPIURL = v
+	}
+	if v := os.Getenv("UPLOAD_BUCKET_NAME"); len(v) > 0 {
+		uploadBucketName = v
+	}
+	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
+		recipeAPIURL = v
+	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
 	}
@@ -69,7 +82,6 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-
 	babbageProxy := reverseProxy.Create(babbageURL, nil)
 
 	zebedeeURL, err := url.Parse(zebedeeURL)
@@ -77,8 +89,21 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
+
+	recipeAPIURL, err := url.Parse(recipeAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, nil)
+
+	importAPIURL, err := url.Parse(importAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirectory)
 
 	router := pat.New()
 
@@ -88,7 +113,19 @@ func main() {
 		newAppHandler = legacyIndexFile
 	}
 
-	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
+	uploader, err := upload.New(uploadBucketName)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+
+	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
+	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
+	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
+
+	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
+	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
+	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
@@ -105,6 +142,8 @@ func main() {
 		"bind_addr":      bindAddr,
 		"babbage_url":    babbageURL,
 		"zebedee_url":    zebedeeURL,
+		"recipe_api_url": recipeAPIURL,
+		"import_api_url": importAPIURL,
 		"enable_new_app": enableNewApp,
 	})
 
@@ -187,6 +226,10 @@ func zebedeeDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
+func importAPIDirectory(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+}
+
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
 	c, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
@@ -209,8 +252,6 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 			break
 		}
 
-		log.DebugR(req, "websocket recv", log.Data{"data": string(message)})
-
 		rdr := bufio.NewReader(bytes.NewReader(message))
 		b, err := rdr.ReadBytes(':')
 		if err != nil {
@@ -223,11 +264,10 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 
 		switch eventType {
 		case "event":
-			log.DebugR(req, "event", log.Data{"type": eventType, "data": string(eventData)})
 			var e florenceLogEvent
 			err = json.Unmarshal(eventData, &e)
 			if err != nil {
-				log.ErrorR(req, err, nil)
+				log.ErrorR(req, err, log.Data{"data": string(eventData)})
 				continue
 			}
 			log.Debug("client log", log.Data{"data": e})
