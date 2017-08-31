@@ -73,18 +73,18 @@ class NavBar extends Component {
             )
         }
 
-        if ( `${rootPath}/datasets`.indexOf(route) >= 0) {
-            return (
-                <span>
-                    <li className="global-nav__item">
-                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Dataset upload</Link>
-                    </li>
-                    <li className="global-nav__item">
-                        <Link to={`${rootPath}/login?redirect=${rootPath}/datasets`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
-                    </li>
-                </span>
-            )
-        }
+        // if ( `${rootPath}/datasets`.indexOf(route) >= 0) {
+        //     return (
+        //         <span>
+        //             <li className="global-nav__item">
+        //                 <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Dataset upload</Link>
+        //             </li>
+        //             <li className="global-nav__item">
+        //                 <Link to={`${rootPath}/login?redirect=${rootPath}/datasets`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
+        //             </li>
+        //         </span>
+        //     )
+        // }
     }
 
     render() {
