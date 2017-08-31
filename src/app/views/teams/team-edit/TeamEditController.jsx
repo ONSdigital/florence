@@ -270,7 +270,8 @@ function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
         members: state.state.teams.active.members,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        users: state.state.teams.users
     }
 }
 
