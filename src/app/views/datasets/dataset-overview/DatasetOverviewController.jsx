@@ -38,6 +38,7 @@ class DatasetOverviewController extends Component {
         }
 
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleRetryClick = this.handleRetryClick.bind(this);
     }
     
     componentWillMount() {
@@ -153,7 +154,6 @@ class DatasetOverviewController extends Component {
     }
 
     bindInputs() {
-
         document.querySelectorAll("input").forEach(input => {
             const r = new Resumable({
                 target: "/upload",
@@ -198,7 +198,7 @@ class DatasetOverviewController extends Component {
             r.on('fileError', file => {
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.error = "An error occurred whilst uploading this file"                        
+                        currentFile.error = "An error occurred whilst uploading this file."                        
                     }
                     return currentFile;
                 });
@@ -395,6 +395,22 @@ class DatasetOverviewController extends Component {
         });
     }
 
+    handleRetryClick(aliasName) {
+        const files = this.state.activeDataset.files.map(currentFile => {
+            if (currentFile.alias_name === aliasName) {
+                currentFile.progress = null;
+                currentFile.error = "";
+            }
+            return currentFile;
+        });
+        const activeDataset = {
+            ...this.state.activeDataset,
+            files
+        };
+
+        this.setState({activeDataset});
+    }
+
     renderFileInputs() {
         if (!this.state.activeDataset) {
             return;
@@ -412,6 +428,7 @@ class DatasetOverviewController extends Component {
                     extension={file.extension || null}
                     error={file.error || null}
                     progress={file.progress >= 0 ? file.progress : null}
+                    onRetry={this.handleRetryClick}
                 />
             )
         })
