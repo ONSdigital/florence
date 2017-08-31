@@ -1211,6 +1211,9 @@ select {
 .margin-bottom--5 {
   margin-bottom: 105px; }
 
+.block {
+  display: block; }
+
 .global-nav__list {
   overflow: hidden;
   background: #323232;
@@ -1572,7 +1575,7 @@ select {
     height: auto;
     min-height: 105px; }
 
-select.select {
+.select {
   background-color: white;
   border: 3px solid #58585B;
   -webkit-appearance: menulist;
