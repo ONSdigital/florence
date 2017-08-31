@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import teams from '../../../utilities/APIs/teams';
+import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
 
 const propTypes = {
@@ -63,10 +63,6 @@ class TeamCreate extends Component {
                     this.setState({
                         input
                     });
-                    break;
-                }
-                case(401): {
-                    // This is handle by the request function, so do nothing here
                     break;
                 }
                 default: {
