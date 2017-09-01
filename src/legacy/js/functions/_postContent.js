@@ -9,9 +9,10 @@
  * @param error
  */
 function postContent(collectionId, path, content, overwriteExisting, recursive, success, error) {
+      isUpdatingModal.add();
+
     // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
     postToLocalStorage(collectionId, path, content);
-
 
     var safePath = checkPathSlashes(path);
     if (safePath === '/') {
@@ -30,6 +31,10 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
     var url = url + '&overwriteExisting=' + overwriteExisting;
     var url = url + '&recursive=' + recursive;
 
+    var date = new Date();
+    date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+    console.log("[" + date + "] Post page content: \n", JSON.parse(content));
+
     $.ajax({
         url: url,
         dataType: 'json',
@@ -37,10 +42,12 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         type: 'POST',
         data: content,
         success: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             success(response);
         },
         error: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             if (error) {
                 error(response);
@@ -55,9 +62,7 @@ function postToLocalStorage(collectionId, path, content) {
     var newSaveTime = new Date();
     var newId = collectionId;
     var newPath = path;
-    var newContent = JSON.parse(content);
-
-    console.log(newContent);
+    var newContent = JSON.parse(content); 
     
     var localBackup = localStorage.getItem('localBackup');
 

@@ -64,8 +64,19 @@ func main() {
 	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
 	router.Handle("/{uri:.*}", babbageProxy)
 
-	log.Debug("Starting server", nil)
+	log.Debug("Starting server", log.Data{
+		"bind_addr":      config.BindAddr,
+		"babbage_url":    config.BabbageURL,
+		"zebedee_url":    config.ZebedeeURL,
+		"enable_new_app": config.EnableNewApp,
+	})
 	s := server.New(config.BindAddr, router)
+
+	// TODO need to reconsider default go-ns server timeouts
+	s.Server.IdleTimeout = 120 * time.Second
+	s.Server.WriteTimeout = 120 * time.Second
+	s.Server.ReadTimeout = 30 * time.Second
+	s.MiddlewareOrder = []string{"RequestID", "Log"}
 
 	if config.ChaosPanda.Enabled {
 		s.Middleware["ChaosPanda"] = func(h http.Handler) http.Handler {
