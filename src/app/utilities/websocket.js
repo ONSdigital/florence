@@ -17,12 +17,19 @@ class Socket {
         
         this.socket.onopen = () => {
             console.info("Websocket has been opened");
+
             this.openDelay = 1;
             this.buffer.forEach(message => {
                 // TODO we need to handle the connection breaking whilst it iterates through this loop
                 // in that instance we would break the loop (which can't be done in a forEach easily)
                 this.socket.send(message);
-            })
+            });
+            
+            log.add(eventTypes.socketOpen);
+        }
+
+        this.socket.onerror = () => {
+            log.add(eventTypes.socketError);
         }
 
         this.socket.onclose = () => {
@@ -54,7 +61,7 @@ class Socket {
         message = `${this.messageCounter}:${message}`
 
         if (this.buffer.size >= 50) {
-            console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: `, message);
+            console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: \n`, message);
             log.add(eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
             return;
         }
