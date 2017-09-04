@@ -11,7 +11,7 @@ class Socket {
     open() {
         const protocol = (location.protocol.replace(/^http/, 'ws'));
         this.socket = new WebSocket(`${protocol}${location.host}/florence/websocket`);
-        console.info("Trying to open websocket...")
+        console.info("Trying to open websocket...");
         
         this.socket.onopen = () => {
             console.info("Websocket has been opened");
@@ -50,6 +50,12 @@ class Socket {
     send(message) {
         this.messageCounter++;
         message = `${this.messageCounter}:${message}`
+
+        if (this.buffer.size >= 50) {
+            console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: `, message);
+            return;
+        }
+
         this.buffer.set(this.messageCounter, message);
         
         if (this.socket.readyState === 1) {
