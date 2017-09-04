@@ -8630,7 +8630,7 @@ function pageTypeDataT7(pageType) {
  * @param parentUrl
  */
 
-function loadT8CmdCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
+function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
     var releaseDate = null;             //overwrite scheduled collection date
     var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
     var parentUrlData = parentUrl + "/data";
@@ -11664,21 +11664,26 @@ function setShortcuts(field, callback) {
     };
 
     var path = (location.pathname).replace('/florence/', '');
-    var mapPathToViewID = {
-        "collections": "collections",
-        "publishing-queue": "publish",
-        "reports": "reports",
-        "users-and-access": "users"
+    function mapPathToViewID(path) {
+        if (!path || path === '/florence') {
+            return "collections";
+        }
+        return {
+            "collections": "collections",
+            "publishing-queue": "publish",
+            "reports": "reports",
+            "users-and-access": "users"
+        }[path];
     };
-    $('.js-nav-item--' + mapPathToViewID[path]).addClass('selected');
-    viewController(mapPathToViewID[path]);
+    $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
+    viewController(mapPathToViewID(path));
     
     window.onpopstate = function() {
         var newPath = (document.location.pathname).replace('/florence/', '');
         $('.js-nav-item--collection').hide();
         $('.js-nav-item').removeClass('selected');
-        $('.js-nav-item--' + mapPathToViewID[newPath]).addClass('selected');
-        viewController(mapPathToViewID[newPath]);
+        $('.js-nav-item--' + mapPathToViewID(newPath)).addClass('selected');
+        viewController(mapPathToViewID(newPath));
     }
 
     function processMenuClick(clicked) {
