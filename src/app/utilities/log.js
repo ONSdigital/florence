@@ -1,5 +1,6 @@
 import { browserHistory } from 'react-router';
 import websocket from './websocket';
+import storage from './storage';
 
 export const eventTypes = {
     shownNotification: "SHOWN_NOTIFICATION",
@@ -35,8 +36,16 @@ export default class log {
         browserHistory.listen(location => {
             log.add(eventTypes.changedRoute, {...location})
         });
+
+        this.getAll().then(allItems => {
+            console.log(allItems);
+        })
     }
 
+    /**
+     * @param {string} eventType - tells us what event is being logged. Should be populated by a value from the eventTypes map
+     * @param {*} payload - the data that is being logged
+     */
     static add(eventType, payload)  {
         const event = {
             type: eventType,
@@ -46,11 +55,22 @@ export default class log {
             payload: payload || null
         }
 
+        storage.add(event);
+
         if (!excludeFromServerLogs.includes(eventType)) {
             // Prefix the websocket message with 'log:' so that 
             // the server knows it's a log event being sent
             websocket.send(`log:${JSON.stringify(event)}`);
             return;
         }
+    }
+
+    /**
+     * 
+     * @param {number} fromIndex - start point of the items we'd like to get
+     * @param {number} toIndex - end point of the items we'd like to get
+     */
+    static getAll(fromIndex, toIndex) {
+        return storage.getAll(fromIndex, toIndex);
     }
 }
