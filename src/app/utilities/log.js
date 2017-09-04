@@ -14,14 +14,16 @@ export const eventTypes = {
     editedTeamMembers: "EDITED_TEAM_MEMBERS",
     pingSent: "PING_SENT",
     pingReceived: "PING_RECEIVED",
-    pingFailed: "PING_FAILED"
+    pingFailed: "PING_FAILED",
+    socketBufferFull: "SOCKET_BUFFER_FULL"
 }
 
 const instanceID = Math.floor(Math.random() * 10000) + 1;
 
 const excludeFromServerLogs = [
     eventTypes.pingSent,
-    eventTypes.pingReceived
+    eventTypes.pingReceived,
+    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we'll have an infinite loop
 ]
 
 export default class log {
