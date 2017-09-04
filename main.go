@@ -290,17 +290,19 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		}
 
 		rdr := bufio.NewReader(bytes.NewReader(message))
-		b, err := rdr.ReadBytes(':')
+		b, err := rdr.ReadBytes('{')
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.ErrorR(req, err, log.Data{"bytes": string(b)})
 			continue
 		}
 
-		eventType := string(b[:len(b)-1])
-		eventData := message[len(eventType)+1:]
+		tags := strings.Split(string(b), ":")
+		eventID := tags[0]
+		eventType := tags[1]
+		eventData := message[len(eventID)+len(eventType)+2:]
 
 		switch eventType {
-		case "event":
+		case "log":
 			var e florenceLogEvent
 			err = json.Unmarshal(eventData, &e)
 			if err != nil {
@@ -308,6 +310,11 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 				continue
 			}
 			log.Debug("client log", log.Data{"data": e})
+
+			err = c.WriteJSON(florenceServerEvent{"ack", eventID})
+			if err != nil {
+				log.ErrorR(req, err, nil)
+			}
 		default:
 			log.DebugR(req, "unknown event type", log.Data{"type": eventType, "data": string(eventData)})
 		}
