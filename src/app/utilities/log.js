@@ -1,8 +1,6 @@
 import { browserHistory } from 'react-router';
 import websocket from './websocket';
 
-const instanceID = Math.floor(Math.random() * 10000) + 1;
-
 export const eventTypes = {
     shownNotification: "SHOWN_NOTIFICATION",
     shownWarning: "SHOWN_WARNING",
@@ -18,6 +16,13 @@ export const eventTypes = {
     pingReceived: "PING_RECEIVED",
     pingFailed: "PING_FAILED"
 }
+
+const instanceID = Math.floor(Math.random() * 10000) + 1;
+
+const excludeFromServerLogs = [
+    eventTypes.pingSent,
+    eventTypes.pingReceived
+]
 
 export default class log {
 
@@ -37,29 +42,11 @@ export default class log {
             payload: payload || null
         }
 
-        websocket.send(`log:${JSON.stringify(event)}`);
-
-        // console.log(event);
-
-        // Socket isn't open yet but something has been logged, wait until it is open to send it
-        // if (socket.readyState === 0) {
-        //     socket.onopen = () => {
-        //         socket.send(`event:${JSON.stringify(event)}`);
-        //     }
-        //     return;
-        // }
-        
-
-        // socket.send(`event:${JSON.stringify(event)}`);
-        
-        // Send across with a top level type because other data, not just events, will be sent too e.g.
-        /*
-        {
-            type: "LOG_EVENT",
-            payload: {
-                event
-            }
+        if (!excludeFromServerLogs.includes(eventType)) {
+            // Prefix the websocket message with 'log:' so that 
+            // the server knows it's a log event being sent
+            websocket.send(`log:${JSON.stringify(event)}`);
+            return;
         }
-        */
     }
 }
