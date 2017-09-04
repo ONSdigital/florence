@@ -1397,11 +1397,11 @@ select {
   .drawer__body {
     padding: 21px 160px;
     background-color: #CCCCCB;
-    flex: 1;
-    display: flex; }
+    flex: 1; }
   .drawer__loader {
     margin-left: 0;
-    margin-right: 0; }
+    margin-right: 0;
+    margin-bottom: 21px; }
   .drawer__footer {
     padding: 21px 160px; }
 
