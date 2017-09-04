@@ -15,7 +15,9 @@ export const eventTypes = {
     pingSent: "PING_SENT",
     pingReceived: "PING_RECEIVED",
     pingFailed: "PING_FAILED",
-    socketBufferFull: "SOCKET_BUFFER_FULL"
+    socketBufferFull: "SOCKET_BUFFER_FULL",
+    socketOpen: "SOCKET_OPEN",
+    socketError: "SOCKET_ERROR"
 }
 
 const instanceID = Math.floor(Math.random() * 10000) + 1;
