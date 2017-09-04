@@ -304,6 +304,7 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		switch eventType {
 		case "log":
 			var e florenceLogEvent
+			e.ServerTimestamp = time.Now().UTC().Format("2006-01-02T15:04:05.000-0700Z")
 			err = json.Unmarshal(eventData, &e)
 			if err != nil {
 				log.ErrorR(req, err, log.Data{"data": string(eventData)})
@@ -328,7 +329,7 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 type florenceLogEvent struct {
-	Created         time.Time   `json:"-"`
+	ServerTimestamp string      `json:"-"`
 	ClientTimestamp time.Time   `json:"clientTimestamp"`
 	Type            string      `json:"type"`
 	Location        string      `json:"location"`
