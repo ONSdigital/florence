@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router';
+import websocket from './websocket';
 
 const instanceID = Math.floor(Math.random() * 10000) + 1;
 
@@ -12,20 +13,20 @@ export const eventTypes = {
     requestFailed: "REQUEST_FAILED",
     passwordChangeSuccess: "PASSWORD_CHANGE_SUCCESS",
     passwordChangeError: "PASSWORD_CHANGE_ERROR",
-    editedTeamMembers: "EDITED_TEAM_MEMBERS"
-}
-
-browserHistory.listen(location => {
-    log.add(eventTypes.changedRoute, {...location})
-});
-
-const socket = new WebSocket(`ws://${window.location.host}/florence/websocket`);
-
-socket.onopen = () => {
-    log.add(eventTypes.appInitialised);
+    editedTeamMembers: "EDITED_TEAM_MEMBERS",
+    pingSent: "PING_SENT",
+    pingReceived: "PING_RECEIVED",
+    pingFailed: "PING_FAILED"
 }
 
 export default class log {
+
+    static initialise() {
+        this.add(eventTypes.appInitialised);
+        browserHistory.listen(location => {
+            log.add(eventTypes.changedRoute, {...location})
+        });
+    }
 
     static add(eventType, payload)  {
         const event = {
@@ -36,17 +37,20 @@ export default class log {
             payload: payload || null
         }
 
+        websocket.send(`log:${JSON.stringify(event)}`);
+
         // console.log(event);
 
-        // Socket isn't open yet but something has been loged, wait until it is open to send it
-        if (socket.readyState === 0) {
-            socket.onopen = () => {
-                socket.send(`event:${JSON.stringify(event)}`);
-            }
-            return;
-        }
+        // Socket isn't open yet but something has been logged, wait until it is open to send it
+        // if (socket.readyState === 0) {
+        //     socket.onopen = () => {
+        //         socket.send(`event:${JSON.stringify(event)}`);
+        //     }
+        //     return;
+        // }
+        
 
-        socket.send(`event:${JSON.stringify(event)}`);
+        // socket.send(`event:${JSON.stringify(event)}`);
         
         // Send across with a top level type because other data, not just events, will be sent too e.g.
         /*

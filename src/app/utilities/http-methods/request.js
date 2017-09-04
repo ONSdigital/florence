@@ -32,7 +32,8 @@ export default function request(method, URI, willRetry = true, onRetry = functio
             method: method,
             requestID: UID,
             willRetry,
-            retryCount
+            retryCount,
+            URI
         };
          const fetchConfig = {
             method,
