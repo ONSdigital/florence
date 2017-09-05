@@ -1217,6 +1217,9 @@ select {
 .margin-bottom--5 {
   margin-bottom: 105px; }
 
+.block {
+  display: block; }
+
 .global-nav__list {
   overflow: hidden;
   background: #323232;
@@ -1397,11 +1400,11 @@ select {
   .drawer__body {
     padding: 21px 160px;
     background-color: #CCCCCB;
-    flex: 1;
-    display: flex; }
+    flex: 1; }
   .drawer__loader {
     margin-left: 0;
-    margin-right: 0; }
+    margin-right: 0;
+    margin-bottom: 21px; }
   .drawer__footer {
     padding: 21px 160px; }
 
@@ -1583,6 +1586,15 @@ select {
   .input__textarea {
     height: auto;
     min-height: 105px; }
+
+.select {
+  background-color: white;
+  border: 3px solid #58585B;
+  -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  appearance: menulist;
+  padding: 5px 10px;
+  min-width: 50%; }
 
 .form__label {
   display: block;

@@ -14,4 +14,5 @@ export default class recipes {
                 return response;
             })
     }
+
 }
