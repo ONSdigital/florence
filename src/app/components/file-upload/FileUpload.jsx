@@ -10,12 +10,20 @@ const propTypes = {
     error: PropTypes.string,
     extension: PropTypes.string,
     accept: PropTypes.string,
-    progress: PropTypes.number
+    progress: PropTypes.number,
+    onRetry: PropTypes.func
 }
 
 class FileUpload extends Component {
     constructor(props) {
         super(props);
+
+        this.handleOnRetry = this.handleOnRetry.bind(this);
+    }
+
+    handleOnRetry(event) {
+        event.preventDefault();
+        this.props.onRetry(this.props.label);
     }
 
     renderInput() {
@@ -28,9 +36,15 @@ class FileUpload extends Component {
                         <p>{this.props.label}</p>
                         <p>Progress: {(this.props.progress > 0 ? this.props.progress : 1) + "%"}</p>
                         <div className="progress">
-                            <div className="progress__bar" style={{width: (this.props.progress > 0 ? this.props.progress : 1) + "%"}}>
+                            <div className={"progress__bar" + (this.props.error ? " progress__bar--error" : "") } style={{width: (this.props.progress > 0 ? this.props.progress : 1) + "%"}}>
                             </div>
                         </div>
+                        {this.props.error &&
+                            <div>
+                                <div className="progress__error">{this.props.error}</div>
+                                <a onClick={this.handleOnRetry} href="">Retry</a>
+                            </div>
+                        }
                     </div>
                 :
                     <Input
