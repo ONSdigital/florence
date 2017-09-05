@@ -39,6 +39,7 @@ class DatasetOverviewController extends Component {
         }
 
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleRetryClick = this.handleRetryClick.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
     }
 
@@ -141,6 +142,16 @@ class DatasetOverviewController extends Component {
         if (!this.state.activeDataset) {
             return;
         }
+
+        if (this.state.activeDataset.status === "submitted" && !this.state.activeDataset.dimensions) {
+            datasetImport.getDimensions(this.state.activeDataset.instanceID).then(response => {
+                const activeDataset = {
+                    ...this.state.activeDataset,
+                    dimensions: response
+                }
+                this.setState({activeDataset});
+            })
+        }
         this.bindInputs();
     }
 
@@ -163,6 +174,7 @@ class DatasetOverviewController extends Component {
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === aliasName) {
                         currentFile.progress = 0;
+                        currentFile.error = null;
                     }
                     return currentFile;
                 });
@@ -173,7 +185,7 @@ class DatasetOverviewController extends Component {
                 this.setState({activeDataset});
             });
             r.on('fileProgress', file => {
-                const progressPercentage = file.progress() * 100;
+                const progressPercentage = Math.round(Number(file.progress() * 100));
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
                         currentFile.progress = progressPercentage;
@@ -189,7 +201,7 @@ class DatasetOverviewController extends Component {
             r.on('fileError', file => {
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.error = "An error occurred whilst uploading this file"
+                        currentFile.error = "An error occurred whilst uploading this file."
                     }
                     return currentFile;
                 });
@@ -269,6 +281,7 @@ class DatasetOverviewController extends Component {
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
+            instanceID: jobAPIResponse.instances[0].id,
             files,
             editionsList,
             editionOverride
@@ -356,19 +369,6 @@ class DatasetOverviewController extends Component {
         });
     }
 
-    handleFormSubmit(event) {
-        event.preventDefault();
-        datasetImport.updateStatus(this.state.activeDataset.jobID, "submitted").then(() => {
-            const activeDataset = {
-                ...this.state.activeDataset,
-                status: "submitted"
-            }
-            this.setState({activeDataset});
-        }).catch(error => {
-            console.error(`Error updating status of job '${this.state.activeDataset.id}': `, error);
-        });
-    }
-
     handleSelect(value){
       datasetImport.addEdition(this.state.activeDataset.jobID, value).then(() => {
         const activeDataset = {
@@ -381,74 +381,188 @@ class DatasetOverviewController extends Component {
       });
     }
 
-    renderFileInputs() {
-        if (!this.state.activeDataset) {
+    handleFormSubmit(event) {
+        event.preventDefault();
+        let filesWithoutURLS = [];
+
+        for (var index = 0; index < this.state.activeDataset.files.length; index++) {
+            const file = this.state.activeDataset.files[index]
+            if (!file.url) {
+                filesWithoutURLS.push(file.alias_name)
+            }
+        }
+
+        if (filesWithoutURLS.length > 0) {
+            const files = this.state.activeDataset.files.map(currentFile => {
+                if (filesWithoutURLS.indexOf(currentFile.alias_name) >= 0) {
+                    currentFile.error = "You must upload this file before submitting to publishing"
+                }
+                return currentFile;
+            });
+            const activeDataset = {
+                ...this.state.activeDataset,
+                files
+            };
+
+            this.setState({activeDataset});
             return;
         }
 
-        return this.state.activeDataset.files.map((file, index) => {
-            return (
-                <FileUpload
-                    label={file.alias_name}
-                    type="file"
-                    id={"dataset-upload-" + index.toString()}
-                    key={index}
-                    accept=".xls, .xlsx, .csv"
-                    url={file.url || null}
-                    extension={file.extension || null}
-                    error={file.error || null}
-                    progress={file.progress >= 0 ? file.progress : null}
-                />
-            )
-        })
-
+        datasetImport.updateStatus(this.state.activeDataset.jobID, "submitted").then(() => {
+            const activeDataset = {
+                ...this.state.activeDataset,
+                status: "submitted"
+            }
+            this.setState({activeDataset});
+        }).catch(error => {
+            console.error(`Error updating status of job '${this.state.activeDataset.jobID}': `, error);
+        });
     }
+
+    handleRetryClick(aliasName) {
+        const files = this.state.activeDataset.files.map(currentFile => {
+            if (currentFile.alias_name === aliasName) {
+                currentFile.progress = null;
+                currentFile.error = "";
+            }
+            return currentFile;
+        });
+        const activeDataset = {
+            ...this.state.activeDataset,
+            files
+        };
+
+        this.setState({activeDataset});
+    }
+
+    renderFileInputs() {
+      if (!this.state.activeDataset) {
+          return;
+      }
+
+      return this.state.activeDataset.files.map((file, index) => {
+          return (
+              <FileUpload
+                  label={file.alias_name}
+                  type="file"
+                  id={"dataset-upload-" + index.toString()}
+                  key={index}
+                  accept=".xls, .xlsx, .csv"
+                  url={file.url || null}
+                  extension={file.extension || null}
+                  error={file.error || null}
+                  progress={file.progress >= 0 ? file.progress : null}
+                  onRetry={this.handleRetryClick}
+              />
+          )
+      })
+    }
+
+    renderSubmittedScreen() {
+        return (
+            <div>
+                <p className="margin-bottom--2">Your files have been processed and are available to the publishing team</p>
+                <h2 className="margin-bottom--1">What happens now?</h2>
+                <ul className="list margin-bottom--2">
+                    <li className="list__item">Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any questions.</li>
+                    <li className="list__item">The publishing team can prepare the dataset landing page which includes the files and associated metadata.</li>
+                </ul>
+                <h2 className="margin-bottom--1">
+                    Dimensions
+                    {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0) &&
+                        <span> ({this.state.activeDataset.dimensions.length})</span>
+                    }
+                </h2>
+                <div className="margin-bottom--2">
+                {this.state.activeDataset.dimensions ?
+                    <ul className="list">
+                    {this.state.activeDataset.dimensions.map((dimension, index) => {
+                        return <li key={index} className="list__item">{dimension.value}</li>
+                    })}
+                    </ul>
+                :
+                    <div>
+                        <p className="margin-bottom--1">Loading dimensions for this dataset...</p>
+                        <span className="loader loader--dark"></span>
+                    </div>
+                }
+                {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length === 0) &&
+                    <p>Dimensions are currently being processed. This could take some time.</p>
+                }
+                </div>
+                <Link className="btn btn--primary" to={`${this.props.rootPath}/datasets`}>Your datasets</Link>
+            </div>
+        )
+    }
+
+    renderDatasetState() {
+        switch (this.state.activeDataset.status) {
+            case "created": {
+                return (
+                    <div>
+                        <h1>Upload new file(s)</h1>
+                        <div className="margin-bottom--1">
+                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                        </div>
+                        <h2 className="margin-bottom--1">
+                            {this.state.activeDataset.alias}
+                        </h2>
+                        {this.state.activeDataset &&
+                          <Select
+                            contents={this.state.activeDataset.editionsList}
+                            label="Select an edition"
+                            id="edition-select"
+                            override={this.state.activeDataset.editionOverride}
+                            overrideLabel="Enter an edition name"
+                            overrideId="edition-input"
+                            onChange={this.handleSelect}
+                          />
+                        }
+                        <form onSubmit={this.handleFormSubmit}>
+                            { this.renderFileInputs() }
+                            <button className="btn btn--positive" type="submit">Submit to publishing</button>
+                        </form>
+                    </div>
+                )
+            }
+            case "submitted": {
+                return (
+                    <div>
+                        <h1>Your dataset has been submitted</h1>
+                        <div className="margin-bottom--1">
+                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                        </div>
+                        {this.renderSubmittedScreen()}
+                    </div>
+                )
+            }
+            case "error": {
+                return (
+                    <div>
+                        <h1>An error has occurred</h1>
+                        <div className="margin-bottom--1">
+                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                        </div>
+                        <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
+                        <p>Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error</p>
+                    </div>
+                )
+            }
+        }
+    }
+
     render() {
         return(
           <div className="grid grid--justify-center">
                 <div className="grid__col-6">
-                    <h1>
-                        {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
-                            "Upload new file(s)"
-                        :
-                            "Submitted to publishing"
-                        }
-                    </h1>
-                    <span className="margin-bottom--1">
-                        &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
-                    </span>
+                    {this.state.activeDataset &&
+                        this.renderDatasetState()
+                    }
                     {this.state.isFetchingDataset &&
                         <div className="grid--align-center grid--align-self-center">
                             <div className="loader loader--large loader--dark"></div>
                         </div>
                     }
-
-                    {this.state.activeDataset &&
-                        <h2 className="margin-bottom--1">
-                        {this.state.activeDataset.alias}
-                        </h2>
-                    }
-
-                    {this.state.activeDataset &&
-                      <Select
-                        contents={this.state.activeDataset.editionsList}
-                        label="Select an edition"
-                        id="edition-select"
-                        override={this.state.activeDataset.editionOverride}
-                        overrideLabel="Enter an edition name"
-                        overrideId="edition-input"
-                        onChange={this.handleSelect}
-                      />
-                    }
-
-                    <form onSubmit={this.handleFormSubmit}>
-                        { this.renderFileInputs() }
-                        {this.state.activeDataset && this.state.activeDataset.status !== "submitted" ?
-                            <button className="btn btn--primary" type="submit">Submit to publishing</button>
-                        :
-                            ""
-                        }
-                    </form>
                 </div>
             </div>
         )
