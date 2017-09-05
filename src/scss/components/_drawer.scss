@@ -50,12 +50,12 @@
         padding: ($lineheight) ($gutter * 8);
         background-color: $quill-grey;
         flex: 1;
-        display: flex;
     }
 
     &__loader {
         margin-left: 0;
         margin-right: 0;
+        margin-bottom: $lineheight;
     }
 
     &__footer {

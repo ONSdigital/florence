@@ -37,21 +37,21 @@ jest.mock('../../../utilities/api-clients/user.js', () => (
                     email: "user.1@test.com"
                 },
                 {
+                    name: "User 3",
+                    email: "user.3@test.com"
+                },
+                {
                     name: "User 2",
                     email: "user.2@test.com"
                 },
                 {
-                    name: "User 3",
-                    email: "user.3@test.com"
+                    name: "User 5",
+                    email: "user.5@test.com"
                 },
                 {
                     name: "User 4",
                     email: "user.4@test.com"
                 },
-                {
-                    name: "User 5",
-                    email: "user.5@test.com"
-                }
             ]);
         }
     )}
@@ -78,48 +78,49 @@ const users = [
         email: "user.2@test.com"
     },
     {
-        name: "User 3",
-        email: "user.3@test.com"
-    },
-    {
         name: "User 4",
         email: "user.4@test.com"
     },
     {
         name: "User 5",
         email: "user.5@test.com"
+    },
+    {
+        name: "User 3",
+        email: "user.3@test.com"
     }
 ]
 const name = "A test team"
 const isUpdatingMembers = false;
 const members = [];
-
-function dispatch() {}
-
-// TODO this should really be tested in the team edit component tests
-// test('Add/remove functionality is disabled whilst data is being fetched', () => {
-//     const props = {
-//         users,
-//         members,
-//         dispatch,
-//         name,
-//         isUpdatingMembers: true
-//     }
-//     const component = mount(
-//         <TeamEditController {...props}/>
-//     )
-// });
-
-test('Updating the search term filters displayed users correctly', () => {
-    const props = {
+const defaultProps = {
         users,
         members,
         dispatch,
         name,
         isUpdatingMembers
     }
+
+function dispatch() {}
+
+
+test("Add/remove functionality for user is disabled whilst that user is being added/removed from team", () => {
+    const component = shallow(
+        <TeamEditController {...defaultProps}/>
+    )
+    const promise = Promise.resolve();
+
+    return promise.then(() => {
+        component.instance().handleMembersChange({email: "user.1@test.com", action: "add"});
+        expect(component.state('disabledUsers').indexOf(('user.1@test.com'))).toBe(0);
+    }).then(() => {
+        expect(component.state('disabledUsers').indexOf(('user.1@test.com'))).toBe(-1);
+    })
+});
+
+test('Updating the search term filters displayed users correctly', () => {
     const component = mount(
-        <TeamEditController {...props}/>
+        <TeamEditController {...defaultProps}/>
     )
 
     expect(component.state('editedUsers')).toBe(null);
@@ -132,15 +133,8 @@ test('Updating the search term filters displayed users correctly', () => {
 });
 
 test("Adding and removing a user to/from a team updates the 'All users' list accordingly", async () => {
-    const props = {
-        users,
-        members,
-        dispatch,
-        name,
-        isUpdatingMembers
-    }
     const component = shallow(
-        <TeamEditController {...props}/>
+        <TeamEditController {...defaultProps}/>
     )
 
     component.setState({editedUsers: users});
@@ -150,4 +144,54 @@ test("Adding and removing a user to/from a team updates the 'All users' list acc
     
     await component.instance().handleMembersChange({email: "user.1@test.com", action: "remove"});
     expect(component.update().state('editedUsers').length).toBe(5);
+});
+
+test("Lists of members and users are sorted into alphanumerical order", () => {
+    const unsortedMembers = [
+        "user.3@test.com",
+        "user.1@test.com",
+        "user.2@test.com",
+    ]
+    const props = Object.assign({}, defaultProps, {
+        members: unsortedMembers  
+    });
+    const component = shallow(
+        <TeamEditController {...props} />
+    );
+
+    const sortedUsers = component.instance().sortUsers(users);
+    const sortedMembers = component.instance().sortMembers(unsortedMembers);
+    
+    sortedUsers.forEach((value, index) => {
+        expect(value.email).toBe(`user.${index+1}@test.com`);
+    });
+    
+    sortedMembers.forEach((value, index) => {
+        expect(value).toBe(`user.${index+1}@test.com`);
+    });
+});
+
+test("List of 'All users' doesn't show users that are already a member of the team", () => {
+    const props = Object.assign({}, defaultProps, {
+        members: [
+            "user.3@test.com",
+            "user.1@test.com",
+            "user.2@test.com",
+        ]  
+    });
+    const component = mount(
+        <TeamEditController {...props} />
+    );
+
+    setImmediate(() => {
+        const editedUsersList = component.update().state('editedUsers');
+        expect(editedUsersList.length).toBe(2);
+
+        editedUsersList.forEach(user => {
+            expect(members.indexOf(user.email)).toBe(-1);
+        });
+        expect(editedUsersList.some(user => user.email === "user.4@test.com")).toBe(true);
+        expect(editedUsersList.some(user => user.email === "user.5@test.com")).toBe(true);
+    });
+    
 });
