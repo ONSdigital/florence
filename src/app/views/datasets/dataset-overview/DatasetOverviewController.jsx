@@ -10,6 +10,7 @@ import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
 import http from '../../../utilities/http';
 import FileUpload from '../../../components/file-upload/FileUpload';
+import Select from '../../../components/Select';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -39,8 +40,9 @@ class DatasetOverviewController extends Component {
 
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleRetryClick = this.handleRetryClick.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
-    
+
     componentWillMount() {
         if (!this.props.datasets || this.props.datasets.length === 0) {
             this.setState({isFetchingDataset: true});
@@ -105,13 +107,13 @@ class DatasetOverviewController extends Component {
                 console.error('Error getting job and recipe data: ', error);
             })
         } else {
+
             const job = this.props.jobs.find(job => {
                 return job.job_id === this.props.params.job
             });
             const recipe = this.props.datasets.find(dataset => {
                 return dataset.id === job.recipe;
             });
-
             const activeDataset = this.mapAPIResponsesToState({recipe, job});
 
             if (!activeDataset) {
@@ -140,7 +142,7 @@ class DatasetOverviewController extends Component {
         if (!this.state.activeDataset) {
             return;
         }
-        
+
         if (this.state.activeDataset.status === "submitted" && !this.state.activeDataset.dimensions) {
             datasetImport.getDimensions(this.state.activeDataset.instanceID).then(response => {
                 const activeDataset = {
@@ -154,7 +156,8 @@ class DatasetOverviewController extends Component {
     }
 
     bindInputs() {
-        document.querySelectorAll("input").forEach(input => {
+
+        document.querySelectorAll('input[type="file"]').forEach(input => {
             const r = new Resumable({
                 target: "/upload",
                 chunkSize: 5 * 1024 * 1024,
@@ -185,7 +188,7 @@ class DatasetOverviewController extends Component {
                 const progressPercentage = Math.round(Number(file.progress() * 100));
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.progress = progressPercentage;                      
+                        currentFile.progress = progressPercentage;
                     }
                     return currentFile;
                 });
@@ -198,7 +201,7 @@ class DatasetOverviewController extends Component {
             r.on('fileError', file => {
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.error = "An error occurred whilst uploading this file."                        
+                        currentFile.error = "An error occurred whilst uploading this file."
                     }
                     return currentFile;
                 });
@@ -232,7 +235,7 @@ class DatasetOverviewController extends Component {
                 }).catch(error => {
                     const files = this.state.activeDataset.files.map(currentFile => {
                         if (currentFile.alias_name === aliasName) {
-                            currentFile.error = "An error occurred whilst uploading this file"                        
+                            currentFile.error = "An error occurred whilst uploading this file"
                         }
                         return currentFile;
                     });
@@ -265,6 +268,13 @@ class DatasetOverviewController extends Component {
             }
         })
 
+        const editionsList = recipeAPIResponse.output_instances.map((output, i) => {
+          const editions = recipeAPIResponse.output_instances[i].editions;
+          return editions;
+        })
+
+        const editionOverride = recipeAPIResponse.output_instances.editions_override;
+
         return {
             recipeID: recipeAPIResponse.id,
             jobID: jobAPIResponse.job_id,
@@ -272,7 +282,9 @@ class DatasetOverviewController extends Component {
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
             instanceID: jobAPIResponse.instances[0].id,
-            files
+            files,
+            editionsList,
+            editionOverride
         }
     }
 
@@ -357,6 +369,18 @@ class DatasetOverviewController extends Component {
         });
     }
 
+    handleSelect(value){
+      datasetImport.addEdition(this.state.activeDataset.jobID, value).then(() => {
+        const activeDataset = {
+            ...this.state.activeDataset,
+            edition: value
+        }
+        this.setState({activeDataset});
+      }).catch(error => {
+          console.error(`Error updating edition of job '${this.state.activeDataset.id}': `, error);
+      });
+    }
+
     handleFormSubmit(event) {
         event.preventDefault();
         let filesWithoutURLS = [];
@@ -371,7 +395,7 @@ class DatasetOverviewController extends Component {
         if (filesWithoutURLS.length > 0) {
             const files = this.state.activeDataset.files.map(currentFile => {
                 if (filesWithoutURLS.indexOf(currentFile.alias_name) >= 0) {
-                    currentFile.error = "You must upload this file before submitting to publishing"                        
+                    currentFile.error = "You must upload this file before submitting to publishing"
                 }
                 return currentFile;
             });
@@ -412,27 +436,26 @@ class DatasetOverviewController extends Component {
     }
 
     renderFileInputs() {
-        if (!this.state.activeDataset) {
-            return;
-        }
+      if (!this.state.activeDataset) {
+          return;
+      }
 
-        return this.state.activeDataset.files.map((file, index) => {
-            return (
-                <FileUpload 
-                    label={file.alias_name}
-                    type="file"
-                    id={"dataset-upload-" + index.toString()}
-                    key={index}
-                    accept=".xls, .xlsx, .csv"
-                    url={file.url || null}
-                    extension={file.extension || null}
-                    error={file.error || null}
-                    progress={file.progress >= 0 ? file.progress : null}
-                    onRetry={this.handleRetryClick}
-                />
-            )
-        })
-        
+      return this.state.activeDataset.files.map((file, index) => {
+          return (
+              <FileUpload
+                  label={file.alias_name}
+                  type="file"
+                  id={"dataset-upload-" + index.toString()}
+                  key={index}
+                  accept=".xls, .xlsx, .csv"
+                  url={file.url || null}
+                  extension={file.extension || null}
+                  error={file.error || null}
+                  progress={file.progress >= 0 ? file.progress : null}
+                  onRetry={this.handleRetryClick}
+              />
+          )
+      })
     }
 
     renderSubmittedScreen() {
@@ -445,8 +468,8 @@ class DatasetOverviewController extends Component {
                     <li className="list__item">The publishing team can prepare the dataset landing page which includes the files and associated metadata.</li>
                 </ul>
                 <h2 className="margin-bottom--1">
-                    Dimensions 
-                    {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0) && 
+                    Dimensions
+                    {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0) &&
                         <span> ({this.state.activeDataset.dimensions.length})</span>
                     }
                 </h2>
@@ -458,7 +481,7 @@ class DatasetOverviewController extends Component {
                     })}
                     </ul>
                 :
-                    <div> 
+                    <div>
                         <p className="margin-bottom--1">Loading dimensions for this dataset...</p>
                         <span className="loader loader--dark"></span>
                     </div>
@@ -484,6 +507,17 @@ class DatasetOverviewController extends Component {
                         <h2 className="margin-bottom--1">
                             {this.state.activeDataset.alias}
                         </h2>
+                        {this.state.activeDataset &&
+                          <Select
+                            contents={this.state.activeDataset.editionsList}
+                            label="Select an edition"
+                            id="edition-select"
+                            override={this.state.activeDataset.editionOverride}
+                            overrideLabel="Enter an edition name"
+                            overrideId="edition-input"
+                            onChange={this.handleSelect}
+                          />
+                        }
                         <form onSubmit={this.handleFormSubmit}>
                             { this.renderFileInputs() }
                             <button className="btn btn--positive" type="submit">Submit to publishing</button>
@@ -519,13 +553,13 @@ class DatasetOverviewController extends Component {
 
     render() {
         return(
-            <div className="grid grid--justify-center">
+          <div className="grid grid--justify-center">
                 <div className="grid__col-6">
                     {this.state.activeDataset &&
                         this.renderDatasetState()
                     }
                     {this.state.isFetchingDataset &&
-                        <div className="grid--align-center grid--align-self-center"> 
+                        <div className="grid--align-center grid--align-self-center">
                             <div className="loader loader--large loader--dark"></div>
                         </div>
                     }
