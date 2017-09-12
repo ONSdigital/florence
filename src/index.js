@@ -11,6 +11,7 @@ import LoginController from './app/views/login/LoginController';
 import TeamsController from './app/views/teams/TeamsController';
 import DatasetController from './app/views/datasets/DatasetsController';
 import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
+import Logs from './app/views/logs/Logs';
 
 import './scss/main.scss';
 
@@ -51,6 +52,7 @@ class Index extends Component {
                             </Route>
                             <Route path={`${rootPath}/datasets`} component={ UserIsAuthenticated(DatasetController) } />
                             <Route path={`${rootPath}/datasets/:job`} component={ UserIsAuthenticated(DatasetOverviewController) } />
+                            <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
