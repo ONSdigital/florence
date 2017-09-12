@@ -26,8 +26,10 @@ const instanceID = Math.floor(Math.random() * 10000) + 1;
 const excludeFromServerLogs = [
     eventTypes.pingSent,
     eventTypes.pingReceived,
-    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we'll have an infinite loop
+    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we could have an infinite loop
 ]
+
+let counter = 0;
 
 export default class log {
 
@@ -36,10 +38,6 @@ export default class log {
         browserHistory.listen(location => {
             log.add(eventTypes.changedRoute, {...location})
         });
-
-        this.getAll().then(allItems => {
-            console.log(allItems);
-        })
     }
 
     /**
@@ -52,14 +50,14 @@ export default class log {
             location: location.href,
             instanceID,
             clientTimestamp: new Date().toISOString(),
-            payload: payload || null
+            payload: payload || null,
+            index: counter++
         }
 
-        storage.add(event);
+        // storage.add(event);
 
         if (!excludeFromServerLogs.includes(eventType)) {
-            // Prefix the websocket message with 'log:' so that 
-            // the server knows it's a log event being sent
+            // Prefix the websocket message with 'log:' so that the server knows it's a log event being sent
             websocket.send(`log:${JSON.stringify(event)}`);
             return;
         }
@@ -72,5 +70,19 @@ export default class log {
      */
     static getAll(fromIndex, toIndex) {
         return storage.getAll(fromIndex, toIndex);
+    }
+
+    /**
+     * @returns {Promise} - Which resolves to am integer
+     */
+    static length() {
+        return storage.length();
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    static removeAll() {
+        return storage.removeAll();
     }
 }
