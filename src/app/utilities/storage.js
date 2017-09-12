@@ -1,88 +1,178 @@
-import localForage from 'localforage';
 import uuid from 'uuid/v4';
+import minimongo from 'minimongo';
 
-// The localForage implementation of size is async, we're keeping our own counter
-// so that we don't have to use a Promise where it feels unnecessary
-let storageCount = 0;
+class Storage {
+    constructor() {
+        this.database = null;
+        this.DbIsInitialised = false;
+        this.buffer = [];
 
-export default class storage {
-    /**
-     * @param {*} data - Data that is being stored
-     * @param {string|number} key - (Optional) key that the item is being stored at
-     *
-     * @returns {string} returns the unique key that the data has been stored at
-     */
-    static add(data, key) {
-        // No key given, so create our own unique ID
-        if (!key) {
-            key = uuid();
-        }
+        this.initialise();
 
-        // Key conflicts with one that already exists, so create out own unique ID
-        if (localForage.getItem(key)) {
-            key = uuid();
-        }
+    }
 
-        localForage.setItem(key, data).then(() => {
-            storageCount++;
+    initialise() {
+        const indexedDB = minimongo.IndexedDb;
+        this.database = new indexedDB({namespace: "florence"}, () => {
+            this.database.addCollection("logs", () => {
+                this.DbIsInitialised = true;
+                if (!this.buffer.length) {
+                    return;  
+                }
+                this.buffer.forEach(item => {
+                    this.database.logs.upsert(item);
+                });
+            });
+        }, () => {
+            console.log('Error creating indexedDB');
         });
-
-        return key;
+    }
+    
+    /**
+     * @returns {object} - returns an object with the structure `{used: integer, available: integer}`. Both values should be integers.
+     */
+    storageUsed() {
+        return navigator.webkitTemporaryStorage.queryUsageAndQuota((used, available) => {
+            return {used, available};
+        });
     }
 
     /**
-     * @param {string|number} key - The unique key of the item that we want to retrieve
+     * @param {*} data - Data that is being stored
+     *
+     * @returns {string} returns the unique key that the data has been stored at
+     */
+    add(data) {
+        data.storageID = uuid();
+
+        if (!this.DbIsInitialised) {
+            this.buffer.push(data);
+            return data.storageID;
+        }
+        
+        this.database.logs.upsert(data);
+
+        return data.storageID;
+    }
+
+    /**
+     * @param {string|number} ID - The unique ID of the item that we want to retrieve
      *
      * @returns {Promise}
      */
-    static get(key) {
-        if (!key) {
+    get(ID) {
+        if (!ID) {
             console.warn("A key must be given when trying to access stored data");
             return Promise.reject();
         }
 
-        return localForage.getItem(key);
+        return new Promise((resolve, reject) => {
+            this.database.logs.findOne({"storageID": ID}, {}, response => {
+                resolve(response);
+            }, error => {
+                reject(error);
+            });
+        });
     }
 
     /**
-     * @param {number} fromIndex - start point of the items we'd like
-     * @param {number} toIndex - end point of the items we'd like
+     * @param {number} fromIndex - (Optional) start point of the items we'd like
+     * @param {number} toIndex - (Optional) end point of the items we'd like
      * 
      * @returns {Promise} resolves to an array of all items in storage (optionally filter by from and to parameters)
      */
-    static getAll(fromIndex, toIndex) {
-        const allItems = [];
+    getAll(fromIndex, toIndex) {
+        console.log({fromIndex, toIndex});
         return new Promise((resolve, reject) => {
-            localForage.iterate((value, key, index) => {
-                if (!fromIndex || index >= fromIndex) {
-                    allItems.push({value, key});
+            this.database.logs.find({}, {sort: [["clientTimestamp", "desc"]], limit: toIndex}).fetch(response => {
+                if (fromIndex) {
+                    // response.splice(toIndex-1, response.length);
+                    // console.log(response.slice(0, 9));
+                    response.splice(0, fromIndex);
                 }
-                if (toIndex && index === toIndex) {
-                    return true;
-                }
-            }).then(() => {
-                resolve(allItems);
-            }).catch(error => {
-                reject(error);
-            })
+                console.log(response);
+                resolve(response);
+            }, error => {
+                reject();
+                console.error("Error fetching all logs from local DB", error);
+            });
         });
     }
 
     /**
-     * @param {*} key - The unique key of the item that we want to remove
+     * @param {string} key - The unique key of the item that we want to remove
      * 
      * @returns {Promise}
      */
-    static remove(key) {
-        return localForage.removeItem(key).then(() => {
-            storageCount--;
+    remove(key) {
+        return new Promise((resolve, reject) => {
+            this.database.logs.remove(key, () => {
+                resolve();
+            }, () => {
+                reject();
+            });
         });
     }
 
     /**
-     * @returns {number} - The number of items held in storage
+     * @returns {Promise} - Which resolves to an integer
      */
-    static length() {
-        return storageCount;
+    length() {
+        return new Promise((resolve, reject) => {
+            /* 
+                NOTE: This will break if we have multiple collections or change the namespace of the DB
+                
+                minimongo doesn't currently support `collection.count()` so we have to access
+                the florence collection directly in IndexedDB and get the count ourselves.
+                
+                If this does break and we want a better solution, a PR to add 'count()' to the API would be welcomed 
+                by the creator and meet our needs (https://github.com/mWater/minimongo/issues/36).
+            */
+            const db = window.indexedDB.open("IDBWrapper-minimongo_florence", 1);
+
+            db.onsuccess = () => {
+                const transaction = db.result.transaction(['minimongo_florence'], 'readonly');
+                const objectStore = transaction.objectStore('minimongo_florence');
+                const countRequest = objectStore.count();
+                countRequest.onsuccess = () => {
+                    resolve(countRequest.result);
+                }
+                countRequest.onerror = () => {
+                    reject();
+                }
+            }
+        });
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    removeAll() {
+        return new Promise((resolve, reject) => {
+            /*
+                To remove a document we first have to set the state to 'removed' in the DB (with logs.remove())
+                and then resolve that remove. This means to remove all we have to loop through
+                each item before setting the state to 'removed' or else we'll get nothing back
+                from 'getAll()' because it filters out 'removed' documents
+            */
+            this.getAll().then(logs => {
+                let removedCount = 0;
+                logs.forEach(log => {
+                    this.database.logs.remove(log._id, () => {
+                        this.database.logs.resolveRemove(log._id, () => {
+                            removedCount++
+                            if (removedCount === logs.length) {
+                                resolve();
+                            } 
+                        });
+                    })
+                })
+            }, () => {
+                reject();
+            });
+        });
     }
 }
+
+const storage = new Storage();
+export default storage;
