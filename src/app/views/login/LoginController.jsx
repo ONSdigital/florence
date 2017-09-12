@@ -15,7 +15,6 @@ import cookies from '../../utilities/cookies';
 import redirectToMainScreen from '../../utilities/redirectToMainScreen';
 
 
-
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
@@ -61,7 +60,11 @@ export class LoginController extends Component {
             cookies.add("access_token", accessToken);
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);
-                redirectToMainScreen(this.props.location.query.redirect);
+                if (user.getOldUserType(userType) == "VIEWER") {
+                    this.props.dispatch(push(`${this.props.rootPath}/not-authorised`));
+                } else {
+                    redirectToMainScreen(this.props.location.query.redirect);
+                }
             });
         }).catch(error => {
             if (error) {
