@@ -25,7 +25,6 @@ class RouteLog extends Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <DefaultLog {...this.props}>
                 {this.props.payload.URI &&
