@@ -30,3 +30,13 @@
     }
 
 }
+
+.select {
+    background-color: white;
+    border: 3px solid $scarpa-flow;
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
+    appearance: menulist;
+    padding:5px 10px;
+    min-width:50%;
+}
