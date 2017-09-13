@@ -44,7 +44,6 @@ class NavBar extends Component {
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
         const isViewer = this.props.userType == 'VIEWER';
-        console.log(isViewer);
 
         if (route.indexOf(`${rootPath}/collections`) >= 0 || route.indexOf(`${rootPath}/publishing-queue`) >= 0 || route.indexOf(`${rootPath}/reports`) >= 0 || route.indexOf(`${rootPath}/users-and-access`) >= 0 || route.indexOf(`${rootPath}/teams`) >= 0 || route.indexOf(`${rootPath}/not-authorised`) >= 0 ) {
             return (
