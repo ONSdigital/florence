@@ -21,7 +21,6 @@ class NotificationLog extends Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <DefaultLog {...this.props} >
                 <div>Type: {this.props.payload.type}</div>
