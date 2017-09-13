@@ -15,7 +15,15 @@ class Storage {
         const indexedDB = minimongo.IndexedDb;
         this.database = new indexedDB({namespace: "florence"}, () => {
             this.database.addCollection("logs", () => {
-                this.DbIsInitialised = true;
+                this.getLatest().then(latestDocument => {
+                    if (new Date(latestDocument.timestamp).toDateString() !== new Date().toDateString()) {
+                        this.removeAll().then(() => {
+                            this.DbIsInitialised = true;
+                        });
+                        return;
+                    }
+                    this.DbIsInitialised = true;
+                });
                 if (!this.buffer.length) {
                     return;  
                 }
@@ -76,27 +84,45 @@ class Storage {
     }
 
     /**
-     * @param {number} fromIndex - (Optional) start point of the items we'd like
-     * @param {number} toIndex - (Optional) end point of the items we'd like
+     * @param {number} skip - (Optional) start point of the items we'd like to receive
+     * @param {number} limit - (Optional) the number of items we'd like to receive
+     * @param {number} requestTimestamp - (Optional) a Unix timestamp that 
      * 
      * @returns {Promise} resolves to an array of all items in storage (optionally filter by from and to parameters)
      */
-    getAll(fromIndex, toIndex) {
-        console.log({fromIndex, toIndex});
+    getAll(skip, limit, requestTimestamp) {
         return new Promise((resolve, reject) => {
-            this.database.logs.find({}, {sort: [["clientTimestamp", "desc"]], limit: toIndex}).fetch(response => {
-                if (fromIndex) {
-                    // response.splice(toIndex-1, response.length);
-                    // console.log(response.slice(0, 9));
-                    response.splice(0, fromIndex);
+            const query = {};
+            
+            if (requestTimestamp) {
+                query.timestamp = {
+                    $lte: requestTimestamp
                 }
-                console.log(response);
+            }
+
+            this.database.logs.find(query, {sort: [["timestamp", "desc"]], skip, limit}).fetch(response => {
                 resolve(response);
             }, error => {
                 reject();
                 console.error("Error fetching all logs from local DB", error);
             });
         });
+    }
+
+    /**
+     * Only returns the latest document that was added to the database
+     * 
+     * @returns {Promise} - resolves to the latest document
+     */
+    getLatest() {
+        return new Promise((resolve, reject) => {
+            this.database.logs.find({}, {sort: ["timestamp"], limit: 1}).fetch(response => {
+                resolve(response[0]);
+            }, error => {
+                reject();
+                console.error("Error fetching all logs from local DB", error);
+            });
+        }); 
     }
 
     /**
