@@ -2,12 +2,15 @@ BIND_ADDR ?= :8081
 BINPATH ?= build
 ENABLE_NEW_APP ?= 1
 
+VERSION=`git describe --tags`
+LDFLAGS=-ldflags "-w -s -X main.Version=${VERSION}"
+
 build: generate
-	go build -tags 'production' -o $(BINPATH)/florence
+	go build $(LDFLAGS) -tags 'production' -o $(BINPATH)/florence
 
 debug: generate
-	go build -tags 'debug' -o $(BINPATH)/florence
-	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} ENABLE_NEW_APP=${ENABLE_NEW_APP} $(BINPATH)/florence
+	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
+	MONGO_URI=${MONGO_URI} HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} ENABLE_NEW_APP=${ENABLE_NEW_APP} $(BINPATH)/florence
 
 generate: ${GOPATH}/bin/go-bindata
 	# build the production version
@@ -20,7 +23,8 @@ generate: ${GOPATH}/bin/go-bindata
 	mv assets/debug.go.new assets/debug.go
 
 test:
-	go test -tags 'production'
+	go test -cover $(shell go list ./... | grep -v /vendor/) -tags 'production'
+	cd src; npm run test
 
 node-modules:
 	cd src; npm install

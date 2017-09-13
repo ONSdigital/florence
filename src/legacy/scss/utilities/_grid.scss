@@ -53,6 +53,11 @@ $col--1: 8.333%;
   &--1 {
     width: $col--1;
   }
+  &--centred {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .row {

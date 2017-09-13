@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Selectable box with active item renders correctly 1`] = `
+<div
+  className="selectable-box"
+>
+  <h2
+    className="selectable-box__heading"
+  >
+    Name
+  </h2>
+  <ul
+    className="selectable-box__list"
+  >
+    <li
+      className="selectable-box__item "
+      id="1"
+      onClick={[Function]}
+    >
+      Item 1
+    </li>
+    <li
+      className="selectable-box__item "
+      id="2"
+      onClick={[Function]}
+    >
+      Item 2
+    </li>
+    <li
+      className="selectable-box__item selected"
+      id="3"
+      onClick={[Function]}
+    >
+      Item 3
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`Selectable box with items renders component with all items 1`] = `
+<div
+  className="selectable-box"
+>
+  <h2
+    className="selectable-box__heading"
+  >
+    Name
+  </h2>
+  <ul
+    className="selectable-box__list"
+  >
+    <li
+      className="selectable-box__item "
+      id="1"
+      onClick={[Function]}
+    >
+      Item 1
+    </li>
+    <li
+      className="selectable-box__item "
+      id="2"
+      onClick={[Function]}
+    >
+      Item 2
+    </li>
+    <li
+      className="selectable-box__item "
+      id="3"
+      onClick={[Function]}
+    >
+      Item 3
+    </li>
+  </ul>
+</div>
+`;
