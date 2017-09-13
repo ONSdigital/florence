@@ -77,11 +77,11 @@ function articleEditor(collectionId, data) {
   });
 
   $("#natStat-checkbox").click(function () {
-      data.description.nationalStatistic = $("#natStat-checkbox").prop('checked') ? true : false;
+      data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
   });
 
   $("#articleType-checkbox").click(function () {
-      data.isPrototypeArticle = $("#articleType-checkbox").prop('checked') ? true : false;
+      data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
   });
 
   // Save
@@ -89,7 +89,6 @@ function articleEditor(collectionId, data) {
   editNav.off(); // remove any existing event handlers.
 
   editNav.on('click', '.btn-edit-save', function () {
-    console.log(data);
     save(updateContent);
   });
 
