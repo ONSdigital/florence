@@ -50,14 +50,9 @@ class Index extends Component {
                                     <Route path={`delete`} component={ UserIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
-<<<<<<< HEAD
                             {/* <Route path={`${rootPath}/datasets`} component={ UserIsAuthenticated(DatasetController) } /> */}
                             {/* <Route path={`${rootPath}/datasets/:job`} component={ UserIsAuthenticated(DatasetOverviewController) } /> */}
-=======
-                            <Route path={`${rootPath}/datasets`} component={ UserIsAuthenticated(DatasetController) } />
-                            <Route path={`${rootPath}/datasets/:job`} component={ UserIsAuthenticated(DatasetOverviewController) } />
                             <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
->>>>>>> a4492593... Basic working client-side logging
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
