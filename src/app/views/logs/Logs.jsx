@@ -52,7 +52,6 @@ class Logs extends Component {
             // TODO fix blank page when you go directly to a page number when there aren't enough pages for that to have any data
             // we should be redirecting them to just '/logs' instead
             if (this.props.page && this.props.page !== "1") {
-                console.log(this.state.logsTimestamp);
                 log.getAll(((this.props.page-1)*10), this.state.pageSize, this.state.logsTimestamp).then(logRange => {
                     this.setState({
                         isFetchingLogs: false,
