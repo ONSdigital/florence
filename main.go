@@ -296,7 +296,7 @@ type florenceLogEvent struct {
 	ClientTimestamp time.Time   `json:"clientTimestamp"`
 	Type            string      `json:"type"`
 	Location        string      `json:"location"`
-	InstanceID      int         `json:"instanceID"`
+	InstanceID      string      `json:"instanceID"`
 	Payload         interface{} `json:"payload"`
 }
 
