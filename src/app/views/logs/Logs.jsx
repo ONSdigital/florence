@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 
-import log from '../../utilities/log';
+import DefaultLog from './log-components/DefaultLog';
+import RouteLog from './log-components/RouteLog';
+import log, { eventTypes } from '../../utilities/log';
 
 const propTypes = {
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
+        query: PropTypes.object.isRequired
     }).isRequired,
-    page: PropTypes.string
+    page: PropTypes.string,
+    dispatch: PropTypes.func.isRequired
 }
 
 class Logs extends Component {
@@ -19,21 +24,34 @@ class Logs extends Component {
         this.state = {
             isFetchingLogs: false,
             logs: null,
-            logCount: null
-        }
-
-        this.clearLogs = this.clearLogs.bind(this)
+            logCount: null,
+            pageSize: 10,
+            logsTimestamp: parseInt(this.props.location.query.timestamp) || new Date().getTime()
+        };
     }
 
     componentWillMount() {
+        // Add a timestamp to the URL so we know what time/date we're getting logs from
+        // which prevents logs being added as when go through pages
+        if (!this.props.location.query.timestamp) {
+            const location = {
+                ...this.props.location,
+                query: {
+                    ...this.props.location.query,
+                    timestamp: this.state.logsTimestamp
+                }
+            }
+            this.props.dispatch(push(location));
+        }
+
         this.setState({isFetchingLogs: true});
         log.length().then(count => {
-            console.log(count);
             this.setState({logCount: count});
             // TODO fix blank page when you go directly to a page number when there aren't enough page for that to have any data
             // we should be redirecting them to just '/logs' instead
             if (this.props.page && this.props.page !== "1") {
-                log.getAll(((this.props.page-1)*10), ((this.props.page-1)*10)+10).then(logRange => {
+                console.log(this.state.logsTimestamp);
+                log.getAll(((this.props.page-1)*10), this.state.pageSize, this.state.logsTimestamp).then(logRange => {
                     this.setState({
                         isFetchingLogs: false,
                         logs: logRange
@@ -43,7 +61,7 @@ class Logs extends Component {
             }
 
             if (count > 10) {
-                log.getAll(0, 10).then(logRange => {
+                log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {
                     this.setState({
                         isFetchingLogs: false,
                         logs: logRange
@@ -52,7 +70,7 @@ class Logs extends Component {
                 return;
             }
 
-            log.getAll().then(logs => {
+            log.getAll(null, null, this.state.logsTimestamp).then(logs => {
                 this.setState({
                     isFetchingLogs: false,
                     logs
@@ -65,7 +83,7 @@ class Logs extends Component {
 
         if (this.props.page !== nextProps.page && nextProps.page === "1") {
             this.setState({isFetchingLogs: true});
-            log.getAll(0, 10).then(logRange => {
+            log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {
                 this.setState({
                     isFetchingLogs: false,
                     logs: logRange
@@ -76,7 +94,7 @@ class Logs extends Component {
 
         if (this.props.page !== nextProps.page) {
             this.setState({isFetchingLogs: true});
-            log.getAll(((nextProps.page-1)*10), ((nextProps.page-1)*10)+10).then(logRange => {
+            log.getAll(((nextProps.page-1)*10), this.state.pageSize, this.state.logsTimestamp).then(logRange => {
                 this.setState({
                     isFetchingLogs: false,
                     logs: logRange
@@ -85,6 +103,8 @@ class Logs extends Component {
         }
     }
 
+    // Not currently needed (was used for development), but we might want to include a 'clear logs' CTA somewhere
+    /*
     clearLogs() {
         this.setState({isFetchingLogs: true});
         log.removeAll().then(() => {
@@ -94,6 +114,20 @@ class Logs extends Component {
                 logCount: 0
             });
         });
+    }
+    */
+
+    mapLogToComponent(log, index) {
+        const mapUniqueLogTypesToComponents = {};
+        mapUniqueLogTypesToComponents[eventTypes.changedRoute] = <RouteLog key={index} {...log} />
+
+        if (mapUniqueLogTypesToComponents[log.type]) {
+            return (
+                mapUniqueLogTypesToComponents[log.type]
+            )
+        }
+
+        return <DefaultLog key={index} {...log} />
     }
 
     renderPagination() {
@@ -126,7 +160,7 @@ class Logs extends Component {
         return (
             <Link 
                 className="pagination__link" 
-                to={`${this.props.location.pathname}?page=${pageNumber}`}
+                to={`${this.props.location.pathname}?page=${pageNumber}&timestamp=${this.state.logsTimestamp}`}
             >
                 {pageNumber}
             </Link>
@@ -138,20 +172,9 @@ class Logs extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
                     {!this.state.isFetchingLogs ?
-                        <div>
-                            <button onClick={this.clearLogs}>Clear logs</button>
+                        <div className="logs">
                             {this.state.logs.map((log, index) => {
-                                return (
-                                    <div key={index}>
-                                        {log.index}:
-                                        <br/>
-                                        {new Date(log.clientTimestamp).toLocaleString('en-GB')}
-                                        <br/>
-                                        {log.type}
-                                        <br/>
-                                        <br/>
-                                    </div>
-                                );
+                               return this.mapLogToComponent(log, index);
                             })}
                             {this.state.logCount > 10 &&
                                 this.renderPagination()
@@ -161,7 +184,9 @@ class Logs extends Component {
                             }
                         </div>
                     :
-                        <div className="loader loader--dark"></div>
+                        <div className="margin-top--2">
+                            <div className="loader loader--dark"></div>
+                        </div>
                     }
                 </div>
             </div>
