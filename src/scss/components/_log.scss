@@ -1,0 +1,14 @@
+.logs {
+    margin-top: $lineheight;
+}
+
+.log {
+    margin-bottom: $lineheight;
+
+    &__type {
+        &::first-letter {
+            text-transform: uppercase;
+        }
+        font-weight: 600;
+    }
+}

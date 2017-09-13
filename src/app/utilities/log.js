@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router';
+import uuid from 'uuid/v4';
 import websocket from './websocket';
 import storage from './storage';
 
@@ -21,15 +22,13 @@ export const eventTypes = {
     socketError: "SOCKET_ERROR"
 }
 
-const instanceID = Math.floor(Math.random() * 10000) + 1;
+const instanceID = uuid();
 
 const excludeFromServerLogs = [
     eventTypes.pingSent,
     eventTypes.pingReceived,
     eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we could have an infinite loop
 ]
-
-let counter = 0;
 
 export default class log {
 
@@ -45,16 +44,17 @@ export default class log {
      * @param {*} payload - the data that is being logged
      */
     static add(eventType, payload)  {
+        const timestamp = new Date();
         const event = {
             type: eventType,
             location: location.href,
             instanceID,
-            clientTimestamp: new Date().toISOString(),
-            payload: payload || null,
-            index: counter++
+            created: timestamp.toISOString(),
+            timestamp: timestamp.getTime(),
+            payload: payload || null
         }
 
-        // storage.add(event);
+        storage.add(event);
 
         if (!excludeFromServerLogs.includes(eventType)) {
             // Prefix the websocket message with 'log:' so that the server knows it's a log event being sent
@@ -65,11 +65,12 @@ export default class log {
 
     /**
      * 
-     * @param {number} fromIndex - start point of the items we'd like to get
-     * @param {number} toIndex - end point of the items we'd like to get
+     * @param {number} skip - (Optional) start point of the items we'd like to receive
+     * @param {number} limit - (Optional) the number of items we'd like to receive
+     * @param {number} requestTimestamp - (Optional) a Unix timestamp that 
      */
-    static getAll(fromIndex, toIndex) {
-        return storage.getAll(fromIndex, toIndex);
+    static getAll(skip, limit, requestTimestamp) {
+        return storage.getAll(skip, limit, requestTimestamp);
     }
 
     /**
