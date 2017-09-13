@@ -10,24 +10,26 @@ const propTypes = {
     location: PropTypes.string.isRequired,
     instanceID: PropTypes.string.isRequired,
     payload: PropTypes.shape({
-        pathname: PropTypes.string,
-        search: PropTypes.string
+        type: PropTypes.string || PropTypes.number,
+        message: PropTypes.string
     })
 }
 
-class RouteLog extends Component {
+class NotificationLog extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
+        console.log(this.props);
         return (
-            <DefaultLog {...this.props}>
-                <div>Routed to: {this.props.payload.pathname}{this.props.payload.search}</div>
+            <DefaultLog {...this.props} >
+                <div>Type: {this.props.payload.type}</div>
+                <div>Message: {this.props.payload.message}</div>
             </DefaultLog>
         )
     }
 }
 
-RouteLog.propTypes = propTypes;
-export default RouteLog;
+NotificationLog.propTypes = propTypes;
+export default NotificationLog;
