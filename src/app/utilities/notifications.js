@@ -49,7 +49,7 @@ export default class notifications {
             });
         }
 
-        log.add(eventTypes.shownNotification);
+        log.add(eventTypes.shownNotification, {type: config.type, message: config.message});
 
         store.dispatch(addNotification(config));
         
