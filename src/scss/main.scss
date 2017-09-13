@@ -1,81 +1,36 @@
-/** To be refactored **/
 
-@import "partials/reset";
-@import "partials/colour-palette";
-@import "partials/fonts";
-@import "elements/typography"; // In new directory
-@import "utilities/grid"; // In new directory
-//@import "partials/elements";
-@import "partials/base";
-//@import "partials/chart-builder";
-//@import "partials/utilities";
+/* 
+* Required legacy SCSS - to be refactored 
+*/
+@import "../legacy/scss/partials/reset";
+// @import "../legacy/scss/utilities/grid";
 
-//For code that needs refactoring - empty regularly
-@import "partials/shame";
 
-//Views
-@import "partials/collections";
-@import "partials/workspace";
-@import "partials/publish";
 
-//JQUI
-//@import "partials/jqui";
+/* 
+* Refactored SCSS 
+*/
 
-/** Use these directories for refactored SCSS **/
-
-// Elements
-@import "elements/tables";
-@import "elements/nav";
-@import "elements/buttons";
-@import "elements/forms";
-@import "elements/inputs";
+//Base styling
+@import "base/variables";
+@import "base/grid";
+@import "base/fonts";
+@import "base/typography";
+@import "base/utilities";
 
 // Components
-@import "components/accordion";
-@import "components/network-status";
-@import "components/slider";
-@import "components/builder";
-@import "components/page";
-// @import "components/tabs";
-@import "components/icons";
-@import "components/markdown-editor";
-// @import "components/modal";
-
-// Utilities
-@import "utilities/mixins";
-@import "utilities/panels";
-@import "utilities/padding";
-@import "utilities/margin";
-@import "utilities/display";
-@import "utilities/utilities";
+@import "components/global-nav";
+@import "components/modal";
+@import "components/selectable-box";
+@import "components/loader";
+@import "components/drawer";
+@import "components/add-remove";
+@import "components/notifications";
+@import "components/progress-bar";
 
 
-/* proposed structure:
-
-SCSS
-	Elements
-		buttons
-		tables
-		lists
-		inputs
-		type
-
-
-	Components
-		nav
-		iframe
-		utilities
-		icons
-		accordions
-		show/hide
-		tabs
-		tree
-		slider
-
-	Utilities
-		workspace??
-		grid
-		utilities
-		screens??
-
-*/
+// Elements
+@import "elements/buttons";
+@import "elements/inputs";
+@import "elements/forms-and-labels";
+@import "elements/lists";

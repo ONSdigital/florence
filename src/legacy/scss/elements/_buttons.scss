@@ -37,6 +37,11 @@ button {
         background-color: $como;
     }
 
+    &--inverse {
+        color: $mine-shaft;
+        background-color: $porcelain;
+    }
+
     &--warning {
         color: $concrete;
         background-color: $tawny-port;
@@ -52,7 +57,7 @@ button {
             color: $pickled-bluewood;
         }
     }
-    
+
     &--disabled {
         opacity: 0.65;
 

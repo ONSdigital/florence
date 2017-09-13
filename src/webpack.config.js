@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
     context: path.resolve(__dirname),
@@ -15,24 +16,30 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015']
-                }
+                loader: 'babel-loader'
             },
             {
-                test: /\.jsx$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['react', 'es2015']
-                }
+                loader: 'eslint-loader'
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract({ fallbackLoader: "style-loader", loader: "css-loader!sass-loader"})
+                use: ExtractTextPlugin.extract({ 
+                    fallback: "style-loader", 
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {sourceMap: isProduction}
+                        },
+                        {
+                            loader: "sass-loader",
+                            options: {sourceMap: isProduction}
+                        }
+                    ]
+                })
             },
             {
                 test: /\.(png|woff|woff2|eot|ttf|svg)$/,
@@ -40,7 +47,6 @@ module.exports = {
             }
         ]
     },
-    devtool: "eval-source-map",
     resolve: {
         // implicitly tell babel to load jsx
         extensions: ['.js', '.jsx']
@@ -50,10 +56,11 @@ module.exports = {
             { from: 'refactored.html', to: 'refactored.html' },
             { from: 'manifest.json', to: 'manifest.json' },
             { from: 'service-worker.js', to: 'service-worker.js' },
-            { from: 'img', to: 'img' },
-            // { from: 'legacy/assets', to: 'legacy-assets' },
-            // { from: 'legacy/index.html', to: 'legacy-assets/index.html'}
+            { from: 'img', to: 'img' }
         ]),
         new ExtractTextPlugin("css/main.css")
-    ]
+    ],
+    externals: {
+        resumeablejs: "Resumable"
+    }
 };
