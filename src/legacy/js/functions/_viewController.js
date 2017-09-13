@@ -9,10 +9,12 @@ function viewController(view) {
             viewUsers();
         }
         else if (view === 'teams') {
-            viewTeams();
+            // viewTeams();
+            window.location.pathname = "/florence/teams";
         }
         else if (view === 'login') {
-            viewLogIn();
+            // viewLogIn();
+            window.location.pathname = "/florence/login";
         }
         else if (view === 'publish') {
             viewPublish();
@@ -25,7 +27,8 @@ function viewController(view) {
         }
     }
     else {
-        viewLogIn();
+        // Redirect to refactored login screen
+        window.location.pathname = "/florence/login";
     }
 }
 

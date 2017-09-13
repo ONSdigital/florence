@@ -367,6 +367,22 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         datasetLandingEditor(collectionId, pageData);
     }
 
+    else if (pageData.type === 'api_dataset_landing_page') {
+        var html = templates.workEditT8LandingPage(templateData);
+        $('.workspace-menu').html(html);
+        editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
+        addDataset(collectionId, pageData, 'datasets', 'edition');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
+        editTopics(collectionId, pageData, templateData, 'topics', 'topics');
+        editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
+        accordion();
+        datasetLandingEditor(collectionId, pageData);
+    }
+
     else if (pageData.type === 'dataset') {
         var html = templates.workEditT8(templateData);
         $('.workspace-menu').html(html);
