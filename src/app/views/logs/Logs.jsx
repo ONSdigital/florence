@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 
 import DefaultLog from './log-components/DefaultLog';
 import RouteLog from './log-components/RouteLog';
+import RequestLog from './log-components/RequestLog';
+import Notification from './log-components/NotificationLog';
 import log, { eventTypes } from '../../utilities/log';
 
 const propTypes = {
@@ -47,7 +49,7 @@ class Logs extends Component {
         this.setState({isFetchingLogs: true});
         log.length().then(count => {
             this.setState({logCount: count});
-            // TODO fix blank page when you go directly to a page number when there aren't enough page for that to have any data
+            // TODO fix blank page when you go directly to a page number when there aren't enough pages for that to have any data
             // we should be redirecting them to just '/logs' instead
             if (this.props.page && this.props.page !== "1") {
                 console.log(this.state.logsTimestamp);
@@ -120,6 +122,15 @@ class Logs extends Component {
     mapLogToComponent(log, index) {
         const mapUniqueLogTypesToComponents = {};
         mapUniqueLogTypesToComponents[eventTypes.changedRoute] = <RouteLog key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.shownNotification] = <Notification key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.shownWarning] = <Notification key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.pingFailed] = <RequestLog isFailure={true} key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.requestSent] = <RequestLog key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.requestReceived] = <RequestLog key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.requestFailed] = <RequestLog isFailure={true} key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.passwordChangeError] = <DefaultLog isFailure={true} key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.socketError] = <DefaultLog isFailure={true} key={index} {...log} />
+        mapUniqueLogTypesToComponents[eventTypes.socketBufferFull] = <DefaultLog isFailure={true} key={index} {...log} />
 
         if (mapUniqueLogTypesToComponents[log.type]) {
             return (
