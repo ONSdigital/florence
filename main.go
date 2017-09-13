@@ -290,24 +290,32 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		}
 
 		rdr := bufio.NewReader(bytes.NewReader(message))
-		b, err := rdr.ReadBytes(':')
+		b, err := rdr.ReadBytes('{')
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.ErrorR(req, err, log.Data{"bytes": string(b)})
 			continue
 		}
 
-		eventType := string(b[:len(b)-1])
-		eventData := message[len(eventType)+1:]
+		tags := strings.Split(string(b), ":")
+		eventID := tags[0]
+		eventType := tags[1]
+		eventData := message[len(eventID)+len(eventType)+2:]
 
 		switch eventType {
-		case "event":
+		case "log":
 			var e florenceLogEvent
+			e.ServerTimestamp = time.Now().UTC().Format("2006-01-02T15:04:05.000-0700Z")
 			err = json.Unmarshal(eventData, &e)
 			if err != nil {
 				log.ErrorR(req, err, log.Data{"data": string(eventData)})
 				continue
 			}
 			log.Debug("client log", log.Data{"data": e})
+
+			err = c.WriteJSON(florenceServerEvent{"ack", eventID})
+			if err != nil {
+				log.ErrorR(req, err, nil)
+			}
 		default:
 			log.DebugR(req, "unknown event type", log.Data{"type": eventType, "data": string(eventData)})
 		}
@@ -321,7 +329,7 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 type florenceLogEvent struct {
-	Created         time.Time   `json:"-"`
+	ServerTimestamp string      `json:"-"`
 	ClientTimestamp time.Time   `json:"clientTimestamp"`
 	Type            string      `json:"type"`
 	Location        string      `json:"location"`

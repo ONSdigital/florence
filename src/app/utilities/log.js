@@ -1,6 +1,5 @@
 import { browserHistory } from 'react-router';
-
-const instanceID = Math.floor(Math.random() * 10000) + 1;
+import websocket from './websocket';
 
 export const eventTypes = {
     shownNotification: "SHOWN_NOTIFICATION",
@@ -12,20 +11,31 @@ export const eventTypes = {
     requestFailed: "REQUEST_FAILED",
     passwordChangeSuccess: "PASSWORD_CHANGE_SUCCESS",
     passwordChangeError: "PASSWORD_CHANGE_ERROR",
-    editedTeamMembers: "EDITED_TEAM_MEMBERS"
+    editedTeamMembers: "EDITED_TEAM_MEMBERS",
+    pingSent: "PING_SENT",
+    pingReceived: "PING_RECEIVED",
+    pingFailed: "PING_FAILED",
+    socketBufferFull: "SOCKET_BUFFER_FULL",
+    socketOpen: "SOCKET_OPEN",
+    socketError: "SOCKET_ERROR"
 }
 
-browserHistory.listen(location => {
-    log.add(eventTypes.changedRoute, {...location})
-});
+const instanceID = Math.floor(Math.random() * 10000) + 1;
 
-const socket = new WebSocket(`ws://${window.location.host}/florence/websocket`);
-
-socket.onopen = () => {
-    log.add(eventTypes.appInitialised);
-}
+const excludeFromServerLogs = [
+    eventTypes.pingSent,
+    eventTypes.pingReceived,
+    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we'll have an infinite loop
+]
 
 export default class log {
+
+    static initialise() {
+        this.add(eventTypes.appInitialised);
+        browserHistory.listen(location => {
+            log.add(eventTypes.changedRoute, {...location})
+        });
+    }
 
     static add(eventType, payload)  {
         const event = {
@@ -36,26 +46,11 @@ export default class log {
             payload: payload || null
         }
 
-        // console.log(event);
-
-        // Socket isn't open yet but something has been loged, wait until it is open to send it
-        if (socket.readyState === 0) {
-            socket.onopen = () => {
-                socket.send(`event:${JSON.stringify(event)}`);
-            }
+        if (!excludeFromServerLogs.includes(eventType)) {
+            // Prefix the websocket message with 'log:' so that 
+            // the server knows it's a log event being sent
+            websocket.send(`log:${JSON.stringify(event)}`);
             return;
         }
-
-        socket.send(`event:${JSON.stringify(event)}`);
-        
-        // Send across with a top level type because other data, not just events, will be sent too e.g.
-        /*
-        {
-            type: "LOG_EVENT",
-            payload: {
-                event
-            }
-        }
-        */
     }
 }
