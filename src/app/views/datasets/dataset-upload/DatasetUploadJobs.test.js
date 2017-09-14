@@ -41,7 +41,7 @@ console.warn = jest.fn(warn => {
 
 test("Correct number of jobs are rendered", () => {
     const component = mount(
-        <Jobs {...defaultProps} />
+        <DatasetUploadJobs {...defaultProps} />
     )
     
     expect(component.find('a').length).toBe(3);
@@ -49,7 +49,7 @@ test("Correct number of jobs are rendered", () => {
 
 test("All in progress jobs are get the correct dataset alias from the recipes data", () => {
     const component = mount(
-        <Jobs {...defaultProps} />
+        <DatasetUploadJobs {...defaultProps} />
     )
     const items = component.find('a');
     const recipeCount = {
@@ -81,7 +81,7 @@ test("All in progress jobs are get the correct dataset alias from the recipes da
 
 test("Attempt to render job with an unrecognised ID should show console warning", () => {
     const component = shallow(
-        <Jobs {...defaultProps} />
+        <DatasetUploadJobs {...defaultProps} />
     )
 
     expect(() => {
