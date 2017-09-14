@@ -14,7 +14,7 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired
 }
 
-class Jobs extends Component {
+class DatasetUploadJobs extends Component {
     constructor(props) {
         super(props);
     }
@@ -34,7 +34,7 @@ class Jobs extends Component {
                             }
                             return (
                                 <li className="list__item list__item--separated grid grid--justify-space-between" key={job.job_id}>
-                                    <Link to={`${this.props.rootPath}/datasets/${job.job_id}`}>
+                                    <Link to={`${this.props.rootPath}/datasets/uploads/${job.job_id}`}>
                                         {recipe.alias}
                                     </Link>
                                     <span>{job.state}</span>
@@ -50,6 +50,6 @@ class Jobs extends Component {
     }
 }
 
-Jobs.propTypes = propTypes;
+DatasetUploadJobs.propTypes = propTypes;
 
-export default Jobs;
+export default DatasetUploadJobs;
