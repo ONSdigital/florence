@@ -43,7 +43,7 @@ class NavBar extends Component {
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
 
-        if (route.indexOf(`${rootPath}/collections`) >= 0 || route.indexOf(`${rootPath}/publishing-queue`) >= 0 || route.indexOf(`${rootPath}/reports`) >= 0 || route.indexOf(`${rootPath}/users-and-access`) >= 0 || route.indexOf(`${rootPath}/teams`) >= 0 ) {
+        if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) ) {
             return (
                 <span>
                     <li className="global-nav__item">
@@ -73,11 +73,11 @@ class NavBar extends Component {
             )
         }
 
-        if ( `${rootPath}/datasets`.indexOf(route) >= 0) {
+        if (route.includes(`${rootPath}/datasets`)) {
             return (
                 <span>
                     <li className="global-nav__item">
-                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Dataset upload</Link>
+                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Datasets</Link>
                     </li>
                     <li className="global-nav__item">
                         <Link to={`${rootPath}/login?redirect=${rootPath}/datasets`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
