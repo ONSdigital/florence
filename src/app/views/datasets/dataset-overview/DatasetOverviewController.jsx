@@ -64,7 +64,7 @@ class DatasetOverviewController extends Component {
                             isDismissable: true
                         }
                         notifications.add(notification);
-                        this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                        this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads`));
                         break;
                     }
                     case("RESPONSE_ERR"):{
@@ -123,7 +123,7 @@ class DatasetOverviewController extends Component {
                     isDismissable: true
                 }
                 notifications.add(notification);
-                this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads`));
                 return;
             }
 
@@ -307,7 +307,7 @@ class DatasetOverviewController extends Component {
                         isDismissable: true
                     }
                     notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                    this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads`));
                     break;
                 }
                 case(413): {
@@ -490,7 +490,7 @@ class DatasetOverviewController extends Component {
                     <p>Dimensions are currently being processed. This could take some time.</p>
                 }
                 </div>
-                <Link className="btn btn--primary" to={`${this.props.rootPath}/datasets`}>Your datasets</Link>
+                <Link className="btn btn--primary" to={`${this.props.rootPath}/datasets/uploads`}>Your datasets</Link>
             </div>
         )
     }
@@ -502,7 +502,7 @@ class DatasetOverviewController extends Component {
                     <div>
                         <h1>Upload new file(s)</h1>
                         <div className="margin-bottom--1">
-                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Return</Link>
                         </div>
                         <h2 className="margin-bottom--1">
                             {this.state.activeDataset.alias}
@@ -530,7 +530,7 @@ class DatasetOverviewController extends Component {
                     <div>
                         <h1>Your dataset has been submitted</h1>
                         <div className="margin-bottom--1">
-                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Return</Link>
                         </div>
                         {this.renderSubmittedScreen()}
                     </div>
@@ -541,7 +541,7 @@ class DatasetOverviewController extends Component {
                     <div>
                         <h1>An error has occurred</h1>
                         <div className="margin-bottom--1">
-                            &#9664; <Link to={`${this.props.rootPath}/datasets`}>Return</Link>
+                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Return</Link>
                         </div>
                         <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
                         <p>Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error</p>
