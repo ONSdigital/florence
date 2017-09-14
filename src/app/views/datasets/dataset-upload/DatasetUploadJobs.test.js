@@ -1,5 +1,5 @@
 import React from 'react';
-import Jobs from './Jobs';
+import DatasetUploadJobs from './DatasetUploadJobs';
 import { shallow, mount } from 'enzyme';
 
 const jobs = [
