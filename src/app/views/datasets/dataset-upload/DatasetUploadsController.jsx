@@ -18,7 +18,7 @@ const propTypes = {
         alias: PropTypes.string
     })),
     jobs: PropTypes.arrayOf(PropTypes.shape({
-        job_id: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
         recipe: PropTypes.string.isRequired
     })),
     rootPath: PropTypes.string.isRequired
