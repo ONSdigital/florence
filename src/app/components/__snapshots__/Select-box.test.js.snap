@@ -31,7 +31,7 @@ exports[`Renders a select element when override is false 1`] = `
 </div>
 `;
 
-exports[`Renders an when override is true 1`] = `
+exports[`Renders an input element when override is true 1`] = `
 <div
   className="margin-bottom--2"
 >
