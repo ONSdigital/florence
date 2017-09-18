@@ -12,7 +12,10 @@
       "./setupJest.js"
     ],
     "collectCoverage": true,
-    "coverageFormats": ["json", "html"],
+    "coverageFormats": [
+      "json",
+      "html"
+    ],
     "globals": {
       "window": true
     }
@@ -52,6 +55,7 @@
     "backoff": "^2.5.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
+    "dateformat": "^2.0.0",
     "extract-text-webpack-plugin": "^2.0.0-beta",
     "file-loader": "^0.10.0",
     "install": "^0.8.7",
