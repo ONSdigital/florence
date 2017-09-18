@@ -10,7 +10,7 @@ import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
 import http from '../../../utilities/http';
 import FileUpload from '../../../components/file-upload/FileUpload';
-import Select from '../../../components/Select';
+import Select from '../../../components/Select-box';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
