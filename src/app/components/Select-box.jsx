@@ -16,7 +16,7 @@ class Select extends Component {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.state = {
-            value: ''
+            value:''
         }
     }
 
@@ -35,7 +35,7 @@ class Select extends Component {
                     className="input"
                     id={this.props.overrideId}
                     type="text"
-                    onChange={this.handleChange}/>
+                    onChange={this.handleChange} />
             </div>
             :
             <div>
