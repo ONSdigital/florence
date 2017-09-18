@@ -8,7 +8,7 @@ const propTypes = {
         alias: PropTypes.string.isRequired
     })),
     jobs: PropTypes.arrayOf(PropTypes.shape({
-        job_id: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
         recipe: PropTypes.string.isRequired
     })),
     rootPath: PropTypes.string.isRequired
@@ -33,8 +33,8 @@ class DatasetUploadJobs extends Component {
                                 return ""
                             }
                             return (
-                                <li className="list__item list__item--separated grid grid--justify-space-between" key={job.job_id}>
-                                    <Link to={`${this.props.rootPath}/datasets/uploads/${job.job_id}`}>
+                                <li className="list__item list__item--separated grid grid--justify-space-between" key={job.id}>
+                                    <Link to={`${this.props.rootPath}/datasets/uploads/${job.id}`}>
                                         {recipe.alias}
                                     </Link>
                                     <span>{job.state}</span>
