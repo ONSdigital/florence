@@ -8,6 +8,8 @@ import SelectableBoxController from '../../components/selectable-box/SelectableB
 import datasetImport from '../../utilities/api-clients/datasetImport';
 import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
+import recipes from '../../utilities/api-clients/recipes';
+import {updateAllRecipes} from '../../config/actions'
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
@@ -30,7 +32,7 @@ class DatasetsController extends Component {
         this.setState({isFetchingDatasets: true});
         const fetches = [
             datasetImport.getCompleted(),
-            datasets.getCompleted()
+            datasets.getCompletedInstances()
         ]
         Promise.all(fetches).then(responses => {
             this.setState({
@@ -41,7 +43,7 @@ class DatasetsController extends Component {
             switch (error.status) {
                 case(403):{
                     const notification = {
-                        "type": "warning",
+                        "type": "info",
                         "message": "You do not permission to view submitted datasets.",
                         isDismissable: true
                     }
@@ -95,6 +97,18 @@ class DatasetsController extends Component {
                 }
             }
             this.setState({isFetchingData: false});
+        });
+
+        recipes.getAll().then(allRecipes => {
+            this.props.dispatch(updateAllRecipes(allRecipes.items));
+        }).catch(error => {
+            const notification = {
+                type: "warning",
+                message: "An unexpected error occurred when trying to get dataset recipes, so some functionality in Florence may not work as expected.",
+                isDismissable: true
+            }
+            notifications.add(notification);
+            console.error("Error getting dataset recipes:\n", error);
         });
     }
 
