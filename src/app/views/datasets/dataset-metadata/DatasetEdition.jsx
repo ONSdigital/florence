@@ -45,6 +45,13 @@ class DatasetEdition extends Component {
             APIRequests.push(recipes.getAll());
         }
 
+        /*
+            We currently have to talk to lots of APIs to get the 'editions' array from the recipe
+            which is why there's so many chained promises here. The instance model is going to be
+            updated to contain the 'editions' array itself, so we should be able to simplify this
+            massively at that point.
+        */
+        
         Promise.all(APIRequests).then(responses => {
             if (this.props.recipes.length === 0) {
                 this.props.dispatch(updateAllRecipes(responses[1].items));
