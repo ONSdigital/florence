@@ -82,6 +82,23 @@
             }
         }
 
+        &--error {
+            border-radius: 4px;
+            border-top: 3px solid $night-shadz;
+            border-bottom: 3px solid $night-shadz;
+            border-left: 3px solid $night-shadz;
+            border-right: 3px solid $scarpa-flow;
+
+            &:before {
+                border-left: 3px solid $night-shadz;
+                border-top: 1px solid $scarpa-flow;
+                border-bottom: 1px solid $scarpa-flow;
+                top: -3px;
+                right: -3px;
+                height: 42px;
+            }
+        }
+
     }
 
 

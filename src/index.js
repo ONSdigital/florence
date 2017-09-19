@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route, IndexRoute, Redirect } from 'react-router';
+import { Router, Route, IndexRoute, IndexRedirect, Redirect } from 'react-router';
 import { routerActions } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 
@@ -12,8 +12,8 @@ import TeamsController from './app/views/teams/TeamsController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/datasets/dataset-upload/DatasetUploadsController';
 import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
-import DatasetMetadataController from './app/views/datasets/dataset-metadata/DatasetMetadataController';
-import DatasetCollectionController from './app/views/datasets/dataset-collection/DatasetCollectionController';
+// import DatasetCollectionController from './app/views/datasets/dataset-collection/DatasetCollectionController';
+import DatasetEdition from './app/views/datasets/dataset-metadata/DatasetEdition';
 
 import './scss/main.scss';
 
@@ -55,10 +55,13 @@ class Index extends Component {
                             <Route path={`${rootPath}/datasets`} >
                                 <IndexRoute component={ UserIsAuthenticated(DatasetsController) } />
                                 <Redirect path="metadata" to={`${rootPath}/datasets`} />
-                                <Route path="metadata/:instance" component={ UserIsAuthenticated(DatasetMetadataController) }/>
+                                <Route path="metadata/:instance" >
+                                    <IndexRedirect to="edition" />
+                                    <Route path="edition" component={ UserIsAuthenticated(DatasetEdition) } />
+                                </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
-                                <Route path="uploads/:job/add-to-collection" component={ UserIsAuthenticated(DatasetCollectionController) } />
+                                {/* <Route path="uploads/:job/add-to-collection" component={ UserIsAuthenticated(DatasetCollectionController) } /> */}
                             </Route>
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path="*" component={ UnknownRoute } />

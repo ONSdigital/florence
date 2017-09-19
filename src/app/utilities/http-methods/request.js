@@ -35,12 +35,13 @@ export default function request(method, URI, willRetry = true, onRetry = functio
             retryCount,
             URI
         };
-         const fetchConfig = {
+        const fetchConfig = {
             method,
             credentials: "include",
-            header: {
+            headers: {
                 'Content-Type': 'application/json',
-                'Request-ID': UID
+                'Request-ID': UID,
+                'internal-token': "FD0108EA-825D-411C-9B1D-41EF7727F465"
             }
         }
 

@@ -4,15 +4,15 @@ import { shallow, mount } from 'enzyme';
 
 const jobs = [
     {
-        job_id: "id1",
+        id: "id1",
         recipe: "recipe1"
     },
     {
-        job_id: "id2",
+        id: "id2",
         recipe: "recipe2"
     },
     {
-        job_id: "id3",
+        id: "id3",
         recipe: "recipe1"
     }
 ]
@@ -89,7 +89,7 @@ test("Attempt to render job with an unrecognised ID should show console warning"
             jobs: [
                 ...defaultProps.jobs,
                 {
-                    job_id: "id4",
+                    id: "id4",
                     recipe: "unknown-recipe"
                 }
             ]
