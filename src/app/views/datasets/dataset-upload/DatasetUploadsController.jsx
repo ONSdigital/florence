@@ -113,7 +113,7 @@ export class DatasetUploadsController extends Component {
         this.setState({disabledDataset: recipeID});
         datasetImport.create(recipeID).then(response => {
             this.props.dispatch(addNewJob(response));
-            this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads/${response.job_id}`));
+            this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads/${response.id}`));
         }).catch(error => {
             this.setState({disabledDataset: ""});
             switch (error.status) {

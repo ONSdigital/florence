@@ -20,7 +20,7 @@ const propTypes = {
         alias: PropTypes.string.isRequired
     })),
     jobs: PropTypes.arrayOf(PropTypes.shape({
-        job_id: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
         recipe: PropTypes.string.isRequired
     })),
     params: PropTypes.shape({
@@ -109,7 +109,7 @@ class DatasetOverviewController extends Component {
         } else {
 
             const job = this.props.jobs.find(job => {
-                return job.job_id === this.props.params.job
+                return job.id === this.props.params.job
             });
             const recipe = this.props.datasets.find(dataset => {
                 return dataset.id === job.recipe;
@@ -277,11 +277,11 @@ class DatasetOverviewController extends Component {
 
         return {
             recipeID: recipeAPIResponse.id,
-            jobID: jobAPIResponse.job_id,
+            jobID: jobAPIResponse.id,
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
-            instanceID: jobAPIResponse.instances[0].id,
+            // instanceID: jobAPIResponse.instances[0].id, //TODO Work out if we need this and why. This is causing this screen to error - something has changed in the API but I'm unsure where it is needed in the screen at the moment.
             files,
             editionsList,
             editionOverride
