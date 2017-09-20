@@ -101,5 +101,14 @@
 
     }
 
+    &-details {
+        border-left: 3px solid $scarpa-flow;
+        padding: ($lineheight / 2) $gutter;
+        margin-bottom: $lineheight;
 
+        &__label {
+            font-weight: 600;
+        }
+
+    }
 }
