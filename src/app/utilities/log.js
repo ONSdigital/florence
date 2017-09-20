@@ -1,6 +1,7 @@
 import { browserHistory } from 'react-router';
-
-const instanceID = Math.floor(Math.random() * 10000) + 1;
+import uuid from 'uuid/v4';
+import websocket from './websocket';
+import storage from './storage';
 
 export const eventTypes = {
     shownNotification: "SHOWN_NOTIFICATION",
@@ -12,50 +13,77 @@ export const eventTypes = {
     requestFailed: "REQUEST_FAILED",
     passwordChangeSuccess: "PASSWORD_CHANGE_SUCCESS",
     passwordChangeError: "PASSWORD_CHANGE_ERROR",
-    editedTeamMembers: "EDITED_TEAM_MEMBERS"
+    editedTeamMembers: "EDITED_TEAM_MEMBERS",
+    pingSent: "PING_SENT",
+    pingReceived: "PING_RECEIVED",
+    pingFailed: "PING_FAILED",
+    socketBufferFull: "SOCKET_BUFFER_FULL",
+    socketOpen: "SOCKET_OPEN",
+    socketError: "SOCKET_ERROR"
 }
 
-browserHistory.listen(location => {
-    log.add(eventTypes.changedRoute, {...location})
-});
+const instanceID = uuid();
 
-const socket = new WebSocket(`ws://${window.location.host}/florence/websocket`);
-
-socket.onopen = () => {
-    log.add(eventTypes.appInitialised);
-}
+const excludeFromServerLogs = [
+    eventTypes.pingSent,
+    eventTypes.pingReceived,
+    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we could have an infinite loop
+]
 
 export default class log {
 
+    static initialise() {
+        this.add(eventTypes.appInitialised);
+        browserHistory.listen(location => {
+            log.add(eventTypes.changedRoute, {...location})
+        });
+    }
+
+    /**
+     * @param {string} eventType - tells us what event is being logged. Should be populated by a value from the eventTypes map
+     * @param {*} payload - the data that is being logged
+     */
     static add(eventType, payload)  {
+        const timestamp = new Date();
         const event = {
             type: eventType,
             location: location.href,
             instanceID,
-            clientTimestamp: new Date().toISOString(),
+            created: timestamp.toISOString(),
+            timestamp: timestamp.getTime(),
             payload: payload || null
         }
 
-        // console.log(event);
+        storage.add(event);
 
-        // Socket isn't open yet but something has been loged, wait until it is open to send it
-        if (socket.readyState === 0) {
-            socket.onopen = () => {
-                socket.send(`event:${JSON.stringify(event)}`);
-            }
+        if (!excludeFromServerLogs.includes(eventType)) {
+            // Prefix the websocket message with 'log:' so that the server knows it's a log event being sent
+            websocket.send(`log:${JSON.stringify(event)}`);
             return;
         }
+    }
 
-        socket.send(`event:${JSON.stringify(event)}`);
-        
-        // Send across with a top level type because other data, not just events, will be sent too e.g.
-        /*
-        {
-            type: "LOG_EVENT",
-            payload: {
-                event
-            }
-        }
-        */
+    /**
+     * 
+     * @param {number} skip - (Optional) start point of the items we'd like to receive
+     * @param {number} limit - (Optional) the number of items we'd like to receive
+     * @param {number} requestTimestamp - (Optional) a Unix timestamp that 
+     */
+    static getAll(skip, limit, requestTimestamp) {
+        return storage.getAll(skip, limit, requestTimestamp);
+    }
+
+    /**
+     * @returns {Promise} - Which resolves to am integer
+     */
+    static length() {
+        return storage.length();
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    static removeAll() {
+        return storage.removeAll();
     }
 }
