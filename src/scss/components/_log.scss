@@ -1,0 +1,31 @@
+.logs {
+    margin-top: $lineheight;
+}
+
+.log {
+    margin-bottom: $lineheight;
+
+    
+    &--failure {
+        position: relative;
+        &:before {
+            content: "";
+            background-color: $night-shadz;
+            height: 100%;
+            width: 4px;
+            top: 0;
+            position: absolute;
+            left: -12px;
+        }
+    }
+
+    &__type {
+        font-weight: 600;
+        &::first-letter {
+            text-transform: uppercase;
+        }
+        &--failure {
+            color: $night-shadz;
+        }
+    }
+}
