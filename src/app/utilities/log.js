@@ -1,5 +1,7 @@
 import { browserHistory } from 'react-router';
+import uuid from 'uuid/v4';
 import websocket from './websocket';
+import storage from './storage';
 
 export const eventTypes = {
     shownNotification: "SHOWN_NOTIFICATION",
@@ -20,12 +22,12 @@ export const eventTypes = {
     socketError: "SOCKET_ERROR"
 }
 
-const instanceID = Math.floor(Math.random() * 10000) + 1;
+const instanceID = uuid();
 
 const excludeFromServerLogs = [
     eventTypes.pingSent,
     eventTypes.pingReceived,
-    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we'll have an infinite loop
+    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we could have an infinite loop
 ]
 
 export default class log {
@@ -37,20 +39,51 @@ export default class log {
         });
     }
 
+    /**
+     * @param {string} eventType - tells us what event is being logged. Should be populated by a value from the eventTypes map
+     * @param {*} payload - the data that is being logged
+     */
     static add(eventType, payload)  {
+        const timestamp = new Date();
         const event = {
             type: eventType,
             location: location.href,
             instanceID,
-            clientTimestamp: new Date().toISOString(),
+            created: timestamp.toISOString(),
+            timestamp: timestamp.getTime(),
             payload: payload || null
         }
 
+        storage.add(event);
+
         if (!excludeFromServerLogs.includes(eventType)) {
-            // Prefix the websocket message with 'log:' so that 
-            // the server knows it's a log event being sent
+            // Prefix the websocket message with 'log:' so that the server knows it's a log event being sent
             websocket.send(`log:${JSON.stringify(event)}`);
             return;
         }
+    }
+
+    /**
+     * 
+     * @param {number} skip - (Optional) start point of the items we'd like to receive
+     * @param {number} limit - (Optional) the number of items we'd like to receive
+     * @param {number} requestTimestamp - (Optional) a Unix timestamp that 
+     */
+    static getAll(skip, limit, requestTimestamp) {
+        return storage.getAll(skip, limit, requestTimestamp);
+    }
+
+    /**
+     * @returns {Promise} - Which resolves to am integer
+     */
+    static length() {
+        return storage.length();
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    static removeAll() {
+        return storage.removeAll();
     }
 }
