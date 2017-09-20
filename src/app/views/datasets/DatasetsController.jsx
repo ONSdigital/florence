@@ -5,11 +5,10 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
-import datasetImport from '../../utilities/api-clients/datasetImport';
 import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
-import {updateAllRecipes} from '../../config/actions'
+import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
@@ -31,14 +30,15 @@ class DatasetsController extends Component {
     componentWillMount() {
         this.setState({isFetchingDatasets: true});
         const fetches = [
-            datasetImport.getCompleted(),
-            datasets.getCompletedInstances()
+            datasets.getCompletedInstances(),
+            datasets.getAll()
         ]
         Promise.all(fetches).then(responses => {
             this.setState({
                 isFetchingDatasets: false,
-                datasets: this.mapAPIResponsesToViewProps(responses[0], responses[1].items),
+                datasets: this.mapAPIResponsesToViewProps(responses[0].items, responses[1].items),
             });
+            this.props.dispatch(updateAllDatasets(responses[1].items));
         }).catch(error => {
             switch (error.status) {
                 case(403):{
@@ -112,18 +112,20 @@ class DatasetsController extends Component {
         });
     }
 
-    mapAPIResponsesToViewProps(completedJobs, completedDatasets) {
+    mapAPIResponsesToViewProps(completedInstances, datasets) {
         // TODO once import API stores uploader info we want to map it to the completed dataset for the view to display
-        return completedDatasets.map(dataset => {
+        return completedInstances.map(instance => {
+            const instanceDataset = datasets.find(dataset => {
+                return dataset.id === instance.dataset_id
+            });
             return {
-                id: dataset.id,
-                name: dataset.title || `No name available (${dataset.id})`
+                id: instance.id,
+                name: instanceDataset.title || `No name available (${instance.id})`
             }
         });
     }
 
     goToDatasetMetadata(props) {
-        console.log(`Clicked dataset:\n`, props);
         this.props.dispatch(push(`${this.props.rootPath}/datasets/metadata/${props.id}`));
     }
 
