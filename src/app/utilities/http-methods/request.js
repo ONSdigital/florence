@@ -32,7 +32,8 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             method: method,
             requestID: UID,
             willRetry,
-            retryCount
+            retryCount,
+            URI
         };
          const fetchConfig = {
             method,
@@ -47,7 +48,7 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             fetchConfig.body = JSON.stringify(body || {});
         }
 
-        log.add(eventTypes.requestSent, logEventPayload);
+        log.add(eventTypes.requestSent, {...logEventPayload});
 
         fetch(URI, fetchConfig).then(response => {
             logEventPayload.status = response.status;
@@ -86,6 +87,8 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
                 return;
             }
 
+            logEventPayload.status = 200;
+
             if (!responseIsJSON) {
                 resolve();
             }
@@ -103,7 +106,7 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             resolve(responseJSON);
         }).catch(fetchError => {
 
-            logEventPayload.error = fetchError;
+            logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
 
             if (willRetry) {
