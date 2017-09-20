@@ -1666,6 +1666,19 @@ select {
         top: -3px;
         right: -3px;
         height: 42px; }
+    .select-wrap--error {
+      border-radius: 4px;
+      border-top: 3px solid #AA354C;
+      border-bottom: 3px solid #AA354C;
+      border-left: 3px solid #AA354C;
+      border-right: 3px solid #58585B; }
+      .select-wrap--error:before {
+        border-left: 3px solid #AA354C;
+        border-top: 1px solid #58585B;
+        border-bottom: 1px solid #58585B;
+        top: -3px;
+        right: -3px;
+        height: 42px; }
   .select-details {
     border-left: 3px solid #58585B;
     padding: 10.5px 20px;
