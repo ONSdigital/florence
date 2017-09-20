@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllDatasets, updateAllJobs, addNewJob } from '../../../config/actions';
+import { updateAllJobs, addNewJob , updateAllRecipes} from '../../../config/actions';
 import recipes from '../../../utilities/api-clients/recipes';
 import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
@@ -13,7 +13,7 @@ import DatasetUploadJobs from './DatasetUploadJobs';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
-    datasets: PropTypes.arrayOf(PropTypes.shape({
+    recipes: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         alias: PropTypes.string
     })),
@@ -43,7 +43,7 @@ export class DatasetUploadsController extends Component {
         const getJobs = datasetImport.getAll();
 
         Promise.all([getRecipes, getJobs]).then(response => {
-            this.props.dispatch(updateAllDatasets(response[0].items));
+            this.props.dispatch(updateAllRecipes(response[0].items));
             this.props.dispatch(updateAllJobs(response[1]));
             this.setState({isFetchingData: false});
         }).catch(error => {
@@ -101,7 +101,7 @@ export class DatasetUploadsController extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         
         // Don't render all the jobs and datasets yet because the jobs haven't been added to the state yet
-        if (nextProps.datasets.length > 0 && !nextProps.jobs && !nextState.isFetchingData) {
+        if (nextProps.recipes.length > 0 && !nextProps.jobs && !nextState.isFetchingData) {
             return false;
         }
         
@@ -189,7 +189,7 @@ export class DatasetUploadsController extends Component {
                             </div> 
                         }
                         {!this.state.isFetchingData &&
-                            <DatasetUploadJobs jobs={this.props.jobs} datasets={this.props.datasets} rootPath={this.props.rootPath} />
+                            <DatasetUploadJobs jobs={this.props.jobs} datasets={this.props.recipes} rootPath={this.props.rootPath} />
                         }
                     </div>
                     <h2 className="margin-bottom--1">Datasets available to you</h2>
@@ -198,9 +198,9 @@ export class DatasetUploadsController extends Component {
                             <div className="loader loader--dark"></div>
                         </div>
                     }
-                    {this.props.datasets.length > 0 &&
+                    {this.props.recipes.length > 0 &&
                         <ul className="list list--neutral">
-                            {this.props.datasets.map(dataset => {
+                            {this.props.recipes.map(dataset => {
                                 return (
                                     <DatasetUploadItem 
                                         key={dataset.id} 
@@ -222,7 +222,7 @@ DatasetUploadsController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        datasets: state.state.datasets.all,
+        recipes: state.state.datasets.recipes,
         jobs: state.state.datasets.jobs,
         rootPath: state.state.rootPath
     }

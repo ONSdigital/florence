@@ -502,7 +502,7 @@ class DatasetOverviewController extends Component {
                     <div>
                         <h1>Upload new file(s)</h1>
                         <div className="margin-bottom--1">
-                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Return</Link>
+                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Back</Link>
                         </div>
                         <h2 className="margin-bottom--1">
                             {this.state.activeDataset.alias}
