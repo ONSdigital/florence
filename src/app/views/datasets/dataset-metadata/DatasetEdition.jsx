@@ -1,26 +1,27 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import dataset from '../../../utilities/api-clients/datasets';
+import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
-import Select from '../../../components/Select'
-import recipes from '../../../utilities/api-clients/recipes'
-import {updateAllRecipes, updateActiveInstance} from '../../../config/actions'
-import datasetImport from '../../../utilities/api-clients/datasetImport'
+import Select from '../../../components/Select';
+import {updateActiveInstance, updateAllDatasets} from '../../../config/actions';
 
 const propTypes = {
-    instance_id: PropTypes.string,
     params: PropTypes.shape({
         instance: PropTypes.string
     }),
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
-    recipes: PropTypes.array,
     instance: PropTypes.shape({
         editions: PropTypes.arrayOf(PropTypes.string)
-    })
+    }),
+    datasets: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired
+    }))
 }
 
 class DatasetEdition extends Component {
@@ -28,9 +29,10 @@ class DatasetEdition extends Component {
         super(props);
 
         this.state = {
-            isFetchingData: false,
+            isFetchingInstance: false,
             edition: null,
-            error: null
+            error: null,
+            datasetTitle: null
         };
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -38,42 +40,27 @@ class DatasetEdition extends Component {
     }
 
     componentWillMount() {
-        this.setState({isFetchingData: true});
+        this.setState({isFetchingInstance: true});
 
-        const APIRequests = [dataset.getInstance(this.props.params.instance)];
-        if (this.props.recipes.length === 0) {
-            APIRequests.push(recipes.getAll());
+        const APIRequests = [
+            datasets.getInstance(this.props.params.instance)
+        ]
+        if (this.props.datasets.length === 0) {
+            APIRequests.push(datasets.getAll());
         }
 
-        /*
-            We currently have to talk to lots of APIs to get the 'editions' array from the recipe
-            which is why there's so many chained promises here. The instance model is going to be
-            updated to contain the 'editions' array itself, so we should be able to simplify this
-            massively at that point.
-        */
-        
         Promise.all(APIRequests).then(responses => {
-            if (this.props.recipes.length === 0) {
-                this.props.dispatch(updateAllRecipes(responses[1].items));
-            }
             this.props.dispatch(updateActiveInstance(responses[0]));
-            return responses[0].links.job.id;
-        }).then(jobID => {
-            return datasetImport.get(jobID);
-        }).then(job => {
-            try {
-                const instanceRecipe = this.props.recipes.find(recipe => {
-                    return recipe.id === job.recipe
-                });
-                const instanceWithSuggestedEditions = {
-                    ...this.props.instance,
-                    editions: instanceRecipe.output_instances[0].editions
-                }
-                this.props.dispatch(updateActiveInstance(instanceWithSuggestedEditions));
-                this.setState({isFetchingData: false});
-            } catch (error) {
-                throw "Error mapping instance to a recipe and getting editions"
+            if (this.props.datasets.length === 0) {
+                this.props.dispatch(updateAllDatasets(responses[1].items));
             }
+            const activeDataset = this.props.datasets.find(dataset => {
+                return dataset.id === responses[0].dataset_id;
+            });
+            this.setState({
+                isFetchingInstance: false,
+                datasetTitle: activeDataset.title
+            });
         }).catch(error => {
             switch (error.status) {
                 case(403):{
@@ -106,7 +93,7 @@ class DatasetEdition extends Component {
                 }
             }
             console.error("Error has occurred:\n", error);
-            this.setState({isFetchingData: false});
+            this.setState({isFetchingInstance: false});
         });
     }
 
@@ -127,6 +114,8 @@ class DatasetEdition extends Component {
                 error: "You must select an edition"
             });
         }
+
+        this.props.dispatch(push("whats-changed"));
     }
 
     handleSelectChange(event) {
@@ -141,12 +130,22 @@ class DatasetEdition extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
                     <h1>Create a new dataset edition</h1>
-                    {this.state.isFetchingData ?
+                    <div className="margin-bottom--1">
+                        &#9664; <Link to={`${this.props.rootPath}/datasets`}>Back</Link>
+                    </div>
+                    {this.state.isFetchingInstance ?
                         <div className="loader loader--dark"></div>
                     :
                         <div>
                             <h2>Dataset</h2>
-                            <p className="margin-bottom--1">Unable to get dataset title</p>
+                            <p className="margin-bottom--1">
+                                {this.state.datasetTitle ||
+                                    <span>
+                                        <span>Getting dataset title...</span>
+                                        <span className="loader loader--dark"></span>
+                                    </span>
+                                }
+                            </p>
                             <form onSubmit={this.handleFormSubmit}>
                                 <h2>Edition</h2>
                                 <div className="grid__col-6 margin-bottom--2">
@@ -171,8 +170,8 @@ DatasetEdition.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
-        recipes: state.state.datasets.recipes,
-        instance: state.state.datasets.activeInstance
+        instance: state.state.datasets.activeInstance,
+        datasets: state.state.datasets.all
     }
 }
 
