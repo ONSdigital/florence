@@ -27,10 +27,28 @@ const UserIsAuthenticated = UserAuthWrapper({
     failureRedirectPath: `${rootPath}/login`
 });
 
+const UserIsPublisher = UserAuthWrapper({
+    authSelector: state => {
+        return state.state.user.isAuthenticated ? state.state.user : {};
+    },
+    redirectAction: routerActions.replace,
+    wrapperDisplayName: 'UserIsPublisher',
+    failureRedirectPath: `${rootPath}/not-authorised`,
+    predicate: user => user.userType == 'ADMIN' || user.userType == 'EDITOR',
+})
+
 class UnknownRoute extends Component {
     render() {
         return (
             <h1>Sorry, this page couldn't be found</h1>
+        )
+    }
+}
+
+class NotAuthorised extends Component {
+    render() {
+        return (
+            <h1>Sorry, you don't have access to this. Please go to Ermintrude</h1>
         )
     }
 }
@@ -43,15 +61,16 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Redirect exact from={rootPath} to={`${rootPath}/collections`}/>
-                            <Route path={`${rootPath}/teams`} component={ UserIsAuthenticated(TeamsController) }>
-                                <Route path={`:team`} component={ UserIsAuthenticated(TeamsController) }>
-                                    <Route path={`edit`} component={ UserIsAuthenticated(TeamsController) }/>
-                                    <Route path={`delete`} component={ UserIsAuthenticated(TeamsController) }/>
+                            <Route path={`${rootPath}/teams`} component={ UserIsPublisher(TeamsController) }>
+                                <Route path={`:team`} component={ UserIsPublisher(TeamsController) }>
+                                    <Route path={`edit`} component={ UserIsPublisher(TeamsController) }/>
+                                    <Route path={`delete`} component={ UserIsPublisher(TeamsController) }/>
                                 </Route>
                             </Route>
                             {/* <Route path={`${rootPath}/datasets`} component={ UserIsAuthenticated(DatasetController) } /> */}
                             {/* <Route path={`${rootPath}/datasets/:job`} component={ UserIsAuthenticated(DatasetOverviewController) } /> */}
                             <Route path={`${rootPath}/login`} component={ LoginController } />
+                            <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
                     </Route>

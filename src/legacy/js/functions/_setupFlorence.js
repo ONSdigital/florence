@@ -210,6 +210,12 @@ function setupFlorence() {
         }
     }
 
+    // redirect a viewer to not authorised message if they try access old Florence
+    var userType = localStorage.getItem("userType");
+    if (userType == "VIEWER") {
+        window.location.href = '/florence/not-authorised';
+    }
+
     // Get ping times to zebedee and surface for user
     var lastPingTime;
     var pingTimes = [];
