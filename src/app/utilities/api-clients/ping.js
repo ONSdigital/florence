@@ -13,14 +13,14 @@ export default function ping() {
         body: JSON.stringify({})
     }
     const requestID = uuid();
-    log.add(eventTypes.pingSent, {requestID})
+    // log.add(eventTypes.pingSent, {requestID});
     return fetch('/zebedee/ping', fetchConfig).then(response => {
         if (!response.ok) {
             throw response;
         }
         return response.json();
     }).then(response => {
-        log.add(eventTypes.pingReceived, {requestID});
+        // log.add(eventTypes.pingReceived, {requestID});
         return response;
     }).catch(error => {
         log.add(eventTypes.pingFailed, {
