@@ -12,6 +12,7 @@ import TeamsController from './app/views/teams/TeamsController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/datasets/dataset-upload/DatasetUploadsController';
 import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
+import DatasetCollectionController from './app/views/datasets/dataset-collection/DatasetCollectionController';
 import DatasetEdition from './app/views/datasets/dataset-metadata/DatasetEdition';
 
 import './scss/main.scss';
@@ -62,6 +63,7 @@ class Index extends Component {
                                 </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
+                                <Route path="add-to-collection/:instance" component={ UserIsAuthenticated(DatasetCollectionController) } />
                             </Route>
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path="*" component={ UnknownRoute } />
