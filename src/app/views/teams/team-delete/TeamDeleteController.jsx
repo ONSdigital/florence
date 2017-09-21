@@ -71,7 +71,6 @@ export class TeamDeleteController extends Component {
                 return team.name !== this.props.name;
             })
             this.props.dispatch(updateAllTeams(newTeams));
-            this.props.dispatch(push(`${this.props.rootPath}/teams`));
             this.props.onDeleteSuccess();
         }).catch(error => {
             this.setState({formIsPosting: false});
