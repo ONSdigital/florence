@@ -34,10 +34,10 @@ class Select extends Component {
     render() {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
-                {this.props.error && 
+                <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
+                {this.props.error &&
                     <div className="error-msg">{this.props.error}</div>
                 }
-                <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
                 <div className={"select-wrap " + (this.state.isFocused ? "select-wrap--focus" : "") + (this.props.error ? "select-wrap--error" : "")}>
                     <select
                         className="select"
