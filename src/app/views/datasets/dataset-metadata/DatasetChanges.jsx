@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import datasets from '../../../utilities/api-clients/datasets'
 import {updateActiveInstance} from '../../../config/actions'
+import url from '../../../utilities/url'
+
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
@@ -35,12 +38,12 @@ class DatasetChanges extends Component {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    <h1>This version's metadata</h1>
-                    <div className="margin-bottom--1">
-                        &#9664; <Link to="edition">Back</Link>
+                    <div className="margin-top--2">
+                        &#9664; <Link to={`${url.resolve("edition")}`}>Back</Link>
                     </div>
-                    <p>
-                        This information can change each time a new edition is published. <Link to="history">View history</Link>
+                    <h1 className="margin-top--1">This version's metadata</h1>
+                    <p className="margin-bottom--2">
+                        This information can change each time a new edition is published. <Link to={`${url.resolve("history")}`}>View history</Link>
                     </p>
                     {this.props.instance ?
                         <div>

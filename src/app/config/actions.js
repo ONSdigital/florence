@@ -1,6 +1,3 @@
-import { push } from 'react-router-redux';
-import log, {eventTypes} from '../utilities/log'
-
 export const USER_LOGGED_IN = 'USER_LOGGED_IN';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
@@ -18,23 +15,6 @@ export const UPDATE_ACTIVE_INSTANCE = 'UPDATE_ACTIVE_INSTANCE';
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
 export const TOGGLE_NOTIFICATION_VISIBILITY = 'TOGGLE_NOTIFICATION_VISIBILITY';
-
-// Wraps the react-router-redux 'push' function to handle relative paths, because the library doesn't by itself
-export function relativePush(path) {
-    if (typeof path !== "string") {
-        console.error("Unable to parse relative URL path because non-string type given");
-        log.add(eventTypes.unexpectedRuntimeError, {message: "Unable to parse relative URL path because non-string type given"});
-        return;
-    }
-
-    try {
-        return push(new URL(path, location.href).pathname);
-    } catch (error) {
-        console.error("Error trying to parse relative URL:\n", error);
-        log.add(eventTypes.unexpectedRuntimeError, {message: error.message});
-        return "";
-    }
-}
 
 export function userLoggedIn(email, userType, isAdmin) {
     return {
