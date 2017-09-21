@@ -104,7 +104,7 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
 
         }).then(responseJSON => {
             resolve(responseJSON);
-        }).catch(fetchError => {
+        }).catch((fetchError = {message: "No error message given"}) => {
 
             logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
