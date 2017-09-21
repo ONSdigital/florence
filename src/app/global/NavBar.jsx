@@ -43,11 +43,15 @@ class NavBar extends Component {
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
 
-        if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) ) {
+        if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) || route.includes(`${rootPath}/datasets`) ) {
             return (
                 <span>
                     <li className="global-nav__item">
                         <a className="global-nav__link" href="/florence/collections">Collections</a>
+                    </li>
+
+                    <li className="global-nav__item">
+                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Datasets</Link>
                     </li>
 
                     <li className="global-nav__item">
@@ -68,19 +72,6 @@ class NavBar extends Component {
 
                     <li className="global-nav__item">
                         <Link to={`${rootPath}/login`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
-                    </li>
-                </span>
-            )
-        }
-
-        if (route.includes(`${rootPath}/datasets`)) {
-            return (
-                <span>
-                    <li className="global-nav__item">
-                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Datasets</Link>
-                    </li>
-                    <li className="global-nav__item">
-                        <Link to={`${rootPath}/login?redirect=${rootPath}/datasets`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
                     </li>
                 </span>
             )
