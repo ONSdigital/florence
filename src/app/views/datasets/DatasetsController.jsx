@@ -132,7 +132,7 @@ class DatasetsController extends Component {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    <h1>Select a dataset</h1>
+                    <h1 className="text-center">Select a dataset</h1>
                     <Link className="margin-bottom--1" to={`${location.pathname}/uploads`}>Upload a dataset</Link>
                     <SelectableBoxController 
                         heading="Dataset title"

@@ -10,7 +10,7 @@ import {
     updateActiveTeamMembers
 } from '../../config/actions';
 import teams from '../../utilities/api-clients/teams';
-import safeURL from '../../utilities/safeURL';
+import url from '../../utilities/url';
 import notifications from '../../utilities/notifications';
 
 import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
@@ -167,7 +167,7 @@ export class TeamsController extends Component {
         teams.getAll().then(allTeams => {
             // Add any props (such as 'path') to response from API
             const allTeamsWithProps = allTeams.map(team => {
-                const path = safeURL(team.name + "_" + team.id);
+                const path = url.sanitise(team.name + "_" + team.id);
                 return Object.assign({}, team, {
                     path: path
                 });
@@ -297,7 +297,7 @@ export class TeamsController extends Component {
         if (clickedTeam.isSelected) {
             return;
         }
-        const path = safeURL(clickedTeam.name + "_" + clickedTeam.id);
+        const path = url.sanitise(clickedTeam.name + "_" + clickedTeam.id);
         this.props.dispatch(push(`${this.props.rootPath}/teams/${path}`));
     }
 
@@ -331,7 +331,7 @@ export class TeamsController extends Component {
             <div>
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-4">
-                        <h1>Select a team</h1>
+                        <h1 className="text-center">Select a team</h1>
                         <SelectableBoxController 
                             items={this.props.allTeams}
                             activeItem={this.props.activeTeam}
@@ -341,7 +341,7 @@ export class TeamsController extends Component {
                         />
                     </div>
                     <div className="grid__col-4">
-                        <h1>Create a team</h1>
+                        <h1 className="text-center">Create a team</h1>
                         <TeamCreate onCreateSuccess={this.handleTeamCreateSuccess} />
                     </div>
                 </div>
