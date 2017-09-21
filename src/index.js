@@ -35,7 +35,7 @@ const UserIsAuthenticated = UserAuthWrapper({
 class UnknownRoute extends Component {
     render() {
         return (
-            <h1>Sorry, this page couldn't be found</h1>
+            <h1 className="text-center">Sorry, this page couldn't be found</h1>
         )
     }
 }
