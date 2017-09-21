@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
-import {updateActiveInstance, updateAllDatasets} from '../../../config/actions';
+import {relativePush, updateActiveInstance, updateAllDatasets} from '../../../config/actions';
 
 const propTypes = {
     params: PropTypes.shape({
@@ -115,7 +115,7 @@ class DatasetEdition extends Component {
             });
         }
 
-        this.props.dispatch(push("whats-changed"));
+        this.props.dispatch(relativePush("whats-changed"));
     }
 
     handleSelectChange(event) {
@@ -139,12 +139,7 @@ class DatasetEdition extends Component {
                         <div>
                             <h2>Dataset</h2>
                             <p className="margin-bottom--1">
-                                {this.state.datasetTitle ||
-                                    <span>
-                                        <span>Getting dataset title...</span>
-                                        <span className="loader loader--dark"></span>
-                                    </span>
-                                }
+                                {this.state.datasetTitle || "Fetching dataset title..."}
                             </p>
                             <form onSubmit={this.handleFormSubmit}>
                                 <h2>Edition</h2>
