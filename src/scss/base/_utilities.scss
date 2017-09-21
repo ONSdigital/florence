@@ -28,3 +28,19 @@
 .block {
   display: block;
 }
+
+.text-center {
+    text-align: center;
+}
+
+.font-weight {
+    &--300 {
+        font-weight: 300;
+    }
+    &--400 {
+        font-weight: 400;
+    }
+    &--600 {
+        font-weight: 600;
+    }
+}
