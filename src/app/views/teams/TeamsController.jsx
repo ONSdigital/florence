@@ -135,7 +135,7 @@ export class TeamsController extends Component {
     }
 
     handleMembersEditClick() {
-        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/edit`));
+        this.props.dispatch(push(`${location.pathname}/edit`));
     }
 
     handleDrawerCancelClick() {
@@ -143,10 +143,11 @@ export class TeamsController extends Component {
     }
 
     handleTeamDeleteClick() {
-        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/delete`));
+        this.props.dispatch(push(`${location.pathname}/delete`));
     }
 
     handleTeamDeleteSuccess() {
+        this.props.dispatch(push(`${this.props.rootPath}/teams`));
         const notification = {
             type: 'positive',
             message: `Team '${this.props.activeTeam.name}' successfully deleted`,
@@ -250,8 +251,13 @@ export class TeamsController extends Component {
             this.setState({isUpdatingTeamMembers: false});
         }).catch(error => {
             switch(error.status) {
-                case(401): {
-                    // This is handle by the request function, so do nothing here
+                case(404): {
+                    const notification = {
+                        type: "warning",
+                        message: `Couldn't find members for the team: '${teamName}'. This team may have been deleted.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
                     break;
                 }
                 case("RESPONSE_ERR"): {
