@@ -7,9 +7,14 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"io"
 	"sort"
 	"strconv"
+)
+
+var ErrMD5PartSumMismatch = errors.New(
+	"Etag received did not match calculated MD5 sum",
 )
 
 // Multi represents an unfinished multipart upload.
@@ -55,7 +60,7 @@ func (b *Bucket) ListMulti(prefix, delim string) (multis []*Multi, prefixes []st
 		"prefix":      {prefix},
 		"delimiter":   {delim},
 	}
-	for attempt := attempts.Start(); attempt.Next(); {
+	for attempt := b.S3.AttemptStrategy.Start(); attempt.Next(); {
 		req := &request{
 			method: "GET",
 			bucket: b.Name,
@@ -80,7 +85,7 @@ func (b *Bucket) ListMulti(prefix, delim string) (multis []*Multi, prefixes []st
 		}
 		params["key-marker"] = []string{resp.NextKeyMarker}
 		params["upload-id-marker"] = []string{resp.NextUploadIdMarker}
-		attempt = attempts.Start() // Last request worked.
+		attempt = b.S3.AttemptStrategy.Start() // Last request worked.
 	}
 	panic("unreachable")
 }
@@ -125,7 +130,7 @@ func (b *Bucket) InitMulti(key string, contType string, perm ACL) (*Multi, error
 	var resp struct {
 		UploadId string `xml:"UploadId"`
 	}
-	for attempt := attempts.Start(); attempt.Next(); {
+	for attempt := b.S3.AttemptStrategy.Start(); attempt.Next(); {
 		err = b.S3.query(req, &resp)
 		if !shouldRetry(err) {
 			break
@@ -135,6 +140,54 @@ func (b *Bucket) InitMulti(key string, contType string, perm ACL) (*Multi, error
 		return nil, err
 	}
 	return &Multi{Bucket: b, Key: key, UploadId: resp.UploadId}, nil
+}
+
+// PutPart sends part n of the multipart upload, reading all the content from r.
+// Each part, except for the last one, must be at least 5MB in size.
+//
+// This function does not need a io.ReadSeeker as input, so it's suitable for
+// doing streamed uploads.
+//
+// See http://goo.gl/pqZer for details.
+func (m *Multi) PutPartReader(n int, r io.Reader, contentLength int64) (Part, error) {
+	hash := md5.New()
+	tr := io.TeeReader(r, hash)
+
+	headers := map[string][]string{
+		"Content-Length": {strconv.FormatInt(contentLength, 10)},
+	}
+	params := map[string][]string{
+		"uploadId":   {m.UploadId},
+		"partNumber": {strconv.FormatInt(int64(n), 10)},
+	}
+
+	req := &request{
+		method:  "PUT",
+		bucket:  m.Bucket.Name,
+		path:    m.Key,
+		headers: headers,
+		params:  params,
+		payload: tr,
+	}
+	if err := m.Bucket.S3.prepare(req); err != nil {
+		return Part{}, err
+	}
+
+	resp, err := m.Bucket.S3.run(req, nil)
+	if err != nil {
+		return Part{}, err
+	}
+
+	// Verify that S3 received the same bytes that we read
+	calculatedHash := fmt.Sprintf(`"%x"`, hash.Sum(nil))
+	etag := resp.Header.Get("ETag")
+	if etag == "" {
+		return Part{}, errors.New("part upload succeeded with no ETag")
+	} else if etag != calculatedHash {
+		return Part{}, ErrMD5PartSumMismatch
+	}
+
+	return Part{n, etag, contentLength}, nil
 }
 
 // PutPart sends part n of the multipart upload, reading all the content from r.
@@ -158,7 +211,7 @@ func (m *Multi) putPart(n int, r io.ReadSeeker, partSize int64, md5b64 string) (
 		"uploadId":   {m.UploadId},
 		"partNumber": {strconv.FormatInt(int64(n), 10)},
 	}
-	for attempt := attempts.Start(); attempt.Next(); {
+	for attempt := m.Bucket.S3.AttemptStrategy.Start(); attempt.Next(); {
 		_, err := r.Seek(0, 0)
 		if err != nil {
 			return Part{}, err
@@ -175,15 +228,14 @@ func (m *Multi) putPart(n int, r io.ReadSeeker, partSize int64, md5b64 string) (
 		if err != nil {
 			return Part{}, err
 		}
-		hresp, err := m.Bucket.S3.run(req)
+		resp, err := m.Bucket.S3.run(req, nil)
 		if shouldRetry(err) && attempt.HasNext() {
 			continue
 		}
 		if err != nil {
 			return Part{}, err
 		}
-		hresp.Body.Close()
-		etag := hresp.Header.Get("ETag")
+		etag := resp.Header.Get("ETag")
 		if etag == "" {
 			return Part{}, errors.New("part upload succeeded with no ETag")
 		}
@@ -239,7 +291,7 @@ func (m *Multi) ListParts() ([]Part, error) {
 		"max-parts": {strconv.FormatInt(int64(listPartsMax), 10)},
 	}
 	var parts partSlice
-	for attempt := attempts.Start(); attempt.Next(); {
+	for attempt := m.Bucket.S3.AttemptStrategy.Start(); attempt.Next(); {
 		req := &request{
 			method: "GET",
 			bucket: m.Bucket.Name,
@@ -260,7 +312,7 @@ func (m *Multi) ListParts() ([]Part, error) {
 			return parts, nil
 		}
 		params["part-number-marker"] = []string{resp.NextPartNumberMarker}
-		attempt = attempts.Start() // Last request worked.
+		attempt = m.Bucket.S3.AttemptStrategy.Start() // Last request worked.
 	}
 	panic("unreachable")
 }
@@ -340,8 +392,22 @@ func (p completeParts) Len() int           { return len(p) }
 func (p completeParts) Less(i, j int) bool { return p[i].PartNumber < p[j].PartNumber }
 func (p completeParts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
+type completeResponse struct {
+	// The element name: should be either CompleteMultipartUploadResult or Error.
+	XMLName xml.Name
+	// If the element was error, then it should have the following:
+	Code      string
+	Message   string
+	RequestId string
+	HostId    string
+}
+
 // Complete assembles the given previously uploaded parts into the
 // final object. This operation may take several minutes.
+//
+// The complete call to AMZ may still fail after returning HTTP 200,
+// so even though it's unusued, the body of the reply must be demarshalled
+// and checked to see whether or not the complete succeeded.
 //
 // See http://goo.gl/2Z7Tw for details.
 func (m *Multi) Complete(parts []Part) error {
@@ -357,17 +423,33 @@ func (m *Multi) Complete(parts []Part) error {
 	if err != nil {
 		return err
 	}
-	for attempt := attempts.Start(); attempt.Next(); {
+
+	// Setting Content-Length prevents breakage on DreamObjects
+	for attempt := m.Bucket.S3.AttemptStrategy.Start(); attempt.Next(); {
 		req := &request{
 			method:  "POST",
 			bucket:  m.Bucket.Name,
 			path:    m.Key,
 			params:  params,
 			payload: bytes.NewReader(data),
+			headers: map[string][]string{
+				"Content-Length": []string{strconv.Itoa(len(data))},
+			},
 		}
-		err := m.Bucket.S3.query(req, nil)
+
+		resp := &completeResponse{}
+		err := m.Bucket.S3.query(req, resp)
 		if shouldRetry(err) && attempt.HasNext() {
 			continue
+		}
+		if err == nil && resp.XMLName.Local == "Error" {
+			err = &Error{
+				StatusCode: 200,
+				Code:       resp.Code,
+				Message:    resp.Message,
+				RequestId:  resp.RequestId,
+				HostId:     resp.HostId,
+			}
 		}
 		return err
 	}
@@ -393,7 +475,7 @@ func (m *Multi) Abort() error {
 	params := map[string][]string{
 		"uploadId": {m.UploadId},
 	}
-	for attempt := attempts.Start(); attempt.Next(); {
+	for attempt := m.Bucket.S3.AttemptStrategy.Start(); attempt.Next(); {
 		req := &request{
 			method: "DELETE",
 			bucket: m.Bucket.Name,
