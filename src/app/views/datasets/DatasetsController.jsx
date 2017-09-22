@@ -42,7 +42,7 @@ class DatasetsController extends Component {
             switch (error.status) {
                 case(403):{
                     const notification = {
-                        "type": "info",
+                        "type": "neutral",
                         "message": "You do not permission to view submitted datasets.",
                         isDismissable: true
                     }
@@ -133,7 +133,9 @@ class DatasetsController extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
                     <h1 className="text-center">Select a dataset</h1>
-                    <Link className="margin-bottom--1" to={`${location.pathname}/uploads`}>Upload a dataset</Link>
+                    <div className="margin-bottom--1">
+                        <Link to={`${location.pathname}/uploads`}>Upload a dataset</Link>
+                    </div>
                     <SelectableBoxController 
                         heading="Dataset title"
                         isUpdating={this.state.isFetchingDatasets}

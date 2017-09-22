@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import LoginForm from './LoginForm';
@@ -13,14 +12,12 @@ import { errCodes } from '../../utilities/errorCodes'
 import user from '../../utilities/api-clients/user';
 import cookies from '../../utilities/cookies';
 import redirectToMainScreen from '../../utilities/redirectToMainScreen';
-import url from '../../utilities/url'
 
 
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
-    rootPath: PropTypes.string.isRequired,
     location: PropTypes.object
 };
 
@@ -225,8 +222,7 @@ LoginController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        isAuthenticated: state.state.user.isAuthenticated,
-        rootPath: state.state.rootPath
+        isAuthenticated: state.state.user.isAuthenticated
     }
 }
 

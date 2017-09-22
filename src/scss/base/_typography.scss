@@ -43,9 +43,17 @@ button {
     line-height: $lineheight;
 }
 
-a:focus {
-    outline: 4px solid $focus;
-}   
+
+a {
+    color: $primary-link;
+
+    &:visited {
+        color: $pickled-bluewood;
+    }
+    &:focus {
+        outline: 4px solid $focus;
+    }   
+}
 
 ::-webkit-input-placeholder {
     font-style: italic;
