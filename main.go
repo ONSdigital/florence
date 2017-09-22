@@ -63,7 +63,7 @@ func main() {
 		uploadBucketName = v
 	}
 	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
-		recipeAPIURL = v
+		importAPIURL = v
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
