@@ -13,6 +13,7 @@ import { errCodes } from '../../utilities/errorCodes'
 import user from '../../utilities/api-clients/user';
 import cookies from '../../utilities/cookies';
 import redirectToMainScreen from '../../utilities/redirectToMainScreen';
+import url from '../../utilities/url'
 
 
 
@@ -48,7 +49,7 @@ export class LoginController extends Component {
 
     componentWillMount() {
         if (this.props.isAuthenticated) {
-            this.props.dispatch(push(`${this.props.rootPath}/collections`));
+            redirectToMainScreen(this.props.location.query.redirect);
         }
     }
 
