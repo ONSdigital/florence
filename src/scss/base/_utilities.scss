@@ -5,6 +5,10 @@
         $vertical-margin: $lineheight * $i;
         $horizontal-margin: $gutter * $i;
 
+        &--#{$i} {
+            margin: $vertical-margin $horizontal-margin;
+        }
+
         &-top--#{$i} {
             margin-top: $vertical-margin;
         }

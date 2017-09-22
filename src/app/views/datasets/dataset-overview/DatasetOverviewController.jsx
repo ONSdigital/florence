@@ -11,11 +11,11 @@ import notifications from '../../../utilities/notifications';
 import http from '../../../utilities/http';
 import FileUpload from '../../../components/file-upload/FileUpload';
 import Select from '../../../components/Select-box';
+import url from '../../../utilities/url'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
-    rootPath: PropTypes.string.isRequired,
-    datasets: PropTypes.arrayOf(PropTypes.shape({
+    recipes: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         alias: PropTypes.string.isRequired
     })),
@@ -44,7 +44,7 @@ class DatasetOverviewController extends Component {
     }
 
     componentWillMount() {
-        if (!this.props.datasets || this.props.datasets.length === 0) {
+        if (!this.props.recipes || this.props.recipes.length === 0) {
             this.setState({isFetchingDataset: true});
             const APIResponses = {};
             datasetImport.get(this.props.params.job).then(job => {
@@ -60,17 +60,17 @@ class DatasetOverviewController extends Component {
                     case(404): {
                         const notification = {
                             "type": "neutral",
-                            "message": "This dataset was not recognised, so you've been redirect to the main screen.",
+                            "message": `The job '${this.props.params.job}' was not recognised, so you've been redirect to the dataset upload screen.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
-                        this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads`));
+                        this.props.dispatch(push(url.parent()));
                         break;
                     }
                     case("RESPONSE_ERR"):{
                         const notification = {
                             "type": "warning",
-                            "message": "An error's occurred whilst trying to get this dataset.",
+                            "message": "An error's occurred whilst trying to get this job.",
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -79,7 +79,7 @@ class DatasetOverviewController extends Component {
                     case("FETCH_ERR"): {
                         const notification = {
                             type: "warning",
-                            message: "There's been a network error whilst trying to get this dataset. Please check you internet connection and try again in a few moments.",
+                            message: "There's been a network error whilst trying to get this job. Please check you internet connection and try again in a few moments.",
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -88,7 +88,7 @@ class DatasetOverviewController extends Component {
                     case("UNEXPECTED_ERR"): {
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error has occurred whilst trying to get this dataset.",
+                            message: "An unexpected error has occurred whilst trying to get this job.",
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -97,7 +97,7 @@ class DatasetOverviewController extends Component {
                     default: {
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get this dataset.",
+                            message: "An unexpected error's occurred whilst trying to get this job.",
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -111,7 +111,7 @@ class DatasetOverviewController extends Component {
             const job = this.props.jobs.find(job => {
                 return job.id === this.props.params.job
             });
-            const recipe = this.props.datasets.find(dataset => {
+            const recipe = this.props.recipes.find(dataset => {
                 return dataset.id === job.recipe;
             });
             const activeDataset = this.mapAPIResponsesToState({recipe, job});
@@ -123,7 +123,7 @@ class DatasetOverviewController extends Component {
                     isDismissable: true
                 }
                 notifications.add(notification);
-                this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads`));
+                this.props.dispatch(push(url.parent()));
                 return;
             }
 
@@ -303,11 +303,10 @@ class DatasetOverviewController extends Component {
                 case(404): {
                     const notification = {
                         "type": "neutral",
-                        "message": "This job was not recognised, so you've been redirected to the main screen.",
+                        "message": "This job was not recognised, another user may have deleted it.",
                         isDismissable: true
                     }
                     notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads`));
                     break;
                 }
                 case(413): {
@@ -490,7 +489,7 @@ class DatasetOverviewController extends Component {
                     <p>Dimensions are currently being processed. This could take some time.</p>
                 }
                 </div>
-                <Link className="btn btn--primary" to={`${this.props.rootPath}/datasets/uploads`}>Your datasets</Link>
+                <Link className="btn btn--primary" to={url.parent()}>Your datasets</Link>
             </div>
         )
     }
@@ -502,7 +501,7 @@ class DatasetOverviewController extends Component {
                     <div>
                         <h1>Upload new file(s)</h1>
                         <div className="margin-bottom--1">
-                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Back</Link>
+                            &#9664; <Link to={url.parent()}>Back</Link>
                         </div>
                         <h2 className="margin-bottom--1">
                             {this.state.activeDataset.alias}
@@ -530,7 +529,7 @@ class DatasetOverviewController extends Component {
                     <div>
                         <h1>Your dataset has been submitted</h1>
                         <div className="margin-bottom--1">
-                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Return</Link>
+                            &#9664; <Link to={url.parent()}>Return</Link>
                         </div>
                         {this.renderSubmittedScreen()}
                     </div>
@@ -541,7 +540,7 @@ class DatasetOverviewController extends Component {
                     <div>
                         <h1>An error has occurred</h1>
                         <div className="margin-bottom--1">
-                            &#9664; <Link to={`${this.props.rootPath}/datasets/uploads`}>Return</Link>
+                            &#9664; <Link to={url.parent()}>Return</Link>
                         </div>
                         <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
                         <p>Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error</p>
@@ -574,8 +573,7 @@ DatasetOverviewController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         datasets: state.state.datasets.all,
-        jobs: state.state.datasets.jobs,
-        rootPath: state.state.rootPath
+        jobs: state.state.datasets.jobs
     }
 }
 

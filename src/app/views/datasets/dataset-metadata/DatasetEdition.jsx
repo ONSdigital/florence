@@ -15,7 +15,6 @@ const propTypes = {
         instance: PropTypes.string
     }),
     dispatch: PropTypes.func.isRequired,
-    rootPath: PropTypes.string.isRequired,
     instance: PropTypes.shape({
         editions: PropTypes.arrayOf(PropTypes.string)
     }),
@@ -66,7 +65,7 @@ class DatasetEdition extends Component {
             switch (error.status) {
                 case(403):{
                     const notification = {
-                        "type": "info",
+                        "type": "neutral",
                         "message": "You do not permission to view the edition metadata for this dataset",
                         isDismissable: true
                     }
@@ -75,12 +74,12 @@ class DatasetEdition extends Component {
                 }
                 case (404): {
                     const notification = {
-                        "type": "info",
+                        "type": "neutral",
                         "message": `Dataset ID '${this.props.params.instance}' was not recognised. You've been redirected to the datasets home screen`,
                         isDismissable: true
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                    this.props.dispatch(push(url.parent(url.parent())));
                     break;
                 }
                 default: {
@@ -131,7 +130,7 @@ class DatasetEdition extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
                     <div className="margin-top--2">
-                        &#9664; <Link to={`${this.props.rootPath}/datasets`}>Back</Link>
+                        &#9664; <Link to={url.parent(url.parent())}>Back</Link>
                     </div>
                     <h1 className="margin-top--1">Create a new dataset edition</h1>
                     {this.state.isFetchingInstance ?
@@ -165,7 +164,6 @@ DatasetEdition.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        rootPath: state.state.rootPath,
         instance: state.state.datasets.activeInstance,
         datasets: state.state.datasets.all
     }
