@@ -148,9 +148,14 @@ export default class datasets {
 
     static getInstance(instanceID) {
         // TODO - unstub once the API puts datasetIDs and editions in instances
-        return Promise.resolve(stubbedInstances.items.find(instance => {
+        const instance = stubbedInstances.items.find(instance => {
             return instance.id === instanceID;
-        }));
+        });
+
+        if (!instance) {
+            return Promise.reject({status: 404});
+        }
+        return Promise.resolve(instance);
 
         // return http.get(`/dataset/instances/${instanceID}`)
         //     .then(response => {
