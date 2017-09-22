@@ -60,7 +60,10 @@ class Index extends Component {
                                 <Route path="metadata/:instance" >
                                     <IndexRedirect to="edition" />
                                     <Route path="edition" component={ UserIsAuthenticated(DatasetEdition) } />
-                                    <Route path="whats-changed" component={ UserIsAuthenticated(DatasetChanges) } />
+                                    <Route path="whats-changed" component={ UserIsAuthenticated(DatasetChanges) } >
+                                        <Route path="add-alert" component={ UserIsAuthenticated(DatasetChanges) } />
+                                        <Route path="add-change" component={ UserIsAuthenticated(DatasetChanges) } />
+                                    </Route>
                                 </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
