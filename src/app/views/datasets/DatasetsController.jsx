@@ -11,7 +11,6 @@ import recipes from '../../utilities/api-clients/recipes';
 import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
 
 const propTypes = {
-    rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired
 }
 
@@ -43,7 +42,7 @@ class DatasetsController extends Component {
             switch (error.status) {
                 case(403):{
                     const notification = {
-                        "type": "info",
+                        "type": "neutral",
                         "message": "You do not permission to view submitted datasets.",
                         isDismissable: true
                     }
@@ -126,15 +125,17 @@ class DatasetsController extends Component {
     }
 
     goToDatasetMetadata(props) {
-        this.props.dispatch(push(`${this.props.rootPath}/datasets/metadata/${props.id}`));
+        this.props.dispatch(push(`${location.pathname}/metadata/${props.id}`));
     }
 
     render() {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    <h1>Select a dataset</h1>
-                    <Link className="margin-bottom--1" to={`${this.props.rootPath}/datasets/uploads`}>Upload a dataset</Link>
+                    <h1 className="text-center">Select a dataset</h1>
+                    <div className="margin-bottom--1">
+                        <Link to={`${location.pathname}/uploads`}>Upload a dataset</Link>
+                    </div>
                     <SelectableBoxController 
                         heading="Dataset title"
                         isUpdating={this.state.isFetchingDatasets}
@@ -149,10 +150,4 @@ class DatasetsController extends Component {
 
 DatasetsController.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        rootPath: state.state.rootPath
-    }
-}
-
-export default connect(mapStateToProps)(DatasetsController);
+export default connect()(DatasetsController);
