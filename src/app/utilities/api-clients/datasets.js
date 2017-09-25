@@ -100,7 +100,23 @@ const stubbedDatasets =
                     ],
                     last_updated: "2017-09-18T10:33:33.29+01:00",
                     dataset_id: "1234nshahb-ebggafsgsh",
-                    editions: ["Time series"]
+                    editions: ["Time series"],
+                    alerts: [
+                        {
+                            title: "1 September 2017",
+                            description: "A description of an alert..."
+                        }
+                    ],
+                    changes: [
+                        {
+                            title: "Special event",
+                            description: "Extreme weather conditions"
+                        },
+                        {
+                            title: "Change in classification",
+                            description: "Privatisation of organisations previously included in the public sector."
+                        }
+                    ]
                 },
                 {
                     id: "46b5cf8d-af76-4b81-a02a-b6eed069bec4",
