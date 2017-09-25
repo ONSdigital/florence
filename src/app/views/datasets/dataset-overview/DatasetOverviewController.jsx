@@ -60,7 +60,7 @@ class DatasetOverviewController extends Component {
                     case(404): {
                         const notification = {
                             "type": "neutral",
-                            "message": `The job '${this.props.params.job}' was not recognised, so you've been redirect to the dataset upload screen.`,
+                            "message": `The job '${this.props.params.job}' was not recognised, so you've been redirected to the dataset upload screen.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -281,7 +281,7 @@ class DatasetOverviewController extends Component {
             alias: recipeAPIResponse.alias,
             format: recipeAPIResponse.format,
             status: jobAPIResponse.state,
-            // instanceID: jobAPIResponse.instances[0].id, //TODO Work out if we need this and why. This is causing this screen to error - something has changed in the API but I'm unsure where it is needed in the screen at the moment.
+            instanceID: jobAPIResponse.links.instances ? jobAPIResponse.links.instances[0].id : "",
             files,
             editionsList,
             editionOverride
@@ -480,16 +480,9 @@ class DatasetOverviewController extends Component {
                     })}
                     </ul>
                 :
-                    <div>
-                        <p className="margin-bottom--1">Loading dimensions for this dataset...</p>
-                        <span className="loader loader--dark"></span>
-                    </div>
-                }
-                {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length === 0) &&
                     <p>Dimensions are currently being processed. This could take some time.</p>
                 }
                 </div>
-                <Link className="btn btn--primary" to={url.parent()}>Your datasets</Link>
             </div>
         )
     }
@@ -499,10 +492,10 @@ class DatasetOverviewController extends Component {
             case "created": {
                 return (
                     <div>
-                        <h1>Upload new file(s)</h1>
-                        <div className="margin-bottom--1">
+                        <div className="margin-top--2">
                             &#9664; <Link to={url.parent()}>Back</Link>
                         </div>
+                        <h1 className="margin-top--1">Upload new file(s)</h1>
                         <h2 className="margin-bottom--1">
                             {this.state.activeDataset.alias}
                         </h2>
@@ -527,10 +520,21 @@ class DatasetOverviewController extends Component {
             case "submitted": {
                 return (
                     <div>
-                        <h1>Your dataset has been submitted</h1>
-                        <div className="margin-bottom--1">
+                        <div className="margin-top--2">
                             &#9664; <Link to={url.parent()}>Return</Link>
                         </div>
+                        <h1 className="margin-top--1">Your dataset has been submitted</h1>
+                        {this.renderSubmittedScreen()}
+                    </div>
+                )
+            }
+            case "completed": {
+                return (
+                    <div>
+                        <div className="margin-top--2">
+                            &#9664; <Link to={url.parent()}>Return</Link>
+                        </div>
+                        <h1 className="margin-top--1">Your dataset has been submitted</h1>
                         {this.renderSubmittedScreen()}
                     </div>
                 )
@@ -538,10 +542,10 @@ class DatasetOverviewController extends Component {
             case "error": {
                 return (
                     <div>
-                        <h1>An error has occurred</h1>
-                        <div className="margin-bottom--1">
+                        <div className="margin-top--2">
                             &#9664; <Link to={url.parent()}>Return</Link>
                         </div>
+                        <h1 className="margin-top--1">An error has occurred</h1>
                         <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
                         <p>Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error</p>
                     </div>
