@@ -29,6 +29,10 @@
     &__footer {
         background-color: $grey-chateau;
         padding: $gutter;
+
+        & a {
+            color: $black;
+        }
     }
 
 }
