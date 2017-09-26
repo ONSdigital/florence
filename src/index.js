@@ -14,6 +14,7 @@ import DatasetUploadsController from './app/views/datasets/dataset-upload/Datase
 import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
 import DatasetCollectionController from './app/views/datasets/dataset-collection/DatasetCollectionController';
 import DatasetEdition from './app/views/datasets/dataset-metadata/DatasetEdition';
+import DatasetDetails from './app/views/datasets/dataset-metadata/DatasetDetails';
 import Logs from './app/views/logs/Logs';
 
 import './scss/main.scss';
@@ -35,7 +36,7 @@ const UserIsAuthenticated = UserAuthWrapper({
 class UnknownRoute extends Component {
     render() {
         return (
-            <h1>Sorry, this page couldn't be found</h1>
+            <h1>Sorry, this page couldnt be found</h1>
         )
     }
 }
@@ -56,6 +57,10 @@ class Index extends Component {
                             </Route>
                             <Route path={`${rootPath}/datasets`} >
                                 <IndexRoute component={ UserIsAuthenticated(DatasetsController) } />
+                                <Route path="dataset/:dataset" >
+                                    <IndexRedirect to="details" />
+                                    <Route path="details" component={ UserIsAuthenticated(DatasetDetails) } />
+                                </Route>
                                 <Redirect path="metadata" to={`${rootPath}/datasets`} />
                                 <Route path="metadata/:instance" >
                                     <IndexRedirect to="edition" />
@@ -78,5 +83,3 @@ class Index extends Component {
 }
 
 ReactDOM.render(<Index/>, document.getElementById('app'));
-
-

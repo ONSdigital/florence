@@ -10,21 +10,26 @@
         }
 
         &-right--#{$i} {
-            margin-bottom: $horizontal-margin;
+            margin-right: $horizontal-margin;
         }
 
         &-bottom--#{$i} {
             margin-bottom: $vertical-margin;
         }
-        
+
         &-left--#{$i} {
             margin-left: $horizontal-margin;
         }
-        
+
     }
 
 }
 
 .block {
   display: block;
+}
+
+
+.inline-block {
+  display: inline-block;
 }
