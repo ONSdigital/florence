@@ -108,7 +108,7 @@ class DatasetEdition extends Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        
+
         if (!this.state.edition) {
             this.setState({
                 error: "You must select an edition"
@@ -144,7 +144,7 @@ class DatasetEdition extends Component {
                             <form onSubmit={this.handleFormSubmit}>
                                 <h2>Edition</h2>
                                 <div className="grid__col-6 margin-bottom--2">
-                                    <Select 
+                                    <Select
                                         contents={this.mapRecipesToSelectOptions()}
                                         onChange={this.handleSelectChange}
                                         error={this.state.error}

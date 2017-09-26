@@ -112,3 +112,69 @@
 
     }
 }
+
+.checkbox {
+    position: relative;
+
+    &__input {
+        position: absolute;
+        cursor: pointer;
+        left: 0;
+        top: 0;
+        width: 25px;
+        height: 25px;
+        margin: 0;
+
+        &:checked + label:after {
+            opacity: 1;
+        }
+
+        + label {
+            &:before {
+                content: "";
+                border: 2px solid $ship-grey;
+                background: white;
+                width: 25px;
+                height: 25px;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            &:after {
+                content: "";
+                border: solid;
+                border-width: 0 0 3px 3px;
+                border-color: $ship-grey;
+                background: transparent;
+                width: 14px;
+                height: 7px;
+                position: absolute;
+                top: 8px;
+                left: 6px;
+                -moz-transform: rotate(-45deg); // Firefox 15 compatibility
+                -o-transform: rotate(-45deg); // Opera 12.0 compatibility
+                -webkit-transform: rotate(-45deg); // Safari 8 compatibility
+                -ms-transform: rotate(-45deg); // IE9 compatibility
+                transform: rotate(-45deg);
+                opacity: 0;
+            }
+
+            :focus:after {
+                opacity: 1;
+            }
+
+        }
+    }
+
+    &__label {
+        display: inline-block;
+        float: none;
+        clear: left;
+        position: relative;
+        padding: (2px 8px 9px 35px);
+        margin-bottom: 8px;
+        cursor: pointer; // Encourage clicking on block labels
+    }
+
+}
