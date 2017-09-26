@@ -8,7 +8,7 @@ import isEmptyObject from 'is-empty-object';
 import datasets from '../../../utilities/api-clients/datasets'
 import {updateActiveInstance} from '../../../config/actions'
 import url from '../../../utilities/url'
-import DatasetChangesAlert from './DatasetChangesAlert'
+import DatasetChangesModal from './DatasetChangesModal'
 
 
 const propTypes = {
@@ -303,7 +303,7 @@ class DatasetChangesController extends Component {
                     </div>
                 </div>
                 {this.state.isEditingAlert &&
-                    <DatasetChangesAlert 
+                    <DatasetChangesModal
                         onSave={this.handleAlertSave}
                         title={this.state.activeAlert ? this.state.activeAlert.title : ""}
                         description={this.state.activeAlert ? this.state.activeAlert.description : ""}
@@ -313,7 +313,7 @@ class DatasetChangesController extends Component {
                     />
                 }
                 {this.state.isEditingSummary &&
-                    <DatasetChangesAlert 
+                    <DatasetChangesModal 
                         onSave={this.handleSummarySave}
                         title={this.state.activeSummary ? this.state.activeSummary.title : ""}
                         description={this.state.activeSummary ? this.state.activeSummary.description : ""}
