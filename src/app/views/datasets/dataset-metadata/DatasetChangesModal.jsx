@@ -5,6 +5,7 @@ import Modal from '../../../components/Modal';
 import Input from '../../../components/Input';
 
 const propTypes = {
+    type: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
     id: PropTypes.number,
@@ -13,13 +14,19 @@ const propTypes = {
     instanceID: PropTypes.string.isRequired
 }
 
-export default class DatasetChangesAlert extends Component {
+export default class DatasetChangesModal extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            title: this.props.title || "",
-            description: this.props.description || ""
+            title: {
+                value: this.props.title || "",
+                error: ""
+            },
+            description: {
+                value: this.props.description || "",
+                error: ""
+            }
         }
 
         this.updateTitle = this.updateTitle.bind(this);
@@ -29,21 +36,53 @@ export default class DatasetChangesAlert extends Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        const updatedAlert = {
-            title: this.state.title,
-            description: this.state.description
+
+        if (!this.state.title.value) {
+            this.setState({
+                title: {
+                    value: this.state.title.value,
+                    error: "Title must not be empty"
+                }
+            })
         }
-        this.props.onSave(updatedAlert, this.props.id);
+        if (!this.state.description.value) {
+            this.setState({
+                description: {
+                    value: this.state.description.value,
+                    error: "Description must not be empty"
+                }
+            })
+        }
+        if (!this.state.description.value || !this.state.title.value) {
+            return;
+        }
+
+
+        const updatedObject = {
+            title: this.state.title.value,
+            description: this.state.description.value
+        };
+        this.props.onSave(updatedObject, this.props.id);
     }
 
     updateTitle(event) {
         event.preventDefault();
-        this.setState({title: event.target.value});
+        this.setState({
+            title: {
+                value: event.target.value,
+                error: ""
+            }
+        });
     }
 
     updateDescription(event) {
         event.preventDefault();
-        this.setState({description: event.target.value});
+        this.setState({
+            description: {
+                value: event.target.value,
+                error: ""
+            }
+        });
     }
 
     render() {
@@ -51,22 +90,24 @@ export default class DatasetChangesAlert extends Component {
             <Modal sizeClass="grid__col-4">
                 <form onSubmit={this.handleFormSubmit}>
                     <h2 className="modal__header">
-                        {this.props.id ? "Edit alert" : "Add alert"}
+                        {this.props.id ? `Edit ${this.props.type}` : `Add ${this.props.type}`}
                     </h2>
                     <div className="modal__body">
                         <Input 
                             label="Title"
-                            id="alert-title"
-                            value={this.state.title || ""}
+                            id="change-modal-title"
+                            value={this.state.title.value || ""}
                             type="text"
                             onChange={this.updateTitle}
+                            error={this.state.title.error}
                         />
                         <Input
                             label="Description"
-                            id="alert-description"
-                            value={this.state.description || ""}
+                            id="change-modal-description"
+                            value={this.state.description.value || ""}
                             type="textarea"
                             onChange={this.updateDescription}
+                            error={this.state.description.error}
                         />
                     </div>
                     <div className="modal__footer">
@@ -81,4 +122,4 @@ export default class DatasetChangesAlert extends Component {
     }
 }
 
-DatasetChangesAlert.propTypes = propTypes;
+DatasetChangesModal.propTypes = propTypes;
