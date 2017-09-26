@@ -11,8 +11,7 @@ const propTypes = {
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
     inline: PropTypes.bool,
-    accept: PropTypes.string,
-    value: PropTypes.string
+    accept: PropTypes.string
 };
 
 const defaultProps = {
