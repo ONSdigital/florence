@@ -36,7 +36,7 @@ const UserIsAuthenticated = UserAuthWrapper({
 class UnknownRoute extends Component {
     render() {
         return (
-            <h1>Sorry, this page couldn't be found</h1>
+            <h1 className="text-center">Sorry, this page couldn't be found</h1>
         )
     }
 }
@@ -58,12 +58,14 @@ class Index extends Component {
                             <Route path={`${rootPath}/datasets`} >
                                 <IndexRoute component={ UserIsAuthenticated(DatasetsController) } />
                                 <Redirect path="metadata" to={`${rootPath}/datasets`} />
+                                <Route path=":datasetID/related-content" component={ UserIsAuthenticated(DatasetRelated) } />
                                 <Route path="metadata/:instance" >
                                     <IndexRedirect to="edition" />
                                     <Route path="edition" component={ UserIsAuthenticated(DatasetEdition) } />
-                                    <IndexRedirect to="related-content" />
-                                    <Route path="related-content" component={ UserIsAuthenticated(DatasetRelated) } />
-                                    <Route path="whats-changed" component={ UserIsAuthenticated(DatasetChanges) } />
+                                    <Route path="whats-changed" component={ UserIsAuthenticated(DatasetChanges) } >
+                                        <Route path="add-alert" component={ UserIsAuthenticated(DatasetChanges) } />
+                                        <Route path="add-change" component={ UserIsAuthenticated(DatasetChanges) } />
+                                    </Route>
                                 </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />

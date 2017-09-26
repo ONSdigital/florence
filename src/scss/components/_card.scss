@@ -1,0 +1,18 @@
+.card {
+    background-color: $iron;
+    padding: $lineheight $gutter;
+    display: flex;
+
+    &__body {
+        padding-right: $gutter;
+    }
+
+    &__title {
+        font-weight: 600;
+    }
+
+    &__actions {
+        align-self: center;
+        margin-left: auto;
+    }
+}
