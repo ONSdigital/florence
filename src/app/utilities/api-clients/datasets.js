@@ -124,7 +124,7 @@ const stubbedDatasets =
                             description: "A description of an alert..."
                         }
                     ],
-                    changes: [
+                    summaries: [
                         {
                             title: "Special event",
                             description: "Extreme weather conditions"
@@ -149,7 +149,9 @@ const stubbedDatasets =
                     headers: [],
                     last_updated: "2017-09-18T10:33:33.29+01:00",
                     dataset_id: "1234nshahb-ebggafsgsh",
-                    editions: ["Meh"]
+                    editions: ["Meh"],
+                    alerts: [],
+                    changes: []
                 }
             ]
         }
