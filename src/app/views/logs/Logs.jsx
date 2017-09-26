@@ -8,6 +8,7 @@ import DefaultLog from './log-components/DefaultLog';
 import RouteLog from './log-components/RouteLog';
 import RequestLog from './log-components/RequestLog';
 import Notification from './log-components/NotificationLog';
+import RuntimeErrorLog from './log-components/RuntimeErrorLog'
 import log, { eventTypes } from '../../utilities/log';
 
 const propTypes = {
@@ -119,25 +120,32 @@ class Logs extends Component {
     */
 
     mapLogToComponent(log, index) {
+        const failureEventTypes = [
+            eventTypes.pingFailed,
+            eventTypes.requestFailed,
+            eventTypes.socketError,
+            eventTypes.passwordChangeError,
+            eventTypes.unexpectedRuntimeError,
+            eventTypes.socketBufferFull
+        ]
         const mapUniqueLogTypesToComponents = {};
-        mapUniqueLogTypesToComponents[eventTypes.changedRoute] = <RouteLog key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.shownNotification] = <Notification key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.shownWarning] = <Notification key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.pingFailed] = <RequestLog isFailure={true} key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.requestSent] = <RequestLog key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.requestReceived] = <RequestLog key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.requestFailed] = <RequestLog isFailure={true} key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.passwordChangeError] = <DefaultLog isFailure={true} key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.socketError] = <DefaultLog isFailure={true} key={index} {...log} />
-        mapUniqueLogTypesToComponents[eventTypes.socketBufferFull] = <DefaultLog isFailure={true} key={index} {...log} />
-
+        mapUniqueLogTypesToComponents[eventTypes.changedRoute] = RouteLog;
+        mapUniqueLogTypesToComponents[eventTypes.shownNotification] = Notification;
+        mapUniqueLogTypesToComponents[eventTypes.shownWarning] = Notification;
+        mapUniqueLogTypesToComponents[eventTypes.pingFailed] = RequestLog
+        mapUniqueLogTypesToComponents[eventTypes.requestSent] = RequestLog
+        mapUniqueLogTypesToComponents[eventTypes.requestReceived] = RequestLog
+        mapUniqueLogTypesToComponents[eventTypes.requestFailed] = RequestLog
+        mapUniqueLogTypesToComponents[eventTypes.unexpectedRuntimeError] = RuntimeErrorLog
+        
         if (mapUniqueLogTypesToComponents[log.type]) {
+            const UniqueLogComponent = mapUniqueLogTypesToComponents[log.type];
             return (
-                mapUniqueLogTypesToComponents[log.type]
+                <UniqueLogComponent key={index} {...log} isFailure={failureEventTypes.includes(log.type)} />
             )
         }
 
-        return <DefaultLog key={index} {...log} />
+        return <DefaultLog key={index} {...log} isFailure={failureEventTypes.includes(log.type)} />
     }
 
     renderPagination() {
