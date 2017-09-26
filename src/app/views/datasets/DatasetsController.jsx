@@ -18,13 +18,15 @@ const propTypes = {
 class DatasetsController extends Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             datasets: [],
+            allDatasets: [],
             isFetchingDatasets: false
         };
 
         this.goToDatasetMetadata = this.goToDatasetMetadata.bind(this);
+        this.goToDatasetDetails = this.goToDatasetDetails.bind(this);
     }
 
     componentWillMount() {
@@ -37,6 +39,7 @@ class DatasetsController extends Component {
             this.setState({
                 isFetchingDatasets: false,
                 datasets: this.mapAPIResponsesToViewProps(responses[0].items, responses[1].items),
+                allDatasets: this.mapDatasetsToViewProps(responses[1].items),
             });
             this.props.dispatch(updateAllDatasets(responses[1].items));
         }).catch(error => {
@@ -125,8 +128,21 @@ class DatasetsController extends Component {
         });
     }
 
+    mapDatasetsToViewProps(allDatasets) {
+        return allDatasets.map(dataset => {
+            return {
+                id: dataset.id,
+                name: dataset.title || `No name available (${dataset.id})`
+            }
+        });
+    }
+
     goToDatasetMetadata(props) {
         this.props.dispatch(push(`${this.props.rootPath}/datasets/metadata/${props.id}`));
+    }
+
+    goToDatasetDetails(props) {
+        this.props.dispatch(push(`${this.props.rootPath}/datasets/dataset/${props.id}`));
     }
 
     render() {
@@ -135,13 +151,21 @@ class DatasetsController extends Component {
                 <div className="grid__col-4">
                     <h1>Select a dataset</h1>
                     <Link className="margin-bottom--1" to={`${this.props.rootPath}/datasets/uploads`}>Upload a dataset</Link>
-                    <SelectableBoxController 
-                        heading="Dataset title"
+                    <SelectableBoxController
+                        heading="Instances"
                         isUpdating={this.state.isFetchingDatasets}
                         handleItemClick={this.goToDatasetMetadata}
                         items={this.state.datasets}
                     />
-                </div>
+                    <div className="margin-top--1">
+                      <SelectableBoxController
+                          heading="Datasets"
+                          isUpdating={this.state.isFetchingDatasets}
+                          handleItemClick={this.goToDatasetDetails}
+                          items={this.state.allDatasets}
+                      />
+                    </div>
+               </div>
             </div>
         )
     }

@@ -35,7 +35,7 @@ class DatasetChanges extends Component {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    <h1>This version's metadata</h1>
+                    <h1>This versions metadata</h1>
                     <div className="margin-bottom--1">
                         &#9664; <Link to="edition">Back</Link>
                     </div>
