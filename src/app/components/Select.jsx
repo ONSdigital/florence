@@ -5,7 +5,7 @@ const propTypes = {
     id: PropTypes.string,
     label: PropTypes.string,
     contents: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string, 
+        PropTypes.string,
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired
@@ -34,7 +34,7 @@ class Select extends Component {
     render() {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
-                {this.props.error && 
+                {this.props.error &&
                     <div className="error-msg">{this.props.error}</div>
                 }
                 <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
@@ -47,7 +47,7 @@ class Select extends Component {
                         onBlur={this.handleFocus}>
                         <option value="">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
-                            return <option key={index} value={item.id || ""}>{item.name || item}</option>
+                            return <option key={index} value={item.name || ""}>{item.name || item}</option>
                         })}
                     </select>
                 </div>
