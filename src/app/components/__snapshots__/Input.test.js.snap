@@ -21,6 +21,7 @@ exports[`Input without type renders a text input 1`] = `
     onChange={undefined}
     placeholder=""
     type="text"
+    value={undefined}
   />
   
 </div>
@@ -47,6 +48,7 @@ exports[`Password prop creates a password input 1`] = `
     onChange={undefined}
     placeholder=""
     type="password"
+    value={undefined}
   />
   <span
     className="btn btn--password"

@@ -1,6 +1,7 @@
 .card {
     background-color: $iron;
     padding: $lineheight $gutter;
+    margin-bottom: $lineheight;
     display: flex;
 
     &__body {
