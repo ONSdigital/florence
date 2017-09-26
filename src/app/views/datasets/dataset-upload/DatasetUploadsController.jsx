@@ -20,8 +20,7 @@ const propTypes = {
     jobs: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         recipe: PropTypes.string.isRequired
-    })),
-    rootPath: PropTypes.string.isRequired
+    }))
 }
 
 export class DatasetUploadsController extends Component {
@@ -111,9 +110,9 @@ export class DatasetUploadsController extends Component {
     handleNewVersionClick(event) {
         const recipeID = event.target.getAttribute('data-recipe-id');
         this.setState({disabledDataset: recipeID});
-        datasetImport.create(recipeID).then(response => {
-            this.props.dispatch(addNewJob(response));
-            this.props.dispatch(push(`${this.props.rootPath}/datasets/uploads/${response.id}`));
+        datasetImport.create(recipeID).then(newJob => {
+            this.props.dispatch(addNewJob(newJob));
+            this.props.dispatch(push(`${location.pathname}/${newJob.id}`));
         }).catch(error => {
             this.setState({disabledDataset: ""});
             switch (error.status) {
@@ -189,7 +188,7 @@ export class DatasetUploadsController extends Component {
                             </div> 
                         }
                         {!this.state.isFetchingData &&
-                            <DatasetUploadJobs jobs={this.props.jobs} datasets={this.props.recipes} rootPath={this.props.rootPath} />
+                            <DatasetUploadJobs jobs={this.props.jobs} datasets={this.props.recipes} />
                         }
                     </div>
                     <h2 className="margin-bottom--1">Datasets available to you</h2>
@@ -223,8 +222,7 @@ DatasetUploadsController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         recipes: state.state.datasets.recipes,
-        jobs: state.state.datasets.jobs,
-        rootPath: state.state.rootPath
+        jobs: state.state.datasets.jobs
     }
 }
 

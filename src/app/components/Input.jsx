@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 const propTypes = {
     id: PropTypes.string.isRequired,
     label: PropTypes.string,
+    value: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,

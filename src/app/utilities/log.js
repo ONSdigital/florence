@@ -19,7 +19,8 @@ export const eventTypes = {
     pingFailed: "PING_FAILED",
     socketBufferFull: "SOCKET_BUFFER_FULL",
     socketOpen: "SOCKET_OPEN",
-    socketError: "SOCKET_ERROR"
+    socketError: "SOCKET_ERROR",
+    unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR"
 }
 
 const instanceID = uuid();
