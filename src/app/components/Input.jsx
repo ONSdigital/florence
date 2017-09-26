@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 const propTypes = {
     id: PropTypes.string.isRequired,
     label: PropTypes.string,
-    value: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
     inline: PropTypes.bool,
-    accept: PropTypes.string
+    accept: PropTypes.string,
+    value: PropTypes.string
 };
 
 const defaultProps = {
