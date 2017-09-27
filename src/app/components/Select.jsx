@@ -11,6 +11,7 @@ const propTypes = {
             name: PropTypes.string.isRequired
         })]
     )).isRequired,
+    selectedOption: PropTypes.string,
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string
@@ -22,7 +23,7 @@ class Select extends Component {
 
         this.state = {
             isFocused: false
-        }
+        };
 
         this.handleFocus = this.handleFocus.bind(this);
     }
@@ -44,7 +45,8 @@ class Select extends Component {
                         id={this.props.id}
                         onChange={this.props.onChange}
                         onFocus={this.handleFocus}
-                        onBlur={this.handleFocus}>
+                        onBlur={this.handleFocus}
+                        value={this.props.selectedOption}>
                         <option value="">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
                             return <option key={index} value={item.id || ""}>{item.name || item}</option>
