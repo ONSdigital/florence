@@ -1124,17 +1124,16 @@ h1, h2, h3, h4 {
 h1 {
   font-size: 35px;
   margin-top: 63px;
-  margin-bottom: 42px;
-  text-align: center; }
+  margin-bottom: 42px; }
 
 h2 {
-  font-size: 28px; }
-
-h3 {
   font-size: 21px; }
 
-h4 {
+h3 {
   font-size: 14px; }
+
+h4 {
+  font-size: 7px; }
 
 p {
   line-height: 21px; }
@@ -1146,6 +1145,13 @@ button {
   font-size: 14px;
   font-weight: 300;
   line-height: 21px; }
+
+a {
+  color: #3B7A9E; }
+  a:visited {
+    color: #343B59; }
+  a:focus {
+    outline: 4px solid #ffbf47; }
 
 ::-webkit-input-placeholder {
   font-style: italic; }
@@ -1181,6 +1187,9 @@ select {
   select select:first-child {
     font-style: italic; }
 
+.margin--0 {
+  margin: 0px 0px; }
+
 .margin-top--0 {
   margin-top: 0px; }
 
@@ -1192,6 +1201,9 @@ select {
 
 .margin-left--0 {
   margin-left: 0px; }
+
+.margin--1 {
+  margin: 21px 20px; }
 
 .margin-top--1 {
   margin-top: 21px; }
@@ -1205,6 +1217,9 @@ select {
 .margin-left--1 {
   margin-left: 20px; }
 
+.margin--2 {
+  margin: 42px 40px; }
+
 .margin-top--2 {
   margin-top: 42px; }
 
@@ -1216,6 +1231,9 @@ select {
 
 .margin-left--2 {
   margin-left: 40px; }
+
+.margin--3 {
+  margin: 63px 60px; }
 
 .margin-top--3 {
   margin-top: 63px; }
@@ -1229,6 +1247,9 @@ select {
 .margin-left--3 {
   margin-left: 60px; }
 
+.margin--4 {
+  margin: 84px 80px; }
+
 .margin-top--4 {
   margin-top: 84px; }
 
@@ -1240,6 +1261,9 @@ select {
 
 .margin-left--4 {
   margin-left: 80px; }
+
+.margin--5 {
+  margin: 105px 100px; }
 
 .margin-top--5 {
   margin-top: 105px; }
@@ -1256,8 +1280,19 @@ select {
 .block {
   display: block; }
 
+.text-center {
+  text-align: center; }
+
+.font-weight--300 {
+  font-weight: 300; }
+
+.font-weight--400 {
+  font-weight: 400; }
+
+.font-weight--600 {
+  font-weight: 600; }
+
 .global-nav__list {
-  overflow: hidden;
   background: #323232;
   padding: 0 20px;
   color: #A1A3A5;
@@ -1274,6 +1309,8 @@ select {
   padding: 21px 20px;
   display: block;
   position: relative; }
+  .global-nav__link:visited {
+    color: inherit; }
   .global-nav__link.selected {
     color: #FFFFFF; }
     .global-nav__link.selected:before {
@@ -1290,7 +1327,7 @@ select {
   background-color: rgba(0, 0, 0, 0.65);
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   top: 0;
   z-index: 2;
   display: flex;
@@ -1538,6 +1575,36 @@ select {
     color: #AA354C;
     font-weight: 600; }
 
+.logs {
+  margin-top: 21px; }
+
+.log {
+  margin-bottom: 21px; }
+  .log--failure {
+    position: relative; }
+    .log--failure:before {
+      content: "";
+      background-color: #AA354C;
+      height: 100%;
+      width: 4px;
+      top: 0;
+      position: absolute;
+      left: -12px; }
+  .log__type {
+    font-weight: 600; }
+    .log__type::first-letter {
+      text-transform: uppercase; }
+    .log__type--failure {
+      color: #AA354C; }
+
+.pagination {
+  list-style: none;
+  margin-top: 21px; }
+  .pagination__item {
+    display: inline-block; }
+    .pagination__item:not(:first-of-type) {
+      margin-left: 20px; }
+
 .btn {
   font-family: 'Roboto Slab', serif;
   border-radius: 4px;
@@ -1545,23 +1612,24 @@ select {
   text-decoration: none;
   position: relative;
   background-color: #F2F2F2;
+  display: inline-block;
   /* Colours */
   /* Margin */
   /* Display */ }
-  .btn--primary {
+  .btn--primary, .btn--primary:visited {
     color: #F2F2F2;
     background-color: #337099; }
-  .btn--positive {
+  .btn--positive, .btn--positive:visited {
     color: #F2F2F2;
     background-color: #49725D; }
-  .btn--warning {
+  .btn--warning, .btn--warning:visited {
     color: #F2F2F2;
     background-color: #6D272B; }
-  .btn--subtle {
+  .btn--subtle, .btn--subtle:visited {
     color: #1B2232;
     background-color: #B2B6C4;
     opacity: 0.5; }
-    .btn--subtle:hover {
+    .btn--subtle:hover, .btn--subtle:visited:hover {
       opacity: 1;
       color: #343B59; }
   .btn--disabled, .btn:disabled {
@@ -1688,7 +1756,8 @@ select {
 
 .form__label {
   display: block;
-  margin-bottom: 7px; }
+  margin-bottom: 7px;
+  font-weight: 600; }
 
 .form__input {
   margin-bottom: 21px; }

@@ -15750,6 +15750,23 @@ function viewCollectionDetails(collectionId, $this) {
         }
         collection.approvalState = approvalStates;
 
+        // temporary code to add API datasets to a collection
+        // this will come from the zebedee collection api when ready
+        if (collection.name === "hasAPIData") {
+            collection.datasets = [
+                {
+                    "edition": "March 2019",
+                    "instance_id": "1078493",
+                    "dataset": {
+                        "id": "string",
+                        "title": "COICOP",
+                        "href": "http://localhost:8080/datasets/DE3BC0B6-D6C4-4E20-917E-95D7EA8C91DC"
+                    },
+                    "version": 1
+                }
+            ]
+        }
+
         var showPanelOptions = {
             html: window.templates.collectionDetails(collection)
         };
