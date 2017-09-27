@@ -5,24 +5,29 @@
     text-decoration: none;
     position: relative;
     background-color: $concrete;
+    display: inline-block;
 
     /* Colours */
-    &--primary {
+    &--primary,
+    &--primary:visited {
         color: $concrete;
         background-color: $astral;
     }
 
-    &--positive {
+    &--positive,
+    &--positive:visited {
         color: $concrete;
         background-color: $como;
     }
 
-    &--warning {
+    &--warning,
+    &--warning:visited {
         color: $concrete;
         background-color: $tawny-port;
     }
 
-    &--subtle {
+    &--subtle,
+    &--subtle:visited {
         color: $mirage;
         background-color: $cadet-blue;
         opacity: 0.5;
