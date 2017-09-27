@@ -36,5 +36,10 @@
                 background-color: $white;
             }
         }
+
+        &:focus {
+            outline: 0 solid;
+            text-decoration: underline !important;
+        }
     }
 }
