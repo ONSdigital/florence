@@ -658,8 +658,8 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + alias2(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\" data-language=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.language : stack1), depth0))
-    + "\">Edit\n                                    file\n                                </button>\n                                <button class=\"btn btn--warning btn-page-delete page-delete\" data-path=\""
-    + alias2(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">Edit\n                                    file\n                                </button>\n                                <button class=\"btn btn--warning dataset-delete\" data-instanceId=\""
+    + alias2(((helper = (helper = helpers.instance_id || (depth0 != null ? depth0.instance_id : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(depth0,{"name":"instance_id","hash":{},"data":data}) : helper)))
     + "\" data-language=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.descriptions : depth0)) != null ? stack1.language : stack1), depth0))
     + "\">Delete file\n                                </button>\n                            </div>\n                        </li>\n";
@@ -1391,7 +1391,7 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.environment : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n\n"
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n"
+    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--datasets\" href=\"javascript:void(0)\">Datasets</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n"
     + ((stack1 = (helpers.if_ne || (depth0 && depth0.if_ne) || alias1).call(depth0,(((stack1 = (depth0 && depth0.Authentication)) && stack1.userType) || alias1).call(depth0,{"name":"this.Authentication.userType","hash":{},"data":data}),"DATA_VISUALISATION",{"name":"if_ne","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--logout\" href=\"javascript:void(0)\">Logout</a></li>\n";
 },"2":function(depth0,helpers,partials,data) {
