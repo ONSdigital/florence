@@ -192,7 +192,24 @@ if (typeof module !== 'undefined') {
   module.exports = StringUtils;
 }
 
-function deleteCollection(collectionId, success, error) {
+function deleteAPIDataset(collectionId, instanceId, success, error) {
+
+    $.ajax({
+        url: "/zebedee/collections/" + collectionId + "/datasets/" + instanceId,
+        type: 'DELETE',
+        success: function (response) {
+            if (success)
+                success(response);
+        },
+        error: function (response) {
+            if (error) {
+                error(response);
+            } else {
+                handleApiError(response);
+            }
+        }
+    });
+}function deleteCollection(collectionId, success, error) {
   $.ajax({
     url: "/zebedee/collection/" + collectionId,
     type: 'DELETE',
@@ -11704,6 +11721,9 @@ function setShortcuts(field, callback) {
             window.history.pushState({}, "", "/florence/collections")
             viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
+        } else if (menuItem.hasClass("js-nav-item--datasets")) {
+            window.history.pushState({}, "", "/florence/datasets");
+            viewController('datasets');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
             viewController('users');
@@ -15758,7 +15778,7 @@ function viewCollectionDetails(collectionId, $this) {
                     "edition": "March 2019",
                     "instance_id": "1078493",
                     "dataset": {
-                        "id": "string",
+                        "id": "DE3BC0B6-D6C4-4E20-917E-95D7EA8C91DC",
                         "title": "COICOP",
                         "href": "http://localhost:8080/datasets/DE3BC0B6-D6C4-4E20-917E-95D7EA8C91DC"
                     },
@@ -15931,6 +15951,40 @@ function viewCollectionDetails(collectionId, $this) {
             //} else {
             //  deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
             //}
+        });
+
+        $('.dataset-delete').click(function () {
+            var instanceId = $(this).attr('data-instanceId');
+
+            function deleteAlert(text) {
+                swal({
+                    title: "Warning",
+                    text: text,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Delete",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: false
+                }, function (result) {
+                    if (result === true) {
+                        deleteAPIDataset(collectionId, instanceId, function () {
+                                viewCollectionDetails(collectionId);
+                                swal({
+                                    title: "Dataset deleted",
+                                    text: "This dataset has been deleted",
+                                    type: "success",
+                                    timer: 2000
+                                });
+                            }, function (error) {
+                                handleApiError(error);
+                            }
+                        );
+                    }
+                });
+            }
+
+            deleteAlert("Are you sure you want to delete this dataset from the collection?");
+
         });
 
         $('.delete-marker-remove').click(function () {
@@ -16152,6 +16206,9 @@ function viewCollectionDetails(collectionId, $this) {
 
         if (view === 'collections') {
             viewCollections();
+        }
+        else if (view === 'datasets') {
+            window.location.pathname = "/florence/datasets";
         }
         else if (view === 'users') {
             viewUsers();

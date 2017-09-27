@@ -1322,6 +1322,9 @@ select {
       left: 0;
       top: 0;
       background-color: #FFFFFF; }
+  .global-nav__link:focus {
+    outline: 0 solid;
+    text-decoration: underline !important; }
 
 .modal__overlay {
   background-color: rgba(0, 0, 0, 0.65);
@@ -1348,6 +1351,8 @@ select {
 .modal__footer {
   background-color: #A1A3A5;
   padding: 20px; }
+  .modal__footer a {
+    color: #000000; }
 
 .selectable-box {
   border: 3px solid #343B59;
@@ -1604,6 +1609,19 @@ select {
     display: inline-block; }
     .pagination__item:not(:first-of-type) {
       margin-left: 20px; }
+
+.card {
+  background-color: #E7E8E9;
+  padding: 21px 20px;
+  margin-bottom: 21px;
+  display: flex; }
+  .card__body {
+    padding-right: 20px; }
+  .card__title {
+    font-weight: 600; }
+  .card__actions {
+    align-self: center;
+    margin-left: auto; }
 
 .btn {
   font-family: 'Roboto Slab', serif;
