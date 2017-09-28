@@ -108,7 +108,7 @@ class DatasetEdition extends Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        
+
         if (!this.state.edition) {
             this.setState({
                 error: "You must select an edition"

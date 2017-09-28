@@ -1,6 +1,6 @@
 import http from '../http';
 
-const stubbedDatasets = 
+const stubbedDatasets =
     {
         "count": 0,
         "items": [
@@ -8,12 +8,12 @@ const stubbedDatasets =
                 "id": "1234nshahb-ebggafsgsh",
                 "contact": [
                     {
-                        "email": "",
-                        "name": "",
-                        "telephone": ""
+                        "email": "dave@ons.gov.uk",
+                        "name": "Dave May",
+                        "telephone": "01234 56473"
                     }
                 ],
-                "description": "",
+                "description": "The description is here",
                 "links": {
                     "editions": {
                         "href": "http://localhost:8080/datasets/1234nshahb-ebggafsgsh/editions"
@@ -44,7 +44,7 @@ const stubbedDatasets =
                     }
                 ],
                 "next_release": "",
-                "periodicity": "",
+                "periodicity": ["Monthly","Annually"],
                 "publisher": {
                     "name": "",
                     "type": "",
@@ -52,7 +52,9 @@ const stubbedDatasets =
                 },
                 "state": "",
                 "theme": "",
-                "title": "CPI"
+                "title": "CPI",
+                "national_statistic": true,
+                "keywords": ""
             },
             {
                 "id": "nahas329u3n-blah-blah",
@@ -170,7 +172,7 @@ export default class datasets {
         //         return response;
         //     });
     }
-    
+
     static getAll() {
         //TODO - unstub once the API shows unpublished datasets to authorised users
         return Promise.resolve(stubbedDatasets);
@@ -207,7 +209,7 @@ export default class datasets {
                 return response;
             });
     }
-    
+
     static getCompletedInstances() {
         // TODO - unstub once the API puts dataset IDs in instances
         const response = {

@@ -13,8 +13,6 @@ import user from '../../utilities/api-clients/user';
 import cookies from '../../utilities/cookies';
 import redirectToMainScreen from '../../utilities/redirectToMainScreen';
 
-
-
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,

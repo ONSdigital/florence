@@ -58,6 +58,14 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
+        case ('UPDATE_ACTIVE_DATASET'): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: action.dataset
+                }
+            });
+        }
         case ('UPDATE_ALL_DATASETS'): {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
