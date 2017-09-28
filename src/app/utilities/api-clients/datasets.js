@@ -26,6 +26,23 @@ const stubbedDatasets =
                         "href": ""
                     }
                 },
+                "qmi": {
+                    "href": "http://localhost:8080/datasets/12345",
+                    "title": "An example QMI",
+                    "descrption": "this is an example QMI for you to look at"
+                },
+                "related_datasets": [
+                    {
+                        "href": "http://localhost:8080/datasets/6789910",
+                        "title": "Crime in the UK"
+                    }
+                ],
+                "publications": [
+                    {
+                        "href": "http://www.localhost:8080/datasets/173849jf8j238d",
+                        "title": "An example publication"
+                    }
+                ],
                 "next_release": "",
                 "periodicity": "",
                 "publisher": {
