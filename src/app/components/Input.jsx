@@ -10,7 +10,8 @@ const propTypes = {
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
     inline: PropTypes.bool,
-    accept: PropTypes.string
+    accept: PropTypes.string,
+    value: PropTypes.string
 };
 
 const defaultProps = {
@@ -52,7 +53,7 @@ export default class Input extends Component {
                         ""
                 }
                 {this.props.type !== "textarea" ?
-                    <input 
+                    <input
                         id={this.props.id}
                         type={this.state.type}
                         className="input input__text"
@@ -62,6 +63,7 @@ export default class Input extends Component {
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
                         accept={this.props.accept}
+                        value={this.props.value}
                     />
                 :
                     <textarea
@@ -72,6 +74,7 @@ export default class Input extends Component {
                         onChange={this.props.onChange}
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
+                        defaultValue={this.props.value}
                     >
                     </textarea>
                 }
