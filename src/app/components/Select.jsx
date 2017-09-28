@@ -5,7 +5,7 @@ const propTypes = {
     id: PropTypes.string,
     label: PropTypes.string,
     contents: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string, 
+        PropTypes.string,
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired
@@ -49,7 +49,7 @@ class Select extends Component {
                         value={this.props.selectedOption}>
                         <option value="">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
-                            return <option key={index} value={item.id || ""}>{item.name || item}</option>
+                            return <option key={index} value={item.name || ""}>{item.name || item}</option>
                         })}
                     </select>
                 </div>
