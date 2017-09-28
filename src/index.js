@@ -20,6 +20,7 @@ import Logs from './app/views/logs/Logs';
 import './scss/main.scss';
 
 import { store, history } from './app/config/store';
+import DatasetRelated from "./app/views/datasets/dataset-metadata/DatasetRelated"
 
 const rootPath = store.getState().state.rootPath;
 
@@ -57,6 +58,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/datasets`} >
                                 <IndexRoute component={ UserIsAuthenticated(DatasetsController) } />
                                 <Redirect path="metadata" to={`${rootPath}/datasets`} />
+                                <Route path=":datasetID/related-content" component={ UserIsAuthenticated(DatasetRelated) } />
                                 <Route path="metadata/:instance" >
                                     <IndexRedirect to="edition" />
                                     <Route path="edition" component={ UserIsAuthenticated(DatasetEdition) } />
