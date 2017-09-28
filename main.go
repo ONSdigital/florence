@@ -64,7 +64,7 @@ func main() {
 		uploadBucketName = v
 	}
 	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
-		recipeAPIURL = v
+		importAPIURL = v
 	}
 	if v := os.Getenv("DATASET_API_URL"); len(v) > 0 {
 		datasetAPIURL = v
