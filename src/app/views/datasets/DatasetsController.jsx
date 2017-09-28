@@ -1,126 +1,52 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateAllDatasets, updateAllJobs, addNewJob } from '../../config/actions';
-import recipes from '../../utilities/api-clients/recipes';
-import datasetImport from '../../utilities/api-clients/datasetImport';
+import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
+import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
-
-import DatasetItem from './DatasetItem';
-import Jobs from './Jobs';
+import recipes from '../../utilities/api-clients/recipes';
+import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    datasets: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        alias: PropTypes.string
-    })),
-    jobs: PropTypes.arrayOf(PropTypes.shape({
-        job_id: PropTypes.string.isRequired,
-        recipe: PropTypes.string.isRequired
-    })),
-    rootPath: PropTypes.string.isRequired
+    dispatch: PropTypes.func.isRequired
 }
 
-export class DatasetsController extends Component {
+class DatasetsController extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            isFetchingData: false,
-            disabledDataset: ""
+            datasets: [],
+            allDatasets: [],
+            isFetchingDatasets: false
         };
 
-        this.handleNewVersionClick = this.handleNewVersionClick.bind(this);
+        this.goToDatasetMetadata = this.goToDatasetMetadata.bind(this);
+        this.goToDatasetDetails = this.goToDatasetDetails.bind(this);
     }
-    
+
     componentWillMount() {
-        this.setState({isFetchingData: true});
-
-        const getRecipes = recipes.getAll();
-        const getJobs = datasetImport.getAll();
-
-        Promise.all([getRecipes, getJobs]).then(response => {
-            this.props.dispatch(updateAllDatasets(response[0].items));
-            this.props.dispatch(updateAllJobs(response[1]));
-            this.setState({isFetchingData: false});
+        this.setState({isFetchingDatasets: true});
+        const fetches = [
+            datasets.getCompletedInstances(),
+            datasets.getAll()
+        ]
+        Promise.all(fetches).then(responses => {
+            this.setState({
+                isFetchingDatasets: false,
+                datasets: this.mapAPIResponsesToViewProps(responses[0].items, responses[1].items),
+                allDatasets: this.mapDatasetsToViewProps(responses[1].items),
+            });
+            this.props.dispatch(updateAllDatasets(responses[1].items));
         }).catch(error => {
             switch (error.status) {
                 case(403):{
                     const notification = {
-                        "type": "warning",
-                        "message": "You do not permission to view all datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification)
-                    break;
-                }
-                case("RESPONSE_ERR"):{
-                    const notification = {
-                        "type": "warning",
-                        "message": "An error's occurred whilst trying to get all datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification)
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("UNEXPECTED_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error has occurred whilst trying to get all datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get all datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            this.setState({isFetchingData: false});
-        });
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        
-        // Don't render all the jobs and datasets yet because the jobs haven't been added to the state yet
-        if (nextProps.datasets.length > 0 && !nextProps.jobs && !nextState.isFetchingData) {
-            return false;
-        }
-        
-        return true;
-    }
-
-    handleNewVersionClick(event) {
-        const recipeID = event.target.getAttribute('data-recipe-id');
-        this.setState({disabledDataset: recipeID});
-        datasetImport.create(recipeID).then(response => {
-            this.props.dispatch(addNewJob(response));
-            this.props.dispatch(push(`${this.props.rootPath}/datasets/${response.job_id}`));
-        }).catch(error => {
-            this.setState({disabledDataset: ""});
-            switch (error.status) {
-                case(403):{
-                    const notification = {
-                        "type": "warning",
-                        "message": "You do not have permission to upload a new version of this dataset.",
+                        "type": "neutral",
+                        "message": "You do not permission to view submitted datasets.",
                         isDismissable: true
                     }
                     notifications.add(notification)
@@ -129,7 +55,7 @@ export class DatasetsController extends Component {
                 case(404):{
                     const notification = {
                         "type": "warning",
-                        "message": "This dataset was not recognised.",
+                        "message": "No API route available to get all submitted datasets",
                         isDismissable: true
                     }
                     notifications.add(notification)
@@ -138,7 +64,7 @@ export class DatasetsController extends Component {
                 case("RESPONSE_ERR"):{
                     const notification = {
                         "type": "warning",
-                        "message": "An error's occurred whilst trying to create a new version of this dataset.",
+                        "message": "An error's occurred whilst trying to get the submitted datasets.",
                         isDismissable: true
                     }
                     notifications.add(notification)
@@ -147,7 +73,7 @@ export class DatasetsController extends Component {
                 case("FETCH_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "There's been a network error whilst trying to create a new version of this dataset. Please check you internet connection and try again in a few moments.",
+                        message: "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -156,7 +82,7 @@ export class DatasetsController extends Component {
                 case("UNEXPECTED_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "An unexpected error has occurred whilst trying to create a new version of this dataset.",
+                        message: "An unexpected error has occurred whilst trying to get the submitted datasets.",
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -165,54 +91,82 @@ export class DatasetsController extends Component {
                 default: {
                     const notification = {
                         type: "warning",
-                        message: "An unexpected error's occurred whilst trying to create a new version of this dataset.",
+                        message: "An unexpected error's occurred whilst trying to get the submitted datasets.",
                         isDismissable: true
                     }
                     notifications.add(notification);
                     break;
                 }
             }
-            console.error("Error creating new import job: ", error);
+            this.setState({isFetchingData: false});
         });
+
+        recipes.getAll().then(allRecipes => {
+            this.props.dispatch(updateAllRecipes(allRecipes.items));
+        }).catch(error => {
+            const notification = {
+                type: "warning",
+                message: "An unexpected error occurred when trying to get dataset recipes, so some functionality in Florence may not work as expected.",
+                isDismissable: true
+            }
+            notifications.add(notification);
+            console.error("Error getting dataset recipes:\n", error);
+        });
+    }
+
+    mapAPIResponsesToViewProps(completedInstances, datasets) {
+        // TODO once import API stores uploader info we want to map it to the completed dataset for the view to display
+        return completedInstances.map(instance => {
+            const instanceDataset = datasets.find(dataset => {
+                return dataset.id === instance.dataset_id
+            });
+            return {
+                id: instance.id,
+                name: instanceDataset.title || `No name available (${instance.id})`
+            }
+        });
+    }
+
+    mapDatasetsToViewProps(allDatasets) {
+        return allDatasets.map(dataset => {
+            return {
+                id: dataset.id,
+                name: dataset.title || `No name available (${dataset.id})`
+            }
+        });
+    }
+
+    goToDatasetMetadata(props) {
+        this.props.dispatch(push(`${location.pathname}/metadata/${props.id}`));
+    }
+
+    goToDatasetDetails(props) {
+        this.props.dispatch(push(`${location.pathname}/dataset/${props.id}`));
     }
 
     render() {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    <h1>All datasets</h1>
-                    <h2 className="margin-bottom--1">In progress</h2>
-                    <div className="margin-bottom--2">
-                        {this.state.isFetchingData &&
-                            <div className="grid--align-self-start"> 
-                                <div className="loader loader--dark"></div>
-                            </div> 
-                        }
-                        {!this.state.isFetchingData &&
-                            <Jobs jobs={this.props.jobs} datasets={this.props.datasets} rootPath={this.props.rootPath} />
-                        }
+                    <h1 className="text-center">Select a dataset</h1>
+                    <div className="margin-bottom--1">
+                        <Link to={`${location.pathname}/uploads`}>Upload a dataset</Link>
                     </div>
-                    <h2 className="margin-bottom--1">Datasets available to you</h2>
-                    {this.state.isFetchingData &&
-                        <div className="grid--align-self-start"> 
-                            <div className="loader loader--dark"></div>
-                        </div>
-                    }
-                    {this.props.datasets.length > 0 &&
-                        <ul className="list list--neutral">
-                            {this.props.datasets.map(dataset => {
-                                return (
-                                    <DatasetItem 
-                                        key={dataset.id} 
-                                        dataset={dataset} 
-                                        onNewVersionClick={this.handleNewVersionClick} 
-                                        isLoading={dataset.id === this.state.disabledDataset}
-                                    />
-                                )
-                            })}
-                        </ul>
-                    }
-                </div>
+                    <SelectableBoxController
+                        heading="Instances"
+                        isUpdating={this.state.isFetchingDatasets}
+                        handleItemClick={this.goToDatasetMetadata}
+                        items={this.state.datasets}
+                    />
+                    <div className="margin-top--1">
+                      <SelectableBoxController
+                          heading="Datasets"
+                          isUpdating={this.state.isFetchingDatasets}
+                          handleItemClick={this.goToDatasetDetails}
+                          items={this.state.allDatasets}
+                      />
+                    </div>
+               </div>
             </div>
         )
     }
@@ -220,12 +174,4 @@ export class DatasetsController extends Component {
 
 DatasetsController.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        datasets: state.state.datasets.all,
-        jobs: state.state.datasets.jobs,
-        rootPath: state.state.rootPath
-    }
-}
-
-export default connect(mapStateToProps)(DatasetsController);
+export default connect()(DatasetsController);
