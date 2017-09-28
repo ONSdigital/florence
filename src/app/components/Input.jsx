@@ -53,7 +53,7 @@ export default class Input extends Component {
                         ""
                 }
                 {this.props.type !== "textarea" ?
-                    <input 
+                    <input
                         id={this.props.id}
                         type={this.state.type}
                         className="input input__text"
