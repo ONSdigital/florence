@@ -33,6 +33,7 @@ var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
+var datasetAPIURL = "http://localhost:22000"
 var uploadBucketName = "dp-frontend-florence-file-uploads"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
@@ -65,6 +66,9 @@ func main() {
 	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
 		importAPIURL = v
 	}
+	if v := os.Getenv("DATASET_API_URL"); len(v) > 0 {
+		datasetAPIURL = v
+	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
 	}
@@ -73,6 +77,7 @@ func main() {
 
 	zc := healthcheck.New(zebedeeURL, "zebedee")
 	bc := healthcheck.New(babbageURL, "babbage")
+	dc := healthcheck.New(datasetAPIURL, "dataset-api")
 	rc := healthcheck.New(recipeAPIURL, "recipe-api")
 	ic := healthcheck.New(importAPIURL, "import-api")
 
@@ -112,7 +117,14 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirectory)
+	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirector)
+
+	datasetAPIURL, err := url.Parse(datasetAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
 	router := pat.New()
 
@@ -137,6 +149,7 @@ func main() {
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
+	router.Handle("/dataset{uri:.*}", datasetAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
@@ -150,12 +163,13 @@ func main() {
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
-		"bind_addr":      bindAddr,
-		"babbage_url":    babbageURL,
-		"zebedee_url":    zebedeeURL,
-		"recipe_api_url": recipeAPIURL,
-		"import_api_url": importAPIURL,
-		"enable_new_app": enableNewApp,
+		"bind_addr":       bindAddr,
+		"babbage_url":     babbageURL,
+		"zebedee_url":     zebedeeURL,
+		"recipe_api_url":  recipeAPIURL,
+		"import_api_url":  importAPIURL,
+		"dataset_api_url": datasetAPIURL,
+		"enable_new_app":  enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)
@@ -187,7 +201,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt, os.Kill)
 
 	for {
-		hc.MonitorExternal(bc, zc, ic, rc)
+		hc.MonitorExternal(bc, zc, ic, rc, dc)
 
 		timer := time.NewTimer(time.Second * 60)
 
@@ -263,8 +277,12 @@ func zebedeeDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
-func importAPIDirectory(req *http.Request) {
+func importAPIDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+}
+
+func datasetAPIDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
@@ -333,7 +351,7 @@ type florenceLogEvent struct {
 	ClientTimestamp time.Time   `json:"clientTimestamp"`
 	Type            string      `json:"type"`
 	Location        string      `json:"location"`
-	InstanceID      int         `json:"instanceID"`
+	InstanceID      string      `json:"instanceID"`
 	Payload         interface{} `json:"payload"`
 }
 

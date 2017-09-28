@@ -2,19 +2,53 @@
 .margin {
 
     @for $i from 0 through 5 {
-        $margin: $lineheight * $i;
+        $vertical-margin: $lineheight * $i;
+        $horizontal-margin: $gutter * $i;
+
+        &--#{$i} {
+            margin: $vertical-margin $horizontal-margin;
+        }
 
         &-top--#{$i} {
-            margin-top: $margin;
+            margin-top: $vertical-margin;
+        }
+
+        &-right--#{$i} {
+            margin-right: $horizontal-margin;
         }
 
         &-bottom--#{$i} {
-            margin-bottom: $margin;
+            margin-bottom: $vertical-margin;
         }
+
+        &-left--#{$i} {
+            margin-left: $horizontal-margin;
+        }
+
     }
 
 }
 
 .block {
   display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.font-weight {
+    &--300 {
+        font-weight: 300;
+    }
+    &--400 {
+        font-weight: 400;
+    }
+    &--600 {
+        font-weight: 600;
+    }
 }

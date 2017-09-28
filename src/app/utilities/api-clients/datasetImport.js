@@ -51,12 +51,20 @@ export default class datasetImport {
             })
     }
 
+    static getCompleted() {
+        return http.get(`/import/jobs?state=completed`, true)
+            .then(response => {
+                return response;
+            })
+    }
+
     static get(jobID) {
         return http.get(`/import/jobs/${jobID}`, true)
             .then(response => {
                 return response;
             })
     }
+
 
     static getDimensions(instanceID) {
         /* Uncomment this is you need to stub this data */

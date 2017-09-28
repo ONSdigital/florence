@@ -1,18 +1,18 @@
 import React from 'react';
-import Jobs from './Jobs';
+import DatasetUploadJobs from './DatasetUploadJobs';
 import { shallow, mount } from 'enzyme';
 
 const jobs = [
     {
-        job_id: "id1",
+        id: "id1",
         recipe: "recipe1"
     },
     {
-        job_id: "id2",
+        id: "id2",
         recipe: "recipe2"
     },
     {
-        job_id: "id3",
+        id: "id3",
         recipe: "recipe1"
     }
 ]
@@ -41,7 +41,7 @@ console.warn = jest.fn(warn => {
 
 test("Correct number of jobs are rendered", () => {
     const component = mount(
-        <Jobs {...defaultProps} />
+        <DatasetUploadJobs {...defaultProps} />
     )
     
     expect(component.find('a').length).toBe(3);
@@ -49,7 +49,7 @@ test("Correct number of jobs are rendered", () => {
 
 test("All in progress jobs are get the correct dataset alias from the recipes data", () => {
     const component = mount(
-        <Jobs {...defaultProps} />
+        <DatasetUploadJobs {...defaultProps} />
     )
     const items = component.find('a');
     const recipeCount = {
@@ -81,7 +81,7 @@ test("All in progress jobs are get the correct dataset alias from the recipes da
 
 test("Attempt to render job with an unrecognised ID should show console warning", () => {
     const component = shallow(
-        <Jobs {...defaultProps} />
+        <DatasetUploadJobs {...defaultProps} />
     )
 
     expect(() => {
@@ -89,7 +89,7 @@ test("Attempt to render job with an unrecognised ID should show console warning"
             jobs: [
                 ...defaultProps.jobs,
                 {
-                    job_id: "id4",
+                    id: "id4",
                     recipe: "unknown-recipe"
                 }
             ]

@@ -13,7 +13,9 @@ export const initialState = {
     },
     datasets: {
         all: [],
-        jobs: []
+        jobs: [],
+        activeInstance: {},
+        recipes: []
     },
     notifications: []
 };
