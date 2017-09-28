@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import http from '../../../utilities/http';
+import { errCodes } from '../../../utilities/errorCodes'
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
 import Modal from '../../../components/Modal';
 import Select from '../../../components/Select';
 import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
-import {relativePush, updateAllDatasets, updateActiveDataset} from '../../../config/actions';
+import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
 
 const propTypes = {
     params: PropTypes.shape({
@@ -24,7 +24,17 @@ const propTypes = {
         title: PropTypes.string.isRequired,
     })),
     dataset: PropTypes.shape({
-        id: PropTypes.string.isRequired
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      keywords: PropTypes.string.isRequired,
+      national_statistic: PropTypes.bool.isRequired,
+      periodicity: PropTypes.array.isRequired,
+      contact: PropTypes.arrayOf(PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          email: PropTypes.string.isRequired,
+          telephone: PropTypes.string.isRequired
+      }))
     })
 }
 
@@ -119,10 +129,11 @@ class DatasetDetails extends Component {
         return http.put(`/`, body, true);
     }
 
-    updateDatasetDetails(datasetDetails) {
-      this.postDatasetDetails(datasetDetails).then(nextPage => {
+    updateDatasetDetails(datasetDetailsData) {
+      this.postDatasetDetails(datasetDetailsData).then(() => {
         // TO DO - Add correct path
-        this.props.dispatch(relativePush("whats-changed"));
+        console.log(datasetDetailsData);
+        this.props.dispatch(push(`${this.props.rootPath}/datasets`));
       }).catch(error => {
           if (error) {
               const notification = {
@@ -204,10 +215,12 @@ class DatasetDetails extends Component {
      handleFormSubmit(event) {
          event.preventDefault();
 
-         const datasetDetails = {
-           email: this.state.contactEmail,
-           name: this.state.contactName,
-           telephone: this.state.contactPhone,
+         const datasetDetailsData = {
+           contact: {
+             email: this.state.contactEmail,
+             name: this.state.contactName,
+             telephone: this.state.contactPhone,
+           },
            description: this.state.description,
            periodicity: this.state.periodicity,
            title: this.state.title,
@@ -219,7 +232,7 @@ class DatasetDetails extends Component {
                  error: "You must select the periodicity"
              });
          } else {
-           this.updateDatasetDetails(datasetDetails);
+           this.updateDatasetDetails(datasetDetailsData);
          }
      }
 
