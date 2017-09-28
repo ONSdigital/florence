@@ -7,6 +7,7 @@ export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
 export const UPDATE_ALL_DATASETS = 'UPDATE_ALL_DATASETS';
+export const UPDATE_ACTIVE_DATASET = 'UPDATE_ACTIVE_DATASET';
 export const UPDATE_ALL_RECIPES = 'UPDATE_ALL_RECIPES';
 export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
 export const ADD_NEW_JOB = 'ADD_NEW_JOB';
@@ -42,6 +43,13 @@ export function updateAllDatasets(allDatasets) {
     return {
         type: UPDATE_ALL_DATASETS,
         allDatasets
+    }
+}
+
+export function updateActiveDataset(dataset) {
+    return {
+        type: UPDATE_ACTIVE_DATASET,
+        dataset
     }
 }
 
