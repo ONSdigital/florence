@@ -5,10 +5,11 @@ const propTypes = {
     id: PropTypes.string,
     label: PropTypes.string,
     onChange: PropTypes.func,
-    error: PropTypes.string
+    error: PropTypes.string,
+    isChecked: PropTypes.bool
 };
 
-class Checkbox extends React.Component {
+class Checkbox extends Component {
   constructor(props) {
     super(props);
 
