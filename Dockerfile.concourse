@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM onsdigital/dp-docker-go
 
 WORKDIR /app/
 
