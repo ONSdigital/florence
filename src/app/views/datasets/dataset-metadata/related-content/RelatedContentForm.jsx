@@ -4,19 +4,15 @@ import PropTypes from 'prop-types';
 import Input from '../../../../components/Input';
 
 const propTypes = {
-    titleInput: PropTypes.shape({
-        value: PropTypes.string,
-        error: PropTypes.string
-    }),
-    urlInput: PropTypes.shape({
-        value: PropTypes.string,
-        error: PropTypes.string
-    }),
+    titleInput: PropTypes.string,
+    urlInput: PropTypes.string,
     name: PropTypes.string.isRequired,
     isPosting: PropTypes.bool,
     onCancel: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
-    onFormInput: PropTypes.func.isRequired
+    onFormInput: PropTypes.func.isRequired,
+    titleError:PropTypes.string,
+    urlError:PropTypes.string
 }
 
 class RelatedContentForm extends Component {
@@ -24,14 +20,8 @@ class RelatedContentForm extends Component {
         super(props);
 
         this.state = {
-            titleInput: {
-                value: "",
-                error: ""
-            },
-            urlInput: {
-                value: "",
-                error: ""
-            },
+            titleInput: "",
+            urlInput: ""
         }
     }
 
@@ -42,21 +32,20 @@ class RelatedContentForm extends Component {
                     <h2> Add related content: </h2>
                 </div>
                 <div className="modal__body">
-                    <div className="form__input">
-                        <Input 
+                      <Input
                             type="text"
                             label="Page title"
                             id="add-related-content-title"
                             name="add-related-content-title"
-                            error={this.state.titleInput.error}
+                            error={this.props.titleError}
                             onChange={this.props.onFormInput}
                             onCancel={this.props.onCancel}
                             isFocused={true}
                         />
-                        <Input 
+                        <Input
                             type="text"
                             label="Page URL"
-                            error={this.state.urlInput.error}
+                            error={this.props.urlError}
                             id="add-related-content-url"
                             name="add-related-content-url"
                             value={this.props.urlInput.value}
@@ -67,10 +56,9 @@ class RelatedContentForm extends Component {
                     <div className="modal__footer">
                     <button disabled={this.props.isPosting} className={"btn btn--primary btn--margin-right"}>Add</button>
                     <button type="button" disabled={this.props.isPosting} className="btn" onClick={this.props.onCancel}>Cancel</button>
-                    {this.props.isPosting && 
+                    {this.props.isPosting &&
                         <div className="loader"></div>
                     }
-                </div>
                 </div>
             </form>
         )
