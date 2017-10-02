@@ -84,6 +84,13 @@ class DatasetDetails extends Component {
     componentWillMount() {
         this.setState({isFetchingDataset: true});
 
+        function guid() {
+            function S4() {
+                return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+            }
+            return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+        }
+
         const APIRequests = [
             datasets.get(this.props.params.dataset)
         ]
@@ -106,20 +113,20 @@ class DatasetDetails extends Component {
             });
 
             this.props.dataset.publications.map(item => {
-                const bulletin = {title: item.title, url: item.href}
+                const bulletin = {title: item.title, url: item.href, key: guid()}
                 const bulletins = this.state.relatedBulletins.concat(bulletin);
                 this.setState({relatedBulletins: bulletins})
             })
 
             this.props.dataset.related_datasets.map(item => {
-                const link = {title: item.title, url: item.href}
+                const link = {title: item.title, url: item.href, key: guid()}
                 const links = this.state.relatedLinks.concat(link);
                 this.setState({relatedLinks: links})
             })
 
             if (this.props.dataset.qmi.title != "") {
                 const item = this.props.dataset.qmi
-                const qmi = {title: item.title, url: item.href}
+                const qmi = {title: item.title, url: item.href, key: guid()}
                 this.setState({relatedQMI: qmi})
             }
 
@@ -281,7 +288,13 @@ class DatasetDetails extends Component {
      }
 
      handleFormSubmit(event) {
-         event.preventDefault()
+         event.preventDefault();
+         function guid() {
+               function S4() {
+                   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+               }
+               return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+           }
 
          if(this.state.titleInput == "" || this.state.urlInput == ""){
            if(this.state.titleInput == ""){
@@ -299,19 +312,19 @@ class DatasetDetails extends Component {
              if (this.state.editKey != "") {
                  this.removeRelated("bulletin", this.state.editKey)
              }
-             const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput});
+             const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
              this.setState({relatedBulletins: bulletins});
          } else if (this.state.modalType === "qmi") {
              if (this.state.editKey != "") {
                  this.removeRelated("qmi", this.state.editKey)
              }
-             const qmi = {title: this.state.titleInput, url: this.state.urlInput};
+             const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: guid()};
              this.setState({relatedQMI: qmi});
          } else if (this.state.modalType === "related-link") {
              if (this.state.editKey != "") {
                  this.removeRelated("link", this.state.editKey)
              }
-             const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput});
+             const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
              this.setState({relatedLinks: links});
          }
 
