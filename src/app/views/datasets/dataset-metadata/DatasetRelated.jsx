@@ -49,7 +49,7 @@ class DatasetRelated extends Component {
     componentWillMount() {
         function guid() {
             function S4() {
-                return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
+                return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
             }
             return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
         }
@@ -140,7 +140,7 @@ class DatasetRelated extends Component {
 
             if (input.value === "") {
                 input.error = "You cannot provide empty values"
-            } 
+            }
         if (event.target.name === "add-related-content-title") {
             this.setState({titleInput: input});
         } else if (event.target.name === "add-related-content-url") {
@@ -150,8 +150,8 @@ class DatasetRelated extends Component {
 
     removeRelated(type, key) {
         function remove(arr, key) {
-            arr.map((item, index) => { 
-                if (item.key === key) { 
+            arr.map((item, index) => {
+                if (item.key === key) {
                     arr.splice(index, 1);
                 }
             })
@@ -178,7 +178,7 @@ class DatasetRelated extends Component {
 
         function guid() {
             function S4() {
-                return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
+                return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
             }
             return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
         }
@@ -207,7 +207,7 @@ class DatasetRelated extends Component {
         this.setState({modalType: ""});
         this.setState({editKey: ""})
     }
-        
+
     render() {
         return (
             <div className="grid grid--justify-center">
@@ -227,7 +227,7 @@ class DatasetRelated extends Component {
                                 return (
                                     <li className="card margin-bottom--1">
                                         <div className="card__body">
-                                            <div className="card__title">{bulletin.title}</div> 
+                                            <div className="card__title">{bulletin.title}</div>
                                         </div>
                                         <div className="card__actions">
                                             <a href="#" onClick={() => {this.handleEditRelatedClick("bulletin", bulletin.key)}}>Edit</a>
@@ -235,7 +235,7 @@ class DatasetRelated extends Component {
                                         </div>
                                     </li>
                                 )
-                            })                        
+                            })
                         }
                         </ul>
                         <a href="#" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document </a>
@@ -247,7 +247,7 @@ class DatasetRelated extends Component {
                                 <ul className="list--neutral margin-bottom--1">
                                     <li className="card margin-bottom--1">
                                         <div className="card__body">
-                                            <div className="card__title">{this.state.relatedQMI.title}</div> 
+                                            <div className="card__title">{this.state.relatedQMI.title}</div>
                                         </div>
                                         <div className="card__actions">
                                             <a href="#" onClick={() => {this.handleEditRelatedClick("qmi", this.state.relatedQMI.key)}}>Edit</a>
@@ -256,7 +256,7 @@ class DatasetRelated extends Component {
                                     </li>
                                 </ul>
                             :
-                            <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>                  
+                            <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
                         }
                     </div>
                     <div className="margin-bottom--2">
@@ -267,7 +267,7 @@ class DatasetRelated extends Component {
                                 return (
                                     <li className="card margin-bottom--1">
                                         <div className="card__body">
-                                            <div className="card__title">{link.title}</div> 
+                                            <div className="card__title">{link.title}</div>
                                         </div>
                                         <div className="card__actions">
                                             <a href="#" onClick={() => {this.handleEditRelatedClick("link", link.key)}}>Edit</a>
@@ -275,7 +275,7 @@ class DatasetRelated extends Component {
                                         </div>
                                     </li>
                                 )
-                            })                            
+                            })
                         }
                         </ul>
                         <a href="#" onClick={() => {this.handleAddRelatedClick("related-link")}}> Add related link </a>
@@ -284,10 +284,10 @@ class DatasetRelated extends Component {
                         <button className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
                     </div>
                 </div>
-                {   
-                    this.state.showModal ?             
+                {
+                    this.state.showModal ?
                     <Modal sizeClass="grid__col-3">
-                        <RelatedDataController 
+                        <RelatedDataController
                             name="related-content-modal"
                             titleInput={this.state.titleInput}
                             urlInput={this.state.urlInput}

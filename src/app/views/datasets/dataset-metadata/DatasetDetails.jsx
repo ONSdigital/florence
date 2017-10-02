@@ -11,6 +11,7 @@ import Modal from '../../../components/Modal';
 import Select from '../../../components/Select';
 import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
+import RelatedDataController from './related-content/RelatedDataController';
 import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
 
 const propTypes = {
@@ -19,6 +20,7 @@ const propTypes = {
     }),
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
@@ -33,7 +35,19 @@ const propTypes = {
       contact: PropTypes.arrayOf(PropTypes.shape({
           name: PropTypes.string.isRequired,
           email: PropTypes.string.isRequired,
-          telephone: PropTypes.string.isRequired
+          telephone: PropTypes.string.isRequired,
+      })),
+      qmi: PropTypes.shape({
+          href: PropTypes.string,
+          title: PropTypes.string,
+      }),
+      related_datasets: PropTypes.arrayOf(PropTypes.shape({
+          href: PropTypes.string.isRequired,
+          title: PropTypes.string.isRequired,
+      })),
+      publications: PropTypes.arrayOf(PropTypes.shape({
+          href: PropTypes.string.isRequired,
+          title: PropTypes.string.isRequired,
       }))
     })
 }
@@ -45,15 +59,26 @@ class DatasetDetails extends Component {
             isFetchingDataset: false,
             error: null,
             showModal: false,
+            modalType: "",
+            relatedBulletins: [],
+            relatedQMI: "",
+            relatedLinks: [],
+            titleInput: "",
+            urlInput: "",
+            editKey: "",
         };
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handlePageSubmit = this.handlePageSubmit.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleModalSubmit = this.handleModalSubmit.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
+        this.removeRelated = this.removeRelated.bind(this);
+        this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
     }
 
     componentWillMount() {
@@ -79,6 +104,25 @@ class DatasetDetails extends Component {
                     telephone: details.telephone,
                 }
             });
+
+            this.props.dataset.publications.map(item => {
+                const bulletin = {title: item.title, url: item.href}
+                const bulletins = this.state.relatedBulletins.concat(bulletin);
+                this.setState({relatedBulletins: bulletins})
+            })
+
+            this.props.dataset.related_datasets.map(item => {
+                const link = {title: item.title, url: item.href}
+                const links = this.state.relatedLinks.concat(link);
+                this.setState({relatedLinks: links})
+            })
+
+            if (this.props.dataset.qmi.title != "") {
+                const item = this.props.dataset.qmi
+                const qmi = {title: item.title, url: item.href}
+                this.setState({relatedQMI: qmi})
+            }
+
             this.setState({
                 isFetchingDataset: false,
                 description: this.props.dataset.description,
@@ -89,6 +133,7 @@ class DatasetDetails extends Component {
                 contactEmail: contact.email,
                 contactPhone: contact.telephone,
             });
+
           }).catch(error => {
               switch (error.status) {
                   case(403):{
@@ -126,13 +171,12 @@ class DatasetDetails extends Component {
 
     postDatasetDetails(body) {
        // Update to put to dataset api
-        return http.put(`/`, body, true);
+      return http.put(`${datasets}`, body, true);
     }
 
     updateDatasetDetails(datasetDetailsData) {
       this.postDatasetDetails(datasetDetailsData).then(() => {
         // TO DO - Add correct path
-        console.log(datasetDetailsData);
         this.props.dispatch(push(`${this.props.rootPath}/datasets`));
       }).catch(error => {
           if (error) {
@@ -191,10 +235,21 @@ class DatasetDetails extends Component {
        const target = event.target;
        const value = target.value;
        const name = target.name;
-
-       this.setState({
-         [name]: value
-       });
+       if (name === "add-related-content-title") {
+           this.setState({titleInput: value});
+           if(this.state.titleError != null) {
+             this.setState({titleError: null})
+           }
+       } else if (name === "add-related-content-url") {
+           this.setState({urlInput: value});
+           if(this.state.urlError != null) {
+             this.setState({urlError: null})
+           }
+       } else {
+         this.setState({
+           [name]: value
+         });
+       }
 
      }
 
@@ -204,6 +259,8 @@ class DatasetDetails extends Component {
 
      handleCancel() {
          this.setState({showModal: false});
+         this.setState({modalType: ""});
+         this.setState({editKey: ""});
      }
 
      handleModalSubmit(event){
@@ -212,7 +269,81 @@ class DatasetDetails extends Component {
        this.props.dispatch(push(`${this.props.rootPath}/datasets`));
      }
 
+     handleAddRelatedClick(type) {
+         this.setState({showModal: true});
+         this.setState({modalType: type});
+     }
+
+     handleEditRelatedClick(type, key) {
+         this.setState({showModal: true});
+         this.setState({modalType: type});
+         this.setState({editKey: key});
+     }
+
      handleFormSubmit(event) {
+         event.preventDefault()
+
+         if(this.state.titleInput == "" || this.state.urlInput == ""){
+           if(this.state.titleInput == ""){
+             this.setState({
+                 titleError: "You must provide a title"
+             });
+           }
+           if (this.state.urlInput == ""){
+             this.setState({
+                 urlError: "You must provide a url"
+             });
+           }
+         } else {
+         if (this.state.modalType === "bulletin") {
+             if (this.state.editKey != "") {
+                 this.removeRelated("bulletin", this.state.editKey)
+             }
+             const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput});
+             this.setState({relatedBulletins: bulletins});
+         } else if (this.state.modalType === "qmi") {
+             if (this.state.editKey != "") {
+                 this.removeRelated("qmi", this.state.editKey)
+             }
+             const qmi = {title: this.state.titleInput, url: this.state.urlInput};
+             this.setState({relatedQMI: qmi});
+         } else if (this.state.modalType === "related-link") {
+             if (this.state.editKey != "") {
+                 this.removeRelated("link", this.state.editKey)
+             }
+             const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput});
+             this.setState({relatedLinks: links});
+         }
+
+         this.setState({showModal: false});
+         this.setState({modalType: ""});
+         this.setState({editKey: ""})
+       }
+     }
+
+     removeRelated(type, key) {
+         function remove(arr, key) {
+             arr.map((item, index) => {
+                 if (item.key === key) {
+                     arr.splice(index, 1);
+                 }
+             })
+             return arr
+         }
+
+         if (type === "bulletin") {
+             var bulletins = remove(this.state.relatedBulletins, key)
+             this.setState({relatedBulletins: bulletins});
+         } else if (type === "qmi") {
+             this.setState({relatedQMI: ""});
+         } else if (type === "link") {
+             var links = remove(this.state.relatedLinks, key)
+             this.setState({relatedLinks: links});
+         }
+     }
+
+     handlePageSubmit(event) {
+
          event.preventDefault();
 
          const datasetDetailsData = {
@@ -225,7 +356,13 @@ class DatasetDetails extends Component {
            periodicity: this.state.periodicity,
            title: this.state.title,
            national_statistic: this.state.isChecked,
-           keywords: this.state.keywords
+           keywords: this.state.keywords,
+           qmi: {
+             title: this.state.relatedQMI.title,
+             href: this.state.relatedQMI.url,
+           },
+           publications: [...this.state.relatedBulletins],
+           related_datasets: [...this.state.relatedLinks],
          }
          if (!this.state.periodicity) {
              this.setState({
@@ -253,7 +390,7 @@ class DatasetDetails extends Component {
                             <h2 className="margin-bottom--1">Dataset</h2>
                             <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.dataset.id || "Fetching dataset ID..."}
 </span></div>
-                          <form className="margin-bottom--4" onSubmit={this.handleFormSubmit}>
+                          <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
                               <Input
                                   value={this.props.dataset.title}
@@ -309,31 +446,94 @@ class DatasetDetails extends Component {
                                   label="Contact telephone"
                                   onChange={this.handleInputChange}
                               />
-                              <button className="btn btn--positive">Save and continue</button>
-                            </form>
+                        <h2 className="margin-bottom--1">Related content</h2>
+                        <div className="margin-bottom--1">
+                            <p> These are common across all editions of the dataset. Changing them will affect all previous editions.</p>
                         </div>
-                    }
-                </div>
-                {
-                    this.state.showModal ?
-                    <Modal sizeClass="grid__col-3">
-                      <div className="modal__header">
-                          <h2>Warning!</h2>
-                      </div>
-                      <div className="modal__body">
-                          <p>You will lose any changes by going back without saving. </p><br/>
-                          <p>Click "Continue" to lose changes and go back to the previous page or
-                              click "Cancel" to stay on the current page.</p>
-                      </div>
-                      <div className="modal__footer">
-                      <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
-                      <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
-
-                      </div>
-                    </Modal>
-                    :
-                    ""
+                        <div className="margin-bottom--2">
+                            <h3> Bulletins, articles and compendia </h3>
+                            <ul className="list--neutral margin-bottom--1">
+                            {
+                                this.state.relatedBulletins.map((bulletin,index) => {
+                                    return (
+                                        <li className="card margin-bottom--1" key={index}>
+                                            <div className="card__body">
+                                                <div className="card__title">{bulletin.title}</div>
+                                            </div>
+                                            <div className="card__actions">
+                                                <a href="#" onClick={() => {this.handleEditRelatedClick("bulletin", bulletin.key)}}>Edit</a>
+                                                <a className="margin-left--1" href="#" onClick={() => {this.removeRelated("bulletin", bulletin.key)}}>Delete</a>
+                                            </div>
+                                        </li>
+                                    )
+                                })
+                            }
+                            </ul>
+                            <a href="#" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document </a>
+                        </div>
+                        <div className="margin-bottom--2">
+                            <h3> QMI </h3>
+                            {
+                                this.state.relatedQMI != "" ?
+                                    <ul className="list--neutral margin-bottom--1">
+                                        <li className="card margin-bottom--1">
+                                            <div className="card__body">
+                                                <div className="card__title">{this.state.relatedQMI.title}</div>
+                                            </div>
+                                            <div className="card__actions">
+                                                <a href="#" onClick={() => {this.handleEditRelatedClick("qmi", this.state.relatedQMI.key)}}>Edit</a>
+                                                <a className="margin-left--1" href="#" onClick={() => {this.removeRelated("qmi", this.state.relatedQMI.key)}}>Delete</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                :
+                                <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
+                            }
+                        </div>
+                        <div className="margin-bottom--2">
+                            <h3> Related links </h3>
+                            <ul className="list--neutral margin-bottom--1">
+                            {
+                                this.state.relatedLinks.map((link, index) => {
+                                    return (
+                                        <li className="card margin-bottom--1" key={index}>
+                                            <div className="card__body">
+                                                <div className="card__title">{link.title}</div>
+                                            </div>
+                                            <div className="card__actions">
+                                                <a href="#" onClick={() => {this.handleEditRelatedClick("link", link.key)}}>Edit</a>
+                                                <a className="margin-left--1" href="#" onClick={() => {this.removeRelated("link", link.key)}}>Delete</a>
+                                            </div>
+                                        </li>
+                                    )
+                                })
+                            }
+                            </ul>
+                            <a href="#" onClick={() => {this.handleAddRelatedClick("related-link")}}> Add related link </a>
+                        </div>
+                        <button className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        </form>
+                    </div>
                 }
+                  </div>
+                  {
+                      this.state.showModal ?
+                      <Modal sizeClass="grid__col-3">
+                          <RelatedDataController
+                              name="related-content-modal"
+                              titleInput={this.state.titleInput}
+                              urlInput={this.state.urlInput}
+                              onCancel={this.handleCancel}
+                              onFormInput={this.handleInputChange}
+                              onFormSubmit={this.handleFormSubmit}
+                              titleError={this.state.titleError}
+                              urlError={this.state.urlError}
+                          />
+                      </Modal>
+                      :
+                      ""
+                  }
+
           </div>
         )
     }
