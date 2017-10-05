@@ -9,8 +9,8 @@ export default class collections {
             })
     }
 
-    static addAPIDataset(collectionID, instanceID) {
-        // return http.put(`/zebedee/collections/${collectionID}/dataset/${instanceID}`, body , true)
+    static addDataset(collectionID, datasetID) {
+        // return http.put(`/zebedee/collections/${collectionID}/dataset/${datasetID}`, body , true)
         //     .then(response => {
         //         return response;
         //     })
@@ -19,11 +19,10 @@ export default class collections {
         return new Promise(resolve => {
             setTimeout(() => { resolve(); }, 2000);
         })
-
     }
 
-    static removeAPIDataset(collectionID, instanceID) {
-        // return http.delete(`/zebedee/collections/${collectionID}/dataset/${instanceID}`, true)
+    static removeDataset(collectionID, datasetID) {
+        // return http.delete(`/zebedee/collections/${collectionID}/dataset/${datasetID}`, true)
         //     .then(response => {
         //         return response;
         //     })
@@ -32,8 +31,30 @@ export default class collections {
         return new Promise(resolve => {
             setTimeout(() => { resolve(); }, 1000);
         })
+    }
 
+    static addInstance(collectionID, instanceID) {
+        // return http.put(`/zebedee/collections/${collectionID}/instances/${instanceID}`, body , true)
+        //     .then(response => {
+        //         return response;
+        //     })
 
+        // mocked ok response from Zebedee
+        return new Promise(resolve => {
+            setTimeout(() => { resolve(); }, 2000);
+        })
+    }
+
+    static removeInstance(collectionID, instanceID) {
+        // return http.delete(`/zebedee/collections/${collectionID}/instances/${instanceID}`, true)
+        //     .then(response => {
+        //         return response;
+        //     })
+
+        // mocked ok response from Zebedee
+        return new Promise(resolve => {
+            setTimeout(() => { resolve(); }, 1000);
+        })
     }
 
 }
