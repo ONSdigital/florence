@@ -1,14 +1,14 @@
 
-/* 
-* Required legacy SCSS - to be refactored 
+/*
+* Required legacy SCSS - to be refactored
 */
 @import "../legacy/scss/partials/reset";
 // @import "../legacy/scss/utilities/grid";
 
 
 
-/* 
-* Refactored SCSS 
+/*
+* Refactored SCSS
 */
 
 //Base styling
@@ -30,6 +30,7 @@
 @import "components/log";
 @import "components/pagination";
 @import "components/card";
+@import "components/details";
 
 
 // Elements
