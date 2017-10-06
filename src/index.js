@@ -22,6 +22,7 @@ import './scss/main.scss';
 
 import { store, history } from './app/config/store';
 import DatasetRelated from "./app/views/datasets/dataset-metadata/DatasetRelated"
+import Preview from './app/components/preview/Preview'
 
 const rootPath = store.getState().state.rootPath;
 
@@ -68,6 +69,7 @@ class Index extends Component {
                                     <IndexRedirect to="edition" />
                                     <Route path="edition" component={ UserIsAuthenticated(DatasetEdition) } />
                                     <Route path="whats-changed" component={ UserIsAuthenticated(DatasetChangesController) } />
+                                    <Route path="preview" component={ UserIsAuthenticated(Preview) } />
                                 </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
