@@ -10,7 +10,6 @@ import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
 import http from '../../../utilities/http';
 import FileUpload from '../../../components/file-upload/FileUpload';
-import Select from '../../../components/Select-box';
 import url from '../../../utilities/url'
 
 const propTypes = {
@@ -496,23 +495,9 @@ class DatasetOverviewController extends Component {
                             &#9664; <Link to={url.parent()}>Back</Link>
                         </div>
                         <h1 className="margin-top--1">Upload new file(s)</h1>
-                        <h2 className="margin-bottom--1">
-                            {this.state.activeDataset.alias}
-                        </h2>
-                        {this.state.activeDataset &&
-                          <Select
-                            contents={this.state.activeDataset.editionsList}
-                            label="Select an edition"
-                            id="edition-select"
-                            override={this.state.activeDataset.editionOverride}
-                            overrideLabel="Enter an edition name"
-                            overrideId="edition-input"
-                            onChange={this.handleSelect}
-                          />
-                        }
                         <form onSubmit={this.handleFormSubmit}>
                             { this.renderFileInputs() }
-                            <button className="btn btn--positive" type="submit">Submit to publishing</button>
+                            <button className="btn btn--positive" type="submit">Save and continue</button>
                         </form>
                     </div>
                 )
