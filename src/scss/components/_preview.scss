@@ -1,0 +1,13 @@
+.preview {
+    $border-width: 4px;
+
+    border: $border-width solid $nevada;
+    height: calc(100vh - #{$navbar-height} - #{$border-width * 2});
+    overflow: hidden;
+
+    &__iframe {
+        width: 100%;
+        height: calc(100vh - #{$navbar-height} - #{$border-width});
+        border-width: 0;
+    }
+}
