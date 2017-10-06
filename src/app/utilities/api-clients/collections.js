@@ -9,7 +9,7 @@ export default class collections {
             })
     }
 
-    static addAPIDataset(collectionID, instanceID) {
+    static addAPIDataset() {
         // return http.put(`/zebedee/collections/${collectionID}/dataset/${instanceID}`, body , true)
         //     .then(response => {
         //         return response;
@@ -22,7 +22,7 @@ export default class collections {
 
     }
 
-    static removeAPIDataset(collectionID, instanceID) {
+    static removeAPIDataset() {
         // return http.delete(`/zebedee/collections/${collectionID}/dataset/${instanceID}`, true)
         //     .then(response => {
         //         return response;
