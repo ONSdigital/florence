@@ -67,7 +67,7 @@ class InstanceCollectionController extends Component {
                 case(403):{
                     const notification = {
                         "type": "neutral",
-                        "message": "You do not permission to view collections.",
+                        "message": "You do not have permission to view collections.",
                         isDismissable: true
                     };
                     notifications.add(notification);
