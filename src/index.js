@@ -13,6 +13,7 @@ import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/datasets/dataset-upload/DatasetUploadsController';
 import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
 import InstanceCollectionController from './app/views/datasets/dataset-collection/InstanceCollectionController';
+import DatasetCollectionController from './app/views/datasets/dataset-collection/DatasetCollectionController';
 import DatasetEdition from './app/views/datasets/dataset-metadata/DatasetEdition';
 import DatasetChangesController from './app/views/datasets/dataset-metadata/DatasetChangesController';
 import DatasetDetails from './app/views/datasets/dataset-metadata/DatasetDetails';
@@ -72,6 +73,7 @@ class Index extends Component {
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
                                 <Route path="add-to-collection/:instance" component={ UserIsAuthenticated(InstanceCollectionController) } />
+                                <Route path="collection/:dataset" component={ UserIsAuthenticated(DatasetCollectionController) } />
                             </Route>
                             <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
