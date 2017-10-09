@@ -20,7 +20,7 @@ const propTypes = {
     handleOnBackFromSuccess: PropTypes.func.isRequired
 };
 
-class DatasetCollectionView extends Component {
+class CollectionView extends Component {
     constructor(props) {
         super(props)
     }
@@ -118,6 +118,6 @@ class DatasetCollectionView extends Component {
         )
     }
 }
-DatasetCollectionView.propTypes = propTypes;
+CollectionView.propTypes = propTypes;
 
-export default DatasetCollectionView;
+export default CollectionView;
