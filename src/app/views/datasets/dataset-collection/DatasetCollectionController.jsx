@@ -10,7 +10,7 @@ import CollectionView from './CollectionView';
 
 const propTypes = {
     params: PropTypes.shape({
-        instance: PropTypes.string.isRequired
+        dataset: PropTypes.string.isRequired
     }).isRequired
 };
 
