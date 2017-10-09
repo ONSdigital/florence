@@ -14,7 +14,7 @@ const propTypes = {
     }).isRequired
 };
 
-class InstanceCollectionController extends Component {
+class DatasetCollectionController extends Component {
 
     constructor(props) {
         super(props);
@@ -170,7 +170,7 @@ class InstanceCollectionController extends Component {
     }
 
     handleOnBackFromSuccess() {
-        collections.removeDataset()
+        collections.removeInstance()
             .then(() => {
                 this.setState({hasChosen: false});
             })
@@ -179,7 +179,7 @@ class InstanceCollectionController extends Component {
     handleAddToCollection() {
         const instanceID = this.props.params.instance;
         const collectionID = this.state.selectedCollection.id;
-        collections.addDataset(collectionID, instanceID)
+        collections.addInstance(collectionID, instanceID)
             .then(() => {
                 // TODO POST next release date field to API
                 // We'll probably want to post "next release date" field to an api at
@@ -207,6 +207,6 @@ function mapStateToProps(state) {
     return state;
 }
 
-InstanceCollectionController.propTypes = propTypes;
+DatasetCollectionController.propTypes = propTypes;
 
-export default connect(mapStateToProps)(InstanceCollectionController);
+export default connect(mapStateToProps)(DatasetCollectionController);
