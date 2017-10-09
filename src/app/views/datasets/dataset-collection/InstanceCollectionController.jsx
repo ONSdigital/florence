@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import dateFormat from 'dateformat';
 import notifications from '../../../utilities/notifications';
 import collections from '../../../utilities/api-clients/collections';
-import DatasetCollectionView from './DatasetCollectionView';
+import CollectionView from './CollectionView';
 
 
 const propTypes = {
@@ -14,7 +14,7 @@ const propTypes = {
     }).isRequired
 };
 
-class DatasetCollectionController extends Component {
+class InstanceCollectionController extends Component {
 
     constructor(props) {
         super(props);
@@ -189,7 +189,7 @@ class DatasetCollectionController extends Component {
 
     render() {
         return (
-            <DatasetCollectionView {...this.state}
+            <CollectionView {...this.state}
                    handleSubmit={this.handleSubmit}
                    handleCollectionChange={this.handleCollectionChange}
                    handleNextReleaseChange={this.handleNextReleaseChange}
@@ -203,6 +203,6 @@ function mapStateToProps(state) {
     return state;
 }
 
-DatasetCollectionController.propTypes = propTypes;
+InstanceCollectionController.propTypes = propTypes;
 
-export default connect(mapStateToProps)(DatasetCollectionController);
+export default connect(mapStateToProps)(InstanceCollectionController);
