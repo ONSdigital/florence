@@ -9,7 +9,7 @@ export default class collections {
             })
     }
 
-    static addDataset(collectionID, datasetID) {
+    static addDataset() {
         // return http.put(`/zebedee/collections/${collectionID}/dataset/${datasetID}`, body , true)
         //     .then(response => {
         //         return response;
@@ -21,7 +21,7 @@ export default class collections {
         })
     }
 
-    static removeDataset(collectionID, datasetID) {
+    static removeDataset() {
         // return http.delete(`/zebedee/collections/${collectionID}/dataset/${datasetID}`, true)
         //     .then(response => {
         //         return response;
@@ -33,7 +33,7 @@ export default class collections {
         })
     }
 
-    static addInstance(collectionID, instanceID) {
+    static addInstance() {
         // return http.put(`/zebedee/collections/${collectionID}/instances/${instanceID}`, body , true)
         //     .then(response => {
         //         return response;
@@ -45,7 +45,7 @@ export default class collections {
         })
     }
 
-    static removeInstance(collectionID, instanceID) {
+    static removeInstance() {
         // return http.delete(`/zebedee/collections/${collectionID}/instances/${instanceID}`, true)
         //     .then(response => {
         //         return response;
