@@ -216,6 +216,13 @@ export default class datasets {
             setTimeout(resolve, 2000);
         })
     }
+    
+    static approveDatasetMetadata(datasetID) {
+        // TODO unstub this once dataset metadata can be reviewed and approved in the API
+        return new Promise(resolve => {
+            setTimeout(resolve, 2000);
+        })
+    }
 
     static getCompletedInstances() {
         // TODO - unstub once the API puts dataset IDs in instances
