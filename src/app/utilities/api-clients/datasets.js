@@ -32,10 +32,14 @@ const stubbedDatasets =
                     "descrption": "this is an example QMI for you to look at"
                 },
                 "related_datasets": [
-                    {
-                        "href": "http://localhost:8080/datasets/6789910",
-                        "title": "Crime in the UK"
-                    }
+                  {
+                      "href": "http://localhost:8080/datasets/6789910",
+                      "title": "Crime in the UK"
+                  },
+                  {
+                      "href": "http://localhost:8080/datasets/6789910",
+                      "title": "More Crime in the UK"
+                  }
                 ],
                 "publications": [
                     {
