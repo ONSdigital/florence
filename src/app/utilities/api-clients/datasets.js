@@ -166,25 +166,19 @@ const stubbedDatasets =
 export default class datasets {
 
     static get(datasetID) {
-        //TODO - unstub once the API has dataset IDs in instance (we need to stub this response so our other stubs work)
-        return Promise.resolve(stubbedDatasets.items.find(dataset => {
-            return dataset.id === datasetID;
-        }));
 
-        // return http.get(`/dataset/datasets/${datasetID}`)
-        //     .then(response => {
-        //         return response;
-        //     });
+        return http.get(`/dataset/datasets/${datasetID}`)
+            .then(response => {
+                return response;
+            });
     }
 
     static getAll() {
-        //TODO - unstub once the API shows unpublished datasets to authorised users
-        return Promise.resolve(stubbedDatasets);
 
-        // return http.get(`/dataset/datasets`)
-        //     .then(response => {
-        //         return response;
-        //     });
+        return http.get(`/dataset/datasets`)
+            .then(response => {
+                return response;
+            });
     }
 
     static getInstance(instanceID) {
