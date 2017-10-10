@@ -23,6 +23,8 @@ import './scss/main.scss';
 
 import { store, history } from './app/config/store';
 import DatasetRelated from "./app/views/datasets/dataset-metadata/DatasetRelated"
+import InstancePreview from './app/views/datasets/instances/InstancePreview'
+
 
 const rootPath = store.getState().state.rootPath;
 
@@ -38,7 +40,9 @@ const UserIsAuthenticated = UserAuthWrapper({
 class UnknownRoute extends Component {
     render() {
         return (
-            <h1>Sorry, this page couldnt be found</h1>
+            <div className="grid grid--justify-center">
+                <h1>Sorry, this page couldnt be found</h1>
+            </div>
         )
     }
 }
@@ -72,6 +76,8 @@ class Index extends Component {
                                 </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
+                                <Route path=":datasetID/preview" component={ UserIsAuthenticated(InstancePreview) } />
+                                <Route path=":datasetID/editions/:edition/versions/:version/preview" component={ UserIsAuthenticated(InstancePreview) } />
                                 <Route path="add-to-collection/:instance" component={ UserIsAuthenticated(InstanceCollectionController) } />
                                 <Route path="collection/:dataset" component={ UserIsAuthenticated(DatasetCollectionController) } />
                             </Route>
