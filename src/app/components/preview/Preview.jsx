@@ -38,9 +38,7 @@ export default class Preview extends Component {
 
     render() {
         return (
-            <div className="preview">
-                <iframe id="iframe" className="preview__iframe" src={this.props.path}></iframe>
-            </div>
+            <iframe id="iframe" className="preview__iframe" src={this.props.path}></iframe>
         )
     }
 }
