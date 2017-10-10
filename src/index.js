@@ -22,7 +22,8 @@ import './scss/main.scss';
 
 import { store, history } from './app/config/store';
 import DatasetRelated from "./app/views/datasets/dataset-metadata/DatasetRelated"
-import Preview from './app/components/preview/Preview'
+import InstancePreview from './app/views/datasets/instances/InstancePreview'
+
 
 const rootPath = store.getState().state.rootPath;
 
@@ -38,7 +39,9 @@ const UserIsAuthenticated = UserAuthWrapper({
 class UnknownRoute extends Component {
     render() {
         return (
-            <h1>Sorry, this page couldnt be found</h1>
+            <div className="grid grid--justify-center">
+                <h1>Sorry, this page couldnt be found</h1>
+            </div>
         )
     }
 }
@@ -69,11 +72,11 @@ class Index extends Component {
                                     <IndexRedirect to="edition" />
                                     <Route path="edition" component={ UserIsAuthenticated(DatasetEdition) } />
                                     <Route path="whats-changed" component={ UserIsAuthenticated(DatasetChangesController) } />
-                                    <Route path="preview" component={ UserIsAuthenticated(Preview) } />
                                 </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
                                 <Route path="add-to-collection/:instance" component={ UserIsAuthenticated(DatasetCollectionController) } />
+                                <Route path=":datasetID/editions/:edition/versions/:version/preview" component={ UserIsAuthenticated(InstancePreview) } />
                             </Route>
                             <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />

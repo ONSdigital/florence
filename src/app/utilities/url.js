@@ -25,7 +25,7 @@ export default class url {
     }
 
     /**
-     * Takes a relative path and resolves it to an absolute path
+     * Takes a relative path and resolves it to an absolute path (root is considered '/florence', so the returned path will always be prefixed with this)
      * 
      * @param {string} path - Path that we want to resolve 
      * @returns {string} - An absolute pathname (excluding host)
@@ -38,7 +38,17 @@ export default class url {
         }
 
         try {
-            return new URL(path, location.href).pathname;
+            // Handle URL for root - prefix it with '/florence'
+            if (path === '/') {
+                return '/florence';
+            }
+            if (path[0] === '/') {
+                path = '/florence' + path;
+            }
+
+            let newURL = new URL(path, location.href).pathname;
+
+            return newURL;
         } catch (error) {
             console.error("Error trying to parse relative URL:\n", error);
             log.add(eventTypes.unexpectedRuntimeError, {message: error.message});
