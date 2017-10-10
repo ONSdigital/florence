@@ -31,7 +31,7 @@ class FileUpload extends Component {
             <div>
                 {/* Checking whether it is a number because 0 usually equals false
                     but we want it (and all other numbers) to resolve to true */}
-                {/*<h2>{this.props.label}</h2>*/}
+                <h2>{this.props.label}</h2>
                 {typeof this.props.progress === "number" ?
                     <div className="margin-bottom--1">
                         <p>{this.props.label}</p>
