@@ -1,0 +1,28 @@
+// Pontential replacement for the show/hide component.
+// Based on the GDS hidden text - http://govuk-elements.herokuapp.com/typography/#typography-hidden-text
+
+details {
+    display: block;
+    clear: both;
+    font-size: 16px;
+
+    summary {
+        cursor:pointer;
+        text-decoration: underline;
+        display: inline-block;
+        width: 100%;
+        &::-webkit-details-marker {
+            display: none;
+        }
+        span {
+            color: $primary-link;
+            &::-webkit-details-marker {
+                font-size:20px;
+            }
+        }
+    }
+
+    .panel {
+      padding-top:10px;
+    }
+}

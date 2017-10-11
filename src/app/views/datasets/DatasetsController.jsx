@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
+import SelectableTableController from './selectable-table/SelectableTableController';
 import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
 import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    headers: PropTypes.arrayOf(PropTypes.object)
 }
 
 class DatasetsController extends Component {
@@ -112,7 +113,7 @@ class DatasetsController extends Component {
             notifications.add(notification);
             console.error("Error getting dataset recipes:\n", error);
         });
-    }
+    } 
 
     mapAPIResponsesToViewProps(completedInstances, datasets) {
         // TODO once import API stores uploader info we want to map it to the completed dataset for the view to display
@@ -145,25 +146,19 @@ class DatasetsController extends Component {
     }
 
     render() {
+        console.log(this.state.datasets);
+        console.log(this.state.allDatasets);
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-4">
+                <div className="grid__col-7">
                     <h1 className="text-center">Select a dataset</h1>
                     <div className="margin-bottom--1">
                         <Link to={`${location.pathname}/uploads`}>Upload a dataset</Link>
                     </div>
-                    <SelectableBoxController
-                        heading="Instances"
-                        isUpdating={this.state.isFetchingDatasets}
-                        handleItemClick={this.goToDatasetMetadata}
-                        items={this.state.datasets}
-                    />
-                    <div className="margin-top--1">
-                      <SelectableBoxController
-                          heading="Datasets"
-                          isUpdating={this.state.isFetchingDatasets}
-                          handleItemClick={this.goToDatasetDetails}
-                          items={this.state.allDatasets}
+                    <div className="margin-top--1 margin-bottom-3">
+                      <SelectableTableController
+                        headers={[{label:"Title",width:"90px"}, {label:"Submission Date", width:"10px"}]}
+                        values={[{title: "CPI", date: "09-10-2017", instances:[{date:"09-10-2017", edition:"2017", version:"1"}]},{title: "Baby names", date: "10-10-2017", instances:[{date:"09-10-2017", edition:"2017", version:"1"},{date:"09-10-2017", edition:"2017", version:"1"},{date:"09-10-2017", edition:"2017", version:"1"}]}]}
                       />
                     </div>
                </div>
