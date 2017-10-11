@@ -22,6 +22,8 @@ class DatasetUploadJobs extends Component {
         return (
             <div>
                 {this.props.jobs.length > 0 ?
+                  <div>
+                    <h3 className="text-right">Status</h3>
                     <ul className="list list--neutral">
                         {this.props.jobs.map(job => {
                             const recipe = this.props.datasets.find(dataset => {
@@ -41,6 +43,7 @@ class DatasetUploadJobs extends Component {
                             )
                         })}
                     </ul>
+                  </div>
                 :
                     <p>No dataset uploads in progress</p>
                 }

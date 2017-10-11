@@ -1,5 +1,5 @@
-/* 
-* Required legacy SCSS - to be refactored 
+/*
+* Required legacy SCSS - to be refactored
 */
 /* global */
 * {
@@ -58,8 +58,8 @@ select {
     text-decoration: underline;
     color: #999; } }
 
-/* 
-* Refactored SCSS 
+/*
+* Refactored SCSS
 */
 /* Spacing */
 /* Font families */
@@ -1522,6 +1522,22 @@ select {
     align-self: center;
     margin-left: auto; }
 
+details {
+  display: block;
+  clear: both;
+  font-size: 16px; }
+  details summary {
+    cursor: pointer;
+    color: #3B7A9E;
+    text-decoration: underline;
+    display: inline-block; }
+    details summary span {
+      color: #3B7A9E; }
+      details summary span::-webkit-details-marker {
+        font-size: 20px; }
+  details .panel {
+    padding-top: 10px; }
+
 .preview {
   height: calc(100vh - 63px);
   display: flex;
@@ -1864,6 +1880,9 @@ select {
 
 .text-center {
   text-align: center; }
+
+.text-right {
+  text-align: right; }
 
 .font-weight--300 {
   font-weight: 300; }

@@ -1531,7 +1531,7 @@ templates['publishList'] = template({"1":function(depth0,helpers,partials,data) 
 templates['recipeModal'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing;
 
-  return "<div class=\"overlay\" id=\"js-modal-recipe\">\n    <div class=\"modal-recipe\">\n        <div class=\"modal-recipe__body\">\n          <ul class=\"modal-recipe-list\">"
+  return "<div class=\"overlay\" id=\"js-modal-recipe\">\n    <div class=\"modal-title col--6\">\n      <h1>Select a dataset to connect</h1>\n    </div>\n    <div class=\"modal-recipe\">\n        <div class=\"modal-recipe__header\">\n            <h2>Dataset title</h2>\n        </div>\n        <div class=\"modal-recipe__body\">\n          <ul class=\"modal-recipe-list\">"
     + ((stack1 = ((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : alias1),(typeof helper === "function" ? helper.call(depth0,{"name":"content","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "</ul>\n          <div class=\"modal-recipe__animation\">"
     + this.escapeExpression((helpers.loadingAnimation || (depth0 && depth0.loadingAnimation) || alias1).call(depth0,{"name":"loadingAnimation","hash":{"dark":true,"large":true},"data":data}))
@@ -2477,32 +2477,12 @@ templates['workEditT8'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
 templates['workEditT8ApiLandingPage'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-d\">Title | Next release | Contact | Summary | NS status | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n              <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"margin-left--1 margin-bottom--1 margin-top--2\"><strong>Connected dataset ID:</strong> "
+    + alias2(alias1((depth0 != null ? depth0.apiDatasetId : depth0), depth0))
+    + "</div>\n  <div class=\"margin-left--1 margin-bottom--1\"><strong>Title:</strong> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
-    + "\"/>\n            </label>\n          </div>\n          <div class=\"next-p\">\n            <label for=\"nextRelease\">Next release\n              <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nextRelease : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactName\">Contact name\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactName\">"
-    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.name : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactEmail\">Contact email\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactEmail\">"
-    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
-    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"datasetId\">Dataset ID\n              <textarea class=\"auto-size\" type=\"text\" id=\"datasetId\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.datasetId : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat-checkbox\">National statistic </label>\n            <input id=\"natStat-checkbox\" type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaCmd\">CMD meta data\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaCmd\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaCmd : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"one\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Download options</h1>\n        <p>Title</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-edition\" class=\"edit-section__sortable\">\n          <div id=\"edition\"></div>\n        </div>\n        <div class=\"text-center\">\n          <button class=\"btn btn--subtle btn-add-section\" id=\"add-edition\">Add spreadsheet</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"dataset\"></div>\n\n    <div id=\"document\"></div>\n\n    <div id=\"qmi\"></div>\n\n    <div id=\"methodology\"></div>\n\n    <div id=\"topics\"></div>\n\n    <div id=\"alert\"></div>\n\n      <div id=\"link\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
-    + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "  </nav>\n\n</section>\n";
-},"usePartial":true,"useData":true});
+    + "</div>\n  <div class=\"margin-left--1\">Go to <a href=\"/florence/datasets\">Datasets</a> to add content to this page.</div>\n</section>\n";
+},"useData":true});
 templates['workEditT8Compendium'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
