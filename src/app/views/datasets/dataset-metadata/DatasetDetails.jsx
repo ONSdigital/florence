@@ -134,7 +134,7 @@ class DatasetDetails extends Component {
                 isFetchingDataset: false,
                 description: this.props.dataset.description,
                 title: this.props.dataset.title,
-                keywords: this.props.dataset.keywords,
+                keywords: this.props.dataset.keywords.join(", "),
                 isChecked:this.props.dataset.national_statistic,
                 contactName: contact.name,
                 contactEmail: contact.email,
@@ -176,13 +176,8 @@ class DatasetDetails extends Component {
             });
     }
 
-    componentWillReceiveProps(nextProps) {
-      console.log(this.props.dataset);
-    }
-
     postDatasetDetails(body) {
-       // Update to put to dataset api
-      return http.put(`${datasets}`, body, true);
+      return http.put(`dataset/datasets/${this.props.params.dataset}`, body, true);
     }
 
     updateDatasetDetails(datasetDetailsData) {
@@ -232,14 +227,6 @@ class DatasetDetails extends Component {
               name: value
             }
         });
-    }
-
-    convertKeywordsToString() {
-        const keywords = this.props.dataset.keywords.map(keyword => {
-            return keyword
-        });
-        const keywordString = keywords.join(", ");
-        return keywordString;
     }
 
     handleSelectChange(event) {
@@ -393,7 +380,6 @@ class DatasetDetails extends Component {
      handlePageSubmit(event) {
 
          event.preventDefault();
-
          const datasetDetailsData = {
            contact: {
              email: this.state.contactEmail,
@@ -404,7 +390,7 @@ class DatasetDetails extends Component {
            release_frequency: this.state.periodicity,
            title: this.state.title,
            national_statistic: this.state.isChecked,
-           keywords: this.state.keywords,
+           keywords: this.state.keywords.split(","),
            qmi: {
              title: this.state.relatedQMI.title,
              href: this.state.relatedQMI.url,
@@ -441,20 +427,20 @@ class DatasetDetails extends Component {
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
                               <Input
-                                  value={this.props.dataset.title}
+                                  value={this.state.title}
                                   id="title"
                                   label="Title"
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={this.props.dataset.description}
+                                  value={this.state.description}
                                   type="textarea"
                                   id="description"
                                   label="About this dataset"
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={this.convertKeywordsToString()}
+                                  value={this.state.keywords}
                                   id="keywords"
                                   label="Keywords"
                                   onChange={this.handleInputChange}
