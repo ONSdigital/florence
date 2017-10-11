@@ -11,10 +11,8 @@ export default class datasets {
     }
 
     static getAll() {
-
         return http.get(`/dataset/datasets`)
             .then(response => {
-                console.log(response);
                 return response;
             });
     }
