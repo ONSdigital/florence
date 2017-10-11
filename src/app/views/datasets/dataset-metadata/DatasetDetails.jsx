@@ -218,9 +218,9 @@ class DatasetDetails extends Component {
     }
 
     mapReleaseFreqToSelectOptions() {
-        return (this.props.dataset.periodicity).map((periodicity, index) => {
+        return (this.props.dataset.periodicity).map(periodicity => {
             return {
-                id: `periodicity-${index}`,
+                id: periodicity.toLowerCase(),
                 name: periodicity
             }
         });
