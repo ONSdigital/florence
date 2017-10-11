@@ -167,7 +167,7 @@ class DatasetOverviewController extends Component {
             r.assignBrowse(input);
             r.assignDrop(input);
             r.on('fileAdded', file => {
-                const aliasName = file.container.labels[0].textContent
+                const aliasName = file.container.name
                 r.opts.query.aliasName = aliasName;
                 r.upload();
                 const files = this.state.activeDataset.files.map(currentFile => {
