@@ -11,6 +11,8 @@ import Modal from '../../../components/Modal';
 import Select from '../../../components/Select';
 import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
+import Card from '../../../components/Card';
+import CardList from '../../../components/CardList';
 import RelatedDataController from './related-content/RelatedDataController';
 import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
 
@@ -72,13 +74,14 @@ class DatasetDetails extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePageSubmit = this.handlePageSubmit.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
-        this.handleModalSubmit = this.handleModalSubmit.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
+        this.handleModalSubmit = this.handleModalSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
         this.removeRelated = this.removeRelated.bind(this);
         this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
+        this.handleActions = this.handleActions.bind(this);
     }
 
     componentWillMount() {
@@ -231,6 +234,12 @@ class DatasetDetails extends Component {
             periodicity: event.target.value
         });
     }
+    
+     handleModalSubmit(event){
+       event.preventDefault();
+       this.setState({showModal: false});
+       this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+     }
 
     handleToggleChange(event){
       this.setState({
@@ -270,21 +279,60 @@ class DatasetDetails extends Component {
          this.setState({editKey: ""});
      }
 
-     handleModalSubmit(event){
-       event.preventDefault();
-       this.setState({showModal: false});
-       this.props.dispatch(push(`${this.props.rootPath}/datasets`));
-     }
-
      handleAddRelatedClick(type) {
          this.setState({showModal: true});
          this.setState({modalType: type});
      }
 
+
      handleEditRelatedClick(type, key) {
          this.setState({showModal: true});
          this.setState({modalType: type});
          this.setState({editKey: key});
+     }
+
+     removeRelated(type, key) {
+         function remove(arr, key) {
+             arr.map((item, index) => {
+                 if (item.key === key) {
+                     arr.splice(index, 1);
+                 }
+             })
+             return arr
+         }
+
+         if (type === "bulletin") {
+             var bulletins = remove(this.state.relatedBulletins, key)
+             this.setState({relatedBulletins: bulletins});
+         } else if (type === "qmi") {
+             this.setState({relatedQMI: ""});
+         } else if (type === "link") {
+             var links = remove(this.state.relatedLinks, key)
+             this.setState({relatedLinks: links});
+         }
+     }
+
+     handleActions(type, key, action){
+
+       if(action === "edit"){
+         this.setState({showModal: true});
+         this.setState({modalType: type});
+         this.setState({editKey: key});
+       }
+
+       if(action === "remove"){
+         this.removeRelated(type, key);
+       }
+
+     }
+
+     mapTypeContentsToCard(items){
+         return (items).map(item => {
+           return {
+             title: item.title,
+             key: item.key,
+           }
+         });
      }
 
      handleFormSubmit(event) {
@@ -320,7 +368,7 @@ class DatasetDetails extends Component {
              }
              const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: guid()};
              this.setState({relatedQMI: qmi});
-         } else if (this.state.modalType === "related-link") {
+         } else if (this.state.modalType === "link") {
              if (this.state.editKey != "") {
                  this.removeRelated("link", this.state.editKey)
              }
@@ -332,27 +380,6 @@ class DatasetDetails extends Component {
          this.setState({modalType: ""});
          this.setState({editKey: ""})
        }
-     }
-
-     removeRelated(type, key) {
-         function remove(arr, key) {
-             arr.map((item, index) => {
-                 if (item.key === key) {
-                     arr.splice(index, 1);
-                 }
-             })
-             return arr
-         }
-
-         if (type === "bulletin") {
-             var bulletins = remove(this.state.relatedBulletins, key)
-             this.setState({relatedBulletins: bulletins});
-         } else if (type === "qmi") {
-             this.setState({relatedQMI: ""});
-         } else if (type === "link") {
-             var links = remove(this.state.relatedLinks, key)
-             this.setState({relatedLinks: links});
-         }
      }
 
      handlePageSubmit(event) {
@@ -465,64 +492,37 @@ class DatasetDetails extends Component {
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Bulletins, articles and compendia </h3>
-                            <ul className="list--neutral margin-bottom--1">
-                            {
-                                this.state.relatedBulletins.map((bulletin,index) => {
-                                    return (
-                                        <li className="card margin-bottom--1" key={index}>
-                                            <div className="card__body">
-                                                <div className="card__title">{bulletin.title}</div>
-                                            </div>
-                                            <div className="card__actions">
-                                                <a href="#" onClick={() => {this.handleEditRelatedClick("bulletin", bulletin.key)}}>Edit</a>
-                                                <a className="margin-left--1" href="#" onClick={() => {this.removeRelated("bulletin", bulletin.key)}}>Delete</a>
-                                            </div>
-                                        </li>
-                                    )
-                                })
-                            }
-                            </ul>
-                            <a href="#" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document </a>
+                            <CardList
+                              contents={this.mapTypeContentsToCard(this.state.relatedBulletins)}
+                              type="bulletin"
+                              listActions={this.handleActions}
+                              />
+                            <a href="#" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</a>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> QMI </h3>
                             {
                                 this.state.relatedQMI != "" ?
-                                    <ul className="list--neutral margin-bottom--1">
-                                        <li className="card margin-bottom--1">
-                                            <div className="card__body">
-                                                <div className="card__title">{this.state.relatedQMI.title}</div>
-                                            </div>
-                                            <div className="card__actions">
-                                                <a href="#" onClick={() => {this.handleEditRelatedClick("qmi", this.state.relatedQMI.key)}}>Edit</a>
-                                                <a className="margin-left--1" href="#" onClick={() => {this.removeRelated("qmi", this.state.relatedQMI.key)}}>Delete</a>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                <ul className="list--neutral margin-bottom--1">
+                                  <Card
+                                    title={this.state.relatedQMI.title}
+                                    keyID={this.state.relatedQMI.key}
+                                    type="qmi"
+                                    onEdit={this.handleActions}
+                                    />
+                                </ul>
                                 :
                                 <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
                             }
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Related links </h3>
-                            <ul className="list--neutral margin-bottom--1">
-                            {
-                                this.state.relatedLinks.map((link, index) => {
-                                    return (
-                                        <li className="card margin-bottom--1" key={index}>
-                                            <div className="card__body">
-                                                <div className="card__title">{link.title}</div>
-                                            </div>
-                                            <div className="card__actions">
-                                                <a href="#" onClick={() => {this.handleEditRelatedClick("link", link.key)}}>Edit</a>
-                                                <a className="margin-left--1" href="#" onClick={() => {this.removeRelated("link", link.key)}}>Delete</a>
-                                            </div>
-                                        </li>
-                                    )
-                                })
-                            }
-                            </ul>
-                            <a href="#" onClick={() => {this.handleAddRelatedClick("related-link")}}> Add related link </a>
+                              <CardList
+                                contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
+                                type="link"
+                                listActions={this.handleActions}
+                                />
+                              <a href="#" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</a>
                         </div>
                         <button className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
                         </form>
@@ -531,7 +531,11 @@ class DatasetDetails extends Component {
                   </div>
                   {
                       this.state.showModal ?
+
                       <Modal sizeClass="grid__col-3">
+                        {
+                            this.state.modalType ?
+
                           <RelatedDataController
                               name="related-content-modal"
                               titleInput={this.state.titleInput}
@@ -542,7 +546,24 @@ class DatasetDetails extends Component {
                               titleError={this.state.titleError}
                               urlError={this.state.urlError}
                           />
+                        :
+                          <div>
+                          <div className="modal__header">
+                              <h2>Warning!</h2>
+                          </div>
+                          <div className="modal__body">
+                              <p>You will lose any changes by going back without saving. </p><br/>
+                              <p>Click "Continue" to lose changes and go back to the previous page or
+                                  click "Cancel" to stay on the current page.</p>
+                          </div>
+                          <div className="modal__footer">
+                          <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
+                          <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
+                          </div>
+                        </div>
+                      }
                       </Modal>
+
                       :
                       ""
                   }
