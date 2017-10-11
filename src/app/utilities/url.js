@@ -1,4 +1,5 @@
 import log, {eventTypes} from '../utilities/log'
+import notifications from './notifications'
 
 export default class url {
     /**
@@ -31,6 +32,7 @@ export default class url {
      * @returns {string} - An absolute pathname (excluding host)
      */
     static resolve(path) {
+
         if (typeof path !== "string") {
             console.error("Unable to parse relative URL path because non-string type given");
             log.add(eventTypes.unexpectedRuntimeError, {message: "Unable to parse relative URL path because non-string type given"});
@@ -45,14 +47,29 @@ export default class url {
             if (path[0] === '/') {
                 path = '/florence' + path;
             }
+            if (location.pathname === "/florence") {
+                path = '/florence/' + path;
+            }
+
+            // Handle paths going up levels, so that it considers any route
+            // not ending in '/' to still be within that directory
+            // e.g. url.resolve("../") from location "/florence/teams" = "/florence";
+            if (path.indexOf('../') === 0) {
+                return new URL(path, location.href + "/").pathname.replace(/\/+$/, "");
+            }
 
             let newURL = new URL(path, location.href).pathname;
 
             return newURL;
         } catch (error) {
             console.error("Error trying to parse relative URL:\n", error);
+            const notification = {
+                type: "warning",
+                message: `There was an unexpected error trying to resolve the path '${path}' ... ¯\\_(ツ)_/¯`
+            };
+            notifications.add(notification);
             log.add(eventTypes.unexpectedRuntimeError, {message: error.message});
-            return location.pathname;
+            return;
         }
     }
 }
