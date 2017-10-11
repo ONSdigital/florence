@@ -35,6 +35,7 @@ var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
 var datasetAPIURL = "http://localhost:22000"
 var uploadBucketName = "dp-frontend-florence-file-uploads"
+var datasetAuthToken = ""
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 
@@ -68,6 +69,9 @@ func main() {
 	}
 	if v := os.Getenv("DATASET_API_URL"); len(v) > 0 {
 		datasetAPIURL = v
+	}
+	if v := os.Getenv("DATASET_AUTH_TOKEN"); len(v) > 0 {
+		datasetAuthToken = v
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
@@ -283,6 +287,7 @@ func importAPIDirector(req *http.Request) {
 
 func datasetAPIDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
+	req.Header.Set("Internal-token", datasetAuthToken)
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
