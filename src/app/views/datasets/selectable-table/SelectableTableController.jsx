@@ -17,6 +17,10 @@ export default class SelectableTableController extends Component {
     }
 
     handleDetailsClick(event, key) {
+        if (event.target.tagName.toLowerCase() === "a") {
+            return;
+        }
+
         event.preventDefault();
         var isSelected = true;
         var array = this.state.table;
