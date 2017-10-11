@@ -29,7 +29,7 @@ import (
 )
 
 var bindAddr = ":8080"
-var babbageURL = "http://localhost:8080"
+var babbageURL = "http://localhost:20000"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
@@ -149,7 +149,7 @@ func main() {
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
-	router.Handle("/dataset{uri:.*}", datasetAPIProxy)
+	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
