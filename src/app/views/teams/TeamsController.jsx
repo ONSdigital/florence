@@ -139,7 +139,7 @@ export class TeamsController extends Component {
     }
 
     handleDrawerCancelClick() {
-        this.props.dispatch(push(url.parent()));
+        this.props.dispatch(push(url.resolve("../")));
     }
 
     handleTeamDeleteClick() {
@@ -147,7 +147,7 @@ export class TeamsController extends Component {
     }
 
     handleTeamDeleteSuccess() {
-        this.props.dispatch(push(url.parent(url.parent())));
+        this.props.dispatch(push(url.resolve("../../")));
         const notification = {
             type: 'positive',
             message: `Team '${this.props.activeTeam.name}' successfully deleted`,
@@ -197,7 +197,7 @@ export class TeamsController extends Component {
                         isDismissable: true
                     }
                     notifications.add(notification);
-                    this.props.dispatch(push(url.parent()));
+                    this.props.dispatch(push(url.resolve("../")));
                 }
             }
         }).catch(error => {

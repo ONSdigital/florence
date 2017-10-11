@@ -27,7 +27,7 @@ class CollectionView extends Component {
 
     renderSuccess() {
         const selectedCollection = this.props.selectedCollection;
-        const link = url.parent(url.parent());
+        const link = url.resolve("../../");
         return (
             <div>
                 <div className="margin-top--2">
@@ -48,7 +48,7 @@ class CollectionView extends Component {
         return (
             <div>
                 <div className="margin-top--2">
-                    &#9664; <Link to={url.parent(url.parent())}>Back</Link>
+                    &#9664; <Link to={url.resolve("../../")}>Back</Link>
                 </div>
                 <h1 className="margin-top--1">Add to collection</h1>
                 {this.props.collectionsSelectItems.length > 0 ?
