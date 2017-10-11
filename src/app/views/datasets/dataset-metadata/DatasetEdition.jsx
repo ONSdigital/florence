@@ -79,7 +79,7 @@ class DatasetEdition extends Component {
                         isDismissable: true
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(url.parent(url.parent())));
+                    this.props.dispatch(push(url.resolve("../../")));
                     break;
                 }
                 default: {
@@ -130,7 +130,7 @@ class DatasetEdition extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
                     <div className="margin-top--2">
-                        &#9664; <Link to={url.parent(url.parent())}>Back</Link>
+                        &#9664; <Link to={url.resolve("../../")}>Back</Link>
                     </div>
                     <h1 className="margin-top--1">Create a new dataset edition</h1>
                     {this.state.isFetchingInstance ?
