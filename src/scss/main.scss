@@ -3,8 +3,6 @@
 * Required legacy SCSS - to be refactored
 */
 @import "../legacy/scss/partials/reset";
-// @import "../legacy/scss/utilities/grid";
-
 
 
 /*
@@ -16,7 +14,6 @@
 @import "base/grid";
 @import "base/fonts";
 @import "base/typography";
-@import "base/utilities";
 
 // Components
 @import "components/global-nav";
@@ -31,10 +28,13 @@
 @import "components/pagination";
 @import "components/card";
 @import "components/details";
-
+@import "components/preview";
 
 // Elements
 @import "elements/buttons";
 @import "elements/inputs";
 @import "elements/forms-and-labels";
 @import "elements/lists";
+
+// High priority - should be last in cascade
+@import "base/utilities";
