@@ -16,7 +16,7 @@ import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
 
 const propTypes = {
     params: PropTypes.shape({
-        dataset: PropTypes.string
+        datasetID: PropTypes.string
     }),
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
@@ -52,7 +52,7 @@ const propTypes = {
     })
 }
 
-class DatasetDetails extends Component {
+class DatasetMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -92,7 +92,7 @@ class DatasetDetails extends Component {
         }
 
         const APIRequests = [
-            datasets.get(this.props.params.dataset)
+            datasets.get(this.props.params.datasetID)
         ]
 
         if (this.props.datasets.length === 0) {
@@ -155,7 +155,7 @@ class DatasetDetails extends Component {
                   case (404): {
                       const notification = {
                           "type": "info",
-                          "message": `Dataset ID '${this.props.params.dataset}' was not recognised. You've been redirected to the datasets home screen`,
+                          "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
                           isDismissable: true
                       };
                       notifications.add(notification);
@@ -552,7 +552,7 @@ class DatasetDetails extends Component {
     }
 }
 
-DatasetDetails.propTypes = propTypes;
+DatasetMetadata.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
@@ -562,4 +562,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(DatasetDetails);
+export default connect(mapStateToProps)(DatasetMetadata);
