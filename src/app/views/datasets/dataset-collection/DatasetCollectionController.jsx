@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import dateFormat from 'dateformat';
+import notifications from '../../../utilities/notifications';
 import collections from '../../../utilities/api-clients/collections';
-import DatasetCollectionView from './DatasetCollectionView';
+import CollectionView from './CollectionView';
+
 
 const propTypes = {
     params: PropTypes.shape({
-        instance: PropTypes.string.isRequired
+        dataset: PropTypes.string.isRequired
     }).isRequired
 };
 
@@ -42,6 +44,15 @@ class DatasetCollectionController extends Component {
         this.setState({isGettingCollections: true});
         collections.getAll()
             .then(allCollections => {
+                if (allCollections.length === 0) {
+                    const notification = {
+                        "type": "warning",
+                        "message": "No collections were found. Try refreshing",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    return
+                }
                 const collectionsSelectItems = [];
                 allCollections.map(item => {
                     collectionsSelectItems.push({id: item.id, name: item.name})
@@ -51,7 +62,65 @@ class DatasetCollectionController extends Component {
                     allCollections: allCollections,
                     isGettingCollections: false
                 })
-            })
+            }).catch(error => {
+            switch (error.status) {
+                case(403):{
+                    const notification = {
+                        "type": "neutral",
+                        "message": "You do not have permission to view collections.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "No API route available to get collections.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get the collections.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get collections. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to get collections.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get the submitted datasets.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            this.setState({isFetchingData: false});
+        });
     }
 
     handleCollectionChange(event) {
@@ -90,18 +159,18 @@ class DatasetCollectionController extends Component {
             return
         }
 
-        const datasetToAddToCollection = {
+        const instanceToAddToCollection = {
             id: this.state.selectedCollection.id,
             name: this.state.selectedCollection.name
         };
 
         this.setState({ isSubmitting: true });
-        this.handleAddToCollection(datasetToAddToCollection);
+        this.handleAddToCollection(instanceToAddToCollection);
 
     }
 
     handleOnBackFromSuccess() {
-        collections.removeAPIDataset()
+        collections.removeInstance()
             .then(() => {
                 this.setState({hasChosen: false});
             })
@@ -110,9 +179,13 @@ class DatasetCollectionController extends Component {
     handleAddToCollection() {
         const instanceID = this.props.params.instance;
         const collectionID = this.state.selectedCollection.id;
-        collections.addAPIDataset(collectionID, instanceID)
+        collections.addInstance(collectionID, instanceID)
             .then(() => {
-                // possibly post "next release date" field to an api?
+                // TODO POST next release date field to API
+                // We'll probably want to post "next release date" field to an api at
+                // this point but not sure whether this data will be stored against
+                // the version or the dataset or whether this field is required at this
+                // part of the journey
                 this.setState({hasChosen: true, isSubmitting: false });
             })
     }
@@ -120,7 +193,7 @@ class DatasetCollectionController extends Component {
 
     render() {
         return (
-            <DatasetCollectionView {...this.state}
+            <CollectionView {...this.state}
                    handleSubmit={this.handleSubmit}
                    handleCollectionChange={this.handleCollectionChange}
                    handleNextReleaseChange={this.handleNextReleaseChange}
