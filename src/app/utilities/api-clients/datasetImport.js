@@ -80,9 +80,9 @@ export default class datasetImport {
         //         node_id: "id-thing-2"
         //     }
         // ])
-        return http.get(`/import/instances/${instanceID}/dimensions`, true)
+        return http.get(`/dataset/instances/${instanceID}`, true)
             .then(response => {
-                return response;
+                return response.dimensions;
             })
     }
 }
