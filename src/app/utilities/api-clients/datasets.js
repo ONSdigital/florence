@@ -32,10 +32,14 @@ const stubbedDatasets =
                     "descrption": "this is an example QMI for you to look at"
                 },
                 "related_datasets": [
-                    {
-                        "href": "http://localhost:8080/datasets/6789910",
-                        "title": "Crime in the UK"
-                    }
+                  {
+                      "href": "http://localhost:8080/datasets/6789910",
+                      "title": "Crime in the UK"
+                  },
+                  {
+                      "href": "http://localhost:8080/datasets/6789910",
+                      "title": "More Crime in the UK"
+                  }
                 ],
                 "publications": [
                     {
@@ -163,14 +167,14 @@ export default class datasets {
 
     static get(datasetID) {
         //TODO - unstub once the API has dataset IDs in instance (we need to stub this response so our other stubs work)
-        // return Promise.resolve(stubbedDatasets.items.find(dataset => {
-        //     return dataset.id === datasetID;
-        // }));
+        return Promise.resolve(stubbedDatasets.items.find(dataset => {
+            return dataset.id === datasetID;
+        }));
 
-        return http.get(`/dataset/datasets/${datasetID}`)
-            .then(response => {
-                return response;
-            });
+        // return http.get(`/dataset/datasets/${datasetID}`)
+        //     .then(response => {
+        //         return response;
+        //     });
     }
 
     static getAll() {
@@ -216,7 +220,7 @@ export default class datasets {
             setTimeout(resolve, 2000);
         })
     }
-    
+
     static approveDatasetMetadata(datasetID) {
         // TODO unstub this once dataset metadata can be reviewed and approved in the API
         return new Promise(resolve => {
