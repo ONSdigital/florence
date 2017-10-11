@@ -126,7 +126,7 @@ class DatasetsController extends Component {
                         var value = {
                             title: dataset.title,
                             date: dataset.next_release,
-                            datasetURL: "/datasets/"+id+"/metadata",
+                            datasetURL: "/florence/datasets/"+id+"/metadata",
                             dataset_id: id,
                             instances: [],
                         };
@@ -146,7 +146,7 @@ class DatasetsController extends Component {
                         edition: instance.edition,
                         date: d.toUTCString(),
                         version: "-",
-                        url: "/datasets/"+datasetID+"/instances/"+instance.id+"/metadata",
+                        url: "/florence/datasets/"+datasetID+"/instances/"+instance.id+"/metadata",
                     };
 
                     value.instances.push(inst);
