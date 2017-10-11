@@ -4,12 +4,12 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import { updateAllJobs, addNewJob , updateAllRecipes} from '../../../config/actions';
-import recipes from '../../../utilities/api-clients/recipes';
-import datasetImport from '../../../utilities/api-clients/datasetImport';
-import notifications from '../../../utilities/notifications';
+import recipes from '../../../utilities/api-clients/recipes'
+import datasetImport from '../../../utilities/api-clients/datasetImport'
+import notifications from '../../../utilities/notifications'
 
-import DatasetUploadItem from './DatasetUploadItem';
-import DatasetUploadJobs from './DatasetUploadJobs';
+import DatasetUploadRecipe from './uploads-components/DatasetUploadRecipe';
+import DatasetUploadJobs from './uploads-components/DatasetUploadJobs';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -201,7 +201,7 @@ export class DatasetUploadsController extends Component {
                         <ul className="list list--neutral">
                             {this.props.recipes.map(dataset => {
                                 return (
-                                    <DatasetUploadItem 
+                                    <DatasetUploadRecipe 
                                         key={dataset.id} 
                                         dataset={dataset} 
                                         onNewVersionClick={this.handleNewVersionClick} 

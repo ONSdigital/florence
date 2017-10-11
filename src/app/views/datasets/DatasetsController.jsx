@@ -9,6 +9,7 @@ import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
 import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
+import url from '../../utilities/url'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired
@@ -137,11 +138,11 @@ class DatasetsController extends Component {
     }
 
     goToDatasetMetadata(props) {
-        this.props.dispatch(push(`${location.pathname}/metadata/${props.id}`));
+        this.props.dispatch(push(`${location.pathname}/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/instances/${props.id}/metadata`));
     }
-
+    
     goToDatasetDetails(props) {
-        this.props.dispatch(push(`${location.pathname}/dataset/${props.id}`));
+        this.props.dispatch(push(`${location.pathname}/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/metadata`));
     }
 
     render() {
@@ -150,7 +151,7 @@ class DatasetsController extends Component {
                 <div className="grid__col-4">
                     <h1 className="text-center">Select a dataset</h1>
                     <div className="margin-bottom--1">
-                        <Link to={`${location.pathname}/uploads`}>Upload a dataset</Link>
+                        <Link to={url.resolve("/uploads/data")}>Upload a dataset</Link>
                     </div>
                     <SelectableBoxController
                         heading="Instances"
