@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import SelectableTableController from './selectable-table/SelectableTableController';
@@ -11,8 +9,7 @@ import recipes from '../../utilities/api-clients/recipes';
 import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    headers: PropTypes.arrayOf(PropTypes.object)
+    dispatch: PropTypes.func.isRequired
 }
 
 class DatasetsController extends Component {
@@ -20,13 +17,11 @@ class DatasetsController extends Component {
         super(props);
 
         this.state = {
-            datasets: [],
-            allDatasets: [],
+            tableValues: [],
             isFetchingDatasets: false
         };
 
-        this.goToDatasetMetadata = this.goToDatasetMetadata.bind(this);
-        this.goToDatasetDetails = this.goToDatasetDetails.bind(this);
+        this.mapResponseToTableData = this.mapResponseToTableData.bind(this);
     }
 
     componentWillMount() {
@@ -38,8 +33,7 @@ class DatasetsController extends Component {
         Promise.all(fetches).then(responses => {
             this.setState({
                 isFetchingDatasets: false,
-                datasets: this.mapAPIResponsesToViewProps(responses[0].items, responses[1].items),
-                allDatasets: this.mapDatasetsToViewProps(responses[1].items),
+                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items)
             });
             this.props.dispatch(updateAllDatasets(responses[1].items));
         }).catch(error => {
@@ -113,53 +107,75 @@ class DatasetsController extends Component {
             notifications.add(notification);
             console.error("Error getting dataset recipes:\n", error);
         });
-    } 
+    }
+    
+    mapResponseToTableData(datasets, instances) {
+        var values = [];
+        var addedDatasets = [];
 
-    mapAPIResponsesToViewProps(completedInstances, datasets) {
-        // TODO once import API stores uploader info we want to map it to the completed dataset for the view to display
-        return completedInstances.map(instance => {
-            const instanceDataset = datasets.find(dataset => {
-                return dataset.id === instance.dataset_id
+        instances.map(instance => {
+            var datasetID = instance.links.dataset.id;
+
+            if (addedDatasets.includes(datasetID) != true) {
+                datasets.map(dataset => {
+                    var reg = /^.+\/datasets\/(.+)$/g;
+                    var self = dataset.links.self.href;
+                    var id = reg.exec(self)[1];
+
+                    if (id === datasetID) {
+                        var value = {
+                            title: dataset.title,
+                            date: dataset.next_release,
+                            datasetURL: "/datasets/"+id+"/metadata",
+                            dataset_id: id,
+                            instances: [],
+                        };
+
+                        addedDatasets.push(datasetID);
+                        values.push(value);
+                        return;
+                    }
+                });
+            }
+
+            values.map((value, index) => {
+                if (value.dataset_id === datasetID) {
+                    var d = new Date(instance.last_updated);
+
+                    var inst = {
+                        edition: instance.edition,
+                        date: d.toUTCString(),
+                        version: "-",
+                        url: "/datasets/"+datasetID+"/instances/"+instance.id+"/metadata",
+                    };
+
+                    value.instances.push(inst);
+
+                    values.splice(index, 1);
+                    values.push(value);
+                }
             });
-            return {
-                id: instance.id,
-                name: instanceDataset.title || `No name available (${instance.id})`
-            }
         });
-    }
 
-    mapDatasetsToViewProps(allDatasets) {
-        return allDatasets.map(dataset => {
-            return {
-                id: dataset.id,
-                name: dataset.title || `No name available (${dataset.id})`
-            }
-        });
-    }
-
-    goToDatasetMetadata(props) {
-        this.props.dispatch(push(`${location.pathname}/metadata/${props.id}`));
-    }
-
-    goToDatasetDetails(props) {
-        this.props.dispatch(push(`${location.pathname}/dataset/${props.id}`));
+        return values;
     }
 
     render() {
-        console.log(this.state.datasets);
-        console.log(this.state.allDatasets);
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-7">
-                    <h1 className="text-center">Select a dataset</h1>
-                    <div className="margin-bottom--1">
-                        <Link to={`${location.pathname}/uploads`}>Upload a dataset</Link>
-                    </div>
+                    <ul className="list list--neutral">
+                        <li className="list__item grid grid--justify-space-between">
+                            <h1>Select a dataset</h1>
+                            <div className="margin-top--3">
+                                <a className="btn btn--primary" href={`${location.pathname}/uploads`}>Upload a dataset</a>
+                            </div>
+                        </li>
+                    </ul>
                     <div className="margin-top--1 margin-bottom-3">
-                      <SelectableTableController
-                        headers={[{label:"Title",width:"90px"}, {label:"Submission Date", width:"10px"}]}
-                        values={[{title: "CPI", date: "09-10-2017", instances:[{date:"09-10-2017", edition:"2017", version:"1"}]},{title: "Baby names", date: "10-10-2017", instances:[{date:"09-10-2017", edition:"2017", version:"1"},{date:"09-10-2017", edition:"2017", version:"1"},{date:"09-10-2017", edition:"2017", version:"1"}]}]}
-                      />
+                        <SelectableTableController
+                            values={this.state.tableValues}
+                        />
                     </div>
                </div>
             </div>
