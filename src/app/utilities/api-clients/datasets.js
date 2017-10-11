@@ -167,14 +167,14 @@ export default class datasets {
 
     static get(datasetID) {
         //TODO - unstub once the API has dataset IDs in instance (we need to stub this response so our other stubs work)
-        return Promise.resolve(stubbedDatasets.items.find(dataset => {
-            return dataset.id === datasetID;
-        }));
+        // return Promise.resolve(stubbedDatasets.items.find(dataset => {
+        //     return dataset.id === datasetID;
+        // }));
 
-        // return http.get(`/dataset/datasets/${datasetID}`)
-        //     .then(response => {
-        //         return response;
-        //     });
+        return http.get(`/dataset/datasets/${datasetID}`)
+            .then(response => {
+                return response;
+            });
     }
 
     static getAll() {
@@ -212,6 +212,20 @@ export default class datasets {
             .then(response => {
                 return response;
             });
+    }
+
+    static approveInstance(instanceID) {
+        // TODO unstub this once a version/instance can be reviewed and approved in the API
+        return new Promise(resolve => {
+            setTimeout(resolve, 2000);
+        })
+    }
+    
+    static approveDatasetMetadata(datasetID) {
+        // TODO unstub this once dataset metadata can be reviewed and approved in the API
+        return new Promise(resolve => {
+            setTimeout(resolve, 2000);
+        })
     }
 
     static getCompletedInstances() {
