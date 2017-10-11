@@ -17,7 +17,8 @@ const propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleCollectionChange: PropTypes.func.isRequired,
     handleNextReleaseChange: PropTypes.func.isRequired,
-    handleOnBackFromSuccess: PropTypes.func.isRequired
+    handleOnBackFromSuccess: PropTypes.func.isRequired,
+    backLink: PropTypes.string.isRequired
 };
 
 class CollectionView extends Component {
@@ -48,7 +49,7 @@ class CollectionView extends Component {
         return (
             <div>
                 <div className="margin-top--2">
-                    &#9664; <Link to={url.parent(url.parent())}>Back</Link>
+                    &#9664; <Link to={this.props.backLink}>Back</Link>
                 </div>
                 <h1 className="margin-top--1">Add to collection</h1>
                 {this.props.collectionsSelectItems.length > 0 ?

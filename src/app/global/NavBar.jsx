@@ -43,7 +43,7 @@ class NavBar extends Component {
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
 
-        if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) || route.includes(`${rootPath}/datasets`) ) {
+        if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) || route.includes(`${rootPath}/datasets`) || route.includes(`${rootPath}/uploads`)) {
             return (
                 <span>
                     <li className="global-nav__item">
@@ -51,7 +51,7 @@ class NavBar extends Component {
                     </li>
 
                     <li className="global-nav__item">
-                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Datasets</Link>
+                        <Link to={`${rootPath}/datasets`} activeClassName="selected" className={"global-nav__link" + (route.includes(`${rootPath}/uploads/data`) ? " selected" : "")}>Datasets</Link>
                     </li>
 
                     <li className="global-nav__item">
