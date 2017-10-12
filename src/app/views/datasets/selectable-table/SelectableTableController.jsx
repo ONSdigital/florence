@@ -1,114 +1,91 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router';
+import dateFormat from 'dateformat';
+
+import url from '../../../utilities/url';
 
 const propTypes = {
-    values: PropTypes.arrayOf(PropTypes.object)
+    values: PropTypes.arrayOf(PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        date: PropTypes.string,
+        id: PropTypes.string.isRequired,
+        instances: PropTypes.arrayOf(PropTypes.shape({
+            date: PropTypes.string,
+            edition: PropTypes.string,
+            version: PropTypes.string
+        }))
+    }))
 }
 
 export default class SelectableTableController extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            table: []
-        }
-
-        this.handleDetailsClick = this.handleDetailsClick.bind(this);
     }
 
-    handleDetailsClick(event, key) {
-        if (event.target.tagName.toLowerCase() === "a") {
-            return;
-        }
-
-        event.preventDefault();
-        var isSelected = true;
-        var array = this.state.table;
-
-        this.state.table.map((item, index) => {
-            if (item === key) {
-                array.splice(index, 1);
-                this.setState({table: array});
-                isSelected = false;
-                return;
-            }
+    renderDatasetInstances(instances) {
+        return instances.map((instance, i) => {
+            return (
+                <div key={i} className="grid simple-table__row">
+                    <div className="grid__col-4">
+                        {dateFormat(instance.date, "HH:MM:ss dd/mm/yy")}
+                    </div>
+                    <div className="grid__col-2">
+                        {instance.edition}
+                    </div>
+                    <div className="grid__col-4">
+                        {instance.version}
+                    </div>
+                    <div className="grid__col-2">
+                        <Link to={instance.url}>View</Link>
+                    </div>
+                </div>
+            )
         })
-
-        if (isSelected) {
-            array.push(key)
-            this.setState({table: array});
-        }
     }
 
     render() {
         return (
             <div className="selectable-table">
                     <div className="selectable-table__heading">
-                        <ul className="selectable-table__list">
-                            <li className="selectable-table__list-item grid__col-6">Title</li>
-                            <li className="selectable-table__list-item grid__col-6">Submission Date</li>
-                        </ul>
+                        Title
                     </div>
                     {this.props.values.map((item, index) => {
                         return (
-                                <div key={index}>
-                                    <details onClick={(event) => {this.handleDetailsClick(event, index)}} className={this.state.table.includes(index) ? "selectable-table__selected" : ""} open={this.state.table.includes(index) ? true : false}>
-                                        <summary>
-                                            <ul className="selectable-table__list">
-                                                <li className="selectable-table__list-item grid__col-6">
-                                                    <strong>{item.title}</strong>
-                                                </li>
-                                                <li className="selectable-table__list-item grid__col-4">
-                                                    {item.date}
-                                                </li>
-                                                <li className="selectable-table__list-item grid__col-2">
-                                                    <div className={this.state.table.includes(index) ? "selectable-table__accordion-open" : "selectable-table__accordion-closed"}></div>
-                                                </li>
-                                            </ul>
-                                        </summary>
-                                        <div className="selectable-table__list">
-                                            <a href={item.datasetURL}> Edit dataset details </a>
-                                            <ul>
-                                                <li className="selectable-table__list-item grid__col-4">
-                                                    Date
-                                                </li>
-                                                <li className="selectable-table__list-item grid__col-2">
-                                                    Edition
-                                                </li>
-                                                <li className="selectable-table__list-item grid__col-2">
-                                                    Version
-                                                </li>
-                                                <hr />
-                                            </ul>
-                                            {item.instances.map((instance, i) => {
-                                                return (
-                                                    <div key={i}>
-                                                        <ul>
-                                                            <li className="selectable-table__list-item grid__col-4">
-                                                                {instance.date}
-                                                            </li>
-                                                            <li className="selectable-table__list-item grid__col-2">
-                                                                {instance.edition}
-                                                            </li>
-                                                            <li className="selectable-table__list-item grid__col-4">
-                                                                {instance.version}
-                                                            </li>
-                                                            <li className="selectable-table__list-item grid__col-2">
-                                                                <a href={instance.url}>View</a>
-                                                            </li>
-                                                            <hr />
-                                                        </ul>
-                                                    </div>
-                                                )
-                                            })}
+                            <details key={index} className="selectable-table__details">
+                                <summary className="selectable-table__summary">
+                                    <div className="grid">
+                                        <div className="grid__col-6">
+                                            <strong>{item.title}</strong>
                                         </div>
-                                    </details>
-                                    {index != this.props.values.length - 1 ?
-                                        <hr className="selectable-table__table-divider" />
-                                    :
-                                        ""
+                                        <div className="grid__col-6">
+                                            {item.date}
+                                        </div>
+                                    </div>
+                                </summary>
+                                <div>
+                                    <Link className="inline-block margin-bottom--1" to={url.resolve(`datasets/${item.id}/metadata`)}> Edit dataset details</Link>
+                                    {item.instances.length > 0 &&
+                                        <div>
+                                            <p className="font-weight--400 grid__col-12">
+                                                New versions:
+                                            </p>
+                                            <div className="grid simple-table__heading">
+                                                <div className="grid__col-4">
+                                                    Date
+                                                </div>
+                                                <div className="grid__col-2">
+                                                    Edition
+                                                </div>
+                                                <div className="grid__col-2">
+                                                    Version
+                                                </div>
+                                            </div>
+                                            { this.renderDatasetInstances(item.instances) }
+                                        </div>
                                     }
                                 </div>
+                            </details>
                         )
                     })}
             </div>
