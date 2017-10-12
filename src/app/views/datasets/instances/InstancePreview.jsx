@@ -17,7 +17,7 @@ const propTypes = {
     }).isRequired
 }
 
-class InstancePreview extends Component {
+export class InstancePreview extends Component {
     constructor(props) {
         super(props);
 
