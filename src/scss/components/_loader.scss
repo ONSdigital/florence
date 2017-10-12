@@ -32,6 +32,10 @@
     height: 42px;
 }
 
+.loader--centre {
+    vertical-align: middle;
+}
+
 // Dark loader animation
 .loader--dark {
     border-left-color: $pickled-bluewood;

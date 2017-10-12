@@ -50,6 +50,7 @@ class FileUpload extends Component {
                 :
                     <Input
                         id={this.props.id}
+                        name={this.props.label}
                         type="file"
                         accept={this.props.accept}
                         error={this.props.error}
