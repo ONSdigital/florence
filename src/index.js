@@ -12,6 +12,7 @@ import TeamsController from './app/views/teams/TeamsController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/datasets/dataset-upload/DatasetUploadsController';
 import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
+import InstanceCollectionController from './app/views/datasets/dataset-collection/InstanceCollectionController';
 import DatasetCollectionController from './app/views/datasets/dataset-collection/DatasetCollectionController';
 import DatasetEdition from './app/views/datasets/dataset-metadata/DatasetEdition';
 import DatasetChangesController from './app/views/datasets/dataset-metadata/DatasetChangesController';
@@ -22,6 +23,8 @@ import './scss/main.scss';
 
 import { store, history } from './app/config/store';
 import DatasetRelated from "./app/views/datasets/dataset-metadata/DatasetRelated"
+import InstancePreview from './app/views/datasets/instances/InstancePreview'
+
 
 const rootPath = store.getState().state.rootPath;
 
@@ -37,7 +40,9 @@ const UserIsAuthenticated = UserAuthWrapper({
 class UnknownRoute extends Component {
     render() {
         return (
-            <h1>Sorry, this page couldnt be found</h1>
+            <div className="grid grid--justify-center">
+                <h1>Sorry, this page couldnt be found</h1>
+            </div>
         )
     }
 }
@@ -71,7 +76,10 @@ class Index extends Component {
                                 </Route>
                                 <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
                                 <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
-                                <Route path="add-to-collection/:instance" component={ UserIsAuthenticated(DatasetCollectionController) } />
+                                <Route path=":datasetID/preview" component={ UserIsAuthenticated(InstancePreview) } />
+                                <Route path=":datasetID/editions/:edition/versions/:version/preview" component={ UserIsAuthenticated(InstancePreview) } />
+                                <Route path="add-to-collection/:instance" component={ UserIsAuthenticated(InstanceCollectionController) } />
+                                <Route path="collection/:dataset" component={ UserIsAuthenticated(DatasetCollectionController) } />
                             </Route>
                             <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />

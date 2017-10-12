@@ -10,11 +10,11 @@ import CollectionView from './CollectionView';
 
 const propTypes = {
     params: PropTypes.shape({
-        dataset: PropTypes.string.isRequired
+        instance: PropTypes.string.isRequired
     }).isRequired
 };
 
-class DatasetCollectionController extends Component {
+class InstanceCollectionController extends Component {
 
     constructor(props) {
         super(props);
@@ -170,7 +170,7 @@ class DatasetCollectionController extends Component {
     }
 
     handleOnBackFromSuccess() {
-        collections.removeInstance()
+        collections.removeDataset()
             .then(() => {
                 this.setState({hasChosen: false});
             })
@@ -179,7 +179,7 @@ class DatasetCollectionController extends Component {
     handleAddToCollection() {
         const instanceID = this.props.params.instance;
         const collectionID = this.state.selectedCollection.id;
-        collections.addInstance(collectionID, instanceID)
+        collections.addDataset(collectionID, instanceID)
             .then(() => {
                 // TODO POST next release date field to API
                 // We'll probably want to post "next release date" field to an api at
@@ -207,6 +207,6 @@ function mapStateToProps(state) {
     return state;
 }
 
-DatasetCollectionController.propTypes = propTypes;
+InstanceCollectionController.propTypes = propTypes;
 
-export default connect(mapStateToProps)(DatasetCollectionController);
+export default connect(mapStateToProps)(InstanceCollectionController);
