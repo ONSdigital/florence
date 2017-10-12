@@ -7,6 +7,7 @@ import { updateAllJobs, addNewJob , updateAllRecipes} from '../../../config/acti
 import recipes from '../../../utilities/api-clients/recipes';
 import datasetImport from '../../../utilities/api-clients/datasetImport';
 import notifications from '../../../utilities/notifications';
+import Definition from '../../../components/Definition';
 
 import DatasetUploadItem from './DatasetUploadItem';
 import DatasetUploadJobs from './DatasetUploadJobs';
@@ -34,7 +35,7 @@ export class DatasetUploadsController extends Component {
 
         this.handleNewVersionClick = this.handleNewVersionClick.bind(this);
     }
-    
+
     componentWillMount() {
         this.setState({isFetchingData: true});
 
@@ -98,12 +99,12 @@ export class DatasetUploadsController extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        
+
         // Don't render all the jobs and datasets yet because the jobs haven't been added to the state yet
         if (nextProps.recipes.length > 0 && !nextProps.jobs && !nextState.isFetchingData) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -177,41 +178,46 @@ export class DatasetUploadsController extends Component {
 
     render() {
         return (
-            <div className="grid grid--justify-center">
-                <div className="grid__col-4">
-                    <h1>All datasets</h1>
+            <div className="grid grid--justify-space-around">
+                <div className="grid__col-5">
+                  <h1>Upload a dataset</h1>
+                  {this.state.isFetchingData &&
+                      <div className="grid--align-self-start">
+                          <div className="loader loader--dark"></div>
+                      </div>
+                  }
+                  {this.props.recipes.length > 0 &&
+                      <ul className="list list--neutral">
+                          {this.props.recipes.map(dataset => {
+                              return (
+                                  <DatasetUploadItem
+                                      key={dataset.id}
+                                      dataset={dataset}
+                                      onNewVersionClick={this.handleNewVersionClick}
+                                      isLoading={dataset.id === this.state.disabledDataset}
+                                  />
+                              )
+                          })}
+                      </ul>
+                  }
+                  </div>
+                  <div className="grid__col-5 margin-top--5">
                     <h2 className="margin-bottom--1">In progress</h2>
+                      <Definition
+                          title="What does the status mean?"
+                          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut quam felis."
+                      />
                     <div className="margin-bottom--2">
                         {this.state.isFetchingData &&
-                            <div className="grid--align-self-start"> 
+                            <div className="grid--align-self-start">
                                 <div className="loader loader--dark"></div>
-                            </div> 
+                            </div>
                         }
                         {!this.state.isFetchingData &&
                             <DatasetUploadJobs jobs={this.props.jobs} datasets={this.props.recipes} />
                         }
                     </div>
-                    <h2 className="margin-bottom--1">Datasets available to you</h2>
-                    {this.state.isFetchingData &&
-                        <div className="grid--align-self-start"> 
-                            <div className="loader loader--dark"></div>
-                        </div>
-                    }
-                    {this.props.recipes.length > 0 &&
-                        <ul className="list list--neutral">
-                            {this.props.recipes.map(dataset => {
-                                return (
-                                    <DatasetUploadItem 
-                                        key={dataset.id} 
-                                        dataset={dataset} 
-                                        onNewVersionClick={this.handleNewVersionClick} 
-                                        isLoading={dataset.id === this.state.disabledDataset}
-                                    />
-                                )
-                            })}
-                        </ul>
-                    }
-                </div>
+                  </div>
             </div>
         )
     }
