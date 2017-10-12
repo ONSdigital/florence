@@ -34,6 +34,20 @@ export default class datasets {
             });
     }
 
+    static approveInstance(instanceID) {
+        // TODO unstub this once a version/instance can be reviewed and approved in the API
+        return new Promise(resolve => {
+            setTimeout(resolve, 2000);
+        })
+    }
+
+    static approveDatasetMetadata(datasetID) {
+        // TODO unstub this once dataset metadata can be reviewed and approved in the API
+        return new Promise(resolve => {
+            setTimeout(resolve, 2000);
+        })
+    }
+
     static getCompletedInstances() {
          return http.get(`/dataset/instances?state=completed`)
              .then(response => {
