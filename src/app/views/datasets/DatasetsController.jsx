@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 
-import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
+import SelectableTableController from './selectable-table/SelectableTableController';
 import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
 import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
+import url from '../../utilities/url'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired
@@ -19,13 +19,11 @@ class DatasetsController extends Component {
         super(props);
 
         this.state = {
-            datasets: [],
-            allDatasets: [],
+            tableValues: [],
             isFetchingDatasets: false
         };
 
-        this.goToDatasetMetadata = this.goToDatasetMetadata.bind(this);
-        this.goToDatasetDetails = this.goToDatasetDetails.bind(this);
+        this.mapResponseToTableData = this.mapResponseToTableData.bind(this);
     }
 
     componentWillMount() {
@@ -37,8 +35,7 @@ class DatasetsController extends Component {
         Promise.all(fetches).then(responses => {
             this.setState({
                 isFetchingDatasets: false,
-                datasets: this.mapAPIResponsesToViewProps(responses[0].items, responses[1].items),
-                allDatasets: this.mapDatasetsToViewProps(responses[1].items),
+                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items)
             });
             this.props.dispatch(updateAllDatasets(responses[1].items));
         }).catch(error => {
@@ -113,59 +110,49 @@ class DatasetsController extends Component {
             console.error("Error getting dataset recipes:\n", error);
         });
     }
+    
+    mapResponseToTableData(datasets, instances) {
 
-    mapAPIResponsesToViewProps(completedInstances, datasets) {
-        // TODO once import API stores uploader info we want to map it to the completed dataset for the view to display
-        return completedInstances.map(instance => {
-            const instanceDataset = datasets.find(dataset => {
-                return dataset.id === instance.dataset_id
+        const values = datasets.map(dataset => {
+            const datasetInstances = instances.map(instance => {
+                const datasetID = instance.links.dataset.id;
+                if (datasetID === dataset.id) {
+                    return {
+                        date: instance.last_updated,
+                        edition: instance.edition || "-",
+                        version: instance.version || "-",
+                        url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/version/${instance.version}`)
+                    }
+                }
             });
             return {
-                id: instance.id,
-                name: instanceDataset.title || `No name available (${instance.id})`
-            }
-        });
-    }
-
-    mapDatasetsToViewProps(allDatasets) {
-        return allDatasets.map(dataset => {
-            return {
+                title: dataset.title,
                 id: dataset.id,
-                name: dataset.title || `No name available (${dataset.id})`
+                instances: datasetInstances
             }
         });
-    }
 
-    goToDatasetMetadata(props) {
-        this.props.dispatch(push(`${location.pathname}/metadata/${props.id}`));
-    }
+        values.push(values[0]);
+        values.push(values[0]);
 
-    goToDatasetDetails(props) {
-        this.props.dispatch(push(`${location.pathname}/dataset/${props.id}`));
+        return values;
     }
 
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-4">
-                    <h1 className="text-center">Select a dataset</h1>
-                    <div className="margin-bottom--1">
-                        <Link to={`${location.pathname}/uploads`}>Upload a dataset</Link>
-                    </div>
-                    <SelectableBoxController
-                        heading="Instances"
-                        isUpdating={this.state.isFetchingDatasets}
-                        handleItemClick={this.goToDatasetMetadata}
-                        items={this.state.datasets}
+                <div className="grid__col-7">
+                    <ul className="list list--neutral">
+                        <li className="list__item grid grid--justify-space-between">
+                            <h1>Select a dataset</h1>
+                            <div className="margin-top--3">
+                                <Link className="btn btn--primary" to={url.resolve("uploads/data")}>Upload a dataset</Link>
+                            </div>
+                        </li>
+                    </ul>
+                    <SelectableTableController
+                        values={this.state.tableValues}
                     />
-                    <div className="margin-top--1">
-                      <SelectableBoxController
-                          heading="Datasets"
-                          isUpdating={this.state.isFetchingDatasets}
-                          handleItemClick={this.goToDatasetDetails}
-                          items={this.state.allDatasets}
-                      />
-                    </div>
                </div>
             </div>
         )
