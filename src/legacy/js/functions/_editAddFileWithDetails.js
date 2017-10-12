@@ -7,12 +7,10 @@
  */
 
 function addFileWithDetails(collectionId, data, field, idField) {
-    console.log('Data passed to addFileWithDetails', data);
     var list = data[field];
     var dataTemplate = {list: list, idField: idField,};
     var html = templates.editorDownloadsWithSummary(dataTemplate);
     $('#' + idField).replaceWith(html);
-    var uriUpload;
     var downloadExtensions;
 
     $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
@@ -67,4 +65,3 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
     sortable();
 }
-
