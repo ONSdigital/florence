@@ -9,10 +9,7 @@
 function addFileWithDetails(collectionId, data, field, idField) {
     console.log('Data passed to addFileWithDetails', data);
     var list = data[field];
-    var showReplaceButton = !!data.versions[0];
-    console.log('showReplaceButton', showReplaceButton, data.versions[0]);
-    var dataTemplate = {list: list, idField: idField, showReplaceButton: showReplaceButton};
-    console.log(dataTemplate);
+    var dataTemplate = {list: list, idField: idField,};
     var html = templates.editorDownloadsWithSummary(dataTemplate);
     $('#' + idField).replaceWith(html);
     var uriUpload;
