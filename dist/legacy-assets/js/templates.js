@@ -1107,23 +1107,23 @@ templates['editorDownloadsWithSummary'] = template({"1":function(depth0,helpers,
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" class=\"edit-section__sortable-item edit-section__sortable-item--summary\">\n                    <div class=\"edit-section__sortable-item--counter float-left\">"
     + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
-    + ". </div>\n                    <textarea id=\"file-title_"
+    + ". </div>\n                    <div class=\"file-upload\">\n                        <div class=\"file-upload__filename\" id=\"file-filename_show_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"add-tooltip\" placeholder=\"Type title here and click\n                    edit to add description\">"
+    + "\"><strong>Filename:</strong> "
+    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + "</div>\n                        <textarea class=\"file-upload__title\" id=\"file-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and click edit to add description\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</textarea>\n                    <textarea style=\"display: none;\" id=\"file-summary_"
+    + "</textarea>\n                        <textarea style=\"display: none;\" id=\"file-summary_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.fileDescription || (depth0 != null ? depth0.fileDescription : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"fileDescription","hash":{},"data":data}) : helper)))
-    + "</textarea>\n                    <br>\n                    <div id=\"file-filename_show_"
+    + "</textarea>\n                        <div class=\"edit-section__buttons\">\n                            <button class=\"btn btn--primary btn-markdown-edit\" id=\"file-edit_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
-    + "</div>\n                    <div class=\"edit-section__buttons\">\n                        <button class=\"btn btn--primary btn-markdown-edit\" id=\"file-edit_"
+    + "\">Edit description</button>\n                            <button class=\"btn btn--warning btn-page-delete\" id=\"file-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">Edit description</button>\n                        <button class=\"btn btn--warning btn-page-delete\" id=\"file-delete_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">Delete</button>\n                    </div>\n                </div>\n";
+    + "\">Delete</button>\n                        </div>\n                    </div>\n                </div>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
