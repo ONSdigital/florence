@@ -24,17 +24,14 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
     })),
     dataset: PropTypes.shape({
-      id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
-      keywords: PropTypes.string.isRequired,
+      keywords: PropTypes.array.isRequired,
       national_statistic: PropTypes.bool.isRequired,
-      periodicity: PropTypes.array.isRequired,
-      contact: PropTypes.arrayOf(PropTypes.shape({
+      contacts: PropTypes.arrayOf(PropTypes.shape({
           name: PropTypes.string.isRequired,
           email: PropTypes.string.isRequired,
           telephone: PropTypes.string.isRequired,
@@ -65,6 +62,7 @@ class DatasetDetails extends Component {
             relatedBulletins: [],
             relatedQMI: "",
             relatedLinks: [],
+            keywords: [],
             titleInput: "",
             urlInput: "",
             editKey: "",
@@ -103,11 +101,11 @@ class DatasetDetails extends Component {
         }
 
         Promise.all(APIRequests).then(responses => {
-            this.props.dispatch(updateActiveDataset(responses[0]));
+            this.props.dispatch(updateActiveDataset(responses[0].current));
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
-            const contact = this.props.dataset.contact.find(details => {
+            const contact = this.props.dataset.contacts.find(details => {
                 return {
                     name: details.name,
                     email: details.email,
@@ -179,6 +177,10 @@ class DatasetDetails extends Component {
             });
     }
 
+    componentWillReceiveProps(nextProps) {
+      console.log(this.props.dataset);
+    }
+
     postDatasetDetails(body) {
        // Update to put to dataset api
       return http.put(`${datasets}`, body, true);
@@ -221,12 +223,24 @@ class DatasetDetails extends Component {
     }
 
     mapReleaseFreqToSelectOptions() {
-        return (this.props.dataset.periodicity).map(periodicity => {
+        const values = [
+          'Weekly', 'Monthly', 'Annually'
+        ];
+
+        return values.map(value => {
             return {
-                id: periodicity.toLowerCase(),
-                name: periodicity
+              id: value.toLowerCase(),
+              name: value
             }
         });
+    }
+
+    convertKeywordsToString() {
+        const keywords = this.props.dataset.keywords.map(keyword => {
+            return keyword
+        });
+        const keywordString = keywords.join(", ");
+        return keywordString;
     }
 
     handleSelectChange(event) {
@@ -265,6 +279,7 @@ class DatasetDetails extends Component {
          this.setState({
            [name]: value
          });
+
        }
 
      }
@@ -393,7 +408,7 @@ class DatasetDetails extends Component {
              telephone: this.state.contactPhone,
            },
            description: this.state.description,
-           periodicity: this.state.periodicity,
+           release_frequency: this.state.periodicity,
            title: this.state.title,
            national_statistic: this.state.isChecked,
            keywords: this.state.keywords,
@@ -428,7 +443,7 @@ class DatasetDetails extends Component {
                     :
                         <div>
                             <h2 className="margin-bottom--1">Dataset</h2>
-                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.dataset.id || "Fetching dataset ID..."}
+                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.dataset || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
@@ -446,7 +461,7 @@ class DatasetDetails extends Component {
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={this.props.dataset.keywords}
+                                  value={this.convertKeywordsToString()}
                                   id="keywords"
                                   label="Keywords"
                                   onChange={this.handleInputChange}
