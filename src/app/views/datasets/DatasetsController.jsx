@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 
 import SelectableTableController from './selectable-table/SelectableTableController';
@@ -7,6 +8,7 @@ import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
 import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
+import url from '../../utilities/url'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired
@@ -110,52 +112,28 @@ class DatasetsController extends Component {
     }
     
     mapResponseToTableData(datasets, instances) {
-        var values = [];
-        var addedDatasets = [];
 
-        instances.map(instance => {
-            var datasetID = instance.links.dataset.id;
-
-            if (addedDatasets.includes(datasetID) != true) {
-                datasets.map(dataset => {
-                    var reg = /^.+\/datasets\/(.+)$/g;
-                    var self = dataset.links.self.href;
-                    var id = reg.exec(self)[1];
-
-                    if (id === datasetID) {
-                        var value = {
-                            title: dataset.title,
-                            date: dataset.next_release,
-                            datasetURL: "/florence/datasets/"+id+"/metadata",
-                            dataset_id: id,
-                            instances: [],
-                        };
-
-                        addedDatasets.push(datasetID);
-                        values.push(value);
-                        return;
+        const values = datasets.map(dataset => {
+            const datasetInstances = instances.map(instance => {
+                const datasetID = instance.links.dataset.id;
+                if (datasetID === dataset.id) {
+                    return {
+                        date: instance.last_updated,
+                        edition: instance.edition || "-",
+                        version: instance.version || "-",
+                        url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/version/${instance.version}`)
                     }
-                });
-            }
-
-            values.map((value, index) => {
-                if (value.dataset_id === datasetID) {
-                    var d = new Date(instance.last_updated);
-
-                    var inst = {
-                        edition: instance.edition,
-                        date: d.toUTCString(),
-                        version: "-",
-                        url: "/florence/datasets/"+datasetID+"/instances/"+instance.id+"/metadata",
-                    };
-
-                    value.instances.push(inst);
-
-                    values.splice(index, 1);
-                    values.push(value);
                 }
             });
+            return {
+                title: dataset.title,
+                id: dataset.id,
+                instances: datasetInstances
+            }
         });
+
+        values.push(values[0]);
+        values.push(values[0]);
 
         return values;
     }
@@ -168,15 +146,13 @@ class DatasetsController extends Component {
                         <li className="list__item grid grid--justify-space-between">
                             <h1>Select a dataset</h1>
                             <div className="margin-top--3">
-                                <a className="btn btn--primary" href={`${location.pathname}/uploads`}>Upload a dataset</a>
+                                <Link className="btn btn--primary" to={url.resolve("uploads/data")}>Upload a dataset</Link>
                             </div>
                         </li>
                     </ul>
-                    <div className="margin-top--1 margin-bottom-3">
-                        <SelectableTableController
-                            values={this.state.tableValues}
-                        />
-                    </div>
+                    <SelectableTableController
+                        values={this.state.tableValues}
+                    />
                </div>
             </div>
         )
