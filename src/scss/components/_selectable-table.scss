@@ -1,68 +1,49 @@
 .selectable-table {
     border: 3px solid $pickled-bluewood;
     border-radius: 4px;
+    
+    &__details {
+        position: relative;
+        padding-left: $gutter;
+        padding-right: $gutter;
+        
+        &:not(:nth-last-of-type(1)) {
+            border-bottom: 1px solid $iron-dark;
+        }
 
-    &__accordion-open {
-        position: absolute;
-        right: 0;
-        top: 10px;
-        content: "";
-        @extend .icon;
-        @extend .icon-arrow-down--dark;
+        &[open] {
+            background-color: $concrete;
+        }
+
+        &:before {
+            position: absolute;
+            top: $lineheight;
+            right: $gutter;
+            content: "";
+            @extend .icon;
+            @extend .icon-arrow-up--dark;
+        }
+
+        &[open]:before {
+            @extend .icon-arrow-down--dark;
+        }
     }
 
-    &__accordion-closed {
-        position: absolute;
-        right: 0;
-        top: 10px;
-        content: "";
-        @extend .icon;
-        @extend .icon-arrow-up--dark;
+    &__summary {
+        padding-top: $lineheight;
+        padding-bottom: $lineheight;
+        text-decoration: none;
+
+        &:focus {
+            outline: 0;
+        }
     }
 
     &__heading {
         font-size: ($magicnumber1 * 2) + $magicnumber2;
-        padding-top: $lineheight / 2;
-        padding-bottom: $lineheight / 2;
+        padding: $lineheight $gutter;
         background-color: $pickled-bluewood;
         color: $cadet-blue;
-        font-family: $base-font-family;
         font-weight: 700;
-        padding-left: $gutter;
-        padding-right: $gutter;
-        line-height: normal;
-    }
-
-    &__list {
-        padding: 0 20px;
-        list-style: none;
-        max-height: $lineheight * 27;
-        overflow-y: scroll;
-    }
-
-    &__list-item{
-        display: inline-block;
-        cursor: pointer;
-        padding: $lineheight;
-
-        &.selected {
-            background-color: $astral;
-            color: $porcelain;
-            cursor: default;
-        }
-
-        &.select:hover {
-            background-color: $astral;
-        }
-    }
-
-    &__selected{
-        background-color: $iron;
-    }
-
-    &__table-divider {
-        border: none;
-        height: 2px;
-        background-color: #333;
     }
 }
