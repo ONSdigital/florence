@@ -17,7 +17,8 @@ const propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleCollectionChange: PropTypes.func.isRequired,
     handleNextReleaseChange: PropTypes.func.isRequired,
-    handleOnBackFromSuccess: PropTypes.func.isRequired
+    handleOnBackFromSuccess: PropTypes.func.isRequired,
+    backLink: PropTypes.string.isRequired
 };
 
 class CollectionView extends Component {
@@ -27,7 +28,7 @@ class CollectionView extends Component {
 
     renderSuccess() {
         const selectedCollection = this.props.selectedCollection;
-        const link = url.resolve("../../");
+        const link = `${location.pathname}/preview`;
         return (
             <div>
                 <div className="margin-top--2">
@@ -36,7 +37,7 @@ class CollectionView extends Component {
                 <h1 className="margin-top--1">Success</h1>
                 <p>This dataset has been checked and added to {selectedCollection.name}.</p>
                 <Link to={link} className="btn btn--positive margin-top--1">
-                    Return to datasets
+                    Preview dataset
                 </Link>
             </div>
         )
@@ -48,7 +49,7 @@ class CollectionView extends Component {
         return (
             <div>
                 <div className="margin-top--2">
-                    &#9664; <Link to={url.resolve("../../")}>Back</Link>
+                    &#9664; <Link to={this.props.backLink}>Back</Link>
                 </div>
                 <h1 className="margin-top--1">Add to collection</h1>
                 {this.props.collectionsSelectItems.length > 0 ?

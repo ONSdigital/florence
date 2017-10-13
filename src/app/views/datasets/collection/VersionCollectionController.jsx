@@ -6,15 +6,18 @@ import dateFormat from 'dateformat';
 import notifications from '../../../utilities/notifications';
 import collections from '../../../utilities/api-clients/collections';
 import CollectionView from './CollectionView';
+import url from '../../../utilities/url'
 
 
 const propTypes = {
     params: PropTypes.shape({
-        dataset: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired,
+        edition: PropTypes.string.isRequired,
+        version: PropTypes.string.isRequired,
     }).isRequired
 };
 
-class DatasetCollectionController extends Component {
+class VersionCollectionController extends Component {
 
     constructor(props) {
         super(props);
@@ -170,16 +173,16 @@ class DatasetCollectionController extends Component {
     }
 
     handleOnBackFromSuccess() {
-        collections.removeInstance()
+        collections.removeDataset()
             .then(() => {
                 this.setState({hasChosen: false});
             })
     }
 
     handleAddToCollection() {
-        const instanceID = this.props.params.instance;
+        const params = this.props.params;
         const collectionID = this.state.selectedCollection.id;
-        collections.addInstance(collectionID, instanceID)
+        collections.addVersion(collectionID, params.datasetID, params.edition, params.version)
             .then(() => {
                 // TODO POST next release date field to API
                 // We'll probably want to post "next release date" field to an api at
@@ -194,19 +197,17 @@ class DatasetCollectionController extends Component {
     render() {
         return (
             <CollectionView {...this.state}
-                   handleSubmit={this.handleSubmit}
-                   handleCollectionChange={this.handleCollectionChange}
-                   handleNextReleaseChange={this.handleNextReleaseChange}
-                   handleOnBackFromSuccess={this.handleOnBackFromSuccess} />
-            )
+                handleSubmit={this.handleSubmit}
+                handleCollectionChange={this.handleCollectionChange}
+                handleNextReleaseChange={this.handleNextReleaseChange}
+                handleOnBackFromSuccess={this.handleOnBackFromSuccess}
+                backLink={url.resolve("metadata")}
+            />
+        )
     }
 
 }
 
-function mapStateToProps(state) {
-    return state;
-}
+VersionCollectionController.propTypes = propTypes;
 
-DatasetCollectionController.propTypes = propTypes;
-
-export default connect(mapStateToProps)(DatasetCollectionController);
+export default connect()(VersionCollectionController);
