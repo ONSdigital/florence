@@ -16,7 +16,7 @@ class Card extends Component {
 
    handleAction(event) {
       event.preventDefault();
-      const action = event.currentTarget.dataset.action;
+      const action = event.target.getAttribute("data-action");
       this.props.onEdit(this.props.type, this.props.keyID, action);
     }
 

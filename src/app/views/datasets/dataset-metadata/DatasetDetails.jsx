@@ -51,12 +51,13 @@ const propTypes = {
     })
 }
 
-class DatasetDetails extends Component {
+export class DatasetDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isFetchingDataset: false,
             error: null,
+            title: null,
             showModal: false,
             modalType: "",
             relatedBulletins: [],
@@ -82,7 +83,7 @@ class DatasetDetails extends Component {
     }
 
     componentWillMount() {
-        this.setState({isFetchingDataset: true});
+      this.setState({isFetchingDataset: true});
 
         function guid() {
             function S4() {
@@ -104,6 +105,7 @@ class DatasetDetails extends Component {
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
+
             const contact = this.props.dataset.contacts.find(details => {
                 return {
                     name: details.name,
@@ -140,6 +142,7 @@ class DatasetDetails extends Component {
                 contactEmail: contact.email,
                 contactPhone: contact.telephone,
             });
+
 
           }).catch(error => {
               switch (error.status) {
@@ -422,7 +425,7 @@ class DatasetDetails extends Component {
                     :
                         <div>
                             <h2 className="margin-bottom--1">Dataset</h2>
-                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.dataset || "Fetching dataset ID..."}
+                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1 datasetId">{this.props.params.dataset || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
