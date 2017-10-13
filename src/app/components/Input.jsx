@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     id: PropTypes.string.isRequired,
+    name: PropTypes.string,
     label: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
@@ -57,7 +58,7 @@ export default class Input extends Component {
                         id={this.props.id}
                         type={this.state.type}
                         className="input input__text"
-                        name={this.props.id}
+                        name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
                         autoFocus={this.props.isFocused}
@@ -69,7 +70,7 @@ export default class Input extends Component {
                     <textarea
                         id={this.props.id}
                         className="input input__textarea"
-                        name={this.props.id}
+                        name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
                         autoFocus={this.props.isFocused}
