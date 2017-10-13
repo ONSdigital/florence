@@ -6,24 +6,23 @@ import { routerActions } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 
 import App from './app/App';
-import Layout from './app/global/Layout'
+import Layout from './app/global/Layout';
 import LoginController from './app/views/login/LoginController';
 import TeamsController from './app/views/teams/TeamsController';
 import DatasetsController from './app/views/datasets/DatasetsController';
-import DatasetUploadsController from './app/views/datasets/dataset-upload/DatasetUploadsController';
-import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
-import InstanceCollectionController from './app/views/datasets/dataset-collection/InstanceCollectionController';
-import DatasetCollectionController from './app/views/datasets/dataset-collection/DatasetCollectionController';
-import DatasetEdition from './app/views/datasets/dataset-metadata/DatasetEdition';
-import DatasetChangesController from './app/views/datasets/dataset-metadata/DatasetChangesController';
-import DatasetDetails from './app/views/datasets/dataset-metadata/DatasetDetails';
+import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
+import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
+import DatasetMetadata from './app/views/datasets/metadata/DatasetMetadata';
+import VersionMetadata from './app/views/datasets/metadata/VersionMetadata';
+import DatasetCollectionController from './app/views/datasets/collection/DatasetCollectionController';
+import VersionCollectionController from './app/views/datasets/collection/VersionCollectionController';
+import DatasetPreview from './app/views/datasets/preview/DatasetPreview';
+import VersionPreview from './app/views/datasets/preview/VersionPreview';
 import Logs from './app/views/logs/Logs';
 
 import './scss/main.scss';
 
 import { store, history } from './app/config/store';
-import DatasetRelated from "./app/views/datasets/dataset-metadata/DatasetRelated"
-import InstancePreview from './app/views/datasets/instances/InstancePreview'
 
 
 const rootPath = store.getState().state.rootPath;
@@ -61,25 +60,37 @@ class Index extends Component {
                                     <Route path="delete" component={ UserIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
+                            <Route path={`${rootPath}/uploads`}>
+                                <IndexRedirect to="data" />
+                                <Route path="data">
+                                    <IndexRoute component={UserIsAuthenticated(DatasetUploadsController)} />
+                                    <Route path=":jobID" component={ UserIsAuthenticated(DatasetUploadDetails) } />
+                                </Route>
+                            </Route>
                             <Route path={`${rootPath}/datasets`} >
                                 <IndexRoute component={ UserIsAuthenticated(DatasetsController) } />
-                                <Route path="dataset/:dataset" >
-                                    <IndexRedirect to="details" />
-                                    <Route path="details" component={ UserIsAuthenticated(DatasetDetails) } />
-                                    <Route path="related-content" component={ UserIsAuthenticated(DatasetRelated) } />
+                                <Route path=":datasetID">
+                                    <IndexRedirect to={`${rootPath}/datasets`} />
+                                    <Route path="metadata">
+                                        <IndexRoute component={ UserIsAuthenticated(DatasetMetadata) } />
+                                        <Route path="collection">
+                                            <IndexRoute component={ UserIsAuthenticated(DatasetCollectionController) } />
+                                            <Route path="preview" component={ UserIsAuthenticated(DatasetPreview) } />
+                                        </Route>
+                                    </Route>
+                                    <Route path="editions/:edition/versions/:version">
+                                        <IndexRedirect to="metadata"/>
+                                        <Route path="metadata" component={ UserIsAuthenticated(VersionMetadata) }/>
+                                        <Route path="collection" >
+                                            <IndexRoute component={ UserIsAuthenticated(VersionCollectionController) } />
+                                            <Route path="preview" component={ UserIsAuthenticated(VersionPreview) } />
+                                        </Route>
+                                    </Route>
+                                    <Route path="instances">
+                                        <IndexRedirect to={`${rootPath}/datasets`}/>
+                                        <Route path=":instanceID/metadata" component={ UserIsAuthenticated(VersionMetadata) } />
+                                    </Route>
                                 </Route>
-                                <Redirect path="metadata" to={`${rootPath}/datasets`} />
-                                <Route path="metadata/:instance" >
-                                    <IndexRedirect to="edition" />
-                                    <Route path="edition" component={ UserIsAuthenticated(DatasetEdition) } />
-                                    <Route path="whats-changed" component={ UserIsAuthenticated(DatasetChangesController) } />
-                                </Route>
-                                <Route path="uploads" component={ UserIsAuthenticated(DatasetUploadsController) } />
-                                <Route path="uploads/:job" component={ UserIsAuthenticated(DatasetOverviewController) } />
-                                <Route path=":datasetID/preview" component={ UserIsAuthenticated(InstancePreview) } />
-                                <Route path=":datasetID/editions/:edition/versions/:version/preview" component={ UserIsAuthenticated(InstancePreview) } />
-                                <Route path="add-to-collection/:instance" component={ UserIsAuthenticated(InstanceCollectionController) } />
-                                <Route path="collection/:dataset" component={ UserIsAuthenticated(DatasetCollectionController) } />
                             </Route>
                             <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />

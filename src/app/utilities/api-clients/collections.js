@@ -33,8 +33,8 @@ export default class collections {
         })
     }
 
-    static addInstance() {
-        // return http.put(`/zebedee/collections/${collectionID}/instances/${instanceID}`, body , true)
+    static addVersion(collectionID, datasetID, edition, version) {
+        // return http.put(`/zebedee/collections/${collectionID}/datasetID/${datasetID}/editions/${edition}/versions/${version}`, body , true)
         //     .then(response => {
         //         return response;
         //     })
@@ -45,8 +45,8 @@ export default class collections {
         })
     }
 
-    static removeInstance() {
-        // return http.delete(`/zebedee/collections/${collectionID}/instances/${instanceID}`, true)
+    static removeVersion(collectionID, datasetID, edition, version) {
+        // return http.delete(`/zebedee/collections/${collectionID}/datasetID/${datasetID}/editions/${edition}/versions/${version}`, true)
         //     .then(response => {
         //         return response;
         //     })
