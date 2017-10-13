@@ -17,7 +17,7 @@ const propTypes = {
     }).isRequired
 }
 
-class InstancePreview extends Component {
+class VersionPreview extends Component {
     constructor(props) {
         super(props);
 
@@ -127,7 +127,7 @@ class InstancePreview extends Component {
                 <div className="preview__header grid grid--justify-center">
                     <div className="grid__col-6 margin-top--1 margin-bottom--1">
                         <form onSubmit={this.handleApproveSubmit}>
-                            &#9664; <Link to={`${url.resolve("collection")}`}>Back</Link>
+                            &#9664; <Link to={`${url.parent()}`}>Back</Link>
                             <h2 className="inline-block margin-left--1">{this.state.datasetTitle || ""}</h2>
                             <button disabled={this.state.isApprovingVersion} className="btn btn--primary btn--block margin-left--1">Approve</button>
                             {this.state.isApprovingVersion &&
@@ -144,6 +144,6 @@ class InstancePreview extends Component {
     }
 }
 
-InstancePreview.propTypes = propTypes;
+VersionPreview.propTypes = propTypes;
 
-export default connect()(InstancePreview);
+export default connect()(VersionPreview);

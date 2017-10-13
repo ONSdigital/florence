@@ -6,15 +6,16 @@ import dateFormat from 'dateformat';
 import notifications from '../../../utilities/notifications';
 import collections from '../../../utilities/api-clients/collections';
 import CollectionView from './CollectionView';
+import url from '../../../utilities/url';
 
 
 const propTypes = {
     params: PropTypes.shape({
-        instance: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired
     }).isRequired
 };
 
-class InstanceCollectionController extends Component {
+class DatasetCollectionController extends Component {
 
     constructor(props) {
         super(props);
@@ -177,9 +178,9 @@ class InstanceCollectionController extends Component {
     }
 
     handleAddToCollection() {
-        const instanceID = this.props.params.instance;
+        const datasetID = this.props.params.datasetID;
         const collectionID = this.state.selectedCollection.id;
-        collections.addDataset(collectionID, instanceID)
+        collections.addDataset(collectionID, datasetID)
             .then(() => {
                 // TODO POST next release date field to API
                 // We'll probably want to post "next release date" field to an api at
@@ -194,19 +195,17 @@ class InstanceCollectionController extends Component {
     render() {
         return (
             <CollectionView {...this.state}
-                   handleSubmit={this.handleSubmit}
-                   handleCollectionChange={this.handleCollectionChange}
-                   handleNextReleaseChange={this.handleNextReleaseChange}
-                   handleOnBackFromSuccess={this.handleOnBackFromSuccess} />
-            )
+                handleSubmit={this.handleSubmit}
+                handleCollectionChange={this.handleCollectionChange}
+                handleNextReleaseChange={this.handleNextReleaseChange}
+                handleOnBackFromSuccess={this.handleOnBackFromSuccess}
+                backLink={url.resolve("../metadata")}
+            />
+        )
     }
 
 }
 
-function mapStateToProps(state) {
-    return state;
-}
+DatasetCollectionController.propTypes = propTypes;
 
-InstanceCollectionController.propTypes = propTypes;
-
-export default connect(mapStateToProps)(InstanceCollectionController);
+export default connect()(DatasetCollectionController);
