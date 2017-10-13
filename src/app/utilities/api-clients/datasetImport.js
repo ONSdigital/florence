@@ -22,16 +22,6 @@ export default class datasetImport {
             })
     }
 
-    static addEdition(jobID, value) {
-        const body = {
-            edition: value
-        }
-        return http.put(`/import/jobs/${jobID}`, body, true)
-            .then(response => {
-                return response;
-            })
-    }
-
     static updateStatus(jobID, status) {
         if (!jobID) {
             console.warn("No job ID given to update status for. Request cancelled");
