@@ -39,7 +39,6 @@ class DatasetUploadController extends Component {
 
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleRetryClick = this.handleRetryClick.bind(this);
-        this.handleSelect = this.handleSelect.bind(this);
     }
 
     componentWillMount() {
@@ -367,18 +366,6 @@ class DatasetUploadController extends Component {
         });
     }
 
-    handleSelect(value){
-      datasetImport.addEdition(this.state.activeDataset.jobID, value).then(() => {
-        const activeDataset = {
-            ...this.state.activeDataset,
-            edition: value
-        }
-        this.setState({activeDataset});
-      }).catch(error => {
-          console.error(`Error updating edition of job '${this.state.activeDataset.id}': `, error);
-      });
-    }
-
     handleFormSubmit(event) {
         event.preventDefault();
         let filesWithoutURLS = [];
@@ -406,15 +393,7 @@ class DatasetUploadController extends Component {
             return;
         }
 
-        datasetImport.updateStatus(this.state.activeDataset.jobID, "submitted").then(() => {
-            const activeDataset = {
-                ...this.state.activeDataset,
-                status: "submitted"
-            }
-            this.setState({activeDataset});
-        }).catch(error => {
-            console.error(`Error updating status of job '${this.state.activeDataset.jobID}': `, error);
-        });
+        this.props.dispatch(push(`${location.pathname}/metadata`));
     }
 
     handleRetryClick(aliasName) {

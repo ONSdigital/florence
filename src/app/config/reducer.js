@@ -1,5 +1,8 @@
 import { initialState } from './initialState';
-import {UPDATE_ACTIVE_INSTANCE} from './actions'
+import {
+    UPDATE_ACTIVE_INSTANCE,
+    UPDATE_ACTIVE_JOB
+} from './actions'
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -55,6 +58,14 @@ export default function reducer(state = initialState, action) {
                 datasets: {
                     ...state.datasets,
                     activeInstance: action.instance
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_JOB): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeJob: action.job
                 }
             });
         }
