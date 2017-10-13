@@ -21,11 +21,11 @@
             right: $gutter;
             content: "";
             @extend .icon;
-            @extend .icon-arrow-up--dark;
+            @extend .icon-arrow-down--dark;
         }
 
         &[open]:before {
-            @extend .icon-arrow-down--dark;
+            @extend .icon-arrow-up--dark;
         }
     }
 

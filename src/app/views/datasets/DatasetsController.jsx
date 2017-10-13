@@ -116,9 +116,11 @@ class DatasetsController extends Component {
         const values = datasets.map(dataset => {
             const datasetInstances = instances.map(instance => {
                 const datasetID = instance.links.dataset.id;
+                console.log(instance);
                 if (datasetID === dataset.id) {
                     return {
                         date: instance.last_updated,
+                        isInstance: !(instance.edition && instance.version),
                         edition: instance.edition || "-",
                         version: instance.version || "-",
                         url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/version/${instance.version}`)
@@ -131,9 +133,6 @@ class DatasetsController extends Component {
                 instances: datasetInstances
             }
         });
-
-        values.push(values[0]);
-        values.push(values[0]);
 
         return values;
     }

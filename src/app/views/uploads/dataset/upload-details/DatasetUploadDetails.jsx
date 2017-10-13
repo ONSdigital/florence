@@ -5,12 +5,12 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import Resumable from 'resumeablejs';
-import recipes from '../../../utilities/api-clients/recipes';
-import datasetImport from '../../../utilities/api-clients/datasetImport';
-import notifications from '../../../utilities/notifications';
-import http from '../../../utilities/http';
-import FileUpload from '../../../components/file-upload/FileUpload';
-import url from '../../../utilities/url'
+import recipes from '../../../../utilities/api-clients/recipes';
+import datasetImport from '../../../../utilities/api-clients/datasetImport';
+import notifications from '../../../../utilities/notifications';
+import http from '../../../../utilities/http';
+import FileUpload from '../../../../components/file-upload/FileUpload';
+import url from '../../../../utilities/url'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -23,11 +23,11 @@ const propTypes = {
         recipe: PropTypes.string.isRequired
     })),
     params: PropTypes.shape({
-        job: PropTypes.string
+        jobID: PropTypes.string
     }).isRequired
 }
 
-class DatasetOverviewController extends Component {
+class DatasetUploadController extends Component {
 
     constructor(props) {
         super(props);
@@ -46,7 +46,7 @@ class DatasetOverviewController extends Component {
         if (!this.props.recipes || this.props.recipes.length === 0) {
             this.setState({isFetchingDataset: true});
             const APIResponses = {};
-            datasetImport.get(this.props.params.job).then(job => {
+            datasetImport.get(this.props.params.jobID).then(job => {
                 APIResponses.job = job;
                 return recipes.get(job.recipe);
             }).then(recipe => {
@@ -59,7 +59,7 @@ class DatasetOverviewController extends Component {
                     case(404): {
                         const notification = {
                             "type": "neutral",
-                            "message": `The job '${this.props.params.job}' was not recognised, so you've been redirected to the dataset upload screen.`,
+                            "message": `The job '${this.props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -108,7 +108,7 @@ class DatasetOverviewController extends Component {
         } else {
 
             const job = this.props.jobs.find(job => {
-                return job.id === this.props.params.job
+                return job.id === this.props.params.jobID
             });
             const recipe = this.props.recipes.find(dataset => {
                 return dataset.id === job.recipe;
@@ -557,7 +557,7 @@ class DatasetOverviewController extends Component {
     }
 }
 
-DatasetOverviewController.propTypes = propTypes;
+DatasetUploadController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
@@ -566,4 +566,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(DatasetOverviewController);
+export default connect(mapStateToProps)(DatasetUploadController);
