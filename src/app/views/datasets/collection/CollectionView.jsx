@@ -28,7 +28,7 @@ class CollectionView extends Component {
 
     renderSuccess() {
         const selectedCollection = this.props.selectedCollection;
-        const link = url.parent(url.parent());
+        const link = `${location.pathname}/preview`;
         return (
             <div>
                 <div className="margin-top--2">
@@ -37,7 +37,7 @@ class CollectionView extends Component {
                 <h1 className="margin-top--1">Success</h1>
                 <p>This dataset has been checked and added to {selectedCollection.name}.</p>
                 <Link to={link} className="btn btn--positive margin-top--1">
-                    Return to datasets
+                    Preview dataset
                 </Link>
             </div>
         )
