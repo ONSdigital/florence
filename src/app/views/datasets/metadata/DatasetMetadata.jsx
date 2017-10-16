@@ -28,25 +28,25 @@ const propTypes = {
     })),
     dataset: PropTypes.shape({
       title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      keywords: PropTypes.array.isRequired,
-      national_statistic: PropTypes.bool.isRequired,
+      description: PropTypes.string,
+      keywords: PropTypes.array,
+      national_statistic: PropTypes.bool,
       contacts: PropTypes.arrayOf(PropTypes.shape({
-          name: PropTypes.string.isRequired,
-          email: PropTypes.string.isRequired,
-          telephone: PropTypes.string.isRequired,
+          name: PropTypes.string,
+          email: PropTypes.string,
+          telephone: PropTypes.string,
       })),
       qmi: PropTypes.shape({
           href: PropTypes.string,
           title: PropTypes.string,
       }),
       related_datasets: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string.isRequired,
-          title: PropTypes.string.isRequired,
+          href: PropTypes.string,
+          title: PropTypes.string,
       })),
       publications: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string.isRequired,
-          title: PropTypes.string.isRequired,
+          href: PropTypes.string,
+          title: PropTypes.string,
       }))
     })
 }
@@ -105,6 +105,7 @@ class DatasetMetadata extends Component {
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
+
             const contact = this.props.dataset.contacts.find(details => {
                 return {
                     name: details.name,
@@ -113,17 +114,21 @@ class DatasetMetadata extends Component {
                 }
             });
 
-            this.props.dataset.publications.map(item => {
-                const bulletin = {title: item.title, url: item.href, key: guid()}
-                const bulletins = this.state.relatedBulletins.concat(bulletin);
-                this.setState({relatedBulletins: bulletins})
-            })
+            { this.props.dataset.publications &&
+              this.props.dataset.publications.map(item => {
+                  const bulletin = {title: item.title, url: item.href, key: guid()}
+                  const bulletins = this.state.relatedBulletins.concat(bulletin);
+                  this.setState({relatedBulletins: bulletins})
+              })
+            }
 
-            this.props.dataset.related_datasets.map(item => {
-                const link = {title: item.title, url: item.href, key: guid()}
-                const links = this.state.relatedLinks.concat(link);
-                this.setState({relatedLinks: links})
-            })
+            { this.props.dataset.related_datasets &&
+              this.props.dataset.related_datasets.map(item => {
+                  const link = {title: item.title, url: item.href, key: guid()}
+                  const links = this.state.relatedLinks.concat(link);
+                  this.setState({relatedLinks: links})
+              })
+            }
 
             if (this.props.dataset.qmi.title != "") {
                 const item = this.props.dataset.qmi
@@ -175,10 +180,6 @@ class DatasetMetadata extends Component {
               }
               console.error("Error has occurred:\n", error);
             });
-    }
-
-    componentWillReceiveProps(nextProps) {
-      console.log(this.props.dataset);
     }
 
     postDatasetDetails(body) {
@@ -248,7 +249,7 @@ class DatasetMetadata extends Component {
             periodicity: event.target.value
         });
     }
-    
+
      handleModalSubmit(event){
        event.preventDefault();
        this.setState({showModal: false});
@@ -443,7 +444,7 @@ class DatasetMetadata extends Component {
                     :
                         <div>
                             <h2 className="margin-bottom--1">Dataset</h2>
-                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.dataset || "Fetching dataset ID..."}
+                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.datasetID || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
@@ -461,7 +462,7 @@ class DatasetMetadata extends Component {
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={this.convertKeywordsToString()}
+                                  value={ this.props.dataset.keywords ? this.convertKeywordsToString() : ""}
                                   id="keywords"
                                   label="Keywords"
                                   onChange={this.handleInputChange}
@@ -516,27 +517,26 @@ class DatasetMetadata extends Component {
                         </div>
                         <div className="margin-bottom--2">
                             <h3> QMI </h3>
-                            {
-                                this.state.relatedQMI != "" ?
-                                <ul className="list--neutral margin-bottom--1">
-                                  <Card
-                                    title={this.state.relatedQMI.title}
-                                    keyID={this.state.relatedQMI.key}
-                                    type="qmi"
-                                    onEdit={this.handleActions}
-                                    />
-                                </ul>
+                                { this.state.relatedQMI.title != undefined ?
+                                  <ul className="list--neutral">
+                                    <Card
+                                      title={this.state.relatedQMI.title}
+                                      keyID={this.state.relatedQMI.key}
+                                      type="qmi"
+                                      onEdit={this.handleActions}
+                                      />
+                                  </ul>
                                 :
-                                <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
-                            }
+                                  <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
+                                }
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Related links </h3>
-                              <CardList
-                                contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
-                                type="link"
-                                listActions={this.handleActions}
-                                />
+                                <CardList
+                                  contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
+                                  type="link"
+                                  listActions={this.handleActions}
+                                  />
                               <a href="#" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</a>
                         </div>
                         <button className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
@@ -545,7 +545,7 @@ class DatasetMetadata extends Component {
                 }
                   </div>
                   {
-                      this.state.showModal ?
+                      this.state.showModal &&
 
                       <Modal sizeClass="grid__col-3">
                         {
@@ -579,8 +579,6 @@ class DatasetMetadata extends Component {
                       }
                       </Modal>
 
-                      :
-                      ""
                   }
 
           </div>
