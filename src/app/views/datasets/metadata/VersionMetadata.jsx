@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
+import datasets from '../../../utilities/api-clients/datasets';
+import notifications from '../../../utilities/notifications';
+import Select from '../../../components/Select';
+import {updateActiveInstance, updateAllDatasets, updateActiveDataset} from '../../../config/actions';
 import url from '../../../utilities/url'
 
 const propTypes = {
@@ -11,7 +15,10 @@ const propTypes = {
         instanceID: PropTypes.string,
         edition: PropTypes.string,
         version: PropTypes.string
-    }).isRequired
+    }).isRequired,
+    instance: PropTypes.shape({
+      edition: PropTypes.string,
+    })
 }
 
 class VersionMetadata extends Component {
@@ -19,6 +26,7 @@ class VersionMetadata extends Component {
         super(props);
 
         this.state = {
+            isFetchingData: false,
             isVersion: null
         }
 
@@ -26,21 +34,35 @@ class VersionMetadata extends Component {
     }
 
     componentWillMount() {
+        this.setState({isFetchingData: true});
+        datasets.get(this.props.params.datasetID).then(dataset => {
+            this.setState({datasetTitle: dataset.current.title});
+        });
+
         if (this.props.params.instanceID) {
-            this.setState({isVersion: false});
-            return;
+          const promise = [
+              datasets.getInstance(this.props.params.instanceID)
+          ]
+          Promise.all(promise).then(response => {
+              this.props.dispatch(updateActiveInstance(response));
+          });
+          this.setState({isVersion: false});
+          return;
         }
 
-        this.setState({isVersion : true});
+        this.setState({
+          isVersion : true,
+          isFetchingData: false,
+        });
+
     }
 
     shouldComponentUpdate(_, nextState) {
-        // No need to re-render, this state does not impact the view. 
+        // No need to re-render, this state does not impact the view.
         // Just used to confirm whether we're on a version or instance
         if (nextState.isVersion) {
             return false;
         }
-
         return true;
     }
 

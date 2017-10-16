@@ -18,7 +18,7 @@ class CardList extends Component {
     render() {
         return (
           <div>
-            <ul className="list--neutral margin-bottom--1">
+            <ul className="list--neutral">
             {
                 this.props.contents.map(item => {
                     return (
