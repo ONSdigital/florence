@@ -110,13 +110,12 @@ class DatasetsController extends Component {
             console.error("Error getting dataset recipes:\n", error);
         });
     }
-    
+
     mapResponseToTableData(datasets, instances) {
 
         const values = datasets.map(dataset => {
             const datasetInstances = instances.map(instance => {
                 const datasetID = instance.links.dataset.id;
-                console.log(instance);
                 if (datasetID === dataset.id) {
                     return {
                         date: instance.last_updated,
@@ -133,7 +132,6 @@ class DatasetsController extends Component {
                 instances: datasetInstances
             }
         });
-
         return values;
     }
 

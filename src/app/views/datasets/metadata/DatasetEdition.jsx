@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
-import {updateActiveInstance, updateAllDatasets} from '../../../config/actions';
+import {updateActiveInstance, updateAllDatasets, updateActiveDataset} from '../../../config/actions';
 import url from '../../../utilities/url'
 
 const propTypes = {
