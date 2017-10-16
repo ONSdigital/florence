@@ -134,6 +134,7 @@ class DatasetUploadController extends Component {
         if (!this.state.activeDataset) {
             return;
         }
+
         this.bindInputs();
     }
 
@@ -142,12 +143,15 @@ class DatasetUploadController extends Component {
             return;
         }
 
-        if (this.state.activeDataset.status === "submitted" && !this.state.activeDataset.dimensions) {
+        if (this.state.activeDataset.status === "completed" && !this.state.activeDataset.dimensions) {
             datasetImport.getDimensions(this.state.activeDataset.instanceID).then(response => {
                 const activeDataset = {
                     ...this.state.activeDataset,
-                    dimensions: response
-                }
+                    dimensions: []
+                };
+                response.map(dimension => {
+                    activeDataset.dimensions.push(dimension.name)
+                })
                 this.setState({activeDataset});
             })
         }
@@ -167,7 +171,7 @@ class DatasetUploadController extends Component {
             r.assignBrowse(input);
             r.assignDrop(input);
             r.on('fileAdded', file => {
-                const aliasName = file.container.name
+                const aliasName = file.container.name;
                 r.opts.query.aliasName = aliasName;
                 r.upload();
                 const files = this.state.activeDataset.files.map(currentFile => {
@@ -268,8 +272,8 @@ class DatasetUploadController extends Component {
         })
 
         const editionsList = recipeAPIResponse.output_instances.map((output, i) => {
-          const editions = recipeAPIResponse.output_instances[i].editions;
-          return editions;
+            const editions = recipeAPIResponse.output_instances[i].editions;
+            return editions;
         })
 
         const editionOverride = recipeAPIResponse.output_instances.editions_override;
@@ -459,7 +463,20 @@ class DatasetUploadController extends Component {
     renderSubmittedScreen() {
         return (
             <div>
-                <p className="margin-bottom--2">Your files have been processed and are available to the publishing team</p>
+                <p className="margin-bottom--2">Your files are being processed.</p>
+                <h2 className="margin-bottom--1">What happens now?</h2>
+                <ul className="list margin-bottom--2">
+                    <li className="list__item">Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any questions.</li>
+                    <li className="list__item">The publishing team can prepare the dataset landing page which includes the files and associated metadata when the upload is complete.</li>
+                </ul>
+            </div>
+        )
+    }
+
+    renderCompletedScreen() {
+        return (
+            <div>
+                <p className="margin-bottom--2">Your files have been processed and are available to the publishing team.</p>
                 <h2 className="margin-bottom--1">What happens now?</h2>
                 <ul className="list margin-bottom--2">
                     <li className="list__item">Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any questions.</li>
@@ -468,19 +485,19 @@ class DatasetUploadController extends Component {
                 <h2 className="margin-bottom--1">
                     Dimensions
                     {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0) &&
-                        <span> ({this.state.activeDataset.dimensions.length})</span>
+                    <span> ({this.state.activeDataset.dimensions.length})</span>
                     }
                 </h2>
                 <div className="margin-bottom--2">
-                {this.state.activeDataset.dimensions ?
-                    <ul className="list">
-                    {this.state.activeDataset.dimensions.map((dimension, index) => {
-                        return <li key={index} className="list__item">{dimension.value}</li>
-                    })}
-                    </ul>
-                :
-                    <p>Dimensions are currently being processed. This could take some time.</p>
-                }
+                    {this.state.activeDataset.dimensions ?
+                        <ul className="list">
+                            {this.state.activeDataset.dimensions.map((dimension, index) => {
+                                return <li key={index} className="list__item">{dimension}</li>
+                            })}
+                        </ul>
+                        :
+                        <p>Dimensions are currently being processed. This could take some time.</p>
+                    }
                 </div>
             </div>
         )
@@ -519,8 +536,8 @@ class DatasetUploadController extends Component {
                         <div className="margin-top--2">
                             &#9664; <Link to={url.parent()}>Return</Link>
                         </div>
-                        <h1 className="margin-top--1">Your dataset has been submitted</h1>
-                        {this.renderSubmittedScreen()}
+                        <h1 className="margin-top--1">Your dataset upload is complete</h1>
+                        {this.renderCompletedScreen()}
                     </div>
                 )
             }
