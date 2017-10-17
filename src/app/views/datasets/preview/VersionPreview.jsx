@@ -17,7 +17,7 @@ const propTypes = {
     }).isRequired
 }
 
-class VersionPreview extends Component {
+export class VersionPreview extends Component {
     constructor(props) {
         super(props);
 
