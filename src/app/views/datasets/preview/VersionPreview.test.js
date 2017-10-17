@@ -1,5 +1,5 @@
 import React from 'react';
-import {InstancePreview} from './InstancePreview';
+import {VersionPreview} from './VersionPreview';
 import notifications from '../../../utilities/notifications';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
@@ -17,7 +17,8 @@ jest.mock('../../../utilities/url', () => {
     return {
         resolve: function() {
             //
-        }
+        },
+        parent: function() {}
     }
 });
 jest.mock('../../../utilities/api-clients/datasets', () => (
@@ -94,14 +95,14 @@ const defaultProps = {
 
 test("Version preview matches stored snapshot", () => {
     const component = renderer.create(
-        <InstancePreview {...defaultProps} />
+        <VersionPreview {...defaultProps} />
     );
     expect(component.toJSON()).toMatchSnapshot();
 });
 
 test("On approval the state is updated to toggle disabling some actions during approval", async () => {
     const component = shallow(
-        <InstancePreview {...defaultProps} />
+        <VersionPreview {...defaultProps} />
     );
 
     expect(component.state("isApprovingVersion")).toBe(false);
@@ -111,7 +112,7 @@ test("On approval the state is updated to toggle disabling some actions during a
 
 test("User shown a notification if an error occurs during approval", async () => {
     const component = shallow(
-        <InstancePreview {...defaultProps} />
+        <VersionPreview {...defaultProps} />
     );
 
     await component.instance().handleApproveSubmit(mockEvent);
@@ -120,7 +121,7 @@ test("User shown a notification if an error occurs during approval", async () =>
 
 test("Dataset title updates after successful fetch from dataset API on mount", async () => {
     const component = shallow(
-        <InstancePreview {...defaultProps} />
+        <VersionPreview {...defaultProps} />
     );
 
     expect(component.state("datasetTitle")).toBe(null);
