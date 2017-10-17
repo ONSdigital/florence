@@ -105,7 +105,6 @@ class DatasetMetadata extends Component {
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
-
             const contact = this.props.dataset.contacts.find(details => {
                 return {
                     name: details.name,
@@ -180,6 +179,7 @@ class DatasetMetadata extends Component {
               }
               console.error("Error has occurred:\n", error);
             });
+
     }
 
     postDatasetDetails(body) {
@@ -224,6 +224,7 @@ class DatasetMetadata extends Component {
     }
 
     mapReleaseFreqToSelectOptions() {
+
         const values = [
           'Weekly', 'Monthly', 'Annually'
         ];

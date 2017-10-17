@@ -48,6 +48,13 @@ export default class datasets {
         })
     }
 
+    static getAllInstances() {
+        return http.get(`/dataset/instances`)
+            .then(response => {
+                return response;
+            });
+    }
+
     static getCompletedInstances() {
          return http.get(`/dataset/instances?state=completed`)
              .then(response => {
