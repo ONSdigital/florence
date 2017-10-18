@@ -28,7 +28,7 @@ class VersionPreview extends Component {
 
         this.handleApproveSubmit = this.handleApproveSubmit.bind(this);
     }
-    
+
     componentWillMount() {
         datasets.get(this.props.params.datasetID).then(dataset => {
             this.setState({datasetTitle: dataset.next.title});
@@ -73,7 +73,7 @@ class VersionPreview extends Component {
     handleApproveSubmit(event) {
         event.preventDefault();
         this.setState({isApprovingVersion: true});
-        
+
         const params = this.props.params;
         datasets.approveInstance(params.datasetID, params.edition, params.version).then(() => {
             this.props.dispatch(push(url.resolve('/datasets')));
@@ -136,7 +136,7 @@ class VersionPreview extends Component {
                         </form>
                     </div>
                 </div>
-                <Preview 
+                <Preview
                     path={`//${location.host}/datasets/${params.datasetID}`}
                 />
             </div>

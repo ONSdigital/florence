@@ -24,9 +24,17 @@ export default class datasets {
              });
     }
 
+    static getInstanceDimensions(instanceID) {
+        return http.get(`/dataset/instances/${instanceID}/dimensions`)
+             .then(response => {
+                 return response;
+             });
+    }
+
     static updateInstanceEdition(instanceID, edition) {
         const body = {
-            edition
+            "edition": edition,
+            "state": "edition-confirmed"
         }
         return http.put(`/dataset/instances/${instanceID}`, body, true)
             .then(response => {

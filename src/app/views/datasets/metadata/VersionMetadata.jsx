@@ -3,12 +3,14 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
+import http from '../../../utilities/http';
 
 import datasets from '../../../utilities/api-clients/datasets';
 import recipes from '../../../utilities/api-clients/recipes';
 import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
-import {updateActiveInstance, updateActiveDataset, updateAllRecipes} from '../../../config/actions';
+import Input from '../../../components/Input';
+import {updateActiveInstance, updateAllRecipes} from '../../../config/actions';
 import url from '../../../utilities/url'
 
 const propTypes = {
@@ -27,7 +29,10 @@ const propTypes = {
     })),
     instance: PropTypes.shape({
       edition: PropTypes.string,
-    })
+      id: PropTypes.string,
+      dimensions: PropTypes.arrayOf(PropTypes.object),
+    }),
+    isVersion: PropTypes.string
 }
 
 class VersionMetadata extends Component {
@@ -43,6 +48,8 @@ class VersionMetadata extends Component {
 
         this.handleEditionChange = this.handleEditionChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+
     }
 
     componentWillMount() {
@@ -56,6 +63,7 @@ class VersionMetadata extends Component {
           Promise.resolve()
       ];
       if (this.props.params.instanceID) {
+
         if (this.props.recipes.length === 0 || this.props.instance === 0) {
             this.setState({isFetchingData: true});
         }
@@ -65,7 +73,7 @@ class VersionMetadata extends Component {
         }
 
         if (this.props.instance === 0 || this.props.instance.id !== this.props.params.instanceID) {
-            promises[1] = datasets.getInstance(this.props.params.instanceID);
+          promises[1] = datasets.getInstance(this.props.params.instanceID);
         }
 
         Promise.all(promises).then(responses => {
@@ -73,8 +81,9 @@ class VersionMetadata extends Component {
               this.props.dispatch(updateAllRecipes(responses[0].items));
           }
           if (this.props.instance === 0 || this.props.instance.id !== this.props.params.instanceID) {
-              this.props.dispatch(updateActiveInstance(responses[1]));
+            this.props.dispatch(updateActiveInstance(responses[1]));
           }
+
           this.setState({isFetchingData: false});
 
             }).catch(error => {
@@ -132,6 +141,16 @@ class VersionMetadata extends Component {
         return true;
     }
 
+    postInstanceData(body) {
+      return http.put(`/dataset/instances/${this.props.params.instanceID}`, body, true);
+    }
+
+    updateInstanceToVersion(instanceData) {
+      this.postInstanceData(instanceData).then(() => {
+        this.props.dispatch(push(url.resolve("collection")));
+      });
+    }
+
     mapEditionsToSelectOptions() {
       const recipe = this.props.recipes.find(recipe => {
           return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
@@ -148,6 +167,46 @@ class VersionMetadata extends Component {
         });
     }
 
+    mapReleaseFreqToSelectOptions() {
+        const values = [
+          'Weekly', 'Monthly', 'Annually'
+        ];
+        return values.map(value => {
+            return {
+              id: value.toLowerCase(),
+              name: value
+            }
+        });
+    }
+
+    handleInputChange(event) {
+       const target = event.target;
+       const value = target.value;
+       const name = target.name;
+       this.setState({
+         [name]: value
+       });
+     }
+
+    mapDimensionsToInputs(){
+      return (
+        this.props.instance.dimensions.map(dimension => {
+          return (
+            <div key={dimension.name}>
+              <h2>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h2>
+              <Input
+                  value=""
+                  type="textarea"
+                  id={dimension.name}
+                  label="Learn more (optional)"
+                  onChange={this.handleInputChange}
+              />
+            </div>
+          )
+        })
+      )
+    }
+
     handleFormSubmit(event) {
         event.preventDefault();
 
@@ -156,7 +215,19 @@ class VersionMetadata extends Component {
             return;
         }
 
-        console.log('Not yet a version, will need to do post -> confirm edition and version -> redirect to the collection endpoint on that route');
+        if (!this.state.selectedEdition) {
+          this.setState({
+              editionError: "You must select an edition"
+          });
+        }
+
+        if (this.state.selectedEdition) {
+          const instanceData = {
+            "edition" : this.state.selectedEdition
+          }
+          this.updateInstanceToVersion(instanceData);
+        }
+
     }
 
     render() {
@@ -181,13 +252,21 @@ class VersionMetadata extends Component {
                                   label="Edition"
                                   contents={this.mapEditionsToSelectOptions()}
                                   onChange={this.handleEditionChange}
-                                  error={this.state.error}
+                                  error={this.state.editionError}
                               />
                             </div>
-                            <h2 className="margin-top--1">What's changed?</h2>
-                            <p>The information below can change with each edition/version</p>
+                            <div className="grid__col-6 margin-bottom--1">
+                              <h2 className="margin-top--1">Notes and information</h2>
+                              <Select
+                                  contents={this.mapReleaseFreqToSelectOptions()}
+                                  onChange={this.handleSelectChange}
+                                  error={this.state.error}
+                                  label="Release frequency"
+                              />
                             </div>
-                            <button className="btn btn--positive">Save and return</button>
+                              {this.mapDimensionsToInputs()}
+                          </div>
+                          <button className="btn btn--positive">Save and return</button>
                         </form>
                       </div>
                     }
