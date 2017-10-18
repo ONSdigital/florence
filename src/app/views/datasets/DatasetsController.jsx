@@ -136,7 +136,7 @@ class DatasetsController extends Component {
                         isInstance: !(instance.edition && instance.version),
                         edition: instance.edition || "-",
                         version: version,
-                        url: version === "-" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/version/${version}`)
+                        url: version === "-" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${version}`)
                     }
                 }
             });
