@@ -141,16 +141,6 @@ class VersionMetadata extends Component {
         return true;
     }
 
-    postInstanceData(body) {
-      return http.put(`/dataset/instances/${this.props.params.instanceID}`, body, true);
-    }
-
-    updateInstanceToVersion(instanceData) {
-      this.postInstanceData(instanceData).then(() => {
-        this.props.dispatch(push(url.resolve("collection")));
-      });
-    }
-
     mapEditionsToSelectOptions() {
       const recipe = this.props.recipes.find(recipe => {
           return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
@@ -219,13 +209,13 @@ class VersionMetadata extends Component {
           this.setState({
               editionError: "You must select an edition"
           });
+          return;
         }
 
         if (this.state.selectedEdition) {
-          const instanceData = {
-            "edition" : this.state.selectedEdition
-          }
-          this.updateInstanceToVersion(instanceData);
+          datasets.updateInstanceEdition(this.props.params.instanceID, this.state.selectedEdition).then(() => {
+            this.props.dispatch(push(url.resolve("collection")));
+          });
         }
 
     }

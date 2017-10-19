@@ -24,7 +24,6 @@ class DatasetsController extends Component {
         };
 
         this.mapResponseToTableData = this.mapResponseToTableData.bind(this);
-        this.getVersionFromURL = this.getVersionFromURL.bind(this);
     }
 
     componentWillMount() {
@@ -112,30 +111,18 @@ class DatasetsController extends Component {
         });
     }
 
-    getVersionFromURL(url) {
-        var reg = /^.+\/datasets\/.+\/editions\/.+\/versions\/(.+)$/g;
-        var match = reg.exec(url);
-        if (match.length > 1) {
-            return match[1];
-        }
-        return "-";
-    }
-
     mapResponseToTableData(datasets, instances) {
 
         const values = datasets.map(dataset => {
             const datasetInstances = instances.map(instance => {
                 const datasetID = instance.links.dataset.id;
                 if (datasetID === dataset.id && instance.state !== "published") {
-                    var version = "-";
-                    if (instance.links.version.href !== "") {
-                        version = this.getVersionFromURL(instance.links.version.href);
-                    }
+                    const version = instance.version || "-";
                     return {
                         date: instance.last_updated,
                         isInstance: !(instance.edition && instance.version),
                         edition: instance.edition || "-",
-                        version: version,
+                        version: version.toString(),
                         url: version === "-" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${version}`)
                     }
                 }
