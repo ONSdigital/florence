@@ -18,7 +18,7 @@ import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
 
 const propTypes = {
     params: PropTypes.shape({
-        dataset: PropTypes.string
+        datasetID: PropTypes.string
     }),
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
@@ -93,7 +93,7 @@ class DatasetMetadata extends Component {
         }
 
         const APIRequests = [
-            datasets.get(this.props.params.dataset)
+            datasets.get(this.props.params.datasetID)
         ]
 
         if (this.props.datasets.length === 0) {
@@ -139,7 +139,7 @@ class DatasetMetadata extends Component {
                 isFetchingDataset: false,
                 description: this.props.dataset.description,
                 title: this.props.dataset.title,
-                keywords: this.props.dataset.keywords,
+                keywords: this.props.dataset.keywords.join(", "),
                 isChecked:this.props.dataset.national_statistic,
                 contactName: contact.name,
                 contactEmail: contact.email,
@@ -160,7 +160,7 @@ class DatasetMetadata extends Component {
                   case (404): {
                       const notification = {
                           "type": "info",
-                          "message": `Dataset ID '${this.props.params.dataset}' was not recognised. You've been redirected to the datasets home screen`,
+                          "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
                           isDismissable: true
                       };
                       notifications.add(notification);
@@ -235,14 +235,6 @@ class DatasetMetadata extends Component {
               name: value
             }
         });
-    }
-
-    convertKeywordsToString() {
-        const keywords = this.props.dataset.keywords.map(keyword => {
-            return keyword
-        });
-        const keywordString = keywords.join(", ");
-        return keywordString;
     }
 
     handleSelectChange(event) {
@@ -413,7 +405,7 @@ class DatasetMetadata extends Component {
            release_frequency: this.state.periodicity,
            title: this.state.title,
            national_statistic: this.state.isChecked,
-           keywords: this.state.keywords,
+           keywords: this.state.keywords.split(","),
            qmi: {
              title: this.state.relatedQMI.title,
              href: this.state.relatedQMI.url,
@@ -445,25 +437,25 @@ class DatasetMetadata extends Component {
                     :
                         <div>
                             <h2 className="margin-bottom--1">Dataset</h2>
-                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.dataset || "Fetching dataset ID..."}
+                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.datasetID || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
                               <Input
-                                  value={this.props.dataset.title}
+                                  value={this.state.title}
                                   id="title"
                                   label="Title"
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={this.props.dataset.description}
+                                  value={this.state.description}
                                   type="textarea"
                                   id="description"
                                   label="About this dataset"
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={ this.props.dataset.keywords ? this.convertKeywordsToString() : ""}
+                                  value={ this.state.keywords}
                                   id="keywords"
                                   label="Keywords"
                                   onChange={this.handleInputChange}

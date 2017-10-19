@@ -29,7 +29,7 @@ import (
 )
 
 var bindAddr = ":8080"
-var babbageURL = "http://localhost:8080"
+var babbageURL = "http://localhost:20000"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
