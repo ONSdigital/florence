@@ -28,36 +28,35 @@ const propTypes = {
     })),
     dataset: PropTypes.shape({
       title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      keywords: PropTypes.array.isRequired,
-      national_statistic: PropTypes.bool.isRequired,
+      description: PropTypes.string,
+      keywords: PropTypes.array,
+      national_statistic: PropTypes.bool,
       contacts: PropTypes.arrayOf(PropTypes.shape({
-          name: PropTypes.string.isRequired,
-          email: PropTypes.string.isRequired,
-          telephone: PropTypes.string.isRequired,
+          name: PropTypes.string,
+          email: PropTypes.string,
+          telephone: PropTypes.string,
       })),
       qmi: PropTypes.shape({
           href: PropTypes.string,
           title: PropTypes.string,
       }),
       related_datasets: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string.isRequired,
-          title: PropTypes.string.isRequired,
+          href: PropTypes.string,
+          title: PropTypes.string,
       })),
       publications: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string.isRequired,
-          title: PropTypes.string.isRequired,
+          href: PropTypes.string,
+          title: PropTypes.string,
       }))
     })
 }
 
-export class DatasetDetails extends Component {
+class DatasetMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isFetchingDataset: false,
             error: null,
-            title: null,
             showModal: false,
             modalType: "",
             relatedBulletins: [],
@@ -74,6 +73,7 @@ export class DatasetDetails extends Component {
         this.handlePageSubmit = this.handlePageSubmit.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
+        this.handleModalSubmit = this.handleModalSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
@@ -83,7 +83,7 @@ export class DatasetDetails extends Component {
     }
 
     componentWillMount() {
-      this.setState({isFetchingDataset: true});
+        this.setState({isFetchingDataset: true});
 
         function guid() {
             function S4() {
@@ -105,7 +105,6 @@ export class DatasetDetails extends Component {
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
-
             const contact = this.props.dataset.contacts.find(details => {
                 return {
                     name: details.name,
@@ -114,17 +113,21 @@ export class DatasetDetails extends Component {
                 }
             });
 
-            this.props.dataset.publications.map(item => {
-                const bulletin = {title: item.title, url: item.href, key: guid()}
-                const bulletins = this.state.relatedBulletins.concat(bulletin);
-                this.setState({relatedBulletins: bulletins})
-            })
+            { this.props.dataset.publications &&
+              this.props.dataset.publications.map(item => {
+                  const bulletin = {title: item.title, url: item.href, key: guid()}
+                  const bulletins = this.state.relatedBulletins.concat(bulletin);
+                  this.setState({relatedBulletins: bulletins})
+              })
+            }
 
-            this.props.dataset.related_datasets.map(item => {
-                const link = {title: item.title, url: item.href, key: guid()}
-                const links = this.state.relatedLinks.concat(link);
-                this.setState({relatedLinks: links})
-            })
+            { this.props.dataset.related_datasets &&
+              this.props.dataset.related_datasets.map(item => {
+                  const link = {title: item.title, url: item.href, key: guid()}
+                  const links = this.state.relatedLinks.concat(link);
+                  this.setState({relatedLinks: links})
+              })
+            }
 
             if (this.props.dataset.qmi.title != "") {
                 const item = this.props.dataset.qmi
@@ -136,13 +139,12 @@ export class DatasetDetails extends Component {
                 isFetchingDataset: false,
                 description: this.props.dataset.description,
                 title: this.props.dataset.title,
-                keywords: this.props.dataset.keywords.join(", "),
+                keywords: this.props.dataset.keywords,
                 isChecked:this.props.dataset.national_statistic,
                 contactName: contact.name,
                 contactEmail: contact.email,
                 contactPhone: contact.telephone,
             });
-
 
           }).catch(error => {
               switch (error.status) {
@@ -177,10 +179,12 @@ export class DatasetDetails extends Component {
               }
               console.error("Error has occurred:\n", error);
             });
+
     }
 
     postDatasetDetails(body) {
-      return http.put(`dataset/datasets/${this.props.params.dataset}`, body, true);
+       // Update to put to dataset api
+      return http.put(`${datasets}`, body, true);
     }
 
     updateDatasetDetails(datasetDetailsData) {
@@ -220,6 +224,7 @@ export class DatasetDetails extends Component {
     }
 
     mapReleaseFreqToSelectOptions() {
+
         const values = [
           'Weekly', 'Monthly', 'Annually'
         ];
@@ -232,11 +237,25 @@ export class DatasetDetails extends Component {
         });
     }
 
+    convertKeywordsToString() {
+        const keywords = this.props.dataset.keywords.map(keyword => {
+            return keyword
+        });
+        const keywordString = keywords.join(", ");
+        return keywordString;
+    }
+
     handleSelectChange(event) {
         this.setState({
             periodicity: event.target.value
         });
     }
+
+     handleModalSubmit(event){
+       event.preventDefault();
+       this.setState({showModal: false});
+       this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+     }
 
     handleToggleChange(event){
       this.setState({
@@ -383,6 +402,7 @@ export class DatasetDetails extends Component {
      handlePageSubmit(event) {
 
          event.preventDefault();
+
          const datasetDetailsData = {
            contact: {
              email: this.state.contactEmail,
@@ -393,7 +413,7 @@ export class DatasetDetails extends Component {
            release_frequency: this.state.periodicity,
            title: this.state.title,
            national_statistic: this.state.isChecked,
-           keywords: this.state.keywords.split(","),
+           keywords: this.state.keywords,
            qmi: {
              title: this.state.relatedQMI.title,
              href: this.state.relatedQMI.url,
@@ -425,25 +445,25 @@ export class DatasetDetails extends Component {
                     :
                         <div>
                             <h2 className="margin-bottom--1">Dataset</h2>
-                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1 datasetId">{this.props.params.dataset || "Fetching dataset ID..."}
+                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.dataset || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
                               <Input
-                                  value={this.state.title}
+                                  value={this.props.dataset.title}
                                   id="title"
                                   label="Title"
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={this.state.description}
+                                  value={this.props.dataset.description}
                                   type="textarea"
                                   id="description"
                                   label="About this dataset"
                                   onChange={this.handleInputChange}
                               />
                               <Input
-                                  value={this.state.keywords}
+                                  value={ this.props.dataset.keywords ? this.convertKeywordsToString() : ""}
                                   id="keywords"
                                   label="Keywords"
                                   onChange={this.handleInputChange}
@@ -498,27 +518,26 @@ export class DatasetDetails extends Component {
                         </div>
                         <div className="margin-bottom--2">
                             <h3> QMI </h3>
-                            {
-                                this.state.relatedQMI != "" ?
-                                <ul className="list--neutral margin-bottom--1">
-                                  <Card
-                                    title={this.state.relatedQMI.title}
-                                    keyID={this.state.relatedQMI.key}
-                                    type="qmi"
-                                    onEdit={this.handleActions}
-                                    />
-                                </ul>
+                                { this.state.relatedQMI.title != undefined ?
+                                  <ul className="list--neutral">
+                                    <Card
+                                      title={this.state.relatedQMI.title}
+                                      keyID={this.state.relatedQMI.key}
+                                      type="qmi"
+                                      onEdit={this.handleActions}
+                                      />
+                                  </ul>
                                 :
-                                <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
-                            }
+                                  <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
+                                }
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Related links </h3>
-                              <CardList
-                                contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
-                                type="link"
-                                listActions={this.handleActions}
-                                />
+                                <CardList
+                                  contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
+                                  type="link"
+                                  listActions={this.handleActions}
+                                  />
                               <a href="#" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</a>
                         </div>
                         <button className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
@@ -527,8 +546,12 @@ export class DatasetDetails extends Component {
                 }
                   </div>
                   {
-                      this.state.showModal ?
+                      this.state.showModal &&
+
                       <Modal sizeClass="grid__col-3">
+                        {
+                            this.state.modalType ?
+
                           <RelatedDataController
                               name="related-content-modal"
                               titleInput={this.state.titleInput}
@@ -539,9 +562,24 @@ export class DatasetDetails extends Component {
                               titleError={this.state.titleError}
                               urlError={this.state.urlError}
                           />
+                        :
+                          <div>
+                          <div className="modal__header">
+                              <h2>Warning!</h2>
+                          </div>
+                          <div className="modal__body">
+                              <p>You will lose any changes by going back without saving. </p><br/>
+                              <p>Click "Continue" to lose changes and go back to the previous page or
+                                  click "Cancel" to stay on the current page.</p>
+                          </div>
+                          <div className="modal__footer">
+                          <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
+                          <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
+                          </div>
+                        </div>
+                      }
                       </Modal>
-                      :
-                      ""
+
                   }
 
           </div>
@@ -549,7 +587,7 @@ export class DatasetDetails extends Component {
     }
 }
 
-DatasetDetails.propTypes = propTypes;
+DatasetMetadata.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
@@ -559,4 +597,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(DatasetDetails);
+export default connect(mapStateToProps)(DatasetMetadata);
