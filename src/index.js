@@ -12,6 +12,7 @@ import TeamsController from './app/views/teams/TeamsController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
 import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
+import DatasetUploadMetadata from './app/views/uploads/dataset/upload-details/DatasetUploadMetadata'
 import DatasetMetadata from './app/views/datasets/metadata/DatasetMetadata';
 import VersionMetadata from './app/views/datasets/metadata/VersionMetadata';
 import DatasetCollectionController from './app/views/datasets/collection/DatasetCollectionController';
@@ -64,7 +65,10 @@ class Index extends Component {
                                 <IndexRedirect to="data" />
                                 <Route path="data">
                                     <IndexRoute component={UserIsAuthenticated(DatasetUploadsController)} />
-                                    <Route path=":jobID" component={ UserIsAuthenticated(DatasetUploadDetails) } />
+                                    <Route path=":jobID">
+                                        <IndexRoute component={ UserIsAuthenticated(DatasetUploadDetails) } />
+                                        <Route path="metadata" component={ UserIsAuthenticated(DatasetUploadMetadata) } />
+                                    </Route>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/datasets`} >
