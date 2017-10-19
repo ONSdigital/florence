@@ -62,7 +62,7 @@ class DatasetUploadController extends Component {
                             isDismissable: true
                         }
                         notifications.add(notification);
-                        this.props.dispatch(push(url.parent()));
+                        this.props.dispatch(push(url.resolve("../")));
                         break;
                     }
                     case("RESPONSE_ERR"):{
@@ -121,7 +121,7 @@ class DatasetUploadController extends Component {
                     isDismissable: true
                 }
                 notifications.add(notification);
-                this.props.dispatch(push(url.parent()));
+                this.props.dispatch(push(url.resolve("../")));
                 return;
             }
 
@@ -488,7 +488,7 @@ class DatasetUploadController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Back</Link>
+                            &#9664; <Link to={url.resolve("../")}>Back</Link>
                         </div>
                         <h1 className="margin-top--1">Upload new file(s)</h1>
                         <form onSubmit={this.handleFormSubmit}>
@@ -502,7 +502,7 @@ class DatasetUploadController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Return</Link>
+                            &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">Your dataset has been submitted</h1>
                         {this.renderSubmittedScreen()}
@@ -513,7 +513,7 @@ class DatasetUploadController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Return</Link>
+                            &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">Your dataset upload is complete</h1>
                         {this.renderCompletedScreen()}
@@ -524,7 +524,7 @@ class DatasetUploadController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Return</Link>
+                            &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
                         <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
