@@ -5,12 +5,12 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import Resumable from 'resumeablejs';
-import recipes from '../../../utilities/api-clients/recipes';
-import datasetImport from '../../../utilities/api-clients/datasetImport';
-import notifications from '../../../utilities/notifications';
-import http from '../../../utilities/http';
-import FileUpload from '../../../components/file-upload/FileUpload';
-import url from '../../../utilities/url'
+import recipes from '../../../../utilities/api-clients/recipes';
+import datasetImport from '../../../../utilities/api-clients/datasetImport';
+import notifications from '../../../../utilities/notifications';
+import http from '../../../../utilities/http';
+import FileUpload from '../../../../components/file-upload/FileUpload';
+import url from '../../../../utilities/url'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -23,11 +23,11 @@ const propTypes = {
         recipe: PropTypes.string.isRequired
     })),
     params: PropTypes.shape({
-        job: PropTypes.string
+        jobID: PropTypes.string
     }).isRequired
 }
 
-class DatasetOverviewController extends Component {
+class DatasetUploadController extends Component {
 
     constructor(props) {
         super(props);
@@ -39,14 +39,13 @@ class DatasetOverviewController extends Component {
 
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleRetryClick = this.handleRetryClick.bind(this);
-        this.handleSelect = this.handleSelect.bind(this);
     }
 
     componentWillMount() {
         if (!this.props.recipes || this.props.recipes.length === 0) {
             this.setState({isFetchingDataset: true});
             const APIResponses = {};
-            datasetImport.get(this.props.params.job).then(job => {
+            datasetImport.get(this.props.params.jobID).then(job => {
                 APIResponses.job = job;
                 return recipes.get(job.recipe);
             }).then(recipe => {
@@ -59,11 +58,11 @@ class DatasetOverviewController extends Component {
                     case(404): {
                         const notification = {
                             "type": "neutral",
-                            "message": `The job '${this.props.params.job}' was not recognised, so you've been redirected to the dataset upload screen.`,
+                            "message": `The job '${this.props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
-                        this.props.dispatch(push(url.parent()));
+                        this.props.dispatch(push(url.resolve("../")));
                         break;
                     }
                     case("RESPONSE_ERR"):{
@@ -108,7 +107,7 @@ class DatasetOverviewController extends Component {
         } else {
 
             const job = this.props.jobs.find(job => {
-                return job.id === this.props.params.job
+                return job.id === this.props.params.jobID
             });
             const recipe = this.props.recipes.find(dataset => {
                 return dataset.id === job.recipe;
@@ -122,7 +121,7 @@ class DatasetOverviewController extends Component {
                     isDismissable: true
                 }
                 notifications.add(notification);
-                this.props.dispatch(push(url.parent()));
+                this.props.dispatch(push(url.resolve("../")));
                 return;
             }
 
@@ -134,6 +133,7 @@ class DatasetOverviewController extends Component {
         if (!this.state.activeDataset) {
             return;
         }
+
         this.bindInputs();
     }
 
@@ -142,12 +142,15 @@ class DatasetOverviewController extends Component {
             return;
         }
 
-        if (this.state.activeDataset.status === "submitted" && !this.state.activeDataset.dimensions) {
+        if (this.state.activeDataset.status === "completed" && !this.state.activeDataset.dimensions) {
             datasetImport.getDimensions(this.state.activeDataset.instanceID).then(response => {
                 const activeDataset = {
                     ...this.state.activeDataset,
-                    dimensions: response
-                }
+                    dimensions: []
+                };
+                response.map(dimension => {
+                    activeDataset.dimensions.push(dimension.name)
+                })
                 this.setState({activeDataset});
             })
         }
@@ -167,7 +170,7 @@ class DatasetOverviewController extends Component {
             r.assignBrowse(input);
             r.assignDrop(input);
             r.on('fileAdded', file => {
-                const aliasName = file.container.labels[0].textContent
+                const aliasName = file.container.name;
                 r.opts.query.aliasName = aliasName;
                 r.upload();
                 const files = this.state.activeDataset.files.map(currentFile => {
@@ -268,8 +271,8 @@ class DatasetOverviewController extends Component {
         })
 
         const editionsList = recipeAPIResponse.output_instances.map((output, i) => {
-          const editions = recipeAPIResponse.output_instances[i].editions;
-          return editions;
+            const editions = recipeAPIResponse.output_instances[i].editions;
+            return editions;
         })
 
         const editionOverride = recipeAPIResponse.output_instances.editions_override;
@@ -367,18 +370,6 @@ class DatasetOverviewController extends Component {
         });
     }
 
-    handleSelect(value){
-      datasetImport.addEdition(this.state.activeDataset.jobID, value).then(() => {
-        const activeDataset = {
-            ...this.state.activeDataset,
-            edition: value
-        }
-        this.setState({activeDataset});
-      }).catch(error => {
-          console.error(`Error updating edition of job '${this.state.activeDataset.id}': `, error);
-      });
-    }
-
     handleFormSubmit(event) {
         event.preventDefault();
         let filesWithoutURLS = [];
@@ -406,15 +397,7 @@ class DatasetOverviewController extends Component {
             return;
         }
 
-        datasetImport.updateStatus(this.state.activeDataset.jobID, "submitted").then(() => {
-            const activeDataset = {
-                ...this.state.activeDataset,
-                status: "submitted"
-            }
-            this.setState({activeDataset});
-        }).catch(error => {
-            console.error(`Error updating status of job '${this.state.activeDataset.jobID}': `, error);
-        });
+        this.props.dispatch(push(`${location.pathname}/metadata`));
     }
 
     handleRetryClick(aliasName) {
@@ -459,7 +442,20 @@ class DatasetOverviewController extends Component {
     renderSubmittedScreen() {
         return (
             <div>
-                <p className="margin-bottom--2">Your files have been processed and are available to the publishing team</p>
+                <p className="margin-bottom--2">Your files are being processed.</p>
+                <h2 className="margin-bottom--1">What happens now?</h2>
+                <ul className="list margin-bottom--2">
+                    <li className="list__item">Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any questions.</li>
+                    <li className="list__item">The publishing team can prepare the dataset landing page which includes the files and associated metadata when the upload is complete.</li>
+                </ul>
+            </div>
+        )
+    }
+
+    renderCompletedScreen() {
+        return (
+            <div>
+                <p className="margin-bottom--2">Your files have been processed and are available to the publishing team.</p>
                 <h2 className="margin-bottom--1">What happens now?</h2>
                 <ul className="list margin-bottom--2">
                     <li className="list__item">Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any questions.</li>
@@ -468,19 +464,19 @@ class DatasetOverviewController extends Component {
                 <h2 className="margin-bottom--1">
                     Dimensions
                     {(this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0) &&
-                        <span> ({this.state.activeDataset.dimensions.length})</span>
+                    <span> ({this.state.activeDataset.dimensions.length})</span>
                     }
                 </h2>
                 <div className="margin-bottom--2">
-                {this.state.activeDataset.dimensions ?
-                    <ul className="list">
-                    {this.state.activeDataset.dimensions.map((dimension, index) => {
-                        return <li key={index} className="list__item">{dimension.value}</li>
-                    })}
-                    </ul>
-                :
-                    <p>Dimensions are currently being processed. This could take some time.</p>
-                }
+                    {this.state.activeDataset.dimensions ?
+                        <ul className="list">
+                            {this.state.activeDataset.dimensions.map((dimension, index) => {
+                                return <li key={index} className="list__item">{dimension}</li>
+                            })}
+                        </ul>
+                        :
+                        <p>Dimensions are currently being processed. This could take some time.</p>
+                    }
                 </div>
             </div>
         )
@@ -492,7 +488,7 @@ class DatasetOverviewController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Back</Link>
+                            &#9664; <Link to={url.resolve("../")}>Back</Link>
                         </div>
                         <h1 className="margin-top--1">Upload new file(s)</h1>
                         <form onSubmit={this.handleFormSubmit}>
@@ -506,7 +502,7 @@ class DatasetOverviewController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Return</Link>
+                            &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">Your dataset has been submitted</h1>
                         {this.renderSubmittedScreen()}
@@ -517,10 +513,10 @@ class DatasetOverviewController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Return</Link>
+                            &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
-                        <h1 className="margin-top--1">Your dataset has been submitted</h1>
-                        {this.renderSubmittedScreen()}
+                        <h1 className="margin-top--1">Your dataset upload is complete</h1>
+                        {this.renderCompletedScreen()}
                     </div>
                 )
             }
@@ -528,7 +524,7 @@ class DatasetOverviewController extends Component {
                 return (
                     <div>
                         <div className="margin-top--2">
-                            &#9664; <Link to={url.parent()}>Return</Link>
+                            &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
                         <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
@@ -557,7 +553,7 @@ class DatasetOverviewController extends Component {
     }
 }
 
-DatasetOverviewController.propTypes = propTypes;
+DatasetUploadController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
@@ -566,4 +562,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(DatasetOverviewController);
+export default connect(mapStateToProps)(DatasetUploadController);
