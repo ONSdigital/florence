@@ -8,9 +8,12 @@ details {
 
     summary {
         cursor:pointer;
-        color: $primary-link;
         text-decoration: underline;
         display: inline-block;
+        width: 100%;
+        &::-webkit-details-marker {
+            display: none;
+        }
         span {
             color: $primary-link;
             &::-webkit-details-marker {
