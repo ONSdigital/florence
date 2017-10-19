@@ -10,6 +10,7 @@ export const UPDATE_ALL_DATASETS = 'UPDATE_ALL_DATASETS';
 export const UPDATE_ACTIVE_DATASET = 'UPDATE_ACTIVE_DATASET';
 export const UPDATE_ALL_RECIPES = 'UPDATE_ALL_RECIPES';
 export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
+export const UPDATE_ACTIVE_JOB = 'UPDATE_ACTIVE_JOB';
 export const ADD_NEW_JOB = 'ADD_NEW_JOB';
 export const UPDATE_ACTIVE_INSTANCE = 'UPDATE_ACTIVE_INSTANCE';
 
@@ -64,6 +65,13 @@ export function updateAllJobs(allJobs) {
     return {
         type: UPDATE_ALL_JOBS,
         allJobs
+    }
+}
+
+export function updateActiveJob(job) {
+    return {
+        type: UPDATE_ACTIVE_JOB,
+        job
     }
 }
 
