@@ -31,10 +31,10 @@ export default class datasets {
              });
     }
 
-    static updateInstanceEdition(instanceID, edition) {
+    static updateInstanceEdition(instanceID, edition, data) {
         const body = {
-            "edition": edition,
-            "state": "edition-confirmed"
+          "edition": edition,
+          "state" : "edition-confirmed"
         }
         return http.put(`/dataset/instances/${instanceID}`, body, true)
             .then(response => {
