@@ -15,7 +15,8 @@ export const initialState = {
         all: [],
         jobs: [],
         activeInstance: {},
-        recipes: []
+        recipes: [],
+        activeJob: {}
     },
     notifications: []
 };

@@ -98,7 +98,7 @@ class DatasetRelated extends Component {
                         isDismissable: true
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(url.parent(url.parent())));
+                    this.props.dispatch(push(url.resolve("../../")));
                     break;
                 }
                 default: {
@@ -213,7 +213,7 @@ class DatasetRelated extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-3">
                     <div className="margin-top--2">
-                        &#9664; <Link to={url.parent(url.parent())}>Back</Link>
+                        &#9664; <Link to={url.resolve("../../")}>Back</Link>
                     </div>
                     <h2 className="margin-bottom--1">Related content</h2>
                     <div className="margin-bottom--1">
