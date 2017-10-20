@@ -15,6 +15,7 @@ import Card from '../../../components/Card';
 import CardList from '../../../components/CardList';
 import RelatedDataController from './related-content/RelatedDataController';
 import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
+import url from '../../../utilities/url'
 
 const propTypes = {
     params: PropTypes.shape({
@@ -74,6 +75,8 @@ class DatasetMetadata extends Component {
             contactPhone: ""
         };
 
+        this.originalState = null;
+
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePageSubmit = this.handlePageSubmit.bind(this);
@@ -107,11 +110,12 @@ class DatasetMetadata extends Component {
         }
 
         Promise.all(APIRequests).then(responses => {
-            this.props.dispatch(updateActiveDataset(responses[0].current));
+            this.props.dispatch(updateActiveDataset(responses[0].next || responses[0].current));
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
 
+            console.log(this.props.dataset);
             if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
                 this.setState({
                     keywords: this.props.dataset.keywords.join(", ")
@@ -190,6 +194,31 @@ class DatasetMetadata extends Component {
               console.error("Error has occurred:\n", error);
             });
 
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.isFetchingDataset) {
+            return false;
+        }
+        return true;
+    }
+
+    componentDidUpdate(_, nextState) {
+        /*
+        We want to detect whether any changes have been made so we can show a warning if the
+        user is leaving without saving
+        */
+
+        // We've already set the state to hasChanges, so do nothing
+        if (nextState.hasChanges) {
+            return;
+        }
+        
+        // Set our initial state, so that we can detect whether there have been any unsaved changes
+        if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
+            this.originalState = nextState;
+            this.setState({hasChanges: true});
+        }
     }
 
     postDatasetDetails(body) {
@@ -287,7 +316,12 @@ class DatasetMetadata extends Component {
      }
 
      handleBackButton() {
-         this.setState({showModal: true});
+        if (this.state.hasChanges) {
+            this.setState({showModal: true});
+            return;
+        }
+
+        this.props.dispatch(push(url.resolve("/datasets")));
      }
 
      handleCancel() {
