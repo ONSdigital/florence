@@ -2,6 +2,15 @@ import React from 'react';
 import SelectableTableController from './SelectableTableController.jsx';
 import renderer from 'react-test-renderer';
 
+jest.mock('../../../utilities/url', () => {
+    return {
+        resolve: function() {
+            //
+        },
+        parent: function() {}
+    }
+});
+
 const values = [
     {
         title: "CPI",
@@ -9,12 +18,13 @@ const values = [
         datasetURL: "/florence/datasets/12345/metadata",
         instances: [
             {
-                date: "",
+                date: "Tue Oct 17 2017 17:11:59 GMT+0100 (BST)",
                 edition: "2016",
                 version: "-",
                 url: "/florence/datasets/12345/instances/6789/metdata"
             }
-        ]
+        ],
+        id: "meeeeeh"
     }
 ]
 
