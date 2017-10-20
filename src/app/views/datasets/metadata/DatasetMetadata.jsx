@@ -56,16 +56,22 @@ class DatasetMetadata extends Component {
         super(props);
         this.state = {
             isFetchingDataset: false,
+            hasChanges: false,
             error: null,
             showModal: false,
             modalType: "",
+            title: "",
+            description: "",
             relatedBulletins: [],
             relatedQMI: "",
             relatedLinks: [],
-            keywords: [],
+            keywords: "",
             titleInput: "",
             urlInput: "",
             editKey: "",
+            contactName: "",
+            contactEmail: "",
+            contactPhone: ""
         };
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -105,13 +111,21 @@ class DatasetMetadata extends Component {
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
-            const contact = this.props.dataset.contacts.find(details => {
-                return {
-                    name: details.name,
-                    email: details.email,
-                    telephone: details.telephone,
-                }
-            });
+
+            if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
+                this.setState({
+                    keywords: this.props.dataset.keywords.join(", ")
+                });
+            }
+            
+            if (this.props.dataset.contacts && this.props.dataset.contacts.length > 0) {
+                const contact = this.props.dataset.contacts[0];
+                this.setState({
+                    contactName: contact.name,
+                    contactEmail: contact.email,
+                    contactPhone: contact.telephone
+                })
+            }
 
             { this.props.dataset.publications &&
               this.props.dataset.publications.map(item => {
@@ -139,11 +153,7 @@ class DatasetMetadata extends Component {
                 isFetchingDataset: false,
                 description: this.props.dataset.description,
                 title: this.props.dataset.title,
-                keywords: this.props.dataset.keywords.join(", "),
-                isChecked:this.props.dataset.national_statistic,
-                contactName: contact.name,
-                contactEmail: contact.email,
-                contactPhone: contact.telephone,
+                isNationalStat:this.props.dataset.national_statistic,
             });
 
           }).catch(error => {
@@ -249,10 +259,8 @@ class DatasetMetadata extends Component {
        this.props.dispatch(push(`${this.props.rootPath}/datasets`));
      }
 
-    handleToggleChange(event){
-      this.setState({
-        isChecked: event.target.checked,
-      });
+    handleToggleChange(isChecked) {
+      this.setState({isNationalStat: isChecked});
     }
 
     handleInputChange(event) {
@@ -404,7 +412,7 @@ class DatasetMetadata extends Component {
            description: this.state.description,
            release_frequency: this.state.periodicity,
            title: this.state.title,
-           national_statistic: this.state.isChecked,
+           national_statistic: this.state.isNationalStat,
            keywords: this.state.keywords.split(","),
            qmi: {
              title: this.state.relatedQMI.title,
@@ -462,7 +470,7 @@ class DatasetMetadata extends Component {
                               />
                               <div className="grid__col-6 margin-top--1">
                                 <Checkbox
-                                    isChecked={this.state.isChecked}
+                                    isChecked={this.state.isNationalStat}
                                     onChange={this.handleToggleChange}
                                     label="National Statistic"
                                     id="national-statistic"
