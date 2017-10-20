@@ -24,14 +24,21 @@ export default class datasets {
              });
     }
 
-    static getInstanceDimensions(instanceID) {
-        return http.get(`/dataset/instances/${instanceID}/dimensions`)
+    static getVersion(datasetID, edition, version) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`)
              .then(response => {
                  return response;
              });
     }
 
-    static updateInstanceEdition(instanceID, edition, data) {
+    static getVersionDimensions(datasetID, edition, version) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}/dimensions`)
+             .then(response => {
+                 return response;
+             });
+    }
+
+    static updateInstanceEdition(instanceID, edition) {
         const body = {
           "edition": edition,
           "state" : "edition-confirmed"
