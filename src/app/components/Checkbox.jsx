@@ -14,10 +14,24 @@ class Checkbox extends Component {
     super(props);
 
     this.state = {
-        isFocused: false
+        isFocused: false,
+        value: false
     }
 
     this.handleFocus = this.handleFocus.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.isChecked) {
+      this.setState({isChecked: this.props.isChecked});
+    }
+  }
+
+  handleChange(event) {
+    const isChecked = event.target.checked;
+    this.setState({value: isChecked});
+    this.props.onChange(isChecked);
   }
 
   handleFocus() {
@@ -32,8 +46,8 @@ class Checkbox extends Component {
           }
           <div className="checkbox">
             <input className="margin-right--1 checkbox__input" type="checkbox"
-              checked={this.props.isChecked}
-              onChange={this.props.onChange}
+              checked={this.state.value}
+              onChange={this.handleChange}
               onFocus={this.handleFocus}
               onBlur={this.handleFocus}
               id={this.props.id}
