@@ -22,16 +22,6 @@ export default class datasetImport {
             })
     }
 
-    static addEdition(jobID, value) {
-        const body = {
-            edition: value
-        }
-        return http.put(`/import/jobs/${jobID}`, body, true)
-            .then(response => {
-                return response;
-            })
-    }
-
     static updateStatus(jobID, status) {
         if (!jobID) {
             console.warn("No job ID given to update status for. Request cancelled");
@@ -80,9 +70,9 @@ export default class datasetImport {
         //         node_id: "id-thing-2"
         //     }
         // ])
-        return http.get(`/import/instances/${instanceID}/dimensions`, true)
+        return http.get(`/dataset/instances/${instanceID}`, true)
             .then(response => {
-                return response;
+                return response.dimensions;
             })
     }
 }
