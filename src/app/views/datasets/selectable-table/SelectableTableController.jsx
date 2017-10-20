@@ -12,8 +12,11 @@ const propTypes = {
         id: PropTypes.string.isRequired,
         instances: PropTypes.arrayOf(PropTypes.shape({
             date: PropTypes.string,
-            edition: PropTypes.string,
-            version: PropTypes.string
+            edition: PropTypes.string.isRequired,
+            version: PropTypes.oneOfType([
+                PropTypes.string.isRequired,
+                PropTypes.number.isRequired
+            ])
         }))
     }))
 }
