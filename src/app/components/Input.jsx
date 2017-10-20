@@ -31,6 +31,7 @@ export default class Input extends Component {
         };
 
         this.showHide = this.showHide.bind(this);
+        this.moveCaretToEnd = this.moveCaretToEnd.bind(this);
     }
 
     showHide(e) {
@@ -39,6 +40,12 @@ export default class Input extends Component {
         this.setState({
             type: this.state.type === 'text' ? 'password' : 'text'
         })
+    }
+
+    moveCaretToEnd(event) {
+        const val = event.target.value;
+        event.target.value = '';
+        event.target.value = val;
     }
 
     render() {
@@ -62,6 +69,7 @@ export default class Input extends Component {
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
                         autoFocus={this.props.isFocused}
+                        onFocus={this.moveCaretToEnd}
                         placeholder={this.props.inline ? this.props.label : ""}
                         accept={this.props.accept}
                         value={this.props.value}
