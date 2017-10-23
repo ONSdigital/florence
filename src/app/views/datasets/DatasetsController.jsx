@@ -114,8 +114,8 @@ class DatasetsController extends Component {
     mapResponseToTableData(datasets, instances) {
         try {
             const values = datasets.map(dataset => {
-                dataset = dataset.current;
-                const datasetInstances = instances.map(instance => {
+                dataset = dataset.current || dataset.next || dataset;
+                const datasetInstances = instances.filter(instance => {
                     const datasetID = instance.links.dataset.id;
                     if (datasetID === dataset.id) {
                         return {
@@ -126,6 +126,7 @@ class DatasetsController extends Component {
                             url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/version/${instance.version}`)
                         }
                     }
+                    return false;
                 });
                 return {
                     title: dataset.title,
