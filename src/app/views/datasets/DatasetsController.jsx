@@ -115,18 +115,18 @@ class DatasetsController extends Component {
         try {
             const values = datasets.map(dataset => {
                 dataset = dataset.current || dataset.next || dataset;
-                const datasetInstances = instances.filter(instance => {
+                const datasetInstances = [];
+                instances.forEach(instance => {
                     const datasetID = instance.links.dataset.id;
                     if (datasetID === dataset.id) {
-                        return {
+                        datasetInstances.push({
                             date: instance.last_updated,
                             isInstance: !(instance.edition && instance.version),
                             edition: instance.edition || "-",
                             version: instance.version || "-",
-                            url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/version/${instance.version}`)
-                        }
+                            url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`)
+                        });
                     }
-                    return false;
                 });
                 return {
                     title: dataset.title,
