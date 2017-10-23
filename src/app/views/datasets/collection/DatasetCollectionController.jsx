@@ -160,21 +160,13 @@ class DatasetCollectionController extends Component {
             return
         }
 
-        const instanceToAddToCollection = {
-            id: this.state.selectedCollection.id,
-            name: this.state.selectedCollection.name
-        };
-
         this.setState({ isSubmitting: true });
-        this.handleAddToCollection(instanceToAddToCollection);
+        this.handleAddToCollection();
 
     }
 
     handleOnBackFromSuccess() {
-        collections.removeDataset()
-            .then(() => {
-                this.setState({hasChosen: false});
-            })
+        this.setState({ hasChosen: false });
     }
 
     handleAddToCollection() {
@@ -182,13 +174,75 @@ class DatasetCollectionController extends Component {
         const collectionID = this.state.selectedCollection.id;
         collections.addDataset(collectionID, datasetID)
             .then(() => {
-                // TODO POST next release date field to API
-                // We'll probably want to post "next release date" field to an api at
-                // this point but not sure whether this data will be stored against
-                // the version or the dataset or whether this field is required at this
-                // part of the journey
                 this.setState({hasChosen: true, isSubmitting: false });
-            })
+            }).catch(error => {
+            switch (error.status) {
+                case(409): { // zebedee will return a 409 if the dataset is in another collection
+                    const notification = {
+                        "type": "neutral",
+                        "message": "This dataset is in another collection.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        "type": "neutral",
+                        "message": "You do not have permission to add dataset to a collection.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "No API route available to add dataset to a collection.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get the collections.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get collections. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to get collections.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get the submitted datasets.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            this.setState({isSubmitting: false});
+        })
     }
 
 
