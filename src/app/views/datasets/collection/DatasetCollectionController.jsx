@@ -207,7 +207,7 @@ class DatasetCollectionController extends Component {
                 case("RESPONSE_ERR"): {
                     const notification = {
                         "type": "warning",
-                        "message": "An error's occurred whilst trying to get the collections.",
+                        "message": "An error's occurred whilst trying to add this dataset to a collection.",
                         isDismissable: true
                     };
                     notifications.add(notification);
@@ -216,7 +216,7 @@ class DatasetCollectionController extends Component {
                 case("FETCH_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "There's been a network error whilst trying to get collections. Please check you internet connection and try again in a few moments.",
+                        message: "There's been a network error whilst trying add this dataset to a collection. Please check you internet connection and try again in a few moments.",
                         isDismissable: true
                     };
                     notifications.add(notification);
@@ -225,7 +225,7 @@ class DatasetCollectionController extends Component {
                 case("UNEXPECTED_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "An unexpected error has occurred whilst trying to get collections.",
+                        message: "An unexpected error has occurred whilst trying to add this dataset to a collection.",
                         isDismissable: true
                     };
                     notifications.add(notification);
