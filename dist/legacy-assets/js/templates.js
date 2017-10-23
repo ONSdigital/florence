@@ -1107,23 +1107,23 @@ templates['editorDownloadsWithSummary'] = template({"1":function(depth0,helpers,
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" class=\"edit-section__sortable-item edit-section__sortable-item--summary\">\n                    <div class=\"edit-section__sortable-item--counter float-left\">"
     + alias3((helpers.plus || (depth0 && depth0.plus) || alias1).call(depth0,(data && data.index),1,{"name":"plus","hash":{},"data":data}))
-    + ". </div>\n                    <textarea id=\"file-title_"
+    + ". </div>\n                    <div class=\"file-upload\">\n                        <div class=\"file-upload__filename\" id=\"file-filename_show_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"add-tooltip\" placeholder=\"Type title here and click\n                    edit to add description\">"
+    + "\"><strong>Filename:</strong> "
+    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
+    + "</div>\n                        <textarea class=\"file-upload__title\" id=\"file-title_"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"Type title here and click edit to add description\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</textarea>\n                    <textarea style=\"display: none;\" id=\"file-summary_"
+    + "</textarea>\n                        <textarea style=\"display: none;\" id=\"file-summary_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.fileDescription || (depth0 != null ? depth0.fileDescription : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"fileDescription","hash":{},"data":data}) : helper)))
-    + "</textarea>\n                    <br>\n                    <div id=\"file-filename_show_"
+    + "</textarea>\n                        <div class=\"edit-section__buttons\">\n                            <button class=\"btn btn--primary btn-markdown-edit\" id=\"file-edit_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.file || (depth0 != null ? depth0.file : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"file","hash":{},"data":data}) : helper)))
-    + "</div>\n                    <div class=\"edit-section__buttons\">\n                        <button class=\"btn btn--primary btn-markdown-edit\" id=\"file-edit_"
+    + "\">Edit description</button>\n                            <button class=\"btn btn--warning btn-page-delete\" id=\"file-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">Edit description</button>\n                        <button class=\"btn btn--warning btn-page-delete\" id=\"file-delete_"
-    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">Delete</button>\n                    </div>\n                </div>\n";
+    + "\">Delete</button>\n                        </div>\n                    </div>\n                </div>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -2106,7 +2106,9 @@ templates['workEditT3'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"        ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "    </nav>\n\n</section>";
 },"usePartial":true,"useData":true});
-templates['workEditT4Article'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+templates['workEditT4Article'] = template({"1":function(depth0,helpers,partials,data) {
+    return "checked";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
   return "<section class=\"panel workspace-edit\">\n    <form class=\"edit-form\">\n        <div class=\"edit-accordion\">\n            <div class=\"edit-section\">\n                <div class=\"edit-section__head\">\n                    <h1>Metadata</h1>\n                    <p id=\"metadata-a\">Title | Contact | Abstract | Keywords</p>\n                </div>\n                <div class=\"edit-section__content\">\n                    <div id=\"metadata-list\">\n                        <div>\n                            <label for=\"title\">Title\n                                <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
@@ -2125,11 +2127,15 @@ templates['workEditT4Article'] = template({"compiler":[6,">= 2.0.0-beta.1"],"mai
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
     + "</textarea>\n                            </label>\n                        </div>\n                        <div id=\"abstract-p\">\n                            <label for=\"abstract\">Abstract\n                                <textarea class=\"auto-size\" type=\"text\"\n                                          id=\"abstract\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1._abstract : stack1), depth0))
-    + "</textarea>\n                            </label>\n                        </div>\n                        <div id=\"natStat\">\n                            <label for=\"natStat-checkbox\">National statistic </label>\n                            <input id=\"natStat-checkbox\" type=\"checkbox\" name=\"natStat\" value=\"false\"/>\n                        </div>\n                        <div>\n                            <label for=\"keywords\">Keywords\n                                <input name=\"tags\" id=\"keywords\" value=\""
+    + "</textarea>\n                            </label>\n                        </div>\n                        <div id=\"natStat\">\n                            <label for=\"natStat-checkbox\">National statistic</label>\n                            <input id=\"natStat-checkbox\" type=\"checkbox\" name=\"natStat\" "
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nationalStatistic : stack1),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "/>\n                        </div>\n                        <div>\n                            <label for=\"keywords\">Keywords\n                                <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
     + "\"\n                                       style=\"display: none;\">\n                            </label>\n                            <ul id=\"keywordsTag\"></ul>\n                        </div>\n                        <div>\n                            <label for=\"metaDescription\">Meta description\n                                <textarea class=\"auto-size\" type=\"text\"\n                                          id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
-    + "</textarea>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div id=\"section\"></div>\n\n            <div id=\"tab\"></div>\n\n            <div id=\"charts\"></div>\n\n            <div id=\"tables\"></div>\n\n            <div id=\"equations\"></div>\n\n            <div id=\"images\"></div>\n\n            <div id=\"document\"></div>\n\n            <div id=\"data\"></div>\n\n            <div id=\"topics\"></div>\n\n            <div id=\"link\"></div>\n\n            <div id=\"qmi\"></div>\n\n            <div id=\"methodology\"></div>\n\n            <div id=\"pdf\"></div>\n\n            <div id=\"correction\"></div>\n\n            <div id=\"alert\"></div>\n\n        </div>\n\n        <nav class=\"edit-nav\">\n"
+    + "</textarea>\n                            </label>\n                        </div>\n                        <div id=\"articleType\">\n                            <label for=\"articleType-checkbox\">Neutral article</label>\n                            <input id=\"articleType-checkbox\" type=\"checkbox\" name=\"articleType\" "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "/>\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div id=\"section\"></div>\n\n            <div id=\"tab\"></div>\n\n            <div id=\"charts\"></div>\n\n            <div id=\"tables\"></div>\n\n            <div id=\"equations\"></div>\n\n            <div id=\"images\"></div>\n\n            <div id=\"document\"></div>\n\n            <div id=\"data\"></div>\n\n            <div id=\"topics\"></div>\n\n            <div id=\"link\"></div>\n\n            <div id=\"qmi\"></div>\n\n            <div id=\"methodology\"></div>\n\n            <div id=\"pdf\"></div>\n\n            <div id=\"correction\"></div>\n\n            <div id=\"alert\"></div>\n\n        </div>\n\n        <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"            ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "        </nav>\n    </form>\n</section>";
 },"usePartial":true,"useData":true});

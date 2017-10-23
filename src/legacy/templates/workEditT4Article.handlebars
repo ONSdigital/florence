@@ -56,8 +56,8 @@
                             </label>
                         </div>
                         <div id="natStat">
-                            <label for="natStat-checkbox">National statistic </label>
-                            <input id="natStat-checkbox" type="checkbox" name="natStat" value="false"/>
+                            <label for="natStat-checkbox">National statistic</label>
+                            <input id="natStat-checkbox" type="checkbox" name="natStat" {{#if this.description.nationalStatistic}}checked{{/if}}/>
                         </div>
                         <div>
                             <label for="keywords">Keywords
@@ -71,6 +71,10 @@
                                 <textarea class="auto-size" type="text"
                                           id="metaDescription">{{this.description.metaDescription}}</textarea>
                             </label>
+                        </div>
+                        <div id="articleType">
+                            <label for="articleType-checkbox">Neutral article</label>
+                            <input id="articleType-checkbox" type="checkbox" name="articleType" {{#if this.isPrototypeArticle}}checked{{/if}}/>
                         </div>
                     </div>
                 </div>
