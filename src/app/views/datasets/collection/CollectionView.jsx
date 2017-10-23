@@ -4,7 +4,6 @@ import { Link } from 'react-router';
 import url from '../../../utilities/url'
 
 import Select from '../../../components/Select';
-import Input from '../../../components/Input';
 
 const propTypes = {
     hasChosen: PropTypes.bool.isRequired,
@@ -64,11 +63,6 @@ class CollectionView extends Component {
                         />
 
                         {selectedCollection.id ? this.renderSelectedCollectionDetails() : ""}
-
-                        <Input id="next-release-date"
-                               label="Next release date"
-                               onChange={this.props.handleNextReleaseChange}
-                        />
 
                         <button type="submit" className="btn btn--positive" disabled={isSubmitting}>
                             Save and continue
