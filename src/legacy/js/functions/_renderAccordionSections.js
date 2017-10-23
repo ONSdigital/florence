@@ -229,7 +229,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         addFileWithDetails(collectionId, pageData, 'downloads', 'file');
-        editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
+        editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         accordion();
         compendiumDataEditor(collectionId, pageData);
     }
