@@ -9,52 +9,66 @@ export default class collections {
             })
     }
 
-    static addDataset() {
-        // return http.put(`/zebedee/collections/${collectionID}/dataset/${datasetID}`, body , true)
-        //     .then(response => {
-        //         return response;
-        //     })
-
-        // mocked ok response from Zebedee
-        return new Promise(resolve => {
-            setTimeout(() => { resolve(); }, 2000);
-        })
+    static addDataset(collectionID, datasetID) {
+        const body = {state: "inProgress"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
+            .then(response => {
+                return response;
+            });
     }
 
-    static removeDataset() {
-        // return http.delete(`/zebedee/collections/${collectionID}/dataset/${datasetID}`, true)
-        //     .then(response => {
-        //         return response;
-        //     })
-
-        // mocked ok response from Zebedee
-        return new Promise(resolve => {
-            setTimeout(() => { resolve(); }, 1000);
-        })
+    static setDatasetStatusToComplete(collectionID, datasetID) {
+        const body = {state: "complete"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
+            .then(response => {
+                return response;
+            });
     }
 
-    static addVersion(collectionID, datasetID, edition, version) {
-        // return http.put(`/zebedee/collections/${collectionID}/datasetID/${datasetID}/editions/${edition}/versions/${version}`, body , true)
-        //     .then(response => {
-        //         return response;
-        //     })
-
-        // mocked ok response from Zebedee
-        return new Promise(resolve => {
-            setTimeout(() => { resolve(); }, 2000);
-        })
+    static setDatasetStatusToReviewed(collectionID, datasetID) {
+        const body = {state: "reviewed"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
+            .then(response => {
+                return response;
+            });
     }
 
-    static removeVersion(collectionID, datasetID, edition, version) {
-        // return http.delete(`/zebedee/collections/${collectionID}/datasetID/${datasetID}/editions/${edition}/versions/${version}`, true)
-        //     .then(response => {
-        //         return response;
-        //     })
+    static removeDataset(collectionID, datasetID) {
+        return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, true)
+            .then(response => {
+                return response;
+            });
+    }
 
-        // mocked ok response from Zebedee
-        return new Promise(resolve => {
-            setTimeout(() => { resolve(); }, 1000);
-        })
+    static addDatasetVersion(collectionID, datasetID, editionID, versionID) {
+        const body = {state: "inProgress"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static setDatasetVersionStatusToComplete(collectionID, datasetID) {
+        const body = {state: "complete"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static setDatasetVersionStatusToReviewed(collectionID, datasetID) {
+        const body = {state: "reviewed"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
+        return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true)
+            .then(response => {
+                return response;
+            });
     }
 
 }
