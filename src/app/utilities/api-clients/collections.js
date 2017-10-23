@@ -48,7 +48,7 @@ export default class collections {
             });
     }
 
-    static setDatasetVersionStatusToComplete(collectionID, datasetID) {
+    static setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID) {
         const body = {state: "complete"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
             .then(response => {
@@ -56,7 +56,7 @@ export default class collections {
             });
     }
 
-    static setDatasetVersionStatusToReviewed(collectionID, datasetID) {
+    static setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID) {
         const body = {state: "reviewed"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
             .then(response => {
