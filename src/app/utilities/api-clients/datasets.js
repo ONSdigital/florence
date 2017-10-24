@@ -55,4 +55,11 @@ export default class datasets {
                  return response;
              });
     }
+
+    static getNewVersionsAndCompletedInstances() {
+        return http.get(`/dataset/instances?state=completed,edition-confirmed`)
+            .then(response => {
+                return response;
+            });
+    }
 }
