@@ -15,7 +15,6 @@ const propTypes = {
     selectedCollection: PropTypes.object,
     handleSubmit: PropTypes.func.isRequired,
     handleCollectionChange: PropTypes.func.isRequired,
-    handleNextReleaseChange: PropTypes.func.isRequired,
     handleOnBackFromSuccess: PropTypes.func.isRequired,
     backLink: PropTypes.string.isRequired
 };
