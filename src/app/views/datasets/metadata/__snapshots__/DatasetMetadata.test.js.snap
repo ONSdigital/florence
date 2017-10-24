@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dataset details page matches stored snapshot 1`] = `
+<div
+  className="grid grid--justify-center"
+>
+  <div
+    className="grid__col-4"
+  >
+    <h1>
+      Dataset details
+    </h1>
+    <div
+      className="margin-bottom--1"
+    >
+      ◀ 
+      <a
+        href="#"
+        onClick={[Function]}
+      >
+        Back
+      </a>
+    </div>
+    <p
+      className="margin-bottom--1"
+    >
+      This information is common across all editions of the dataset.
+      <br />
+      Changing it will affect all previous edition
+    </p>
+    <div
+      className="loader loader--dark"
+    />
+  </div>
+  
+</div>
+`;
