@@ -10,7 +10,7 @@ export default class collections {
     }
 
     static addDataset(collectionID, datasetID) {
-        const body = {state: "inProgress"};
+        const body = {state: "InProgress"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
             .then(response => {
                 return response;
@@ -18,7 +18,7 @@ export default class collections {
     }
 
     static setDatasetStatusToComplete(collectionID, datasetID) {
-        const body = {state: "complete"};
+        const body = {state: "Complete"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
             .then(response => {
                 return response;
@@ -26,7 +26,7 @@ export default class collections {
     }
 
     static setDatasetStatusToReviewed(collectionID, datasetID) {
-        const body = {state: "reviewed"};
+        const body = {state: "Reviewed"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
             .then(response => {
                 return response;
@@ -41,7 +41,7 @@ export default class collections {
     }
 
     static addDatasetVersion(collectionID, datasetID, editionID, versionID) {
-        const body = {state: "inProgress"};
+        const body = {state: "InProgress"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
             .then(response => {
                 return response;
@@ -49,7 +49,7 @@ export default class collections {
     }
 
     static setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID) {
-        const body = {state: "complete"};
+        const body = {state: "Complete"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
             .then(response => {
                 return response;
@@ -57,7 +57,7 @@ export default class collections {
     }
 
     static setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID) {
-        const body = {state: "reviewed"};
+        const body = {state: "Reviewed"};
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
             .then(response => {
                 return response;
