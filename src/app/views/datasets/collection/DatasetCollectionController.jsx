@@ -15,7 +15,7 @@ const propTypes = {
     }).isRequired
 };
 
-class DatasetCollectionController extends Component {
+export class DatasetCollectionController extends Component {
 
     constructor(props) {
         super(props);
@@ -32,7 +32,6 @@ class DatasetCollectionController extends Component {
         };
 
         this.handleCollectionChange = this.handleCollectionChange.bind(this);
-        this.handleNextReleaseChange = this.handleNextReleaseChange.bind(this);
         this.handleOnBackFromSuccess = this.handleOnBackFromSuccess.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -145,11 +144,6 @@ class DatasetCollectionController extends Component {
             },
             errorMsg: ""
         })
-    }
-
-    handleNextReleaseChange(event) {
-        const value = event.target.value;
-        this.setState({nextRelease: value, errorMsg: ""})
     }
 
     handleSubmit(event) {
