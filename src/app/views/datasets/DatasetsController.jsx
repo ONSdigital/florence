@@ -29,7 +29,7 @@ class DatasetsController extends Component {
     componentWillMount() {
         this.setState({isFetchingDatasets: true});
         const fetches = [
-            datasets.getAllInstances(),
+            datasets.getNewVersionsAndCompletedInstances(),
             datasets.getAll()
         ]
         Promise.all(fetches).then(responses => {
@@ -112,29 +112,38 @@ class DatasetsController extends Component {
     }
 
     mapResponseToTableData(datasets, instances) {
-
-        const values = datasets.map(dataset => {
-            const datasetInstances = instances.map(instance => {
-                const datasetID = instance.links.dataset.id;
-                if (datasetID === dataset.id && instance.state !== "published") {
-                    const version = instance.version || "-";
-                    return {
-                        date: instance.last_updated,
-                        isInstance: !(instance.edition && instance.version),
-                        edition: instance.edition || "-",
-                        version: version.toString(),
-                        url: version === "-" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${version}`)
+        try {
+            const values = datasets.map(dataset => {
+                dataset = dataset.current || dataset.next || dataset;
+                const datasetInstances = [];
+                instances.forEach(instance => {
+                    const datasetID = instance.links.dataset.id;
+                    if (datasetID === dataset.id) {
+                        datasetInstances.push({
+                            date: instance.last_updated,
+                            isInstance: !(instance.edition && instance.version),
+                            edition: instance.edition || "-",
+                            version: instance.version || "-",
+                            url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`)
+                        });
                     }
+                });
+                return {
+                    title: dataset.title,
+                    id: dataset.id,
+                    instances: datasetInstances
                 }
             });
-            return {
-                title: dataset.title,
-                id: dataset.id,
-                instances: datasetInstances
-            }
-        });
-
-        return values;
+            return values;
+        } catch (error) {
+            const notification = {
+                type: "warning",
+                message: "Error trying to map the datasets data to the table structure. Please refresh the page."
+            };
+            notifications.add(notification);
+            console.error("Error mapping dataset API responses to view", error);
+            return [];
+        }
     }
 
     render() {
