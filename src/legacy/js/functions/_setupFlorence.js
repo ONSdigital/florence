@@ -159,7 +159,8 @@ function setupFlorence() {
             "collections": "collections",
             "publishing-queue": "publish",
             "reports": "reports",
-            "users-and-access": "users"
+            "users-and-access": "users",
+            "workspace": "workspace"
         }[path];
     };
     $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
