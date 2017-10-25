@@ -16,6 +16,16 @@ export default class Modal extends Component {
         super(props);
     }
 
+    componentWillMount() {
+        // Stop background page from scrolling whilst modal is active
+        document.querySelector("body").style.overflow = "hidden";
+    }
+
+    componentWillUnmount() {
+        // Allow background page to scroll again
+        document.querySelector("body").style.overflow = "initial";
+    }
+
     render() {
         return (
             <div className="modal__overlay">

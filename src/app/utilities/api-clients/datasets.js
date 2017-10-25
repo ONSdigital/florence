@@ -11,6 +11,7 @@ export default class datasets {
     }
 
     static getAll() {
+
         return http.get(`/dataset/datasets`)
             .then(response => {
                 return response;
@@ -39,6 +40,20 @@ export default class datasets {
         return new Promise(resolve => {
             setTimeout(resolve, 2000);
         })
+    }
+
+    static updateDatasetMetadata(datasetID, metadata) {
+        // TODO unstub once dataset API handles putting metadata to a dataset ID
+        return new Promise(resolve => {
+            setTimeout(resolve, 1000);
+        });
+        // const body = {
+        //     metadata
+        // }
+        // return http.put(`/dataset/datasets/${datasetID}`, body, true)
+        //     .then(response => {
+        //         return response;
+        //     })
     }
 
     static approveDatasetMetadata(datasetID) {
