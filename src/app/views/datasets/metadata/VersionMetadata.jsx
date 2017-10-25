@@ -39,6 +39,7 @@ const propTypes = {
     }),
     version: PropTypes.shape({
       edition: PropTypes.string,
+      state: PropTypes.string,
       version: PropTypes.number,
       dimensions: PropTypes.arrayOf(PropTypes.object),
     }),
@@ -105,6 +106,7 @@ class VersionMetadata extends Component {
           this.setState({
             dimensions: this.props.version.dimensions,
             edition: this.props.version.edition,
+            state: this.props.version.state,
           });
         }
 
@@ -161,9 +163,12 @@ class VersionMetadata extends Component {
 
     postData(body) {
       if(this.state.isInstance) {
-        return datasets.updateInstanceEdition(this.props.params.instanceID, this.state.selectedEdition, body);
+        return datasets.confirmEditionAndCreateVersion(this.props.params.instanceID, this.state.selectedEdition, body);
       }
-      return datasets.updateVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body);
+      // Throwing a 400 error - The dataset API has a bug at the version endpoint
+      // The API validates certain fields - license & release date
+      // It shouldn't at the state of "edition-confirmed".
+      return datasets.updateVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version);
     }
 
     updateInstanceVersion(metaData) {
@@ -317,6 +322,7 @@ class VersionMetadata extends Component {
                           <div className="margin-bottom--2">
                             <div className="grid__col-6">
                               <Select
+                                  disabled={this.state.state == "edition-confirmed" ? true : false}
                                   id="edition"
                                   label="Edition"
                                   contents={this.mapEditionsToSelectOptions()}

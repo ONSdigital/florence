@@ -40,6 +40,7 @@ export default class datasets {
 
     static updateVersion(datasetID, edition, version) {
         const body = {
+          "edition": edition,
         }
         return http.put(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`, body, true)
             .then(response => {
@@ -50,7 +51,17 @@ export default class datasets {
     static updateInstanceEdition(instanceID, edition) {
         const body = {
           "edition": edition,
-          "state" : "edition-confirmed"
+        }
+        return http.put(`/dataset/instances/${instanceID}`, body, true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static confirmEditionAndCreateVersion(instanceID, edition) {
+        const body = {
+          "edition": edition,
+          "state": "edition-confirmed",
         }
         return http.put(`/dataset/instances/${instanceID}`, body, true)
             .then(response => {
