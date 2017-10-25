@@ -253,6 +253,19 @@
                 content: '√x';
             }
         }
+
+        &--box {
+            float: left;
+            width: 40px;
+            height: 42px;
+            background: $pickled-bluewood url(../../img/sprite.png) no-repeat 0px -792px;
+            background-size: 30px auto;
+            margin: 10.5px 0 0 20px;
+
+            &:hover:after {
+                background-color: transparent;
+            }
+        }
     }
 
     &__line-numbers {
