@@ -14,7 +14,12 @@ const propTypes = {
     selectedOption: PropTypes.string,
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
+    disabled: PropTypes.bool,
     error: PropTypes.string
+};
+
+const defaultProps = {
+    disabled: false,
 };
 
 class Select extends Component {
@@ -41,6 +46,7 @@ class Select extends Component {
                 }
                 <div className={"select-wrap " + (this.state.isFocused ? "select-wrap--focus" : "") + (this.props.error ? "select-wrap--error" : "")}>
                     <select
+                        disabled={this.props.disabled}
                         className="select"
                         id={this.props.id}
                         onChange={this.props.onChange}
@@ -59,4 +65,5 @@ class Select extends Component {
 }
 
 Select.propTypes = propTypes;
+Select.defaultProps = defaultProps;
 export default Select;
