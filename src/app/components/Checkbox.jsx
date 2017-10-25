@@ -6,7 +6,8 @@ const propTypes = {
     label: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    isChecked: PropTypes.bool
+    isChecked: PropTypes.bool,
+    disabled: PropTypes.bool
 };
 
 class Checkbox extends Component {
@@ -45,11 +46,12 @@ class Checkbox extends Component {
               <div className="error-msg">{this.props.error}</div>
           }
           <div className="checkbox">
-            <input className="margin-right--1 checkbox__input" type="checkbox"
+            <input className="checkbox__input" type="checkbox"
               checked={this.state.value}
               onChange={this.handleChange}
               onFocus={this.handleFocus}
               onBlur={this.handleFocus}
+              disabled={this.props.disabled}
               id={this.props.id}
             />
             <label htmlFor={this.props.id} className="checkbox__label">
