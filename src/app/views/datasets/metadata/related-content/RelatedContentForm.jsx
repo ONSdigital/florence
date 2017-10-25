@@ -25,6 +25,15 @@ class RelatedContentForm extends Component {
         }
     }
 
+    componentWillMount() {
+        if (this.props.urlInput || this.props.titleInput) {
+            this.setState({
+                titleInput: this.props.titleInput,
+                urlInput: this.props.urlInput
+            });
+        }
+    }
+
     render() {
         return (
             <form className="form" onSubmit={this.props.onFormSubmit}>
@@ -41,6 +50,7 @@ class RelatedContentForm extends Component {
                             onChange={this.props.onFormInput}
                             onCancel={this.props.onCancel}
                             isFocused={true}
+                            value={this.props.titleInput}
                         />
                         <Input
                             type="text"
@@ -48,7 +58,7 @@ class RelatedContentForm extends Component {
                             error={this.props.urlError}
                             id="add-related-content-url"
                             name="add-related-content-url"
-                            value={this.props.urlInput.value}
+                            value={this.props.urlInput}
                             onChange={this.props.onFormInput}
                             onCancel={this.props.onCancel}
                         />
