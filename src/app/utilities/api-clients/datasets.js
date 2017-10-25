@@ -42,6 +42,20 @@ export default class datasets {
         })
     }
 
+    static updateDatasetMetadata(datasetID, metadata) {
+        // TODO unstub once dataset API handles putting metadata to a dataset ID
+        return new Promise(resolve => {
+            setTimeout(resolve, 1000);
+        });
+        // const body = {
+        //     metadata
+        // }
+        // return http.put(`/dataset/datasets/${datasetID}`, body, true)
+        //     .then(response => {
+        //         return response;
+        //     })
+    }
+
     static approveDatasetMetadata(datasetID) {
         // TODO unstub this once dataset metadata can be reviewed and approved in the API
         return new Promise(resolve => {
