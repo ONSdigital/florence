@@ -43,6 +43,7 @@ export default class Input extends Component {
     }
 
     moveCaretToEnd(event) {
+        // Move caret to the end of the value on input focus
         const val = event.target.value;
         event.target.value = '';
         event.target.value = val;

@@ -13,9 +13,10 @@ import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
 import Card from '../../../components/Card';
 import CardList from '../../../components/CardList';
-import RelatedDataController from './related-content/RelatedDataController';
+import RelatedContentForm from './related-content/RelatedContentForm'
 import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
-import url from '../../../utilities/url'
+import url from '../../../utilities/url';
+import log, {eventTypes} from '../../../utilities/log'
 
 const propTypes = {
     params: PropTypes.shape({
@@ -25,7 +26,12 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
-        title: PropTypes.string.isRequired,
+        next: PropTypes.shape({
+            title: PropTypes.string.isRequired
+        }),
+        current: PropTypes.shape({
+            title: PropTypes.string.isRequired
+        })
     })),
     dataset: PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -86,9 +92,9 @@ class DatasetMetadata extends Component {
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
-        this.removeRelated = this.removeRelated.bind(this);
+        this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
         this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
-        this.handleActions = this.handleActions.bind(this);
+        this.editRelatedLink = this.editRelatedLink.bind(this);
     }
 
     componentWillMount() {
@@ -115,7 +121,6 @@ class DatasetMetadata extends Component {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
 
-            console.log(this.props.dataset);
             if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
                 this.setState({
                     keywords: this.props.dataset.keywords.join(", ")
@@ -147,7 +152,7 @@ class DatasetMetadata extends Component {
               })
             }
 
-            if (this.props.dataset.qmi.title != "") {
+            if (this.props.dataset.qmi && this.props.dataset.qmi.title !== "") {
                 const item = this.props.dataset.qmi
                 const qmi = {title: item.title, url: item.href, key: guid()}
                 this.setState({relatedQMI: qmi})
@@ -285,7 +290,7 @@ class DatasetMetadata extends Component {
      handleModalSubmit(event){
        event.preventDefault();
        this.setState({showModal: false});
-       this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+       this.props.dispatch(push(url.resolve("/datasets")));
      }
 
     handleToggleChange(isChecked) {
@@ -325,111 +330,176 @@ class DatasetMetadata extends Component {
      }
 
      handleCancel() {
-         this.setState({showModal: false});
-         this.setState({modalType: ""});
-         this.setState({editKey: ""});
+        this.setState({
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            urlInput: "",
+            titleInput: ""
+        });
      }
 
      handleAddRelatedClick(type) {
-         this.setState({showModal: true});
-         this.setState({modalType: type});
+        this.setState({
+            showModal: true,
+            modalType: type
+        });
      }
 
 
      handleEditRelatedClick(type, key) {
-         this.setState({showModal: true});
-         this.setState({modalType: type});
-         this.setState({editKey: key});
+        let relatedItem;
+
+        if (type === "bulletin") {
+            relatedItem = this.state.relatedBulletins.find(bulletin => {
+                return bulletin.key === key;
+            });
+        }
+        
+        if (type === "qmi") {
+            relatedItem = this.state.relatedQMI;
+        }
+        
+        if (type === "link") {
+            relatedItem = this.state.relatedLinks.find(link => {
+                return link.key === key;
+            });
+        }
+
+        this.setState({
+            showModal: true,
+            modalType: type,
+            editKey: key,
+            urlInput: relatedItem.url,
+            titleInput: relatedItem.title
+        });
      }
 
-     removeRelated(type, key) {
-         function remove(arr, key) {
-             arr.map((item, index) => {
-                 if (item.key === key) {
-                     arr.splice(index, 1);
-                 }
-             })
-             return arr
-         }
+     handleDeleteRelatedClick(type, key) {
+        function remove(items, key) {
+            return items.filter(item => {
+                return item.key !== key
+            });
+        }
 
-         if (type === "bulletin") {
-             var bulletins = remove(this.state.relatedBulletins, key)
-             this.setState({relatedBulletins: bulletins});
-         } else if (type === "qmi") {
-             this.setState({relatedQMI: ""});
-         } else if (type === "link") {
-             var links = remove(this.state.relatedLinks, key)
-             this.setState({relatedLinks: links});
-         }
+        if (type === "bulletin") {
+            this.setState({relatedBulletins: remove(this.state.relatedBulletins, key)});
+            return;
+        } 
+        
+        if (type === "qmi") {
+            this.setState({relatedQMI: ""});
+            return;
+        } 
+        
+        if (type === "link") {
+            this.setState({relatedLinks: remove(this.state.relatedLinks, key)});
+            return;
+        }
+
+        console.warn("Attempt to remove a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to remove a related content type that is not recognised: '${type}'`);
      }
 
-     handleActions(type, key, action){
+     editRelatedLink(type, key) {
+        const edit = items => {
+            return items.map(item => {
+                if (item.key !== key) {
+                    return item;
+                }
+                return {
+                    ...item,
+                    title: this.state.titleInput,
+                    url: this.state.urlInput
+                }
+            });
+        }
 
-       if(action === "edit"){
-         this.setState({showModal: true});
-         this.setState({modalType: type});
-         this.setState({editKey: key});
-       }
+        if (type === "bulletin") {
+            this.setState({relatedBulletins: edit(this.state.relatedBulletins, key)});
+            return;
+        } 
+        
+        if (type === "qmi") {
+            const editedQMI = {
+                ...this.state.relatedQMI,
+                title: this.state.titleInput,
+                url: this.state.urlInput
+            }
+            this.setState({relatedQMI: editedQMI});
+            return;
+        } 
+        
+        if (type === "link") {
+            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});
+            return;
+        }
 
-       if(action === "remove"){
-         this.removeRelated(type, key);
-       }
-
+        console.warn("Attempt to edit a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
      }
 
      mapTypeContentsToCard(items){
-         return (items).map(item => {
+         return items.map(item => {
            return {
              title: item.title,
-             key: item.key,
+             id: item.key,
            }
          });
      }
 
      handleFormSubmit(event) {
-         event.preventDefault();
-         function guid() {
-               function S4() {
-                   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-               }
-               return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
-           }
+        event.preventDefault();
+        function guid() {
+            function S4() {
+                return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+            }
+            return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+        }
 
-         if(this.state.titleInput == "" || this.state.urlInput == ""){
-           if(this.state.titleInput == ""){
-             this.setState({
-                 titleError: "You must provide a title"
-             });
-           }
-           if (this.state.urlInput == ""){
-             this.setState({
-                 urlError: "You must provide a url"
-             });
-           }
-         } else {
-         if (this.state.modalType === "bulletin") {
-             if (this.state.editKey != "") {
-                 this.removeRelated("bulletin", this.state.editKey)
-             }
-             const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
-             this.setState({relatedBulletins: bulletins});
-         } else if (this.state.modalType === "qmi") {
-             if (this.state.editKey != "") {
-                 this.removeRelated("qmi", this.state.editKey)
-             }
-             const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: guid()};
-             this.setState({relatedQMI: qmi});
-         } else if (this.state.modalType === "link") {
-             if (this.state.editKey != "") {
-                 this.removeRelated("link", this.state.editKey)
-             }
-             const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
-             this.setState({relatedLinks: links});
-         }
+        if(this.state.titleInput == "" || this.state.urlInput == ""){
+            if(this.state.titleInput == ""){
+                this.setState({
+                    titleError: "You must provide a title"
+                });
+            }
+            if (this.state.urlInput == ""){
+                this.setState({
+                    urlError: "You must provide a url"
+                });
+            }
+            } else {
+            if (this.state.modalType === "bulletin") {
+            if (this.state.editKey != "") {
+                this.editRelatedLink("bulletin", this.state.editKey);
+            } else {
+                const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
+                this.setState({relatedBulletins: bulletins});
+            }
+            } else if (this.state.modalType === "qmi") {
+            if (this.state.editKey != "") {
+                this.editRelatedLink("qmi", this.state.editKey);
+            } else {
+                const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: guid()};
+                this.setState({relatedQMI: qmi});
+            }
+            } else if (this.state.modalType === "link") {
+            if (this.state.editKey != "") {
+                this.editRelatedLink("link", this.state.editKey);
+            } else {
+                const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
+                this.setState({relatedLinks: links});
+            }
+        }
 
-         this.setState({showModal: false});
-         this.setState({modalType: ""});
-         this.setState({editKey: ""})
+        this.setState({
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            titleInput: "",
+            urlInput: ""
+        })
+
        }
      }
 
@@ -468,12 +538,12 @@ class DatasetMetadata extends Component {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    <h1>Dataset details</h1>
-                    <div className="margin-bottom--1">
-                        &#9664; <a href="#" onClick={this.handleBackButton}>Back</a>
+                    <div className="margin-top--2">
+                        &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
+                    <h1 className="margin-top--1">Dataset details</h1>
                     <p className="margin-bottom--1">This information is common across all editions of the dataset.<br/>
-                        Changing it will affect all previous edition</p>
+                        Changing it will affect all previous editions.</p>
                     {this.state.isFetchingDataset ?
                         <div className="loader loader--dark"></div>
                     :
@@ -546,47 +616,48 @@ class DatasetMetadata extends Component {
                             <CardList
                               contents={this.mapTypeContentsToCard(this.state.relatedBulletins)}
                               type="bulletin"
-                              listActions={this.handleActions}
+                              onEdit={this.handleEditRelatedClick}
+                              onDelete={this.handleDeleteRelatedClick}
                               />
-                            <a href="#" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</a>
+                            <button type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> QMI </h3>
                                 { this.state.relatedQMI.title != undefined ?
                                   <ul className="list--neutral">
                                     <Card
-                                      title={this.state.relatedQMI.title}
-                                      keyID={this.state.relatedQMI.key}
-                                      type="qmi"
-                                      onEdit={this.handleActions}
+                                        title={this.state.relatedQMI.title}
+                                        keyID={this.state.relatedQMI.key}
+                                        type="qmi"
+                                        onEdit={this.handleEditRelatedClick}
+                                        onDelete={this.handleDeleteRelatedClick}
                                       />
                                   </ul>
                                 :
-                                  <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
+                                  <button type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </button>
                                 }
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Related links </h3>
                                 <CardList
-                                  contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
-                                  type="link"
-                                  listActions={this.handleActions}
-                                  />
-                              <a href="#" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</a>
+                                    contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
+                                    type="link"
+                                    onEdit={this.handleEditRelatedClick}
+                                    onDelete={this.handleDeleteRelatedClick}
+                                />
+                              <button type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
-                        <button className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        <button type="submit" className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
                         </form>
                     </div>
                 }
                   </div>
-                  {
-                      this.state.showModal &&
+                  {this.state.showModal &&
 
                       <Modal sizeClass="grid__col-3">
-                        {
-                            this.state.modalType ?
+                        {this.state.modalType ?
 
-                          <RelatedDataController
+                          <RelatedContentForm
                               name="related-content-modal"
                               titleInput={this.state.titleInput}
                               urlInput={this.state.urlInput}
