@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import http from '../../../utilities/http';
 
 import datasets from '../../../utilities/api-clients/datasets';
 import recipes from '../../../utilities/api-clients/recipes';
@@ -30,7 +29,7 @@ const propTypes = {
     })),
     dataset: PropTypes.shape({
       title: PropTypes.string.isRequired,
-      release_frequency: PropTypes.string.isRequired,
+      release_frequency: PropTypes.string,
     }),
     instance: PropTypes.shape({
       edition: PropTypes.string,
@@ -109,7 +108,7 @@ class VersionMetadata extends Component {
           });
         }
 
-        this.props.dispatch(updateActiveDataset(responses[2].current));
+        this.props.dispatch(updateActiveDataset(responses[2].current || responses[2].next));
 
         this.setState({
           title: this.props.dataset.title,
@@ -135,7 +134,7 @@ class VersionMetadata extends Component {
                         isDismissable: true
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(url.parent(url.parent())));
+                    this.props.dispatch(push(url.resolve("/datasets")));
                     break;
                 }
                 default: {
@@ -153,10 +152,9 @@ class VersionMetadata extends Component {
     }
 
     shouldComponentUpdate(_, nextState) {
-        // No need to re-render, this state does not impact the view.
-        // Just used to confirm whether we're on a version or instance
-        if (this.props.isInstance && nextState.isInstance) {
-            return false;
+        // No need to re-render, this state update does not impact the view.
+        if (nextState.isFetchingData) {
+          return false;
         }
         return true;
     }
@@ -164,9 +162,8 @@ class VersionMetadata extends Component {
     postData(body) {
       if(this.state.isInstance) {
         return datasets.updateInstanceEdition(this.props.params.instanceID, this.state.selectedEdition, body);
-      } else {
-        return datasets.updateVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body);
       }
+      return datasets.updateVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body);
     }
 
     updateInstanceVersion(metaData) {
