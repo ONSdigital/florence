@@ -63,6 +63,7 @@ class DatasetMetadata extends Component {
         super(props);
         this.state = {
             isFetchingDataset: false,
+            isSubmittingData: false,
             hasChanges: false,
             error: null,
             showModal: false,
@@ -226,43 +227,39 @@ class DatasetMetadata extends Component {
         }
     }
 
-    postDatasetDetails(body) {
-       // Update to put to dataset api
-      return http.put(`${datasets}`, body, true);
-    }
-
     updateDatasetDetails(datasetDetailsData) {
-      this.postDatasetDetails(datasetDetailsData).then(() => {
-        // TO DO - Add correct path
-        this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+      datasets.updateDatasetMetadata(this.props.params.datasetID, datasetDetailsData).then(() => {
+        this.setState({isSubmittingData: false});
+        this.props.dispatch(push(`${location.pathname}/collection`));
       }).catch(error => {
-          if (error) {
-              const notification = {
-                  type: 'warning',
-                  isDismissable: true,
-                  autoDismiss: 15000
-              };
-              switch (error.status) {
-                  case ('UNEXPECTED_ERR'): {
-                      console.error(errCodes.UNEXPECTED_ERR);
-                      notification.message = errCodes.UNEXPECTED_ERR;
-                      notifications.add(notification);
-                      break;
-                  }
-                  case ('RESPONSE_ERR'): {
-                      console.error(errCodes.RESPONSE_ERR);
-                      notification.message = errCodes.RESPONSE_ERR;
-                      notifications.add(notification);
-                      break;
-                  }
-                  case ('FETCH_ERR'): {
-                      console.error(errCodes.FETCH_ERR);
-                      notification.message = errCodes.FETCH_ERR;
-                      notifications.add(notification);
-                      break;
-                  }
-              }
-          }
+        this.setState({isSubmittingData: false});
+        if (error) {
+            const notification = {
+                type: 'warning',
+                isDismissable: true,
+                autoDismiss: 15000
+            };
+            switch (error.status) {
+                case ('UNEXPECTED_ERR'): {
+                    console.error(errCodes.UNEXPECTED_ERR);
+                    notification.message = errCodes.UNEXPECTED_ERR;
+                    notifications.add(notification);
+                    break;
+                }
+                case ('RESPONSE_ERR'): {
+                    console.error(errCodes.RESPONSE_ERR);
+                    notification.message = errCodes.RESPONSE_ERR;
+                    notifications.add(notification);
+                    break;
+                }
+                case ('FETCH_ERR'): {
+                    console.error(errCodes.FETCH_ERR);
+                    notification.message = errCodes.FETCH_ERR;
+                    notifications.add(notification);
+                    break;
+                }
+            }
+        }
       });
 
     }
@@ -504,8 +501,9 @@ class DatasetMetadata extends Component {
      }
 
      handlePageSubmit(event) {
-
          event.preventDefault();
+
+        this.setState({isSubmittingData: true});
 
          const datasetDetailsData = {
            contact: {
@@ -526,9 +524,10 @@ class DatasetMetadata extends Component {
            related_datasets: [...this.state.relatedLinks],
          }
          if (!this.state.periodicity) {
-             this.setState({
-                 error: "You must select the periodicity"
-             });
+            this.setState({
+                error: "You must select the periodicity",
+                isSubmittingData: false
+            });
          } else {
            this.updateDatasetDetails(datasetDetailsData);
          }
@@ -558,6 +557,7 @@ class DatasetMetadata extends Component {
                                   id="title"
                                   label="Title"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.description}
@@ -565,17 +565,20 @@ class DatasetMetadata extends Component {
                                   id="description"
                                   label="About this dataset"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
                                   value={ this.state.keywords}
                                   id="keywords"
                                   label="Keywords"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <div className="grid__col-6 margin-top--1">
                                 <Checkbox
                                     isChecked={this.state.isNationalStat}
                                     onChange={this.handleToggleChange}
+                                    disabled={this.state.isSubmittingData}
                                     label="National Statistic"
                                     id="national-statistic"
                                 />
@@ -586,6 +589,7 @@ class DatasetMetadata extends Component {
                                       onChange={this.handleSelectChange}
                                       error={this.state.error}
                                       label="Release frequency"
+                                      disabled={this.state.isSubmittingData}
                                   />
                               </div>
                               <h3 className="margin-bottom--1">Contact</h3>
@@ -594,18 +598,21 @@ class DatasetMetadata extends Component {
                                   id="contactName"
                                   label="Contact name"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.contactEmail}
                                   id="contactEmail"
                                   label="Contact email"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.contactPhone}
                                   id="contactPhone"
                                   label="Contact telephone"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                         <h2 className="margin-bottom--1">Related content</h2>
                         <div className="margin-bottom--1">
@@ -619,7 +626,7 @@ class DatasetMetadata extends Component {
                               onEdit={this.handleEditRelatedClick}
                               onDelete={this.handleDeleteRelatedClick}
                               />
-                            <button type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
+                            <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> QMI </h3>
@@ -634,7 +641,7 @@ class DatasetMetadata extends Component {
                                       />
                                   </ul>
                                 :
-                                  <button type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </button>
+                                  <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </button>
                                 }
                         </div>
                         <div className="margin-bottom--2">
@@ -645,9 +652,12 @@ class DatasetMetadata extends Component {
                                     onEdit={this.handleEditRelatedClick}
                                     onDelete={this.handleDeleteRelatedClick}
                                 />
-                              <button type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
+                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
-                        <button type="submit" className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        {this.state.isSubmittingData &&
+                            <div className="loader loader--centre loader--dark margin-left--1"></div>
+                        }
                         </form>
                     </div>
                 }
