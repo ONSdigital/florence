@@ -5,10 +5,11 @@ import Card from './Card';
 const propTypes = {
     contents: PropTypes.arrayOf(PropTypes.shape({
         title: PropTypes.string,
-        keyID: PropTypes.string,
+        id: PropTypes.string,
     })),
     type: PropTypes.string.isRequired,
-    listActions: PropTypes.func
+    onEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
 }
 
 class CardList extends Component {
@@ -18,16 +19,17 @@ class CardList extends Component {
     render() {
         return (
           <div>
-            <ul className="list--neutral margin-bottom--1">
+            <ul className="list--neutral margin-bottom--0">
             {
                 this.props.contents.map(item => {
                     return (
                         <Card
                           title={item.title}
-                          keyID={item.key}
-                          key={item.key}
+                          key={item.id}
+                          id={item.id}
                           type={this.props.type}
-                          onEdit={this.props.listActions}
+                          onEdit={this.props.onEdit}
+                          onDelete={this.props.onDelete}
                         />
                     )
                 })

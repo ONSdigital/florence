@@ -13,8 +13,10 @@ import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
 import Card from '../../../components/Card';
 import CardList from '../../../components/CardList';
-import RelatedDataController from './related-content/RelatedDataController';
+import RelatedContentForm from './related-content/RelatedContentForm'
 import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
+import url from '../../../utilities/url';
+import log, {eventTypes} from '../../../utilities/log'
 
 const propTypes = {
     params: PropTypes.shape({
@@ -24,29 +26,34 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
-        title: PropTypes.string.isRequired,
+        next: PropTypes.shape({
+            title: PropTypes.string.isRequired
+        }),
+        current: PropTypes.shape({
+            title: PropTypes.string.isRequired
+        })
     })),
     dataset: PropTypes.shape({
       title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      keywords: PropTypes.array.isRequired,
-      national_statistic: PropTypes.bool.isRequired,
+      description: PropTypes.string,
+      keywords: PropTypes.array,
+      national_statistic: PropTypes.bool,
       contacts: PropTypes.arrayOf(PropTypes.shape({
-          name: PropTypes.string.isRequired,
-          email: PropTypes.string.isRequired,
-          telephone: PropTypes.string.isRequired,
+          name: PropTypes.string,
+          email: PropTypes.string,
+          telephone: PropTypes.string,
       })),
       qmi: PropTypes.shape({
           href: PropTypes.string,
           title: PropTypes.string,
       }),
       related_datasets: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string.isRequired,
-          title: PropTypes.string.isRequired,
+          href: PropTypes.string,
+          title: PropTypes.string,
       })),
       publications: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string.isRequired,
-          title: PropTypes.string.isRequired,
+          href: PropTypes.string,
+          title: PropTypes.string,
       }))
     })
 }
@@ -56,17 +63,26 @@ class DatasetMetadata extends Component {
         super(props);
         this.state = {
             isFetchingDataset: false,
+            isSubmittingData: false,
+            hasChanges: false,
             error: null,
             showModal: false,
             modalType: "",
+            title: "",
+            description: "",
             relatedBulletins: [],
             relatedQMI: "",
             relatedLinks: [],
-            keywords: [],
+            keywords: "",
             titleInput: "",
             urlInput: "",
             editKey: "",
+            contactName: "",
+            contactEmail: "",
+            contactPhone: ""
         };
+
+        this.originalState = null;
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -77,9 +93,9 @@ class DatasetMetadata extends Component {
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
-        this.removeRelated = this.removeRelated.bind(this);
+        this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
         this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
-        this.handleActions = this.handleActions.bind(this);
+        this.editRelatedLink = this.editRelatedLink.bind(this);
     }
 
     componentWillMount() {
@@ -101,31 +117,43 @@ class DatasetMetadata extends Component {
         }
 
         Promise.all(APIRequests).then(responses => {
-            this.props.dispatch(updateActiveDataset(responses[0].current));
+            this.props.dispatch(updateActiveDataset(responses[0].next || responses[0].current));
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
-            const contact = this.props.dataset.contacts.find(details => {
-                return {
-                    name: details.name,
-                    email: details.email,
-                    telephone: details.telephone,
-                }
-            });
 
-            this.props.dataset.publications.map(item => {
-                const bulletin = {title: item.title, url: item.href, key: guid()}
-                const bulletins = this.state.relatedBulletins.concat(bulletin);
-                this.setState({relatedBulletins: bulletins})
-            })
+            if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
+                this.setState({
+                    keywords: this.props.dataset.keywords.join(", ")
+                });
+            }
+            
+            if (this.props.dataset.contacts && this.props.dataset.contacts.length > 0) {
+                const contact = this.props.dataset.contacts[0];
+                this.setState({
+                    contactName: contact.name,
+                    contactEmail: contact.email,
+                    contactPhone: contact.telephone
+                })
+            }
 
-            this.props.dataset.related_datasets.map(item => {
-                const link = {title: item.title, url: item.href, key: guid()}
-                const links = this.state.relatedLinks.concat(link);
-                this.setState({relatedLinks: links})
-            })
+            { this.props.dataset.publications &&
+              this.props.dataset.publications.map(item => {
+                  const bulletin = {title: item.title, url: item.href, key: guid()}
+                  const bulletins = this.state.relatedBulletins.concat(bulletin);
+                  this.setState({relatedBulletins: bulletins})
+              })
+            }
 
-            if (this.props.dataset.qmi.title != "") {
+            { this.props.dataset.related_datasets &&
+              this.props.dataset.related_datasets.map(item => {
+                  const link = {title: item.title, url: item.href, key: guid()}
+                  const links = this.state.relatedLinks.concat(link);
+                  this.setState({relatedLinks: links})
+              })
+            }
+
+            if (this.props.dataset.qmi && this.props.dataset.qmi.title !== "") {
                 const item = this.props.dataset.qmi
                 const qmi = {title: item.title, url: item.href, key: guid()}
                 this.setState({relatedQMI: qmi})
@@ -135,11 +163,7 @@ class DatasetMetadata extends Component {
                 isFetchingDataset: false,
                 description: this.props.dataset.description,
                 title: this.props.dataset.title,
-                keywords: this.props.dataset.keywords,
-                isChecked:this.props.dataset.national_statistic,
-                contactName: contact.name,
-                contactEmail: contact.email,
-                contactPhone: contact.telephone,
+                isNationalStat:this.props.dataset.national_statistic,
             });
 
           }).catch(error => {
@@ -175,54 +199,73 @@ class DatasetMetadata extends Component {
               }
               console.error("Error has occurred:\n", error);
             });
+
     }
 
-    componentWillReceiveProps(nextProps) {
-      console.log(this.props.dataset);
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.isFetchingDataset) {
+            return false;
+        }
+        return true;
     }
 
-    postDatasetDetails(body) {
-       // Update to put to dataset api
-      return http.put(`${datasets}`, body, true);
+    componentDidUpdate(_, nextState) {
+        /*
+        We want to detect whether any changes have been made so we can show a warning if the
+        user is leaving without saving
+        */
+
+        // We've already set the state to hasChanges, so do nothing
+        if (nextState.hasChanges) {
+            return;
+        }
+        
+        // Set our initial state, so that we can detect whether there have been any unsaved changes
+        if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
+            this.originalState = nextState;
+            this.setState({hasChanges: true});
+        }
     }
 
     updateDatasetDetails(datasetDetailsData) {
-      this.postDatasetDetails(datasetDetailsData).then(() => {
-        // TO DO - Add correct path
-        this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+      datasets.updateDatasetMetadata(this.props.params.datasetID, datasetDetailsData).then(() => {
+        this.setState({isSubmittingData: false});
+        this.props.dispatch(push(`${location.pathname}/collection`));
       }).catch(error => {
-          if (error) {
-              const notification = {
-                  type: 'warning',
-                  isDismissable: true,
-                  autoDismiss: 15000
-              };
-              switch (error.status) {
-                  case ('UNEXPECTED_ERR'): {
-                      console.error(errCodes.UNEXPECTED_ERR);
-                      notification.message = errCodes.UNEXPECTED_ERR;
-                      notifications.add(notification);
-                      break;
-                  }
-                  case ('RESPONSE_ERR'): {
-                      console.error(errCodes.RESPONSE_ERR);
-                      notification.message = errCodes.RESPONSE_ERR;
-                      notifications.add(notification);
-                      break;
-                  }
-                  case ('FETCH_ERR'): {
-                      console.error(errCodes.FETCH_ERR);
-                      notification.message = errCodes.FETCH_ERR;
-                      notifications.add(notification);
-                      break;
-                  }
-              }
-          }
+        this.setState({isSubmittingData: false});
+        if (error) {
+            const notification = {
+                type: 'warning',
+                isDismissable: true,
+                autoDismiss: 15000
+            };
+            switch (error.status) {
+                case ('UNEXPECTED_ERR'): {
+                    console.error(errCodes.UNEXPECTED_ERR);
+                    notification.message = errCodes.UNEXPECTED_ERR;
+                    notifications.add(notification);
+                    break;
+                }
+                case ('RESPONSE_ERR'): {
+                    console.error(errCodes.RESPONSE_ERR);
+                    notification.message = errCodes.RESPONSE_ERR;
+                    notifications.add(notification);
+                    break;
+                }
+                case ('FETCH_ERR'): {
+                    console.error(errCodes.FETCH_ERR);
+                    notification.message = errCodes.FETCH_ERR;
+                    notifications.add(notification);
+                    break;
+                }
+            }
+        }
       });
 
     }
 
     mapReleaseFreqToSelectOptions() {
+
         const values = [
           'Weekly', 'Monthly', 'Annually'
         ];
@@ -235,30 +278,20 @@ class DatasetMetadata extends Component {
         });
     }
 
-    convertKeywordsToString() {
-        const keywords = this.props.dataset.keywords.map(keyword => {
-            return keyword
-        });
-        const keywordString = keywords.join(", ");
-        return keywordString;
-    }
-
     handleSelectChange(event) {
         this.setState({
             periodicity: event.target.value
         });
     }
-    
+
      handleModalSubmit(event){
        event.preventDefault();
        this.setState({showModal: false});
-       this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+       this.props.dispatch(push(url.resolve("/datasets")));
      }
 
-    handleToggleChange(event){
-      this.setState({
-        isChecked: event.target.checked,
-      });
+    handleToggleChange(isChecked) {
+      this.setState({isNationalStat: isChecked});
     }
 
     handleInputChange(event) {
@@ -285,121 +318,192 @@ class DatasetMetadata extends Component {
      }
 
      handleBackButton() {
-         this.setState({showModal: true});
+        if (this.state.hasChanges) {
+            this.setState({showModal: true});
+            return;
+        }
+
+        this.props.dispatch(push(url.resolve("/datasets")));
      }
 
      handleCancel() {
-         this.setState({showModal: false});
-         this.setState({modalType: ""});
-         this.setState({editKey: ""});
+        this.setState({
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            urlInput: "",
+            titleInput: ""
+        });
      }
 
      handleAddRelatedClick(type) {
-         this.setState({showModal: true});
-         this.setState({modalType: type});
+        this.setState({
+            showModal: true,
+            modalType: type
+        });
      }
 
 
      handleEditRelatedClick(type, key) {
-         this.setState({showModal: true});
-         this.setState({modalType: type});
-         this.setState({editKey: key});
+        let relatedItem;
+
+        if (type === "bulletin") {
+            relatedItem = this.state.relatedBulletins.find(bulletin => {
+                return bulletin.key === key;
+            });
+        }
+        
+        if (type === "qmi") {
+            relatedItem = this.state.relatedQMI;
+        }
+        
+        if (type === "link") {
+            relatedItem = this.state.relatedLinks.find(link => {
+                return link.key === key;
+            });
+        }
+
+        this.setState({
+            showModal: true,
+            modalType: type,
+            editKey: key,
+            urlInput: relatedItem.url,
+            titleInput: relatedItem.title
+        });
      }
 
-     removeRelated(type, key) {
-         function remove(arr, key) {
-             arr.map((item, index) => {
-                 if (item.key === key) {
-                     arr.splice(index, 1);
-                 }
-             })
-             return arr
-         }
+     handleDeleteRelatedClick(type, key) {
+        function remove(items, key) {
+            return items.filter(item => {
+                return item.key !== key
+            });
+        }
 
-         if (type === "bulletin") {
-             var bulletins = remove(this.state.relatedBulletins, key)
-             this.setState({relatedBulletins: bulletins});
-         } else if (type === "qmi") {
-             this.setState({relatedQMI: ""});
-         } else if (type === "link") {
-             var links = remove(this.state.relatedLinks, key)
-             this.setState({relatedLinks: links});
-         }
+        if (type === "bulletin") {
+            this.setState({relatedBulletins: remove(this.state.relatedBulletins, key)});
+            return;
+        } 
+        
+        if (type === "qmi") {
+            this.setState({relatedQMI: ""});
+            return;
+        } 
+        
+        if (type === "link") {
+            this.setState({relatedLinks: remove(this.state.relatedLinks, key)});
+            return;
+        }
+
+        console.warn("Attempt to remove a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to remove a related content type that is not recognised: '${type}'`);
      }
 
-     handleActions(type, key, action){
+     editRelatedLink(type, key) {
+        const edit = items => {
+            return items.map(item => {
+                if (item.key !== key) {
+                    return item;
+                }
+                return {
+                    ...item,
+                    title: this.state.titleInput,
+                    url: this.state.urlInput
+                }
+            });
+        }
 
-       if(action === "edit"){
-         this.setState({showModal: true});
-         this.setState({modalType: type});
-         this.setState({editKey: key});
-       }
+        if (type === "bulletin") {
+            this.setState({relatedBulletins: edit(this.state.relatedBulletins, key)});
+            return;
+        } 
+        
+        if (type === "qmi") {
+            const editedQMI = {
+                ...this.state.relatedQMI,
+                title: this.state.titleInput,
+                url: this.state.urlInput
+            }
+            this.setState({relatedQMI: editedQMI});
+            return;
+        } 
+        
+        if (type === "link") {
+            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});
+            return;
+        }
 
-       if(action === "remove"){
-         this.removeRelated(type, key);
-       }
-
+        console.warn("Attempt to edit a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
      }
 
      mapTypeContentsToCard(items){
-         return (items).map(item => {
+         return items.map(item => {
            return {
              title: item.title,
-             key: item.key,
+             id: item.key,
            }
          });
      }
 
      handleFormSubmit(event) {
-         event.preventDefault();
-         function guid() {
-               function S4() {
-                   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-               }
-               return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
-           }
+        event.preventDefault();
+        function guid() {
+            function S4() {
+                return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+            }
+            return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+        }
 
-         if(this.state.titleInput == "" || this.state.urlInput == ""){
-           if(this.state.titleInput == ""){
-             this.setState({
-                 titleError: "You must provide a title"
-             });
-           }
-           if (this.state.urlInput == ""){
-             this.setState({
-                 urlError: "You must provide a url"
-             });
-           }
-         } else {
-         if (this.state.modalType === "bulletin") {
-             if (this.state.editKey != "") {
-                 this.removeRelated("bulletin", this.state.editKey)
-             }
-             const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
-             this.setState({relatedBulletins: bulletins});
-         } else if (this.state.modalType === "qmi") {
-             if (this.state.editKey != "") {
-                 this.removeRelated("qmi", this.state.editKey)
-             }
-             const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: guid()};
-             this.setState({relatedQMI: qmi});
-         } else if (this.state.modalType === "link") {
-             if (this.state.editKey != "") {
-                 this.removeRelated("link", this.state.editKey)
-             }
-             const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
-             this.setState({relatedLinks: links});
-         }
+        if(this.state.titleInput == "" || this.state.urlInput == ""){
+            if(this.state.titleInput == ""){
+                this.setState({
+                    titleError: "You must provide a title"
+                });
+            }
+            if (this.state.urlInput == ""){
+                this.setState({
+                    urlError: "You must provide a url"
+                });
+            }
+            } else {
+            if (this.state.modalType === "bulletin") {
+            if (this.state.editKey != "") {
+                this.editRelatedLink("bulletin", this.state.editKey);
+            } else {
+                const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
+                this.setState({relatedBulletins: bulletins});
+            }
+            } else if (this.state.modalType === "qmi") {
+            if (this.state.editKey != "") {
+                this.editRelatedLink("qmi", this.state.editKey);
+            } else {
+                const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: guid()};
+                this.setState({relatedQMI: qmi});
+            }
+            } else if (this.state.modalType === "link") {
+            if (this.state.editKey != "") {
+                this.editRelatedLink("link", this.state.editKey);
+            } else {
+                const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: guid()});
+                this.setState({relatedLinks: links});
+            }
+        }
 
-         this.setState({showModal: false});
-         this.setState({modalType: ""});
-         this.setState({editKey: ""})
+        this.setState({
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            titleInput: "",
+            urlInput: ""
+        })
+
        }
      }
 
      handlePageSubmit(event) {
-
          event.preventDefault();
+
+        this.setState({isSubmittingData: true});
 
          const datasetDetailsData = {
            contact: {
@@ -410,8 +514,8 @@ class DatasetMetadata extends Component {
            description: this.state.description,
            release_frequency: this.state.periodicity,
            title: this.state.title,
-           national_statistic: this.state.isChecked,
-           keywords: this.state.keywords,
+           national_statistic: this.state.isNationalStat,
+           keywords: this.state.keywords.split(","),
            qmi: {
              title: this.state.relatedQMI.title,
              href: this.state.relatedQMI.url,
@@ -420,9 +524,10 @@ class DatasetMetadata extends Component {
            related_datasets: [...this.state.relatedLinks],
          }
          if (!this.state.periodicity) {
-             this.setState({
-                 error: "You must select the periodicity"
-             });
+            this.setState({
+                error: "You must select the periodicity",
+                isSubmittingData: false
+            });
          } else {
            this.updateDatasetDetails(datasetDetailsData);
          }
@@ -432,44 +537,48 @@ class DatasetMetadata extends Component {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    <h1>Dataset details</h1>
-                    <div className="margin-bottom--1">
-                        &#9664; <a href="#" onClick={this.handleBackButton}>Back</a>
+                    <div className="margin-top--2">
+                        &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
+                    <h1 className="margin-top--1">Dataset details</h1>
                     <p className="margin-bottom--1">This information is common across all editions of the dataset.<br/>
-                        Changing it will affect all previous edition</p>
+                        Changing it will affect all previous editions.</p>
                     {this.state.isFetchingDataset ?
                         <div className="loader loader--dark"></div>
                     :
                         <div>
                             <h2 className="margin-bottom--1">Dataset</h2>
-                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.dataset || "Fetching dataset ID..."}
+                            <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.datasetID || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
 
                               <Input
-                                  value={this.props.dataset.title}
+                                  value={this.state.title}
                                   id="title"
                                   label="Title"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
-                                  value={this.props.dataset.description}
+                                  value={this.state.description}
                                   type="textarea"
                                   id="description"
                                   label="About this dataset"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
-                                  value={this.convertKeywordsToString()}
+                                  value={ this.state.keywords}
                                   id="keywords"
                                   label="Keywords"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <div className="grid__col-6 margin-top--1">
                                 <Checkbox
-                                    isChecked={this.state.isChecked}
+                                    isChecked={this.state.isNationalStat}
                                     onChange={this.handleToggleChange}
+                                    disabled={this.state.isSubmittingData}
                                     label="National Statistic"
                                     id="national-statistic"
                                 />
@@ -480,6 +589,7 @@ class DatasetMetadata extends Component {
                                       onChange={this.handleSelectChange}
                                       error={this.state.error}
                                       label="Release frequency"
+                                      disabled={this.state.isSubmittingData}
                                   />
                               </div>
                               <h3 className="margin-bottom--1">Contact</h3>
@@ -488,18 +598,21 @@ class DatasetMetadata extends Component {
                                   id="contactName"
                                   label="Contact name"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.contactEmail}
                                   id="contactEmail"
                                   label="Contact email"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.contactPhone}
                                   id="contactPhone"
                                   label="Contact telephone"
                                   onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
                               />
                         <h2 className="margin-bottom--1">Related content</h2>
                         <div className="margin-bottom--1">
@@ -510,48 +623,51 @@ class DatasetMetadata extends Component {
                             <CardList
                               contents={this.mapTypeContentsToCard(this.state.relatedBulletins)}
                               type="bulletin"
-                              listActions={this.handleActions}
+                              onEdit={this.handleEditRelatedClick}
+                              onDelete={this.handleDeleteRelatedClick}
                               />
-                            <a href="#" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</a>
+                            <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> QMI </h3>
-                            {
-                                this.state.relatedQMI != "" ?
-                                <ul className="list--neutral margin-bottom--1">
-                                  <Card
-                                    title={this.state.relatedQMI.title}
-                                    keyID={this.state.relatedQMI.key}
-                                    type="qmi"
-                                    onEdit={this.handleActions}
-                                    />
-                                </ul>
+                                { this.state.relatedQMI.title != undefined ?
+                                  <ul className="list--neutral">
+                                    <Card
+                                        title={this.state.relatedQMI.title}
+                                        keyID={this.state.relatedQMI.key}
+                                        type="qmi"
+                                        onEdit={this.handleEditRelatedClick}
+                                        onDelete={this.handleDeleteRelatedClick}
+                                      />
+                                  </ul>
                                 :
-                                <a href="#" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </a>
-                            }
+                                  <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </button>
+                                }
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Related links </h3>
-                              <CardList
-                                contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
-                                type="link"
-                                listActions={this.handleActions}
+                                <CardList
+                                    contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
+                                    type="link"
+                                    onEdit={this.handleEditRelatedClick}
+                                    onDelete={this.handleDeleteRelatedClick}
                                 />
-                              <a href="#" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</a>
+                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
-                        <button className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        {this.state.isSubmittingData &&
+                            <div className="loader loader--centre loader--dark margin-left--1"></div>
+                        }
                         </form>
                     </div>
                 }
                   </div>
-                  {
-                      this.state.showModal ?
+                  {this.state.showModal &&
 
                       <Modal sizeClass="grid__col-3">
-                        {
-                            this.state.modalType ?
+                        {this.state.modalType ?
 
-                          <RelatedDataController
+                          <RelatedContentForm
                               name="related-content-modal"
                               titleInput={this.state.titleInput}
                               urlInput={this.state.urlInput}
@@ -579,8 +695,6 @@ class DatasetMetadata extends Component {
                       }
                       </Modal>
 
-                      :
-                      ""
                   }
 
           </div>

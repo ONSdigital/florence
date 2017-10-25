@@ -3,32 +3,36 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     title: PropTypes.string,
-    keyID: PropTypes.string,
     type: PropTypes.string,
-    onEdit: PropTypes.func
+    id: PropTypes.string,
+    onEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
 }
 
 class Card extends Component {
     constructor(props) {
         super(props);
-        this.handleAction = this.handleAction.bind(this);
+        this.handleEditClick = this.handleEditClick.bind(this);
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
     }
 
-   handleAction(event) {
-      event.preventDefault();
-      const action = event.currentTarget.dataset.action;
-      this.props.onEdit(this.props.type, this.props.keyID, action);
+    handleEditClick() {
+        this.props.onEdit(this.props.type, this.props.id);
+    }
+    
+    handleDeleteClick() {
+        this.props.onDelete(this.props.type, this.props.id);
     }
 
     render() {
         return (
-          <li className="card margin-bottom--1" key={this.props.keyID}>
+          <li className="card margin-bottom--1" key={this.props.id}>
               <div className="card__body">
                   <div className="card__title">{this.props.title}</div>
               </div>
               <div className="card__actions">
-                  <a href="#" data-action="edit" onClick={this.handleAction}>Edit</a>
-                  <a className="margin-left--1" data-action="remove" href="#" onClick={this.handleAction}>Delete</a>
+                  <button type="button" className="btn btn--link" onClick={this.handleEditClick}>Edit</button>
+                  <button type="button" className="margin-left--1 btn btn--link" onClick={this.handleDeleteClick}>Delete</button>
               </div>
           </li>
         )
