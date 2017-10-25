@@ -41,7 +41,7 @@ export default class datasets {
     static updateVersion(datasetID, edition, version) {
         const body = {
         }
-        return http.put(`/datasets/${datasetID}/editions/${edition}/versions/${version}`, body, true)
+        return http.put(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`, body, true)
             .then(response => {
                 return response;
             });
