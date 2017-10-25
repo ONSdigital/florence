@@ -30,7 +30,7 @@ function viewController(view) {
                 });
                 createWorkspace(pageURI, collectionID, "edit", response);
             }, error => {
-                console.error("Error getting collection date, redirected to collections screen", error);
+                console.error("Error getting collection data, redirected to collections screen", error);
             });
         }
         else if (view === 'users') {
