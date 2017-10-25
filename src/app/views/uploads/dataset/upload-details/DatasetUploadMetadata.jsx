@@ -158,7 +158,7 @@ class DatasetUploadMetadata extends Component {
             })
         }).then(() => {
             this.setState({isSubmittingData: false});
-            this.props.dispatch(push(url.parent()));
+            this.props.dispatch(push(url.resolve("../")));
         }).catch(error => {
             switch (error.status) {
                 case(400):{
@@ -236,7 +236,7 @@ class DatasetUploadMetadata extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-6">
                     <div className="margin-top--2">
-                        &#9664; <Link to={url.parent()}>Return</Link>
+                        &#9664; <Link to={url.resolve("../")}>Return</Link>
                     </div>
                     <h1 className="margin-top--1">Dataset upload details</h1>
                     {this.state.isFetchingData ? 
