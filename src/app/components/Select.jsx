@@ -46,7 +46,6 @@ class Select extends Component {
                 }
                 <div className={"select-wrap " + (this.state.isFocused ? "select-wrap--focus" : "") + (this.props.error ? "select-wrap--error" : "") + (this.props.disabled ? "select-wrap--disabled" : "")}>
                     <select
-                        disabled={this.props.disabled}
                         className="select"
                         id={this.props.id}
                         disabled={this.props.disabled}
