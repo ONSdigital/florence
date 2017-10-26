@@ -161,7 +161,7 @@ test("Removing a related QMI updates state to be empty", async () => {
     expect(component.state("relatedQMI")).toBe("");
 });
 
-test("Removing a related bulletin updates state correctly", async () => {
+test("Handler for removing a related bulletin updates state correctly", async () => {
     const component = shallow(
         <DatasetMetadata {...defaultProps} />
     );
@@ -169,14 +169,14 @@ test("Removing a related bulletin updates state correctly", async () => {
     await component.instance().componentWillMount();
     await component.update();
     expect(component.state("relatedBulletins").length).toEqual(1);
-    // expect(component.state("relatedBulletins")).toMatchObject({
-    //     key: "12345",
-    //     title: exampleDataset.current.re.title,
-    //     url: exampleDataset.current.qmi.href
-    // });
-    // await component.instance().handleDeleteRelatedClick("bulletin", "12345");
-    // await component.update();
-    // expect(component.state("relatedQMI")).toBe("");
+    expect(component.state("relatedBulletins")[0]).toMatchObject({
+        key: "12345",
+        title: exampleDataset.current.publications[0].title,
+        url: exampleDataset.current.publications[0].href
+    });
+    await component.instance().handleDeleteRelatedClick("bulletin", "12345");
+    await component.update();
+    expect(component.state("relatedBulletins").length).toBe(0);
 });
 
 test("Related datasets are set in state correctly on mount", async () => {
@@ -186,6 +186,190 @@ test("Related datasets are set in state correctly on mount", async () => {
 
     await component.instance().componentWillMount();
     await component.update();
-
     expect(component.state("relatedLinks").length).toEqual(2);
+    component.state("relatedLinks").forEach((relatedLink, index) => {
+        expect(relatedLink).toMatchObject({
+            key: "12345",
+            title: exampleDataset.current.related_datasets[index].title,
+            url: exampleDataset.current.related_datasets[index].href
+        });
+    });
 });
+
+test("Changing an input value updates the state to show a change has been made", async () => {
+    const component = await shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+
+    await component.update();
+    expect(component.state("hasChanges")).toBe(false);
+    component.setState({description: "A new description"});
+    expect(component.state("description")).toBe("A new description");
+    expect(component.state("hasChanges")).toBe(true);
+});
+
+test("Warning modal shown when unsaved changes have been made", async () => {
+    const component = await shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+
+    await component.update();
+    expect(component.find(".modal__header h2").exists()).toBe(false);
+    expect(component.state("showModal")).toBe(false);
+    component.setState({description: "A new description"});
+    component.instance().handleBackButton();
+    expect(component.state("showModal")).toBe(true);
+    expect(component.state("modalType")).toBe("");
+    expect(component.find(".modal__header h2").exists()).toBe(true);
+});
+
+test("Available release frequencies maps correctly to select element", () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+
+    const validSelectContents = [
+        {
+            id: "weekly",
+            name: "Weekly"
+        },
+        {
+            id: "monthly",
+            name: "Monthly"
+        },
+        {
+            id: "annually",
+            name: "Annually"
+        }
+    ]
+
+    const createdSelectContents = component.instance().mapReleaseFreqToSelectOptions();
+    expect(createdSelectContents).toEqual(expect.arrayContaining(validSelectContents));
+});
+
+test("Handle select change event updates state correctly", () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+
+    expect(component.update().state("periodicity")).toBe("");
+    component.instance().handleSelectChange({preventDefault: ()=>{}, target: {value: "Weekly"}});
+    expect(component.update().state("periodicity")).toBe("Weekly");
+});
+
+test("Handle checkbox tick updates 'national statistic' state correctly", () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+
+    expect(component.state("isNationalStat")).toBe(false);
+    component.instance().handleToggleChange(true);
+    expect(component.state("isNationalStat")).toBe(true);
+    component.instance().handleToggleChange(false);
+    expect(component.state("isNationalStat")).toBe(false);
+});
+
+test("Handle input change updates relevant state correctly", () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    const mockTitleEvent = {
+        target: {
+            value: "Some free text",
+            name: "add-related-content-title"
+        }
+    }
+    const mockURLEvent = {
+        target: {
+            value: "https://url.com",
+            name: "add-related-content-url"
+        }
+    }
+
+    expect(component.state("titleInput")).toBe("");
+    expect(component.state("urlInput")).toBe("");
+
+    component.instance().handleInputChange(mockTitleEvent);
+    expect(component.state("titleInput")).toBe(mockTitleEvent.target.value);
+
+    component.instance().handleInputChange(mockURLEvent);
+    expect(component.state("urlInput")).toBe(mockURLEvent.target.value);
+});
+
+test("Input errors are added on submit and then removed on change of that input", () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    const mockTitleEvent = {
+        target: {
+            value: "Some free text",
+            name: "add-related-content-title"
+        }
+    }
+    const mockURLEvent = {
+        target: {
+            value: "https://url.com",
+            name: "add-related-content-url"
+        }
+    }
+
+    expect(component.state("titleInput")).toBe("");
+    expect(component.state("urlInput")).toBe("");
+    expect(component.update().state("titleError")).toBe("");
+    expect(component.update().state("urlError")).toBe("");
+
+    component.instance().handleFormSubmit({preventDefault: ()=>{}});
+    expect(component.update().state("titleError")).not.toBe("");
+    expect(component.update().state("urlError")).not.toBe("");
+
+    component.instance().handleInputChange(mockTitleEvent);
+    expect(component.state("titleInput")).toBe(mockTitleEvent.target.value);
+    expect(component.update().state("titleError")).toBe(null);
+
+    component.instance().handleInputChange(mockURLEvent);
+    expect(component.state("urlInput")).toBe(mockURLEvent.target.value);
+    expect(component.update().state("urlError")).toBe(null);
+});
+
+test("Handler to edit a related item updates the state with new values", async () => {
+    const component = await shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    await component.update();
+    
+    expect(component.state("relatedBulletins").length).toBe(1);
+    const initialRelatedBulletins = component.state("relatedBulletins");
+    component.setState({titleInput: "Some new words"});
+    component.instance().editRelatedLink("bulletin", "12345");
+    expect(component.state("relatedBulletins").length).toBe(1);
+    const editedRelatedBulletins = component.update().state("relatedBulletins");
+    expect(editedRelatedBulletins[0].title).toBe("Some new words");
+});
+
+test("Handle for editing a related link opens modal with existing values", async () => {
+    const component = await shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    await component.update();
+    
+    component.instance().handleEditRelatedClick("bulletin", "12345");
+    expect(component.state("showModal")).toBe(true);
+    expect(component.state("modalType")).toBe("bulletin");
+    expect(component.state("urlInput")).toBe(exampleDataset.current.publications[0].href);
+    expect(component.state("titleInput")).toBe(exampleDataset.current.publications[0].title);
+});
+
+test("Related items map to card element correctly", async () => {
+    const component = await shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    await component.update();
+
+    const cardProps = component.instance().mapTypeContentsToCard(component.state("relatedLinks"));
+    component.state("relatedLinks").forEach((dataset, index) => {
+        expect(cardProps[index]).toMatchObject({
+            title: dataset.title,
+            id: dataset.key
+        });
+    })
+})
