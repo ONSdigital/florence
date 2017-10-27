@@ -6,7 +6,8 @@ const propTypes = {
     label: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    isChecked: PropTypes.bool
+    isChecked: PropTypes.bool,
+    disabled: PropTypes.bool
 };
 
 class Checkbox extends Component {
@@ -14,10 +15,24 @@ class Checkbox extends Component {
     super(props);
 
     this.state = {
-        isFocused: false
+        isFocused: false,
+        value: false
     }
 
     this.handleFocus = this.handleFocus.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.isChecked) {
+      this.setState({isChecked: this.props.isChecked});
+    }
+  }
+
+  handleChange(event) {
+    const isChecked = event.target.checked;
+    this.setState({value: isChecked});
+    this.props.onChange(isChecked);
   }
 
   handleFocus() {
@@ -31,11 +46,12 @@ class Checkbox extends Component {
               <div className="error-msg">{this.props.error}</div>
           }
           <div className="checkbox">
-            <input className="margin-right--1 checkbox__input" type="checkbox"
-              checked={this.props.isChecked}
-              onChange={this.props.onChange}
+            <input className="checkbox__input" type="checkbox"
+              checked={this.state.value}
+              onChange={this.handleChange}
               onFocus={this.handleFocus}
               onBlur={this.handleFocus}
+              disabled={this.props.disabled}
               id={this.props.id}
             />
             <label htmlFor={this.props.id} className="checkbox__label">

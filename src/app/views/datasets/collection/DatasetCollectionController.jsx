@@ -247,7 +247,7 @@ export class DatasetCollectionController extends Component {
                 handleCollectionChange={this.handleCollectionChange}
                 handleNextReleaseChange={this.handleNextReleaseChange}
                 handleOnBackFromSuccess={this.handleOnBackFromSuccess}
-                backLink={url.resolve("../metadata")}
+                backLink={url.resolve("../../metadata")}
             />
         )
     }
