@@ -13,7 +13,7 @@
     }
 
     &:disabled {
-        border: 3px solid $nappa;
+        border-color: $nappa;
         color: $nappa;
         background-color: $quill-grey;
         position: relative;
@@ -41,6 +41,10 @@
     position: relative;
     cursor: pointer;
 
+    &:disabled {
+        cursor: default;
+    }
+
     &-wrap {
         position: relative;
         height: $lineheight * 2;
@@ -63,6 +67,15 @@
             right: -3px;
             background: $scarpa-flow url(../../dist/img/sprite.svg) no-repeat 6px -849px;
             background-size: 30px auto;
+        }
+
+        &--disabled {
+            border-color: $nappa;
+            background-color: $quill-grey;
+
+            &:before {
+                background-color: $nappa;
+            }
         }
 
         &--focus {
@@ -118,12 +131,24 @@
 
     &__input {
         position: absolute;
-        cursor: pointer;
         left: 0;
         top: 0;
-        width: 25px;
-        height: 25px;
+        width: 28px;
+        height: 28px;
         margin: 0;
+
+        &:disabled {
+            cursor: default;
+        }
+
+        &:disabled + label:before {
+            border-color: $nappa;
+            background-color: $quill-grey;
+        }
+
+        &:focus {
+            outline: 3px solid $focus;
+        }
 
         &:checked + label:after {
             opacity: 1;
@@ -132,10 +157,10 @@
         + label {
             &:before {
                 content: "";
-                border: 2px solid $ship-grey;
+                border: 3px solid $scarpa-flow;
                 background: white;
-                width: 25px;
-                height: 25px;
+                width: 28px;
+                height: 28px;
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -145,13 +170,13 @@
                 content: "";
                 border: solid;
                 border-width: 0 0 3px 3px;
-                border-color: $ship-grey;
+                border-color: $scarpa-flow;
                 background: transparent;
-                width: 14px;
-                height: 7px;
+                width: 15px;
+                height: 8px;
                 position: absolute;
                 top: 8px;
-                left: 6px;
+                left: 7px;
                 -moz-transform: rotate(-45deg); // Firefox 15 compatibility
                 -o-transform: rotate(-45deg); // Opera 12.0 compatibility
                 -webkit-transform: rotate(-45deg); // Safari 8 compatibility
@@ -172,7 +197,7 @@
         float: none;
         clear: left;
         position: relative;
-        padding: (2px 8px 9px 35px);
+        padding: (4px 8px 9px 35px);
         margin-bottom: 8px;
         cursor: pointer; // Encourage clicking on block labels
     }

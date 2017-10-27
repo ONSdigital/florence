@@ -14,7 +14,8 @@ const propTypes = {
     selectedOption: PropTypes.string,
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
-    error: PropTypes.string
+    error: PropTypes.string,
+    disabled: PropTypes.bool
 };
 
 class Select extends Component {
@@ -39,10 +40,11 @@ class Select extends Component {
                 {this.props.error &&
                     <div className="error-msg">{this.props.error}</div>
                 }
-                <div className={"select-wrap " + (this.state.isFocused ? "select-wrap--focus" : "") + (this.props.error ? "select-wrap--error" : "")}>
+                <div className={"select-wrap " + (this.state.isFocused ? "select-wrap--focus" : "") + (this.props.error ? "select-wrap--error" : "") + (this.props.disabled ? "select-wrap--disabled" : "")}>
                     <select
                         className="select"
                         id={this.props.id}
+                        disabled={this.props.disabled}
                         onChange={this.props.onChange}
                         onFocus={this.handleFocus}
                         onBlur={this.handleFocus}
