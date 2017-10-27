@@ -16,7 +16,7 @@ import notifications from '../notifications';
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry = function(){}, body, callerHandles401) {
+export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
