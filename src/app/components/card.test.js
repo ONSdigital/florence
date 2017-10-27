@@ -1,10 +1,11 @@
 import React from 'react';
 import Card from './Card.jsx';
-import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 
 const props = {
-    title: "Card title"
+    title: "Card title",
+    onEdit: () => {},
+    onDelete: () => {}
 }
 
 test('Renders the title for the card', () => {
