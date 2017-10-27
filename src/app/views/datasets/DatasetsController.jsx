@@ -129,7 +129,7 @@ class DatasetsController extends Component {
                     }
                 });
                 return {
-                    title: dataset.title,
+                    title: dataset.title || dataset.id,
                     id: dataset.id,
                     instances: datasetInstances
                 }
