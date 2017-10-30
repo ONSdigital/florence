@@ -18,6 +18,10 @@ const propTypes = {
     disabled: PropTypes.bool
 };
 
+const defaultProps = {
+    disabled: false,
+};
+
 class Select extends Component {
     constructor(props) {
         super(props);
@@ -61,4 +65,5 @@ class Select extends Component {
 }
 
 Select.propTypes = propTypes;
+Select.defaultProps = defaultProps;
 export default Select;

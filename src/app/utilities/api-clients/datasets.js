@@ -25,9 +25,44 @@ export default class datasets {
              });
     }
 
+    static getVersion(datasetID, edition, version) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`)
+             .then(response => {
+                 return response;
+             });
+    }
+
+    static getVersionDimensions(datasetID, edition, version) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}/dimensions`)
+             .then(response => {
+                 return response;
+             });
+    }
+
+    static updateVersion(datasetID, edition, version) {
+        const body = {
+          "edition": edition,
+        }
+        return http.put(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`, body, true)
+            .then(response => {
+                return response;
+            });
+    }
+
     static updateInstanceEdition(instanceID, edition) {
         const body = {
-            edition
+          "edition": edition,
+        }
+        return http.put(`/dataset/instances/${instanceID}`, body, true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static confirmEditionAndCreateVersion(instanceID, edition) {
+        const body = {
+          "edition": edition,
+          "state": "edition-confirmed",
         }
         return http.put(`/dataset/instances/${instanceID}`, body, true)
             .then(response => {
@@ -61,6 +96,13 @@ export default class datasets {
         return new Promise(resolve => {
             setTimeout(resolve, 2000);
         })
+    }
+
+    static getAllInstances() {
+        return http.get(`/dataset/instances`)
+            .then(response => {
+                return response;
+            });
     }
 
     static getCompletedInstances() {
