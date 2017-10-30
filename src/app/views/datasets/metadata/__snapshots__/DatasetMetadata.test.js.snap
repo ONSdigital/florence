@@ -7,31 +7,33 @@ exports[`Dataset details page matches stored snapshot 1`] = `
   <div
     className="grid__col-4"
   >
-    <h1>
-      Dataset details
-    </h1>
     <div
-      className="margin-bottom--1"
+      className="margin-top--2"
     >
       ◀ 
-      <a
-        href="#"
+      <button
+        className="btn btn--link"
         onClick={[Function]}
+        type="button"
       >
         Back
-      </a>
+      </button>
     </div>
+    <h1
+      className="margin-top--1"
+    >
+      Dataset details
+    </h1>
     <p
       className="margin-bottom--1"
     >
       This information is common across all editions of the dataset.
       <br />
-      Changing it will affect all previous edition
+      Changing it will affect all previous editions.
     </p>
     <div
       className="loader loader--dark"
     />
   </div>
-  
 </div>
 `;
