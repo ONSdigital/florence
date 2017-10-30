@@ -13,6 +13,7 @@ export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
 export const UPDATE_ACTIVE_JOB = 'UPDATE_ACTIVE_JOB';
 export const ADD_NEW_JOB = 'ADD_NEW_JOB';
 export const UPDATE_ACTIVE_INSTANCE = 'UPDATE_ACTIVE_INSTANCE';
+export const UPDATE_ACTIVE_VERSION = 'UPDATE_ACTIVE_VERSION';
 
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
@@ -86,6 +87,14 @@ export function updateActiveInstance(instance) {
     return {
         type: UPDATE_ACTIVE_INSTANCE,
         instance
+    }
+}
+
+
+export function updateActiveVersion(version) {
+    return {
+        type: UPDATE_ACTIVE_VERSION,
+        version
     }
 }
 
