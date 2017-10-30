@@ -28,22 +28,24 @@ export default class SelectableTableController extends Component {
 
     renderDatasetInstances(instances) {
         return instances.map((instance, i) => {
-            return (
-                <div key={i} className="grid simple-table__row">
-                    <div className="grid__col-4">
-                        {dateFormat(instance.date, "HH:MM:ss dd/mm/yy")}
+            if (instance !== undefined) {
+                return (
+                    <div key={i} className="grid simple-table__row">
+                        <div className="grid__col-4">
+                            {dateFormat(instance.date, "HH:MM:ss dd/mm/yy")}
+                        </div>
+                        <div className="grid__col-2">
+                            {instance.edition}
+                        </div>
+                        <div className="grid__col-4">
+                            {instance.version}
+                        </div>
+                        <div className="grid__col-2">
+                            <Link to={instance.url}>View</Link>
+                        </div>
                     </div>
-                    <div className="grid__col-2">
-                        {instance.edition}
-                    </div>
-                    <div className="grid__col-4">
-                        {instance.version}
-                    </div>
-                    <div className="grid__col-2">
-                        <Link to={instance.url}>View</Link>
-                    </div>
-                </div>
-            )
+                )
+            }
         })
     }
 
