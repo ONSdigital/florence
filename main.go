@@ -35,7 +35,7 @@ var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
 var datasetAPIURL = "http://localhost:22000"
 var uploadBucketName = "dp-frontend-florence-file-uploads"
-var datasetAuthToken = ""
+var datasetAuthToken = "FD0108EA-825D-411C-9B1D-41EF7727F465"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 

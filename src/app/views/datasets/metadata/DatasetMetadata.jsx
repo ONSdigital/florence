@@ -79,7 +79,11 @@ export class DatasetMetadata extends Component {
             editKey: "",
             contactName: "",
             contactEmail: "",
-            contactPhone: ""
+            contactPhone: "",
+            periodicity: "",
+            isNationalStat: false,
+            titleError: "",
+            urlError: ""
         };
 
         this.originalState = null;
@@ -283,49 +287,49 @@ export class DatasetMetadata extends Component {
         });
     }
 
-     handleModalSubmit(event){
-       event.preventDefault();
-       this.setState({showModal: false});
-       this.props.dispatch(push(url.resolve("/datasets")));
-     }
+    handleModalSubmit(event){
+        event.preventDefault();
+        this.setState({showModal: false});
+        this.props.dispatch(push(url.resolve("/datasets")));
+    }
 
     handleToggleChange(isChecked) {
       this.setState({isNationalStat: isChecked});
     }
 
     handleInputChange(event) {
-       const target = event.target;
-       const value = target.value;
-       const name = target.name;
-       if (name === "add-related-content-title") {
-           this.setState({titleInput: value});
-           if(this.state.titleError != null) {
-             this.setState({titleError: null})
-           }
-       } else if (name === "add-related-content-url") {
-           this.setState({urlInput: value});
-           if(this.state.urlError != null) {
-             this.setState({urlError: null})
-           }
-       } else {
-         this.setState({
-           [name]: value
-         });
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        if (name === "add-related-content-title") {
+            this.setState({titleInput: value});
+            if(this.state.titleError != null) {
+                this.setState({titleError: null})
+            }
+        } else if (name === "add-related-content-url") {
+            this.setState({urlInput: value});
+            if(this.state.urlError != null) {
+                this.setState({urlError: null})
+            }
+        } else {
+            this.setState({
+                [name]: value
+            });
 
-       }
+        }
 
      }
 
-     handleBackButton() {
+    handleBackButton() {
         if (this.state.hasChanges) {
             this.setState({showModal: true});
             return;
         }
 
         this.props.dispatch(push(url.resolve("/datasets")));
-     }
+    }
 
-     handleCancel() {
+    handleCancel() {
         this.setState({
             showModal: false,
             modalType: "",
@@ -333,14 +337,14 @@ export class DatasetMetadata extends Component {
             urlInput: "",
             titleInput: ""
         });
-     }
+    }
 
-     handleAddRelatedClick(type) {
+    handleAddRelatedClick(type) {
         this.setState({
             showModal: true,
             modalType: type
         });
-     }
+    }
 
 
      handleEditRelatedClick(type, key) {
@@ -436,12 +440,12 @@ export class DatasetMetadata extends Component {
      }
 
      mapTypeContentsToCard(items){
-         return items.map(item => {
-           return {
-             title: item.title,
-             id: item.key,
-           }
-         });
+        return items.map(item => {
+            return {
+                title: item.title,
+                id: item.key,
+            }
+        });
      }
 
      handleFormSubmit(event) {
@@ -458,39 +462,38 @@ export class DatasetMetadata extends Component {
                     urlError: "You must provide a url"
                 });
             }
-            } else {
+        } else {
             if (this.state.modalType === "bulletin") {
-            if (this.state.editKey != "") {
-                this.editRelatedLink("bulletin", this.state.editKey);
-            } else {
-                const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: uuid()});
-                this.setState({relatedBulletins: bulletins});
-            }
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("bulletin", this.state.editKey);
+                } else {
+                    const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: uuid()});
+                    this.setState({relatedBulletins: bulletins});
+                }
             } else if (this.state.modalType === "qmi") {
-            if (this.state.editKey != "") {
-                this.editRelatedLink("qmi", this.state.editKey);
-            } else {
-                const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: uuid()};
-                this.setState({relatedQMI: qmi});
-            }
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("qmi", this.state.editKey);
+                } else {
+                    const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: uuid()};
+                    this.setState({relatedQMI: qmi});
+                }
             } else if (this.state.modalType === "link") {
-            if (this.state.editKey != "") {
-                this.editRelatedLink("link", this.state.editKey);
-            } else {
-                const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: uuid()});
-                this.setState({relatedLinks: links});
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("link", this.state.editKey);
+                } else {
+                    const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: uuid()});
+                    this.setState({relatedLinks: links});
+                }
             }
+
+            this.setState({
+                showModal: false,
+                modalType: "",
+                editKey: "",
+                titleInput: "",
+                urlInput: ""
+            });
         }
-
-        this.setState({
-            showModal: false,
-            modalType: "",
-            editKey: "",
-            titleInput: "",
-            urlInput: ""
-        })
-
-       }
      }
 
      handlePageSubmit(event) {

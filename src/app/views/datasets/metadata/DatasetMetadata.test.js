@@ -149,6 +149,7 @@ test("Removing a related QMI updates state to be empty", async () => {
     const component = shallow(
         <DatasetMetadata {...defaultProps} />
     );
+
     await component.instance().componentWillMount();
     await component.update();
     expect(component.state("relatedQMI")).toMatchObject({
