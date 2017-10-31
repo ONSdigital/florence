@@ -13,7 +13,8 @@ const propTypes = {
             error: PropTypes.string
         })),
         onSubmit: PropTypes.func.isRequired,
-        onCancel: PropTypes.func.isRequired
+        onCancel: PropTypes.func.isRequired,
+        isSubmitting: PropTypes.bool
     }).isRequired
 };
 
@@ -25,7 +26,8 @@ export default class ChangePasswordForm extends Component {
     }
 
     render() {
-        const inputs = this.props.formData.inputs;
+        const inputs = this.props.formData.inputs || [];
+        const isSubmitting = this.props.formData.isSubmitting || false;
 
         return (
             <div>
@@ -36,13 +38,15 @@ export default class ChangePasswordForm extends Component {
                     <div className="modal__body">
                         {
                             inputs.map((input, index) => {
-                                return <Input key={index} {...input} />
+                                return <Input key={index} {...input} disabled={isSubmitting} />
                             })
                         }
                     </div>
                     <div className="modal__footer">
-                        <button className="btn btn--positive" onClick={this.props.formData.onSubmit}>Update password</button>
-                        <button className="btn" onClick={this.props.formData.onCancel}>Cancel</button>
+                        <button className="btn btn--positive" onClick={this.props.formData.onSubmit} disabled={isSubmitting}>Update password</button>
+                        <button className="btn" onClick={this.props.formData.onCancel} disabled={isSubmitting}>Cancel</button>
+
+                        {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                     </div>
                 </form>
             </div>
