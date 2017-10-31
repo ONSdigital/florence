@@ -116,7 +116,16 @@ if (typeof module !== 'undefined') {
   module.exports = PathUtils;
 }
 
-
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
 
 
 var StringUtils = {
@@ -11659,7 +11668,8 @@ function setShortcuts(field, callback) {
             "collections": "collections",
             "publishing-queue": "publish",
             "reports": "reports",
-            "users-and-access": "users"
+            "users-and-access": "users",
+            "workspace": "workspace"
         }[path];
     };
     $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
@@ -16127,6 +16137,34 @@ function viewCollectionDetails(collectionId, $this) {
 
         if (view === 'collections') {
             viewCollections();
+        }
+        else if (view === 'workspace') {
+            /*
+                Example of a correct URL:
+                '/florence/workspace?collection=:collectionID&uri=:pageURI'
+            */
+
+            const collectionID = getQueryVariable("collection");
+            const pageURI = getQueryVariable("uri");
+            window.history.replaceState({}, "Florence", "/florence/collections");
+            
+            if (!pageURI || !collectionID) {
+                console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
+                viewCollections();
+                return;
+            }
+
+            getCollectionDetails(collectionID, response => {
+                Florence.collection = Object.assign({}, Florence.collection, {
+                    id: collectionID,
+                    name: response.name,
+                    date: response.publishDate,
+                    type: response.type
+                });
+                createWorkspace(pageURI, collectionID, "edit", response);
+            }, error => {
+                console.error("Error getting collection data, redirected to collections screen", error);
+            });
         }
         else if (view === 'users') {
             viewUsers();
