@@ -63,4 +63,11 @@ export default class user {
         store.dispatch(userLoggedOut());
     }
 
+    static updatePassword(body) {
+        return http.post('/zebedee/password', body)
+            .then(response => {
+                return response;
+            })
+    }
+
 }
