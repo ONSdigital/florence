@@ -1,11 +1,24 @@
 .list {
 
+    margin-left: $gutter;
+
     &--neutral {
         list-style: none;
+        margin-left: 0;
     }
 
     &__item {
         margin-bottom: $lineheight;
-    }
 
+        &--separated:first-of-type {
+            padding-top: $lineheight / 2;
+            border-top: 1px solid $iron-dark;
+        }
+        
+        &--separated {
+            padding-bottom: $lineheight / 2;
+            margin-bottom: $lineheight / 2;
+            border-bottom: 1px solid $iron-dark;
+        }
+    }
 }

@@ -254,6 +254,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 "images": [],
                 "alerts": [],
                 "versions": [],
+                "isPrototypeArticle": false,
                 type: pageType
             };
         }

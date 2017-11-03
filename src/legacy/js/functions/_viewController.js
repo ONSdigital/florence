@@ -5,6 +5,9 @@ function viewController(view) {
         if (view === 'collections') {
             viewCollections();
         }
+        else if (view === 'datasets') {
+            window.location.pathname = "/florence/datasets";
+        }
         else if (view === 'users') {
             viewUsers();
         }

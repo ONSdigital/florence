@@ -5,14 +5,15 @@ import NavBar from './NavBar';
 
 const propTypes = {
     children: PropTypes.node.isRequired,
-    params: PropTypes.object.isRequired
+    params: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
 };
 
 export default class Layout extends Component {
     render() {
         return (
             <div>
-                <NavBar params={this.props.params} />
+                <NavBar location={this.props.location} />
                 {this.props.children}
             </div>
         )

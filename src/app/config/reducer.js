@@ -1,4 +1,9 @@
 import { initialState } from './initialState';
+import {
+    UPDATE_ACTIVE_INSTANCE,
+    UPDATE_ACTIVE_VERSION,
+    UPDATE_ACTIVE_JOB
+} from './actions'
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -46,6 +51,70 @@ export default function reducer(state = initialState, action) {
                     active: Object.assign({}, state.teams.active, {
                         members: action.members
                     })
+                })
+            })
+        }
+        case (UPDATE_ACTIVE_INSTANCE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeInstance: action.instance
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_VERSION): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeVersion: action.version
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_JOB): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeJob: action.job
+                }
+            });
+        }
+        case ('UPDATE_ACTIVE_DATASET'): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: action.dataset
+                }
+            });
+        }
+        case ('UPDATE_ALL_DATASETS'): {
+            return Object.assign({}, state, {
+                datasets: Object.assign({}, state.datasets, {
+                    all: action.allDatasets
+                })
+            })
+        }
+        case ('UPDATE_ALL_RECIPES'): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    recipes: action.allRecipes
+                }
+            })
+        }
+        case ('UPDATE_ALL_JOBS'): {
+            return Object.assign({}, state, {
+                datasets: Object.assign({}, state.datasets, {
+                    jobs: action.allJobs
+                })
+            })
+        }
+        case ('ADD_NEW_JOB'): {
+            return Object.assign({}, state, {
+                datasets: Object.assign({}, state.datasets, {
+                    jobs: [
+                        ...state.datasets.jobs,
+                        action.job
+                    ]
                 })
             })
         }
