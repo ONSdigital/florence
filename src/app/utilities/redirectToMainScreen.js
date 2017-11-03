@@ -10,8 +10,8 @@ import { store } from '../config/store';
 export default function redirectToMainScreen(screen) {
     const rootPath = store.getState().state.rootPath;
 
-    if (screen === `${rootPath}/teams`) {
-        browserHistory.push(`${rootPath}/teams`);
+    if (screen === `${rootPath}/teams` || screen === `${rootPath}/datasets`) {
+        browserHistory.push(screen);
         return;
     }
 
