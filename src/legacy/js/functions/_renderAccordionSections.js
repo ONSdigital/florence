@@ -367,6 +367,11 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         datasetLandingEditor(collectionId, pageData);
     }
 
+    else if (pageData.type === 'api_dataset_landing_page') {
+        var html = templates.workEditT8ApiLandingPage(templateData);
+        $('.workspace-menu').html(html);
+    }
+
     else if (pageData.type === 'dataset') {
         var html = templates.workEditT8(templateData);
         $('.workspace-menu').html(html);

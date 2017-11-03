@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { hasValidAuthToken } from './utilities/hasValidAuthToken';
-import user from './utilities/user';
+import user from './utilities/api-clients/user';
+import log from './utilities/log';
+import ping from './utilities/api-clients/ping';
 
 import Notifications from './global/notifications/Notifications';
 
@@ -23,6 +25,13 @@ class App extends Component {
     }
 
     componentWillMount() {
+
+        log.initialise();
+
+        window.setInterval(() => {
+            ping();
+        }, 10000);
+
         this.setState({isCheckingAuthentication: true});
         hasValidAuthToken().then(isValid => {
             if (isValid) {

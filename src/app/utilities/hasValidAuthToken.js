@@ -4,7 +4,7 @@
  * @returns {Promise} which returns a boolean value
  */
 
-import http from './http';
+import ping from './api-clients/ping';
 import cookies from './cookies';
 
 export function hasValidAuthToken() {
@@ -12,11 +12,13 @@ export function hasValidAuthToken() {
     return new Promise(function(resolve, reject) {
         if (!cookies.get('access_token')) {
             resolve(false);
+            return;
         }
 
-        http.post('/zebedee/ping').then(response => {
+        ping().then(response => {
             if (!response.hasSession) {
                 resolve(false);
+                return;
             }
             resolve(true);
         }).catch(fetchError => {

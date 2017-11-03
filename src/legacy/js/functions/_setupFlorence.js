@@ -151,21 +151,26 @@ function setupFlorence() {
     };
 
     var path = (location.pathname).replace('/florence/', '');
-    var mapPathToViewID = {
-        "collections": "collections",
-        "publishing-queue": "publish",
-        "reports": "reports",
-        "users-and-access": "users"
+    function mapPathToViewID(path) {
+        if (!path || path === '/florence') {
+            return "collections";
+        }
+        return {
+            "collections": "collections",
+            "publishing-queue": "publish",
+            "reports": "reports",
+            "users-and-access": "users"
+        }[path];
     };
-    $('.js-nav-item--' + mapPathToViewID[path]).addClass('selected');
-    viewController(mapPathToViewID[path]);
+    $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
+    viewController(mapPathToViewID(path));
     
     window.onpopstate = function() {
         var newPath = (document.location.pathname).replace('/florence/', '');
         $('.js-nav-item--collection').hide();
         $('.js-nav-item').removeClass('selected');
-        $('.js-nav-item--' + mapPathToViewID[newPath]).addClass('selected');
-        viewController(mapPathToViewID[newPath]);
+        $('.js-nav-item--' + mapPathToViewID(newPath)).addClass('selected');
+        viewController(mapPathToViewID(newPath));
     }
 
     function processMenuClick(clicked) {
@@ -185,6 +190,9 @@ function setupFlorence() {
             window.history.pushState({}, "", "/florence/collections")
             viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
+        } else if (menuItem.hasClass("js-nav-item--datasets")) {
+            window.history.pushState({}, "", "/florence/datasets");
+            viewController('datasets');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
             viewController('users');
