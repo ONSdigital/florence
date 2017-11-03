@@ -10,7 +10,15 @@
     "automock": false,
     "setupFiles": [
       "./setupJest.js"
-    ]
+    ],
+    "collectCoverage": true,
+    "coverageFormats": [
+      "json",
+      "html"
+    ],
+    "globals": {
+      "window": true
+    }
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",
@@ -47,9 +55,13 @@
     "backoff": "^2.5.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
+    "dateformat": "^2.0.0",
     "extract-text-webpack-plugin": "^2.0.0-beta",
     "file-loader": "^0.10.0",
     "install": "^0.8.7",
+    "is-empty-object": "^1.1.1",
+    "localforage": "^1.5.0",
+    "minimongo": "^4.6.0",
     "node-sass": "^4.5.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",

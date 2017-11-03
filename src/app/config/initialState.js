@@ -11,5 +11,12 @@ export const initialState = {
         all: [],
         users: []
     },
+    datasets: {
+        all: [],
+        jobs: [],
+        activeInstance: {},
+        recipes: [],
+        activeJob: {}
+    },
     notifications: []
 };
