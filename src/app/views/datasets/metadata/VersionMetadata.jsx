@@ -162,17 +162,17 @@ class VersionMetadata extends Component {
     }
 
     postData(body) {
-      if(this.state.isInstance) {
-        return datasets.confirmEditionAndCreateVersion(this.props.params.instanceID, this.state.selectedEdition, body);
-      }
-      // Throwing a 400 error - The dataset API has a bug at the version endpoint
-      // The API validates certain fields - license & release date
-      // It shouldn't at the state of "edition-confirmed".
-      return datasets.updateVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version);
+        if(this.state.isInstance) {
+            return datasets.confirmEditionAndCreateVersion(this.props.params.instanceID, this.state.selectedEdition, body);
+        }
+        // Throwing a 400 error - The dataset API has a bug at the version endpoint
+        // The API validates certain fields - license & release date
+        // It shouldn't at the state of "edition-confirmed".
+        return datasets.updateVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version);
     }
 
-    updateInstanceVersion(metaData) {
-      return this.postData(metaData).then(() => {
+    updateInstanceVersion(edition) {
+      return this.postData({edition}).then(() => {
         if(this.state.isInstance) {
           datasets.getInstance(this.props.params.instanceID).then(response => {
             this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/collection`));
@@ -276,28 +276,41 @@ class VersionMetadata extends Component {
     handleFormSubmit(event) {
         event.preventDefault();
 
-        if (!this.state.edition || !this.state.release_frequency) {
-          if (!this.state.edition) {
+        /* 
+            It's currently up in the air whether we need this or not on the version screen 
+            so we shouldn't be validating on it
+        */
+        // if (!this.state.edition || !this.state.release_frequency) {
+        //     if (!this.state.edition) {
+        //         this.setState({
+        //             editionError: "You must select an edition"
+        //         });
+        //     }
+        //     if (!this.state.release_frequency) {
+        //         this.setState({
+        //             releaseError: "You must select a release frequency"
+        //         });
+        //     }
+        //   return
+        // }
+        // const metaData = {
+        //   release_frequency: this.state.release_frequency,
+        //   edition: this.state.edition
+        // }
+        // if (this.state.edition && this.state.release_frequency) {
+        //     this.updateInstanceVersion(metaData);
+        // }
+
+        if (!this.state.edition) {
             this.setState({
                 editionError: "You must select an edition"
             });
-          }
-
-          if (!this.state.release_frequency) {
-            this.setState({
-                releaseError: "You must select a release frequency"
-            });
-          }
-          return
+            return;
         }
 
-        const metaData = {
-          release_frequency: this.state.release_frequency,
-          edition: this.state.edition
-        }
 
-        if (this.state.edition && this.state.release_frequency) {
-          this.updateInstanceVersion(metaData);
+        if (this.state.edition) {
+            this.updateInstanceVersion(this.state.edition);
         }
     }
 
@@ -346,7 +359,7 @@ class VersionMetadata extends Component {
                              this.mapDimensionsToInputs(this.state.dimensions)
                            }
                           </div>
-                          <button className="btn btn--positive">Save and return</button>
+                          <button className="btn btn--positive">Save and add to collection</button>
                         </form>
                       </div>
                     }
