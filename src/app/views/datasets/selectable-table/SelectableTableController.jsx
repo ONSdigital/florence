@@ -41,7 +41,9 @@ export default class SelectableTableController extends Component {
                             {instance.version}
                         </div>
                         <div className="grid__col-2">
-                            <Link to={instance.url}>View</Link>
+                            {/* Wrap in span to stop grid col from forcing link to be full width 
+                            (which made focus outline much wider than the link itself) */}
+                            <span><Link to={instance.url}>View</Link></span>
                         </div>
                     </div>
                 )
