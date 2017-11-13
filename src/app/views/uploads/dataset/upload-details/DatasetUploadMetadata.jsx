@@ -138,16 +138,16 @@ class DatasetUploadMetadata extends Component {
     handleFormSubmit(event) {
         event.preventDefault();
 
-        
+
         if (!this.state.selectedEdition) {
             this.setState({
                 editionError: "An edition must be selected"
             });
             return;
         }
-        
+
         this.setState({isSubmittingData: true});
-        
+
         datasets.updateInstanceEdition(this.props.job.links.instances[0].id, this.state.selectedEdition).then(() => {
             return datasetImport.updateStatus(this.props.params.jobID, "submitted").then(() => {
                 const activeDataset = {
@@ -228,7 +228,7 @@ class DatasetUploadMetadata extends Component {
             this.setState({isSubmittingData: false});
             console.error("Error trying to submit edition to publishing team", error);
         });
-        
+
     }
 
     render() {
@@ -239,14 +239,14 @@ class DatasetUploadMetadata extends Component {
                         &#9664; <Link to={url.resolve("../")}>Return</Link>
                     </div>
                     <h1 className="margin-top--1">Dataset upload details</h1>
-                    {this.state.isFetchingData ? 
+                    {this.state.isFetchingData ?
                         <div className="loader loader--dark"></div>
                     :
                         <form onSubmit={this.handleFormSubmit}>
                             <p className="margin-bottom--1">
                                 Last updated by ... on {dateFormat(this.props.job.last_updated, "HH:MM:ss dd/mm/yy")}
                             </p>
-                            <Select 
+                            <Select
                                 id="editions"
                                 label="Edition"
                                 contents={this.mapEditionsToSelect()}
@@ -256,7 +256,7 @@ class DatasetUploadMetadata extends Component {
                             <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
                                 Submit to publishing
                             </button>
-                            {this.state.isSubmittingData && 
+                            {this.state.isSubmittingData &&
                                 <div className="loader loader--centre loader--dark margin-left--1"></div>
                             }
                         </form>

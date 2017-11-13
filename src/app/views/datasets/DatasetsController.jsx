@@ -110,7 +110,7 @@ class DatasetsController extends Component {
             console.error("Error getting dataset recipes:\n", error);
         });
     }
-    
+
     mapResponseToTableData(datasets, instances) {
         try {
             const values = datasets.map(dataset => {
@@ -133,8 +133,8 @@ class DatasetsController extends Component {
                     id: dataset.id,
                     instances: datasetInstances
                 }
-            });  
-            return values; 
+            });
+            return values;
         } catch (error) {
             const notification = {
                 type: "warning",
