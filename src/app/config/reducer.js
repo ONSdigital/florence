@@ -1,6 +1,7 @@
 import { initialState } from './initialState';
 import {
     UPDATE_ACTIVE_INSTANCE,
+    UPDATE_ACTIVE_VERSION,
     UPDATE_ACTIVE_JOB
 } from './actions'
 
@@ -58,6 +59,14 @@ export default function reducer(state = initialState, action) {
                 datasets: {
                     ...state.datasets,
                     activeInstance: action.instance
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_VERSION): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeVersion: action.version
                 }
             });
         }
