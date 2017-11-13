@@ -112,7 +112,7 @@ export class DatasetMetadata extends Component {
         if (this.props.datasets.length === 0) {
             APIRequests.push(datasets.getAll());
         }
-        
+
         Promise.all(APIRequests).then(responses => {
             this.props.dispatch(updateActiveDataset(responses[0].next || responses[0].current));
             if (this.props.datasets.length === 0) {
@@ -124,7 +124,7 @@ export class DatasetMetadata extends Component {
                     keywords: this.props.dataset.keywords.join(", ")
                 });
             }
-            
+
             if (this.props.dataset.contacts && this.props.dataset.contacts.length > 0) {
                 const contact = this.props.dataset.contacts[0];
                 this.setState({
@@ -222,7 +222,7 @@ export class DatasetMetadata extends Component {
         if (nextState.hasChanges) {
             return;
         }
-        
+
         // Set our initial state, so that we can detect whether there have been any unsaved changes
         if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
             this.originalState = nextState;
@@ -355,11 +355,11 @@ export class DatasetMetadata extends Component {
                 return bulletin.key === key;
             });
         }
-        
+
         if (type === "qmi") {
             relatedItem = this.state.relatedQMI;
         }
-        
+
         if (type === "link") {
             relatedItem = this.state.relatedLinks.find(link => {
                 return link.key === key;
@@ -385,13 +385,13 @@ export class DatasetMetadata extends Component {
         if (type === "bulletin") {
             this.setState({relatedBulletins: remove(this.state.relatedBulletins, key)});
             return;
-        } 
-        
+        }
+
         if (type === "qmi") {
             this.setState({relatedQMI: ""});
             return;
-        } 
-        
+        }
+
         if (type === "link") {
             this.setState({relatedLinks: remove(this.state.relatedLinks, key)});
             return;
@@ -418,8 +418,8 @@ export class DatasetMetadata extends Component {
         if (type === "bulletin") {
             this.setState({relatedBulletins: edit(this.state.relatedBulletins, key)});
             return;
-        } 
-        
+        }
+
         if (type === "qmi") {
             const editedQMI = {
                 ...this.state.relatedQMI,
@@ -428,8 +428,8 @@ export class DatasetMetadata extends Component {
             }
             this.setState({relatedQMI: editedQMI});
             return;
-        } 
-        
+        }
+
         if (type === "link") {
             this.setState({relatedLinks: edit(this.state.relatedLinks, key)});
             return;
