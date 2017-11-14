@@ -25,7 +25,8 @@
         "react/jsx-max-props-per-line": 0,
         "react/jsx-sort-props": 0,
         "react/jsx-no-literals": 0,
-        "react/sort-comp": 1
+        "react/sort-comp": 1,
+        "react/no-direct-mutation-state": 2
     },
     "plugins": [
         "react",
