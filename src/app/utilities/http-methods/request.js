@@ -89,24 +89,34 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             }
 
             logEventPayload.status = 200;
-
-            if (!responseIsJSON) {
-                resolve();
+            
+            if (!responseIsJSON && method !== "POST" && method !== "PUT") {
+                log.add(eventTypes.runtimeWarning, `Received request response for method '${method}' that didn't have the 'application/json' header`)
             }
-
-            if (responseIsJSON) {
+            
+            // We're wrapping this try/catch in an async function because we're using 'await' 
+            // which requires being executed inside an async function (which the 'fetch' can't be set as)
+            (async () => {
                 try {
-                    return response.json();
+                    const json = await response.json();
+                    resolve(json);
                 } catch (error) {
                     console.error("Error trying to parse request body as JSON: ", error);
+                    log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse JSON response from request but unable to. Error message: ' + error);
+
+                    // We're not necessarily relying on a response with these methods
+                    // so we should still resolve the promise, just with no response body
+                    if (method === "POST" || method === "PUT") {
+                        resolve();
+                        return;
+                    }
+
+                    // We're trying to get data at this point and the body can't be parsed
+                    // which means this request is a failure and the promise should be rejected
                     reject({status: response.status, message: "JSON response body couldn't be parsed"});
                 }
-            }
-
-        }).then(responseJSON => {
-            resolve(responseJSON);
+            })()
         }).catch((fetchError = {message: "No error message given"}) => {
-
             logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
 
