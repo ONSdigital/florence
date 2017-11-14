@@ -56,12 +56,15 @@ class VersionMetadata extends Component {
             edition: null,
             title: null,
             release_frequency: null,
+            releaseDate: null,
+            releaseDateError: null,
             dimensions: []
         }
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleReleaseDateChange = this.handleReleaseDateChange.bind(this);
     }
 
     componentWillMount() {
@@ -273,6 +276,13 @@ class VersionMetadata extends Component {
         });
       }
 
+    handleReleaseDateChange(event) {
+        this.setState({
+            releaseDateError: "",
+            releaseDate: event.target.value
+        });
+    }
+
     handleFormSubmit(event) {
         event.preventDefault();
 
@@ -301,15 +311,23 @@ class VersionMetadata extends Component {
         //     this.updateInstanceVersion(metaData);
         // }
 
+        let haveError = false;
+
         if (!this.state.edition) {
             this.setState({
                 editionError: "You must select an edition"
             });
-            return;
+            haveError = true;
         }
 
+        if (!this.state.isInstance && !this.state.releaseDate) {
+            this.setState({
+                releaseDateError: "You must add a release date"
+            });
+            haveError = true;
+        }
 
-        if (this.state.edition) {
+        if (this.state.edition && this.state.isInstance && !haveError) {
             this.updateInstanceVersion(this.state.edition);
         }
     }
@@ -342,6 +360,14 @@ class VersionMetadata extends Component {
                                   onChange={this.handleSelectChange}
                                   error={this.state.editionError}
                                   selectedOption={this.state.edition}
+                              />
+                              <Input
+                                    id="release_date"
+                                    label="Release date"
+                                    type="date"
+                                    onChange={this.handleReleaseDateChange}
+                                    error={this.state.releaseDateError}
+                                    selectedOption={this.state.edition}
                               />
                             </div>
                             <div className="grid__col-6 margin-bottom--1">
