@@ -6,7 +6,7 @@
         "jest": true
     },
     "parserOptions": {
-        "ecmaVersion": 6,
+        "ecmaVersion": 2017,
         "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true,
@@ -26,10 +26,8 @@
         "react/jsx-sort-props": 0,
         "react/jsx-no-literals": 0,
         "react/sort-comp": 1,
-        "react/no-direct-mutation-state": 2
+        "react/no-direct-mutation-state": 2,
+        "react/no-unescaped-entities": 0
     },
-    "plugins": [
-        "react",
-        "jsx-a11y"
-    ]
+    "plugins": ["react"]
 }
