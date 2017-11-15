@@ -57,6 +57,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             log.add(eventTypes.requestReceived, logEventPayload);
 
             const responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+            const responseIsText = response.headers.get('content-type').match(/text\/plain/);
 
             if (response.status >= 500) {
                 throw new HttpError(response);
@@ -94,6 +95,27 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 log.add(eventTypes.runtimeWarning, `Received request response for method '${method}' that didn't have the 'application/json' header`)
             }
             
+            // We've detected a text response so we should try to parse as text, not JSON
+            if (responseIsText) {
+                (async () => {
+                    try {
+                        const text = await response.text();
+                        resolve(text);
+                    } catch (error) {
+                        console.error("Error trying to parse request body as text: ", error);
+                        log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse text response from request but unable to. Error message: ' + error);
+    
+                        if (method === "POST" || method === "PUT") {
+                            resolve();
+                            return;
+                        }
+    
+                        reject({status: response.status, message: "Text response body couldn't be parsed"});
+                    }
+                })()
+                return
+            }
+
             // We're wrapping this try/catch in an async function because we're using 'await' 
             // which requires being executed inside an async function (which the 'fetch' can't be set as)
             (async () => {

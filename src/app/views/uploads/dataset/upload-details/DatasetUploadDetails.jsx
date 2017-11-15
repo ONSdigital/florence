@@ -416,6 +416,24 @@ class DatasetUploadController extends Component {
         this.setState({activeDataset});
     }
 
+    pollUploadState() {
+        const timer = setInterval(() => {
+            datasetImport.get(this.props.params.jobID).then(job => {
+                if (job.state === "completed") {
+                    window.clearInterval(timer);
+                    this.setState({
+                        activeDataset: {
+                            ...this.state.activeDataset,
+                            status: "completed"
+                        }
+                    })
+                }
+            }).catch(error => {
+                console.error("Error trying to get import job: ", error);
+            });
+        }, 1000);
+    }
+
     renderFileInputs() {
       if (!this.state.activeDataset) {
           return;
@@ -440,6 +458,7 @@ class DatasetUploadController extends Component {
     }
 
     renderSubmittedScreen() {
+        this.pollUploadState();
         return (
             <div>
                 <p className="margin-bottom--2">Your files are being processed.</p>
