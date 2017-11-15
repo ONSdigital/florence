@@ -28,7 +28,7 @@ const propTypes = {
       })),
     })),
     dataset: PropTypes.shape({
-      title: PropTypes.string.isRequired,
+      title: PropTypes.string,
       release_frequency: PropTypes.string,
     }),
     instance: PropTypes.shape({
@@ -42,6 +42,7 @@ const propTypes = {
       state: PropTypes.string,
       version: PropTypes.number,
       dimensions: PropTypes.arrayOf(PropTypes.object),
+      release_date: PropTypes.string
     }),
     isInstance: PropTypes.string
 }
@@ -53,11 +54,12 @@ class VersionMetadata extends Component {
         this.state = {
             isFetchingData: false,
             isInstance: null,
+            hasChanges: false,
             edition: null,
             title: null,
             release_frequency: null,
-            releaseDate: null,
-            releaseDateError: null,
+            releaseDate: "",
+            releaseDateError: "",
             dimensions: []
         }
 
@@ -110,6 +112,7 @@ class VersionMetadata extends Component {
             dimensions: this.props.version.dimensions,
             edition: this.props.version.edition,
             state: this.props.version.state,
+            releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : ""
           });
         }
 
@@ -168,55 +171,61 @@ class VersionMetadata extends Component {
         if(this.state.isInstance) {
             return datasets.confirmEditionAndCreateVersion(this.props.params.instanceID, this.state.selectedEdition, body);
         }
+
         // Throwing a 400 error - The dataset API has a bug at the version endpoint
         // The API validates certain fields - license & release date
         // It shouldn't at the state of "edition-confirmed".
-        return datasets.updateVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version);
+        return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body);
     }
 
-    updateInstanceVersion(edition) {
-      return this.postData({edition}).then(() => {
-        if(this.state.isInstance) {
-          datasets.getInstance(this.props.params.instanceID).then(response => {
-            this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/collection`));
-          });
-        } else {
-          this.props.dispatch(push(url.resolve("collection")));
+    updateInstanceVersion(body) {
+        if (this.state.hasChanges || this.state.isInstance) {
+            return this.postData(body).then(() => {
+                if (this.state.isInstance) {
+                    datasets.getInstance(this.props.params.instanceID).then(response => {
+                        this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/collection`));
+                    });
+                } else {
+                    this.props.dispatch(push(url.resolve("collection")));
+                }
+            }).catch(error => {
+                switch (error.status) {
+                    case (403): {
+                        const notification = {
+                            "type": "neutral",
+                            "message": "You do not permission to view the edition metadata for this dataset",
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                    case (404): {
+                        const notification = {
+                            "type": "neutral",
+                            "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        this.props.dispatch(push(url.parent(url.parent())));
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error's occurred whilst trying to get this dataset",
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+                console.error("Error has occurred:\n", error);
+            });
         }
 
-      }).catch(error => {
-          switch (error.status) {
-              case(403):{
-                  const notification = {
-                      "type": "neutral",
-                      "message": "You do not permission to view the edition metadata for this dataset",
-                      isDismissable: true
-                  }
-                  notifications.add(notification);
-                  break;
-              }
-              case (404): {
-                  const notification = {
-                      "type": "neutral",
-                      "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
-                      isDismissable: true
-                  };
-                  notifications.add(notification);
-                  this.props.dispatch(push(url.parent(url.parent())));
-                  break;
-              }
-              default: {
-                  const notification = {
-                      type: "warning",
-                      message: "An unexpected error's occurred whilst trying to get this dataset",
-                      isDismissable: true
-                  }
-                  notifications.add(notification);
-                  break;
-              }
-          }
-          console.error("Error has occurred:\n", error);
-      });
+        if (!this.state.isInstance && !this.state.hasChanges) {
+            this.props.dispatch(push(url.resolve("collection")));
+        }
     }
 
     mapEditionsToSelectOptions() {
@@ -263,7 +272,8 @@ class VersionMetadata extends Component {
        const value = target.value;
        const name = target.name;
        this.setState({
-         [name]: value
+         [name]: value,
+         hasChanges: true
        });
      }
 
@@ -272,14 +282,16 @@ class VersionMetadata extends Component {
         const value = target.value;
         const id = target.id;
         this.setState({
-          [id]: value
+          [id]: value,
+          hasChanges: true
         });
       }
 
     handleReleaseDateChange(event) {
         this.setState({
             releaseDateError: "",
-            releaseDate: event.target.value
+            releaseDate: new Date(event.target.value),
+            hasChanges: true
         });
     }
 
@@ -287,7 +299,7 @@ class VersionMetadata extends Component {
         event.preventDefault();
 
         /* 
-            It's currently up in the air whether we need this or not on the version screen 
+            It's currently up in the air whether we need release frequency or not on the version screen 
             so we shouldn't be validating on it
         */
         // if (!this.state.edition || !this.state.release_frequency) {
@@ -328,13 +340,25 @@ class VersionMetadata extends Component {
         }
 
         if (this.state.edition && this.state.isInstance && !haveError) {
-            this.updateInstanceVersion(this.state.edition);
+            const instanceMetadata = {
+                edition: this.state.edition
+            }
+            if (this.state.releaseDate) {
+                instanceMetadata.release_date = this.state.releaseDate.toISOString();
+            }
+            this.updateInstanceVersion(instanceMetadata);
+            return;
+        }
+
+        if (!this.state.isInstance && !haveError) {
+            this.updateInstanceVersion({
+                release_date: this.state.releaseDate.toISOString()
+            });
         }
     }
 
 
     render() {
-
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-6">
@@ -344,10 +368,12 @@ class VersionMetadata extends Component {
                     <h1 className="margin-top--1 margin-bottom--1">New data</h1>
                     <p>This information is specific to this new data and can be updated each time new data is added.</p>
                       {this.state.isFetchingData ?
-                          <div className="loader loader--dark"></div>
+                        <div className="margin-top--2">
+                            <div className="loader loader--dark"></div>
+                        </div>
                       :
                       <div>
-                        <h2 className="margin-top--1">{this.state.title}</h2>
+                        <h2 className="margin-top--1">{this.state.title || this.props.params.datasetID + " (title not available)"}</h2>
 
                         <form onSubmit={this.handleFormSubmit}>
                           <div className="margin-bottom--2">
@@ -365,6 +391,7 @@ class VersionMetadata extends Component {
                                     id="release_date"
                                     label="Release date"
                                     type="date"
+                                    value={this.state.releaseDate && this.state.releaseDate.toISOString().substring(0, 10)}
                                     onChange={this.handleReleaseDateChange}
                                     error={this.state.releaseDateError}
                                     selectedOption={this.state.edition}

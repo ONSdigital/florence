@@ -39,11 +39,11 @@ export default class datasets {
              });
     }
 
-    static updateVersion(datasetID, edition, version) {
-        const body = {
-          "edition": edition,
+    static updateVersionMetadata(datasetID, edition, version, metadata) {
+        if (typeof metadata !== "object") {
+            return Promise.reject({status: 400});
         }
-        return http.put(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`, body, true)
+        return http.put(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`, metadata, true)
             .then(response => {
                 return response;
             });
@@ -59,10 +59,16 @@ export default class datasets {
             });
     }
 
-    static confirmEditionAndCreateVersion(instanceID, edition) {
-        const body = {
+    static confirmEditionAndCreateVersion(instanceID, edition, metadata) {
+        let body = {
           "edition": edition,
-          "state": "edition-confirmed",
+          "state": "edition-confirmed"
+        }
+        if (metadata && typeof metadata === "object") {
+            body = {
+                ...body,
+                ...metadata
+            }
         }
         return http.put(`/dataset/instances/${instanceID}`, body, true)
             .then(response => {
