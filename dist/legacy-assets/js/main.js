@@ -1534,7 +1534,7 @@ function addDataset(collectionId, data, field, idField) {
         downloadExtensions = /\.csdb$|\.csv$/;
         pageType = 'timeseries_dataset';
     } else {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
         pageType = 'dataset';
     }
 
@@ -1760,23 +1760,23 @@ function addFile(collectionId, data, field, idField) {
 
     //Add
     if (data.type === 'static_adhoc') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_qmi') {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'article_download' || (data.type === 'static_methodology_download' && field === 'pdfDownloads')) {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'static_methodology_download' && field === 'downloads') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.zip$/;
     } else if (data.type === 'static_methodology') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.pdf$|.zip$/;
     } else if (data.type === 'static_foi') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_page') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_article') {
-        downloadExtensions = /\.xls$|.pdf$|.zip$/;
+        downloadExtensions = /\.xls$|.xlsx$|.pdf$|.zip$/;
     } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'article' || data.type === 'bulletin'|| data.type === 'compendium_chapter') {
         downloadExtensions = /\.pdf$/;
     } else {
@@ -1868,7 +1868,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
     //Add
     if (data.type === 'compendium_data') {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
     } else {
         sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
     }
@@ -2544,7 +2544,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
     if (data.type === 'timeseries_dataset') {
         downloadExtensions = /\.csdb$|\.csv$/;
     } else if (data.type === 'dataset') {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
     }
 
     var ajaxRequest = [];
@@ -3122,7 +3122,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
   //Add file types
   if (data.type === 'compendium_data'){
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
+    downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
   }
   else if (data.type === 'article_download'){
     downloadExtensions = /\.pdf$/;
@@ -7228,6 +7228,9 @@ function loadImportScreen (collectionId) {
 
 /**
  * Manages markdown editor
+ * 
+ * Uses pagedown markdown librart - https://github.com/ujifgc/pagedown
+ * 
  * @param content
  * @param onSave
  * @param pageData
@@ -7324,56 +7327,97 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         var $input = $('#wmd-input');
         var selectionStart = $input[0].selectionStart;
         var selectionEnd = $input[0].selectionEnd;
-        var beforeCursor = $input.val().substring(0, selectionStart).split("\n");
-        var afterCursor = $input.val().substring(selectionStart).split("\n");
-        var newInputValue;
-        var hasCloseTag;
-        var removeTag = false;
+        var beforeCursor = $input.val().substring(0, selectionStart);
+        var afterCursor = $input.val().substring(selectionStart);
+        var beforeCursorArray = beforeCursor.split("\n");
+        var afterCursorArray = afterCursor.split("\n");
+        var selectedLine = $input.val().split("\n")[beforeCursorArray.length-1];
+        var newInputValue = $input.val();
+        var cursorIsInsideBoxTag = false;
+        var cursorIsOnOpeningTag = false;
+        var cursorIsOnClosingTag = false;
+        var nextClosingTag = afterCursor.indexOf("</ons-box>");
+        var nextOpeningTag = afterCursor.indexOf("<ons-box");
 
-        beforeCursor.forEach(function(line, index) {
-            if (line.indexOf("</ons-box>") >= 0) {
-                hasCloseTag = true;
-                return;
-            }
-            if (line.indexOf("<ons-box") >= 0 && !hasCloseTag) {
-                removeTag = true;
-                beforeCursor.splice(index, 1);
-                return;
-            }
-        })
-        
-        if (removeTag) {
-            var closingTagRemoved = false;
-            afterCursor.forEach(function(line, index) {
-                if (closingTagRemoved === true) {
-                    return;
-                }
-                if (line.indexOf("</ons-box>") >= 0) {
-                    console.log(afterCursor[index]);
-                    afterCursor.splice(index, 1);
-                    return;
-                }
-            });
-            console.log(afterCursor);
-            newInputValue = beforeCursor.join("\n") + afterCursor.join("\n");
-            $input.val(newInputValue);
-            return;
+        // Detect that the cursor is inside box markdown, 
+        // so that we can choose to remove it instead of adding a new one.
+        if (nextClosingTag < nextOpeningTag || (nextClosingTag >= 0 && nextOpeningTag === -1)) {
+            cursorIsInsideBoxTag = true;
         }
 
-        if (selectionStart === selectionEnd) {
+        // Detect that the cursor is on a box tag so that we can
+        // choose to remove the entire tag
+        if (selectedLine.indexOf("<ons-box") >= 0) {
+            cursorIsOnOpeningTag = true;
+        }
+        if (selectedLine.indexOf("</ons-box>") >= 0) {
+            cursorIsOnClosingTag = true;
+        }
+
+        if (cursorIsOnOpeningTag) {
             var eachLine = $input.val().split("\n");
-            var selection = beforeCursor[beforeCursor.length-1] + afterCursor[0];
-            var wrappedSelection = '<ons-box align="full">\n' + selection + '\n</ons-box>';
-            eachLine[beforeCursor.length-1] = wrappedSelection;
-            newInputValue = eachLine.join("\n");
+            var closingTagRemoved = false;
+            eachLine.splice([beforeCursorArray.length-1], 1);
 
+            var index = [beforeCursorArray.length-1];
+            while(!closingTagRemoved) {
+                if (eachLine[index].indexOf("</ons-box>") >= 0) {
+                    eachLine.splice(index, 1);
+                    closingTagRemoved = true;
+                }
+                index++;
+            }
+            newInputValue = eachLine.join("\n");
+        } else if (cursorIsOnClosingTag) {
+            var eachLine = $input.val().split("\n");
+            var closingTagRemoved = false;
+            eachLine.splice([beforeCursorArray.length-1], 1);
+
+            var index = [beforeCursorArray.length-1];
+            while(!closingTagRemoved) {
+                if (eachLine[index].indexOf("<ons-box") >= 0) {
+                    eachLine.splice(index, 1);
+                    closingTagRemoved = true;
+                }
+                index--;
+            }
+            newInputValue = eachLine.join("\n");
+        } else if (cursorIsInsideBoxTag) {
+            beforeCursorArray.reverse();
+            for (var [index, value] of beforeCursorArray.entries()) {
+                if (value.indexOf("<ons-box") >= 0) {
+                    beforeCursorArray.splice(index, 1);
+                    break;
+                }
+            }
+            beforeCursorArray.reverse();
+
+            for (var [index, value] of afterCursorArray.entries()) {
+                if (value.indexOf("</ons-box>") >= 0) {
+                    afterCursorArray.splice(index, 1);
+                    break;
+                }
+            }
+            newInputValue = beforeCursorArray.join("\n") + afterCursorArray.join("\n");
         } else {
-            selection = $input.val().substring(selectionStart, selectionEnd);
-            newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
+            if (selectionStart === selectionEnd) {
+                var eachLine = $input.val().split("\n");
+                var selection = beforeCursorArray[beforeCursorArray.length-1] + afterCursorArray[0];
+                var wrappedSelection = '<ons-box align="full">\n' + selection + '\n</ons-box>';
+                eachLine[beforeCursorArray.length-1] = wrappedSelection;
+                newInputValue = eachLine.join("\n");
+
+            } else {
+                selection = $input.val().substring(selectionStart, selectionEnd);
+                newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
+            }
         }
+
         $input.val(newInputValue);
         $('#wmd-input').trigger('input');
+        $input[0].setSelectionRange(selectionStart, selectionEnd);
         Florence.Editor.markdownEditor.refreshPreview();
+
     });
 
     $("#wmd-input").on('click', function () {
@@ -7479,7 +7523,7 @@ function markdownEditor() {
         var newText = text.replace(/<ons-box\salign="([a-zA-Z]*)">((?:.|\n)*?)<\/ons-box>/igm, function (match) {
             var align = $(match).attr('align') || "";
             var content = $(match)[0].innerHTML;
-            return '[box align="' + align + '" ]' + content + '[/box]';
+            return '[box align="' + align + '"]' + content + '[/box]';
         });
         return newText;
     });
