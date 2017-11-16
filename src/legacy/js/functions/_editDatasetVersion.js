@@ -21,7 +21,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
     if (data.type === 'timeseries_dataset') {
         downloadExtensions = /\.csdb$|\.csv$/;
     } else if (data.type === 'dataset') {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
     }
 
     var ajaxRequest = [];
