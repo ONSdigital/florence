@@ -15,7 +15,6 @@ const propTypes = {
 }
 
 class NavBar extends Component {
-
     constructor(props) {
         super(props);
 
@@ -78,19 +77,6 @@ class NavBar extends Component {
                 </span>
             )
         }
-
-        // if ( `${rootPath}/datasets`.indexOf(route) >= 0) {
-        //     return (
-        //         <span>
-        //             <li className="global-nav__item">
-        //                 <Link to={`${rootPath}/datasets`} activeClassName="selected" className="global-nav__link">Dataset upload</Link>
-        //             </li>
-        //             <li className="global-nav__item">
-        //                 <Link to={`${rootPath}/login?redirect=${rootPath}/datasets`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
-        //             </li>
-        //         </span>
-        //     )
-        // }
     }
 
     render() {
