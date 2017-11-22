@@ -15,7 +15,6 @@ const propTypes = {
 }
 
 class NavBar extends Component {
-
     constructor(props) {
         super(props);
 
