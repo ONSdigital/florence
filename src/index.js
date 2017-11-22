@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, Route, Redirect } from 'react-router';
 import { routerActions } from 'react-router-redux';
-import { UserAuthWrapper } from 'redux-auth-wrapper';
+import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 
 import App from './app/App';
 import Layout from './app/global/Layout'
@@ -19,23 +19,23 @@ import { store, history } from './app/config/store';
 
 const rootPath = store.getState().state.rootPath;
 
-const UserIsAuthenticated = UserAuthWrapper({
-    authSelector: state => {
-        return state.state.user.isAuthenticated ? state.state.user : {};
+const userIsAuthenticated = connectedReduxRedirect({
+    authenticatedSelector: state => {
+        return state.state.user.isAuthenticated;
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: 'UserIsAuthenticated',
-    failureRedirectPath: `${rootPath}/login`
+    redirectPath: `${rootPath}/login`
 });
 
-const UserIsPublisher = UserAuthWrapper({
-    authSelector: state => {
-        return state.state.user.isAuthenticated ? state.state.user : {};
+const userIsNotAuthorised = connectedReduxRedirect({
+    authenticatedSelector: state => {
+        return state.state.user.userType == 'ADMIN' || state.state.user.userType == 'EDITOR';
     },
     redirectAction: routerActions.replace,
-    wrapperDisplayName: 'UserIsPublisher',
-    failureRedirectPath: `${rootPath}/not-authorised`,
-    predicate: user => user.userType == 'ADMIN' || user.userType == 'EDITOR',
+    wrapperDisplayName: 'UserIsAuthenticated',
+    redirectPath: `${rootPath}/not-authorised`,
+    allowRedirectBack: false
 })
 
 class UnknownRoute extends Component {
@@ -49,7 +49,7 @@ class UnknownRoute extends Component {
 class NotAuthorised extends Component {
     render() {
         return (
-            <h1>Sorry, you don't have access to this. Please go to Ermintrude</h1>
+            <h1>Sorry, you don't have access to this screen. Please go to <a href="/ermintrude/index.html">Ermintrude</a>.</h1>
         )
     }
 }
@@ -62,15 +62,13 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Redirect exact from={rootPath} to={`${rootPath}/collections`}/>
-                            <Route path={`${rootPath}/teams`} component={ UserIsPublisher(TeamsController) }>
-                                <Route path={`:team`} component={ UserIsPublisher(TeamsController) }>
-                                    <Route path={`edit`} component={ UserIsPublisher(TeamsController) }/>
-                                    <Route path={`delete`} component={ UserIsPublisher(TeamsController) }/>
+                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
+                                <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
+                                    <Route path={`edit`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
+                                    <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
                                 </Route>
                             </Route>
-                            {/* <Route path={`${rootPath}/datasets`} component={ UserIsAuthenticated(DatasetController) } /> */}
-                            {/* <Route path={`${rootPath}/datasets/:job`} component={ UserIsAuthenticated(DatasetOverviewController) } /> */}
-                            <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
+                            <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path={`*`} component={ UnknownRoute } />
