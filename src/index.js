@@ -37,12 +37,30 @@ const UserIsAuthenticated = UserAuthWrapper({
     failureRedirectPath: `${rootPath}/login`
 });
 
+const UserIsPublisher = UserAuthWrapper({
+    authSelector: state => {
+        return state.state.user.isAuthenticated ? state.state.user : {};
+    },
+    redirectAction: routerActions.replace,
+    wrapperDisplayName: 'UserIsPublisher',
+    failureRedirectPath: `${rootPath}/not-authorised`,
+    predicate: user => user.userType == 'ADMIN' || user.userType == 'EDITOR',
+})
+
 class UnknownRoute extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
                 <h1>Sorry, this page couldnt be found</h1>
             </div>
+        )
+    }
+}
+
+class NotAuthorised extends Component {
+    render() {
+        return (
+            <h1>Sorry, you don't have access to this. Please go to Ermintrude</h1>
         )
     }
 }
@@ -98,6 +116,7 @@ class Index extends Component {
                             </Route>
                             <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
+                            <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path="*" component={ UnknownRoute } />
                         </Route>
                     </Route>
