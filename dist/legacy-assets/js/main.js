@@ -116,7 +116,16 @@ if (typeof module !== 'undefined') {
   module.exports = PathUtils;
 }
 
-
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
 
 
 var StringUtils = {
@@ -1848,81 +1857,64 @@ function addFile(collectionId, data, field, idField) {
  */
 
 function addFileWithDetails(collectionId, data, field, idField) {
-  var list = data[field];
-  var dataTemplate = {list: list, idField: idField};
-  var html = templates.editorDownloadsWithSummary(dataTemplate);
-  $('#' + idField).replaceWith(html);
-  var uriUpload;
-  var downloadExtensions;
+    var list = data[field];
+    var dataTemplate = {list: list, idField: idField,};
+    var html = templates.editorDownloadsWithSummary(dataTemplate);
+    $('#' + idField).replaceWith(html);
+    var downloadExtensions;
 
-  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
+    $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
-  // Edit
-  if (!data[field] || data[field].length === 0) {
-    var lastIndex = 0;
-  } else {
-    $(data[field]).each(function (index) {
-      // Delete
-      $('#' + idField + '-delete_' + index).click(function () {
-        fileDelete(collectionId, data, field, index);
-      });
+    // Edit
+    if (!data[field] || data[field].length === 0) {
+        var lastIndex = 0;
+    } else {
+        $(data[field]).each(function (index) {
+            // Delete
+            $('#' + idField + '-delete_' + index).click(function () {
+                fileDelete(collectionId, data, field, index);
+            });
 
-      // Edit
-      $('#' + idField + '-edit_' + index).click(function () {
-        var editedSectionValue = {
-          "title": $('#' + idField + '-title_' + index).val(),
-          "markdown": $('#' + idField + '-summary_' + index).val()
-        };
+            // Edit
+            $('#' + idField + '-edit_' + index).click(function () {
+                var editedSectionValue = {
+                    "title": $('#' + idField + '-title_' + index).val(),
+                    "markdown": $('#' + idField + '-summary_' + index).val()
+                };
 
-        var saveContent = function (updatedContent) {
-          data[field][index].fileDescription = updatedContent;
-          data[field][index].title = $('#' + idField + '-title_' + index).val();
-          updateContent(collectionId, data.uri, JSON.stringify(data));
-        };
-        loadMarkdownEditor(editedSectionValue, saveContent, data);
-      });
-    });
-  }
-
-  //Add
-  if (data.type === 'compendium_data') {
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
-  } else {
-    sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
-  }
-
-  $('#add-' + idField).one('click', function () {
-    uploadFile(collectionId, data, field, idField, lastIndex, downloadExtensions, addFileWithDetails);
-  });
-
-  $(function () {
-    $('.add-tooltip').tooltip({
-      items: '.add-tooltip',
-      content: 'Type title here and click Edit to add a description',
-      show: "slideDown", // show immediately
-      open: function (event, ui) {
-        ui.tooltip.hover(
-          function () {
-            $(this).fadeTo("slow", 0.5);
-          });
-      }
-    });
-  });
-
-  function sortable() {
-    $('#sortable-' + idField).sortable({
-      stop: function () {
-        $('#' + idField + ' .edit-section__sortable-item--counter').each(function (index) {
-          $(this).empty().append(index + 1);
+                var saveContent = function (updatedContent) {
+                    data[field][index].fileDescription = updatedContent;
+                    data[field][index].title = $('#' + idField + '-title_' + index).val();
+                    updateContent(collectionId, data.uri, JSON.stringify(data));
+                };
+                loadMarkdownEditor(editedSectionValue, saveContent, data);
+            });
         });
-      }
+    }
+
+    //Add
+    if (data.type === 'compendium_data') {
+        downloadExtensions = /\.csv$|.xls$|.zip$/;
+    } else {
+        sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
+    }
+
+    $('#add-' + idField).one('click', function () {
+        uploadFile(collectionId, data, field, idField, lastIndex, downloadExtensions, addFileWithDetails);
     });
-  }
 
-  sortable();
-}
+    function sortable() {
+        $('#sortable-' + idField).sortable({
+            stop: function () {
+                $('#' + idField + ' .edit-section__sortable-item--counter').each(function (index) {
+                    $(this).empty().append(index + 1);
+                });
+            }
+        });
+    }
 
-/**
+    sortable();
+}/**
  * Manages alerts
  * @param collectionId
  * @param data
@@ -7263,6 +7255,9 @@ function loadImportScreen (collectionId) {
 
 /**
  * Manages markdown editor
+ * 
+ * Uses pagedown markdown librart - https://github.com/ujifgc/pagedown
+ * 
  * @param content
  * @param onSave
  * @param pageData
@@ -7355,6 +7350,103 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         });
     });
 
+    $("#js-editor--box").click(function() {
+        var $input = $('#wmd-input');
+        var selectionStart = $input[0].selectionStart;
+        var selectionEnd = $input[0].selectionEnd;
+        var beforeCursor = $input.val().substring(0, selectionStart);
+        var afterCursor = $input.val().substring(selectionStart);
+        var beforeCursorArray = beforeCursor.split("\n");
+        var afterCursorArray = afterCursor.split("\n");
+        var selectedLine = $input.val().split("\n")[beforeCursorArray.length-1];
+        var newInputValue = $input.val();
+        var cursorIsInsideBoxTag = false;
+        var cursorIsOnOpeningTag = false;
+        var cursorIsOnClosingTag = false;
+        var nextClosingTag = afterCursor.indexOf("</ons-box>");
+        var nextOpeningTag = afterCursor.indexOf("<ons-box");
+
+        // Detect that the cursor is inside box markdown, 
+        // so that we can choose to remove it instead of adding a new one.
+        if (nextClosingTag < nextOpeningTag || (nextClosingTag >= 0 && nextOpeningTag === -1)) {
+            cursorIsInsideBoxTag = true;
+        }
+
+        // Detect that the cursor is on a box tag so that we can
+        // choose to remove the entire tag
+        if (selectedLine.indexOf("<ons-box") >= 0) {
+            cursorIsOnOpeningTag = true;
+        }
+        if (selectedLine.indexOf("</ons-box>") >= 0) {
+            cursorIsOnClosingTag = true;
+        }
+
+        if (cursorIsOnOpeningTag) {
+            var eachLine = $input.val().split("\n");
+            var closingTagRemoved = false;
+            eachLine.splice([beforeCursorArray.length-1], 1);
+
+            var index = [beforeCursorArray.length-1];
+            while(!closingTagRemoved) {
+                if (eachLine[index].indexOf("</ons-box>") >= 0) {
+                    eachLine.splice(index, 1);
+                    closingTagRemoved = true;
+                }
+                index++;
+            }
+            newInputValue = eachLine.join("\n");
+        } else if (cursorIsOnClosingTag) {
+            var eachLine = $input.val().split("\n");
+            var closingTagRemoved = false;
+            eachLine.splice([beforeCursorArray.length-1], 1);
+
+            var index = [beforeCursorArray.length-1];
+            while(!closingTagRemoved) {
+                if (eachLine[index].indexOf("<ons-box") >= 0) {
+                    eachLine.splice(index, 1);
+                    closingTagRemoved = true;
+                }
+                index--;
+            }
+            newInputValue = eachLine.join("\n");
+        } else if (cursorIsInsideBoxTag) {
+            beforeCursorArray.reverse();
+            for (var [index, value] of beforeCursorArray.entries()) {
+                if (value.indexOf("<ons-box") >= 0) {
+                    beforeCursorArray.splice(index, 1);
+                    break;
+                }
+            }
+            beforeCursorArray.reverse();
+
+            for (var [index, value] of afterCursorArray.entries()) {
+                if (value.indexOf("</ons-box>") >= 0) {
+                    afterCursorArray.splice(index, 1);
+                    break;
+                }
+            }
+            newInputValue = beforeCursorArray.join("\n") + afterCursorArray.join("\n");
+        } else {
+            if (selectionStart === selectionEnd) {
+                var eachLine = $input.val().split("\n");
+                var selection = beforeCursorArray[beforeCursorArray.length-1] + afterCursorArray[0];
+                var wrappedSelection = '<ons-box align="full">\n' + selection + '\n</ons-box>';
+                eachLine[beforeCursorArray.length-1] = wrappedSelection;
+                newInputValue = eachLine.join("\n");
+
+            } else {
+                selection = $input.val().substring(selectionStart, selectionEnd);
+                newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
+            }
+        }
+
+        $input.val(newInputValue);
+        $('#wmd-input').trigger('input');
+        $input[0].setSelectionRange(selectionStart, selectionEnd);
+        Florence.Editor.markdownEditor.refreshPreview();
+
+    });
+
     $("#wmd-input").on('click', function () {
         markDownEditorSetLines();
     });
@@ -7417,6 +7509,7 @@ function markdownEditor() {
     // output chart tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {
         var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+            console.log("ONS Chart tag found", match);
             var path = $(match).attr('path');
             return '[chart path="' + path + '" ]';
         });
@@ -7448,6 +7541,16 @@ function markdownEditor() {
             var fullWidth = $(match).attr('full-width') || "";
             var fullWidthText = fullWidth == "true" ? 'display="full-width"' : '';
             return '[interactive url="' + path + '" ' + fullWidthText + ']';
+        });
+        return newText;
+    });
+
+    // output box tag as text instead of the actual tag.
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/<ons-box\salign="([a-zA-Z]*)">((?:.|\n)*?)<\/ons-box>/igm, function (match) {
+            var align = $(match).attr('align') || "";
+            var content = $(match)[0].innerHTML;
+            return '[box align="' + align + '"]' + content + '[/box]';
         });
         return newText;
     });
@@ -10192,6 +10295,9 @@ function addLocalPostResponse(response) {
  * @returns {boolean}
  */
 function postLogin(email, password) {
+    // lowercase email address, before we login/store in local storage, so it matches zebedee
+    // allows string comparisons between zebedee responses and local storage data to work
+    email = email.toLowerCase();
     $.ajax({
         url: "/zebedee/login",
         dataType: 'json',
@@ -11171,7 +11277,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         addFileWithDetails(collectionId, pageData, 'downloads', 'file');
-        editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
+        editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         accordion();
         compendiumDataEditor(collectionId, pageData);
     }
@@ -11684,7 +11790,8 @@ function setShortcuts(field, callback) {
             "collections": "collections",
             "publishing-queue": "publish",
             "reports": "reports",
-            "users-and-access": "users"
+            "users-and-access": "users",
+            "workspace": "workspace"
         }[path];
     };
     $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
@@ -11736,6 +11843,12 @@ function setShortcuts(field, callback) {
             logout();
             viewController();
         }
+    }
+
+    // redirect a viewer to not authorised message if they try access old Florence
+    var userType = localStorage.getItem("userType");
+    if (userType == "VIEWER") {
+        window.location.href = '/florence/not-authorised';
     }
 
     // Get ping times to zebedee and surface for user
@@ -16203,6 +16316,34 @@ function viewCollectionDetails(collectionId, $this) {
         }
         else if (view === 'datasets') {
             window.location.pathname = "/florence/datasets";
+        } 
+        else if (view === 'workspace') {
+            /*
+                Example of a correct URL:
+                '/florence/workspace?collection=:collectionID&uri=:pageURI'
+            */
+
+            const collectionID = getQueryVariable("collection");
+            const pageURI = getQueryVariable("uri");
+            window.history.replaceState({}, "Florence", "/florence/collections");
+            
+            if (!pageURI || !collectionID) {
+                console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
+                viewCollections();
+                return;
+            }
+
+            getCollectionDetails(collectionID, response => {
+                Florence.collection = Object.assign({}, Florence.collection, {
+                    id: collectionID,
+                    name: response.name,
+                    date: response.publishDate,
+                    type: response.type
+                });
+                createWorkspace(pageURI, collectionID, "edit", response);
+            }, error => {
+                console.error("Error getting collection data, redirected to collections screen", error);
+            });
         }
         else if (view === 'users') {
             viewUsers();

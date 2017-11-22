@@ -159,7 +159,8 @@ function setupFlorence() {
             "collections": "collections",
             "publishing-queue": "publish",
             "reports": "reports",
-            "users-and-access": "users"
+            "users-and-access": "users",
+            "workspace": "workspace"
         }[path];
     };
     $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
@@ -211,6 +212,12 @@ function setupFlorence() {
             logout();
             viewController();
         }
+    }
+
+    // redirect a viewer to not authorised message if they try access old Florence
+    var userType = localStorage.getItem("userType");
+    if (userType == "VIEWER") {
+        window.location.href = '/florence/not-authorised';
     }
 
     // Get ping times to zebedee and surface for user
