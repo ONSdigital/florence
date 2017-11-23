@@ -149,6 +149,7 @@ test("Removing a related QMI updates state to be empty", async () => {
     const component = shallow(
         <DatasetMetadata {...defaultProps} />
     );
+
     await component.instance().componentWillMount();
     await component.update();
     expect(component.state("relatedQMI")).toMatchObject({
@@ -336,7 +337,7 @@ test("Handler to edit a related item updates the state with new values", async (
         <DatasetMetadata {...defaultProps} />
     );
     await component.update();
-    
+
     expect(component.state("relatedBulletins").length).toBe(1);
     const initialRelatedBulletins = component.state("relatedBulletins");
     component.setState({titleInput: "Some new words"});
@@ -351,7 +352,7 @@ test("Handle for editing a related link opens modal with existing values", async
         <DatasetMetadata {...defaultProps} />
     );
     await component.update();
-    
+
     component.instance().handleEditRelatedClick("bulletin", "12345");
     expect(component.state("showModal")).toBe(true);
     expect(component.state("modalType")).toBe("bulletin");
