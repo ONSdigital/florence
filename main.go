@@ -12,11 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
-<<<<<<< HEAD
-=======
 
 	mgo "gopkg.in/mgo.v2"
->>>>>>> 41f63c1f... optionally write to mongo
 
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
@@ -30,7 +27,6 @@ var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var enableNewApp = false
-var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
 var upgrader = websocket.Upgrader{}
@@ -203,29 +199,33 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 			break
 		}
 
-		log.DebugR(req, "websocket recv", log.Data{"data": string(message)})
-
 		rdr := bufio.NewReader(bytes.NewReader(message))
-		b, err := rdr.ReadBytes(':')
+		b, err := rdr.ReadBytes('{')
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.ErrorR(req, err, log.Data{"bytes": string(b)})
 			continue
 		}
 
-		eventType := string(b[:len(b)-1])
-		eventData := message[len(eventType)+1:]
+		tags := strings.Split(string(b), ":")
+		eventID := tags[0]
+		eventType := tags[1]
+		eventData := message[len(eventID)+len(eventType)+2:]
 
 		switch eventType {
-		case "event":
-			log.DebugR(req, "event", log.Data{"type": eventType, "data": string(eventData)})
+		case "log":
 			var e florenceLogEvent
 			e.ServerTimestamp = time.Now().UTC().Format("2006-01-02T15:04:05.000-0700Z")
 			err = json.Unmarshal(eventData, &e)
 			if err != nil {
-				log.ErrorR(req, err, nil)
+				log.ErrorR(req, err, log.Data{"data": string(eventData)})
 				continue
 			}
 			log.Debug("client log", log.Data{"data": e})
+
+			err = c.WriteJSON(florenceServerEvent{"ack", eventID})
+			if err != nil {
+				log.ErrorR(req, err, nil)
+			}
 		default:
 			log.DebugR(req, "unknown event type", log.Data{"type": eventType, "data": string(eventData)})
 		}
@@ -243,7 +243,7 @@ type florenceLogEvent struct {
 	ClientTimestamp time.Time   `json:"clientTimestamp"`
 	Type            string      `json:"type"`
 	Location        string      `json:"location"`
-	InstanceID      int         `json:"instanceID"`
+	InstanceID      string      `json:"instanceID"`
 	Payload         interface{} `json:"payload"`
 }
 
