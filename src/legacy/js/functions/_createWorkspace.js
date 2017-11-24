@@ -8,9 +8,8 @@
  * @returns {boolean}
  **/
 
-function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
+function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
-
     $("#working-on").on('click', function () {
     }); // add event listener to mainNav
 
@@ -36,10 +35,15 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             document.cookie = "lang=" + "cy;path=/";
         }
         Florence.refreshAdminMenu();
-
+      
+        
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
-
+        
+        // If we're viewing a filterable dataset then redirect the iframe to use the new path
+        if (datasetID){
+          window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
+        }
         // Store nav objects
         var $nav = $('.js-workspace-nav'),
             $navItem = $nav.find('.js-workspace-nav__item');
@@ -105,7 +109,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             menuItem.addClass('selected');
 
             if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click', collectionData);
+                loadBrowseScreen(collectionId, 'click', collectionData, datasetID);
             } else if (menuItem.is('#create')) {
                 Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
@@ -247,6 +251,7 @@ function processPreviewLoad(collectionId, collectionData) {
     } else {
         // Collection of functions to run on iframe load
         onIframeLoad(function (event) {
+
             var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
                 $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
 
