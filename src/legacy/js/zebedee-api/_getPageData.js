@@ -45,7 +45,6 @@ function getPageDataDescription(collectionId, path, success, error) {
     type: 'GET',
     success: function (response) {
       if (success)
-        console.log('Response: ', response);
         success(response);
     },
     error: function (response) {
