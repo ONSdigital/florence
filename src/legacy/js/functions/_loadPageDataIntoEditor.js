@@ -52,7 +52,6 @@ function loadPageDataIntoEditor(path, collectionId, click) {
 
     $.when.apply($, ajaxRequests).then(function () {
         if (click) {
-
             var iframe = getPreviewUrl();
             if (iframe !== pageData.uri) {
                 setTimeout(loadPageDataIntoEditor(path, collectionId), 200);
