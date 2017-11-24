@@ -10,7 +10,6 @@
  */
 function postContent(collectionId, path, content, overwriteExisting, recursive, success, error) {
       isUpdatingModal.add();
-
     // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
     postToLocalStorage(collectionId, path, content);
 
