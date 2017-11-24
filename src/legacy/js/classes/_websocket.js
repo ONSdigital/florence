@@ -37,7 +37,6 @@ var websocket = {
 
         websocket.socket.onclose = function() {
             console.info("Websocket has been closed");
-            debugger;
             websocket.retrySocketDelay *= 2;
             if (websocket.retrySocketDelay >= 10000) {
                 websocket.retrySocketDelay = 10000;
