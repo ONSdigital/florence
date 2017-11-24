@@ -22,3 +22,6 @@ npm-debug.log*
 #Golang
 assets/debug.go
 build/florence
+
+#Jest
+src/coverage
