@@ -24,7 +24,7 @@ const propTypes = {
     recipes: PropTypes.arrayOf(PropTypes.shape({
       output_instances: PropTypes.arrayOf(PropTypes.shape({
         editions: PropTypes.arrayOf(PropTypes.string).isRequired,
-        dataset_id: PropTypes.string
+        id: PropTypes.string
       })),
     })),
     dataset: PropTypes.shape({
@@ -46,17 +46,16 @@ const propTypes = {
     isInstance: PropTypes.string
 }
 
-export class VersionMetadata extends Component {
+class VersionMetadata extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             isFetchingData: false,
             isInstance: null,
-            edition: "",
-            editions: [],
-            title: "",
-            release_frequency: "",
+            edition: null,
+            title: null,
+            release_frequency: null,
             dimensions: []
         }
 
@@ -92,13 +91,6 @@ export class VersionMetadata extends Component {
 
         if (this.props.recipes.length === 0) {
             this.props.dispatch(updateAllRecipes(responses[0].items));
-            const recipe = this.props.recipes.find(item => {
-                return item.output_instances[0].dataset_id === this.props.params.datasetID;
-            })
-            const editionsArray = recipe.output_instances[0].editions;
-            this.setState({
-              editions: editionsArray,
-            });
         }
 
         if (this.props.params.instanceID) {
@@ -123,7 +115,7 @@ export class VersionMetadata extends Component {
         this.setState({
           title: this.props.dataset.title,
           release_frequency: this.props.dataset.release_frequency,
-          isFetchingData: false,
+          isFetchingData: false
         });
 
         }).catch(error => {
@@ -224,7 +216,11 @@ export class VersionMetadata extends Component {
       });
     }
 
-    mapEditionsToSelectOptions(editions) {
+    mapEditionsToSelectOptions() {
+      const recipe = this.props.recipes.find(recipe => {
+          return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
+      })
+      const editions = recipe.output_instances[0].editions;
       return editions.map(edition => edition);
     }
 
@@ -329,7 +325,7 @@ export class VersionMetadata extends Component {
                                   disabled={this.state.state == "edition-confirmed" ? true : false}
                                   id="edition"
                                   label="Edition"
-                                  contents={this.mapEditionsToSelectOptions(this.state.editions)}
+                                  contents={this.mapEditionsToSelectOptions()}
                                   onChange={this.handleSelectChange}
                                   error={this.state.editionError}
                                   selectedOption={this.state.edition}
