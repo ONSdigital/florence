@@ -379,7 +379,7 @@ class VersionMetadata extends Component {
                           <div className="margin-bottom--2">
                             <div className="grid__col-6">
                               <Select
-                                  disabled={this.state.state == "edition-confirmed" ? true : false}
+                                  disabled={!this.state.isInstance}
                                   id="edition"
                                   label="Edition"
                                   contents={this.mapEditionsToSelectOptions()}
