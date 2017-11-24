@@ -15,7 +15,7 @@ function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
         dataType: 'json',
         type: 'GET',
         success: function (response) {
-            
+
             checkAndAddDeleteFlag(response, collectionData);
 
             // var collectionOwner = localStorage.getItem('userType');
