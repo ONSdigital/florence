@@ -1,4 +1,72 @@
-var CookieUtils = {
+var websocket = {
+    socket: null,
+    retrySocketDelay: 1,
+    buffer: new Map(),
+    messageCounter: 0,
+    open: function() {
+        console.info("Trying to open websocket...");
+
+        websocket.socket = new WebSocket("ws://" + location.host + "/florence/websocket");
+
+        websocket.socket.onopen = function() {
+            console.info("Websocket has been opened");
+            websocket.retrySocketDelay = 1;
+            websocket.buffer.forEach(function(message) {
+                websocket.socket.send(message);
+            });
+
+            // FIXME we should be logging that the socket is open - but there's a horrible cyclical dependency on startup atm
+        }
+
+        websocket.socket.onerror = function() {
+            console.error("Error opening websocket");
+        }
+
+        websocket.socket.onmessage = function(message) {
+            message = JSON.parse(message.data);
+            if (message.type === "version") {
+                // TODO Not being used yet to check version but should replace existing implementation at some point
+                Florence.version = message.payload.version;
+                return;
+            }
+            if (message.type !== "ack") {
+                return;
+            }
+            websocket.buffer.delete(parseInt(message.payload));
+        }
+
+        websocket.socket.onclose = function() {
+            console.info("Websocket has been closed");
+            websocket.retrySocketDelay *= 2;
+            if (websocket.retrySocketDelay >= 10000) {
+                websocket.retrySocketDelay = 10000;
+            }
+
+            setTimeout(() => {
+                // setTimeout sets 'this' to window wrapping 'this.open()' in a lambda function
+                // (rather than passing it inline), stops it.
+                // Ref: https://stackoverflow.com/questions/2130241/pass-correct-this-context-to-settimeout-callback
+                websocket.open();
+            }, websocket.retrySocketDelay);
+        }
+    },
+    send: function(message) {
+        websocket.messageCounter++;
+        message = websocket.messageCounter + ":" + message;
+
+        if (websocket.buffer.size >= 50) {
+            console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: \n`, message);
+            log.add(log.eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
+            return;
+        }
+
+        websocket.buffer.set(websocket.messageCounter, message);
+        
+        if (websocket.socket.readyState === 1) {
+            websocket.socket.send(message);
+        }
+    }
+};var CookieUtils = {
   getCookieValue: function (a, b) {
     b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
     return b ? b.pop() : '';
@@ -45,6 +113,12 @@ Florence.Editor = {
     isDirty: false,
     data: {}
 };
+
+// Can't use randomId function in StringUtils because it is later in the main.js (because the concatenation is done alphabetically)
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+};
+Florence.instanceID = (S4() + S4());
 
 Florence.CreateCollection = {
     selectedRelease: ""
@@ -105,6 +179,79 @@ if (typeof module !== 'undefined') {
 }
 
 
+var log = {
+    add: function(eventType, payload) {
+        var timestamp = new Date();
+        var event = {
+            type: eventType,
+            instanceID: Florence.instanceID,
+            created: timestamp.toISOString(),
+            timestamp: timestamp.getTime(),
+            payload: payload || null
+        }
+
+        // Add unrecognised log type to log event
+        if (!log.eventTypesMap[eventType]) {
+            console.log("Unrecognised log type: ", eventType, payload);
+            event.type = log.eventTypes.unrecognisedLogType;
+        }
+
+        websocket.send("log:" + JSON.stringify(event));
+    },
+    eventTypes: {
+        appInitialised: "APP_INITIALISED",
+        requestSent: "REQUEST_SENT",
+        requestReceived: "REQUEST_RECEIVED",
+        requestFailed: "REQUEST_FAILED",
+        pingSent: "PING_SENT",
+        pingReceived: "PING_RECEIVED",
+        pingFailed: "PING_FAILED",
+        socketOpen: "SOCKET_OPEN",
+        socketBufferFull: "SOCKET_BUFFER_FULL",
+        socketError: "SOCKET_ERROR",
+        unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
+        runtimeWarning: "RUNTIME_WARNING",
+        unrecognisedLogType: "UNRECOGNISED_LOG_TYPE"
+    },
+    eventTypesMap: {}
+}
+
+// Create a map for event type values to property name 
+// so that we can detect when we're logging an unrecognised event
+for (var eventType in log.eventTypes) {
+    log.eventTypesMap[log.eventTypes[eventType]] = eventType;
+}
+
+$.ajaxSetup({
+    beforeSend: function(request) {
+        var requestID = (S4() + S4());
+        request.setRequestHeader("X-Request-ID", requestID);
+        request.uniqueID = requestID;
+        log.add(
+            log.eventTypes.requestSent, {
+                requestID
+            }
+        );
+    }
+});
+
+$(document).ajaxSuccess(function(event, request, settings) {
+    log.add(
+        log.eventTypes.requestReceived, {
+            requestID: request.uniqueID,
+            status: request.statusText
+        }
+    );
+});
+
+$(document).ajaxError(function(event, request, settings) {
+    log.add(
+        log.eventTypes.requestReceived, {
+            requestID: request.uniqueID,
+            status: request.statusText
+        }
+    );
+});
 var PathUtils = {
   isJsonFile: function (uri) {
     return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1;
@@ -11455,6 +11602,9 @@ function setShortcuts(field, callback) {
     });
   });
 }function setupFlorence() {
+    websocket.open();
+    log.add(log.eventTypes.appInitialised);
+
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
     Handlebars.registerPartial("browseNodeDataVis", templates.browseNodeDataVis);

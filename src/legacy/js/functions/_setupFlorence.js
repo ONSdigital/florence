@@ -1,4 +1,7 @@
 function setupFlorence() {
+    websocket.open();
+    log.add(log.eventTypes.appInitialised);
+
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
     Handlebars.registerPartial("browseNodeDataVis", templates.browseNodeDataVis);
