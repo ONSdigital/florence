@@ -6,12 +6,9 @@ var websocket = {
     open: function() {
         console.info("Trying to open websocket...");
 
-        var ws = websocket.socket || new WebSocket("ws://" + location.host + "/florence/websocket");
-        if (!websocket.socket) {
-            websocket.socket = ws;
-        }
+        websocket.socket = new WebSocket("ws://" + location.host + "/florence/websocket");
 
-        ws.onopen = function() {
+        websocket.socket.onopen = function() {
             console.info("Websocket has been opened");
             websocket.retrySocketDelay = 1;
             websocket.buffer.forEach(function(message) {
@@ -21,7 +18,11 @@ var websocket = {
             // FIXME we should be logging that the socket is open - but there's a horrible cyclical dependency on startup atm
         }
 
-        ws.onmessage = function(message) {
+        websocket.socket.onerror = function() {
+            console.error("Error opening websocket");
+        }
+
+        websocket.socket.onmessage = function(message) {
             message = JSON.parse(message.data);
             if (message.type === "version") {
                 // TODO Not being used yet to check version but should replace existing implementation at some point
@@ -34,8 +35,9 @@ var websocket = {
             websocket.buffer.delete(parseInt(message.payload));
         }
 
-        ws.onclose = () => {
+        websocket.socket.onclose = function() {
             console.info("Websocket has been closed");
+            debugger;
             websocket.retrySocketDelay *= 2;
             if (websocket.retrySocketDelay >= 10000) {
                 websocket.retrySocketDelay = 10000;
