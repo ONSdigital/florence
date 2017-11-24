@@ -243,10 +243,11 @@ class VersionMetadata extends Component {
             <div key={dimension.name}>
               <h2>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h2>
               <Input
-                  value=""
+                  value=""                  
                   type="textarea"
                   id={dimension.name}
-                  label="Learn more (optional)"
+                  disabled={true}
+                  label="Learn more (optional) (not supported yet)"
                   onChange={this.handleInputChange}
               />
             </div>
@@ -403,16 +404,15 @@ class VersionMetadata extends Component {
                               <h2 className="margin-top--1">Notes and information</h2>
                               <Select
                                   id="release_frequency"
+                                  disabled={true}
                                   contents={this.mapReleaseFreqToSelectOptions()}
                                   onChange={this.handleSelectChange}
                                   error={this.state.releaseError}
-                                  label="Release frequency"
+                                  label="Release frequency (not supported yet)"
                                   selectedOption={this.state.release_frequency}
                               />
                             </div>
-                            {this.state.isInstance &&
-                             this.mapDimensionsToInputs(this.state.dimensions)
-                           }
+                            {this.mapDimensionsToInputs(this.state.dimensions)}
                           </div>
                           <button className="btn btn--positive">Save and add to collection</button>
                         </form>
