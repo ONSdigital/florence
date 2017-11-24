@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from 'react-router';
 import { routerActions } from 'react-router-redux';
-import { UserAuthWrapper } from 'redux-auth-wrapper';
+import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 
 import App from './app/App';
 import Layout from './app/global/Layout';
@@ -28,14 +28,24 @@ import { store, history } from './app/config/store';
 
 const rootPath = store.getState().state.rootPath;
 
-const UserIsAuthenticated = UserAuthWrapper({
-    authSelector: state => {
-        return state.state.user.isAuthenticated ? state.state.user : {};
+const userIsAuthenticated = connectedReduxRedirect({
+    authenticatedSelector: state => {
+        return state.state.user.isAuthenticated;
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: 'UserIsAuthenticated',
-    failureRedirectPath: `${rootPath}/login`
+    redirectPath: `${rootPath}/login`
 });
+
+const userIsNotAuthorised = connectedReduxRedirect({
+    authenticatedSelector: state => {
+        return state.state.user.userType == 'ADMIN' || state.state.user.userType == 'EDITOR';
+    },
+    redirectAction: routerActions.replace,
+    wrapperDisplayName: 'UserIsAuthenticated',
+    redirectPath: `${rootPath}/not-authorised`,
+    allowRedirectBack: false
+})
 
 class UnknownRoute extends Component {
     render() {
@@ -43,6 +53,14 @@ class UnknownRoute extends Component {
             <div className="grid grid--justify-center">
                 <h1>Sorry, this page couldnt be found</h1>
             </div>
+        )
+    }
+}
+
+class NotAuthorised extends Component {
+    render() {
+        return (
+            <h1>Sorry, you don't have access to this screen. Please go to <a href="/ermintrude/index.html">Ermintrude</a>.</h1>
         )
     }
 }
@@ -55,49 +73,50 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Redirect exact from={rootPath} to={`${rootPath}/collections`}/>
-                            <Route path={`${rootPath}/teams`} component={ UserIsAuthenticated(TeamsController) }>
-                                <Route path=":team" component={ UserIsAuthenticated(TeamsController) }>
-                                    <Route path="edit" component={ UserIsAuthenticated(TeamsController) }/>
-                                    <Route path="delete" component={ UserIsAuthenticated(TeamsController) }/>
+                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(TeamsController) }>
+                                <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
+                                    <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
+                                    <Route path="delete" component={ userIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/uploads`}>
                                 <IndexRedirect to="data" />
                                 <Route path="data">
-                                    <IndexRoute component={UserIsAuthenticated(DatasetUploadsController)} />
+                                    <IndexRoute component={userIsAuthenticated(DatasetUploadsController)} />
                                     <Route path=":jobID">
-                                        <IndexRoute component={ UserIsAuthenticated(DatasetUploadDetails) } />
-                                        <Route path="metadata" component={ UserIsAuthenticated(DatasetUploadMetadata) } />
+                                        <IndexRoute component={ userIsAuthenticated(DatasetUploadDetails) } />
+                                        <Route path="metadata" component={ userIsAuthenticated(DatasetUploadMetadata) } />
                                     </Route>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/datasets`} >
-                                <IndexRoute component={ UserIsAuthenticated(DatasetsController) } />
+                                <IndexRoute component={ userIsAuthenticated(DatasetsController) } />
                                 <Route path=":datasetID">
                                     <IndexRedirect to={`${rootPath}/datasets`} />
                                     <Route path="metadata">
-                                        <IndexRoute component={ UserIsAuthenticated(DatasetMetadata) } />
+                                        <IndexRoute component={ userIsAuthenticated(DatasetMetadata) } />
                                         <Route path="collection">
-                                            <IndexRoute component={ UserIsAuthenticated(DatasetCollectionController) } />
-                                            <Route path="preview" component={ UserIsAuthenticated(DatasetPreview) } />
+                                            <IndexRoute component={ userIsAuthenticated(DatasetCollectionController) } />
+                                            <Route path="preview" component={ userIsAuthenticated(DatasetPreview) } />
                                         </Route>
                                     </Route>
                                     <Route path="editions/:edition/versions/:version">
                                         <IndexRedirect to="metadata"/>
-                                        <Route path="metadata" component={ UserIsAuthenticated(VersionMetadata) }/>
+                                        <Route path="metadata" component={ userIsAuthenticated(VersionMetadata) }/>
                                         <Route path="collection" >
-                                            <IndexRoute component={ UserIsAuthenticated(VersionCollectionController) } />
-                                            <Route path="preview" component={ UserIsAuthenticated(VersionPreview) } />
+                                            <IndexRoute component={ userIsAuthenticated(VersionCollectionController) } />
+                                            <Route path="preview" component={ userIsAuthenticated(VersionPreview) } />
                                         </Route>
                                     </Route>
                                     <Route path="instances">
                                         <IndexRedirect to={`${rootPath}/datasets`}/>
-                                        <Route path=":instanceID/metadata" component={ UserIsAuthenticated(VersionMetadata) } />
+                                        <Route path=":instanceID/metadata" component={ userIsAuthenticated(VersionMetadata) } />
                                     </Route>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/logs`} component={ UserIsAuthenticated(Logs) } />
+                            <Route path={`${rootPath}/logs`} component={ userIsAuthenticated(Logs) } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
+                            <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path="*" component={ UnknownRoute } />
                         </Route>
                     </Route>
