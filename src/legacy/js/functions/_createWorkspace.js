@@ -10,6 +10,7 @@
 
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
+    
     $("#working-on").on('click', function () {
     }); // add event listener to mainNav
 
@@ -36,7 +37,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         }
         Florence.refreshAdminMenu();
       
-        
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
         
@@ -251,7 +251,6 @@ function processPreviewLoad(collectionId, collectionData) {
     } else {
         // Collection of functions to run on iframe load
         onIframeLoad(function (event) {
-
             var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
                 $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
 
