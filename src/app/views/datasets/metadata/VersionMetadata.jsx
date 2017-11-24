@@ -288,9 +288,11 @@ class VersionMetadata extends Component {
       }
 
     handleReleaseDateChange(event) {
+        const value = event.target.value;
+        const releaseDate = value ? new Date(value) : "";
         this.setState({
             releaseDateError: "",
-            releaseDate: new Date(event.target.value),
+            releaseDate,
             hasChanges: true
         });
     }
