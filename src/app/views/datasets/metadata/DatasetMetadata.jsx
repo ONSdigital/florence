@@ -125,6 +125,12 @@ export class DatasetMetadata extends Component {
                     releaseFrequency: this.props.dataset.release_frequency
                 });
             }
+            
+            if (this.props.dataset && this.props.dataset.national_statistic) {
+                this.setState({
+                    isNationalStat: this.props.dataset.national_statistic
+                });
+            }
 
             if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
                 this.setState({
