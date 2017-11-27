@@ -1,5 +1,4 @@
 function updateContent(collectionId, path, content, redirectToPath) {
-  console.log(path);
     putContent(collectionId, path, content,
         success = function () {
             Florence.Editor.isDirty = false;
