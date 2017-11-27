@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -30,7 +29,6 @@ var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
 var uploadBucketName = "dp-frontend-florence-file-uploads"
-var enableNewApp = false
 var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
@@ -60,9 +58,6 @@ func main() {
 	}
 	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
 		recipeAPIURL = v
-	}
-	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
-		enableNewApp, _ = strconv.ParseBool(v)
 	}
 
 	log.Namespace = "florence"
@@ -107,12 +102,6 @@ func main() {
 
 	router := pat.New()
 
-	newAppHandler := refactoredIndexFile
-
-	if !enableNewApp {
-		newAppHandler = legacyIndexFile
-	}
-
 	uploader, err := upload.New(uploadBucketName)
 	if err != nil {
 		log.Error(err, nil)
@@ -136,7 +125,7 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:/.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:/.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
@@ -145,7 +134,6 @@ func main() {
 		"zebedee_url":    zebedeeURL,
 		"recipe_api_url": recipeAPIURL,
 		"import_api_url": importAPIURL,
-		"enable_new_app": enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)

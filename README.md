@@ -58,7 +58,6 @@ The following environment variables are available when running the Go server.
 | IMPORT_API_URL       | http://localhost:21800            | URL that the [dataset import API](https://github.com/ONSdigital/dp-import-api) can be accessed on                                                                                       |
 | RECIPE_API_URL       | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                                                                      |
 | UPLOAD_BUCKET_NAME   | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                      |
-| ENABLE_NEW_APP       | false                             | When true the refactored Florence JS application will be available on `/florence`, otherwise it'll host the current Florence application |
 
 For example:
 ```
