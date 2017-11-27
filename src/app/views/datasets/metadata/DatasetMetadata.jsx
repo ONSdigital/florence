@@ -120,6 +120,18 @@ export class DatasetMetadata extends Component {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             }
 
+            if (this.props.dataset && this.props.dataset.title) {
+                this.setState({
+                    title: this.props.dataset.title
+                });
+            }
+            
+            if (this.props.dataset && this.props.dataset.description) {
+                this.setState({
+                    description: this.props.dataset.description,
+                });
+            }
+
             if (this.props.dataset && this.props.dataset.release_frequency) {
                 this.setState({
                     releaseFrequency: this.props.dataset.release_frequency
@@ -176,10 +188,7 @@ export class DatasetMetadata extends Component {
             }
 
             this.setState({
-                isFetchingDataset: false,
-                description: this.props.dataset.description,
-                title: this.props.dataset.title,
-                isNationalStat:this.props.dataset.national_statistic,
+                isFetchingDataset: false
             });
 
           }).catch(error => {
