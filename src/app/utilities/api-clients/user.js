@@ -25,41 +25,49 @@ export default class user {
     static getPermissions(email) {
         return http.get(`/zebedee/permission?email=${email}`)
             .then(response => {
-
-                // TAKEN FROM OLD FLORENCE
-                // Store the user type in localStorage. Used in old Florence
-                // where views can depend on user type. e.g. Browse tree
-                if (response.admin) {
-                    localStorage.setItem("userType", "PUBLISHING_SUPPORT");
-                } else if (response.editor && !response.dataVisPublisher) {
-                    localStorage.setItem("userType", "PUBLISHING_SUPPORT");
-                } else if (response.editor && response.dataVisPublisher) {
-                    localStorage.setItem("userType", "DATA_VISUALISATION");
-                } else if (!response.admin && !response.editor && !response.dataVisPublisher) {
-                    localStorage.setItem("userType", "VIEWER");
-                }
-
                 return response;
             }).catch(error => {
                 console.error(`Error getting user permissions for ${email} \n${error}`);
         });
     }
 
+    static getOldUserType(user) {
+        // TAKEN FROM OLD FLORENCE
+        if (user.admin) {
+            return "PUBLISHING_SUPPORT";
+        } else if (user.editor && !user.dataVisPublisher) {
+            return "PUBLISHING_SUPPORT";
+        } else if (user.editor && user.dataVisPublisher) {
+            return "DATA_VISUALISATION";
+        } else if (!user.admin && !user.editor && !user.dataVisPublisher) {
+            return "VIEWER";
+        }
+    }
+
     static setUserState(user) {
         const email = user.email;
         let userType = '';
-        if (user.editor) {
-            userType = 'EDITOR'
-        } else {
-            userType = 'DATA-VIS'
-        }
+        if (user.editor) { userType = 'EDITOR'}
+        if (user.admin) { userType = 'ADMIN'}
+        if (!user.editor && !user.admin) { userType = 'VIEWER'}
         const isAdmin = !!user.admin;
         store.dispatch(userLoggedIn(email, userType, isAdmin));
         localStorage.setItem("loggedInAs", email);
+
+        // Store the user type in localStorage. Used in old Florence
+        // where views can depend on user type. e.g. Browse tree
+        localStorage.setItem("userType", this.getOldUserType(user));
     }
 
     static logOut() {
         store.dispatch(userLoggedOut());
+    }
+
+    static updatePassword(body) {
+        return http.post('/zebedee/password', body)
+            .then(response => {
+                return response;
+            })
     }
 
 }
