@@ -283,6 +283,7 @@ export class DatasetMetadata extends Component {
 
     handleSelectChange(event) {
         this.setState({
+            error: "",
             periodicity: event.target.value
         });
     }
@@ -521,7 +522,7 @@ export class DatasetMetadata extends Component {
          }
          if (!this.state.periodicity) {
             this.setState({
-                error: "You must select the periodicity",
+                error: "You must select a release frequency",
                 isSubmittingData: false
             });
          } else {
@@ -585,6 +586,7 @@ export class DatasetMetadata extends Component {
                                       onChange={this.handleSelectChange}
                                       error={this.state.error}
                                       label="Release frequency"
+                                      id="release-frequency"
                                       disabled={this.state.isSubmittingData}
                                   />
                               </div>
