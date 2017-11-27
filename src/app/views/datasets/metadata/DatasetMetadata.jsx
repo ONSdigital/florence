@@ -243,43 +243,6 @@ export class DatasetMetadata extends Component {
         }
     }
 
-    updateDatasetDetails(datasetDetailsData) {
-      datasets.updateDatasetMetadata(this.props.params.datasetID, datasetDetailsData).then(() => {
-        this.setState({isSubmittingData: false});
-        this.props.dispatch(push(`${location.pathname}/collection`));
-      }).catch(error => {
-        this.setState({isSubmittingData: false});
-        if (error) {
-            const notification = {
-                type: 'warning',
-                isDismissable: true,
-                autoDismiss: 15000
-            };
-            switch (error.status) {
-                case ('UNEXPECTED_ERR'): {
-                    console.error(errCodes.UNEXPECTED_ERR);
-                    notification.message = errCodes.UNEXPECTED_ERR;
-                    notifications.add(notification);
-                    break;
-                }
-                case ('RESPONSE_ERR'): {
-                    console.error(errCodes.RESPONSE_ERR);
-                    notification.message = errCodes.RESPONSE_ERR;
-                    notifications.add(notification);
-                    break;
-                }
-                case ('FETCH_ERR'): {
-                    console.error(errCodes.FETCH_ERR);
-                    notification.message = errCodes.FETCH_ERR;
-                    notifications.add(notification);
-                    break;
-                }
-            }
-        }
-      });
-
-    }
-
     mapReleaseFreqToSelectOptions() {
         const values = [
           'Weekly', 'Monthly', 'Annually'
@@ -488,7 +451,7 @@ export class DatasetMetadata extends Component {
         }
     }
 
-     handleFormSubmit(event) {
+    handleFormSubmit(event) {
         event.preventDefault();
 
         if(this.state.titleInput == "" || this.state.urlInput == ""){
@@ -536,12 +499,43 @@ export class DatasetMetadata extends Component {
         }
      }
 
-     handlePageSubmit(event) {
-         event.preventDefault();
-
-        this.setState({isSubmittingData: true});
-        this.updateDatasetDetails(this.mapStateToAPIRequest());
-     }
+    handlePageSubmit(event) {
+        event.preventDefault();
+        this.setState({ isSubmittingData: true });
+        datasets.updateDatasetMetadata(this.props.params.datasetID, this.mapStateToAPIRequest()).then(() => {
+            this.setState({ isSubmittingData: false });
+            this.props.dispatch(push(`${location.pathname}/collection`));
+        }).catch(error => {
+            this.setState({ isSubmittingData: false });
+            if (error) {
+                const notification = {
+                    type: 'warning',
+                    isDismissable: true,
+                    autoDismiss: 15000
+                };
+                switch (error.status) {
+                    case ('UNEXPECTED_ERR'): {
+                        console.error(errCodes.UNEXPECTED_ERR);
+                        notification.message = errCodes.UNEXPECTED_ERR;
+                        notifications.add(notification);
+                        break;
+                    }
+                    case ('RESPONSE_ERR'): {
+                        console.error(errCodes.RESPONSE_ERR);
+                        notification.message = errCodes.RESPONSE_ERR;
+                        notifications.add(notification);
+                        break;
+                    }
+                    case ('FETCH_ERR'): {
+                        console.error(errCodes.FETCH_ERR);
+                        notification.message = errCodes.FETCH_ERR;
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+            }
+        });
+    }
 
     render() {
         return (
