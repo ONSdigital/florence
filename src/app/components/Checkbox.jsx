@@ -47,7 +47,7 @@ class Checkbox extends Component {
           }
           <div className="checkbox">
             <input className="checkbox__input" type="checkbox"
-              checked={this.state.value}
+              checked={this.state.isChecked}
               onChange={this.handleChange}
               onFocus={this.handleFocus}
               onBlur={this.handleFocus}
