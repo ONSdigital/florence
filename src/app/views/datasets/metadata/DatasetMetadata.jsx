@@ -566,7 +566,7 @@ export class DatasetMetadata extends Component {
                         <div className="loader loader--dark"></div>
                     :
                         <div>
-                            <h2 className="margin-bottom--1">Dataset</h2>
+                            <h2 className="margin-top--1 margin-bottom--1">Dataset</h2>
                             <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.datasetID || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
@@ -590,15 +590,16 @@ export class DatasetMetadata extends Component {
                                   value={ this.state.keywords}
                                   id="keywords"
                                   label="Keywords"
+                                  placeholder={`e.g. housing, inflation`}
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isSubmittingData}
                               />
-                              <div className="grid__col-6 margin-top--1">
+                              <div className="grid__col-6 margin-top--2">
                                 <Checkbox
                                     isChecked={this.state.isNationalStat}
                                     onChange={this.handleToggleChange}
                                     disabled={this.state.isSubmittingData}
-                                    label="National Statistic"
+                                    label="National statistic"
                                     id="national-statistic"
                                 />
                               </div>
@@ -635,7 +636,7 @@ export class DatasetMetadata extends Component {
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isSubmittingData}
                               />
-                        <h2 className="margin-bottom--1">Related content</h2>
+                        <h2 className="margin-top--2 margin-bottom--1">Related content</h2>
                         <div className="margin-bottom--1">
                             <p> These are common across all editions of the dataset. Changing them will affect all previous editions.</p>
                         </div>
@@ -675,7 +676,7 @@ export class DatasetMetadata extends Component {
                                 />
                               <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
-                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" onClick={this.handlePageSubmit}>Save and continue</button>
                         {this.state.isSubmittingData &&
                             <div className="loader loader--centre loader--dark margin-left--1"></div>
                         }
