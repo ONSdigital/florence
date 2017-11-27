@@ -80,7 +80,7 @@ export class DatasetMetadata extends Component {
             contactName: "",
             contactEmail: "",
             contactPhone: "",
-            periodicity: "",
+            releaseFrequency: "",
             isNationalStat: false,
             titleError: "",
             urlError: ""
@@ -284,7 +284,7 @@ export class DatasetMetadata extends Component {
     handleSelectChange(event) {
         this.setState({
             error: "",
-            periodicity: event.target.value
+            releaseFrequency: event.target.value
         });
     }
 
@@ -449,6 +449,33 @@ export class DatasetMetadata extends Component {
         });
      }
 
+    splitKeywordsString(keywords) {
+        return keywords.split(",").map(keyword => {
+            return keyword.trim()
+        });
+    }
+    
+    mapStateToAPIRequest() {
+        return {
+            contacts: [{
+                email: this.state.contactEmail,
+                name: this.state.contactName,
+                telephone: this.state.contactPhone,
+            }],
+            description: this.state.description,
+            release_frequency: this.state.releaseFrequency,
+            title: this.state.title,
+            national_statistic: this.state.isNationalStat,
+            keywords: this.splitKeywordsString(this.state.keywords),
+            qmi: {
+                title: this.state.relatedQMI.title,
+                href: this.state.relatedQMI.url,
+            },
+            publications: [...this.state.relatedBulletins],
+            related_datasets: [...this.state.relatedLinks],
+        }
+    }
+
      handleFormSubmit(event) {
         event.preventDefault();
 
@@ -502,32 +529,15 @@ export class DatasetMetadata extends Component {
 
         this.setState({isSubmittingData: true});
 
-         const datasetDetailsData = {
-           contact: {
-             email: this.state.contactEmail,
-             name: this.state.contactName,
-             telephone: this.state.contactPhone,
-           },
-           description: this.state.description,
-           release_frequency: this.state.periodicity,
-           title: this.state.title,
-           national_statistic: this.state.isNationalStat,
-           keywords: this.state.keywords.split(","),
-           qmi: {
-             title: this.state.relatedQMI.title,
-             href: this.state.relatedQMI.url,
-           },
-           publications: [...this.state.relatedBulletins],
-           related_datasets: [...this.state.relatedLinks],
-         }
-         if (!this.state.periodicity) {
-            this.setState({
-                error: "You must select a release frequency",
-                isSubmittingData: false
-            });
-         } else {
-           this.updateDatasetDetails(datasetDetailsData);
-         }
+        const datasetDetailsData = this.mapStateToAPIRequest();
+        if (!this.state.releaseFrequency) {
+        this.setState({
+            error: "You must select a release frequency",
+            isSubmittingData: false
+        });
+        } else {
+        this.updateDatasetDetails(datasetDetailsData);
+        }
      }
 
     render() {
