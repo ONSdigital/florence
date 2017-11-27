@@ -97,6 +97,11 @@ const exampleDataset = {
             'keyword2'
         ],
         publisher: {},
+        contacts: [{
+            email: "test@email.com",
+            name: "foo bar",
+            telephone: "01633 123456"
+        }],
         state: 'published',
         title: 'CPI',
         uri: '/economy/inflationandpricesindices/datasets/consumerpriceindices'
@@ -252,9 +257,9 @@ test("Handle select change event updates state correctly", () => {
         <DatasetMetadata {...defaultProps} />
     );
 
-    expect(component.update().state("periodicity")).toBe("");
+    expect(component.update().state("releaseFrequency")).toBe("");
     component.instance().handleSelectChange({preventDefault: ()=>{}, target: {value: "Weekly"}});
-    expect(component.update().state("periodicity")).toBe("Weekly");
+    expect(component.update().state("releaseFrequency")).toBe("Weekly");
 });
 
 test("Handle checkbox tick updates 'national statistic' state correctly", () => {
@@ -372,4 +377,116 @@ test("Related items map to card element correctly", async () => {
             id: dataset.key
         });
     })
-})
+});
+
+describe("Component's state maps to API request correctly when", () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    
+    it("contact details data has been updated", () => {
+        const mockState = {
+            contactEmail: "foobar@email.com",
+            contactPhone: "01234 567890",
+            contactName: "Bob Jones"
+        }
+        const mockRequestContactsObject = {
+            email: "foobar@email.com",
+            telephone: "01234 567890",
+            name: "Bob Jones"
+        }
+    
+        component.setState(mockState);
+        const componentInstance = component.instance();
+        expect(componentInstance.mapStateToAPIRequest().contacts.length).toBe(1);
+        expect(componentInstance.mapStateToAPIRequest().contacts[0]).toEqual(expect.objectContaining(mockRequestContactsObject));
+    });
+    
+    it("description data has been updated", () => {
+        const mockState = {
+            description: "This is a stubbed description"
+        }
+    
+        component.setState(mockState);
+        expect(component.instance().mapStateToAPIRequest().description).toBe(mockState.description);
+    });
+    
+    it("related publications data has been updated", () => {
+        const mockPublicationsState = {
+            relatedBulletins: [
+                {
+                    title: "A publication title",
+                    href: "/economy/gdp/bulletins/july2016"
+                },
+                {
+                    title: "A publication title",
+                    href: "/economy/gdp/bulletins/july2016",
+                    description: "Words words words and more words"
+                }
+            ]
+        }
+    
+        component.setState(mockPublicationsState);
+        const componentInstance = component.instance();
+        expect(componentInstance.mapStateToAPIRequest().publications.length).toBe(2);
+        expect(componentInstance.mapStateToAPIRequest().publications[0]).toEqual(expect.objectContaining(mockPublicationsState.relatedBulletins[0]));
+        expect(componentInstance.mapStateToAPIRequest().publications[1]).toEqual(expect.objectContaining(mockPublicationsState.relatedBulletins[1]));
+    });
+    
+    it("related links data has been updated", () => {
+        const mockLinksState = {
+            relatedLinks: [
+                {
+                    title: "GOV.UK",
+                    href: "https://gov.uk"
+                }
+            ]
+        }
+    
+        component.setState(mockLinksState);
+        expect(component.instance().mapStateToAPIRequest().related_datasets[0]).toEqual(expect.objectContaining(mockLinksState.relatedLinks[0]));
+    });
+    
+    it("related QMI data has been updated", () => {
+        const mockQMIState = {
+            relatedQMI: {
+                title: "A methodology article",
+                url: "/economy/gdp/methodology/gdpqmi"
+            } 
+        }
+        const mockRequestQMIObject = {
+            title: mockQMIState.relatedQMI.title,
+            href: mockQMIState.relatedQMI.url
+        }
+    
+        component.setState(mockQMIState);
+        expect(component.instance().mapStateToAPIRequest().qmi).toEqual(expect.objectContaining(mockRequestQMIObject));
+    });
+    
+    it("national statistic data has been updated", () => {
+        const mockNationalStatState = {
+            isNationalStat: false
+        }
+    
+        component.setState(mockNationalStatState);
+        expect(component.instance().mapStateToAPIRequest().national_statistic).toBe(false);
+    });
+    
+    it("keywords data has been updated", () => {
+        const mockKeywordsState = {
+            keywords: "foo , bar,more, two words, another"
+        }
+    
+        component.setState(mockKeywordsState);
+        expect(component.instance().mapStateToAPIRequest().keywords).toEqual(expect.arrayContaining(["foo", "bar", "more", "two words", "another"]));
+    });
+    
+    it("title data has been updated", () => {
+        const mockTitleState = {
+            title: "Foobar"
+        }
+    
+        component.setState(mockTitleState);
+        expect(component.instance().mapStateToAPIRequest().title).toBe("Foobar");
+    });
+});
