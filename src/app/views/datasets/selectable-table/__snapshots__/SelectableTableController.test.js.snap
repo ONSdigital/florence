@@ -86,12 +86,14 @@ exports[`Selectable table with values renders component with all values 1`] = `
           <div
             className="grid__col-2"
           >
-            <a
-              onClick={[Function]}
-              style={Object {}}
-            >
-              View
-            </a>
+            <span>
+              <a
+                onClick={[Function]}
+                style={Object {}}
+              >
+                View
+              </a>
+            </span>
           </div>
         </div>
       </div>
