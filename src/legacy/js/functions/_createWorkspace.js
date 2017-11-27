@@ -10,7 +10,7 @@
 
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
-    
+
     $("#working-on").on('click', function () {
     }); // add event listener to mainNav
 
@@ -28,7 +28,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             currentPath = path;
             safePath = checkPathSlashes(currentPath);
         }
-        
+
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
             document.cookie = "lang=" + "en;path=/";
@@ -36,10 +36,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             document.cookie = "lang=" + "cy;path=/";
         }
         Florence.refreshAdminMenu();
-      
+
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
-        
+
         // If we're viewing a filterable dataset then redirect the iframe to use the new path
         if (datasetID){
           window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
@@ -115,7 +115,11 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPreviewUrl();
+                if(datasetID){
+                  Florence.globalVars.pagePath = $('.js-browse__item.selected').data('url');
+                } else {
+                  Florence.globalVars.pagePath = getPreviewUrl();
+                }
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
@@ -343,4 +347,3 @@ function toggleDeleteRevertChildren($item) {
 
     $childContainer.find('.page__buttons').toggleClass('deleted');
 }
-
