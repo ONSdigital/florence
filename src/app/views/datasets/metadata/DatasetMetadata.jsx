@@ -20,42 +20,42 @@ import log, {eventTypes} from '../../../utilities/log'
 
 const propTypes = {
     params: PropTypes.shape({
-        datasetID: PropTypes.string
-    }),
+        datasetID: PropTypes.string.isRequired
+    }).isRequired,
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
-            title: PropTypes.string.isRequired
+            title: PropTypes.string
         }),
         current: PropTypes.shape({
-            title: PropTypes.string.isRequired
+            title: PropTypes.string
         })
     })),
     dataset: PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      keywords: PropTypes.array,
-      national_statistic: PropTypes.bool,
-      contacts: PropTypes.arrayOf(PropTypes.shape({
-          name: PropTypes.string,
-          email: PropTypes.string,
-          telephone: PropTypes.string,
-      })),
-      qmi: PropTypes.shape({
-          href: PropTypes.string,
-          title: PropTypes.string,
-      }),
-      related_datasets: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string,
-          title: PropTypes.string,
-      })),
-      publications: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string,
-          title: PropTypes.string,
-      })),
-      release_frequency: PropTypes.string
+        title: PropTypes.string,
+        description: PropTypes.string,
+        keywords: PropTypes.array,
+        national_statistic: PropTypes.bool,
+        contacts: PropTypes.arrayOf(PropTypes.shape({
+            name: PropTypes.string,
+            email: PropTypes.string,
+            telephone: PropTypes.string,
+        })),
+        qmi: PropTypes.shape({
+            href: PropTypes.string,
+            title: PropTypes.string,
+        }),
+        related_datasets: PropTypes.arrayOf(PropTypes.shape({
+            href: PropTypes.string,
+            title: PropTypes.string,
+        })),
+        publications: PropTypes.arrayOf(PropTypes.shape({
+            href: PropTypes.string,
+            title: PropTypes.string,
+        })),
+        release_frequency: PropTypes.string
     })
 }
 
@@ -106,19 +106,8 @@ export class DatasetMetadata extends Component {
     componentWillMount() {
         this.setState({isFetchingDataset: true});
 
-        const APIRequests = [
-            datasets.get(this.props.params.datasetID)
-        ]
-
-        if (this.props.datasets.length === 0) {
-            APIRequests.push(datasets.getAll());
-        }
-
-        Promise.all(APIRequests).then(responses => {
-            this.props.dispatch(updateActiveDataset(responses[0].next || responses[0].current));
-            if (this.props.datasets.length === 0) {
-                this.props.dispatch(updateAllDatasets(responses[1].items));
-            }
+        datasets.get(this.props.params.datasetID).then(response => {
+            this.props.dispatch(updateActiveDataset(response.next || response.current));
 
             if (this.props.dataset && this.props.dataset.title) {
                 this.setState({
