@@ -54,7 +54,8 @@ const propTypes = {
       publications: PropTypes.arrayOf(PropTypes.shape({
           href: PropTypes.string,
           title: PropTypes.string,
-      }))
+      })),
+      release_frequency: PropTypes.string
     })
 }
 
@@ -117,6 +118,12 @@ export class DatasetMetadata extends Component {
             this.props.dispatch(updateActiveDataset(responses[0].next || responses[0].current));
             if (this.props.datasets.length === 0) {
                 this.props.dispatch(updateAllDatasets(responses[1].items));
+            }
+
+            if (this.props.dataset && this.props.dataset.release_frequency) {
+                this.setState({
+                    releaseFrequency: this.props.dataset.release_frequency
+                });
             }
 
             if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
@@ -268,7 +275,6 @@ export class DatasetMetadata extends Component {
     }
 
     mapReleaseFreqToSelectOptions() {
-
         const values = [
           'Weekly', 'Monthly', 'Annually'
         ];
@@ -531,10 +537,10 @@ export class DatasetMetadata extends Component {
 
         const datasetDetailsData = this.mapStateToAPIRequest();
         if (!this.state.releaseFrequency) {
-        this.setState({
-            error: "You must select a release frequency",
-            isSubmittingData: false
-        });
+            this.setState({
+                error: "You must select a release frequency",
+                isSubmittingData: false
+            });
         } else {
         this.updateDatasetDetails(datasetDetailsData);
         }
@@ -593,6 +599,7 @@ export class DatasetMetadata extends Component {
                               <div className="grid__col-6 margin-bottom--1">
                                   <Select
                                       contents={this.mapReleaseFreqToSelectOptions()}
+                                      selectedOption={this.state.releaseFrequency}
                                       onChange={this.handleSelectChange}
                                       error={this.state.error}
                                       label="Release frequency"
