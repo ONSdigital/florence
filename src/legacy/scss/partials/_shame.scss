@@ -331,3 +331,18 @@
     }
 
 }
+
+.file-upload {
+
+    width: 460px;
+
+    &__title {
+        width: 100% !important;
+        margin-bottom: $lineheight / 2 !important;
+    }
+
+    &__filename {
+        margin: 10px 0;
+    }
+
+}
