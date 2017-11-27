@@ -246,13 +246,15 @@ class DatasetUploadMetadata extends Component {
                             <p className="margin-bottom--1">
                                 Last updated by ... on {dateFormat(this.props.job.last_updated, "HH:MM:ss dd/mm/yy")}
                             </p>
-                            <Select
-                                id="editions"
-                                label="Edition"
-                                contents={this.mapEditionsToSelect()}
-                                onChange={this.handleEditionChange}
-                                error={this.state.editionError}
-                            />
+                            <div className="grid__col-6">
+                                <Select
+                                    id="editions"
+                                    label="Edition"
+                                    contents={this.mapEditionsToSelect()}
+                                    onChange={this.handleEditionChange}
+                                    error={this.state.editionError}
+                                />
+                            </div>
                             <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
                                 Submit to publishing
                             </button>
