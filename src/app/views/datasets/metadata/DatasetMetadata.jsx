@@ -540,16 +540,7 @@ export class DatasetMetadata extends Component {
          event.preventDefault();
 
         this.setState({isSubmittingData: true});
-
-        const datasetDetailsData = this.mapStateToAPIRequest();
-        if (!this.state.releaseFrequency) {
-            this.setState({
-                error: "You must select a release frequency",
-                isSubmittingData: false
-            });
-        } else {
-        this.updateDatasetDetails(datasetDetailsData);
-        }
+        this.updateDatasetDetails(this.mapStateToAPIRequest());
      }
 
     render() {
