@@ -51,6 +51,12 @@
 			"revisionTime": "2016-04-13T04:16:32Z"
 		},
 		{
+			"checksumSHA1": "jb1pFNNVYzpY4Mz09WEWeTNng40=",
+			"path": "github.com/gorilla/websocket",
+			"revision": "3f3e394da2b801fbe732a935ef40724762a67a07",
+			"revisionTime": "2017-02-18T16:27:10Z"
+		},
+		{
 			"checksumSHA1": "tewA7jXVGCw1zb5mA0BDecWi4iQ=",
 			"path": "github.com/jtolds/gls",
 			"revision": "8ddce2a84170772b95dd5d576c48d517b22cac63",
