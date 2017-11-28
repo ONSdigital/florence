@@ -3,18 +3,21 @@ var websocket = {
     retrySocketDelay: 1,
     buffer: new Map(),
     messageCounter: 0,
+    hasConnected: false,
+    reconnectAttempts: 0,
     open: function() {
         console.info("Trying to open websocket...");
 
         websocket.socket = new WebSocket(location.protocol.replace(/^http/, 'ws') + location.host + "/florence/websocket");
+        websocket.reconnectAttempts++;
 
         websocket.socket.onopen = function() {
             console.info("Websocket has been opened");
+            websocket.hasConnected = true;
             websocket.retrySocketDelay = 1;
             websocket.buffer.forEach(function(message) {
                 websocket.socket.send(message);
             });
-
             // FIXME we should be logging that the socket is open - but there's a horrible cyclical dependency on startup atm
         }
 
@@ -38,8 +41,13 @@ var websocket = {
         websocket.socket.onclose = function() {
             console.info("Websocket has been closed");
             websocket.retrySocketDelay *= 2;
-            if (websocket.retrySocketDelay >= 10000) {
-                websocket.retrySocketDelay = 10000;
+            if (websocket.retrySocketDelay >= 300000) {
+                websocket.retrySocketDelay = 300000;
+            }
+
+            if (!websocket.hasConnected && websocket.reconnectAttempts >= 100) {
+                console.info("Unable to connect websocket after 100 attempts, so stop retrying websocket");
+                return;
             }
 
             setTimeout(() => {
