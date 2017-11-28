@@ -6,7 +6,7 @@ var websocket = {
     open: function() {
         console.info("Trying to open websocket...");
 
-        websocket.socket = new WebSocket("ws://" + location.host + "/florence/websocket");
+        websocket.socket = new WebSocket(location.protocol.replace(/^http/, 'ws') + location.host + "/florence/websocket");
 
         websocket.socket.onopen = function() {
             console.info("Websocket has been opened");
