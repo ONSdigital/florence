@@ -64,7 +64,7 @@ var websocket = {
 
         if (websocket.buffer.size >= 50) {
             console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: \n`, message);
-            log.add(log.eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
+            //log.add(log.eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
             return;
         }
 
