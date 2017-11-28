@@ -13,8 +13,6 @@ import (
 	"strings"
 	"time"
 
-	mgo "gopkg.in/mgo.v2"
-
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
 	"github.com/ONSdigital/go-ns/log"
@@ -30,7 +28,6 @@ var enableNewApp = false
 
 var getAsset = assets.Asset
 var upgrader = websocket.Upgrader{}
-var session *mgo.Session
 
 // Version is set by the make target
 var Version string
