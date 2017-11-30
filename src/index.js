@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route, Redirect } from 'react-router';
+import { Router, Route } from 'react-router';
 import { routerActions } from 'react-router-redux';
 import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 
 import App from './app/App';
 import Layout from './app/global/Layout'
 import LoginController from './app/views/login/LoginController';
+import CollectionsController from './app/views/collections/CollectionsController';
 import TeamsController from './app/views/teams/TeamsController';
 // import DatasetController from './app/views/datasets/DatasetsController';
 // import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
@@ -61,7 +62,7 @@ class Index extends Component {
                 <Router history={ history }>
                     <Route component={ App }>
                         <Route component={ Layout }>
-                            <Redirect exact from={rootPath} to={`${rootPath}/collections`}/>
+                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) } />
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
                                 <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
                                     <Route path={`edit`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
