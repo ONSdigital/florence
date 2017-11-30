@@ -50,7 +50,7 @@ class NavBar extends Component {
                     {!isViewer ?
                         <span>
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/collections">Collections</a>
+                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
                             </li>
 
                             <li className="global-nav__item">
