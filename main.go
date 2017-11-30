@@ -130,7 +130,6 @@ func main() {
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
-	router.HandleFunc("/florence/collections", legacyIndexFile)
 	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
 	router.HandleFunc("/florence/reports", legacyIndexFile)
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
