@@ -8,6 +8,11 @@ class Collections extends Component {
         super(props);
     }
 
+    handleCollectionCreateSuccess() {
+        // route to collection details pane for new collection
+        // update list of collections
+    }
+
     render () {
         return (
             <div>
@@ -17,8 +22,8 @@ class Collections extends Component {
 
                     </div>
                     <div className="grid__col-4">
-                        <h1>Create a team</h1>
-
+                        <h1>Create a collection</h1>
+                        <CollectionCreate onSuccess={this.handleCollectionCreateSuccess}/>
 
                     </div>
                 </div>
