@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
-import CollectionCreate from './create/CollectionCreate';
+import { CollectionCreate } from './create/CollectionCreate';
 
 class Collections extends Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class Collections extends Component {
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
-                        <CollectionCreate onSuccess={this.handleCollectionCreateSuccess}/>
+                        <CollectionCreate user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}/>
 
                     </div>
                 </div>
@@ -32,4 +32,10 @@ class Collections extends Component {
     }
 }
 
-export default connect()(Collections);
+function mapStateToProps(state) {
+    return {
+        user: state.state.user
+    }
+}
+
+export default connect(mapStateToProps)(Collections);
