@@ -18,7 +18,7 @@ const propTypes = {
     onSuccess: PropTypes.func.isRequired
 };
 
-class CollectionCreate extends Component {
+export class CollectionCreate extends Component {
     constructor(props) {
         super(props);
 
@@ -66,18 +66,28 @@ class CollectionCreate extends Component {
     // return a date in ISO format (yyyy-mm-dd). returns todays date by default,
     // or same date but however many years ahead
     getTodayDate(yearsAhead) {
-        const years = typeof yearsAhead === 'number' || 0;
+        const years = typeof yearsAhead === 'number' ? yearsAhead : 0;
         return (new Date(new Date().setFullYear(new Date().getFullYear() + years)).toISOString().split('T')[0]);
     }
 
     getListOfTeams() {
-        teams.getAll().then(response => {
-            const teams = response.map(team => {
+        teams.getAll().then(teams => {
+            if (teams.length === 0) {
+                const notification = {
+                    "type": "warning",
+                    "message": "Failed to get teams. You should be able to add teams after creating the collection or you can try refreshing",
+                    isDismissable: true
+                };
+                notifications.add(notification);
+                this.setState({ isGettingTeams: false });
+                return
+            }
+            const allTeams = teams.map(team => {
                 return {id: team.id.toString(), name: team.name}
             });
             this.setState({
                 ...this.state,
-                allTeams: teams,
+                allTeams: allTeams,
                 isGettingTeams: false
             })
         }).catch(error => {
@@ -120,9 +130,8 @@ class CollectionCreate extends Component {
     }
 
     handleCollectionNameChange(event) {
-        const name = event.target.value || "";
         const collectionName = {
-            value: name,
+            value: event.target.value,
             errorMsg: ""
         };
 
@@ -174,24 +183,20 @@ class CollectionCreate extends Component {
     }
 
     handleCollectionTypeChange(event) {
-        const type = event.value || "";
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            type: type
+            type: event.value
         };
         this.setState({newCollectionDetails: newCollectionDetails});
     }
 
     handleScheduleTypeChange(event) {
-        const scheduleType = event.value || "";
-        this.setState({scheduleType: scheduleType});
+        this.setState({scheduleType: event.value});
     }
 
     handlePublishDateChange(event) {
-        const date = event.target.value || "";
-
         const publishDate = {
-            value: date,
+            value: event.target.value,
             errorMsg: ""
         };
 
@@ -203,10 +208,8 @@ class CollectionCreate extends Component {
     }
 
     handlePublishTimeChange(event) {
-        const time = event.target.value || "";
-
         const publishTime = {
-            value: time,
+            value: event.target.value,
             errorMsg: ""
         };
 
@@ -221,6 +224,29 @@ class CollectionCreate extends Component {
     handleAddRelease(event) {
         event.preventDefault();
         console.warn("We haven't built this feature yet")
+    }
+
+    makePublishDate() {
+        if (this.state.newCollectionDetails.type === 'scheduled') {
+            const date = this.state.newCollectionDetails.publishDate.value;
+            const time = this.state.newCollectionDetails.publishTime.value;
+            return (new Date(date + " " + time).toISOString());
+        } else {
+            return null;
+        }
+    }
+
+    mapStateToPostBody() {
+        return {
+            name: this.state.newCollectionDetails.name.value,
+            type: this.state.newCollectionDetails.type,
+            publishDate: this.makePublishDate(),
+            teams: this.state.newCollectionDetails.teams.map(team => {
+                return team.name;
+            }),
+            collectionOwner: this.state.newCollectionDetails.collectionOwner,
+            releaseUri: this.state.newCollectionDetails.releaseUri || null
+        }
     }
 
     handleSubmit(event) {
@@ -282,34 +308,7 @@ class CollectionCreate extends Component {
             return;
         }
 
-        // format publish collection date
-        let publishDate;
-        if (this.state.newCollectionDetails.type === 'scheduled') {
-            const date = this.state.newCollectionDetails.publishDate.value;
-            const time = this.state.newCollectionDetails.publishTime.value;
-            publishDate = (new Date(date + " " + time).toISOString());
-        } else {
-            publishDate = null;
-        }
-
-        // this will be null until the release picker is built
-        const releaseUri = this.state.newCollectionDetails.releaseUri || null;
-
-        // create a array of team names as that is what Zebeedee is expecting
-        const teams = this.state.newCollectionDetails.teams.map(team => {
-            return team.name;
-        });
-
-        const body = {
-            name: this.state.newCollectionDetails.name.value,
-            type: this.state.newCollectionDetails.type,
-            publishDate: publishDate,
-            teams: teams,
-            collectionOwner: this.state.newCollectionDetails.collectionOwner,
-            releaseUri: releaseUri
-        };
-
-        collections.create(body).then(() => {
+        collections.create(this.mapStateToPostBody()).then(() => {
             const notification = {
                 type: 'positive',
                 message: `Successfully created '${this.state.newCollectionDetails.name.value}' collection`,
@@ -450,12 +449,13 @@ class CollectionCreate extends Component {
     }
 }
 
+CollectionCreate.propTypes = propTypes;
+
 function mapStateToProps(state) {
     return {
         user: state.state.user
     }
 }
 
-CollectionCreate.propTypes = propTypes;
-
 export default connect(mapStateToProps)(CollectionCreate);
+
