@@ -10,6 +10,15 @@ import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections'
 import { updateActiveCollection } from '../../config/actions';
 
+const collectionPagePropTypes = {
+    uri: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    description: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        edition: PropTypes.string
+    }).isRequired
+}
+
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
@@ -18,10 +27,26 @@ const propTypes = {
     }).isRequired,
     activeCollection: PropTypes.shape({
         approvalStatus: PropTypes.string.isRequired,
-        publishComplete: PropTypes.bool.isRequired,
         collectionOwner: PropTypes.string,
         isEncrypted: PropTypes.bool,
-        timeseriesImportFiles: PropTypes.array.isRequired,
+        timeseriesImportFiles: PropTypes.array,
+        inProgress: PropTypes.arrayOf(PropTypes.shape(collectionPagePropTypes)),
+        complete: PropTypes.arrayOf(PropTypes.shape(collectionPagePropTypes)),
+        reviewed: PropTypes.arrayOf(PropTypes.shape(collectionPagePropTypes)),
+        datasets: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            uri: PropTypes.string.isRequired,
+            state: PropTypes.string.isRequired
+        })),
+        datasetVersion: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            edition: PropTypes.string.isRequired,
+            version: PropTypes.string.isRequired,
+            uri: PropTypes.string.isRequired,
+            state: PropTypes.string.isRequired
+        })),
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
@@ -36,6 +61,7 @@ class CollectionsController extends Component {
         this.state = {
             collections: [],
             isFetchingData: false,
+            isFetchingCollectionDetails: false,
             drawerIsAnimatable: false,
             drawerIsVisible: false
         };
@@ -49,6 +75,7 @@ class CollectionsController extends Component {
         this.fetchCollections();
 
         if (this.props.params.collectionID) {
+            this.fetchActiveCollection(this.props.params.collectionID);
             this.setState({drawerIsVisible: true});
         }
     }
@@ -63,6 +90,12 @@ class CollectionsController extends Component {
                 drawerIsAnimatable: true,
                 drawerIsVisible: true
             });
+            this.fetchActiveCollection(nextProps.params.collectionID);
+        }
+
+        if (this.props.params.collectionID && !nextProps.params.collectionID) {
+            // TODO possibly create a 'empty active collection' reducer/action
+            this.props.dispatch(updateActiveCollection(null));
         }
     }
 
@@ -73,13 +106,14 @@ class CollectionsController extends Component {
                 collections: collections,
                 isFetchingData: false
             });
+        });
+    }
 
-            if (this.props.params.collectionID) {
-                const activeCollection = collections.find(collection => {
-                    return collection.id === this.props.params.collectionID;
-                });
-                this.props.dispatch(updateActiveCollection(activeCollection));
-            }
+    fetchActiveCollection(collectionID) {
+        this.setState({isFetchingCollectionDetails: true});
+        collections.get(collectionID).then(collection => {
+            this.props.dispatch(updateActiveCollection(collection));
+            this.setState({isFetchingCollectionDetails: false});
         });
     }
 
@@ -120,12 +154,17 @@ class CollectionsController extends Component {
                 isAnimatable={this.state.drawerIsAnimatable} 
                 handleTransitionEnd={this.handleDrawerTransitionEnd}
             >
-                {(this.props.params.collectionID && this.props.activeCollection) &&
+                {(this.props.params.collectionID && this.props.activeCollection) ?
                     <CollectionDetails 
                         collectionID = {this.props.params.collectionID}
                         {...this.props.activeCollection}
                         onCancel={this.handleDrawerCancelClick}
+                        isLoadingDetails={this.state.isFetchingCollectionDetails}
                     />
+                    :
+                    <div className="grid grid--align-center grid--full-height">
+                        <div className="loader loader--large"></div>
+                    </div>
                 }
             </Drawer>
         )
