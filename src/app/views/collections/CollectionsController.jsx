@@ -1,31 +1,86 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import { Link } from 'react-router';
+import { push } from 'react-router-redux';
 
-import collections from '../../utilities/api-clients/collections';
+import CollectionCreate from './create/CollectionCreate';
+import CollectionDetails from './details/CollectionDetails';
+import Drawer from '../../components/drawer/Drawer';
+import collections from '../../utilities/api-clients/collections'
+import { updateActiveCollection } from '../../config/actions';
 
-import { CollectionCreate } from './create/CollectionCreate';
+const propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    rootPath: PropTypes.string.isRequired,
+    params: PropTypes.shape({
+        collectionID: PropTypes.string
+    }).isRequired,
+    activeCollection: PropTypes.shape({
+        approvalStatus: PropTypes.string.isRequired,
+        publishComplete: PropTypes.bool.isRequired,
+        collectionOwner: PropTypes.string,
+        isEncrypted: PropTypes.bool,
+        timeseriesImportFiles: PropTypes.array.isRequired,
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+        teams: PropTypes.array.isRequired
+    })
+};
 
-class Collections extends Component {
+class CollectionsController extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            collections: []
+            collections: [],
+            isFetchingData: false,
+            drawerIsAnimatable: false,
+            drawerIsVisible: false
         };
 
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
-
+        this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
+        this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
     }
 
     componentWillMount() {
         this.fetchCollections();
+
+        if (this.props.params.collectionID) {
+            this.setState({drawerIsVisible: true});
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (!this.props.params.collectionID && nextProps.params.collectionID) {
+            const activeCollection = this.state.collections.find(collection => {
+                return collection.id === nextProps.params.collectionID;
+            });
+            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.setState({
+                drawerIsAnimatable: true,
+                drawerIsVisible: true
+            });
+        }
     }
 
     fetchCollections() {
+        this.setState({isFetchingData: true});
         collections.getAll().then(collections => {
-            console.log(collections);
-            this.setState({collections: collections})
-        })
+            this.setState({
+                collections: collections,
+                isFetchingData: false
+            });
+
+            if (this.props.params.collectionID) {
+                const activeCollection = collections.find(collection => {
+                    return collection.id === this.props.params.collectionID;
+                });
+                this.props.dispatch(updateActiveCollection(activeCollection));
+            }
+        });
     }
 
     handleCollectionCreateSuccess() {
@@ -36,6 +91,44 @@ class Collections extends Component {
     handleCollectionSelection() {
         // trigger collection details view
         console.log('clicked');
+    }
+    
+    handleDrawerTransitionEnd() {
+        this.setState({
+            drawerIsAnimatable: false
+        });
+
+        // Active collection is now hidden, so can now clear the details from the panel.
+        // This stops the collection details from disappearing before the animation to 
+        // close the drawer is finished (which looks ugly).
+        if (!this.state.drawerIsVisible) {
+            this.props.dispatch(push(`${this.props.rootPath}/collections`));
+        }
+    }
+
+    handleDrawerCancelClick() {
+        this.setState({
+            drawerIsAnimatable: true,
+            drawerIsVisible: false
+        });
+    }
+
+    renderDetailsDrawer() {
+        return (
+            <Drawer
+                isVisible={this.state.drawerIsVisible} 
+                isAnimatable={this.state.drawerIsAnimatable} 
+                handleTransitionEnd={this.handleDrawerTransitionEnd}
+            >
+                {(this.props.params.collectionID && this.props.activeCollection) &&
+                    <CollectionDetails 
+                        collectionID = {this.props.params.collectionID}
+                        {...this.props.activeCollection}
+                        onCancel={this.handleDrawerCancelClick}
+                    />
+                }
+            </Drawer>
+        )
     }
 
     render () {
@@ -52,11 +145,13 @@ class Collections extends Component {
                         }
                         </ul>
 
+                        {/* FIXME this is a temporary link to get the collection details working */}
+                        <Link to="/florence/collections/asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c">A collection</Link>
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
                         <CollectionCreate user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}/>
-
+                        {this.renderDetailsDrawer()}
                     </div>
                 </div>
             </div>
@@ -64,10 +159,14 @@ class Collections extends Component {
     }
 }
 
+CollectionsController.propTypes = propTypes;
+
 function mapStateToProps(state) {
     return {
-        user: state.state.user
+        user: state.state.user,
+        activeCollection: state.state.collections.active,
+        rootPath: state.state.rootPath
     }
 }
 
-export default connect(mapStateToProps)(Collections);
+export default connect(mapStateToProps)(CollectionsController);

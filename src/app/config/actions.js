@@ -1,6 +1,9 @@
 export const USER_LOGGED_IN = 'USER_LOGGED_IN';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
+export const UPDATE_ALL_COLLECTIONS = 'UPDATE_ALL_COLLECTIONS';
+export const UPDATE_ACTIVE_COLLECTION = 'UPDATE_ACTIVE_COLLECTION';
+
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
 export const UPDATE_USERS = 'UPDATE_USERS';
 export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
@@ -26,6 +29,13 @@ export function userLoggedIn(email, userType, isAdmin) {
 export function userLoggedOut() {
     return {
         type: USER_LOGGED_OUT
+    }
+}
+
+export function updateActiveCollection(collection) {
+    return {
+        type: UPDATE_ACTIVE_COLLECTION,
+        collection
     }
 }
 
