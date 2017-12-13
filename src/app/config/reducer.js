@@ -1,4 +1,6 @@
 import { initialState } from './initialState';
+import { UPDATE_ACTIVE_COLLECTION } from './actions';
+
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -18,6 +20,15 @@ export default function reducer(state = initialState, action) {
                     isAuthenticated: false
                 })
             })
+        }
+        case (UPDATE_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: action.collection
+                }
+            }
         }
         case ('UPDATE_ALL_TEAMS'): {
             return Object.assign({}, state, {
