@@ -9,6 +9,7 @@ import CollectionDetails from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections'
 import { updateActiveCollection } from '../../config/actions';
+import url from '../../utilities/url'
 
 const collectionPagePropTypes = {
     uri: PropTypes.string.isRequired,
@@ -23,7 +24,8 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     params: PropTypes.shape({
-        collectionID: PropTypes.string
+        collectionID: PropTypes.string,
+        pageID: PropTypes.string
     }).isRequired,
     activeCollection: PropTypes.shape({
         approvalStatus: PropTypes.string.isRequired,
@@ -69,6 +71,7 @@ class CollectionsController extends Component {
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
+        this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
     }
 
     componentWillMount() {
@@ -140,6 +143,19 @@ class CollectionsController extends Component {
         }
     }
 
+    handleCollectionPageClick(id) {
+        if (id === this.props.params.pageID) {
+            return;
+        }
+
+        let newURL = location.pathname + "/" + id;
+        if (this.props.params.pageID) {
+            newURL = url.resolve(id);
+        }
+    
+        this.props.dispatch(push(newURL));
+    }
+
     handleDrawerCancelClick() {
         this.setState({
             drawerIsAnimatable: true,
@@ -157,8 +173,10 @@ class CollectionsController extends Component {
                 {(this.props.params.collectionID && this.props.activeCollection) ?
                     <CollectionDetails 
                         collectionID = {this.props.params.collectionID}
+                        activePageID={this.props.params.pageID}
                         {...this.props.activeCollection}
                         onCancel={this.handleDrawerCancelClick}
+                        onPageClick={this.handleCollectionPageClick}
                         isLoadingDetails={this.state.isFetchingCollectionDetails}
                     />
                     :
