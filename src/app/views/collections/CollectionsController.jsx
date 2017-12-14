@@ -104,14 +104,14 @@ class CollectionsController extends Component {
                 drawerIsVisible: false
             });
         }
-    }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        // if (this.props.params.collectionID && !nextProps.params.collectionID) {
-        //     console.log({nextProps, nextState});
-        //     return false;
-        // }
-        return true;
+        if ((this.props.params.collectionID && nextProps.params.collectionID) && (this.props.params.collectionID !== nextProps.params.collectionID)) {
+            const activeCollection = this.state.collections.find(collection => {
+                return collection.id === nextProps.params.collectionID;
+            });
+            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.fetchActiveCollection(nextProps.params.collectionID);
+        }
     }
 
     fetchCollections() {
@@ -219,15 +219,16 @@ class CollectionsController extends Component {
                     <div className="grid__col-4">
                         <h1>Select a collection</h1>
                         <ul>
-                        {this.state.collections ?
-                            this.state.collections.map((collection, index) => {
-                                return <li key={index} onClick={this.handleCollectionSelection}>{collection.name}</li>
-                            }) : ""
+                        {this.state.collections &&
+                            this.state.collections.map(collection => {
+                                return (
+                                    <li key={collection.id}>
+                                        <Link to={"/florence/collections/" + collection.id}>{collection.name}</Link>
+                                    </li>
+                                )
+                            })
                         }
                         </ul>
-
-                        {/* FIXME this is a temporary link to get the collection details working */}
-                        <Link to="/florence/collections/asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c">A collection</Link>
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>

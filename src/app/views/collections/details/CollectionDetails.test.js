@@ -2,11 +2,22 @@ import React from 'react';
 import CollectionDetails from './CollectionDetails';
 import { shallow } from 'enzyme';
 
+console.error = () => {};
+
 jest.mock('../../../utilities/log', () => {
     return {
         add: function() {
             //
-        }
+        },
+        eventTypes: {}
+    }
+});
+
+jest.mock('../../../utilities/notifications', () => {
+    return {
+        add: jest.fn(() => {
+            //
+        })
     }
 });
 
