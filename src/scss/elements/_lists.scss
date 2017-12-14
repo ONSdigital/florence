@@ -23,6 +23,10 @@
                 cursor: pointer;
                 font-weight: 600;
             }
+
+            & .expandable-item-contents {
+                display: none;
+            }
         }
         
         &--expandable.active {
@@ -44,6 +48,10 @@
             &:hover {
                 cursor: default;
                 font-weight: 300;
+            }
+
+            & .expandable-item-contents {
+                display: block;
             }
         }
     }

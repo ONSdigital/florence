@@ -72,6 +72,7 @@ class CollectionsController extends Component {
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
+        this.handleCollectionPageEditClick = this.handleCollectionPageEditClick.bind(this);
     }
 
     componentWillMount() {
@@ -156,6 +157,10 @@ class CollectionsController extends Component {
         this.props.dispatch(push(newURL));
     }
 
+    handleCollectionPageEditClick(uri) {
+        window.location = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${uri}`;
+    }
+
     handleDrawerCancelClick() {
         this.setState({
             drawerIsAnimatable: true,
@@ -177,6 +182,7 @@ class CollectionsController extends Component {
                         {...this.props.activeCollection}
                         onCancel={this.handleDrawerCancelClick}
                         onPageClick={this.handleCollectionPageClick}
+                        onEditPageClick={this.handleCollectionPageEditClick}
                         isLoadingDetails={this.state.isFetchingCollectionDetails}
                     />
                     :
