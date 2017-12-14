@@ -1,5 +1,5 @@
-import log, {eventTypes} from '../utilities/log'
-import notifications from './notifications'
+import log, {eventTypes} from '../utilities/log';
+import notifications from './notifications';
 
 export default class url {
     /**
@@ -12,6 +12,21 @@ export default class url {
         const safeURL = url.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         return encodeURIComponent(safeURL);
     }
+
+    /**
+     * Slugifies the url (e.g. for when we want to use the URI as an ID in Florence's routing)
+     * 
+     * @param {string} - A URI
+     * @return {string} - The URI safely slugified
+     */
+    static slug(url) {
+        if (url.startsWith('/')) {
+            return url.replace('/', '').replace(/\//g, '-');
+        }
+
+        return url.replace(/\//g, '-');
+    }
+
 
     /**
      * Takes a relative path and resolves it to an absolute path (root is considered '/florence', so the returned path will always be prefixed with this)
