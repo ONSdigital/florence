@@ -11,6 +11,7 @@ import collections from '../../utilities/api-clients/collections'
 import { updateActiveCollection } from '../../config/actions';
 import url from '../../utilities/url'
 
+// TODO move shared prop types to a separate file and import them when needed?
 const collectionPagePropTypes = {
     uri: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
