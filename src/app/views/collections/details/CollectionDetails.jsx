@@ -50,7 +50,7 @@ export class CollectionDetails extends Component {
     }
 
     renderInProgress() {
-        if (this.props.inProgress.length === 0) {
+        if (!this.props.inProgress || this.props.inProgress.length === 0) {
             return <p className="margin-bottom--2">No pages in progress</p>
         }
 
@@ -61,7 +61,7 @@ export class CollectionDetails extends Component {
     }
     
     renderWaitingReview() {
-        if (this.props.complete.length === 0) {
+        if (!this.props.complete || this.props.complete.length === 0) {
             return <p className="margin-bottom--2">No pages awaiting review</p>
         }
 
@@ -72,7 +72,7 @@ export class CollectionDetails extends Component {
     }
     
     renderReviewed() {
-        if (this.props.reviewed.length === 0) {
+        if (!this.props.reviewed || this.props.reviewed.length === 0) {
             return <p className="margin-bottom--2">No reviewed pages</p>
         }
 
@@ -80,6 +80,41 @@ export class CollectionDetails extends Component {
             return this.renderPageItem(page);
         });
         return this.renderPagesList(pages);
+    }
+
+    statePageCount(state) {
+        if (!this.props[state] || this.props[state].length === 0) {
+            return "0";
+        }
+        return this.props[state].length.toString();
+    }
+
+    renderPluralisedPageText(state) {
+        if (this.props[state] && this.props[state].length === 1) {
+            return "page";
+        }
+        return "pages";
+    }
+
+    renderPageStateHeading(state) {
+        
+        switch (state) {
+            case("inProgress"): {
+                return (
+                    this.statePageCount(state) + " " + this.renderPluralisedPageText() + " in progress"
+                );
+            }
+            case("complete"): {
+                return (
+                    this.statePageCount(state) + " " + this.renderPluralisedPageText() + " awaiting review"
+                );
+            }
+            case("reviewed"): {
+                return (
+                    this.statePageCount(state) + " reviewed " + this.renderPluralisedPageText()
+                );
+            }
+        }
     }
 
     render () {
@@ -97,11 +132,13 @@ export class CollectionDetails extends Component {
                         </div>
                         :
                         <div>
-                            <h3 className="margin-bottom--1">{this.props.inProgress.length} page{this.props.inProgress.length > 1 && "s"} in progress</h3>
+                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('inProgress')}</h3>
                             {this.renderInProgress()}
-                            <h3 className="margin-bottom--1">{this.props.complete.length} page{this.props.complete.length > 1 && "s"} awaiting review</h3>
+                            {/* <h3 className="margin-bottom--1">{this.props.complete.length} page{this.props.complete.length > 1 && "s"} awaiting review</h3> */}
+                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('complete')}</h3>
                             {this.renderWaitingReview()}
-                            <h3 className="margin-bottom--1">{this.props.reviewed.length} reviewed page{this.props.reviewed.length > 1 && "s"}</h3>
+                            {/* <h3 className="margin-bottom--1">{this.props.reviewed.length} reviewed page{this.props.reviewed.length > 1 && "s"}</h3> */}
+                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
                             {this.renderReviewed()}
                         </div>
                     }
