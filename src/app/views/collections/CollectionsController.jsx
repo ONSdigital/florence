@@ -99,9 +99,19 @@ class CollectionsController extends Component {
         }
 
         if (this.props.params.collectionID && !nextProps.params.collectionID) {
-            // TODO possibly create a 'empty active collection' reducer/action
-            this.props.dispatch(updateActiveCollection(null));
+            this.setState({
+                drawerIsAnimatable: true,
+                drawerIsVisible: false
+            });
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        // if (this.props.params.collectionID && !nextProps.params.collectionID) {
+        //     console.log({nextProps, nextState});
+        //     return false;
+        // }
+        return true;
     }
 
     fetchCollections() {
@@ -112,6 +122,7 @@ class CollectionsController extends Component {
                 isFetchingData: false
             });
         });
+        // TODO handle error scenarios
     }
 
     fetchActiveCollection(collectionID) {
@@ -120,6 +131,7 @@ class CollectionsController extends Component {
             this.props.dispatch(updateActiveCollection(collection));
             this.setState({isFetchingCollectionDetails: false});
         });
+        // TODO handle error scenarios
     }
 
     handleCollectionCreateSuccess() {
@@ -176,9 +188,14 @@ class CollectionsController extends Component {
                 isAnimatable={this.state.drawerIsAnimatable} 
                 handleTransitionEnd={this.handleDrawerTransitionEnd}
             >
-                {(this.props.params.collectionID && this.props.activeCollection) ?
+                {(this.props.params.collectionID && this.props.activeCollection) 
+                    ||
+                // Drawer closing but keep collection details rendered whilst
+                // animation happens. handleEndTransition will empty active collection
+                (!this.props.params.collectionID && this.props.activeCollection)
+                ?
                     <CollectionDetails 
-                        collectionID = {this.props.params.collectionID}
+                        collectionID = {this.props.activeCollection.id}
                         activePageID={this.props.params.pageID}
                         {...this.props.activeCollection}
                         onCancel={this.handleDrawerCancelClick}
