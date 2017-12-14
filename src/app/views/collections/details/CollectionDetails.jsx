@@ -10,6 +10,7 @@ const propTypes = {
     name: PropTypes.string.isRequired,
     onCancel: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
+    onEditPageClick: PropTypes.func.isRequired,
     isLoadingDetails: PropTypes.bool,
     inProgress: PropTypes.array,
     complete: PropTypes.array,
@@ -26,9 +27,16 @@ export class CollectionDetails extends Component {
         const handlePageClick = () => {
             this.props.onPageClick(pageID);
         }
+        const handleEditClick = () => {
+            this.props.onEditPageClick(page.uri);
+        }
         return (
             <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === pageID ? " active" : "")}>
                 <Page type={page.type} title={page.description.title} />
+                <div className="expandable-item-contents margin-top--1">
+                    <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
+                    <button className="btn btn--warning btn--margin-left" type="button" disabled>Delete</button>
+                </div>
             </li>
         )
     }
