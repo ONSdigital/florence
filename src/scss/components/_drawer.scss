@@ -50,6 +50,7 @@
         padding: ($lineheight) ($gutter * 8);
         background-color: $quill-grey;
         flex: 1;
+        overflow-y: scroll;
     }
 
     &__loader {

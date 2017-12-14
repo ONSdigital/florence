@@ -63,7 +63,9 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
+                                    <Route path=':pageID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                                </Route>
                             </Route>
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
                                 <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
