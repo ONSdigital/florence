@@ -97,7 +97,6 @@ export class CollectionDetails extends Component {
     }
 
     renderPageStateHeading(state) {
-        
         switch (state) {
             case("inProgress"): {
                 return (
@@ -122,7 +121,7 @@ export class CollectionDetails extends Component {
             <div className="drawer__container">
                 <h2 className="drawer__heading">{this.props.name}</h2>
                 <div className="drawer__banner">
-                    <button className="btn btn--primary" disabled>Create/edit page</button>
+                    <a href={url.resolve("/workspace") + "?collection=" + this.props.collectionID} className="btn btn--primary" disabled>Create/edit page</a>
                     <button className="btn btn--margin-left" disabled>Restore page</button>
                 </div>
                 <div className="drawer__body">
@@ -134,10 +133,8 @@ export class CollectionDetails extends Component {
                         <div>
                             <h3 className="margin-bottom--1">{this.renderPageStateHeading('inProgress')}</h3>
                             {this.renderInProgress()}
-                            {/* <h3 className="margin-bottom--1">{this.props.complete.length} page{this.props.complete.length > 1 && "s"} awaiting review</h3> */}
                             <h3 className="margin-bottom--1">{this.renderPageStateHeading('complete')}</h3>
                             {this.renderWaitingReview()}
-                            {/* <h3 className="margin-bottom--1">{this.props.reviewed.length} reviewed page{this.props.reviewed.length > 1 && "s"}</h3> */}
                             <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
                             {this.renderReviewed()}
                         </div>
