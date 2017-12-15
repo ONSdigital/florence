@@ -181,6 +181,7 @@ class CollectionsController extends Component {
         this.setState(state => ({
             pendingDeletedPages: [...state.pendingDeletedPages, uri]
         }));
+        this.props.dispatch(push(url.resolve('../')));
 
         const deletePageTimer = setTimeout(() => {
             collections.deletePage(this.props.params.collectionID, uri).then(() => {
@@ -204,7 +205,9 @@ class CollectionsController extends Component {
                 pendingDeletedPages: [...state.pendingDeletedPages].filter(pageURI => {
                     return pageURI !== uri;
                 })
-            }))
+            }));
+            const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.name}/${url.slug(uri)}`;
+            this.props.dispatch(push(pageRoute));
             window.clearTimeout(deletePageTimer);
             notifications.remove(notificationID);
         };
