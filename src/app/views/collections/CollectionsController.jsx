@@ -30,7 +30,7 @@ const propTypes = {
         pageID: PropTypes.string
     }).isRequired,
     activeCollection: PropTypes.shape({
-        approvalStatus: PropTypes.string.isRequired,
+        approvalStatus: PropTypes.string,
         collectionOwner: PropTypes.string,
         isEncrypted: PropTypes.bool,
         timeseriesImportFiles: PropTypes.array,
@@ -179,11 +179,26 @@ export class CollectionsController extends Component {
         window.location = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${uri}`;
     }
 
+    handleCollectionPageDeleteUndo(deleteTimer, uri, notificationID) {
+        this.setState(state => ({
+            pendingDeletedPages: [...state.pendingDeletedPages].filter(pageURI => {
+                return pageURI !== uri;
+            })
+        }));
+        const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}/${url.slug(uri)}`;
+        this.props.dispatch(push(pageRoute));
+        window.clearTimeout(deleteTimer);
+        notifications.remove(notificationID);
+
+        return pageRoute //using 'return' so that we can test the correct new URL has been generated
+    }
+
     handleCollectionPageDeleteClick(uri, title, state) {
         this.setState(state => ({
             pendingDeletedPages: [...state.pendingDeletedPages, uri]
         }));
-        this.props.dispatch(push(url.resolve('../')));
+        const collectionURL = url.resolve('../');
+        this.props.dispatch(push(collectionURL));
 
         const deletePageTimer = setTimeout(() => {
             collections.deletePage(this.props.params.collectionID, uri).then(() => {
@@ -203,15 +218,7 @@ export class CollectionsController extends Component {
         }, 6000);
 
         const undoPageDelete = () => {
-            this.setState(state => ({
-                pendingDeletedPages: [...state.pendingDeletedPages].filter(pageURI => {
-                    return pageURI !== uri;
-                })
-            }));
-            const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.name}/${url.slug(uri)}`;
-            this.props.dispatch(push(pageRoute));
-            window.clearTimeout(deletePageTimer);
-            notifications.remove(notificationID);
+            this.handleCollectionPageDeleteUndo(deletePageTimer, uri, notificationID);
         };
 
         const notification = {
@@ -225,6 +232,8 @@ export class CollectionsController extends Component {
             message: <span>Deleted page <strong>'{title}'</strong> from collection '{this.props.activeCollection.name}'</span>
         }
         const notificationID = notifications.add(notification);
+
+        return collectionURL //using 'return' so that we can test the correct new URL has been generated
     }
 
     handleDrawerCancelClick() {
