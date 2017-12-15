@@ -64,6 +64,7 @@ class CollectionsController extends Component {
 
         this.state = {
             collections: [],
+            pendingDeletedPages: [],
             isFetchingData: false,
             isFetchingCollectionDetails: false,
             drawerIsAnimatable: false,
@@ -177,31 +178,37 @@ class CollectionsController extends Component {
     }
 
     handleCollectionPageDeleteClick(uri, title, state) {
-        const originalCollectionsPages = [...this.props.activeCollection[state]];
-        const originalActiveCollection = {
-            ...this.props.activeCollection,
-            [state]: originalCollectionsPages
-        };
-        const newCollectionsPages = this.props.activeCollection[state].filter(page => {
-            return page.uri !== uri;
-        });
-        const updatedActiveCollection = {
-            ...this.props.activeCollection,
-            [state]: newCollectionsPages
-        }
-        this.props.dispatch(updateActiveCollection(updatedActiveCollection));
+        this.setState(state => ({
+            pendingDeletedPages: [...state.pendingDeletedPages, uri]
+        }));
+
         const deletePageTimer = setTimeout(() => {
             collections.deletePage(this.props.params.collectionID, uri).then(() => {
+                const newCollectionsPages = this.props.activeCollection[state].filter(page => {
+                    return page.uri !== uri;
+                });
+                const updatedActiveCollection = {
+                    ...this.props.activeCollection,
+                    [state]: newCollectionsPages
+                }
+                this.props.dispatch(updateActiveCollection(updatedActiveCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
-                console.error("Error deleting page form a collection: ", error);
+                // TODO handle error gracefully
+                console.error("Error deleting page from a collection: ", error);
             });
         }, 6000);
+
         const undoPageDelete = () => {
-            this.props.dispatch(updateActiveCollection(originalActiveCollection));
+            this.setState(state => ({
+                pendingDeletedPages: [...state.pendingDeletedPages].filter(pageURI => {
+                    return pageURI !== uri;
+                })
+            }))
             window.clearTimeout(deletePageTimer);
             notifications.remove(notificationID);
         };
+
         const notification = {
             buttons: [{
                 text: "Undo",
@@ -222,6 +229,16 @@ class CollectionsController extends Component {
         });
     }
 
+    mapPagesToCollectionsDetails(state) {
+        if (!this.state.pendingDeletedPages || this.state.pendingDeletedPages.length === 0) {
+            return this.props.activeCollection[state];
+        }
+
+        return this.props.activeCollection[state].filter(page => {
+            return !this.state.pendingDeletedPages.includes(page.uri);
+        });
+    }
+
     renderDetailsDrawer() {
         return (
             <Drawer
@@ -239,6 +256,9 @@ class CollectionsController extends Component {
                         collectionID = {this.props.activeCollection.id}
                         activePageID={this.props.params.pageID}
                         {...this.props.activeCollection}
+                        inProgress={this.mapPagesToCollectionsDetails('inProgress')}
+                        complete={this.mapPagesToCollectionsDetails('complete')}
+                        reviewed={this.mapPagesToCollectionsDetails('reviewed')}
                         onCancel={this.handleDrawerCancelClick}
                         onPageClick={this.handleCollectionPageClick}
                         onEditPageClick={this.handleCollectionPageEditClick}

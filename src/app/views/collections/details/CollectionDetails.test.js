@@ -37,10 +37,10 @@ const defaultProps = {
 const alternativePageProps = {
     inProgress: [
             {
-                uri: "/economy",
-                type: "taxonomy_landing_page",
+                uri: "/",
+                type: "homepage",
                 description: {
-                    title: "Economy"
+                    title: "Home"
                 }
             },
             {
