@@ -11,6 +11,7 @@ const propTypes = {
     onCancel: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
+    onDeletePageClick: PropTypes.func.isRequired,
     isLoadingDetails: PropTypes.bool,
     inProgress: PropTypes.array,
     complete: PropTypes.array,
@@ -22,7 +23,7 @@ export class CollectionDetails extends Component {
         super(props);
     }
 
-    renderPageItem(page) {
+    renderPageItem(page, state) {
         const pageID = url.slug(page.uri);
         const handlePageClick = () => {
             this.props.onPageClick(pageID);
@@ -30,12 +31,15 @@ export class CollectionDetails extends Component {
         const handleEditClick = () => {
             this.props.onEditPageClick(page.uri);
         }
+        const handleDeleteClick = () => {
+            this.props.onDeletePageClick(page.uri, page.description.title, state);
+        }
         return (
             <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === pageID ? " active" : "")}>
                 <Page type={page.type} title={page.description.title} />
                 <div className="expandable-item-contents margin-top--1">
                     <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
-                    <button className="btn btn--warning btn--margin-left" type="button" disabled>Delete</button>
+                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">Delete</button>
                 </div>
             </li>
         )
@@ -55,7 +59,7 @@ export class CollectionDetails extends Component {
         }
 
         const pages = this.props.inProgress.map(page => {
-            return this.renderPageItem(page);
+            return this.renderPageItem(page, "inProgress");
         });
         return this.renderPagesList(pages);
     }
@@ -66,7 +70,7 @@ export class CollectionDetails extends Component {
         }
 
         const pages = this.props.complete.map(page => {
-            return this.renderPageItem(page);
+            return this.renderPageItem(page, "complete");
         });
         return this.renderPagesList(pages);
     }
@@ -77,7 +81,7 @@ export class CollectionDetails extends Component {
         }
 
         const pages = this.props.reviewed.map(page => {
-            return this.renderPageItem(page);
+            return this.renderPageItem(page, "reviewed");
         });
         return this.renderPagesList(pages);
     }
