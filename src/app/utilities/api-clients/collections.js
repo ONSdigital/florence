@@ -23,4 +23,8 @@ export default class collections {
             })
     }
 
+    static deletePage(collectionID, pageURI) {
+        return http.delete(`/zebedee/content/${collectionID}?uri=${pageURI}`);
+    }
+
 }
