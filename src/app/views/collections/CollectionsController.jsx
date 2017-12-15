@@ -58,7 +58,7 @@ const propTypes = {
     })
 };
 
-class CollectionsController extends Component {
+export class CollectionsController extends Component {
     constructor(props) {
         super(props);
 
@@ -171,6 +171,8 @@ class CollectionsController extends Component {
         }
     
         this.props.dispatch(push(newURL));
+
+        return newURL; //using 'return' so that we can test the correct new URL has been generated
     }
 
     handleCollectionPageEditClick(uri) {
