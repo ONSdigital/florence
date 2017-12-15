@@ -104,17 +104,17 @@ export class CollectionDetails extends Component {
         switch (state) {
             case("inProgress"): {
                 return (
-                    this.statePageCount(state) + " " + this.renderPluralisedPageText() + " in progress"
+                    this.statePageCount(state) + " " + this.renderPluralisedPageText(state) + " in progress"
                 );
             }
             case("complete"): {
                 return (
-                    this.statePageCount(state) + " " + this.renderPluralisedPageText() + " awaiting review"
+                    this.statePageCount(state) + " " + this.renderPluralisedPageText(state) + " awaiting review"
                 );
             }
             case("reviewed"): {
                 return (
-                    this.statePageCount(state) + " reviewed " + this.renderPluralisedPageText()
+                    this.statePageCount(state) + " reviewed " + this.renderPluralisedPageText(state)
                 );
             }
         }
