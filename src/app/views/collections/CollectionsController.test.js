@@ -1,6 +1,7 @@
 import React from 'react';
 import { CollectionsController } from './CollectionsController';
 import { shallow } from 'enzyme';
+import colllections from '../../utilities/api-clients/collections';
 
 jest.mock('../../utilities/log', () => {
     return {
@@ -11,13 +12,21 @@ jest.mock('../../utilities/log', () => {
     }
 });
 
-// jest.mock('../../../utilities/notifications', () => {
-//     return {
-//         add: jest.fn(() => {
-//             //
-//         })
-//     }
-// });
+jest.mock('../../utilities/api-clients/collections', () => {
+    return {
+        getAll: () => {
+            return Promise.resolve([]);
+        },
+        deletePage: () => {
+            return Promise.resolve();
+        },
+        get: () => {
+            return Promise.resolve({})
+        }
+    }
+});
+
+jest.useFakeTimers();
 
 function setLocation(href) {
     Object.defineProperty(window.location, 'href', {
@@ -30,8 +39,12 @@ function setLocation(href) {
     });
 }
 
+let dispatchedAction;
+
 const defaultProps = {
-    dispatch: () => {},
+    dispatch: action => {
+        dispatchedAction = action;
+    },
     rootPath: '/florence',
     params: {
         collectionID: undefined,
@@ -45,8 +58,32 @@ const collection = {
     name: 'Test collection',
     type: 'manual',
     teams: ['cpi', 'cpih'],
-    inProgress: [],
-    complete: [],
+    inProgress: [
+        {
+            uri: "/",
+            type: "homepage",
+            description: {
+                title: "Home"
+            }
+        },
+        {
+            uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+            type: "bulletin",
+            description: {
+                title: "Consumer Price Inflation",
+                edition: "July 2017"
+            }
+        }
+    ],
+    complete: [
+        {
+            uri: "/businessindustryandtrade",
+            type: "taxonomy_landing_page",
+            description: {
+                title: "Business industry and trade"
+            }
+        }
+    ],
     reviewed: [],
     datasets: [],
     datasetVersion: []
@@ -89,6 +126,16 @@ describe("When the active collection parameter changes", () => {
     });
 });
 
+test("Collection details are hidden when 'Cancel' is clicked", () => {
+    const component = shallow(
+        <CollectionsController {...defaultProps} />
+    );
+
+    component.instance().handleDrawerCancelClick();
+    expect(component.state('drawerIsVisible')).toBe(false);
+    expect(component.state('drawerIsAnimatable')).toBe(true);
+});
+
 describe("Selecting a page in a collection", () => {
     const props = {
         ...defaultProps,
@@ -101,7 +148,7 @@ describe("Selecting a page in a collection", () => {
         <CollectionsController {...props} />
     )
 
-    setLocation("http://publishing.onsdigital.co.uk/florence/collections/test-collection");
+    setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection");
 
     it("the first time goes to the page's ID updates", () => {
         const newURL = component.instance().handleCollectionPageClick('test-page-1');
@@ -120,6 +167,50 @@ describe("Selecting a page in a collection", () => {
     });
 });
 
-// clicking page goes to URL of that page
+describe("Deleting a page from a collection", () => {
+    const props = {
+        ...defaultProps,
+        activeCollection: collection
+    }
+    const component = shallow(
+        <CollectionsController {...props} />
+    )
+
+    expect(component.instance().mapPagesToCollectionsDetails('inProgress')).toEqual(collection.inProgress);
+    
+    it("removes the page from the collection details", () => {
+        component.instance().handleCollectionPageDeleteClick(
+            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+        );
+        expect(component.instance().mapPagesToCollectionsDetails('inProgress')).toEqual([collection.inProgress[1]]);
+    });
+
+    it("redirects the user to the collection details", () => {
+        setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection-12345/test-page-1");
+        const newURL = component.instance().handleCollectionPageDeleteClick(
+            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+        );
+        expect(newURL).toBe('/florence/collections/test-collection-12345');
+    });
+
+    it("undo puts the page back into the collection details", () => {
+        component.instance().handleCollectionPageDeleteUndo(() => {}, collection.inProgress[0].uri, '12345');
+        expect(component.instance().mapPagesToCollectionsDetails('inProgress')).toEqual(collection.inProgress);
+    });
+    
+    it("undo redirects the user to the undeleted page", () => {
+        const newURL = component.instance().handleCollectionPageDeleteUndo(() => {}, 'test-page-1', '12345');
+        expect(newURL).toBe("/florence/collections/test-collection-12345/test-page-1");
+    });
+
+    it("deletes the page from the server 5 seconds after the click of 'delete'", async () => {
+        await component.instance().handleCollectionPageDeleteClick(
+            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+        );
+        await jest.runOnlyPendingTimers();
+        expect(dispatchedAction.collection.inProgress.length).toBe(1);
+        expect(dispatchedAction.collection.inProgress).toMatchObject([collection.inProgress[1]]);
+    });
+});
 
 // updates props with empty active collection after the collection details are hidden
