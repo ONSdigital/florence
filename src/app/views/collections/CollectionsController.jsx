@@ -10,6 +10,7 @@ import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections'
 import { updateActiveCollection } from '../../config/actions';
 import url from '../../utilities/url'
+import notifications from '../../utilities/notifications'
 
 // TODO move shared prop types to a separate file and import them when needed?
 const collectionPagePropTypes = {
@@ -74,6 +75,7 @@ class CollectionsController extends Component {
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
         this.handleCollectionPageEditClick = this.handleCollectionPageEditClick.bind(this);
+        this.handleCollectionPageDeleteClick = this.handleCollectionPageDeleteClick.bind(this);
     }
 
     componentWillMount() {
@@ -174,6 +176,45 @@ class CollectionsController extends Component {
         window.location = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${uri}`;
     }
 
+    handleCollectionPageDeleteClick(uri, title, state) {
+        const originalCollectionsPages = [...this.props.activeCollection[state]];
+        const originalActiveCollection = {
+            ...this.props.activeCollection,
+            [state]: originalCollectionsPages
+        };
+        const newCollectionsPages = this.props.activeCollection[state].filter(page => {
+            return page.uri !== uri;
+        });
+        const updatedActiveCollection = {
+            ...this.props.activeCollection,
+            [state]: newCollectionsPages
+        }
+        this.props.dispatch(updateActiveCollection(updatedActiveCollection));
+        const deletePageTimer = setTimeout(() => {
+            collections.deletePage(this.props.params.collectionID, uri).then(() => {
+                window.clearTimeout(deletePageTimer);
+            }).catch(error => {
+                console.error("Error deleting page form a collection: ", error);
+            });
+        }, 6000);
+        const undoPageDelete = () => {
+            this.props.dispatch(updateActiveCollection(originalActiveCollection));
+            window.clearTimeout(deletePageTimer);
+            notifications.remove(notificationID);
+        };
+        const notification = {
+            buttons: [{
+                text: "Undo",
+                onClick: undoPageDelete
+            }],
+            type: 'positive',
+            isDismissable: false,
+            autoDismiss: 5000,
+            message: <span>Deleted page <strong>'{title}'</strong> from collection '{this.props.activeCollection.name}'</span>
+        }
+        const notificationID = notifications.add(notification);
+    }
+
     handleDrawerCancelClick() {
         this.setState({
             drawerIsAnimatable: true,
@@ -201,6 +242,7 @@ class CollectionsController extends Component {
                         onCancel={this.handleDrawerCancelClick}
                         onPageClick={this.handleCollectionPageClick}
                         onEditPageClick={this.handleCollectionPageEditClick}
+                        onDeletePageClick={this.handleCollectionPageDeleteClick}
                         isLoadingDetails={this.state.isFetchingCollectionDetails}
                     />
                     :
