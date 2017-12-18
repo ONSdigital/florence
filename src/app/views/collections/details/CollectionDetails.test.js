@@ -41,7 +41,13 @@ const alternativePageProps = {
                 type: "homepage",
                 description: {
                     title: "Home"
-                }
+                },
+                events: [
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-14T11:36:03.402Z"
+                    }
+                ]
             },
             {
                 uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
@@ -49,7 +55,13 @@ const alternativePageProps = {
                 description: {
                     title: "Consumer Price Inflation",
                     edition: "July 2017"
-                }
+                },
+                events: [
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-14T11:36:03.402Z"
+                    }
+                ]
             }
         ],
         complete: [
@@ -58,7 +70,13 @@ const alternativePageProps = {
                 type: "taxonomy_landing_page",
                 description: {
                     title: "Business industry and trade"
-                }
+                },
+                events: [
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-14T11:36:03.402Z"
+                    }
+                ]
             }
         ],
         reviewed: null
@@ -169,3 +187,75 @@ describe("Invalid props doesn't break the component", () => {
         expect(component.find('.list__item--expandable').length).toBe(3);
     });
 });
+
+describe("'Last edit' information for a page in a collection", () => {
+    const component = shallow(
+        <CollectionDetails {...defaultProps} />
+    );
+
+    it("Handles no events being stored for page", () => {
+        const brokenEventsProps = {
+            ...defaultProps,
+            inProgress: [
+                ...defaultProps.inProgress,
+                {
+                    uri: "/economy/page",
+                    type: "product_page",
+                    description: {
+                        title: "A page"
+                    }
+                }
+            ]
+        }
+        component.setProps({...brokenEventsProps});
+        
+        // reset props for futures tests
+        component.setProps({...defaultProps});
+    });
+
+    it("Excludes the date if the data isn't available", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: ""
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (date not available)");
+
+        delete event.date;
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (date not available)");
+    });
+    
+    it("Excludes the date if it isn't a valid date", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: "not a valid date"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (date not available)");
+    });
+    
+    it("Excludes the email if the data isn't available", () => {
+        const event = {
+            email: "",
+            date: "2017-12-14T11:36:03.402Z"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: email not available (Thu 14 Dec 2017 - 11:36:03)");
+
+        delete event.email;
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: email not available (Thu 14 Dec 2017 - 11:36:03)");
+    });
+
+    it("Renders an error message if neither the email or date are available", () => {
+        const event = {};
+        expect(component.instance().renderLastEditText(event)).toBe("Error getting 'last edit' details");
+        expect(component.instance().renderLastEditText()).toBe("Error getting 'last edit' details");
+    })
+    
+    it("Renders an error message if it isn't a valid date and no email is available", () => {
+        const event = {
+            email: "",
+            date: "not a valid date"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Error rendering 'last edit' details");
+    });
+
+});
+
