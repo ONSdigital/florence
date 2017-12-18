@@ -27,25 +27,30 @@ export class CollectionDetails extends Component {
 
     renderLastEditText(lastEdit) {
         try {
-            const date = dateFormat(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
-            if ((!lastEdit.email && !lastEdit.date) || (typeof lastEdit.email !== "string" && typeof lastEdit.date !== "string") || !lastEdit) {
-                return `'Last edit' details not available`;
+            if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
+                return "Error getting 'last edit' details";
             }
-            if (!lastEdit.email || typeof lastEdit.email !== "string") {
-                return `Last edit: email not available (${date})`;
-            }
+
             if (!lastEdit.date || typeof lastEdit.date !== "string") {
                 return `Last edit: ${lastEdit.email} (date not available)`;
+            }
+            
+            const date = dateFormat(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
+            if (!lastEdit.email || typeof lastEdit.email !== "string") {
+                return `Last edit: email not available (${date})`;
             }
             return (
                 `Last edit: ${lastEdit.email} (${date})`
             )
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error parsing date for collection details 'page last edit' function. Last edit: " + JSON.stringify(lastEdit));
-            console.error("Error parsing date for collection details 'page last edit' function. Last edit: ", lastEdit);
-            return (
-                "Error rendering 'last edit' details"
-            );
+            log.add(eventTypes.unexpectedRuntimeError, "Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit));
+            console.error("Error parsing date for collection details 'page last edit' function. Last edit data: ", lastEdit);
+
+            if (lastEdit.email) {
+                return `Last edit: ${lastEdit.email} (date not available)`;
+            }
+
+            return "Error rendering 'last edit' details";
         }
     }
 
@@ -60,7 +65,7 @@ export class CollectionDetails extends Component {
         const handleDeleteClick = () => {
             this.props.onDeletePageClick(page.uri, page.description.title, state);
         }
-        const pageEvents = page.events ? page.events[0] : {};
+        const pageEvents = page.events ? page.events[0] : {}; //FIXME we should probably be doing this in the controller, not in the view
         return (
             <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === pageID ? " active" : "")}>
                 <Page type={page.type} title={page.description.title} isActive={this.props.activePageID === pageID} />
