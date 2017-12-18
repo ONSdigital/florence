@@ -10,9 +10,12 @@
         color: $cadet-blue;
         font-family: $base-font-family;
         font-weight: 700;
-        padding-left: $gutter;
         padding-right: $gutter;
         line-height: normal;
+
+        &:first-of-type {
+            padding-left: $gutter;
+        }
     }
 
     &__status {
