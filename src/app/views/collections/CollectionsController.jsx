@@ -205,6 +205,7 @@ export class CollectionsController extends Component {
         // This stops the collection details from disappearing before the animation to 
         // close the drawer is finished (which looks ugly).
         if (!this.state.drawerIsVisible) {
+            this.props.dispatch(emptyActiveCollection());
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }
     }
@@ -286,7 +287,6 @@ export class CollectionsController extends Component {
     }
 
     handleDrawerCancelClick() {
-        this.props.dispatch(emptyActiveCollection());
         this.setState({
             drawerIsAnimatable: true,
             drawerIsVisible: false
