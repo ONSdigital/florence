@@ -133,6 +133,49 @@ export class CollectionsController extends Component {
         collections.get(collectionID).then(collection => {
             this.props.dispatch(updateActiveCollection(collection));
             this.setState({isFetchingCollectionDetails: false});
+        }).catch(error => {
+            switch(error.status) {
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Collection '${collectionID}' couldn't be found so you've been redirect to the collections screen`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: 'warning',
+                        message: `You don't have permissions to access collection '${collectionID}' so you've been redirect to the collections screen`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                    break;
+                }
+                case('FETCH_ERR'): {
+                    const notification = {
+                        type: 'warning',
+                        message: `There's been a network error getting collection '${collectionID}', please check your connection and refresh the page`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: 'warning',
+                        message: 'An unexpected error occurred',
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            this.setState({isFetchingCollectionDetails: false});
+            console.error(`Fetching collection ${collectionID}: `, error);
         });
         // TODO handle error scenarios
     }
@@ -319,7 +362,7 @@ export class CollectionsController extends Component {
 
 CollectionsController.propTypes = propTypes;
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
     return {
         user: state.state.user,
         activeCollection: state.state.collections.active,
