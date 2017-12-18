@@ -29,7 +29,7 @@ export default class DoubleSelectableBoxController extends Component {
 
     renderList() {
         return (
-            <ul className="selectable-box__list grid__col-12">
+            <ul className="selectable-box__list">
                 {
                     this.props.items.map((item, index) => {
                         return (
@@ -48,14 +48,16 @@ export default class DoubleSelectableBoxController extends Component {
 
     render() {
         return (
-            <div className="selectable-box grid">
-                <h2 className="selectable-box__heading grid__col-6">
-                    { this.props.headings[0] }
-                </h2>
-                <h2 className="selectable-box__heading grid__col-6 grid__cell">
-                    { this.props.headings[1] }
-                    { this.props.isUpdating && <span className="selectable-box__status pull-right loader"/> }
-                </h2>
+            <div className="selectable-box">
+                <div className="grid">
+                    <h2 className="selectable-box__heading grid__col-6">
+                        { this.props.headings[0] }
+                    </h2>
+                    <h2 className="selectable-box__heading grid__col-6 grid__cell">
+                        { this.props.headings[1] }
+                        { this.props.isUpdating && <span className="selectable-box__status pull-right loader"/> }
+                    </h2>
+                </div>
                 { this.renderList() }
             </div>
         )
