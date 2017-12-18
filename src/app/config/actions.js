@@ -39,6 +39,13 @@ export function updateActiveCollection(collection) {
     }
 }
 
+export function emptyActiveCollection() {
+    return {
+        type: UPDATE_ACTIVE_COLLECTION,
+        collection: null
+    }
+}
+
 export function updateUsers(users) {
     return {
         type: UPDATE_USERS,
