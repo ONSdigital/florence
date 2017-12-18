@@ -19,7 +19,11 @@ const collectionPagePropTypes = {
     description: PropTypes.shape({
         title: PropTypes.string.isRequired,
         edition: PropTypes.string
-    }).isRequired
+    }).isRequired,
+    events: PropTypes.arrayOf(PropTypes.shape({
+        email: PropTypes.string.isRequired,
+        date: PropTypes.string.isRequired
+    }))
 }
 
 const propTypes = {
