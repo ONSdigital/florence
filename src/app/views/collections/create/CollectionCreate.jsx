@@ -308,7 +308,7 @@ export class CollectionCreate extends Component {
             return;
         }
 
-        collections.create(this.mapStateToPostBody()).then(() => {
+        collections.create(this.mapStateToPostBody()).then(response => {
             const notification = {
                 type: 'positive',
                 message: `Successfully created '${this.state.newCollectionDetails.name.value}' collection`,
@@ -317,7 +317,7 @@ export class CollectionCreate extends Component {
             };
             notifications.add(notification);
             this.setState({ isSubmitting: false });
-            this.props.onSuccess();
+            this.props.onSuccess(response);
         }).catch(error => {
             switch(error.status) {
                 case(400): {
