@@ -8,9 +8,12 @@ import CollectionCreate from './create/CollectionCreate';
 import CollectionDetails from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections'
-import { updateActiveCollection } from '../../config/actions';
+import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
 import url from '../../utilities/url'
 import notifications from '../../utilities/notifications'
+import dateformat from 'dateformat';
+
+import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 
 // TODO move shared prop types to a separate file and import them when needed?
 const collectionPagePropTypes = {
@@ -68,8 +71,8 @@ export class CollectionsController extends Component {
 
         this.state = {
             collections: [],
+            isFetchingCollections: false,
             pendingDeletedPages: [],
-            isFetchingData: false,
             isFetchingCollectionDetails: false,
             drawerIsAnimatable: false,
             drawerIsVisible: false
@@ -100,7 +103,7 @@ export class CollectionsController extends Component {
             this.props.dispatch(updateActiveCollection(activeCollection));
             this.setState({
                 drawerIsAnimatable: true,
-                drawerIsVisible: true
+                drawerIsVisible: true,
             });
             this.fetchActiveCollection(nextProps.params.collectionID);
         }
@@ -108,7 +111,7 @@ export class CollectionsController extends Component {
         if (this.props.params.collectionID && !nextProps.params.collectionID) {
             this.setState({
                 drawerIsAnimatable: true,
-                drawerIsVisible: false
+                drawerIsVisible: false,
             });
         }
 
@@ -122,11 +125,11 @@ export class CollectionsController extends Component {
     }
 
     fetchCollections() {
-        this.setState({isFetchingData: true});
+        this.setState({isFetchingCollections: true});
         collections.getAll().then(collections => {
             this.setState({
                 collections: collections,
-                isFetchingData: false
+                isFetchingCollections: false
             });
         });
         // TODO handle error scenarios
@@ -189,9 +192,8 @@ export class CollectionsController extends Component {
         // update list of collections
     }
 
-    handleCollectionSelection() {
-        // trigger collection details view
-        console.log('clicked');
+    handleCollectionSelection(collection) {
+        this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}`));
     }
     
     handleDrawerTransitionEnd() {
@@ -255,7 +257,7 @@ export class CollectionsController extends Component {
                 const updatedActiveCollection = {
                     ...this.props.activeCollection,
                     [state]: newCollectionsPages
-                }
+                };
                 this.props.dispatch(updateActiveCollection(updatedActiveCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
@@ -284,10 +286,36 @@ export class CollectionsController extends Component {
     }
 
     handleDrawerCancelClick() {
+        this.props.dispatch(emptyActiveCollection());
         this.setState({
             drawerIsAnimatable: true,
             drawerIsVisible: false
         });
+    }
+
+    readablePublishDate(collection) {
+        if (collection.publishDate && collection.type === "manual") {
+            return dateformat(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT") + " [rolled back]";
+        }
+
+        if (collection.publishDate) {
+            return dateformat(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT");
+        }
+
+        if (!collection.publishDate) {
+            return "[manual collection]";
+        }
+    }
+
+    mapCollectionsToDoubleSelectableBox() {
+    return this.state.collections.map(collection => {
+        return {
+            id: collection.id,
+            firstColumn: collection.name,
+            secondColumn: this.readablePublishDate(collection),
+            selectableItem: collection
+        }
+        })
     }
 
     mapPagesToCollectionsDetails(state) {
@@ -341,17 +369,13 @@ export class CollectionsController extends Component {
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-4">
                         <h1>Select a collection</h1>
-                        <ul>
-                        {this.state.collections &&
-                            this.state.collections.map(collection => {
-                                return (
-                                    <li key={collection.id}>
-                                        <Link to={"/florence/collections/" + collection.id}>{collection.name}</Link>
-                                    </li>
-                                )
-                            })
-                        }
-                        </ul>
+                        <DoubleSelectableBoxController
+                            items={this.mapCollectionsToDoubleSelectableBox()}
+                            activeItem={this.props.activeCollection}
+                            isUpdating={this.state.isFetchingCollections}
+                            headings={["Name", "Collection date"]}
+                            handleItemClick={this.handleCollectionSelection}
+                        />
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
