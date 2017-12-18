@@ -26,6 +26,7 @@
 
             & .expandable-item-contents {
                 display: none;
+                position: relative;
             }
         }
         
@@ -36,7 +37,7 @@
 
             &:before {
                 position: absolute;
-                background-color: $iron;
+                background-color: $white;
                 border: 4px solid $grey-chateau;
                 content: "";
                 height: calc(100% + #{$lineheight*2});
