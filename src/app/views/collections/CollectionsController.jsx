@@ -127,8 +127,42 @@ export class CollectionsController extends Component {
                 collections: collections,
                 isFetchingCollections: false
             });
+        }).catch(error => {
+            switch(error.status) {
+                case(401): {
+                    // This is handled by the request function, so do nothing here
+                    break;
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An error's occurred whilst trying to get collections. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get collections. You may only be able to see previously loaded information and not be able to edit any team members",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error("Error fetching all collections:\n", error);
         });
-        // TODO handle error scenarios
     }
 
     fetchActiveCollection(collectionID) {
