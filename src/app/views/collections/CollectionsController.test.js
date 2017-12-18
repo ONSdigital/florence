@@ -1,14 +1,22 @@
 import React from 'react';
-import { CollectionsController } from './CollectionsController';
+import { CollectionsController, mapStateToProps } from './CollectionsController';
 import { shallow } from 'enzyme';
 import colllections from '../../utilities/api-clients/collections';
+import notifications from '../../utilities/notifications';
+
+console.error = () => {};
 
 jest.mock('../../utilities/log', () => {
     return {
-        add: function() {
-            //
-        },
+        add: function() {},
         eventTypes: {}
+    }
+});
+
+jest.mock('../../utilities/notifications', () => {
+    return {
+        add: jest.fn().mockImplementation(() => {}),
+        remove: () => {}
     }
 });
 
@@ -21,7 +29,7 @@ jest.mock('../../utilities/api-clients/collections', () => {
             return Promise.resolve();
         },
         get: () => {
-            return Promise.resolve({})
+            return Promise.reject({status: 404});
         }
     }
 });
@@ -213,4 +221,50 @@ describe("Deleting a page from a collection", () => {
     });
 });
 
-// updates props with empty active collection after the collection details are hidden
+describe("When fetching a collection's detail", () => {
+    const component = shallow(
+        <CollectionsController {...defaultProps} />
+    );
+    
+    it("a loading icon is shown", () => {
+        component.instance().fetchActiveCollection();
+        expect(component.state('isFetchingCollectionDetails')).toBe(true);
+    });
+    
+    it("the loading icon is hidden on success", async () => {
+        await component.instance().fetchActiveCollection();
+        await component.update()
+        expect(component.state('isFetchingCollectionDetails')).toBe(false);
+    });
+    
+    it("the loading icon is hidden on error", async () => {
+        await component.instance().fetchActiveCollection();
+        await component.update()
+        expect(component.state('isFetchingCollectionDetails')).toBe(false);
+    });
+
+    it("shows a notification on error", async () => {
+        notifications.add.mockClear();
+        await component.instance().fetchActiveCollection();
+        await component.update();
+        expect(notifications.add.mock.calls.length).toBe(1);
+    });
+});
+
+test("Map state to props function", () => {
+    const reduxState = {
+        state: {
+            user: "foobar@email.com",
+            collections: {
+                active: {...collection}
+            },
+            rootPath: "/florence"
+        }
+    }
+    const expectedProps = {
+        user: "foobar@email.com",
+        activeCollection: {...collection},
+        rootPath: "/florence"
+    }
+    expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+});
