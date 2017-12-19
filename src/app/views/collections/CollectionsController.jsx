@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 
 import CollectionCreate from './create/CollectionCreate';
-import CollectionDetails from './details/CollectionDetails';
+import CollectionDetails, {pagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections'
 import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
@@ -13,24 +13,12 @@ import notifications from '../../utilities/notifications'
 import dateformat from 'dateformat';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
-
-// TODO move shared prop types to a separate file and import them when needed?
-const collectionPagePropTypes = {
-    uri: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    description: PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        edition: PropTypes.string
-    }).isRequired,
-    events: PropTypes.arrayOf(PropTypes.shape({
-        email: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired
-    }))
-}
+import log, {eventTypes} from '../../utilities/log';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
     params: PropTypes.shape({
         collectionID: PropTypes.string,
         pageID: PropTypes.string
@@ -40,9 +28,9 @@ const propTypes = {
         collectionOwner: PropTypes.string,
         isEncrypted: PropTypes.bool,
         timeseriesImportFiles: PropTypes.array,
-        inProgress: PropTypes.arrayOf(PropTypes.shape(collectionPagePropTypes)),
-        complete: PropTypes.arrayOf(PropTypes.shape(collectionPagePropTypes)),
-        reviewed: PropTypes.arrayOf(PropTypes.shape(collectionPagePropTypes)),
+        inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
+        complete: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
+        reviewed: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
         datasets: PropTypes.arrayOf(PropTypes.shape({
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
@@ -60,7 +48,7 @@ const propTypes = {
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
-        teams: PropTypes.array.isRequired
+        teams: PropTypes.array
     })
 };
 
@@ -169,10 +157,49 @@ export class CollectionsController extends Component {
         });
     }
 
+    mapCollectionResponseToState(collection) {
+        try {
+            const canBeApproved = collection.reviewed.length > 1 && collection.inProgress.length === 0 && collection.complete.length === 0;
+            const canBeDeleted = collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0;
+            const mapPageToState = pagesArray => {
+                return pagesArray.map(page => {
+                    return {
+                        lastEdit: {
+                            email: page.events ? page.events[0].email : "",
+                            date: page.events ? page.events[0].date : ""
+                        },
+                        title: page.description.title,
+                        edition: page.description.edition || "",
+                        uri: page.uri,
+                        type: page.type,
+                        id: url.slug(page.uri)
+                    }
+                });
+            }
+            const mappedCollection = {
+                id: collection.id,
+                name: collection.name,
+                canBeApproved,
+                canBeDeleted,
+                inProgress: mapPageToState(collection.inProgress),
+                complete: mapPageToState(collection.complete),
+                reviewed: mapPageToState(collection.reviewed),
+                type: collection.type,
+                teams: collections.teams
+            }
+            return mappedCollection;
+        } catch (error) {
+            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state");
+            console.error("Error mapping collection GET response to Redux state", error);
+            return null;
+        }
+    }
+
     fetchActiveCollection(collectionID) {
         this.setState({isFetchingCollectionDetails: true});
         collections.get(collectionID).then(collection => {
-            this.props.dispatch(updateActiveCollection(collection));
+            const activeCollection = this.mapCollectionResponseToState(collection);
+            this.props.dispatch(updateActiveCollection(activeCollection));
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             switch(error.status) {
@@ -377,9 +404,8 @@ export class CollectionsController extends Component {
                 (!this.props.params.collectionID && this.props.activeCollection)
                 ?
                     <CollectionDetails 
-                        collectionID = {this.props.activeCollection.id}
-                        activePageID={this.props.params.pageID}
                         {...this.props.activeCollection}
+                        activePageID={this.props.params.pageID}
                         inProgress={this.mapPagesToCollectionsDetails('inProgress')}
                         complete={this.mapPagesToCollectionsDetails('complete')}
                         reviewed={this.mapPagesToCollectionsDetails('reviewed')}
