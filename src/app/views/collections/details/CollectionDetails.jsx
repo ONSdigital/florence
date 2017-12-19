@@ -14,13 +14,12 @@ export const pagePropTypes = {
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
     uri: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired
+    type: PropTypes.string.isRequired
 }
 
 const propTypes = {
     id: PropTypes.string.isRequired,
-    activePageID: PropTypes.string,
+    activePageURI: PropTypes.string,
     name: PropTypes.string.isRequired,
     onCancel: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
@@ -90,7 +89,7 @@ export class CollectionDetails extends Component {
 
     renderPageItem(page, state) {
         const handlePageClick = () => {
-            this.props.onPageClick(page.id);
+            this.props.onPageClick(page.uri);
         }
         const handleEditClick = () => {
             this.props.onEditPageClick(page.uri);
@@ -99,8 +98,8 @@ export class CollectionDetails extends Component {
             this.props.onDeletePageClick(page.uri, page.title, state);
         }
         return (
-            <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === page.id ? " active" : "")}>
-                <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageID === pagePropTypes.id} />
+            <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
+                <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
                 <div className="expandable-item-contents">
                     <p className="colour--emperor margin-bottom--1 margin-left--2">{this.renderLastEditText(page.lastEdit)}</p>
                     <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>

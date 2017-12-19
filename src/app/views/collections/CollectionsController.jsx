@@ -20,8 +20,7 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
     params: PropTypes.shape({
-        collectionID: PropTypes.string,
-        pageID: PropTypes.string
+        collectionID: PropTypes.string
     }).isRequired,
     activeCollection: PropTypes.shape({
         approvalStatus: PropTypes.string,
@@ -49,7 +48,8 @@ const propTypes = {
         name: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
         teams: PropTypes.array
-    })
+    }),
+    activePageURI: PropTypes.string
 };
 
 export class CollectionsController extends Component {
@@ -188,8 +188,7 @@ export class CollectionsController extends Component {
                         title: page.description.title,
                         edition: page.description.edition || "",
                         uri: page.uri,
-                        type: page.type,
-                        id: url.slug(page.uri)
+                        type: page.type
                     }
                 });
             }
@@ -348,14 +347,14 @@ export class CollectionsController extends Component {
         }
     }
 
-    handleCollectionPageClick(id) {
-        if (id === this.props.params.pageID) {
+    handleCollectionPageClick(uri) {
+        if (uri === this.props.activePageURI) {
             return;
         }
 
-        let newURL = location.pathname + "/" + id;
-        if (this.props.params.pageID) {
-            newURL = url.resolve(id);
+        let newURL = location.pathname + "#" + uri;
+        if (this.props.activePageURI) {
+            newURL = `${this.props.rootPath}/collections/${this.props.params.collectionID}#${uri}`;
         }
     
         this.props.dispatch(push(newURL));
@@ -373,7 +372,7 @@ export class CollectionsController extends Component {
                 return pageURI !== uri;
             })
         }));
-        const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}/${url.slug(uri)}`;
+        const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}#${uri}`;
         this.props.dispatch(push(pageRoute));
         window.clearTimeout(deleteTimer);
         notifications.remove(notificationID);
@@ -385,7 +384,7 @@ export class CollectionsController extends Component {
         this.setState(state => ({
             pendingDeletedPages: [...state.pendingDeletedPages, uri]
         }));
-        const collectionURL = url.resolve('../');
+        const collectionURL = location.pathname.replace(`#${uri}`, "");
         this.props.dispatch(push(collectionURL));
 
         const triggerPageDelete = () => {
@@ -532,7 +531,7 @@ export class CollectionsController extends Component {
                 ?
                     <CollectionDetails 
                         {...this.props.activeCollection}
-                        activePageID={this.props.params.pageID}
+                        activePageURI={this.props.activePageURI}
                         inProgress={this.mapPagesToCollectionsDetails('inProgress')}
                         complete={this.mapPagesToCollectionsDetails('complete')}
                         reviewed={this.mapPagesToCollectionsDetails('reviewed')}
@@ -583,7 +582,8 @@ export function mapStateToProps(state) {
     return {
         user: state.state.user,
         activeCollection: state.state.collections.active,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        activePageURI: state.routing.locationBeforeTransitions.hash.replace('#', '')
     }
 }
 
