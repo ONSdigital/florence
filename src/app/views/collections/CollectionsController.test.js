@@ -268,3 +268,50 @@ test("Map state to props function", () => {
     }
     expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
 });
+
+describe("readablePublishDate returns correct display date when", () => {
+    const component = shallow(
+        <CollectionsController {...defaultProps} />
+    );
+
+    it("a collection has a publishDate and is set to manual publish", () => {
+        const collection = {
+            publishDate: "2017-12-19T09:30:00.000Z",
+            type: "manual"
+        };
+        const result = component.instance().readablePublishDate(collection);
+        expect(result).toBe("Tue, 19/12/2017 9:30AM [rolled back]");
+    });
+
+    it("a collection has a publishDate", () => {
+        const collection = {
+            publishDate: "2017-07-13T01:30:00.000Z",
+            type: ""
+        };
+        const result = component.instance().readablePublishDate(collection);
+        expect(result).toBe("Thu, 13/07/2017 2:30AM");
+    });
+
+    it("a collection has no publishDate and is set to manual", () => {
+        const collection = {
+            publishDate: "",
+            type: "manual"
+        };
+        const result = component.instance().readablePublishDate(collection);
+        expect(result).toBe("[manual collection]");
+    });
+});
+
+test("Map collections to double selectable box function", () => {
+    const component = shallow(
+        <CollectionsController {...defaultProps} />
+    );
+    component.setState({collections: [collection]});
+    const result = component.instance().mapCollectionsToDoubleSelectableBox();
+    expect(result).toContainEqual({
+        id: 'test-collection-12345',
+        firstColumn: 'Test collection',
+        secondColumn: '[manual collection]',
+        selectableItem: collection
+    });
+});
