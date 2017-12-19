@@ -388,7 +388,7 @@ export class CollectionsController extends Component {
         const collectionURL = url.resolve('../');
         this.props.dispatch(push(collectionURL));
 
-        const deletePageTimer = setTimeout(() => {
+        const triggerPageDelete = () => {
             collections.deletePage(this.props.params.collectionID, uri).then(() => {
                 const newCollectionsPages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
@@ -441,18 +441,31 @@ export class CollectionsController extends Component {
                 }
                 console.error("Error deleting page from a collection: ", error);
             });
-        }, 6000);
+        }
+
+        const deletePageTimer = setTimeout(triggerPageDelete, 6000);
 
         const undoPageDelete = () => {
             this.handleCollectionPageDeleteUndo(deletePageTimer, uri, notificationID);
         };
 
+        const handleNotificationClose = () => {
+            triggerPageDelete();
+            notifications.remove(notificationID);
+        }
+
         const notification = {
-            buttons: [{
-                text: "Undo",
-                onClick: undoPageDelete
-            }],
-            type: 'positive',
+            buttons: [
+                {
+                    text: "Undo",
+                    onClick: undoPageDelete
+                },
+                {
+                    text: "Close",
+                    onClick: handleNotificationClose
+                }
+            ],
+            type: 'neutral',
             isDismissable: false,
             autoDismiss: 5000,
             message: <span>Deleted page <strong>'{title}'</strong> from collection '{this.props.activeCollection.name}'</span>
