@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 
 import CollectionCreate from './create/CollectionCreate';
@@ -75,6 +74,7 @@ export class CollectionsController extends Component {
         };
 
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
+        this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
@@ -217,9 +217,10 @@ export class CollectionsController extends Component {
         // TODO handle error scenarios
     }
 
-    handleCollectionCreateSuccess() {
-        // route to collection details pane for new collection
-        // update list of collections
+    handleCollectionCreateSuccess(newCollection) {
+        const collections = [...this.state.collections, newCollection];
+        this.setState({collections: collections});
+        this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
     }
 
     handleCollectionSelection(collection) {
