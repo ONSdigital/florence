@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { CollectionsController, mapStateToProps } from './CollectionsController';
 import { shallow } from 'enzyme';
-import colllections from '../../utilities/api-clients/collections';
 import notifications from '../../utilities/notifications';
 
 console.error = () => {};
@@ -15,7 +14,7 @@ jest.mock('../../utilities/log', () => {
 
 jest.mock('../../utilities/notifications', () => {
     return {
-        add: jest.fn().mockImplementation(() => {}),
+        add: jest.fn(() => {}),
         remove: () => {}
     }
 });
@@ -23,11 +22,50 @@ jest.mock('../../utilities/notifications', () => {
 jest.mock('../../utilities/api-clients/collections', () => {
     return {
         getAll: () => {
-            return Promise.resolve([]);
+            return Promise.resolve([
+                {
+                    "approvalStatus": "NOT_STARTED",
+                    "publishComplete": false,
+                    "isEncrypted": false,
+                    "collectionOwner": "hello",
+                    "timeseriesImportFiles": [],
+                    "id": "anothercollection-91bc818cff240fa546c84b0cc4c3d32f0667de3068832485e254c17655d5b4ad",
+                    "name": "Another collection",
+                    "type": "manual",
+                    "teams": []
+                }, 
+                {
+                    "approvalStatus": "NOT_STARTED",
+                    "publishComplete": false,
+                    "isEncrypted": false,
+                    "collectionOwner": "PUBLISHING_SUPPORT",
+                    "timeseriesImportFiles": [],
+                    "id": "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
+                    "name": "asdasdasd",
+                    "type": "manual",
+                    "teams": []
+                }, 
+                {
+                    "approvalStatus": "NOT_STARTED",
+                    "publishComplete": false,
+                    "isEncrypted": false,
+                    "collectionOwner": "PUBLISHING_SUPPORT",
+                    "timeseriesImportFiles": [],
+                    "id": "test-collection-12345",
+                    "name": "Test collection",
+                    "type": "manual",
+                    "teams": ['cpi', 'cpih']
+                }
+            ]);
         },
         deletePage: () => {
             return Promise.resolve();
         },
+        delete: jest.fn().mockImplementationOnce(() => {
+            return Promise.reject({status: 500})
+        }).mockImplementation(() => {
+            return Promise.resolve()
+        }),
         get: () => {
             return Promise.reject({status: 404});
         }
@@ -58,7 +96,10 @@ const defaultProps = {
         collectionID: undefined,
         pageID: undefined
     },
-    activeCollection: null
+    activeCollection: null,
+    user: {
+        userType: ""
+    }
 };
 
 const collection = {
@@ -243,6 +284,31 @@ describe("Deleting a page from a collection", () => {
     });
 });
 
+describe("Deleting a collection", () => {
+    const props = {
+        ...defaultProps
+    }
+    const component = shallow(
+        <CollectionsController {...props} />
+    );
+
+    it("user is shown a notification if the collection isn't deleted due to an application error", async () => {
+        notifications.add.mockClear();
+        expect(notifications.add.mock.calls.length).toEqual(0);
+        await component.instance().handleCollectionDeleteClick('test-collection-12345');
+        await component.update();
+        expect(notifications.add.mock.calls.length).toEqual(1);
+    });
+
+    it("removes the collection from the state", async () => {
+        expect(component.state('collections').some(collection => {return collection.id === 'test-collection-12345'})).toBeTruthy();
+        await component.instance().handleCollectionDeleteClick('test-collection-12345');
+        await component.update();
+        expect(component.state('collections').some(collection => {return collection.id === 'test-collection-12345'})).toBeFalsy();
+    });
+
+});
+
 describe("When fetching a collection's detail", () => {
     const component = shallow(
         <CollectionsController {...defaultProps} />
@@ -343,13 +409,81 @@ describe("Mapping GET collection API response to view state", () => {
         <CollectionsController {...defaultProps} />
     )
 
-    it("'canBeApproved' value set to false correctly")
+    it("'canBeApproved' value set to false correctly", () => {
+        let canBeApproved = component.instance().mapCollectionResponseToState(collection).canBeApproved;
+        expect(canBeApproved).toBeFalsy();
+        
+        let mockCollection = {
+            ...collection,
+            inProgress: [],
+            reviewed: []
+        }
+        canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        expect(canBeApproved).toBeFalsy();
+        
+        mockCollection.complete = [];
+        canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        expect(canBeApproved).toBeFalsy();
+    });
     
-    it("'canBeApproved' value set to true correctly")
+    it("'canBeApproved' value set to true correctly", () => {
+        let mockCollection = {
+            inProgress: [],
+            complete: [],
+            reviewed: [...collection.complete]
+        }
+        let canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        expect(canBeApproved).toBeTruthy();
+
+        mockCollection = {
+            ...mockCollection,
+            reviewed: [
+                ...collection.inProgress,
+                ...collection.complete
+            ]
+        }
+        canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        expect(canBeApproved).toBeTruthy();
+    });
     
-    it("'canBeDeleted' value set to false correctly")
+    it("'canBeDeleted' value set to false correctly", () => {
+        let canBeDeleted = component.instance().mapCollectionResponseToState(collection).canBeDeleted;
+        expect(canBeDeleted).toBeFalsy();
+
+        let mockCollection = {
+            ...collection,
+            inProgress: [],
+            complete: [],
+            reviewed: [...collection.complete]
+        }
+        canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        expect(canBeDeleted).toBeFalsy();
+        
+        mockCollection = {
+            ...collection,
+            inProgress: [],
+            complete: [...collection.complete],
+            reviewed: []
+        }
+        canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        expect(canBeDeleted).toBeFalsy();
+
+        delete mockCollection.reviewed;
+        canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        expect(canBeDeleted).toBeFalsy();
+    });
     
-    it("'canBeDeleted' value set to true correctly")
+    it("'canBeDeleted' value set to true correctly", () => {
+        let mockCollection = {
+            ...collection,
+            inProgress: [],
+            complete: [],
+            reviewed: []
+        }
+
+        let canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        expect(canBeDeleted).toBeTruthy();
+    });
 
     it("pages map and have correct structure", () => {
         const inProgressPages = component.instance().mapCollectionResponseToState(collection).inProgress;
@@ -396,8 +530,7 @@ describe("Mapping GET collection API response to view state", () => {
         expect(completePages).toEqual(expectedComplete);
         
         const reviewedPages = component.instance().mapCollectionResponseToState(collection).reviewed;
-        const expectedReviewed = []
-        expect(reviewedPages).toEqual(expectedReviewed);
+        expect(reviewedPages).toEqual([]);
     });
 
 });
