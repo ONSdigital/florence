@@ -275,12 +275,23 @@ describe("Deleting a page from a collection", () => {
     });
 
     it("deletes the page from the server 5 seconds after the click of 'delete'", async () => {
+        const expectedInProgress = [{
+            edition: "July 2017",
+            id: "economy-inflationsandprices-consumerinflation-bulletins-consumerpriceinflation-july2017",
+            lastEdit: {
+                "date": "2017-12-14T11:36:03.402Z",
+                "email": "foobar@email.com"
+            },
+            title: "Consumer Price Inflation",
+            type: "bulletin",
+            uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
+        }];
         await component.instance().handleCollectionPageDeleteClick(
             collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
         );
         await jest.runOnlyPendingTimers();
         expect(dispatchedAction.collection.inProgress.length).toBe(1);
-        expect(dispatchedAction.collection.inProgress).toMatchObject([collection.inProgress[1]]);
+        expect(dispatchedAction.collection.inProgress).toMatchObject(expectedInProgress);
     });
 });
 
