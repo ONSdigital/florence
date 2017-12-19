@@ -69,6 +69,7 @@ export class CollectionsController extends Component {
         this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
+        this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
         this.handleCollectionPageEditClick = this.handleCollectionPageEditClick.bind(this);
         this.handleCollectionPageDeleteClick = this.handleCollectionPageDeleteClick.bind(this);
@@ -159,9 +160,25 @@ export class CollectionsController extends Component {
 
     mapCollectionResponseToState(collection) {
         try {
-            const canBeApproved = collection.reviewed.length > 1 && collection.inProgress.length === 0 && collection.complete.length === 0;
-            const canBeDeleted = collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0;
+            // 'aPageListHasNoValue' checks whether any of the inProgress, complete or reviewed properties are null so we can 
+            // decide whether to allow the user to delete/approve. It also stops this function from completely failing
+            // on the length check of each array if it is null.
+            const aPageListHasNoValue = (!collection.inProgress || !collection.complete || !collection.reviewed);
+            const canBeApproved = (
+                !aPageListHasNoValue
+                &&
+                (collection.reviewed.length >= 1 && collection.inProgress.length === 0 && collection.complete.length === 0)
+            );
+            const canBeDeleted = (
+                !aPageListHasNoValue
+                &&
+                (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0)
+            );
             const mapPageToState = pagesArray => {
+                if (!pagesArray) {
+                    log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
+                    return null;
+                }
                 return pagesArray.map(page => {
                     return {
                         lastEdit: {
@@ -189,8 +206,8 @@ export class CollectionsController extends Component {
             }
             return mappedCollection;
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state");
-            console.error("Error mapping collection GET response to Redux state", error);
+            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state" + JSON.stringify(error));
+            console.error("Error mapping collection GET response to Redux state" + error);
             return null;
         }
     }
@@ -205,8 +222,8 @@ export class CollectionsController extends Component {
             switch(error.status) {
                 case(404): {
                     const notification = {
-                        type: 'warning',
-                        message: `Collection '${collectionID}' couldn't be found so you've been redirect to the collections screen`,
+                        type: 'neutral',
+                        message: `Collection '${collectionID}' couldn't be found so you've been redirected to the collections screen`,
                         autoDismiss: 5000
                     };
                     notifications.add(notification);
@@ -226,7 +243,7 @@ export class CollectionsController extends Component {
                 case('FETCH_ERR'): {
                     const notification = {
                         type: 'warning',
-                        message: `There's been a network error getting collection '${collectionID}', please check your connection and refresh the page`,
+                        message: `There was a network error whilst getting collection '${collectionID}', please check your connection and refresh the page`,
                         autoDismiss: 5000
                     };
                     notifications.add(notification);
@@ -256,6 +273,65 @@ export class CollectionsController extends Component {
 
     handleCollectionSelection(collection) {
         this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}`));
+    }
+
+    handleCollectionDeleteClick(collectionID) {
+        this.props.dispatch(push(`${this.props.rootPath}/collections`));
+        collections.delete(collectionID).then(() => {
+            const notification = {
+                type: 'positive',
+                message: `Successfully deleted collection '${collectionID}'`,
+                autoDismiss: 4000,
+                isDismissable: true
+            }
+            notifications.add(notification);
+            this.setState(state => ({
+                collections: state.collections.filter(collection => {
+                    return collection.id !== collectionID
+                })
+            }));
+        }).catch(error => {
+            switch (error.status) {
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't delete collection '${collectionID}'. It may have already been deleted.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: 'neutral',
+                        message: `You don't have permission to delete collections`,
+                        autoDismiss: 5000,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case('FETCH_ERR'): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't delete collection '${collectionID}' due to a network error, please check your connection and try again.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't delete collection '${collectionID}' due to an unexpected error`,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error(`Error deleting collection '${collectionID}'`, error);
+        });
     }
     
     handleDrawerTransitionEnd() {
@@ -324,7 +400,45 @@ export class CollectionsController extends Component {
                 this.props.dispatch(updateActiveCollection(updatedActiveCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
-                // TODO handle error gracefully
+                switch (error.status) {
+                    case(404): {
+                        const notification = {
+                            type: 'warning',
+                            message: `Couldn't delete the page '${title}' from this collection. It may have already been deleted.`,
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                    case(403): {
+                        const notification = {
+                            type: 'neutral',
+                            message: `You don't have permission to delete the page '${title}' from this collection`,
+                            autoDismiss: 5000,
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                    case('FETCH_ERR'): {
+                        const notification = {
+                            type: 'warning',
+                            message: `Couldn't delete the page '${title}' from this collection due to a network error, please check your connection and try again.`,
+                            isDismissable: true
+                        }
+                        notifications.add(notification);
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: 'warning',
+                            message: `Couldn't delete the page '${title}' from this collection due to an unexpected error`,
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                }
                 console.error("Error deleting page from a collection: ", error);
             });
         }, 6000);
@@ -413,6 +527,7 @@ export class CollectionsController extends Component {
                         onPageClick={this.handleCollectionPageClick}
                         onEditPageClick={this.handleCollectionPageEditClick}
                         onDeletePageClick={this.handleCollectionPageDeleteClick}
+                        onDeleteCollectionClick={this.handleCollectionDeleteClick}
                         isLoadingDetails={this.state.isFetchingCollectionDetails}
                     />
                     :
