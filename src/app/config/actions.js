@@ -3,6 +3,7 @@ export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
 export const UPDATE_ALL_COLLECTIONS = 'UPDATE_ALL_COLLECTIONS';
 export const UPDATE_ACTIVE_COLLECTION = 'UPDATE_ACTIVE_COLLECTION';
+export const EMPTY_ACTIVE_COLLECTION = 'EMPTY_ACTIVE_COLLECTION';
 
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
 export const UPDATE_USERS = 'UPDATE_USERS';
@@ -41,7 +42,7 @@ export function updateActiveCollection(collection) {
 
 export function emptyActiveCollection() {
     return {
-        type: UPDATE_ACTIVE_COLLECTION,
+        type: EMPTY_ACTIVE_COLLECTION,
         collection: null
     }
 }

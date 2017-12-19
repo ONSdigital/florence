@@ -4,6 +4,10 @@
     padding-top: 5px;
     padding-bottom: 5px;
 
+    &.active {
+        font-weight: 400;
+    }
+
     &:after {
         content: '';
         width: 25px;

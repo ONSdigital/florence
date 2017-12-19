@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION } from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION } from './actions';
 
 
 export default function reducer(state = initialState, action) {
@@ -27,6 +27,15 @@ export default function reducer(state = initialState, action) {
                 collections: {
                     ...state.collections,
                     active: action.collection
+                }
+            }
+        }
+        case (EMPTY_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: null
                 }
             }
         }

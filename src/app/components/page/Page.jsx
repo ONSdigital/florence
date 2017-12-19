@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     type: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    isActive: PropTypes.bool
 };
 
 export class Page extends Component {
@@ -13,7 +14,7 @@ export class Page extends Component {
 
     render() {
         return (
-            <div className={"page page--" + this.props.type}>
+            <div className={"page page--" + this.props.type + (this.props.isActive ? " active" : "")}>
                 {this.props.title}
             </div>
         )
