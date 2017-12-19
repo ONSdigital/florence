@@ -219,6 +219,10 @@ export class CollectionsController extends Component {
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             switch(error.status) {
+                case(401): {
+                    // do nothing - this is handled by the request function itself
+                    break;
+                }
                 case(404): {
                     const notification = {
                         type: 'neutral',
@@ -291,6 +295,10 @@ export class CollectionsController extends Component {
             }));
         }).catch(error => {
             switch (error.status) {
+                case(401): {
+                    // do nothing - this is handled by the request function itself
+                    break;
+                }
                 case(404): {
                     const notification = {
                         type: 'warning',
@@ -400,6 +408,10 @@ export class CollectionsController extends Component {
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
                 switch (error.status) {
+                    case(401): {
+                        // do nothing - this is handled by the request function itself
+                        break;
+                    }
                     case(404): {
                         const notification = {
                             type: 'warning',
