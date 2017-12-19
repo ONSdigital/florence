@@ -151,9 +151,9 @@ func main() {
 	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
 
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
-	router.Handle("/import{uri:.*}", importAPIProxy)
-	router.Handle("/dataset{uri:.*}", datasetAPIProxy)
+	router.Handle("/recipes{uri:/.*}", recipeAPIProxy)
+	router.Handle("/import{uri:/.*}", importAPIProxy)
+	router.Handle("/dataset{uri:/.*}", datasetAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
