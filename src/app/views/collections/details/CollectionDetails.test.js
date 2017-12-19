@@ -42,12 +42,12 @@ const alternativePageProps = {
                 description: {
                     title: "Home"
                 },
-                events: [
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-14T11:36:03.402Z"
-                    }
-                ]
+                lastEdit: {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                },
+                id: ""
+                
             },
             {
                 uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
@@ -56,12 +56,11 @@ const alternativePageProps = {
                     title: "Consumer Price Inflation",
                     edition: "July 2017"
                 },
-                events: [
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-14T11:36:03.402Z"
-                    }
-                ]
+                lastEdit: {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                },
+                id: "economy-inflationsandprices-consumerinflation-bulletins-consumerpriceinflation-july2017"
             }
         ],
         complete: [
@@ -71,12 +70,11 @@ const alternativePageProps = {
                 description: {
                     title: "Business industry and trade"
                 },
-                events: [
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-14T11:36:03.402Z"
-                    }
-                ]
+                lastEdit: {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                },
+                id: "businessindustryandtrade"
             }
         ],
         reviewed: null
