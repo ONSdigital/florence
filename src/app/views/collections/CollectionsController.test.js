@@ -99,6 +99,9 @@ const defaultProps = {
     activeCollection: null,
     user: {
         userType: ""
+    },
+    location: {
+        hash: ""
     }
 };
 
@@ -223,16 +226,16 @@ describe("Selecting a page in a collection", () => {
 
     it("the first time goes to the page's ID updates", () => {
         const newURL = component.instance().handleCollectionPageClick('test-page-1');
-        expect(newURL).toBe('/florence/collections/test-collection/test-page-1');
+        expect(newURL).toBe('/florence/collections/test-collection#test-page-1');
     });
 
     it("going from one page to another updates the route with the new page's ID", () => {
         const newURL = component.instance().handleCollectionPageClick('test-page-2');
-        expect(newURL).toBe('/florence/collections/test-collection/test-page-2');
+        expect(newURL).toBe('/florence/collections/test-collection#test-page-2');
     });
 
     it("doesn't do anything if the same page is clicked", () => {
-        component.setProps({params: {pageID: "test-page-2"}});
+        component.setProps({activePageURI: "test-page-2"});
         const newURL = component.instance().handleCollectionPageClick('test-page-2');
         expect(newURL).toBe(undefined);
     });
@@ -257,9 +260,9 @@ describe("Deleting a page from a collection", () => {
     });
 
     it("redirects the user to the collection details", () => {
-        setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection-12345/test-page-1");
+        setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection-12345#test-page-1");
         const newURL = component.instance().handleCollectionPageDeleteClick(
-            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+            "test-page-1", "Test page 1", 'inProgress'
         );
         expect(newURL).toBe('/florence/collections/test-collection-12345');
     });
@@ -271,13 +274,12 @@ describe("Deleting a page from a collection", () => {
     
     it("undo redirects the user to the undeleted page", () => {
         const newURL = component.instance().handleCollectionPageDeleteUndo(() => {}, 'test-page-1', '12345');
-        expect(newURL).toBe("/florence/collections/test-collection-12345/test-page-1");
+        expect(newURL).toBe("/florence/collections/test-collection-12345#test-page-1");
     });
 
     it("deletes the page from the server 5 seconds after the click of 'delete'", async () => {
         const expectedInProgress = [{
             edition: "July 2017",
-            id: "economy-inflationsandprices-consumerinflation-bulletins-consumerpriceinflation-july2017",
             lastEdit: {
                 "date": "2017-12-14T11:36:03.402Z",
                 "email": "foobar@email.com"
@@ -350,22 +352,49 @@ describe("When fetching a collection's detail", () => {
     });
 });
 
-test("Map state to props function", () => {
-    const reduxState = {
+describe("Map state to props function", () => {
+    let expectedProps = {
+        user: "foobar@email.com",
+        activeCollection: {...collection},
+        rootPath: "/florence",
+        activePageURI: ""
+    }
+    let reduxState = {
         state: {
             user: "foobar@email.com",
             collections: {
                 active: {...collection}
             },
             rootPath: "/florence"
+        },
+        routing: {
+            locationBeforeTransitions: {
+                hash: ""   
+            }
         }
     }
-    const expectedProps = {
-        user: "foobar@email.com",
-        activeCollection: {...collection},
-        rootPath: "/florence"
-    }
-    expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+
+    it("maps the application state correctly", () => {
+        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+    });
+
+    it("maps routing state correctly when a bulletin page is active in the collection", () => {
+        reduxState.routing.locationBeforeTransitions.hash = "#/economy/grossdomesticproduct/bulletins/gdp/july2017";
+        expectedProps.activePageURI = "/economy/grossdomesticproduct/bulletins/gdp/july2017";
+        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+    });
+    
+    it("maps routing state correctly when the home page is active in the collection", () => {
+        reduxState.routing.locationBeforeTransitions.hash = "#/";
+        expectedProps.activePageURI = "/"
+        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+    });
+    
+    it("maps routing state correctly when there is a trailing slash on the active page URI ", () => {
+        reduxState.routing.locationBeforeTransitions.hash = "#/economy#";
+        expectedProps.activePageURI = "/economy#"
+        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+    });
 });
 
 describe("readablePublishDate returns correct display date when", () => {
@@ -507,8 +536,7 @@ describe("Mapping GET collection API response to view state", () => {
                 title: "Home",
                 edition: "",
                 uri: "/",
-                type: "homepage",
-                id: ""
+                type: "homepage"
             },
             {
                 lastEdit: {
@@ -518,8 +546,7 @@ describe("Mapping GET collection API response to view state", () => {
                 title: "Consumer Price Inflation",
                 edition: "July 2017",
                 uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
-                type: "bulletin",
-                id: "economy-inflationsandprices-consumerinflation-bulletins-consumerpriceinflation-july2017"
+                type: "bulletin"
             }
         ]
         expect(inProgressPages).toEqual(expectedInProgress);
@@ -534,8 +561,7 @@ describe("Mapping GET collection API response to view state", () => {
                 title: "Business industry and trade",
                 edition: "",
                 uri: "/businessindustryandtrade",
-                type: "taxonomy_landing_page",
-                id: "businessindustryandtrade"
+                type: "taxonomy_landing_page"
             }
         ]
         expect(completePages).toEqual(expectedComplete);
