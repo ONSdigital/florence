@@ -26,7 +26,10 @@ const propTypes = {
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
     onDeletePageClick: PropTypes.func.isRequired,
+    onDeleteCollectionClick: PropTypes.func.isRequired,
     isLoadingDetails: PropTypes.bool,
+    canBeDeleted: PropTypes.bool,
+    canBeApproved: PropTypes.bool,
     inProgress: PropTypes.arrayOf(PropTypes.shape(
         pagePropTypes
     )),
@@ -41,6 +44,19 @@ const propTypes = {
 export class CollectionDetails extends Component {
     constructor(props) {
         super(props);
+
+        this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
+    }
+
+    shouldComponentUpdate(nextProps) {
+        if (this.props.isLoadingDetails && nextProps.isLoadingDetails) {
+            return false;
+        }
+        return true;
+    }
+
+    handleCollectionDeleteClick() {
+        this.props.onDeleteCollectionClick(this.props.id);
     }
 
     renderLastEditText(lastEdit) {
@@ -103,7 +119,11 @@ export class CollectionDetails extends Component {
     }
 
     renderInProgress() {
-        if (!this.props.inProgress || this.props.inProgress.length === 0) {
+        if (!this.props.inProgress) {
+            return <p className="margin-bottom--2">Error getting in progress pages</p>
+        }
+
+        if (this.props.inProgress.length === 0) {
             return <p className="margin-bottom--2">No pages in progress</p>
         }
 
@@ -114,7 +134,11 @@ export class CollectionDetails extends Component {
     }
     
     renderWaitingReview() {
-        if (!this.props.complete || this.props.complete.length === 0) {
+        if (!this.props.complete) {
+            return <p className="margin-bottom--2">Error getting pages awaiting review</p>
+        }
+
+        if (this.props.complete.length === 0) {
             return <p className="margin-bottom--2">No pages awaiting review</p>
         }
 
@@ -125,7 +149,11 @@ export class CollectionDetails extends Component {
     }
     
     renderReviewed() {
-        if (!this.props.reviewed || this.props.reviewed.length === 0) {
+        if (!this.props.reviewed) {
+            return <p className="margin-bottom--2">Error getting reviewed pages pages</p>
+        }
+
+        if (this.props.reviewed.length === 0) {
             return <p className="margin-bottom--2">No reviewed pages</p>
         }
 
@@ -195,6 +223,12 @@ export class CollectionDetails extends Component {
                 </div>
                 <div className="drawer__footer">
                     <button className="btn" onClick={this.props.onCancel}>Cancel</button>
+                    {this.props.canBeDeleted &&
+                        <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button">Delete</button>
+                    }
+                    {this.props.canBeApproved &&
+                        <button className="btn btn--positive btn--margin-left" disabled={true}>Approve</button>
+                    }
                 </div>
             </div>
         )
