@@ -393,10 +393,10 @@ export class CollectionsController extends Component {
                 const newCollectionsPages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
                 });
-                const updatedActiveCollection = {
+                const updatedActiveCollection = this.mapCollectionResponseToState({
                     ...this.props.activeCollection,
                     [state]: newCollectionsPages
-                };
+                });
                 this.props.dispatch(updateActiveCollection(updatedActiveCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
