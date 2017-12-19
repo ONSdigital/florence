@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { CollectionsController, mapStateToProps } from './CollectionsController';
 import { shallow } from 'enzyme';
 import colllections from '../../utilities/api-clients/collections';
@@ -72,7 +72,13 @@ const collection = {
             type: "homepage",
             description: {
                 title: "Home"
-            }
+            },
+            events: [
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                }
+            ]
         },
         {
             uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
@@ -80,7 +86,13 @@ const collection = {
             description: {
                 title: "Consumer Price Inflation",
                 edition: "July 2017"
-            }
+            },
+            events: [
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                }
+            ]
         }
     ],
     complete: [
@@ -89,7 +101,17 @@ const collection = {
             type: "taxonomy_landing_page",
             description: {
                 title: "Business industry and trade"
-            }
+            },
+            events: [
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                },
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-10T10:21:43.402Z"
+                }
+            ]
         }
     ],
     reviewed: [],
@@ -314,4 +336,68 @@ test("Map collections to double selectable box function", () => {
         secondColumn: '[manual collection]',
         selectableItem: collection
     });
+});
+
+describe("Mapping GET collection API response to view state", () => {
+    const component = shallow(
+        <CollectionsController {...defaultProps} />
+    )
+
+    it("'canBeApproved' value set to false correctly")
+    
+    it("'canBeApproved' value set to true correctly")
+    
+    it("'canBeDeleted' value set to false correctly")
+    
+    it("'canBeDeleted' value set to true correctly")
+
+    it("pages map and have correct structure", () => {
+        const inProgressPages = component.instance().mapCollectionResponseToState(collection).inProgress;
+        const expectedInProgress = [
+            {
+                lastEdit: {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                },
+                title: "Home",
+                edition: "",
+                uri: "/",
+                type: "homepage",
+                id: ""
+            },
+            {
+                lastEdit: {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                },
+                title: "Consumer Price Inflation",
+                edition: "July 2017",
+                uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+                type: "bulletin",
+                id: "economy-inflationsandprices-consumerinflation-bulletins-consumerpriceinflation-july2017"
+            }
+        ]
+        expect(inProgressPages).toEqual(expectedInProgress);
+        
+        const completePages = component.instance().mapCollectionResponseToState(collection).complete;
+        const expectedComplete = [
+            {
+                lastEdit: {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                },
+                title: "Business industry and trade",
+                edition: "",
+                uri: "/businessindustryandtrade",
+                type: "taxonomy_landing_page",
+                id: "businessindustryandtrade"
+            }
+        ]
+        expect(completePages).toEqual(expectedComplete);
+        
+        const reviewedPages = component.instance().mapCollectionResponseToState(collection).reviewed;
+        const expectedReviewed = []
+        expect(reviewedPages).toEqual(expectedReviewed);
+    });
+
 });

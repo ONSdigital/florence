@@ -6,8 +6,20 @@ import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log';
 import Page from '../../../components/page/Page';
 
+export const pagePropTypes = {
+    lastEdit: PropTypes.shape({
+        email: PropTypes.string,
+        date: PropTypes.string
+    }),
+    title: PropTypes.string.isRequired,
+    edition: PropTypes.string,
+    uri: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired
+}
+
 const propTypes = {
-    collectionID: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     activePageID: PropTypes.string,
     name: PropTypes.string.isRequired,
     onCancel: PropTypes.func.isRequired,
@@ -15,9 +27,15 @@ const propTypes = {
     onEditPageClick: PropTypes.func.isRequired,
     onDeletePageClick: PropTypes.func.isRequired,
     isLoadingDetails: PropTypes.bool,
-    inProgress: PropTypes.array,
-    complete: PropTypes.array,
-    reviewed: PropTypes.array,
+    inProgress: PropTypes.arrayOf(PropTypes.shape(
+        pagePropTypes
+    )),
+    complete: PropTypes.arrayOf(PropTypes.shape(
+        pagePropTypes
+    )),
+    reviewed: PropTypes.arrayOf(PropTypes.shape(
+        pagePropTypes
+    )),
 };
 
 export class CollectionDetails extends Component {
@@ -55,22 +73,20 @@ export class CollectionDetails extends Component {
     }
 
     renderPageItem(page, state) {
-        const pageID = url.slug(page.uri);
         const handlePageClick = () => {
-            this.props.onPageClick(pageID);
+            this.props.onPageClick(page.id);
         }
         const handleEditClick = () => {
             this.props.onEditPageClick(page.uri);
         }
         const handleDeleteClick = () => {
-            this.props.onDeletePageClick(page.uri, page.description.title, state);
+            this.props.onDeletePageClick(page.uri, page.title, state);
         }
-        const pageEvents = page.events ? page.events[0] : {}; //FIXME we should probably be doing this in the controller, not in the view
         return (
-            <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === pageID ? " active" : "")}>
-                <Page type={page.type} title={page.description.title} isActive={this.props.activePageID === pageID} />
+            <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === page.id ? " active" : "")}>
+                <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageID === pagePropTypes.id} />
                 <div className="expandable-item-contents">
-                    <p className="colour--emperor margin-bottom--1 margin-left--2">{this.renderLastEditText(pageEvents)}</p>
+                    <p className="colour--emperor margin-bottom--1 margin-left--2">{this.renderLastEditText(page.lastEdit)}</p>
                     <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
                     <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">Delete</button>
                 </div>
@@ -158,7 +174,7 @@ export class CollectionDetails extends Component {
             <div className="drawer__container">
                 <h2 className="drawer__heading">{this.props.name}</h2>
                 <div className="drawer__banner">
-                    <a href={url.resolve("/workspace") + "?collection=" + this.props.collectionID} className="btn btn--primary" disabled>Create/edit page</a>
+                    <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary" disabled>Create/edit page</a>
                     <button className="btn btn--margin-left" disabled>Restore page</button>
                 </div>
                 <div className="drawer__body">
