@@ -7,6 +7,10 @@ const propTypes = {
         firstColumn: PropTypes.string.isRequired,
         secondColumn: PropTypes.string.isRequired
     }),
+    publishStatus: PropTypes.shape({
+        neutral: PropTypes.string.isRequired,
+        warning: PropTypes.string.isRequired
+    }),
     handleClick: PropTypes.func.isRequired,
     isSelected: PropTypes.bool
 };
