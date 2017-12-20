@@ -603,90 +603,105 @@ describe("Approving a collection", () => {
     const component = shallow(
         <CollectionsController {...defaultProps}/>
     );
-    const collectionsWithInProgressPages = [{
-            id: "in-progress-collection-123",
-            name: "In progress collection",
-            inProgress: [{
-                uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
-                type: "bulletin",
-                description: {
-                    title: "Consumer Price Inflation",
-                    edition: "July 2017"
+    const collectionWithInProgressPages = {
+        id: "in-progress-collection-123",
+        name: "In progress collection",
+        inProgress: [{
+            uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+            type: "bulletin",
+            description: {
+                title: "Consumer Price Inflation",
+                edition: "July 2017"
+            },
+            events: [
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                }
+            ]
+        }],
+        complete: [],
+        reviewed: [{
+            uri: "/businessindustryandtrade",
+            type: "taxonomy_landing_page",
+            description: {
+                title: "Business industry and trade"
+            },
+            events: [
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
                 },
-                events: [
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-14T11:36:03.402Z"
-                    }
-                ]
-            }],
-            complete: [],
-            reviewed: [{
-                uri: "/businessindustryandtrade",
-                type: "taxonomy_landing_page",
-                description: {
-                    title: "Business industry and trade"
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-10T10:21:43.402Z"
+                }
+            ]
+        }]
+    }
+
+    const collectionThatsReadyToApprove = {
+        id: "ready-to-approve-collection-123",
+        name: "Ready to approve collection",
+        inProgress: [],
+        complete: [],
+        reviewed: [{
+            uri: "/businessindustryandtrade",
+            type: "taxonomy_landing_page",
+            description: {
+                title: "Business industry and trade"
+            },
+            events: [
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
                 },
-                events: [
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-14T11:36:03.402Z"
-                    },
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-10T10:21:43.402Z"
-                    }
-                ]
-            }]
-        }
-    ]
+                {
+                    email: "foobar@email.com",
+                    date: "2017-12-10T10:21:43.402Z"
+                }
+            ]
+        }]
+    };
 
     it("shows a notification when an error occurs", () => {
         notifications.add.mockClear();
         expect(notifications.add.mock.calls.length).toBe(0);
-        component.setState({collections: collectionsWithInProgressPages});
-        component.instance().handleCollectionApproveClick('in-progress-collection-123');
+        component.setProps({activeCollection: collectionWithInProgressPages});
+        component.instance().handleCollectionApproveClick();
         expect(notifications.add.mock.calls.length).toBe(1);
     });
 
     it("exits the function if the collection isn't in the correct state to be approved", () => {
-        expect(component.instance().handleCollectionApproveClick('in-progress-collection-123')).toBe(false);
+        component.setProps({activeCollection: collectionWithInProgressPages});
+        expect(component.instance().handleCollectionApproveClick()).toBe(false);
     });
 
     it("shows a notification if the collection isn't in the correct state to be approved", async () => {
-        const collectionThatsReadyToApprove = [{
-            id: "in-progress-collection-123",
-            name: "In progress collection",
-            inProgress: [],
-            complete: [],
-            reviewed: [{
-                uri: "/businessindustryandtrade",
-                type: "taxonomy_landing_page",
-                description: {
-                    title: "Business industry and trade"
-                },
-                events: [
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-14T11:36:03.402Z"
-                    },
-                    {
-                        email: "foobar@email.com",
-                        date: "2017-12-10T10:21:43.402Z"
-                    }
-                ]
-            }]
-        }];
-        component.setState({collections: collectionThatsReadyToApprove});
         notifications.add.mockClear();
         expect(notifications.add.mock.calls.length).toBe(0);
-        const returnValue = await component.instance().handleCollectionApproveClick('in-progress-collection-123');
-        await component.update()
-        expect(returnValue).not.toBe(false); // confirm thats it was a valid collection to be approved but there was an issue from the API response
+        component.setProps({activeCollection: collectionThatsReadyToApprove});
+        const returnValue = await component.instance().handleCollectionApproveClick();
+        await component.update();
+        expect(returnValue).not.toBe(false); // confirms thats it was a valid collection to be approved but there was an issue from the API response
         expect(notifications.add.mock.calls.length).toBe(1);
     });
 
-    it("on successful approve it updates the collection's state to show that pre-publish is in progress", () => {
-
+    it("on successful approval the state updates to show that collection's pre-publish process is in progress", async () => {
+        const collectionsArray = component.props('collections');
+        const props = {
+            params: {
+                collectionID: 'ready-to-approve-collection-123'
+            },
+            activeCollection: collectionThatsReadyToApprove
+        };
+        component.setState({collections: [
+            ...collectionsArray, 
+            collectionThatsReadyToApprove
+        ]});
+        component.setProps(props);
+        component.instance().handleCollectionApproveClick();
+        await component.update();
+        expect(component.state('collections').find(collection => collection.id === 'ready-to-approve-collection-123').publishedStatus.neutral).toBe(true);
     });
 });
