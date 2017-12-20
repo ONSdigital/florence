@@ -45,8 +45,7 @@ const alternativePageProps = {
                 lastEdit: {
                     email: "foobar@email.com",
                     date: "2017-12-14T11:36:03.402Z"
-                },
-                id: ""
+                }
                 
             },
             {
@@ -59,8 +58,7 @@ const alternativePageProps = {
                 lastEdit: {
                     email: "foobar@email.com",
                     date: "2017-12-14T11:36:03.402Z"
-                },
-                id: "economy-inflationsandprices-consumerinflation-bulletins-consumerpriceinflation-july2017"
+                }
             }
         ],
         complete: [
@@ -73,8 +71,7 @@ const alternativePageProps = {
                 lastEdit: {
                     email: "foobar@email.com",
                     date: "2017-12-14T11:36:03.402Z"
-                },
-                id: "businessindustryandtrade"
+                }
             }
         ],
         reviewed: null
@@ -113,7 +110,7 @@ describe("Collection details page edit/delete buttons only show for an active pa
 
     it("buttons will show for active pages", () => {
         component.setProps({
-            activePageID: "economy-inflationsandprices-consumerinflation-bulletins-consumerpriceinflation-july2017"
+            activePageURI: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
         });
         const activePages = component.find('.list__item--expandable.active');
         expect(activePages.length).toBe(1);
