@@ -22,41 +22,7 @@ jest.mock('../../utilities/notifications', () => {
 jest.mock('../../utilities/api-clients/collections', () => {
     return {
         getAll: () => {
-            return Promise.resolve([
-                {
-                    "approvalStatus": "NOT_STARTED",
-                    "publishComplete": false,
-                    "isEncrypted": false,
-                    "collectionOwner": "hello",
-                    "timeseriesImportFiles": [],
-                    "id": "anothercollection-91bc818cff240fa546c84b0cc4c3d32f0667de3068832485e254c17655d5b4ad",
-                    "name": "Another collection",
-                    "type": "manual",
-                    "teams": []
-                }, 
-                {
-                    "approvalStatus": "NOT_STARTED",
-                    "publishComplete": false,
-                    "isEncrypted": false,
-                    "collectionOwner": "PUBLISHING_SUPPORT",
-                    "timeseriesImportFiles": [],
-                    "id": "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
-                    "name": "asdasdasd",
-                    "type": "manual",
-                    "teams": []
-                }, 
-                {
-                    "approvalStatus": "NOT_STARTED",
-                    "publishComplete": false,
-                    "isEncrypted": false,
-                    "collectionOwner": "PUBLISHING_SUPPORT",
-                    "timeseriesImportFiles": [],
-                    "id": "test-collection-12345",
-                    "name": "Test collection",
-                    "type": "manual",
-                    "teams": ['cpi', 'cpih']
-                }
-            ]);
+            return Promise.resolve(mockAllCollections);
         },
         deletePage: () => {
             return Promise.resolve();
@@ -109,6 +75,55 @@ const defaultProps = {
         hash: ""
     }
 };
+
+const mockAllCollections = [
+    {
+        "approvalStatus": "NOT_STARTED",
+        "publishComplete": false,
+        "isEncrypted": false,
+        "collectionOwner": "hello",
+        "timeseriesImportFiles": [],
+        "id": "anothercollection-91bc818cff240fa546c84b0cc4c3d32f0667de3068832485e254c17655d5b4ad",
+        "name": "Another collection",
+        "type": "manual",
+        "teams": []
+    },
+    {
+        "approvalStatus": "IN_PROGRESS",
+        "publishComplete": false,
+        "isEncrypted": false,
+        "collectionOwner": "PUBLISHING_SUPPORT",
+        "timeseriesImportFiles": [],
+        "id": "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
+        "name": "asdasdasd",
+        "type": "manual",
+        "teams": []
+    },
+    {
+        "approvalStatus": "IN_PROGRESS",
+        "publishComplete": false,
+        "isEncrypted": false,
+        "collectionOwner": "PUBLISHING_SUPPORT",
+        "timeseriesImportFiles": [],
+        "id": "test-collection-12345",
+        "name": "Test collection",
+        "type": "manual",
+        "teams": ['cpi', 'cpih']
+    },
+    {
+        "approvalStatus": "ERROR",
+        "publishComplete": false,
+        "isEncrypted": false,
+        "collectionOwner": "PUBLISHING_SUPPORT",
+        "timeseriesImportFiles": [ ],
+        "id": "test-2210949c5454fc9c914c74558e78b4b0cb0536cf46757707ae66b7a64086709a",
+        "name": "Test",
+        "type": "manual",
+        "teams": [
+            "Team 2"
+        ]
+    }
+];
 
 const collection = {
     id: 'test-collection-12345',
@@ -435,17 +450,25 @@ describe("readablePublishDate returns correct display date when", () => {
     });
 });
 
-test("Map collections to double selectable box function", () => {
+test("Map collection to state function", () => {
     const component = shallow(
         <CollectionsController {...defaultProps} />
     );
-    component.setState({collections: [collection]});
-    const result = component.instance().mapCollectionsToDoubleSelectableBox();
-    expect(result).toContainEqual({
+    const result = component.instance().mapAllCollectionsToState(mockAllCollections[2]);
+    expect(result).toEqual({
         id: 'test-collection-12345',
-        firstColumn: 'Test collection',
-        secondColumn: '[manual collection]',
-        selectableItem: collection
+        name: 'Test collection',
+        publishDate: '[manual collection]',
+        publishStatus: {
+            neutral: true,
+            warning: false,
+            success: false
+        },
+        type: 'manual',
+        selectableBox: {
+            firstColumn: 'Test collection',
+            secondColumn: '[manual collection]'
+        }
     });
 });
 
@@ -629,7 +652,7 @@ describe("Approving a collection", () => {
     it("exits the function if the collection isn't in the correct state to be approved", () => {
         expect(component.instance().handleCollectionApproveClick('in-progress-collection-123')).toBe(false);
     });
-    
+
     it("shows a notification if the collection isn't in the correct state to be approved", async () => {
         const collectionThatsReadyToApprove = [{
             id: "in-progress-collection-123",
