@@ -23,6 +23,10 @@ export default class collections {
             })
     }
 
+    static approve(collectionID) {
+        return http.post(`/zebedee/approve/${collectionID}`);
+    }
+
     static delete(collectionID) {
         return http.delete(`/zebedee/collection/${collectionID}`);
     }

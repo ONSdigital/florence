@@ -26,6 +26,7 @@ const propTypes = {
     onEditPageClick: PropTypes.func.isRequired,
     onDeletePageClick: PropTypes.func.isRequired,
     onDeleteCollectionClick: PropTypes.func.isRequired,
+    onApproveCollectionClick: PropTypes.func.isRequired,
     isLoadingDetails: PropTypes.bool,
     canBeDeleted: PropTypes.bool,
     canBeApproved: PropTypes.bool,
@@ -45,6 +46,7 @@ export class CollectionDetails extends Component {
         super(props);
 
         this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
+        this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -56,6 +58,10 @@ export class CollectionDetails extends Component {
 
     handleCollectionDeleteClick() {
         this.props.onDeleteCollectionClick(this.props.id);
+    }
+
+    handleCollectionApproveClick() {
+        this.props.onApproveCollectionClick(this.props.id);
     }
 
     renderLastEditText(lastEdit) {
@@ -226,7 +232,7 @@ export class CollectionDetails extends Component {
                         <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button">Delete</button>
                     }
                     {this.props.canBeApproved &&
-                        <button className="btn btn--positive btn--margin-left" disabled={true}>Approve</button>
+                        <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionApproveClick} type="button">Approve</button>
                     }
                 </div>
             </div>
