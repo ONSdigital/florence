@@ -14,19 +14,21 @@ export const pagePropTypes = {
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
     uri: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired
+    type: PropTypes.string.isRequired
 }
 
 const propTypes = {
     id: PropTypes.string.isRequired,
-    activePageID: PropTypes.string,
+    activePageURI: PropTypes.string,
     name: PropTypes.string.isRequired,
     onCancel: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
     onDeletePageClick: PropTypes.func.isRequired,
+    onDeleteCollectionClick: PropTypes.func.isRequired,
     isLoadingDetails: PropTypes.bool,
+    canBeDeleted: PropTypes.bool,
+    canBeApproved: PropTypes.bool,
     inProgress: PropTypes.arrayOf(PropTypes.shape(
         pagePropTypes
     )),
@@ -41,6 +43,19 @@ const propTypes = {
 export class CollectionDetails extends Component {
     constructor(props) {
         super(props);
+
+        this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
+    }
+
+    shouldComponentUpdate(nextProps) {
+        if (this.props.isLoadingDetails && nextProps.isLoadingDetails) {
+            return false;
+        }
+        return true;
+    }
+
+    handleCollectionDeleteClick() {
+        this.props.onDeleteCollectionClick(this.props.id);
     }
 
     renderLastEditText(lastEdit) {
@@ -74,7 +89,7 @@ export class CollectionDetails extends Component {
 
     renderPageItem(page, state) {
         const handlePageClick = () => {
-            this.props.onPageClick(page.id);
+            this.props.onPageClick(page.uri);
         }
         const handleEditClick = () => {
             this.props.onEditPageClick(page.uri);
@@ -83,8 +98,8 @@ export class CollectionDetails extends Component {
             this.props.onDeletePageClick(page.uri, page.title, state);
         }
         return (
-            <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === page.id ? " active" : "")}>
-                <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageID === pagePropTypes.id} />
+            <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
+                <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
                 <div className="expandable-item-contents">
                     <p className="colour--emperor margin-bottom--1 margin-left--2">{this.renderLastEditText(page.lastEdit)}</p>
                     <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
@@ -103,7 +118,11 @@ export class CollectionDetails extends Component {
     }
 
     renderInProgress() {
-        if (!this.props.inProgress || this.props.inProgress.length === 0) {
+        if (!this.props.inProgress) {
+            return <p className="margin-bottom--2">Error getting in progress pages</p>
+        }
+
+        if (this.props.inProgress.length === 0) {
             return <p className="margin-bottom--2">No pages in progress</p>
         }
 
@@ -114,7 +133,11 @@ export class CollectionDetails extends Component {
     }
     
     renderWaitingReview() {
-        if (!this.props.complete || this.props.complete.length === 0) {
+        if (!this.props.complete) {
+            return <p className="margin-bottom--2">Error getting pages awaiting review</p>
+        }
+
+        if (this.props.complete.length === 0) {
             return <p className="margin-bottom--2">No pages awaiting review</p>
         }
 
@@ -125,7 +148,11 @@ export class CollectionDetails extends Component {
     }
     
     renderReviewed() {
-        if (!this.props.reviewed || this.props.reviewed.length === 0) {
+        if (!this.props.reviewed) {
+            return <p className="margin-bottom--2">Error getting reviewed pages pages</p>
+        }
+
+        if (this.props.reviewed.length === 0) {
             return <p className="margin-bottom--2">No reviewed pages</p>
         }
 
@@ -195,6 +222,12 @@ export class CollectionDetails extends Component {
                 </div>
                 <div className="drawer__footer">
                     <button className="btn" onClick={this.props.onCancel}>Cancel</button>
+                    {this.props.canBeDeleted &&
+                        <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button">Delete</button>
+                    }
+                    {this.props.canBeApproved &&
+                        <button className="btn btn--positive btn--margin-left" disabled={true}>Approve</button>
+                    }
                 </div>
             </div>
         )
