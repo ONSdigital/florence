@@ -117,10 +117,7 @@ export class CollectionsController extends Component {
         this.setState({isFetchingCollections: true});
         collections.getAll().then(collections => {
             const allCollections = collections.map(collection => {
-                return {
-                    ...collection,
-                    approvalStates: this.mapApprovalState(collection)
-                }
+                return this.mapAllCollectionsToState(collection)
             });
             this.setState({
                 collections: allCollections,
@@ -184,31 +181,53 @@ export class CollectionsController extends Component {
         });
     }
 
-    mapApprovalState(collection) {
-        const approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false}
+    mapAllCollectionsToState(collection) {
+        try {
+            const publishStates = this.mapPublishState(collection);
+            return {
+                id: collection.id,
+                name: collection.name,
+                publishDate: this.readablePublishDate(collection),
+                publishStatus: {
+                    neutral: publishStates.inProgress,
+                    warning: publishStates.thrownError,
+                    success: publishStates.completed
+                },
+                selectableBox: {
+                    firstColumn: collection.name,
+                    secondColumn: this.readablePublishDate(collection)
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    mapPublishState(collection) {
+        const publishStates = {inProgress: false, thrownError: false, completed: false, notStarted: false}
         try {
             switch (collection.approvalStatus) {
                 case (undefined): {
                     break;
                 }
                 case ('NOT_STARTED'): {
-                    approvalStates.notStarted = true;
+                    publishStates.notStarted = true;
                     break;
                 }
                 case ('IN_PROGRESS'): {
-                    approvalStates.inProgress = true;
+                    publishStates.inProgress = true;
                     break;
                 }
                 case ('COMPLETE'): {
-                    approvalStates.completed = true;
+                    publishStates.completed = true;
                     break;
                 }
                 case ('ERROR'): {
-                    approvalStates.thrownError = true;
+                    publishStates.thrownError = true;
                     break;
                 }
             }
-            return approvalStates;
+            return publishStates;
         } catch (error) {
             console.error(error);
             return null;
@@ -564,22 +583,6 @@ export class CollectionsController extends Component {
         }
     }
 
-    mapCollectionsToDoubleSelectableBox() {
-    return this.state.collections.map(collection => {
-        return {
-            id: collection.id,
-            firstColumn: collection.name,
-            secondColumn: this.readablePublishDate(collection),
-            selectableItem: collection,
-            states: {
-                neutral: collection.approvalStates.inProgress,
-                warning: collection.approvalStates.thrownError,
-                success: collection.approvalStates.completed
-            }
-        }
-        })
-    }
-
     mapPagesToCollectionsDetails(state) {
         if (!this.state.pendingDeletedPages || this.state.pendingDeletedPages.length === 0) {
             return this.props.activeCollection[state];
@@ -632,7 +635,7 @@ export class CollectionsController extends Component {
                     <div className="grid__col-4">
                         <h1>Select a collection</h1>
                         <DoubleSelectableBoxController
-                            items={this.mapCollectionsToDoubleSelectableBox()}
+                            items={this.state.collections}
                             activeItem={this.props.activeCollection}
                             isUpdating={this.state.isFetchingCollections}
                             headings={["Name", "Collection date"]}
