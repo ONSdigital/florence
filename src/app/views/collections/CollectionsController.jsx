@@ -70,6 +70,7 @@ export class CollectionsController extends Component {
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
         this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
         this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
+        this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
         this.handleCollectionPageEditClick = this.handleCollectionPageEditClick.bind(this);
         this.handleCollectionPageDeleteClick = this.handleCollectionPageDeleteClick.bind(this);
@@ -234,63 +235,10 @@ export class CollectionsController extends Component {
         }
     }
 
-    mapCollectionResponseToState(collection) {
-        try {
-            // 'aPageListHasNoValue' checks whether any of the inProgress, complete or reviewed properties are null so we can 
-            // decide whether to allow the user to delete/approve. It also stops this function from completely failing
-            // on the length check of each array if it is null.
-            const aPageListHasNoValue = (!collection.inProgress || !collection.complete || !collection.reviewed);
-            const canBeApproved = (
-                !aPageListHasNoValue
-                &&
-                (collection.reviewed.length >= 1 && collection.inProgress.length === 0 && collection.complete.length === 0)
-            );
-            const canBeDeleted = (
-                !aPageListHasNoValue
-                &&
-                (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0)
-            );
-            const mapPageToState = pagesArray => {
-                if (!pagesArray) {
-                    log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
-                    return null;
-                }
-                return pagesArray.map(page => {
-                    return {
-                        lastEdit: {
-                            email: page.events ? page.events[0].email : "",
-                            date: page.events ? page.events[0].date : ""
-                        },
-                        title: page.description.title,
-                        edition: page.description.edition || "",
-                        uri: page.uri,
-                        type: page.type
-                    }
-                });
-            }
-            const mappedCollection = {
-                id: collection.id,
-                name: collection.name,
-                canBeApproved,
-                canBeDeleted,
-                inProgress: mapPageToState(collection.inProgress),
-                complete: mapPageToState(collection.complete),
-                reviewed: mapPageToState(collection.reviewed),
-                type: collection.type,
-                teams: collections.teams
-            }
-            return mappedCollection;
-        } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state" + JSON.stringify(error));
-            console.error("Error mapping collection GET response to Redux state" + error);
-            return null;
-        }
-    }
-
     fetchActiveCollection(collectionID) {
         this.setState({isFetchingCollectionDetails: true});
         collections.get(collectionID).then(collection => {
-            const activeCollection = this.mapCollectionResponseToState(collection);
+            const activeCollection = this.mapCollectionDetailsToState(collection);
             this.props.dispatch(updateActiveCollection(activeCollection));
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
@@ -341,7 +289,6 @@ export class CollectionsController extends Component {
             this.setState({isFetchingCollectionDetails: false});
             console.error(`Fetching collection ${collectionID}: `, error);
         });
-        // TODO handle error scenarios
     }
 
     handleCollectionCreateSuccess(newCollection) {
@@ -416,6 +363,68 @@ export class CollectionsController extends Component {
             console.error(`Error deleting collection '${collectionID}'`, error);
         });
     }
+
+    handleCollectionApproveClick(collectionID) {
+        const collection = this.state.collections.find(collection => collection.id === collectionID);
+        if (!this.collectionCanBeApproved(collection)) {
+            const notification = {
+                type: 'neutral',
+                message: `Collection '${collection.name}' can't be approved, please check that there are no pages in progress or awaiting review`,
+                isDismissable: true,
+                autoDismiss: 4000
+            };
+            notifications.add(notification);
+            return false;
+        }
+        collections.approve(collectionID).then(() => {
+            // TODO Waiting on mapping function for updating collections state
+        }).catch(error => {
+            switch (error.status) {
+                case(401): {
+                    // Handle by request function
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: 'neutral',
+                        message: `You don't have permission to approve the collection '${collection.name}'`,
+                        autoDismiss: 5000,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't approve the collection '${collection.name}'. It may have already been approved or have been deleted.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case('FETCH_ERR'): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't approve the collection '${collection.name}' due to a network error, please check your connection and try again.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't approve the collection '${collection.name}' due to an unexpected error`,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error("Error approving collection", error);
+        });
+    }
     
     handleDrawerTransitionEnd() {
         this.setState({
@@ -476,7 +485,7 @@ export class CollectionsController extends Component {
                 const newCollectionsPages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
                 });
-                const updatedActiveCollection = this.mapCollectionResponseToState({
+                const updatedActiveCollection = this.mapCollectionDetailsToState({
                     ...this.props.activeCollection,
                     [state]: newCollectionsPages
                 });
@@ -583,6 +592,38 @@ export class CollectionsController extends Component {
         }
     }
 
+    collectionCanBeApproved(collection) {
+        // One of the lists doesn't have a value, so we can't verify whether it can be
+        // deleted or not. Therefore it's safer to not allow approval
+        if (!collection.inProgress || !collection.complete || !collection.reviewed) {
+            return false;
+        }
+
+        if (collection.reviewed.length >= 1 && collection.inProgress.length === 0 && collection.complete.length === 0) {
+            return true;
+        }
+
+        // We shouldn't get to this return but we'll return false by default because it's safer to disallow
+        // approval rather than approve something in a unexpected state
+        return false;
+    }
+    
+    collectionCanBeDeleted(collection) {
+        // One of the lists doesn't have a value, so we can't verify whether it can be
+        // deleted or not. Therefore it's safer to not allow approval
+        if (!collection.inProgress || !collection.complete || !collection.reviewed) {
+            return false;
+        }
+
+        if (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0) {
+            return true;
+        }
+
+        // We shouldn't get to this return but we'll return false by default because it's safer to disallow
+        // approval rather than approve something in a unexpected state
+        return false;
+    }
+
     mapPagesToCollectionsDetails(state) {
         if (!this.state.pendingDeletedPages || this.state.pendingDeletedPages.length === 0) {
             return this.props.activeCollection[state];
@@ -591,6 +632,47 @@ export class CollectionsController extends Component {
         return this.props.activeCollection[state].filter(page => {
             return !this.state.pendingDeletedPages.includes(page.uri);
         });
+    }
+
+    mapCollectionDetailsToState(collection) {
+        try {
+            const canBeApproved = this.collectionCanBeApproved(collection);
+            const canBeDeleted = this.collectionCanBeDeleted(collection);
+            const mapPageToState = pagesArray => {
+                if (!pagesArray) {
+                    log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
+                    return null;
+                }
+                return pagesArray.map(page => {
+                    return {
+                        lastEdit: {
+                            email: page.events ? page.events[0].email : "",
+                            date: page.events ? page.events[0].date : ""
+                        },
+                        title: page.description.title,
+                        edition: page.description.edition || "",
+                        uri: page.uri,
+                        type: page.type
+                    }
+                });
+            }
+            const mappedCollection = {
+                id: collection.id,
+                name: collection.name,
+                canBeApproved,
+                canBeDeleted,
+                inProgress: mapPageToState(collection.inProgress),
+                complete: mapPageToState(collection.complete),
+                reviewed: mapPageToState(collection.reviewed),
+                type: collection.type,
+                teams: collections.teams
+            }
+            return mappedCollection;
+        } catch (error) {
+            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state" + JSON.stringify(error));
+            console.error("Error mapping collection GET response to Redux state" + error);
+            return null;
+        }
     }
 
     renderDetailsDrawer() {
@@ -617,6 +699,7 @@ export class CollectionsController extends Component {
                         onEditPageClick={this.handleCollectionPageEditClick}
                         onDeletePageClick={this.handleCollectionPageDeleteClick}
                         onDeleteCollectionClick={this.handleCollectionDeleteClick}
+                        onApproveCollectionClick={this.handleCollectionApproveClick}
                         isLoadingDetails={this.state.isFetchingCollectionDetails}
                     />
                     :
