@@ -365,30 +365,50 @@ export class CollectionsController extends Component {
         });
     }
 
-    handleCollectionApproveClick(collectionID) {
-        const collection = this.state.collections.find(collection => collection.id === collectionID);
-        if (!this.collectionCanBeApproved(collection)) {
+    handleCollectionApproveClick() {
+        const activeCollection = this.props.activeCollection;
+        const collectionID = this.props.params.collectionID;
+        if (!this.collectionCanBeApproved(activeCollection)) {
             const notification = {
                 type: 'neutral',
-                message: `Collection '${collection.name}' can't be approved, please check that there are no pages in progress or awaiting review`,
+                message: `Unable to approve collection '${activeCollection.name}', please check that there are no pages in progress or awaiting review`,
                 isDismissable: true,
                 autoDismiss: 4000
             };
             notifications.add(notification);
             return false;
         }
-        collections.approve(collectionID).then(() => {
-            // TODO Waiting on mapping function for updating collections state
+
+        const updatePublishStatusToNeutral = state => {
+            return {
+                collections: state.collections.map(collection => {
+                    if (collection.id !== collectionID) {
+                        return collection;
+                    }
+
+                    return {
+                        ...collection,
+                        publishedStatus: {
+                            ...collection.publishStatus,
+                            neutral: true
+                        }
+                    }
+                })
+            }
+        }
+        collections.approve(collectionID).then(() => {   
+            this.setState(updatePublishStatusToNeutral);
+            this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }).catch(error => {
             switch (error.status) {
                 case(401): {
-                    // Handle by request function
+                    // Handled by request function
                     break;
                 }
                 case(403): {
                     const notification = {
                         type: 'neutral',
-                        message: `You don't have permission to approve the collection '${collection.name}'`,
+                        message: `You don't have permission to approve the collection '${activeCollection.name}'`,
                         autoDismiss: 5000,
                         isDismissable: true
                     };
@@ -398,7 +418,7 @@ export class CollectionsController extends Component {
                 case(404): {
                     const notification = {
                         type: 'warning',
-                        message: `Couldn't approve the collection '${collection.name}'. It may have already been approved or have been deleted.`,
+                        message: `Couldn't approve the collection '${activeCollection.name}'. It may have already been approved or have been deleted.`,
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -407,7 +427,7 @@ export class CollectionsController extends Component {
                 case('FETCH_ERR'): {
                     const notification = {
                         type: 'warning',
-                        message: `Couldn't approve the collection '${collection.name}' due to a network error, please check your connection and try again.`,
+                        message: `Couldn't approve the collection '${activeCollection.name}' due to a network error, please check your connection and try again.`,
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -416,7 +436,7 @@ export class CollectionsController extends Component {
                 default: {
                     const notification = {
                         type: 'warning',
-                        message: `Couldn't approve the collection '${collection.name}' due to an unexpected error`,
+                        message: `Couldn't approve the collection '${activeCollection.name}' due to an unexpected error`,
                         isDismissable: true
                     };
                     notifications.add(notification);
