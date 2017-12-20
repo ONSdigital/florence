@@ -61,6 +61,11 @@ jest.mock('../../utilities/api-clients/collections', () => {
         deletePage: () => {
             return Promise.resolve();
         },
+        approve: jest.fn().mockImplementationOnce(() => {
+            return Promise.reject({status: 500});
+        }).mockImplementation(() => {
+            return Promise.resolve()
+        }),
         delete: jest.fn().mockImplementationOnce(() => {
             return Promise.reject({status: 500})
         }).mockImplementation(() => {
@@ -450,7 +455,7 @@ describe("Mapping GET collection API response to view state", () => {
     )
 
     it("'canBeApproved' value set to false correctly", () => {
-        let canBeApproved = component.instance().mapCollectionResponseToState(collection).canBeApproved;
+        let canBeApproved = component.instance().mapCollectionDetailsToState(collection).canBeApproved;
         expect(canBeApproved).toBeFalsy();
         
         let mockCollection = {
@@ -458,11 +463,11 @@ describe("Mapping GET collection API response to view state", () => {
             inProgress: [],
             reviewed: []
         }
-        canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
         expect(canBeApproved).toBeFalsy();
         
         mockCollection.complete = [];
-        canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
         expect(canBeApproved).toBeFalsy();
     });
     
@@ -472,7 +477,7 @@ describe("Mapping GET collection API response to view state", () => {
             complete: [],
             reviewed: [...collection.complete]
         }
-        let canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        let canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
         expect(canBeApproved).toBeTruthy();
 
         mockCollection = {
@@ -482,12 +487,12 @@ describe("Mapping GET collection API response to view state", () => {
                 ...collection.complete
             ]
         }
-        canBeApproved = component.instance().mapCollectionResponseToState(mockCollection).canBeApproved;
+        canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
         expect(canBeApproved).toBeTruthy();
     });
     
     it("'canBeDeleted' value set to false correctly", () => {
-        let canBeDeleted = component.instance().mapCollectionResponseToState(collection).canBeDeleted;
+        let canBeDeleted = component.instance().mapCollectionDetailsToState(collection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
 
         let mockCollection = {
@@ -496,7 +501,7 @@ describe("Mapping GET collection API response to view state", () => {
             complete: [],
             reviewed: [...collection.complete]
         }
-        canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
         
         mockCollection = {
@@ -505,11 +510,11 @@ describe("Mapping GET collection API response to view state", () => {
             complete: [...collection.complete],
             reviewed: []
         }
-        canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
 
         delete mockCollection.reviewed;
-        canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
     });
     
@@ -521,12 +526,12 @@ describe("Mapping GET collection API response to view state", () => {
             reviewed: []
         }
 
-        let canBeDeleted = component.instance().mapCollectionResponseToState(mockCollection).canBeDeleted;
+        let canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeTruthy();
     });
 
     it("pages map and have correct structure", () => {
-        const inProgressPages = component.instance().mapCollectionResponseToState(collection).inProgress;
+        const inProgressPages = component.instance().mapCollectionDetailsToState(collection).inProgress;
         const expectedInProgress = [
             {
                 lastEdit: {
@@ -551,7 +556,7 @@ describe("Mapping GET collection API response to view state", () => {
         ]
         expect(inProgressPages).toEqual(expectedInProgress);
         
-        const completePages = component.instance().mapCollectionResponseToState(collection).complete;
+        const completePages = component.instance().mapCollectionDetailsToState(collection).complete;
         const expectedComplete = [
             {
                 lastEdit: {
@@ -566,8 +571,99 @@ describe("Mapping GET collection API response to view state", () => {
         ]
         expect(completePages).toEqual(expectedComplete);
         
-        const reviewedPages = component.instance().mapCollectionResponseToState(collection).reviewed;
+        const reviewedPages = component.instance().mapCollectionDetailsToState(collection).reviewed;
         expect(reviewedPages).toEqual([]);
     });
+});
 
+describe("Approving a collection", () => {
+    const component = shallow(
+        <CollectionsController {...defaultProps}/>
+    );
+    const collectionsWithInProgressPages = [{
+            id: "in-progress-collection-123",
+            name: "In progress collection",
+            inProgress: [{
+                uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+                type: "bulletin",
+                description: {
+                    title: "Consumer Price Inflation",
+                    edition: "July 2017"
+                },
+                events: [
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-14T11:36:03.402Z"
+                    }
+                ]
+            }],
+            complete: [],
+            reviewed: [{
+                uri: "/businessindustryandtrade",
+                type: "taxonomy_landing_page",
+                description: {
+                    title: "Business industry and trade"
+                },
+                events: [
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-14T11:36:03.402Z"
+                    },
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-10T10:21:43.402Z"
+                    }
+                ]
+            }]
+        }
+    ]
+
+    it("shows a notification when an error occurs", () => {
+        notifications.add.mockClear();
+        expect(notifications.add.mock.calls.length).toBe(0);
+        component.setState({collections: collectionsWithInProgressPages});
+        component.instance().handleCollectionApproveClick('in-progress-collection-123');
+        expect(notifications.add.mock.calls.length).toBe(1);
+    });
+
+    it("exits the function if the collection isn't in the correct state to be approved", () => {
+        expect(component.instance().handleCollectionApproveClick('in-progress-collection-123')).toBe(false);
+    });
+    
+    it("shows a notification if the collection isn't in the correct state to be approved", async () => {
+        const collectionThatsReadyToApprove = [{
+            id: "in-progress-collection-123",
+            name: "In progress collection",
+            inProgress: [],
+            complete: [],
+            reviewed: [{
+                uri: "/businessindustryandtrade",
+                type: "taxonomy_landing_page",
+                description: {
+                    title: "Business industry and trade"
+                },
+                events: [
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-14T11:36:03.402Z"
+                    },
+                    {
+                        email: "foobar@email.com",
+                        date: "2017-12-10T10:21:43.402Z"
+                    }
+                ]
+            }]
+        }];
+        component.setState({collections: collectionThatsReadyToApprove});
+        notifications.add.mockClear();
+        expect(notifications.add.mock.calls.length).toBe(0);
+        const returnValue = await component.instance().handleCollectionApproveClick('in-progress-collection-123');
+        await component.update()
+        expect(returnValue).not.toBe(false); // confirm thats it was a valid collection to be approved but there was an issue from the API response
+        expect(notifications.add.mock.calls.length).toBe(1);
+    });
+
+    it("on successful approve it updates the collection's state to show that pre-publish is in progress", () => {
+
+    });
 });
