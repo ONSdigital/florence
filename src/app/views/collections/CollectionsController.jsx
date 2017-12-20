@@ -115,14 +115,40 @@ export class CollectionsController extends Component {
     fetchCollections() {
         this.setState({isFetchingCollections: true});
         collections.getAll().then(collections => {
+            const allCollections = collections.map(collection => {
+                return {
+                    ...collection,
+                    approvalStates: this.mapApprovalState(collection)
+                }
+            });
             this.setState({
-                collections: collections,
+                collections: allCollections,
                 isFetchingCollections: false
             });
         }).catch(error => {
             switch(error.status) {
                 case(401): {
                     // This is handled by the request function, so do nothing here
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `No API route available to get collections.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: 'warning',
+                        message: `You don't have permissions to view collections`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
                     break;
                 }
                 case("RESPONSE_ERR"): {
@@ -155,6 +181,37 @@ export class CollectionsController extends Component {
             }
             console.error("Error fetching all collections:\n", error);
         });
+    }
+
+    mapApprovalState(collection) {
+        const approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false}
+        try {
+            switch (collection.approvalStatus) {
+                case (undefined): {
+                    break;
+                }
+                case ('NOT_STARTED'): {
+                    approvalStates.notStarted = true;
+                    break;
+                }
+                case ('IN_PROGRESS'): {
+                    approvalStates.inProgress = true;
+                    break;
+                }
+                case ('COMPLETE'): {
+                    approvalStates.completed = true;
+                    break;
+                }
+                case ('ERROR'): {
+                    approvalStates.thrownError = true;
+                    break;
+                }
+            }
+            return approvalStates;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
     }
 
     mapCollectionResponseToState(collection) {
@@ -375,7 +432,12 @@ export class CollectionsController extends Component {
             id: collection.id,
             firstColumn: collection.name,
             secondColumn: this.readablePublishDate(collection),
-            selectableItem: collection
+            selectableItem: collection,
+            states: {
+                neutral: collection.approvalStates.inProgress,
+                warning: collection.approvalStates.thrownError,
+                success: collection.approvalStates.completed
+            }
         }
         })
     }
