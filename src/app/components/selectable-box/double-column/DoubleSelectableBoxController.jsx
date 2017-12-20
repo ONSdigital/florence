@@ -7,9 +7,10 @@ const propTypes = {
     headings: PropTypes.array.isRequired,
     items: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
-        firstColumn: PropTypes.string.isRequired,
-        secondColumn: PropTypes.string.isRequired,
-        selectableItem: PropTypes.object.isRequired,
+        selectableBox: PropTypes.shape({
+            firstColumn: PropTypes.string.isRequired,
+            secondColumn: PropTypes.string.isRequired
+        }),
     })).isRequired,
     activeItem: PropTypes.object,
     handleItemClick: PropTypes.func.isRequired,
