@@ -8,8 +8,8 @@ const propTypes = {
         secondColumn: PropTypes.string.isRequired
     }),
     publishStatus: PropTypes.shape({
-        neutral: PropTypes.string.isRequired,
-        warning: PropTypes.string.isRequired
+        neutral: PropTypes.bool.isRequired,
+        warning: PropTypes.bool.isRequired
     }),
     handleClick: PropTypes.func.isRequired,
     isSelected: PropTypes.bool
