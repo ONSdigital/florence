@@ -194,6 +194,7 @@ export class CollectionsController extends Component {
                     warning: publishStates.thrownError,
                     success: publishStates.completed
                 },
+                type: collection.type,
                 selectableBox: {
                     firstColumn: collection.name,
                     secondColumn: this.readablePublishDate(collection)
