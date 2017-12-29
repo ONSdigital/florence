@@ -8818,20 +8818,20 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
     // Call the recipe API, get data and create elements.
     function getRecipes() {
       $.ajax({
-          url: 'http://localhost:8081/recipes',
+          url: '/recipes',
           dataType: 'json',
           crossDomain: true,
           success: function (recipeData) {
             var templateData = {};
+            var content = "";
             $.each(recipeData.items, function(i, v) {
               // Get the dataset names and id's
               var datasetName = v.alias;
                   datasetId = v.output_instances[0].dataset_id;
               // Create elements, store data in data attr to be used later
-              templateData  = {
-                  content: '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
-              };
+              content =  content + '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
             });
+            templateData.content = content;
             // Load modal and add the data
             viewRecipeModal(templateData);
           },
