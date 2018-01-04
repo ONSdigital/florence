@@ -70,7 +70,7 @@ func main() {
 	if v := os.Getenv("DATASET_API_URL"); len(v) > 0 {
 		datasetAPIURL = v
 	}
-	if v := os.Getenv("DATASET_AUTH_TOKEN"); len(v) > 0 {
+	if v := os.Getenv("DATASET_API_AUTH_TOKEN"); len(v) > 0 {
 		datasetAuthToken = v
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
