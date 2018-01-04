@@ -323,6 +323,15 @@ export class CollectionsController extends Component {
                     // do nothing - this is handled by the request function itself
                     break;
                 }
+                case(400): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't delete collection '${collectionID}'. There may be a file left in progress or awaiting review.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
                 case(404): {
                     const notification = {
                         type: 'warning',
