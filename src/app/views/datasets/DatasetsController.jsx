@@ -124,7 +124,7 @@ class DatasetsController extends Component {
                             isInstance: !(instance.edition && instance.version),
                             edition: instance.edition || "-",
                             version: instance.version || "-",
-                            url: instance.state !== "edition-confirmed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`)
+                            url: instance.state === "completed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`)
                         });
                     }
                 });
