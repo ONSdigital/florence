@@ -39,14 +39,15 @@ export class CollectionCreate extends Component {
                 },
                 pendingDeletes: [],
                 teams: [],
-                collectionOwner: this.props.user.userType,
-                releaseUri: ""
+                releaseUri: "",
+                scheduleType: "custom-schedule",
             },
-            scheduleType: "custom-schedule",
             isGettingTeams: true,
             allTeams: [],
             isSubmitting: false
         };
+
+        this.baseNewCollectionDetails = this.state.newCollectionDetails;
 
         this.handleCollectionNameChange = this.handleCollectionNameChange.bind(this);
         this.handleTeamSelection = this.handleTeamSelection.bind(this);
@@ -191,7 +192,11 @@ export class CollectionCreate extends Component {
     }
 
     handleScheduleTypeChange(event) {
-        this.setState({scheduleType: event.value});
+        const newCollectionDetails = {
+            ...this.state.newCollectionDetails,
+            scheduleType: event.value
+        };
+        this.setState({newCollectionDetails: newCollectionDetails});
     }
 
     handlePublishDateChange(event) {
@@ -244,7 +249,7 @@ export class CollectionCreate extends Component {
             teams: this.state.newCollectionDetails.teams.map(team => {
                 return team.name;
             }),
-            collectionOwner: this.state.newCollectionDetails.collectionOwner,
+            collectionOwner: this.props.user.userType,
             releaseUri: this.state.newCollectionDetails.releaseUri || null
         }
     }
@@ -316,7 +321,7 @@ export class CollectionCreate extends Component {
                 autoDismiss: 15000
             };
             notifications.add(notification);
-            this.setState({ isSubmitting: false });
+            this.setState({ newCollectionDetails: this.baseNewCollectionDetails, isSubmitting: false });
             this.props.onSuccess(response);
         }).catch(error => {
             switch(error.status) {
@@ -353,14 +358,14 @@ export class CollectionCreate extends Component {
         const radioData = [
             {id: "custom-radio", value: "custom-schedule", label: "Custom schedule"},
             {id: "calendar-radio", value: "calender-entry-schedule", label: "Calendar entry schedule"} ];
-        const showCustomScheduleOptions = this.state.scheduleType === "custom-schedule";
+        const showCustomScheduleOptions = this.state.newCollectionDetails.scheduleType === "custom-schedule";
 
         return (
             <div>
                 <RadioGroup
                     groupName="schedule-type"
                     radioData={radioData}
-                    selectedValue={this.state.scheduleType}
+                    selectedValue={this.state.newCollectionDetails.scheduleType}
                     onChange={this.handleScheduleTypeChange}
                     legend="Schedule type"
                     inline={true}
@@ -374,6 +379,7 @@ export class CollectionCreate extends Component {
                             type="date"
                             onChange={this.handlePublishDateChange}
                             error={this.state.newCollectionDetails.publishDate.errorMsg}
+                            value={this.state.newCollectionDetails.publishDate.value}
                             min={this.getTodayDate()}
                             max={this.getTodayDate(10)}
                         />
@@ -410,6 +416,7 @@ export class CollectionCreate extends Component {
                         label="Collection Name"
                         type="text"
                         error={this.state.newCollectionDetails.name.errorMsg}
+                        value={this.state.newCollectionDetails.name.value}
                         onChange={this.handleCollectionNameChange}
                     />
 
@@ -451,11 +458,5 @@ export class CollectionCreate extends Component {
 
 CollectionCreate.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        user: state.state.user
-    }
-}
-
-export default connect(mapStateToProps)(CollectionCreate);
+export default connect()(CollectionCreate);
 
