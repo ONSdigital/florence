@@ -76,19 +76,20 @@ const defaultProps = {
 const expectedTodayDate = function() {
     const dateObj = new Date;
     const month = dateObj.getUTCMonth() + 1; //months from 1-12
+    const formattedMonth = month < 10 ? "0" + month : month;
     const day = dateObj.getUTCDate() < 10 ? "0" + dateObj.getUTCDate() : dateObj.getUTCDate(); // add 0 to start if less then 10
     const year = dateObj.getUTCFullYear();
-    return (year + "-" + month + "-" + day);
+    return (year + "-" + formattedMonth + "-" + day);
 };
 
 const expectTodayInTenYears = function () {
     const dateObj = new Date;
     const month = dateObj.getUTCMonth() + 1; // months from 1-12
+    const formattedMonth = month < 10 ? "0" + month : month;
     const day = dateObj.getUTCDate() < 10 ? "0" + dateObj.getUTCDate() : dateObj.getUTCDate(); // add 0 to start if less then 10
     const year = dateObj.getUTCFullYear() + 10; // simulate date 10 years ahead
-    return (year + "-" + month + "-" + day);
+    return (year + "-" + formattedMonth + "-" + day);
 };
-
 
 test("Create collection form matches stored snapshot", () => {
     const component = renderer.create(
@@ -149,9 +150,9 @@ test("Handle schedule type change updates state correctly", () => {
     const component = shallow(
         <CollectionCreate {...defaultProps} />
     );
-    expect(component.update().state().scheduleType).toBe("custom-schedule");
+    expect(component.update().state().newCollectionDetails.scheduleType).toBe("custom-schedule");
     component.instance().handleScheduleTypeChange({value: "calender-entry-schedule"});
-    expect(component.update().state().scheduleType).toBe("calender-entry-schedule");
+    expect(component.update().state().newCollectionDetails.scheduleType).toBe("calender-entry-schedule");
 });
 
 test("Handle publish date change updates state correctly", () => {
