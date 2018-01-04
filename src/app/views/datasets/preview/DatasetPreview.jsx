@@ -126,7 +126,7 @@ class DatasetPreview extends Component {
 
     render() {
         const params = this.props.params;
-        const path = this.state.latestVersion
+        const path = this.state.latestVersion;
         return (
             <div className="preview">
                 <div className="preview__header grid grid--justify-center">
