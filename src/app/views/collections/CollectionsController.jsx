@@ -293,7 +293,7 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
-        const collections = [...this.state.collections, newCollection];
+        const collections = [...this.state.collections, this.mapAllCollectionsToState(newCollection)];
         this.setState({collections: collections});
         this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
     }
