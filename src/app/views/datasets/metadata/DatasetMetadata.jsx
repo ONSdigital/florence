@@ -519,14 +519,14 @@ export class DatasetMetadata extends Component {
            publications: [...this.state.relatedBulletins],
            related_datasets: [...this.state.relatedLinks],
          }
-         if (!this.state.periodicity) {
-            this.setState({
-                error: "You must select the periodicity",
-                isSubmittingData: false
-            });
-         } else {
-           this.updateDatasetDetails(datasetDetailsData);
-         }
+        // if (!this.state.periodicity) {
+        //     this.setState({
+        //         error: "You must select the periodicity",
+        //         isSubmittingData: false
+        //     });
+        //     return;
+        // }
+        this.updateDatasetDetails(datasetDetailsData);
      }
 
     render() {
