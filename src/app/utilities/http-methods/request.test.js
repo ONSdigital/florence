@@ -35,10 +35,8 @@ test("Request doesn't retry when the fetch resolves", async () => {
     await request('GET', '/foobar', true, function() {
         jest.runOnlyPendingTimers();
         retries++;
-    }, null).then(response => {
-        console.log(response);
-    }).catch(error => {
-        console.log(error);
+    }, null).catch(() => {
+        fail();
     });
     expect(retries).toEqual(0);
 })
