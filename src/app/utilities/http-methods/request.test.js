@@ -1,6 +1,7 @@
 import request from './request';
 import 'isomorphic-fetch';
 import log from '../log';
+import { fail } from 'assert';
 
 jest.mock('../log', () => {
     return {
@@ -21,17 +22,41 @@ beforeEach(() => {
 
 jest.useFakeTimers();
 
+test("Request doesn't retry when the fetch resolves", async () => {
+    fetch.mockResponse('{}',
+    {
+        headers: new Headers({
+            'content-type': "application/json"
+        }),
+        status: 200
+    }  );
+    let retries = 0;
+    expect(fetch).toHaveBeenCalledTimes(0);
+    await request('GET', '/foobar', true, function() {
+        jest.runOnlyPendingTimers();
+        retries++;
+    }, null).then(response => {
+        console.log(response);
+    }).catch(error => {
+        console.log(error);
+    });
+    expect(retries).toEqual(0);
+})
+
 test("Request back-off attempts 5 retries when fetches fail", async () => {
     fetch.mockReject();
+    let retries = 0;
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request('GET', '/foobar', true, function() {
             jest.runOnlyPendingTimers();
+            retries++;
         }, null);
     } catch(e) {
         expect(e);
     }
     expect(fetch).toHaveBeenCalledTimes(6);
+    expect(retries).toEqual(5);
 })
 
 test("Request back-off resolves as soon as a fetch is successful", async () => {
