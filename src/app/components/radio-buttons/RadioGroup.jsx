@@ -19,13 +19,13 @@ export default class RadioGroup extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {selectedValue: this.props.selectedValue};
+        //this.state = {selectedValue: ""};
 
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange(event) {
-        this.setState({selectedValue: event.value});
+        //this.setState({selectedValue: event.value});
 
         if (this.props.onChange) {
             this.props.onChange(event);
@@ -35,7 +35,7 @@ export default class RadioGroup extends Component {
     render() {
         const radioData = this.props.radioData;
         const groupName = this.props.groupName;
-        const selectedValue = this.state.selectedValue;
+        const selectedValue = this.props.selectedValue;
 
         return (
             <fieldset className={"fieldset" + (this.props.inline ? " inline" : "")}>
