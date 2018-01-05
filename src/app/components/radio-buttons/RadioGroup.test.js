@@ -39,9 +39,7 @@ test("Handle change passes correct value caller onChange method", () => {
     const component = shallow(
         <RadioGroup {...defaultProps} checked={false} onChange={mockedOnChange}/>
     );
-    //expect(component.update().state().selectedValue).toBe("test-value1");
     component.instance().handleChange(mockedEvent);
-    //expect(component.update().state().selectedValue).toBe("test-value2");
     expect(passedToParent).toMatchObject({
         id: "test-radio2",
         checked: true,
