@@ -25,8 +25,6 @@ export default class RadioGroup extends Component {
     }
 
     handleChange(event) {
-        //this.setState({selectedValue: event.value});
-
         if (this.props.onChange) {
             this.props.onChange(event);
         }
