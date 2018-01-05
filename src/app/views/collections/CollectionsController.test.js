@@ -459,7 +459,8 @@ test("Map collection to state function", () => {
         id: 'test-collection-12345',
         name: 'Test collection',
         publishDate: '[manual collection]',
-        publishStatus: {
+        status: {
+            message: "preparing publish",
             neutral: true,
             warning: false,
             success: false
