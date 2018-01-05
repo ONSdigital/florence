@@ -8,6 +8,7 @@ import Select from '../../../components/Select';
 const propTypes = {
     hasChosen: PropTypes.bool.isRequired,
     isGettingCollections: PropTypes.bool.isRequired,
+    isGettingDataset: PropTypes.bool.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
     errorMsg: PropTypes.string,
     collectionsSelectItems: PropTypes.array,
@@ -16,7 +17,8 @@ const propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleCollectionChange: PropTypes.func.isRequired,
     handleOnBackFromSuccess: PropTypes.func.isRequired,
-    backLink: PropTypes.string.isRequired
+    backLink: PropTypes.string.isRequired,
+    hasVersion: PropTypes.string
 };
 
 class CollectionView extends Component {
@@ -26,7 +28,7 @@ class CollectionView extends Component {
 
     renderSuccess() {
         const selectedCollection = this.props.selectedCollection;
-        const link = `${location.pathname}/preview`;
+        const isGettingDataset = this.props.isGettingDataset;
         return (
             <div>
                 <div className="margin-top--2">
@@ -34,11 +36,42 @@ class CollectionView extends Component {
                 </div>
                 <h1 className="margin-top--1">Success</h1>
                 <p>This dataset has been checked and added to {selectedCollection.name}.</p>
-                <Link to={link} className="btn btn--positive margin-top--1">
-                    Preview dataset
-                </Link>
+                {isGettingDataset ?
+                    <div className="form__loader loader loader--dark margin-left--1"></div> 
+                    : 
+                    this.renderNextStep()
+                }
             </div>
         )
+    }
+
+    renderNextStep() {
+        const hasVersion = this.props.hasVersion;
+
+        if (hasVersion === "true"){
+            const previewLink = `${location.pathname}/preview`;
+            return (
+                <Link to={previewLink} className="btn btn--positive margin-top--1">
+                    Preview dataset
+                </Link>
+            )
+        }
+
+        if (hasVersion === "false"){
+            return (
+                <Link className="btn btn--primary margin-top--1" to={url.resolve("/uploads/data")}>
+                    Upload a dataset
+                </Link>
+            )
+        }
+
+        if (hasVersion === ""){
+            return (
+                <Link className="btn btn--primary margin-top--1" to={url.resolve("/datasets")}>
+                    Return to datasets
+                </Link>
+            )
+        }
     }
 
     renderChoices() {
@@ -59,6 +92,7 @@ class CollectionView extends Component {
                                 onChange={this.props.handleCollectionChange}
                                 error={this.props.errorMsg}
                                 selectedOption={this.props.selectedCollection.id}
+                                version={this.props.hasVersion}
                         />
 
                         {selectedCollection.id ? this.renderSelectedCollectionDetails() : ""}
