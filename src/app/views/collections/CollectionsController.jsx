@@ -202,7 +202,16 @@ export class CollectionsController extends Component {
                 }
             }
         } catch (error) {
-            console.log(error);
+            const notification = {
+                type: "warning",
+                message: "Error whilst mapping list of collections to screen",
+                isDismissable: true,
+                autoDismiss: 3000
+            }
+            notifications.add(notification);
+            console.error("Error mapping collections to component state: ", error);
+            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collections to component state: " + error);
+            return false;
         }
     }
 
