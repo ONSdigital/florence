@@ -189,10 +189,11 @@ export class CollectionsController extends Component {
                 id: collection.id,
                 name: collection.name,
                 publishDate: this.readablePublishDate(collection),
-                publishStatus: {
+                status: {
                     neutral: publishStates.inProgress,
                     warning: publishStates.thrownError,
-                    success: publishStates.completed
+                    success: publishStates.completed,
+                    message: publishStates.message,
                 },
                 type: collection.type,
                 selectableBox: {
@@ -215,7 +216,7 @@ export class CollectionsController extends Component {
     }
 
     mapPublishState(collection) {
-        const publishStates = {inProgress: false, thrownError: false, completed: false, notStarted: false}
+        const publishStates = {inProgress: false, thrownError: false, completed: false, notStarted: false, message: ""}
         try {
             switch (collection.approvalStatus) {
                 case (undefined): {
@@ -227,6 +228,7 @@ export class CollectionsController extends Component {
                 }
                 case ('IN_PROGRESS'): {
                     publishStates.inProgress = true;
+                    publishStates.message = "preparing publish";
                     break;
                 }
                 case ('COMPLETE'): {
@@ -235,6 +237,7 @@ export class CollectionsController extends Component {
                 }
                 case ('ERROR'): {
                     publishStates.thrownError = true;
+                    publishStates.message = "error whilst preparing publish";
                     break;
                 }
             }
