@@ -602,8 +602,8 @@ export class CollectionsController extends Component {
             ],
             type: 'neutral',
             isDismissable: false,
-            autoDismiss: 5000,
-            message: <span>Deleted page <strong>'{title}'</strong> from collection '{this.props.activeCollection.name}'</span>
+            autoDismiss: 6000,
+            message: `Deleted page '${title}' from collection '${this.props.activeCollection.name}'`
         }
         const notificationID = notifications.add(notification);
 
