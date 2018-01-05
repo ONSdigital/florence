@@ -116,6 +116,7 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
                 }
             })()
         }).catch((fetchError = {message: "No error message given"}) => {
+            console.log(fetchError);
             logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
 
