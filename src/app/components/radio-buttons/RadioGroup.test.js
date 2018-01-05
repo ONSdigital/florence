@@ -33,15 +33,15 @@ test("Radio button matches stored snapshot", () => {
     expect(component.toJSON()).toMatchSnapshot();
 });
 
-test("Handle change update states correctly and passes correct value caller onChange method", () => {
+test("Handle change passes correct value caller onChange method", () => {
     let passedToParent = {};
     const mockedOnChange = (event) => {passedToParent = event;};
     const component = shallow(
         <RadioGroup {...defaultProps} checked={false} onChange={mockedOnChange}/>
     );
-    expect(component.update().state().selectedValue).toBe("test-value1");
+    //expect(component.update().state().selectedValue).toBe("test-value1");
     component.instance().handleChange(mockedEvent);
-    expect(component.update().state().selectedValue).toBe("test-value2");
+    //expect(component.update().state().selectedValue).toBe("test-value2");
     expect(passedToParent).toMatchObject({
         id: "test-radio2",
         checked: true,
