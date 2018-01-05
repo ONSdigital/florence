@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import dateFormat from 'dateformat';
 import notifications from '../../../utilities/notifications';
 import collections from '../../../utilities/api-clients/collections';
+import datasets from '../../../utilities/api-clients/datasets';
 import CollectionView from './CollectionView';
 import url from '../../../utilities/url';
-
 
 const propTypes = {
     params: PropTypes.shape({
@@ -23,12 +23,14 @@ export class DatasetCollectionController extends Component {
         this.state = {
             hasChosen: false,
             isGettingCollections: false,
+            isGettingDataset: false,
             isSubmitting: false,
             errorMsg: "",
             collectionsSelectItems: [],
             allCollections: [],
             selectedCollection: {},
             nextRelease: "",
+            hasVersion: ""
         };
 
         this.handleCollectionChange = this.handleCollectionChange.bind(this);
@@ -38,8 +40,16 @@ export class DatasetCollectionController extends Component {
 
     componentWillMount() {
         this.getCollections();
+        this.getDatasets();
     }
-
+    getDatasets() {
+        this.setState({isGettingDataset: true});
+        datasets.get(this.props.params.datasetID)
+            .then(dataset => {
+                this.setState(dataset.next.links.latest_version ? {hasVersion: "true"} : {hasVersion:"false"});
+        });
+        this.setState({isGettingDataset: false});
+    }
     getCollections() {
         this.setState({isGettingCollections: true});
         collections.getAll()
