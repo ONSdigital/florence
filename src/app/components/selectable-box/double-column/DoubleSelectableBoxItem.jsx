@@ -7,9 +7,10 @@ const propTypes = {
         firstColumn: PropTypes.string.isRequired,
         secondColumn: PropTypes.string.isRequired
     }),
-    publishStatus: PropTypes.shape({
+    status: PropTypes.shape({
         neutral: PropTypes.bool.isRequired,
-        warning: PropTypes.bool.isRequired
+        warning: PropTypes.bool.isRequired,
+        message: PropTypes.string.isRequired
     }),
     handleClick: PropTypes.func.isRequired,
     isSelected: PropTypes.bool
@@ -30,10 +31,14 @@ export default class DoubleSelectableBoxItem extends Component {
         return (
             <li
                 id={this.props.id}
-                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${this.props.publishStatus.neutral ? " neutral" : ""} ${this.props.publishStatus.warning ? " warning" : ""}`}
+                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${this.props.status.neutral ? " neutral" : ""} ${this.props.status.warning ? " warning" : ""}`}
                 onClick={this.bindClick}>
                 <div className="grid">
-                    <div className="grid__col-6">{this.props.selectableBox.firstColumn}</div>
+                    <div className="grid__col-6">
+                        {this.props.selectableBox.firstColumn}
+                        {this.props.status.message ? ` [${this.props.status.message}]` : ''}
+
+                    </div>
                     <div className="grid__col-6">{this.props.selectableBox.secondColumn}</div>
                 </div>
             </li>
