@@ -18,6 +18,8 @@ import './scss/main.scss';
 
 import { store, history } from './app/config/store';
 
+import SelectableTest from './SelectableTest';
+
 const rootPath = store.getState().state.rootPath;
 
 const userIsAuthenticated = connectedReduxRedirect({
@@ -71,6 +73,7 @@ class Index extends Component {
                                     <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
                                 </Route>
                             </Route>
+                            <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
