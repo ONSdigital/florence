@@ -214,7 +214,7 @@ export class CollectionDetails extends Component {
         if (this.props.status.inProgress) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
-                    Preparing to publish
+                    Preparing collection for the publishing queue
                 </div>
             )
         }
@@ -229,7 +229,7 @@ export class CollectionDetails extends Component {
     }
 
     renderCollectionPageActions() {
-        if (this.props.status.inProgress || this.props.status.thrownError) {
+        if (this.props.status && (this.props.status.inProgress || this.props.status.thrownError)) {
             return;
         }
 
@@ -242,25 +242,24 @@ export class CollectionDetails extends Component {
     }
 
     renderCollectionActions() {
-        if (this.props.status.inProgress || this.props.status.thrownError) {
+        if (this.props.status && (this.props.status.inProgress || this.props.status.thrownError)) {
             return;
         }
 
         if (this.props.canBeDeleted) {
             return (
-                <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button">Delete</button>
+                <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
             )
         }
         
         if (this.props.canBeApproved) {
             return (
-                <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionApproveClick} type="button">Approve</button>
+                <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
             )   
         }
-        
     }
 
-    render () {
+    render() {
         return (
             <div className="drawer__container">
                 <h2 className="drawer__heading">{this.props.name}</h2>
@@ -283,7 +282,7 @@ export class CollectionDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn" onClick={this.props.onClose}>Close</button>
+                    <button className="btn" onClick={this.props.onClose} type="button">Close</button>
                     {this.renderCollectionActions()}
                 </div>
             </div>

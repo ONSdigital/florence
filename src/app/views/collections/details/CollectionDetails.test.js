@@ -81,10 +81,10 @@ describe("Collection details page edit/delete buttons only show for an active pa
     const props = {
         ...defaultProps,
         ...alternativePageProps
-    }
+    };
     const component = shallow(
         <CollectionDetails {...props} />
-    )
+    );
 
     it("render the correct number of in progress pages", () => {
         const pages = component.find('.list__item--expandable');
@@ -252,5 +252,69 @@ describe("'Last edit' information for a page in a collection", () => {
         expect(component.instance().renderLastEditText(event)).toBe("Error rendering 'last edit' details");
     });
 
+});
+
+describe("Approve collection button", () => {
+    const component = shallow(
+        <CollectionDetails {...defaultProps}/>
+    );
+
+    it("doesn't show when canBeApproved is false", () => {
+        component.setProps({canBeApproved: false});
+        expect(component.find('#approve-collection').exists()).toEqual(false);
+    });
+    
+    it("shows when canBeApproved is true", () => {
+        component.setProps({canBeApproved: true});
+        expect(component.find('#approve-collection').exists()).toEqual(true);
+    });
+
+    it("doesn't show when the status is set to inProgress", () => {
+        component.setProps({
+            canBeApproved: true,
+            status: {inProgress: true}
+        });
+        expect(component.find('#approve-collection').exists()).toEqual(false);
+    });
+    
+    it("doesn't show when the status is set to thrownError", () => {
+        component.setProps({
+            canBeApproved: true,
+            status: {thrownError: true}
+        });
+        expect(component.find('#approve-collection').exists()).toEqual(false);
+    });
+});
+
+describe("Delete collection button", () => {
+    const component = shallow(
+        <CollectionDetails {...defaultProps}/>
+    );
+
+    it("doesn't show when canBeDeleted is false", () => {
+        component.setProps({canBeDeleted: false});
+        expect(component.find('#delete-collection').exists()).toEqual(false);
+    });
+    
+    it("shows when canBeDeleted is true", () => {
+        component.setProps({canBeDeleted: true});
+        expect(component.find('#delete-collection').exists()).toEqual(true);
+    });
+
+    it("doesn't show when the status is set to inProgress", () => {
+        component.setProps({
+            canBeDeleted: true,
+            status: {inProgress: true}
+        });
+        expect(component.find('#delete-collection').exists()).toEqual(false);
+    });
+    
+    it("doesn't show when the status is set to thrownError", () => {
+        component.setProps({
+            canBeDeleted: true,
+            status: {thrownError: true}
+        });
+        expect(component.find('#delete-collection').exists()).toEqual(false);
+    });
 });
 
