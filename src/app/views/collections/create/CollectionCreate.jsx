@@ -242,15 +242,20 @@ export class CollectionCreate extends Component {
     }
 
     mapStateToPostBody() {
-        return {
-            name: this.state.newCollectionDetails.name.value,
-            type: this.state.newCollectionDetails.type,
-            publishDate: this.makePublishDate(),
-            teams: this.state.newCollectionDetails.teams.map(team => {
-                return team.name;
-            }),
-            collectionOwner: this.props.user.userType,
-            releaseUri: this.state.newCollectionDetails.releaseUri || null
+        try {
+            return {
+                name: this.state.newCollectionDetails.name.value,
+                type: this.state.newCollectionDetails.type,
+                publishDate: this.makePublishDate(),
+                teams: this.state.newCollectionDetails.teams.map(team => {
+                    return team.name;
+                }),
+                collectionOwner: this.props.user.userType,
+                releaseUri: this.state.newCollectionDetails.releaseUri || null
+            }
+        } catch (error) {
+            log.add(eventTypes.unexpectedRuntimeError, "Error mapping new collection state to POST body" + JSON.stringify(error));
+            console.error("Error mapping new collection state to POST body" + error);
         }
     }
 
@@ -314,13 +319,6 @@ export class CollectionCreate extends Component {
         }
 
         collections.create(this.mapStateToPostBody()).then(response => {
-            const notification = {
-                type: 'positive',
-                message: `Successfully created '${this.state.newCollectionDetails.name.value}' collection`,
-                isDismissable: true,
-                autoDismiss: 15000
-            };
-            notifications.add(notification);
             this.setState({ newCollectionDetails: this.baseNewCollectionDetails, isSubmitting: false });
             this.props.onSuccess(response);
         }).catch(error => {
@@ -350,7 +348,17 @@ export class CollectionCreate extends Component {
                     });
                     break;
                 }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: `An unexpected error has occured whilst creating collection`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
             }
+            console.error(error);
         });
     }
 
