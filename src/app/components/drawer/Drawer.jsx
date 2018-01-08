@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-    isVisible: PropTypes.bool.isRequired,
-    isAnimatable: PropTypes.bool.isRequired,
+    isVisible: PropTypes.bool,
+    isAnimatable: PropTypes.bool,
     handleTransitionEnd: PropTypes.func.isRequired,
     children: PropTypes.node
 }
