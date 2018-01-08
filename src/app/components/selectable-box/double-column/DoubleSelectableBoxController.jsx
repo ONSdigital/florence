@@ -30,7 +30,7 @@ export default class DoubleSelectableBoxController extends Component {
 
     renderList() {
         return (
-            <ul className="selectable-box__list">
+            <ul id="selectable-box" className="selectable-box__list">
                 {
                     this.props.items.map((item, index) => {
                         return (
