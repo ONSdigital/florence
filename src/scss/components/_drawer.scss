@@ -44,6 +44,12 @@
             background-color: $emperor;
             color: $iron;
         }
+
+        &--large {
+            font-size: $magicnumber2 * 6;
+            padding-top: $lineheight * 1.5;
+            padding-bottom: $lineheight * 1.5;
+        }
     }
 
     &__body {
