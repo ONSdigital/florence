@@ -40,10 +40,10 @@ export class DatasetCollectionController extends Component {
 
     componentWillMount() {
         this.getCollections();
-        this.getDatasets();
+        this.getDataset();
     }
 
-    getDatasets() {
+    getDataset() {
         this.setState({isGettingDataset: true});
         datasets.get(this.props.params.datasetID)
             .then(dataset => {
