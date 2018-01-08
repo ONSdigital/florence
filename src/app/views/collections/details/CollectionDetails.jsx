@@ -21,7 +21,7 @@ const propTypes = {
     id: PropTypes.string.isRequired,
     activePageURI: PropTypes.string,
     name: PropTypes.string.isRequired,
-    onCancel: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
     onDeletePageClick: PropTypes.func.isRequired,
@@ -39,6 +39,10 @@ const propTypes = {
     reviewed: PropTypes.arrayOf(PropTypes.shape(
         pagePropTypes
     )),
+    status: PropTypes.shape({
+        inProgress: PropTypes.bool,
+        thrownError: PropTypes.bool
+    })
 };
 
 export class CollectionDetails extends Component {
@@ -202,14 +206,66 @@ export class CollectionDetails extends Component {
         }
     }
 
+    renderCollectionState() {
+        if (!this.props.status) {
+            return;
+        }
+
+        if (this.props.status.inProgress) {
+            return (
+                <div className="drawer__banner drawer__banner--dark drawer__banner--large">
+                    Preparing to publish
+                </div>
+            )
+        }
+        
+        if (this.props.status.thrownError) {
+            return (
+                <div className="drawer__banner drawer__banner--dark drawer__banner--large">
+                    Error whilst preparing this collection for the publishing queue
+                </div>
+            )
+        }
+    }
+
+    renderCollectionPageActions() {
+        if (this.props.status.inProgress || this.props.status.thrownError) {
+            return;
+        }
+
+        return (
+            <div className="drawer__banner">
+                <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary" disabled>Create/edit page</a>
+                <button className="btn btn--margin-left" disabled>Restore page</button>
+            </div>
+        )
+    }
+
+    renderCollectionActions() {
+        if (this.props.status.inProgress || this.props.status.thrownError) {
+            return;
+        }
+
+        if (this.props.canBeDeleted) {
+            return (
+                <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button">Delete</button>
+            )
+        }
+        
+        if (this.props.canBeApproved) {
+            return (
+                <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionApproveClick} type="button">Approve</button>
+            )   
+        }
+        
+    }
+
     render () {
         return (
             <div className="drawer__container">
                 <h2 className="drawer__heading">{this.props.name}</h2>
-                <div className="drawer__banner">
-                    <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary" disabled>Create/edit page</a>
-                    <button className="btn btn--margin-left" disabled>Restore page</button>
-                </div>
+                {this.renderCollectionState()}
+                {this.renderCollectionPageActions()}
                 <div className="drawer__body">
                     {this.props.isLoadingDetails ?
                         <div className="grid grid--align-center margin-top--4">
@@ -227,13 +283,8 @@ export class CollectionDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn" onClick={this.props.onCancel}>Cancel</button>
-                    {this.props.canBeDeleted &&
-                        <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button">Delete</button>
-                    }
-                    {this.props.canBeApproved &&
-                        <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionApproveClick} type="button">Approve</button>
-                    }
+                    <button className="btn" onClick={this.props.onClose}>Close</button>
+                    {this.renderCollectionActions()}
                 </div>
             </div>
         )
