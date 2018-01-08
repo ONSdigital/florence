@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 
@@ -8,7 +8,6 @@ import CollectionDetails, {pagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections'
 import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
-import url from '../../utilities/url'
 import notifications from '../../utilities/notifications'
 import dateformat from 'dateformat';
 
@@ -305,9 +304,15 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
+        console.log(hello);
         const collections = [...this.state.collections, this.mapAllCollectionsToState(newCollection)];
         this.setState({collections: collections});
         this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
+        this.fetchCollections();
+
+        // scroll to newly created collection
+        const element = document.getElementById(newCollection.id).getBoundingClientRect();
+        document.getElementById('selectable-box').scrollTop = element.top;
     }
 
     handleCollectionSelection(collection) {
