@@ -51,7 +51,7 @@ class CollectionView extends Component {
         if (hasVersion === "true"){
             const previewLink = `${location.pathname}/preview`;
             return (
-                <Link to={previewLink} className="btn btn--positive margin-top--1">
+                <Link to={previewLink} className="btn btn--positive margin-top--1 preview-link">
                     Preview dataset
                 </Link>
             )
@@ -59,7 +59,7 @@ class CollectionView extends Component {
 
         if (hasVersion === "false"){
             return (
-                <Link className="btn btn--primary margin-top--1" to={url.resolve("/uploads/data")}>
+                <Link className="btn btn--primary margin-top--1 upload-link" to={url.resolve("/uploads/data")}>
                     Upload a dataset
                 </Link>
             )
