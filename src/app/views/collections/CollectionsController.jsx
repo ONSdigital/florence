@@ -700,15 +700,18 @@ export class CollectionsController extends Component {
                 });
             }
             const mappedCollection = {
-                id: collection.id,
-                name: collection.name,
+                // id: collection.id,
+                // name: collection.name,
+                ...collection,
                 canBeApproved,
                 canBeDeleted,
                 inProgress: mapPageToState(collection.inProgress),
                 complete: mapPageToState(collection.complete),
                 reviewed: mapPageToState(collection.reviewed),
-                type: collection.type,
-                teams: collections.teams
+                status: this.mapPublishState(collection)
+                // type: collection.type,
+                // teams: collections.teams,
+                // status: {...collection.status}
             }
             return mappedCollection;
         } catch (error) {

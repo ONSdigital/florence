@@ -225,7 +225,7 @@ test("Collection details are hidden when 'Cancel' is clicked", () => {
         <CollectionsController {...defaultProps} />
     );
 
-    component.instance().handleDrawerCancelClick();
+    component.instance().handleDrawerCloseClick();
     expect(component.state('drawerIsVisible')).toBe(false);
     expect(component.state('drawerIsAnimatable')).toBe(true);
 });
