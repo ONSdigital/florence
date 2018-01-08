@@ -297,23 +297,47 @@ describe("Deleting a page from a collection", () => {
         expect(newURL).toBe("/florence/collections/test-collection-12345#test-page-1");
     });
 
-    it("deletes the page from the server 5 seconds after the click of 'delete'", async () => {
-        const expectedInProgress = [{
-            edition: "July 2017",
-            lastEdit: {
-                "date": "2017-12-14T11:36:03.402Z",
-                "email": "foobar@email.com"
-            },
-            title: "Consumer Price Inflation",
-            type: "bulletin",
-            uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
-        }];
+    it("a timer deletes the page from the server after the click of 'delete'", async () => {
         await component.instance().handleCollectionPageDeleteClick(
             collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
         );
         await jest.runOnlyPendingTimers();
+        expect(dispatchedAction.collection.inProgress.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
+        expect(dispatchedAction.collection.complete.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
+        expect(dispatchedAction.collection.reviewed.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
         expect(dispatchedAction.collection.inProgress.length).toBe(1);
-        expect(dispatchedAction.collection.inProgress).toMatchObject(expectedInProgress);
+    });
+
+    it("updates whether the collection can be approved", async () => {
+        const customActiveCollection = {
+            ...collection,
+            inProgress: [collection.inProgress[0]],
+            complete: [],
+            reviewed: [collection.inProgress[1]]
+        }
+        component.setProps({activeCollection: customActiveCollection});
+        await component.instance().handleCollectionPageDeleteClick(
+            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+        );
+        await jest.runOnlyPendingTimers();
+        expect(dispatchedAction.collection.canBeApproved).toEqual(true);
+        expect(dispatchedAction.collection.canBeDeleted).toEqual(false);
+    });
+    
+    it("updates whether the collection can be deleted", async () => {
+        const customActiveCollection = {
+            ...collection,
+            inProgress: [collection.inProgress[0]],
+            complete: [],
+            reviewed: []
+        }
+        component.setProps({activeCollection: customActiveCollection});
+        await component.instance().handleCollectionPageDeleteClick(
+            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+        );
+        await jest.runOnlyPendingTimers();
+        expect(dispatchedAction.collection.canBeApproved).toEqual(false);
+        expect(dispatchedAction.collection.canBeDeleted).toEqual(true);
     });
 });
 
