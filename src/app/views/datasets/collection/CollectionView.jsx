@@ -8,7 +8,7 @@ import Select from '../../../components/Select';
 const propTypes = {
     hasChosen: PropTypes.bool.isRequired,
     isGettingCollections: PropTypes.bool.isRequired,
-    isGettingDataset: PropTypes.bool.isRequired,
+    isGettingDataset: PropTypes.bool,
     isSubmitting: PropTypes.bool.isRequired,
     errorMsg: PropTypes.string,
     collectionsSelectItems: PropTypes.array,
