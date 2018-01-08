@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 
 import CollectionCreate from './create/CollectionCreate';
 import CollectionDetails, {pagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
-import collections from '../../utilities/api-clients/collections'
+import collections from '../../utilities/api-clients/collections';
 import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
-import url from '../../utilities/url'
-import notifications from '../../utilities/notifications'
+import notifications from '../../utilities/notifications';
 import dateformat from 'dateformat';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
@@ -527,11 +526,13 @@ export class CollectionsController extends Component {
                 const newCollectionsPages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
                 });
-                const updatedActiveCollection = this.mapCollectionDetailsToState({
+                const updatedCollection = {
                     ...this.props.activeCollection,
                     [state]: newCollectionsPages
-                });
-                this.props.dispatch(updateActiveCollection(updatedActiveCollection));
+                };
+                updatedCollection.canBeApproved = this.collectionCanBeApproved(updatedCollection);
+                updatedCollection.canBeDeleted = this.collectionCanBeDeleted(updatedCollection);
+                this.props.dispatch(updateActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
                 switch (error.status) {
