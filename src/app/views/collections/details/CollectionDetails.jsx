@@ -21,7 +21,7 @@ const propTypes = {
     id: PropTypes.string.isRequired,
     activePageURI: PropTypes.string,
     name: PropTypes.string.isRequired,
-    onCancel: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
     onDeletePageClick: PropTypes.func.isRequired,
@@ -227,7 +227,7 @@ export class CollectionDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn" onClick={this.props.onCancel}>Cancel</button>
+                    <button className="btn" onClick={this.props.onClose}>Close</button>
                     {this.props.canBeDeleted &&
                         <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button">Delete</button>
                     }

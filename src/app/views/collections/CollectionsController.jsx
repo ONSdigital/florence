@@ -67,7 +67,7 @@ export class CollectionsController extends Component {
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
         this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
-        this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
+        this.handleDrawerCloseClick = this.handleDrawerCloseClick.bind(this);
         this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
         this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
@@ -614,7 +614,7 @@ export class CollectionsController extends Component {
         return collectionURL //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleDrawerCancelClick() {
+    handleDrawerCloseClick() {
         this.setState({
             drawerIsAnimatable: true,
             drawerIsVisible: false
@@ -737,7 +737,7 @@ export class CollectionsController extends Component {
                         inProgress={this.mapPagesToCollectionsDetails('inProgress')}
                         complete={this.mapPagesToCollectionsDetails('complete')}
                         reviewed={this.mapPagesToCollectionsDetails('reviewed')}
-                        onCancel={this.handleDrawerCancelClick}
+                        onClose={this.handleDrawerCloseClick}
                         onPageClick={this.handleCollectionPageClick}
                         onEditPageClick={this.handleCollectionPageEditClick}
                         onDeletePageClick={this.handleCollectionPageDeleteClick}
