@@ -6,9 +6,9 @@ import { push } from 'react-router-redux';
 import CollectionCreate from './create/CollectionCreate';
 import CollectionDetails, {pagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
-import collections from '../../utilities/api-clients/collections'
+import collections from '../../utilities/api-clients/collections';
 import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
-import notifications from '../../utilities/notifications'
+import notifications from '../../utilities/notifications';
 import dateformat from 'dateformat';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
@@ -67,7 +67,7 @@ export class CollectionsController extends Component {
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
         this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
-        this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
+        this.handleDrawerCloseClick = this.handleDrawerCloseClick.bind(this);
         this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
         this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
@@ -304,7 +304,6 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
-        console.log(hello);
         const collections = [...this.state.collections, this.mapAllCollectionsToState(newCollection)];
         this.setState({collections: collections});
         this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
@@ -532,11 +531,13 @@ export class CollectionsController extends Component {
                 const newCollectionsPages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
                 });
-                const updatedActiveCollection = this.mapCollectionDetailsToState({
+                const updatedCollection = {
                     ...this.props.activeCollection,
                     [state]: newCollectionsPages
-                });
-                this.props.dispatch(updateActiveCollection(updatedActiveCollection));
+                };
+                updatedCollection.canBeApproved = this.collectionCanBeApproved(updatedCollection);
+                updatedCollection.canBeDeleted = this.collectionCanBeDeleted(updatedCollection);
+                this.props.dispatch(updateActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
                 switch (error.status) {
@@ -610,15 +611,15 @@ export class CollectionsController extends Component {
             ],
             type: 'neutral',
             isDismissable: false,
-            autoDismiss: 5000,
-            message: <span>Deleted page <strong>'{title}'</strong> from collection '{this.props.activeCollection.name}'</span>
+            autoDismiss: 6000,
+            message: `Deleted page '${title}' from collection '${this.props.activeCollection.name}'`
         }
         const notificationID = notifications.add(notification);
 
         return collectionURL //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleDrawerCancelClick() {
+    handleDrawerCloseClick() {
         this.setState({
             drawerIsAnimatable: true,
             drawerIsVisible: false
@@ -704,15 +705,18 @@ export class CollectionsController extends Component {
                 });
             }
             const mappedCollection = {
-                id: collection.id,
-                name: collection.name,
+                // id: collection.id,
+                // name: collection.name,
+                ...collection,
                 canBeApproved,
                 canBeDeleted,
                 inProgress: mapPageToState(collection.inProgress),
                 complete: mapPageToState(collection.complete),
                 reviewed: mapPageToState(collection.reviewed),
-                type: collection.type,
-                teams: collections.teams
+                status: this.mapPublishState(collection)
+                // type: collection.type,
+                // teams: collections.teams,
+                // status: {...collection.status}
             }
             return mappedCollection;
         } catch (error) {
@@ -741,7 +745,7 @@ export class CollectionsController extends Component {
                         inProgress={this.mapPagesToCollectionsDetails('inProgress')}
                         complete={this.mapPagesToCollectionsDetails('complete')}
                         reviewed={this.mapPagesToCollectionsDetails('reviewed')}
-                        onCancel={this.handleDrawerCancelClick}
+                        onClose={this.handleDrawerCloseClick}
                         onPageClick={this.handleCollectionPageClick}
                         onEditPageClick={this.handleCollectionPageEditClick}
                         onDeletePageClick={this.handleCollectionPageDeleteClick}

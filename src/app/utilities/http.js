@@ -15,7 +15,7 @@ export default class http {
     * @returns {Promise} which returns the response body in JSON format
     */
     static delete(uri, willRetry, callerHandles401) {
-        return request("DELETE", uri, willRetry, null, null, callerHandles401);
+        return request("DELETE", uri, willRetry, undefined, null, callerHandles401);
     }
 
     /**
@@ -26,7 +26,7 @@ export default class http {
      * @returns {Promise} which returns the response body in JSON format
      */
     static get(uri, willRetry, callerHandles401) {
-        return request("GET", uri, willRetry, null, null, callerHandles401);
+        return request("GET", uri, willRetry, undefined, null, callerHandles401);
     }
 
     /**
@@ -38,7 +38,7 @@ export default class http {
      * @returns {Promise} which returns the response body in JSON format
      */
     static post(uri, body ,willRetry, callerHandles401) {
-        return request("POST", uri, willRetry, null, body, callerHandles401)
+        return request("POST", uri, willRetry, undefined, body, callerHandles401)
     }
     
     /**
@@ -50,7 +50,7 @@ export default class http {
      * @returns {Promise} which returns the response body in JSON format
      */
     static put(uri, body, willRetry, callerHandles401) {
-        return request("PUT", uri, willRetry, null, body, callerHandles401)
+        return request("PUT", uri, willRetry, undefined, body, callerHandles401)
     }
     
     /**
