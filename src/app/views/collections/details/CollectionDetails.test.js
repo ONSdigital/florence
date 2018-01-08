@@ -25,7 +25,7 @@ const defaultProps = {
     collectionID: 'test-collection-12345',
     activePageID: 'economy-grossdomesticproduct-bulletins-gdp-2014',
     name: 'Test collection',
-    onCancel: () => {},
+    onClose: () => {},
     onPageClick: () => {},
     onEditPageClick: () => {},
     isLoadingDetails: null,
