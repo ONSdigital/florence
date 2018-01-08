@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import collections from '../../../utilities/api-clients/collections';
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
+import log, { eventTypes } from '../../../utilities/log';
 
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
