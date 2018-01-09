@@ -27,10 +27,10 @@ export default class SelectableBox extends Component {
         return (
             <ul className="selectable-box__list">
                 {
-                    this.props.items.map((item, index) => {
+                    this.props.items.map(item => {
                         return (
                             <SelectableBoxItem
-                                key={index}
+                                key={item.id}
                                 {...item}
                                 isSelected={this.props.activeItem && item.id === this.props.activeItem.id}
                                 handleClick={this.bindItemClick}
@@ -48,9 +48,9 @@ export default class SelectableBox extends Component {
                 {
                     this.props.headings.map((item, index) => {
                         return (
-                            <h2 key={index} className="selectable-box__heading grid__col-12">
+                            <h2 key={index} className={`selectable-box__heading grid__col-${12 / this.props.headings.length} grid__cell`}>
                                 {item}
-                                { this.props.isUpdating && this.props.headings.length === index + 1 ? <span className="selectable-box__status loader"/> : "" }
+                                { this.props.isUpdating && this.props.headings.length === index + 1 ? <span className="selectable-box__status pull-right loader"/> : "" }
                             </h2>
                         )
                     })
