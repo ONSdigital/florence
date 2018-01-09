@@ -117,7 +117,7 @@ export class CollectionsController extends Component {
         this.setState({isFetchingCollections: true});
         collections.getAll().then(collections => {
             const allCollections = collections.map(collection => {
-                return this.mapAllCollectionsToState(collection)
+                return this.mapCollectionToState(collection)
             });
             this.setState({
                 collections: allCollections,
@@ -181,7 +181,7 @@ export class CollectionsController extends Component {
         });
     }
 
-    mapAllCollectionsToState(collection) {
+    mapCollectionToState(collection) {
         try {
             const publishStates = this.mapPublishState(collection);
             return {
@@ -198,7 +198,12 @@ export class CollectionsController extends Component {
                 selectableBox: {
                     firstColumn: collection.name,
                     secondColumn: this.readablePublishDate(collection)
-                }
+                },
+                canBeApproved: false,
+                canBeDeleted: false,
+                inProgress: collection.inProgress,
+                complete: collection.complete,
+                reviewed: collection.reviewed
             }
         } catch (error) {
             const notification = {
@@ -250,7 +255,8 @@ export class CollectionsController extends Component {
     fetchActiveCollection(collectionID) {
         this.setState({isFetchingCollectionDetails: true});
         collections.get(collectionID).then(collection => {
-            const activeCollection = this.mapCollectionDetailsToState(collection);
+            const mappedCollection = this.mapCollectionToState(collection);
+            const activeCollection = this.mapPagesToCollection(mappedCollection);
             this.props.dispatch(updateActiveCollection(activeCollection));
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
@@ -304,7 +310,7 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
-        const collections = [...this.state.collections, this.mapAllCollectionsToState(newCollection)];
+        const collections = [...this.state.collections, this.mapCollectionToState(newCollection)];
         this.setState({collections: collections});
         this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
         this.fetchCollections();
@@ -528,12 +534,12 @@ export class CollectionsController extends Component {
 
         const triggerPageDelete = () => {
             collections.deletePage(this.props.params.collectionID, uri).then(() => {
-                const newCollectionsPages = this.props.activeCollection[state].filter(page => {
+                const pages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
                 });
                 const updatedCollection = {
                     ...this.props.activeCollection,
-                    [state]: newCollectionsPages
+                    [state]: pages
                 };
                 updatedCollection.canBeApproved = this.collectionCanBeApproved(updatedCollection);
                 updatedCollection.canBeDeleted = this.collectionCanBeDeleted(updatedCollection);
@@ -672,7 +678,7 @@ export class CollectionsController extends Component {
         return false;
     }
 
-    mapPagesToCollectionsDetails(state) {
+    mapPagesAndPendingDeletes(state) {
         if (!this.state.pendingDeletedPages || this.state.pendingDeletedPages.length === 0) {
             return this.props.activeCollection[state];
         }
@@ -682,7 +688,7 @@ export class CollectionsController extends Component {
         });
     }
 
-    mapCollectionDetailsToState(collection) {
+    mapPagesToCollection(collection) {
         try {
             const canBeApproved = this.collectionCanBeApproved(collection);
             const canBeDeleted = this.collectionCanBeDeleted(collection);
@@ -705,18 +711,12 @@ export class CollectionsController extends Component {
                 });
             }
             const mappedCollection = {
-                // id: collection.id,
-                // name: collection.name,
                 ...collection,
                 canBeApproved,
                 canBeDeleted,
                 inProgress: mapPageToState(collection.inProgress),
                 complete: mapPageToState(collection.complete),
-                reviewed: mapPageToState(collection.reviewed),
-                status: this.mapPublishState(collection)
-                // type: collection.type,
-                // teams: collections.teams,
-                // status: {...collection.status}
+                reviewed: mapPageToState(collection.reviewed)
             }
             return mappedCollection;
         } catch (error) {
@@ -742,9 +742,9 @@ export class CollectionsController extends Component {
                     <CollectionDetails 
                         {...this.props.activeCollection}
                         activePageURI={this.props.activePageURI}
-                        inProgress={this.mapPagesToCollectionsDetails('inProgress')}
-                        complete={this.mapPagesToCollectionsDetails('complete')}
-                        reviewed={this.mapPagesToCollectionsDetails('reviewed')}
+                        inProgress={this.mapPagesAndPendingDeletes('inProgress')}
+                        complete={this.mapPagesAndPendingDeletes('complete')}
+                        reviewed={this.mapPagesAndPendingDeletes('reviewed')}
                         onClose={this.handleDrawerCloseClick}
                         onPageClick={this.handleCollectionPageClick}
                         onEditPageClick={this.handleCollectionPageEditClick}
@@ -772,7 +772,7 @@ export class CollectionsController extends Component {
                             items={this.state.collections}
                             activeItem={this.props.activeCollection}
                             isUpdating={this.state.isFetchingCollections}
-                            headings={["Name", "Collection date"]}
+                            headings={["Name", "Publish date"]}
                             handleItemClick={this.handleCollectionSelection}
                         />
                     </div>

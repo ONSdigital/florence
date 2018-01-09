@@ -270,13 +270,13 @@ describe("Deleting a page from a collection", () => {
         <CollectionsController {...props} />
     )
 
-    expect(component.instance().mapPagesToCollectionsDetails('inProgress')).toEqual(collection.inProgress);
+    expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(collection.inProgress);
     
     it("removes the page from the collection details", () => {
         component.instance().handleCollectionPageDeleteClick(
             collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
         );
-        expect(component.instance().mapPagesToCollectionsDetails('inProgress')).toEqual([collection.inProgress[1]]);
+        expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual([collection.inProgress[1]]);
     });
 
     it("redirects the user to the collection details", () => {
@@ -289,7 +289,7 @@ describe("Deleting a page from a collection", () => {
 
     it("undo puts the page back into the collection details", () => {
         component.instance().handleCollectionPageDeleteUndo(() => {}, collection.inProgress[0].uri, '12345');
-        expect(component.instance().mapPagesToCollectionsDetails('inProgress')).toEqual(collection.inProgress);
+        expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(collection.inProgress);
     });
     
     it("undo redirects the user to the undeleted page", () => {
@@ -478,7 +478,7 @@ test("Map collection to state function", () => {
     const component = shallow(
         <CollectionsController {...defaultProps} />
     );
-    const result = component.instance().mapAllCollectionsToState(mockAllCollections[2]);
+    const result = component.instance().mapCollectionToState(mockAllCollections[2]);
     expect(result).toEqual({
         id: 'test-collection-12345',
         name: 'Test collection',
@@ -493,7 +493,12 @@ test("Map collection to state function", () => {
         selectableBox: {
             firstColumn: 'Test collection',
             secondColumn: '[manual collection]'
-        }
+        },
+        inProgress: undefined,
+        complete: undefined,
+        reviewed: undefined,
+        canBeApproved: false,
+        canBeDeleted: false
     });
 });
 
@@ -503,7 +508,7 @@ describe("Mapping GET collection API response to view state", () => {
     )
 
     it("'canBeApproved' value set to false correctly", () => {
-        let canBeApproved = component.instance().mapCollectionDetailsToState(collection).canBeApproved;
+        let canBeApproved = component.instance().mapPagesToCollection(collection).canBeApproved;
         expect(canBeApproved).toBeFalsy();
         
         let mockCollection = {
@@ -511,11 +516,11 @@ describe("Mapping GET collection API response to view state", () => {
             inProgress: [],
             reviewed: []
         }
-        canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
+        canBeApproved = component.instance().mapPagesToCollection(mockCollection).canBeApproved;
         expect(canBeApproved).toBeFalsy();
         
         mockCollection.complete = [];
-        canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
+        canBeApproved = component.instance().mapPagesToCollection(mockCollection).canBeApproved;
         expect(canBeApproved).toBeFalsy();
     });
     
@@ -525,7 +530,7 @@ describe("Mapping GET collection API response to view state", () => {
             complete: [],
             reviewed: [...collection.complete]
         }
-        let canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
+        let canBeApproved = component.instance().mapPagesToCollection(mockCollection).canBeApproved;
         expect(canBeApproved).toBeTruthy();
 
         mockCollection = {
@@ -535,12 +540,12 @@ describe("Mapping GET collection API response to view state", () => {
                 ...collection.complete
             ]
         }
-        canBeApproved = component.instance().mapCollectionDetailsToState(mockCollection).canBeApproved;
+        canBeApproved = component.instance().mapPagesToCollection(mockCollection).canBeApproved;
         expect(canBeApproved).toBeTruthy();
     });
     
     it("'canBeDeleted' value set to false correctly", () => {
-        let canBeDeleted = component.instance().mapCollectionDetailsToState(collection).canBeDeleted;
+        let canBeDeleted = component.instance().mapPagesToCollection(collection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
 
         let mockCollection = {
@@ -549,7 +554,7 @@ describe("Mapping GET collection API response to view state", () => {
             complete: [],
             reviewed: [...collection.complete]
         }
-        canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
+        canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
         
         mockCollection = {
@@ -558,11 +563,11 @@ describe("Mapping GET collection API response to view state", () => {
             complete: [...collection.complete],
             reviewed: []
         }
-        canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
+        canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
 
         delete mockCollection.reviewed;
-        canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
+        canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
     });
     
@@ -574,12 +579,12 @@ describe("Mapping GET collection API response to view state", () => {
             reviewed: []
         }
 
-        let canBeDeleted = component.instance().mapCollectionDetailsToState(mockCollection).canBeDeleted;
+        let canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeTruthy();
     });
 
     it("pages map and have correct structure", () => {
-        const inProgressPages = component.instance().mapCollectionDetailsToState(collection).inProgress;
+        const inProgressPages = component.instance().mapPagesToCollection(collection).inProgress;
         const expectedInProgress = [
             {
                 lastEdit: {
@@ -604,7 +609,7 @@ describe("Mapping GET collection API response to view state", () => {
         ]
         expect(inProgressPages).toEqual(expectedInProgress);
         
-        const completePages = component.instance().mapCollectionDetailsToState(collection).complete;
+        const completePages = component.instance().mapPagesToCollection(collection).complete;
         const expectedComplete = [
             {
                 lastEdit: {
@@ -619,7 +624,7 @@ describe("Mapping GET collection API response to view state", () => {
         ]
         expect(completePages).toEqual(expectedComplete);
         
-        const reviewedPages = component.instance().mapCollectionDetailsToState(collection).reviewed;
+        const reviewedPages = component.instance().mapPagesToCollection(collection).reviewed;
         expect(reviewedPages).toEqual([]);
     });
 });

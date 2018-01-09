@@ -40,9 +40,11 @@ const propTypes = {
         pagePropTypes
     )),
     status: PropTypes.shape({
-        inProgress: PropTypes.bool,
-        thrownError: PropTypes.bool
-    })
+        neutral: PropTypes.bool,
+        warning: PropTypes.bool
+    }),
+    type: PropTypes.string.isRequired,
+    publishDate: PropTypes.string
 };
 
 export class CollectionDetails extends Component {
@@ -159,7 +161,7 @@ export class CollectionDetails extends Component {
     
     renderReviewed() {
         if (!this.props.reviewed) {
-            return <p className="margin-bottom--2">Error getting reviewed pages pages</p>
+            return <p className="margin-bottom--2">Error getting reviewed pages</p>
         }
 
         if (this.props.reviewed.length === 0) {
@@ -211,7 +213,7 @@ export class CollectionDetails extends Component {
             return;
         }
 
-        if (this.props.status.inProgress) {
+        if (this.props.status.neutral) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
                     Preparing collection for the publishing queue
@@ -219,7 +221,7 @@ export class CollectionDetails extends Component {
             )
         }
         
-        if (this.props.status.thrownError) {
+        if (this.props.status.warning) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
                     Error whilst preparing this collection for the publishing queue
@@ -229,7 +231,7 @@ export class CollectionDetails extends Component {
     }
 
     renderCollectionPageActions() {
-        if (this.props.status && (this.props.status.inProgress || this.props.status.thrownError)) {
+        if (this.props.status && (this.props.status.neutral || this.props.status.warning)) {
             return;
         }
 
@@ -242,7 +244,7 @@ export class CollectionDetails extends Component {
     }
 
     renderCollectionActions() {
-        if (this.props.status && (this.props.status.inProgress || this.props.status.thrownError)) {
+        if (this.props.status && (this.props.status.neutral || this.props.status.warning)) {
             return;
         }
 
@@ -259,10 +261,35 @@ export class CollectionDetails extends Component {
         }
     }
 
+    renderPublishDate() {
+        if (!this.props.type) {
+            return;
+        }
+
+        if (this.props.type === "manual") {
+            return <p>Manual publish</p>
+        }
+
+        if (this.props.type === "scheduled" && this.props.publishDate) {
+            return (
+                <p>Publish date: {this.props.publishDate}</p>
+            )
+        }
+
+        if (this.props.type === "scheduled" && !this.props.publishDate) {
+            return (
+                <p>Publishing date: no publish date available</p>
+            )
+        }
+    }
+
     render() {
         return (
             <div className="drawer__container">
-                <h2 className="drawer__heading">{this.props.name}</h2>
+                <div className="drawer__heading">
+                    <h2>{this.props.name}</h2>
+                    {this.renderPublishDate()}
+                </div>
                 {this.renderCollectionState()}
                 {this.renderCollectionPageActions()}
                 <div className="drawer__body">
