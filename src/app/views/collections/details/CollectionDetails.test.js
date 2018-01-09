@@ -269,18 +269,18 @@ describe("Approve collection button", () => {
         expect(component.find('#approve-collection').exists()).toEqual(true);
     });
 
-    it("doesn't show when the status is set to inProgress", () => {
+    it("doesn't show when the status is set to neutral", () => {
         component.setProps({
             canBeApproved: true,
-            status: {inProgress: true}
+            status: {neutral: true}
         });
         expect(component.find('#approve-collection').exists()).toEqual(false);
     });
     
-    it("doesn't show when the status is set to thrownError", () => {
+    it("doesn't show when the status is set to warning", () => {
         component.setProps({
             canBeApproved: true,
-            status: {thrownError: true}
+            status: {warning: true}
         });
         expect(component.find('#approve-collection').exists()).toEqual(false);
     });
@@ -301,18 +301,18 @@ describe("Delete collection button", () => {
         expect(component.find('#delete-collection').exists()).toEqual(true);
     });
 
-    it("doesn't show when the status is set to inProgress", () => {
+    it("doesn't show when the status is set to neutral", () => {
         component.setProps({
             canBeDeleted: true,
-            status: {inProgress: true}
+            status: {neutral: true}
         });
         expect(component.find('#delete-collection').exists()).toEqual(false);
     });
     
-    it("doesn't show when the status is set to thrownError", () => {
+    it("doesn't show when the status is set to warning", () => {
         component.setProps({
             canBeDeleted: true,
-            status: {thrownError: true}
+            status: {warning: true}
         });
         expect(component.find('#delete-collection').exists()).toEqual(false);
     });
