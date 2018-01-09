@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import SelectableBox from './app/components/selectable-box/SelectableBox'
+import SelectableBox from './app/components/selectable-box-new/SelectableBox'
 
 export default class SelectableTest extends Component {
     constructor(props) {
@@ -16,10 +16,10 @@ export default class SelectableTest extends Component {
 
         const oneCol = {
             numberOfColumns: 1,
-            headings: ["Heading 1"],
-            activeItem: "",
+            columns: [{heading: "Heading 1", width: "12"}],
+            activeItem: {},
             handleItemClick: this.handleClick,
-            isUpdating: false,
+            isUpdating: true,
             items: [{
                 id: "001",
                 name: "Item 1",
@@ -30,7 +30,7 @@ export default class SelectableTest extends Component {
                     message: "",
                 },
                 selectableBox: {
-                    firstColumn: "Item 1"
+                    firstColumn: {value: "Item 1", width: "12"}
                 }
             }, {
                 id: "002",
@@ -42,25 +42,95 @@ export default class SelectableTest extends Component {
                     message: "",
                 },
                 selectableBox: {
-                    firstColumn: "Item 2"
+                    firstColumn: {value: "Item 2", width: "12"}
                 }
             }]
         };
+
         const twoCol = {
             numberOfColumns: 2,
-            headings: ["Heading 1", "Heading 2"],
-            activeItem: "",
+            columns: [{heading: "Heading 1", width: "6"}, {heading: "Heading 2", width: "6"}],
+            activeItem: {},
             handleItemClick: this.handleClick,
-            isUpdating: false,
-            items: []
+            isUpdating: true,
+            items: [{
+                id: "001",
+                name: "Item 1",
+                status: {
+                    neutral: false,
+                    warning: false,
+                    success: false,
+                    message: "",
+                },
+                selectableBox: {
+                    firstColumn: {value: "Item 1 title", width: "6"},
+                    secondColumn: {value: "Item 1 date", width: "6"}
+                }
+            }, {
+                id: "002",
+                name: "Item 2",
+                status: {
+                    neutral: true,
+                    warning: false,
+                    success: false,
+                    message: "",
+                },
+                selectableBox: {
+                    firstColumn: {value: "Item 2 title", width: "6"},
+                    secondColumn: {value: "Item 1 date", width: "6"}
+                }
+            }]
         };
+
         const threeCol = {
             numberOfColumns: 3,
-            headings: ["Heading 1", "Heading 2", "Heading 3"],
-            activeItem: "",
+            columns: [{heading: "Heading 1", width: "6"}, {heading: "Heading 2", width: "3"}, {heading: "Heading 3", width: "3"}],
+            activeItem: {},
             handleItemClick: this.handleClick,
-            isUpdating: false,
-            items: []
+            isUpdating: true,
+            items: [{
+                id: "001",
+                name: "Item 1",
+                status: {
+                    neutral: false,
+                    warning: false,
+                    success: false,
+                    message: "",
+                },
+                selectableBox: {
+                    firstColumn: {value: "Item 1 title", width: "6"},
+                    secondColumn: {value: "Item 1 date", width: "3"},
+                    thirdColumn: {value: "Item 1 other", width: "3"}
+                }
+            }, {
+                id: "002",
+                name: "Item 2",
+                status: {
+                    neutral: true,
+                    warning: false,
+                    success: false,
+                    message: "",
+                },
+                selectableBox: {
+                    firstColumn: {value: "Item 2 title", width: "6"},
+                    secondColumn: {value: "Item 2 date", width: "3"},
+                    thirdColumn: {value: "Item 2 other", width: "3"}
+                }
+            }, {
+                id: "003",
+                name: "Item 3",
+                status: {
+                    neutral: false,
+                    warning: true,
+                    success: false,
+                    message: "",
+                },
+                selectableBox: {
+                    firstColumn: {value: "Item 3 title", width: "6"},
+                    secondColumn: {value: "Item 3 date", width: "3"},
+                    thirdColumn: {value: "Item 3 other", width: "3"}
+                }
+            }]
         };
 
 
@@ -76,7 +146,7 @@ export default class SelectableTest extends Component {
                         {...twoCol}
                     />
                 </div>
-                <div className="grid__col-10 margin-top--2">
+                <div className="grid__col-10 margin-top--2 margin-bottom--2">
                     <SelectableBox
                         {...threeCol}
                     />
