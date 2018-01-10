@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import dateFormat from 'dateformat';
+import { Link } from 'react-router';
 
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log';
@@ -287,8 +288,13 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__container">
                 <div className="drawer__heading">
-                    <h2>{this.props.name}</h2>
-                    {this.renderPublishDate()}
+                    <div className="grid grid--justify-space-between grid--align-end">
+                        <div>
+                            <h2>{this.props.name}</h2>
+                            {this.renderPublishDate()}
+                        </div>
+                        <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
+                    </div>
                 </div>
                 {this.renderCollectionState()}
                 {this.renderCollectionPageActions()}
