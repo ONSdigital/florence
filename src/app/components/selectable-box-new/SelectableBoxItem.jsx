@@ -2,10 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-    name: PropTypes.string.isRequired,
     id: PropTypes.any.isRequired,
+    columns: PropTypes.arrayOf(PropTypes.shape({
+        heading: PropTypes.string.isRequired,
+        width: PropTypes.string.isRequired
+    })).isRequired,
+    columnValues: PropTypes.arrayOf(PropTypes.string),
     handleClick: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool
+    isSelected: PropTypes.bool,
+    returnValue: PropTypes.object.isRequired,
+    status: PropTypes.shape({
+        neutral: PropTypes.bool.isRequired,
+        warning: PropTypes.bool.isRequired,
+        success: PropTypes.bool.isRequired,
+        message: PropTypes.string,
+    }).isRequired,
 }
 
 export default class SelectableBoxItem extends Component {
@@ -16,32 +27,33 @@ export default class SelectableBoxItem extends Component {
     }
 
     bindClick() {
-        this.props.handleClick(this.props);
+        this.props.handleClick(this.props.returnValue);
+    }
+
+    renderColumns() {
+        const columns = [];
+        for (let i = 0; i < this.props.columns.length; i++) {
+            const isFirst = i === 0;
+            columns.push(
+                <div key={`${this.props.id}-col-${i}`} className={`grid__col-${this.props.columns[i].width}`}>
+                    {this.props.columnValues[i]}
+
+                    {this.props.status.message && isFirst ? ` [${this.props.status.message}]` : ''}
+                </div>
+            )
+        }
+        return columns
     }
 
     render() {
+        console.log(this.props);
         return (
             <li
                 id={this.props.id}
                 className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${this.props.status.neutral ? " neutral" : ""} ${this.props.status.warning ? " warning" : ""}`}
                 onClick={this.bindClick}>
                 <div className="grid">
-                    <div className={`grid__col-${this.props.selectableBox.firstColumn.width}`}>
-                        {this.props.selectableBox.firstColumn.value}
-                        {this.props.status.message ? ` [${this.props.status.message}]` : ''}
-                    </div>
-
-                    {this.props.selectableBox.secondColumn ?
-                        <div className={`grid__col-${this.props.selectableBox.secondColumn.width}`}>
-                            {this.props.selectableBox.secondColumn.value}
-                        </div>
-                        : ''}
-
-                    {this.props.selectableBox.thirdColumn ?
-                        <div className={`grid__col-${this.props.selectableBox.thirdColumn.width}`}>
-                            {this.props.selectableBox.thirdColumn.value}
-                        </div>
-                        : ''}
+                    {this.renderColumns()}
                 </div>
             </li>
         )
