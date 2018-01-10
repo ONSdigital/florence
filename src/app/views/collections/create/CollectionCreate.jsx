@@ -11,12 +11,18 @@ import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import SelectedItemList from '../../../components/selected-items/SelectedItemList'
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
+import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
 
 const propTypes = {
     user: PropTypes.shape({
         userType: PropTypes.string.isRequired,
     }).isRequired,
-    onSuccess: PropTypes.func.isRequired
+    onSuccess: PropTypes.func.isRequired,
+    allTeams: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+    })),
+    dispatch: PropTypes.func.isRequired
 };
 
 export class CollectionCreate extends Component {
@@ -44,7 +50,6 @@ export class CollectionCreate extends Component {
                 scheduleType: "custom-schedule",
             },
             isGettingTeams: true,
-            allTeams: [],
             isSubmitting: false
         };
 
@@ -88,10 +93,12 @@ export class CollectionCreate extends Component {
                 return {id: team.id.toString(), name: team.name}
             });
             this.setState({
-                ...this.state,
-                allTeams: allTeams,
                 isGettingTeams: false
-            })
+            });
+            this.props.dispatch(updateAllTeamIDsAndNames(allTeams));
+            
+            // Not needed for this screen but keeps teams array up-to-date for the teams screen
+            this.props.dispatch(updateAllTeams(teams));
         }).catch(error => {
             switch(error.status) {
                 case(401): {
@@ -159,7 +166,7 @@ export class CollectionCreate extends Component {
         }
 
         // get info for selected team from teams list in state
-        const selectedTeam = this.state.allTeams.find(team => {
+        const selectedTeam = this.props.allTeams.find(team => {
             return team.id === teamID;
         });
 
@@ -422,7 +429,7 @@ export class CollectionCreate extends Component {
                 <form onSubmit={this.handleSubmit}>
                     <Input
                         id="collection-name"
-                        label="Collection Name"
+                        label="Collection name"
                         type="text"
                         error={this.state.newCollectionDetails.name.errorMsg}
                         value={this.state.newCollectionDetails.name.value}
@@ -432,7 +439,7 @@ export class CollectionCreate extends Component {
                     <Select
                         id="collection-teams"
                         label="Select a team(s) that can view this collection"
-                        contents={hasTeams ? this.state.allTeams : []}
+                        contents={hasTeams ? this.props.allTeams : []}
                         defaultOption={hasTeams ? "Select an option" : "Loading teams"}
                         onChange={this.handleTeamSelection}
                     />
@@ -467,5 +474,11 @@ export class CollectionCreate extends Component {
 
 CollectionCreate.propTypes = propTypes;
 
-export default connect()(CollectionCreate);
+function mapStateToProps(state) {
+    return {
+        allTeams: state.state.teams.allIDsAndNames
+    }
+}
+
+export default connect(mapStateToProps)(CollectionCreate);
 
