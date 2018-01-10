@@ -192,6 +192,26 @@ export class CollectionEditController extends Component {
             hasError = true;
         }
 
+        if (this.state.publishType === "scheduled" && !this.state.publishDate.value) {
+            this.setState({
+                publishDate: {
+                    value: "",
+                    errorMsg: "A scheduled collection must have a publish date"
+                }
+            });
+            hasError = true;
+        }
+        
+        if (this.state.publishType === "scheduled" && !this.state.publishTime.value) {
+            this.setState({
+                publishTime: {
+                    value: "",
+                    errorMsg: "A scheduled collection must have a publish date"
+                }
+            });
+            hasError = true;
+        }
+
         if (hasError) {
             return;
         }

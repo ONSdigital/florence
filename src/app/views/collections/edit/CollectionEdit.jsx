@@ -18,7 +18,9 @@ const propTypes = {
     onPublishTimeChange: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     publishDate: PropTypes.string,
+    publishDateErrorMsg: PropTypes.string,
     publishTime: PropTypes.string,
+    publishTimeErrorMsg: PropTypes.string,
     teams: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
@@ -134,20 +136,26 @@ class CollectionEdit extends Component {
                             legend="Publish type"
                             inline={true}
                         />
-                        <Input
-                            type="date"
-                            id="edit-publish-date"
-                            label="Publish date"
-                            value={this.props.publishDate}
-                            onChange={this.handlePublishDateChange}
-                        />
-                        <Input
-                            type="time"
-                            id="edit-publish-date"
-                            label="Publish date"
-                            value={this.props.publishTime}
-                            onChange={this.handlePublishTimeChange}
-                        />
+                        {this.props.publishType === "scheduled" && 
+                            <span>
+                                <Input
+                                    type="date"
+                                    id="edit-publish-date"
+                                    label="Publish date"
+                                    error={this.props.publishDateErrorMsg}
+                                    value={this.props.publishDate}
+                                    onChange={this.handlePublishDateChange}
+                                />
+                                <Input
+                                    type="time"
+                                    id="edit-publish-date"
+                                    label="Publish date"
+                                    error={this.props.publishTimeErrorMsg}
+                                    value={this.props.publishTime}
+                                    onChange={this.handlePublishTimeChange}
+                                />
+                            </span>
+                        }
                     </form>
                 </div>
                 <div className="drawer__footer">
