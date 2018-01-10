@@ -135,6 +135,10 @@
     padding: 0 0 0 38px;
     margin-bottom: $lineheight / 2;
 
+    &--inline {
+        display: inline-block;
+    }
+
     &__input {
         position: absolute;
         cursor: pointer;
@@ -186,9 +190,4 @@
             }
         }
     }
-}
-
-// To sit multiple choice inputs next to each other, use .inline on parent
-.inline .radio {
-    display: inline-block;
 }
