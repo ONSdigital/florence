@@ -9,6 +9,7 @@ export const initialState = {
     teams: {
         active: {},
         all: [],
+        allIDsAndNames: [],
         users: []
     },
     datasets: {
