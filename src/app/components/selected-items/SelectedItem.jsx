@@ -8,8 +8,7 @@ const propTypes = {
         }).isRequired,
     onRemoveItem: PropTypes.func.isRequired
 };
-
-export default class SelectedItem extends Component {
+      export default class SelectedItem extends Component {
     constructor(props) {
         super(props);
 
@@ -25,7 +24,7 @@ export default class SelectedItem extends Component {
         return (
             <span className="selected-item-list__item">
                 {this.props.item.name}
-                <button className="selected-item-list__remove" onClick={this.handleRemoveClick}>×</button>
+                <button className="selected-item-list__remove" type="button" onClick={this.handleRemoveClick}>×</button>
             </span>
         )
     }

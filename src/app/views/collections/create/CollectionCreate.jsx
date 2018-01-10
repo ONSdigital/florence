@@ -440,7 +440,7 @@ export class CollectionCreate extends Component {
                         id="collection-teams"
                         label="Select a team(s) that can view this collection"
                         contents={hasTeams ? this.props.allTeams : []}
-                        defaultOption={hasTeams ? "Select an option" : "Loading teams"}
+                        defaultOption={hasTeams ? "Select an option" : "Loading teams..."}
                         onChange={this.handleTeamSelection}
                     />
 
