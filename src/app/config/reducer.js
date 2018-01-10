@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION } from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES } from './actions';
 
 
 export default function reducer(state = initialState, action) {
@@ -45,6 +45,15 @@ export default function reducer(state = initialState, action) {
                     all: action.allTeams
                 })
             })
+        }
+        case (UPDATE_ALL_TEAM_IDS_AND_NAMES): {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
+                    allIDsAndNames: action.allTeamIDsAndNames
+                }
+            }
         }
         case ('UPDATE_USERS'): {
             return Object.assign({}, state, {
