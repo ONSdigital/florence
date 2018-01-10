@@ -70,7 +70,9 @@ const defaultProps = {
     user: {
         userType: "ADMIN"
     },
-    onSuccess: function(){}
+    onSuccess: function(){},
+    dispatch: () => {},
+    allTeams: []
 };
 
 const expectedTodayDate = function() {
@@ -127,7 +129,7 @@ test("Handle team selection change updates state correctly", () => {
     const component = shallow(
         <CollectionCreate {...defaultProps} />
     );
-    component.setState({ allTeams: mockedTeams });
+    component.setProps({ allTeams: mockedTeams });
     expect(component.update().state().newCollectionDetails.teams).toHaveLength(0);
     component.instance().handleTeamSelection({target: {value: "1"}});
     expect(component.update().state().newCollectionDetails.teams).toContainEqual({id: "1", name: "Team 1"});
@@ -137,7 +139,7 @@ test("Handle team selection doesn't add a team that is already in the collection
     const component = shallow(
         <CollectionCreate {...defaultProps} />
     );
-    component.setState({ allTeams: mockedTeams });
+    component.setProps({ allTeams: mockedTeams });
     const teams = [{id: "1", name: "Team 1"}];
     const newCollection = {...newCollectionDetails, teams: teams};
     component.setState({ newCollectionDetails: newCollection });
