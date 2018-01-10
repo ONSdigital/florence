@@ -63,6 +63,7 @@ const defaultProps = {
         dispatchedAction = action;
     },
     rootPath: '/florence',
+    routes:['a-collection-id'],
     params: {
         collectionID: undefined,
         pageID: undefined
@@ -498,7 +499,8 @@ test("Map collection to state function", () => {
         complete: undefined,
         reviewed: undefined,
         canBeApproved: false,
-        canBeDeleted: false
+        canBeDeleted: false,
+        teams: ['cpi', 'cpih']
     });
 });
 
