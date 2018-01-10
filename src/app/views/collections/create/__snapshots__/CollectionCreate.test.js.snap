@@ -12,7 +12,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
         className="form__label"
         htmlFor="collection-name"
       >
-        Collection Name
+        Collection name
       </label>
       
       <input
@@ -27,7 +27,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
         onChange={[Function]}
         placeholder=""
         type="text"
-        value={undefined}
+        value=""
       />
       
     </div>
@@ -55,7 +55,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
           <option
             value=""
           >
-            Loading teams
+            Loading teams...
           </option>
         </select>
       </div>
@@ -64,13 +64,13 @@ exports[`Create collection form matches stored snapshot 1`] = `
       className="selected-item-list"
     />
     <fieldset
-      className="fieldset inline"
+      className="fieldset"
     >
       <legend>
         Publish type
       </legend>
       <div
-        className="radio"
+        className="radio radio--inline"
       >
         <input
           checked={true}
@@ -91,7 +91,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
         </label>
       </div>
       <div
-        className="radio"
+        className="radio radio--inline"
       >
         <input
           checked={false}
@@ -114,13 +114,13 @@ exports[`Create collection form matches stored snapshot 1`] = `
     </fieldset>
     <div>
       <fieldset
-        className="fieldset inline"
+        className="fieldset"
       >
         <legend>
           Schedule type
         </legend>
         <div
-          className="radio"
+          className="radio radio--inline"
         >
           <input
             checked={true}
@@ -141,7 +141,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
           </label>
         </div>
         <div
-          className="radio"
+          className="radio radio--inline"
         >
           <input
             checked={false}
@@ -179,13 +179,13 @@ exports[`Create collection form matches stored snapshot 1`] = `
             className="input input__text"
             disabled={false}
             id="publish-date"
-            max="2027-12-07"
-            min="2017-12-07"
+            max="2028-01-10"
+            min="2018-01-10"
             name="publish-date"
             onChange={[Function]}
             placeholder=""
             type="date"
-            value={undefined}
+            value=""
           />
           
         </div>
