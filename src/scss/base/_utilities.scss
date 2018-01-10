@@ -36,3 +36,17 @@
     }
 
 }
+
+.font-size {
+    &--16 {
+        font-size: 16px;
+    }
+}
+
+.inline {
+    display: inline;
+
+    &-block {
+        display: inline-block;
+    }
+}
