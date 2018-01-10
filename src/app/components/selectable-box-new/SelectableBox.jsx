@@ -4,31 +4,18 @@ import PropTypes from 'prop-types';
 import SelectableBoxItem from './SelectableBoxItem';
 
 const propTypes = {
-    numberOfColumns: PropTypes.number.isRequired,
     columns: PropTypes.arrayOf(PropTypes.shape({
         heading: PropTypes.string.isRequired,
         width: PropTypes.string.isRequired
     })).isRequired,
-    items: PropTypes.arrayOf(PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
-        selectableBox: PropTypes.shape({
-            firstColumn: PropTypes.shape({
-                value: PropTypes.string.isRequired,
-                width: PropTypes.string.isRequired
-            }).isRequired,
-            secondColumn: PropTypes.shape({
-                value: PropTypes.string.isRequired,
-                width: PropTypes.string.isRequired
-            }),
-            thirdColumn: PropTypes.shape({
-                value: PropTypes.string.isRequired,
-                width: PropTypes.string.isRequired
-            })
-        }),
+        columnValues: PropTypes.arrayOf(PropTypes.string),
+        returnValue: PropTypes.shape.isRequired,
     })).isRequired,
-    activeItem: PropTypes.object,
+    activeRowID: PropTypes.string,
     handleItemClick: PropTypes.func.isRequired,
-    isUpdating: PropTypes.bool,
+    isUpdating: PropTypes.bool.isRequired,
 }
 
 export default class SelectableBox extends Component {
@@ -38,22 +25,22 @@ export default class SelectableBox extends Component {
         this.bindItemClick = this.bindItemClick.bind(this);
     }
 
-    bindItemClick(itemProps) {
-        this.props.handleItemClick(itemProps);
+    bindItemClick(clickedItem) {
+        this.props.handleItemClick(clickedItem);
     }
 
     renderList() {
         return (
             <ul className="selectable-box__list">
                 {
-                    this.props.items.map(item => {
+                    this.props.rows.map(row => {
                         return (
                             <SelectableBoxItem
-                                key={item.id}
-                                {...item}
-                                isSelected={this.props.activeItem && item.id === this.props.activeItem.id}
+                                columns={this.props.columns}
+                                key={row.id}
+                                {...row}
+                                isSelected={this.props.activeRowID === row.id}
                                 handleClick={this.bindItemClick}
-                                numberOfColums={this.props.numberOfColumns}
                             />
                         )
                     })
@@ -69,7 +56,7 @@ export default class SelectableBox extends Component {
                     this.props.columns.map((column, index) => {
                         const isLastColumn = this.props.columns.length === index + 1;
                         return (
-                            <h2 key={index} className={`selectable-box__heading grid__col-${column.width} grid__cell`}>
+                            <h2 key={`selectable-box__heading-${index}`} className={`selectable-box__heading grid__col-${column.width} grid__cell`}>
                                 {column.heading}
                                 { this.props.isUpdating && isLastColumn ? <span className="selectable-box__status pull-right loader"/> : "" }
                             </h2>
