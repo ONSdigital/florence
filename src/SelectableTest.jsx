@@ -13,123 +13,98 @@ export default class SelectableTest extends Component {
     }
 
     render() {
-
         const oneCol = {
-            numberOfColumns: 1,
             columns: [{heading: "Heading 1", width: "12"}],
-            activeItem: {},
+            activeRowID: "002",
             handleItemClick: this.handleClick,
             isUpdating: true,
-            items: [{
+            rows: [{
                 id: "001",
-                name: "Item 1",
+                columnValues: ["Item 1"],
+                returnValue: {id: "001"},
                 status: {
                     neutral: false,
                     warning: false,
                     success: false,
                     message: "",
                 },
-                selectableBox: {
-                    firstColumn: {value: "Item 1", width: "12"}
-                }
             }, {
                 id: "002",
-                name: "Item 2",
+                columnValues: ["Item 2"],
+                returnValue: {id: "002"},
                 status: {
                     neutral: false,
                     warning: false,
                     success: false,
                     message: "",
                 },
-                selectableBox: {
-                    firstColumn: {value: "Item 2", width: "12"}
-                }
             }]
         };
 
         const twoCol = {
             numberOfColumns: 2,
             columns: [{heading: "Heading 1", width: "6"}, {heading: "Heading 2", width: "6"}],
-            activeItem: {},
+            activeRowID: "",
             handleItemClick: this.handleClick,
             isUpdating: true,
-            items: [{
+            rows: [{
                 id: "001",
-                name: "Item 1",
+                columnValues: ["Item 1", "Item 1 date"],
+                returnValue: {id: "001"},
                 status: {
                     neutral: false,
                     warning: false,
                     success: false,
                     message: "",
                 },
-                selectableBox: {
-                    firstColumn: {value: "Item 1 title", width: "6"},
-                    secondColumn: {value: "Item 1 date", width: "6"}
-                }
             }, {
                 id: "002",
-                name: "Item 2",
+                columnValues: ["Item 2", "Item 2 date"],
+                returnValue: {id: "002"},
                 status: {
-                    neutral: true,
+                    neutral: false,
                     warning: false,
                     success: false,
                     message: "",
                 },
-                selectableBox: {
-                    firstColumn: {value: "Item 2 title", width: "6"},
-                    secondColumn: {value: "Item 1 date", width: "6"}
-                }
             }]
         };
 
         const threeCol = {
-            numberOfColumns: 3,
             columns: [{heading: "Heading 1", width: "6"}, {heading: "Heading 2", width: "3"}, {heading: "Heading 3", width: "3"}],
-            activeItem: {},
+            activeRowID: "",
             handleItemClick: this.handleClick,
             isUpdating: true,
-            items: [{
+            rows: [{
                 id: "001",
-                name: "Item 1",
-                status: {
-                    neutral: false,
-                    warning: false,
-                    success: false,
-                    message: "",
-                },
-                selectableBox: {
-                    firstColumn: {value: "Item 1 title", width: "6"},
-                    secondColumn: {value: "Item 1 date", width: "3"},
-                    thirdColumn: {value: "Item 1 other", width: "3"}
-                }
-            }, {
-                id: "002",
-                name: "Item 2",
-                status: {
-                    neutral: true,
-                    warning: false,
-                    success: false,
-                    message: "",
-                },
-                selectableBox: {
-                    firstColumn: {value: "Item 2 title", width: "6"},
-                    secondColumn: {value: "Item 2 date", width: "3"},
-                    thirdColumn: {value: "Item 2 other", width: "3"}
-                }
-            }, {
-                id: "003",
-                name: "Item 3",
+                columnValues: ["Item 1", "Item 1 date", "Item 1 other"],
+                returnValue: {id: "001"},
                 status: {
                     neutral: false,
                     warning: true,
                     success: false,
+                    message: "YAY!",
+                },
+            }, {
+                id: "002",
+                columnValues: ["Item 2", "Item 2 date", "Item 2 other"],
+                returnValue: {id: "002"},
+                status: {
+                    neutral: false,
+                    warning: false,
+                    success: false,
                     message: "",
                 },
-                selectableBox: {
-                    firstColumn: {value: "Item 3 title", width: "6"},
-                    secondColumn: {value: "Item 3 date", width: "3"},
-                    thirdColumn: {value: "Item 3 other", width: "3"}
-                }
+            }, {
+                id: "003",
+                columnValues: ["Item 3", "Item 3 date", "Item 3 other"],
+                returnValue: {id: "003"},
+                status: {
+                    neutral: false,
+                    warning: false,
+                    success: false,
+                    message: "",
+                },
             }]
         };
 
