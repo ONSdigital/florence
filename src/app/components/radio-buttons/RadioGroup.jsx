@@ -36,11 +36,11 @@ export default class RadioGroup extends Component {
         const selectedValue = this.props.selectedValue;
 
         return (
-            <fieldset className={"fieldset" + (this.props.inline ? " inline" : "")}>
+            <fieldset className="fieldset">
                 {this.props.legend ? <legend>{this.props.legend}</legend> : ""}
                 {
                     radioData.map((radio, index) => {
-                        return <Radio key={index} {...radio} group={groupName} onChange={this.handleChange} checked={selectedValue === radio.value}/>
+                        return <Radio inline={this.props.inline} key={index} {...radio} group={groupName} onChange={this.handleChange} checked={selectedValue === radio.value}/>
                     })
                 }
             </fieldset>
