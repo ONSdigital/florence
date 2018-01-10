@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import dateFormat from 'dateformat';
 
 import CollectionEdit from './CollectionEdit';
 import url from '../../../utilities/url';
@@ -20,7 +21,9 @@ const propTypes = {
     teams: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
-    }))
+    })),
+    publishType: PropTypes.string.isRequired,
+    publishDate: PropTypes.string
 };
 
 export class CollectionEditController extends Component {
@@ -31,20 +34,44 @@ export class CollectionEditController extends Component {
             isSavingEdits: false,
             isFetchingAllTeams: false,
             name: {
-                value: this.props.name,
+                value: props.name,
                 errorMsg: ""
             },
-            teams: this.props.teams
+            teams: props.teams,
+            publishType: props.publishType,
+            publishDate: {
+                value: "",
+                errorMsg: ""
+            },
+            publishTime: {
+                value: "",
+                errorMsg: ""
+            }
         }
 
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handlePublishTypeChange = this.handlePublishTypeChange.bind(this);
+        this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
+        this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleTeamSelection = this.handleTeamSelection.bind(this);
         this.handleRemoveTeam = this.handleRemoveTeam.bind(this);
     }
 
     componentWillMount() {
+        if (this.props.publishType === "scheduled" && this.props.publishDate) {
+            this.setState({
+                publishDate: {
+                    value: dateFormat(this.props.publishDate, "yyyy-mm-dd"),
+                    errorMsg: ""
+                },
+                publishTime: {
+                    value: dateFormat(this.props.publishDate, "hh:MM"),
+                    errorMsg: ""
+                }
+            });
+        }
         this.setState({
             isFetchingAllTeams: true
         });
@@ -87,15 +114,13 @@ export class CollectionEditController extends Component {
         });
     }
 
-    handleNameChange() {
-        if (this.state.name.errorMsg) {
-            this.setState(state => ({
-                name: {
-                    value: state.name.value,
-                    errorMsg: ""
-                }
-            }));
-        }
+    handleNameChange(name) {
+        this.setState({
+            name: {
+                value: name,
+                errorMsg: ""
+            }
+        });
     }
 
     handleTeamSelection(teamID) {
@@ -126,15 +151,38 @@ export class CollectionEditController extends Component {
         }));
     }
 
+    handlePublishTypeChange(publishType) {
+        this.setState({publishType});
+    }
+
+    handlePublishDateChange(date) {
+        this.setState({
+            publishDate: {
+                value: date,
+                errorMsg: ""
+            }
+        });
+        console.log(date);
+    }
+    
+    handlePublishTimeChange(time) {
+        this.setState({
+            publishTime: {
+                value: time,
+                errorMsg: ""
+            }
+        });
+    }
+
     handleCancel() {
         this.props.dispatch(push(url.resolve('../')));
     }
 
-    handleSave(formState) {
+    handleSave() {
         let hasError = false;
         
         //TODO possibly share validation between here and create collection component
-        if (!formState.name) {
+        if (!this.state.name.value) {
             this.setState(state => ({
                 name: {
                     ...state.name,
@@ -148,7 +196,8 @@ export class CollectionEditController extends Component {
             return;
         }
 
-        this.props.dispatch(push(url.resolve('../')));
+        console.log(this.state);
+        // this.props.dispatch(push(url.resolve('../')));
     }
 
     render() {
@@ -160,8 +209,19 @@ export class CollectionEditController extends Component {
                 onNameChange={this.handleNameChange}
                 onTeamSelect={this.handleTeamSelection}
                 onRemoveTeam={this.handleRemoveTeam}
+                onPublishTypeChange={this.handlePublishTypeChange}
+                onPublishDateChange={this.handlePublishDateChange}
+                onPublishTimeChange={this.handlePublishTimeChange}
+                originalName={this.props.name}
                 name={this.state.name.value}
                 nameErrorMsg={this.state.name.errorMsg}
+                originalPublishType={this.props.publishType}
+                publishType={this.state.publishType}
+                originalPublishDate={dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}
+                publishDate={this.state.publishDate.value}
+                publishDateErrorMsg={this.state.publishDate.errorMsg}
+                publishTime={this.state.publishTime.value}
+                publishTimeErrorMsg={this.state.publishTime.errorMsg}
                 teams={this.state.teams || []}
                 allTeams={this.state.isFetchingAllTeams ? [] : this.props.allTeams}
                 isFetchingAllTeams={this.state.isFetchingAllTeams}
@@ -175,7 +235,9 @@ CollectionEditController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         allTeams: state.state.teams.allIDsAndNames,
-        teams: state.state.collections.active ? state.state.collections.active.teams : undefined
+        teams: state.state.collections.active ? state.state.collections.active.teams : undefined,
+        publishType: state.state.collections.active ? state.state.collections.active.type : undefined,
+        publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined
     }
 }
 
