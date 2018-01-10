@@ -199,7 +199,7 @@ export class CollectionsController extends Component {
             return {
                 id: collection.id,
                 name: collection.name,
-                publishDate: this.readablePublishDate(collection),
+                publishDate: collection.publishDate,
                 status: {
                     neutral: publishStates.inProgress,
                     warning: publishStates.thrownError,
@@ -793,7 +793,7 @@ export class CollectionsController extends Component {
     renderEditCollection() {
         return (
             <CollectionEditController
-                {...this.props.activeCollection}
+                name={this.props.activeCollection.name}
             />
         )
     }

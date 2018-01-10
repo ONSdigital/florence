@@ -3,17 +3,22 @@ import PropTypes from 'prop-types';
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import SelectedItemList from '../../../components/selected-items/SelectedItemList';
+import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 
 const propTypes = {
+    originalName: PropTypes.string,
     name: PropTypes.string,
     nameErrorMsg: PropTypes.string,
     onCancel: PropTypes.func.isRequired,
     onNameChange: PropTypes.func.isRequired,
     onRemoveTeam: PropTypes.func.isRequired,
     onTeamSelect: PropTypes.func.isRequired,
+    onPublishTypeChange: PropTypes.func.isRequired,
+    onPublishDateChange: PropTypes.func.isRequired,
+    onPublishTimeChange: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    type: PropTypes.string,
     publishDate: PropTypes.string,
+    publishTime: PropTypes.string,
     teams: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
@@ -22,6 +27,9 @@ const propTypes = {
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
     })),
+    publishType: PropTypes.string.isRequired,
+    originalPublishType: PropTypes.string.isRequired,
+    originalPublishDate: PropTypes.string.isRequired,
     isFetchingAllTeams: PropTypes.bool
 };
 
@@ -29,13 +37,16 @@ class CollectionEdit extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            name: this.props.name,
-            teams: this.props.teams
-        }
+        this.publishTypeRadioButtons = [
+            {id: "edit-type-schedule", value: "scheduled", label: "Scheduled"},
+            {id: "edit-type-manual", value: "manual", label: "Manual"}
+        ];
 
         this.handleTeamSelection = this.handleTeamSelection.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handlePublishTypeChange = this.handlePublishTypeChange.bind(this);
+        this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
+        this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
     }
 
@@ -44,33 +55,42 @@ class CollectionEdit extends Component {
     }
 
     handleNameChange(event) {
-        this.setState({
-            name: event.target.value
-        });
         this.props.onNameChange(event.target.value);
+    }
+
+    handlePublishTypeChange(event) {
+        this.props.onPublishTypeChange(event.value);
+    }
+
+    handlePublishDateChange(event) {
+        this.props.onPublishDateChange(event.target.value);
+    }
+
+    handlePublishTimeChange(event) {
+        this.props.onPublishTimeChange(event.target.value);
     }
 
     handleSave(event) {
         event.preventDefault();
-        this.props.onSave(this.state);
+        this.props.onSave();
     }
 
     renderPublishDate() {
-        if (!this.props.type) {
+        if (!this.props.originalPublishType) {
             return;
         }
 
-        if (this.props.type === "manual") {
+        if (this.props.originalPublishType === "manual") {
             return <p>Manual publish</p>
         }
 
-        if (this.props.type === "scheduled" && this.props.publishDate) {
+        if (this.props.originalPublishType === "scheduled" && this.props.originalPublishDate) {
             return (
-                <p>Publish date: {this.props.publishDate}</p>
+                <p>Publish date: {this.props.originalPublishDate}</p>
             )
         }
 
-        if (this.props.type === "scheduled" && !this.props.publishDate) {
+        if (this.props.originalPublishType === "scheduled" && !this.props.originalPublishDate) {
             return (
                 <p>Publishing date: no publish date available</p>
             )
@@ -83,7 +103,7 @@ class CollectionEdit extends Component {
                 <div className="drawer__heading">
                     <div className="grid grid--justify-space-between grid--align-end">
                         <div>
-                            <h2>{this.props.name}</h2>
+                            <h2>{this.props.originalName}</h2>
                             {this.renderPublishDate()}
                         </div>
                         <p>Editing collection...</p>
@@ -94,7 +114,7 @@ class CollectionEdit extends Component {
                         <Input
                             id="collection-edit-name"
                             label="Name"
-                            value={this.state.name}
+                            value={this.props.name}
                             error={this.props.nameErrorMsg}
                             onChange={this.handleNameChange}
                         />
@@ -106,6 +126,28 @@ class CollectionEdit extends Component {
                             onChange={this.handleTeamSelection}
                         />
                         <SelectedItemList items={this.props.teams} onRemoveItem={this.props.onRemoveTeam}/>
+                        <RadioGroup
+                            groupName="collection-edit-type"
+                            radioData={this.publishTypeRadioButtons}
+                            selectedValue={this.props.publishType}
+                            onChange={this.handlePublishTypeChange}
+                            legend="Publish type"
+                            inline={true}
+                        />
+                        <Input
+                            type="date"
+                            id="edit-publish-date"
+                            label="Publish date"
+                            value={this.props.publishDate}
+                            onChange={this.handlePublishDateChange}
+                        />
+                        <Input
+                            type="time"
+                            id="edit-publish-date"
+                            label="Publish date"
+                            value={this.props.publishTime}
+                            onChange={this.handlePublishTimeChange}
+                        />
                     </form>
                 </div>
                 <div className="drawer__footer">
