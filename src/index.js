@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route } from 'react-router';
+import { Router, Route, IndexRoute } from 'react-router';
 import { routerActions } from 'react-router-redux';
 import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 
@@ -13,6 +13,7 @@ import TeamsController from './app/views/teams/TeamsController';
 // import DatasetController from './app/views/datasets/DatasetsController';
 // import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
 import Logs from './app/views/logs/Logs';
+import {CollectionEditController} from './app/views/collections/edit/CollectionEditController';
 
 import './scss/main.scss';
 
@@ -39,7 +40,7 @@ const userIsNotAuthorised = connectedReduxRedirect({
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectPath: `${rootPath}/not-authorised`,
     allowRedirectBack: false
-})
+});
 
 class UnknownRoute extends Component {
     render() {
@@ -65,7 +66,9 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
+                                    <Route path='edit' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                                </Route>
                             </Route>
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
                                 <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>

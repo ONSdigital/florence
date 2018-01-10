@@ -13,6 +13,7 @@ import dateformat from 'dateformat';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import log, {eventTypes} from '../../utilities/log';
+import CollectionEditController from './edit/CollectionEditController';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -48,7 +49,9 @@ const propTypes = {
         type: PropTypes.string.isRequired,
         teams: PropTypes.array
     }),
-    activePageURI: PropTypes.string
+    activePageURI: PropTypes.string,
+    isEditingCollection: PropTypes.bool,
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export class CollectionsController extends Component {
@@ -61,7 +64,8 @@ export class CollectionsController extends Component {
             pendingDeletedPages: [],
             isFetchingCollectionDetails: false,
             drawerIsAnimatable: false,
-            drawerIsVisible: false
+            drawerIsVisible: false,
+            isEditingCollection: false
         };
 
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
@@ -85,6 +89,14 @@ export class CollectionsController extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        // Open and close edit collection modal
+        if (nextProps.routes[nextProps.routes.length-1].path === "edit") {
+            this.setState({isEditingCollection: true});
+        }
+        if (this.props.routes[this.props.routes.length-1].path === "edit" && nextProps.routes[nextProps.routes.length-1].path !== "edit") {
+            this.setState({isEditingCollection: false});
+        }
+
         if (!this.props.params.collectionID && nextProps.params.collectionID) {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
@@ -203,7 +215,8 @@ export class CollectionsController extends Component {
                 canBeDeleted: false,
                 inProgress: collection.inProgress,
                 complete: collection.complete,
-                reviewed: collection.reviewed
+                reviewed: collection.reviewed,
+                teams: collection.teams
             }
         } catch (error) {
             const notification = {
@@ -726,39 +739,62 @@ export class CollectionsController extends Component {
         }
     }
 
-    renderDetailsDrawer() {
+    renderDrawer() {
+        if (this.state.isFetchingCollections) {
+            return (
+                <Drawer
+                isVisible={this.state.drawerIsVisible} 
+                isAnimatable={this.state.drawerIsAnimatable} 
+                handleTransitionEnd={this.handleDrawerTransitionEnd}
+            >
+                <div className="grid grid--align-center grid--full-height">
+                    <div className="loader loader--large"></div>
+                </div>
+            </Drawer>
+            )
+        }
+
+
         return (
             <Drawer
                 isVisible={this.state.drawerIsVisible} 
                 isAnimatable={this.state.drawerIsAnimatable} 
                 handleTransitionEnd={this.handleDrawerTransitionEnd}
             >
-                {(this.props.params.collectionID && this.props.activeCollection) 
-                    ||
-                // Drawer closing but keep collection details rendered whilst
-                // animation happens. handleEndTransition will empty active collection
-                (!this.props.params.collectionID && this.props.activeCollection)
-                ?
-                    <CollectionDetails 
-                        {...this.props.activeCollection}
-                        activePageURI={this.props.activePageURI}
-                        inProgress={this.mapPagesAndPendingDeletes('inProgress')}
-                        complete={this.mapPagesAndPendingDeletes('complete')}
-                        reviewed={this.mapPagesAndPendingDeletes('reviewed')}
-                        onClose={this.handleDrawerCloseClick}
-                        onPageClick={this.handleCollectionPageClick}
-                        onEditPageClick={this.handleCollectionPageEditClick}
-                        onDeletePageClick={this.handleCollectionPageDeleteClick}
-                        onDeleteCollectionClick={this.handleCollectionDeleteClick}
-                        onApproveCollectionClick={this.handleCollectionApproveClick}
-                        isLoadingDetails={this.state.isFetchingCollectionDetails}
-                    />
-                    :
-                    <div className="grid grid--align-center grid--full-height">
-                        <div className="loader loader--large"></div>
-                    </div>
+                {(this.props.activeCollection && !this.state.isEditingCollection) &&
+                    this.renderCollectionDetails()
+                }
+                {(this.props.activeCollection && this.state.isEditingCollection) &&
+                    this.renderEditCollection()
                 }
             </Drawer>
+        )
+    }
+
+    renderCollectionDetails() {
+        return (
+            <CollectionDetails 
+                {...this.props.activeCollection}
+                activePageURI={this.props.activePageURI}
+                inProgress={this.mapPagesAndPendingDeletes('inProgress')}
+                complete={this.mapPagesAndPendingDeletes('complete')}
+                reviewed={this.mapPagesAndPendingDeletes('reviewed')}
+                onClose={this.handleDrawerCloseClick}
+                onPageClick={this.handleCollectionPageClick}
+                onEditPageClick={this.handleCollectionPageEditClick}
+                onDeletePageClick={this.handleCollectionPageDeleteClick}
+                onDeleteCollectionClick={this.handleCollectionDeleteClick}
+                onApproveCollectionClick={this.handleCollectionApproveClick}
+                isLoadingDetails={this.state.isFetchingCollectionDetails}
+            />
+        )
+    }
+
+    renderEditCollection() {
+        return (
+            <CollectionEditController
+                {...this.props.activeCollection}
+            />
         )
     }
 
@@ -779,7 +815,7 @@ export class CollectionsController extends Component {
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
                         <CollectionCreate user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}/>
-                        {this.renderDetailsDrawer()}
+                        {this.renderDrawer()}
                     </div>
                 </div>
             </div>
