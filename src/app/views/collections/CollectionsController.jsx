@@ -797,6 +797,7 @@ export class CollectionsController extends Component {
         return (
             <CollectionEditController
                 name={this.props.activeCollection.name}
+                id={this.props.activeCollection.id}
             />
         )
     }

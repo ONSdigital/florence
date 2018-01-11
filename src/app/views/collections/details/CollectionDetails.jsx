@@ -273,7 +273,7 @@ export class CollectionDetails extends Component {
 
         if (this.props.type === "scheduled" && this.props.publishDate) {
             return (
-                <p>Publish date: {this.props.publishDate}</p>
+                <p>Publish date: {dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}</p>
             )
         }
 

@@ -32,7 +32,8 @@ const propTypes = {
     publishType: PropTypes.string.isRequired,
     originalPublishType: PropTypes.string.isRequired,
     originalPublishDate: PropTypes.string.isRequired,
-    isFetchingAllTeams: PropTypes.bool
+    isFetchingAllTeams: PropTypes.bool,
+    isSavingEdits: PropTypes.bool
 };
 
 class CollectionEdit extends Component {
@@ -112,7 +113,7 @@ class CollectionEdit extends Component {
                     </div>
                 </div>
                 <div className="drawer__body">
-                    <form onSubmit={this.handleSave}>
+                    <form className="form" onSubmit={this.handleSave}>
                         <Input
                             id="collection-edit-name"
                             label="Name"
@@ -127,7 +128,7 @@ class CollectionEdit extends Component {
                             defaultOption={this.props.isFetchingAllTeams ? "Loading teams..." : "Select an option"}
                             onChange={this.handleTeamSelection}
                         />
-                        <SelectedItemList items={this.props.teams} onRemoveItem={this.props.onRemoveTeam}/>
+                        <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.props.onRemoveTeam}/>
                         <RadioGroup
                             groupName="collection-edit-type"
                             radioData={this.publishTypeRadioButtons}
@@ -159,8 +160,13 @@ class CollectionEdit extends Component {
                     </form>
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn" type="button" onClick={this.props.onCancel}>Cancel</button>
-                    <button className="btn btn--positive btn--margin-left" type="button" onClick={this.handleSave}>Save and return</button>
+                    <button disabled={this.props.isSavingEdits} className="btn" type="button" onClick={this.props.onCancel}>Cancel</button>
+                    <button disabled={this.props.isSavingEdits} className="btn btn--positive btn--margin-left" type="button" onClick={this.handleSave}>Save and return</button>
+                    {this.props.isSavingEdits &&
+                        <div className="inline-block">
+                            <div className="form__loader loader"></div>
+                        </div>
+                    }
                 </div>
             </div>
         )
