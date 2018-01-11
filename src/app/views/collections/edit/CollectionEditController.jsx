@@ -10,6 +10,7 @@ import teams from '../../../utilities/api-clients/teams';
 import log, {eventTypes} from '../../../utilities/log';
 import notifications from '../../../utilities/notifications';
 import { updateAllTeamIDsAndNames , updateAllTeams} from '../../../config/actions';
+import collectionValidation from '../validation/collectionValidation';
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -44,7 +45,7 @@ export class CollectionEditController extends Component {
                 errorMsg: ""
             },
             publishTime: {
-                value: "",
+                value: "09:30",
                 errorMsg: ""
             }
         }
@@ -162,7 +163,6 @@ export class CollectionEditController extends Component {
                 errorMsg: ""
             }
         });
-        console.log(date);
     }
     
     handlePublishTimeChange(time) {
@@ -181,32 +181,34 @@ export class CollectionEditController extends Component {
     handleSave() {
         let hasError = false;
         
-        //TODO possibly share validation between here and create collection component
-        if (!this.state.name.value) {
+        const validatedName = collectionValidation.name(this.state.name.value);
+        if (!validatedName.isValid) {
             this.setState(state => ({
                 name: {
                     ...state.name,
-                    errorMsg: "Collections must be given a name"
+                    errorMsg: validatedName.errorMsg
                 }
             }));
             hasError = true;
         }
 
-        if (this.state.publishType === "scheduled" && !this.state.publishDate.value) {
+        const validatedDate = collectionValidation.date(this.state.publishDate.value, this.state.publishType);
+        if (!validatedDate.isValid) {
             this.setState({
                 publishDate: {
                     value: "",
-                    errorMsg: "A scheduled collection must have a publish date"
+                    errorMsg: validatedDate.errorMsg
                 }
             });
             hasError = true;
         }
         
-        if (this.state.publishType === "scheduled" && !this.state.publishTime.value) {
+        const validatedTime = collectionValidation.time(this.state.publishTime.value, this.state.publishType)
+        if (!validatedTime.isValid) {
             this.setState({
                 publishTime: {
                     value: "",
-                    errorMsg: "A scheduled collection must have a publish date"
+                    errorMsg: validatedTime.errorMsg
                 }
             });
             hasError = true;
@@ -240,7 +242,7 @@ export class CollectionEditController extends Component {
                 originalPublishDate={dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}
                 publishDate={this.state.publishDate.value}
                 publishDateErrorMsg={this.state.publishDate.errorMsg}
-                publishTime={this.state.publishTime.value || "09:30"}
+                publishTime={this.state.publishTime.value}
                 publishTimeErrorMsg={this.state.publishTime.errorMsg}
                 teams={this.state.teams || []}
                 allTeams={this.state.isFetchingAllTeams ? [] : this.props.allTeams}
