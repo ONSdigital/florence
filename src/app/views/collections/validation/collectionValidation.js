@@ -1,5 +1,3 @@
-import { debug } from "util";
-
 /**
  * validates collection data
  * 
@@ -37,7 +35,6 @@ export default class collectionValidation {
     }
     
     static time(time, publishType) {
-        console.log(time);
         if (publishType === "scheduled" && !time) {
             return {
                 isValid: false,
