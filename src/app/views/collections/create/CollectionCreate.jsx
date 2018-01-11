@@ -12,6 +12,7 @@ import Select from '../../../components/Select';
 import SelectedItemList from '../../../components/selected-items/SelectedItemList'
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
+import collectionValidation from '../validation/collectionValidation';
 
 const propTypes = {
     user: PropTypes.shape({
@@ -271,56 +272,58 @@ export class CollectionCreate extends Component {
         event.preventDefault();
         this.setState({isSubmitting: true});
 
-        // check no required fields are empty
-        // check name has a value
-        if (!this.state.newCollectionDetails.name.value) {
+        let hasError = false;
+        let newCollectionDetails = this.state.newCollectionDetails
+
+        const validatedName = collectionValidation.name(this.state.newCollectionDetails.name.value);
+        if (!validatedName.isValid) {
             const collectionName = {
-                value: "",
-                errorMsg: "Collections must be given a name"
+                value: this.state.newCollectionDetails.name.value,
+                errorMsg: validatedName.errorMsg
             };
 
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
+            newCollectionDetails = {
+                ...newCollectionDetails,
                 name: collectionName
             };
-            this.setState({
-                newCollectionDetails: newCollectionDetails,
-                isSubmitting: false
-            });
-            return;
+            hasError = true;
         }
 
-        // check date has a value
-        if (this.state.newCollectionDetails.type === "scheduled" && !this.state.newCollectionDetails.publishDate.value) {
+        const validatedDate = collectionValidation.date(this.state.newCollectionDetails.publishDate.value, this.state.newCollectionDetails.type);
+        if (!validatedDate.isValid) {
             const collectionDate = {
-                value: "",
-                errorMsg: "Scheduled collections must be given a publish date"
+                value: this.state.newCollectionDetails.publishDate.value,
+                errorMsg: validatedDate.errorMsg
             };
 
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
+            newCollectionDetails = {
+                ...newCollectionDetails,
                 publishDate: collectionDate
             };
-            this.setState({
-                newCollectionDetails: newCollectionDetails,
-                isSubmitting: false
-            });
-            return;
+            hasError = true;
         }
 
-        // check time has a value
-        if (this.state.newCollectionDetails.type === "scheduled" && !this.state.newCollectionDetails.publishTime.value) {
+        const validatedTime = collectionValidation.time(this.state.newCollectionDetails.publishTime.value, this.state.newCollectionDetails.type);
+        if (!validatedTime.isValid) {
             const collectionTime = {
-                value: "",
-                errorMsg: "Scheduled collections must be given a publish time"
+                value: this.state.newCollectionDetails.publishTime.value,
+                errorMsg: validatedTime.errorMsg
             };
 
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
+            newCollectionDetails = {
+                ...newCollectionDetails,
                 publishTime: collectionTime
             };
             this.setState({
                 newCollectionDetails: newCollectionDetails,
+                isSubmitting: false
+            });
+            hasError = true;
+        }
+
+        if (hasError) {
+            this.setState({
+                newCollectionDetails,
                 isSubmitting: false
             });
             return;
@@ -330,6 +333,7 @@ export class CollectionCreate extends Component {
             this.setState({ newCollectionDetails: this.baseNewCollectionDetails, isSubmitting: false });
             this.props.onSuccess(response);
         }).catch(error => {
+            this.setState({isSubmitting: false});
             switch(error.status) {
                 case(400): {
                     const notification = {
