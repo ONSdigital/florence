@@ -216,7 +216,10 @@ export class CollectionsController extends Component {
                 inProgress: collection.inProgress,
                 complete: collection.complete,
                 reviewed: collection.reviewed,
-                teams: collection.teams
+                teams: collection.teamsDetails ? collection.teamsDetails.map(team => ({
+                    id: team.id.toString(), 
+                    name: team.name
+                })) : [],
             }
         } catch (error) {
             const notification = {

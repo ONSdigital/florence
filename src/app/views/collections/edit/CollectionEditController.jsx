@@ -240,7 +240,7 @@ export class CollectionEditController extends Component {
                 originalPublishDate={dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}
                 publishDate={this.state.publishDate.value}
                 publishDateErrorMsg={this.state.publishDate.errorMsg}
-                publishTime={this.state.publishTime.value}
+                publishTime={this.state.publishTime.value || "09:30"}
                 publishTimeErrorMsg={this.state.publishTime.errorMsg}
                 teams={this.state.teams || []}
                 allTeams={this.state.isFetchingAllTeams ? [] : this.props.allTeams}
