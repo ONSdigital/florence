@@ -116,7 +116,9 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
                 if(datasetID){
-                  Florence.globalVars.pagePath = $('.js-browse__item.selected').data('url');
+                  var url = $('#browser-location').val();
+                  url = url.replace(/^.*\/\/[^\/]+/, '')
+                  Florence.globalVars.pagePath = url;
                 } else {
                   Florence.globalVars.pagePath = getPreviewUrl();
                 }
