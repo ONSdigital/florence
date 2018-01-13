@@ -12,7 +12,6 @@ import TeamsController from './app/views/teams/TeamsController';
 // import DatasetController from './app/views/datasets/DatasetsController';
 // import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
 import Logs from './app/views/logs/Logs';
-import LogsNew from './app/views/logs/Logs-new';
 
 import './scss/main.scss';
 
@@ -69,7 +68,7 @@ class Index extends Component {
                                     <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/logs`} component={ LogsNew } />
+                            <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path={`*`} component={ UnknownRoute } />
