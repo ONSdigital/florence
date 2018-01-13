@@ -83,7 +83,7 @@ export class Logs extends Component {
     handleDeleteAll() {
         this.setState({isFetchingLogs: true});
         log.removeAll().then(() => {
-            this.setState({isFetchingLogs: false, logs: []});
+            this.setState({isFetchingLogs: false, logs: [], paginationCount: 0});
         }).catch(error => {
             this.setState({isFetchingLogs: false});
             console.error("Error removing all logs from storage", error);
@@ -120,6 +120,10 @@ export class Logs extends Component {
     }
 
     renderPagination() {
+        if (this.state.paginationCount === 1) {
+            return;
+        }
+
         const pagination = [...Array(this.state.paginationCount)];
         const pageNumbers = pagination.map((_, index) => {
             return (
@@ -130,9 +134,22 @@ export class Logs extends Component {
         });
 
         return (
-            <ul className="pagination">
-                {pageNumbers}
-            </ul>
+            <nav className="margin-top--2">
+                <p>Page {this.props.page || 1} of {this.state.paginationCount}</p>
+                <ul className="pagination">
+                    {this.props.page && this.props.page !== "1" &&
+                        <li className="pagination__item">
+                            <Link to={`${this.props.location.pathname}?page=${parseInt(this.props.page) - 1}&timestamp=${this.state.logsTimestamp}`} className="pagination__link">Previous</Link>
+                        </li>
+                    }
+                    {pageNumbers}
+                    {this.props.page !== this.state.paginationCount &&
+                        <li className="pagination__item">
+                            <Link to={`${this.props.location.pathname}?page=${parseInt(this.props.page) + 1}&timestamp=${this.state.logsTimestamp}`} className="pagination__link">Next</Link>
+                        </li>
+                    }
+                </ul>
+            </nav>
         )
     }
 
@@ -159,17 +176,25 @@ export class Logs extends Component {
         return (
             <div className="grid grid--justify-center margin-bottom--3">
                 <div className="grid__col-8">
-                    <h1>Logs</h1>
+                    <div className="grid grid--justify-space-between grid--align-center">
+                        <h1>Logs</h1>
+                        <div>
+                            <button className="btn btn--warning" onClick={this.handleDeleteAll} type="button">Delete all</button>
+                        </div>
+                    </div>
                     {this.state.isFetchingLogs ?
                         <div className="grid grid--justify-center margin-top--5">
                             <div className="loader loader--dark loader--large"></div>
                         </div>
                     :
                         <div className="logs">
-                            <button className="btn btn--warning" onClick={this.handleDeleteAll} type="button">Delete all</button>
-                            {this.state.logs.map(log => {
-                                return this.mapLogToComponent(log, log.storageID)
-                            })}
+                            {this.state.logs.length > 0 ? 
+                                this.state.logs.map(log => {
+                                    return this.mapLogToComponent(log, log.storageID)
+                                })
+                            :
+                                <p>No logs to display</p>
+                            }
                             {this.renderPagination()}
                         </div>
 
