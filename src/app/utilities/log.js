@@ -70,8 +70,8 @@ export default class log {
      * @param {number} limit - (Optional) the number of items we'd like to receive
      * @param {number} requestTimestamp - (Optional) a Unix timestamp that 
      */
-    static getAll(skip, limit, requestTimestamp) {
-        return storage.getAll(skip, limit, requestTimestamp);
+    static getAll(pageNumber, limit, requestTimestamp) {
+        return storage.getAll(pageNumber, limit, requestTimestamp);
     }
 
     /**

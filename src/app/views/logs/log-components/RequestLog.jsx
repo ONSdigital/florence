@@ -15,11 +15,12 @@ const propTypes = {
         URI: PropTypes.string,
         method: PropTypes.string,
         retryCount: PropTypes.number,
-        willRetry: PropTypes.bool
+        willRetry: PropTypes.bool,
+        requestID: PropTypes.string,
     })
 }
 
-class RouteLog extends Component {
+class RequestLog extends Component {
     constructor(props) {
         super(props);
     }
@@ -39,10 +40,13 @@ class RouteLog extends Component {
                 {this.props.payload.message &&
                     <div>Message: {this.props.payload.message}</div>
                 }
+                {this.props.payload.requestID &&
+                    <div>Request ID: {this.props.payload.requestID}</div>
+                }
             </DefaultLog>
         )
     }
 }
 
-RouteLog.propTypes = propTypes;
-export default RouteLog;
+RequestLog.propTypes = propTypes;
+export default RequestLog;
