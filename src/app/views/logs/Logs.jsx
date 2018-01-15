@@ -10,6 +10,7 @@ import RequestLog from './log-components/RequestLog';
 import RouteLog from './log-components/RouteLog';
 import RuntimeErrorLog from './log-components/RuntimeErrorLog'
 import NotificationLog from './log-components/NotificationLog'
+import uuid from 'uuid/v4';
 
 const propTypes = {
     user: PropTypes.string,
@@ -195,11 +196,10 @@ export class Logs extends Component {
     //     }
     // }
 
-    renderPaginationItem(index, currentPageNumber) {
-        console.log(index);
+    renderPaginationItem (pageNumber, currentPageNumber) {
         return (
-            <li className={"pagination__item" + (index === currentPageNumber ? " pagination__item--active" : "")} key={index}>
-                {this.renderPageLink(index)}
+            <li className={"pagination__item" + (pageNumber === currentPageNumber ? " pagination__item--active" : "")} key={uuid()}>
+                {this.renderPageLink(pageNumber)}
             </li>
         )
     }
@@ -217,32 +217,24 @@ export class Logs extends Component {
         pagination[0] = this.renderPaginationItem(1, currentPageNumber);
         pagination[pagination.length-1] = this.renderPaginationItem(this.state.paginationCount, currentPageNumber);
 
-        if (currentPageNumber >= 8) {
-            pagination[1] = <li className="pagination__item" key="first-ellipsis">&#8230;</li>;
+        if (currentPageNumber >= 7) {
+            pagination[1] = <li className="pagination__item" key="before-ellipsis">&#8230;</li>;
         }
 
-        const lastPageInRange = (currentPageNumber + 3) - this.state.paginationCount;
-        if (lastPageInRange >= 0) {
-            console.log('Out of page range by:' + lastPageInRange);
-            for (let i = 0; i < lastPageInRange; i++) {
-                // console.log("(currentPageNumber-5)+i: ", (currentPageNumber-5)+i);
-                // console.log("(currentPageNumber-5)+i+lastPageInRange: ", (currentPageNumber-5)+i+lastPageInRange);
-                // console.log('-----');
-                pagination[i+2] = this.renderPaginationItem((currentPageNumber-5)+i, currentPageNumber);
-            }
+        const lastPageInRange = (currentPageNumber + 4) - this.state.paginationCount;
+        const offset = lastPageInRange >= 0 ? lastPageInRange : 0;
+        
+        if (lastPageInRange < 0) {
+            pagination[pagination.length-2] = <li className="pagination__item" key="after-ellipsis">&#8230;</li>;
         }
 
         pagination.forEach((page, index) => {
             if (page !== undefined) {
-                console.log('No: ', index);
                 return;
             }
 
-            // console.log((currentPageNumber-5)+index);
-            console.log('Yes: ', index);
-
-            console.log(currentPageNumber-5);
-            pagination[index] = this.renderPaginationItem((currentPageNumber-5)+index, currentPageNumber);
+            const pageNumber = currentPageNumber <= 5 ? index+1 : (currentPageNumber-5-offset)+index;
+            pagination[index] = this.renderPaginationItem(pageNumber, currentPageNumber);
         });
 
         return pagination;
@@ -277,8 +269,7 @@ export class Logs extends Component {
                         </li>
                     }
                     {this.renderPaginationNumbers(currentPageNumber)}
-                    {/* {this.oldRenderPaginationNumbers(currentPageNumber)} */}
-                    {this.state.logs.length > 0 && this.props.page !== this.state.paginationCount &&
+                    {this.state.logs.length > 0 && parseInt(this.props.page) !== this.state.paginationCount &&
                         <li className="pagination__item">
                             <Link to={`${this.props.location.pathname}?page=${currentPageNumber + 1}&timestamp=${this.state.logsTimestamp}`} className="pagination__link pagination__link--flush-right">Next</Link>
                         </li>
