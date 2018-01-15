@@ -57,7 +57,7 @@ export class Logs extends Component {
             this.setState({
                 logs: response.results,
                 isFetchingLogs: false,
-                paginationCount: response.pagination.pageCount
+                paginationCount: response.pagination.pageCount || 1
             })
         }).catch(error => {
             this.setState({isFetchingLogs: false});
@@ -83,7 +83,7 @@ export class Logs extends Component {
     handleDeleteAll() {
         this.setState({isFetchingLogs: true});
         log.removeAll().then(() => {
-            this.setState({isFetchingLogs: false, logs: [], paginationCount: 0});
+            this.setState({isFetchingLogs: false, logs: [], paginationCount: 1});
         }).catch(error => {
             this.setState({isFetchingLogs: false});
             console.error("Error removing all logs from storage", error);
@@ -119,33 +119,168 @@ export class Logs extends Component {
         return <DefaultLog key={id} {...log} isFailure={failureEventTypes.includes(log.type)} />
     }
 
-    renderPagination() {
-        if (this.state.paginationCount === 1) {
-            return;
+    renderCurrentPageNumber() {
+        return <p>Page {this.props.page || 1} of {this.state.paginationCount}</p>;
+    }
+
+    // renderPaginationNumbers(currentPageNumber) {
+    //     const pagination = this.state.paginationCount < 10 ? [...Array(this.state.paginationCount)] : [...Array(10)];
+
+    //     // Just render 10 normal links
+    //     if (this.state.paginationCount <= 10) {
+    //         return pagination.map((_, index) => {
+    //             return (
+    //                 <li className={"pagination__item" + (index+1 === currentPageNumber ? " pagination__item--active" : "")} key={index}>
+    //                     {this.renderPageLink(index+1)}
+    //                 </li>
+    //             )
+    //         });
+    //     }
+
+    //     console.log(this.state.paginationCount);
+    //     console.log(currentPageNumber + 4);
+
+    //     // Show dots on both sides
+    //     if (this.state.paginationCount > 10 && currentPageNumber+4 <= this.state.paginationCount) {
+    //         pagination.splice(0,2);
+    //         const numbers = pagination.map((_, index) => {
+    //             const modifiedNumber = (index+currentPageNumber-4);
+    //             return (
+    //                 <li className={"pagination__item" + (modifiedNumber === currentPageNumber ? " pagination__item--active" : "")} key={modifiedNumber}>
+    //                     {this.renderPageLink(modifiedNumber)}
+    //                 </li>
+    //             )
+    //         });
+    //         console.log(currentPageNumber-4);
+
+    //         return (
+    //             <span>
+    //                 <li className="pagination__item">
+    //                     {this.renderPageLink(1)}
+    //                 </li>
+    //                 {currentPageNumber-4 > 2 && 
+    //                     <li className="pagination__item">&#8230;</li>
+    //                 }
+    //                 {numbers}
+    //                 <li className="pagination__item">&#8230;</li>
+    //                 <li className="pagination__item" key="last">
+    //                     {this.renderPageLink(this.state.paginationCount)}
+    //                 </li>
+    //             </span>
+    //         )
+    //     }
+
+    //     // Don't show dots at end
+    //     if (this.state.paginationCount > 10 && currentPageNumber+4 >= this.state.paginationCount) {
+    //         const numbers = pagination.map((_, index) => {
+    //             const modifiedNumber = (index+currentPageNumber-4);
+    //             if (modifiedNumber > this.state.paginationCount) {
+    //                 return;
+    //             }
+    //             return (
+    //                 <li className={"pagination__item" + (modifiedNumber === currentPageNumber ? " pagination__item--active" : "")} key={modifiedNumber}>
+    //                     {this.renderPageLink(modifiedNumber)}
+    //                 </li>
+    //             )
+    //         });
+    //         return (
+    //             <span>
+    //                 <li className="pagination__item">
+    //                     {this.renderPageLink(1)}
+    //                 </li>
+    //                 <li className="pagination__item">&#8230;</li>
+    //                 {numbers}
+    //             </span>
+    //         )
+    //     }
+    // }
+
+    renderPaginationItem(index, currentPageNumber) {
+        console.log(index);
+        return (
+            <li className={"pagination__item" + (index === currentPageNumber ? " pagination__item--active" : "")} key={index}>
+                {this.renderPageLink(index)}
+            </li>
+        )
+    }
+
+    renderPaginationNumbers(currentPageNumber) {
+        const tempArray = this.state.paginationCount < 10 ? [...Array(this.state.paginationCount)] : [...Array(10)];
+
+        if (this.state.paginationCount < 10) {
+            return tempArray.map((_, index) => {
+                return this.renderPaginationItem(index+1, currentPageNumber);
+            })
         }
 
-        const pagination = [...Array(this.state.paginationCount)];
-        const pageNumbers = pagination.map((_, index) => {
+        const pagination = tempArray;
+        pagination[0] = this.renderPaginationItem(1, currentPageNumber);
+        pagination[pagination.length-1] = this.renderPaginationItem(this.state.paginationCount, currentPageNumber);
+
+        if (currentPageNumber >= 8) {
+            pagination[1] = <li className="pagination__item" key="first-ellipsis">&#8230;</li>;
+        }
+
+        const lastPageInRange = (currentPageNumber + 3) - this.state.paginationCount;
+        if (lastPageInRange >= 0) {
+            console.log('Out of page range by:' + lastPageInRange);
+            for (let i = 0; i < lastPageInRange; i++) {
+                // console.log("(currentPageNumber-5)+i: ", (currentPageNumber-5)+i);
+                // console.log("(currentPageNumber-5)+i+lastPageInRange: ", (currentPageNumber-5)+i+lastPageInRange);
+                // console.log('-----');
+                pagination[i+2] = this.renderPaginationItem((currentPageNumber-5)+i, currentPageNumber);
+            }
+        }
+
+        pagination.forEach((page, index) => {
+            if (page !== undefined) {
+                console.log('No: ', index);
+                return;
+            }
+
+            // console.log((currentPageNumber-5)+index);
+            console.log('Yes: ', index);
+
+            console.log(currentPageNumber-5);
+            pagination[index] = this.renderPaginationItem((currentPageNumber-5)+index, currentPageNumber);
+        });
+
+        return pagination;
+    }
+
+    oldRenderPaginationNumbers(currentPageNumber) {
+        const pagination = this.state.paginationCount < 10 ? [...Array(this.state.paginationCount)] : [...Array(10)];
+        const numbers = pagination.map((_, index) => {
             return (
-                <li className="pagination__item" key={index}>
+                <li className={"pagination__item" + (index+1 === currentPageNumber ? " pagination__item--active" : "")} key={index}>
                     {this.renderPageLink(index+1)}
                 </li>
             )
         });
 
+        return numbers;
+    }
+
+    renderPagination() {
+        if (this.state.paginationCount === 1) {
+            return;
+        }
+        const currentPageNumber = this.props.page ? parseInt(this.props.page) : 1;
+
         return (
             <nav className="margin-top--2">
-                <p>Page {this.props.page || 1} of {this.state.paginationCount}</p>
+                {this.renderCurrentPageNumber()}
                 <ul className="pagination">
                     {this.props.page && this.props.page !== "1" &&
                         <li className="pagination__item">
-                            <Link to={`${this.props.location.pathname}?page=${parseInt(this.props.page) - 1}&timestamp=${this.state.logsTimestamp}`} className="pagination__link">Previous</Link>
+                            <Link to={`${this.props.location.pathname}?page=${currentPageNumber - 1}&timestamp=${this.state.logsTimestamp}`} className="pagination__link pagination__link--flush-left">Previous</Link>
                         </li>
                     }
-                    {pageNumbers}
-                    {this.props.page !== this.state.paginationCount &&
+                    {this.renderPaginationNumbers(currentPageNumber)}
+                    {/* {this.oldRenderPaginationNumbers(currentPageNumber)} */}
+                    {this.state.logs.length > 0 && this.props.page !== this.state.paginationCount &&
                         <li className="pagination__item">
-                            <Link to={`${this.props.location.pathname}?page=${parseInt(this.props.page) + 1}&timestamp=${this.state.logsTimestamp}`} className="pagination__link">Next</Link>
+                            <Link to={`${this.props.location.pathname}?page=${currentPageNumber + 1}&timestamp=${this.state.logsTimestamp}`} className="pagination__link pagination__link--flush-right">Next</Link>
                         </li>
                     }
                 </ul>
