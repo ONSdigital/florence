@@ -66,7 +66,6 @@ export class CollectionEditController extends Component {
     }
 
     componentWillMount() {
-        console.log(this.props);
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
                 publishDate: {
