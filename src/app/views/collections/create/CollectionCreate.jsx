@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
+import dateFormat from 'dateformat';
 
 import collections from '../../../utilities/api-clients/collections';
 import teams from '../../../utilities/api-clients/teams';
@@ -13,6 +14,7 @@ import SelectedItemList from '../../../components/selected-items/SelectedItemLis
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
 import collectionValidation from '../validation/collectionValidation';
+import date from '../../../utilities/date';
 
 const propTypes = {
     user: PropTypes.shape({
@@ -53,6 +55,9 @@ export class CollectionCreate extends Component {
             isGettingTeams: true,
             isSubmitting: false
         };
+
+        this.minimumPublishDate = dateFormat(date.getNow(), "yyyy-mm-dd");
+        this.maximumPublishDate = dateFormat(date.addYear(10), "yyyy-mm-dd");
 
         this.baseNewCollectionDetails = this.state.newCollectionDetails;
 
@@ -400,8 +405,8 @@ export class CollectionCreate extends Component {
                             onChange={this.handlePublishDateChange}
                             error={this.state.newCollectionDetails.publishDate.errorMsg}
                             value={this.state.newCollectionDetails.publishDate.value}
-                            min={this.getTodayDate()}
-                            max={this.getTodayDate(10)}
+                            min={this.minimumPublishDate}
+                            max={this.maximumPublishDate}
                         />
 
                         <Input

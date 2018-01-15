@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import dateFormat from 'dateformat';
+
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import SelectedItemList from '../../../components/selected-items/SelectedItemList';
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
+import date from '../../../utilities/date';
 
 const propTypes = {
     originalName: PropTypes.string,
@@ -44,6 +47,9 @@ class CollectionEdit extends Component {
             {id: "edit-type-schedule", value: "scheduled", label: "Scheduled"},
             {id: "edit-type-manual", value: "manual", label: "Manual"}
         ];
+
+        this.minimumPublishDate = dateFormat(date.getNow(), "yyyy-mm-dd");
+        this.maximumPublishDate = dateFormat(date.addYear(10), "yyyy-mm-dd");
 
         this.handleTeamSelection = this.handleTeamSelection.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -145,12 +151,14 @@ class CollectionEdit extends Component {
                                     label="Publish date"
                                     error={this.props.publishDateErrorMsg}
                                     value={this.props.publishDate}
+                                    min={this.minimumPublishDate}
+                                    max={this.maximumPublishDate}
                                     onChange={this.handlePublishDateChange}
                                 />
                                 <Input
                                     type="time"
-                                    id="edit-publish-date"
-                                    label="Publish date"
+                                    id="edit-publish-time"
+                                    label="Publish time"
                                     error={this.props.publishTimeErrorMsg}
                                     value={this.props.publishTime}
                                     onChange={this.handlePublishTimeChange}
