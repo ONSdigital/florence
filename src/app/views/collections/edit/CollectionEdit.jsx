@@ -52,6 +52,7 @@ class CollectionEdit extends Component {
         this.maximumPublishDate = dateFormat(date.addYear(10), "yyyy-mm-dd");
 
         this.handleTeamSelection = this.handleTeamSelection.bind(this);
+        this.handleTeamRemove = this.handleTeamRemove.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handlePublishTypeChange = this.handlePublishTypeChange.bind(this);
         this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
@@ -61,6 +62,10 @@ class CollectionEdit extends Component {
 
     handleTeamSelection(event) {
         this.props.onTeamSelect(event.target.value);
+    }
+    
+    handleTeamRemove(team) {
+        this.props.onRemoveTeam(team.id);
     }
 
     handleNameChange(event) {
@@ -134,7 +139,7 @@ class CollectionEdit extends Component {
                             defaultOption={this.props.isFetchingAllTeams ? "Loading teams..." : "Select an option"}
                             onChange={this.handleTeamSelection}
                         />
-                        <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.props.onRemoveTeam}/>
+                        <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.handleTeamRemove}/>
                         <RadioGroup
                             groupName="collection-edit-type"
                             radioData={this.publishTypeRadioButtons}
