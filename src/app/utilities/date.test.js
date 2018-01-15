@@ -46,10 +46,18 @@ describe("Adding to a date", () => {
 // we just want to check that our abstraction hasn't broken
 describe("Formatting a date", () => {
     const format = "UTC:ddd, d/m/yyyy h:MM:ss";
+    const mockedDate = new Date("2018-01-10T14:02:30.513Z");
 
     it("returns a string of a passed in date", () => {
-        const mockedDate = new Date("2018-01-10T14:02:30.513Z");
         expect(date.format(mockedDate, format)).toBe("Wed, 10/1/2018 2:02:30");
+    });
+
+    it("returns a string of just the time of a passed in date", () => {
+        expect(date.format(mockedDate, "h:MM:ss")).toBe("2:02:30");
+    });
+    
+    it("returns a string of just the date of a passed in date", () => {
+        expect(date.format(mockedDate, "yyyy/mm/dd")).toBe("2018/01/10");
     });
 
     it("uses the current date by default", () => {
