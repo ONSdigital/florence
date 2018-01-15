@@ -76,13 +76,6 @@ export class CollectionCreate extends Component {
         this.getListOfTeams();
     }
 
-    // return a date in ISO format (yyyy-mm-dd). returns todays date by default,
-    // or same date but however many years ahead
-    getTodayDate(yearsAhead) {
-        const years = typeof yearsAhead === 'number' ? yearsAhead : 0;
-        return (new Date(new Date().setFullYear(new Date().getFullYear() + years)).toISOString().split('T')[0]);
-    }
-
     getListOfTeams() {
         teams.getAll().then(teams => {
             if (teams.length === 0) {
@@ -249,7 +242,7 @@ export class CollectionCreate extends Component {
         if (this.state.newCollectionDetails.type === 'scheduled') {
             const date = this.state.newCollectionDetails.publishDate.value;
             const time = this.state.newCollectionDetails.publishTime.value;
-            return (new Date(date + " " + time).toISOString());
+            return (new Date(date + " " + time + "Z").toISOString());
         } else {
             return null;
         }
