@@ -42,77 +42,6 @@ export default class date {
 
         return newDate;
     }
-
-    // /**
-    //  * Add a year, month or day to the a date
-    //  * 
-    //  * @param {date object} date - (optional) A date object
-    //  * @param {integer} extraYears - (optional) Number of years to add to the date
-    //  * @param {integer} extraMonths - (optional) Number of months to add to the date
-    //  * @param {integer} extraDays - (optional) Number of days to add to the date
-    //  * @param {boolean} useCurrentTime - (optional) Only use when a date isn't being passed in. Set to 'true' to use the current time otherwise it will return the time that the application was loaded
-    //  * 
-    //  * @returns {date object} - The new date with the added years/months/days
-    //  */
-    // static addToDate(date, extraYears = 0, extraMonths = 0, extraDays = 0, useCurrentTime = false) {
-    //     if (!date) {
-    //         date = useCurrentTime ? this.getNow() : today;
-    //     }
-
-    //     if (extraYears && typeof extraYears === "string") {
-    //         try {
-    //             extraYears = parseInt(extraYears);
-    //         } catch (error) {
-    //             extraYears = 0;
-    //             log.add(eventTypes.unexpectedRuntimeError, {message: "Error attempting to add year to a date because string couldn't be parsed to an integer: " + JSON.stringify(error)});
-    //             console.error(`Error attempting to add year '${extraYears}' to a date because string couldn't be parsed to an integer`, error);
-    //         }
-    //     }
-        
-    //     if (extraMonths && typeof extraMonths === "string") {
-    //         try {
-    //             extraMonths = parseInt(extraMonths);
-    //         } catch (error) {
-    //             extraMonths = 0;
-    //             log.add(eventTypes.unexpectedRuntimeError, {message: `Error attempting to add month '${extraMonths}' to a date because string couldn't be parsed to an integer: ` + JSON.stringify(error)});
-    //             console.error(`Error attempting to add month '${extraMonths}' to a date because string couldn't be parsed to an integer`, error);
-    //         }
-    //     }
-        
-    //     if (extraDays && typeof extraDays === "string") {
-    //         try {
-    //             extraDays = parseInt(extraMonths);
-    //         } catch (error) {
-    //             extraDays = 0;
-    //             log.add(eventTypes.unexpectedRuntimeError, {message: `Error attempting to add day '${extraDays}' to a date because string couldn't be parsed to an integer: ` + JSON.stringify(error)});
-    //             console.error(`Error attempting to add day '${extraDays}' to a date because string couldn't be parsed to an integer`, error);
-    //         }
-    //     }
-
-    //     let currentDate = date.getDate();
-    //     let currentMonth = date.getMonth();
-    //     let currentYear = date.getFullYear();
-    //     let newDate = date;
-
-    //     // if (extraDays && extraDays !== 0) {
-    //     //     newDate.setDate(currentDate + extraDays);
-    //     // }
-        
-    //     if (extraMonths && extraMonths !== 0) {
-    //         console.log(newDate);
-    //         newDate.setMonth(currentMonth + extraMonths);
-    //         console.log(newDate);
-    //     }
-        
-    //     // if (extraYears && extraYears !== 0) {
-    //     //     newDate.setFullYear(currentYear + extraYears);
-    //     // }
-
-    //     // console.log(newDate);
-
-    //     // return new Date(newYears, newMonths, newDays, date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
-    //     return newDate;
-    // }
     
     /**
      * Add a year, month or day to the a date
@@ -124,7 +53,7 @@ export default class date {
      */
     static format(date, format) {
         if (!date) {
-            date = today;
+            date = this.getNow();
         }
         return dateFormat(date, format);
     }
