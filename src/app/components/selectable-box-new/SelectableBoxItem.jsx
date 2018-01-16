@@ -15,11 +15,11 @@ const propTypes = {
     isSelected: PropTypes.bool,
     returnValue: PropTypes.object.isRequired,
     status: PropTypes.shape({
-        neutral: PropTypes.bool.isRequired,
-        warning: PropTypes.bool.isRequired,
-        success: PropTypes.bool.isRequired,
+        neutral: PropTypes.bool,
+        warning: PropTypes.bool,
+        success: PropTypes.bool,
         message: PropTypes.string,
-    }).isRequired,
+    }),
 }
 
 export default class SelectableBoxItem extends Component {
@@ -34,6 +34,7 @@ export default class SelectableBoxItem extends Component {
     }
 
     renderColumns() {
+        const status = this.props.status || {};
         const columns = [];
         for (let i = 0; i < this.props.columns.length; i++) {
             const isFirst = i === 0;
@@ -41,7 +42,7 @@ export default class SelectableBoxItem extends Component {
                 <div key={`${this.props.id}-col-${i}`} className={`grid__col-${this.props.columns[i].width}`}>
                     {this.props.columnValues[i]}
 
-                    {this.props.status.message && isFirst ? ` [${this.props.status.message}]` : ''}
+                    {status.message && isFirst ? ` [${status.message}]` : ''}
                 </div>
             )
         }
@@ -49,10 +50,11 @@ export default class SelectableBoxItem extends Component {
     }
 
     render() {
+        const status = this.props.status || {};
         return (
             <li
                 id={this.props.id}
-                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${this.props.status.neutral ? " neutral" : ""} ${this.props.status.warning ? " warning" : ""}`}
+                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${status.neutral ? " neutral" : ""} ${status.warning ? " warning" : ""}`}
                 onClick={this.bindClick}>
                 <div className="grid">
                     {this.renderColumns()}
