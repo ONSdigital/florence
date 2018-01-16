@@ -230,7 +230,7 @@ export class CollectionsController extends Component {
                     id: team.id.toString(), 
                     name: team.name
                 })) : [],
-                deletes: collection.pendingDeletes || []
+                deletes: collection.pendingDeletes
             }
         } catch (error) {
             const notification = {
