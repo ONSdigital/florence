@@ -181,9 +181,9 @@ function viewCollectionDetails(collectionId, $this) {
                 var safePath = checkPathSlashes(path);
                 Florence.globalVars.welsh = false;
             }
-            getPageDataDescription(collectionId, safePath,
-                success = function () {
-                    createWorkspace(safePath, collectionId, 'edit', collection);
+            getPageData(collectionId, safePath,
+                success = function (response) {
+                    createWorkspace(safePath, collectionId, 'edit', collection, null, response.apiDatasetId);
                 },
                 error = function (response) {
                     handleApiError(response);
