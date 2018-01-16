@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 
 import CollectionCreate from './create/CollectionCreate';
-import CollectionDetails, {pagePropTypes} from './details/CollectionDetails';
+import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections';
 import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
@@ -30,6 +30,11 @@ const propTypes = {
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
         complete: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
         reviewed: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
+        deletes: PropTypes.arrayOf(PropTypes.shape({
+            user: PropTypes.string.isRequired,
+            root: deletedPagePropTypes,
+            totalDeletes: PropTypes.number.isRequired
+        })),
         datasets: PropTypes.arrayOf(PropTypes.shape({
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
@@ -62,6 +67,10 @@ export class CollectionsController extends Component {
             collections: [],
             isFetchingCollections: false,
             pendingDeletedPages: [],
+            isCancellingDelete: {
+                value: false,
+                uri: ""
+            },
             isFetchingCollectionDetails: false,
             drawerIsAnimatable: false,
             drawerIsVisible: false,
@@ -77,6 +86,7 @@ export class CollectionsController extends Component {
         this.handleCollectionPageClick = this.handleCollectionPageClick.bind(this);
         this.handleCollectionPageEditClick = this.handleCollectionPageEditClick.bind(this);
         this.handleCollectionPageDeleteClick = this.handleCollectionPageDeleteClick.bind(this);
+        this.handleCancelPageDeleteClick = this.handleCancelPageDeleteClick.bind(this);
     }
 
     componentWillMount() {
@@ -220,6 +230,7 @@ export class CollectionsController extends Component {
                     id: team.id.toString(), 
                     name: team.name
                 })) : [],
+                deletes: collection.pendingDeletes || []
             }
         } catch (error) {
             const notification = {
@@ -570,7 +581,7 @@ export class CollectionsController extends Component {
                     case(404): {
                         const notification = {
                             type: 'warning',
-                            message: `Couldn't delete the page '${title}' from this collection. It may have already been deleted.`,
+                            message: `Couldn't delete the page '${title}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -605,6 +616,7 @@ export class CollectionsController extends Component {
                         break;
                     }
                 }
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting page '${title}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
                 console.error("Error deleting page from a collection: ", error);
             });
         }
@@ -648,6 +660,94 @@ export class CollectionsController extends Component {
         });
     }
 
+    handleCancelPageDeleteClick(uri) {
+        if (!uri) {
+            notifications.add({
+                type: "warning",
+                message: "Couldn't delete because of an unexpected error: unable to get URI of delete to cancel",
+                autoDismiss: 5000,
+                isDismissable: true
+            });
+            return;
+        }
+
+        this.setState({isCancellingDelete: {
+            value: true,
+            uri
+        }});
+
+        const activeCollectionID = this.props.activeCollection.id;
+
+        collections.cancelDelete(this.props.params.collectionID, uri).then(() => {
+            // User have moved to another collection during the async update, so don't update the active collection in state
+            if (this.props.params.collectionID !== activeCollectionID) {
+                return;
+            }
+            this.setState({isCancellingDelete: {
+                value: false,
+                uri: ""
+            }});
+
+            const updatedActiveCollection = {
+                ...this.props.activeCollection,
+                deletes: this.props.activeCollection.deletes.filter(deletedPage => {
+                    return deletedPage.root.uri !== uri;
+                })
+            };
+            this.props.dispatch(updateActiveCollection(updatedActiveCollection));
+        }).catch(error => {
+            this.setState({isCancellingDelete: {
+                value: false,
+                uri: ""
+            }});
+            switch (error.status) {
+                case(401): {
+                    // do nothing - this is handled by the request function itself
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: 'neutral',
+                        message: `You don't have permission to cancel the delete '${uri}' in the collection '${this.props.activeCollection.name}'`,
+                        autoDismiss: 5000,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't cancel delete of page '${uri}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case('FETCH_ERR'): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't cancel delete of page '${uri}' from this collection due to a network error, please check your connection and try again.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: 'warning',
+                        message: `Couldn't cancel delete of page '${uri}' from the collection '${this.props.activeCollection.name}' due to an unexpected error`,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error removing pending delete of page '${uri}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error removing pending delete of page '${uri}' from collection '${this.props.params.collectionID}'`, error);
+        });
+    }
+
     readablePublishDate(collection) {
         if (collection.publishDate && collection.type === "manual") {
             return dateformat(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT") + " [rolled back]";
@@ -685,7 +785,7 @@ export class CollectionsController extends Component {
             return false;
         }
 
-        if (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0) {
+        if (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0 && collection.deletes.length === 0) {
             return true;
         }
 
@@ -788,7 +888,9 @@ export class CollectionsController extends Component {
                 onDeletePageClick={this.handleCollectionPageDeleteClick}
                 onDeleteCollectionClick={this.handleCollectionDeleteClick}
                 onApproveCollectionClick={this.handleCollectionApproveClick}
+                onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
+                isCancellingDelete={this.state.isCancellingDelete}
             />
         )
     }
