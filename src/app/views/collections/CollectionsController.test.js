@@ -321,6 +321,7 @@ describe("Deleting a page from a collection", () => {
             collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
         );
         await jest.runOnlyPendingTimers();
+        console.log(dispatchedAction);
         expect(dispatchedAction.collection.canBeApproved).toEqual(true);
         expect(dispatchedAction.collection.canBeDeleted).toEqual(false);
     });
@@ -332,11 +333,15 @@ describe("Deleting a page from a collection", () => {
             complete: [],
             reviewed: []
         }
+        console.error = (error) => {
+            console.error("Error:", error);
+        };
         component.setProps({activeCollection: customActiveCollection});
         await component.instance().handleCollectionPageDeleteClick(
             collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
         );
         await jest.runOnlyPendingTimers();
+        console.log(dispatchedAction);
         expect(dispatchedAction.collection.canBeApproved).toEqual(false);
         expect(dispatchedAction.collection.canBeDeleted).toEqual(true);
     });

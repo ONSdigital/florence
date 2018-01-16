@@ -785,7 +785,7 @@ export class CollectionsController extends Component {
             return false;
         }
 
-        if (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0 && collection.deletes.length === 0) {
+        if (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0 && (!collection.deletes || collection.deletes.length === 0)) {
             return true;
         }
 
