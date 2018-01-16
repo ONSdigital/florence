@@ -18,6 +18,19 @@ export const pagePropTypes = {
     type: PropTypes.string.isRequired
 }
 
+export const deletedPagePropTypes = PropTypes.shape({
+    uri: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    description: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        edition: PropTypes.string,
+        language: PropTypes.string
+    }),
+    children: PropTypes.arrayOf(PropTypes.object),
+    deleteMarker: PropTypes.bool.isRequired,
+    contentPath: PropTypes.string.isRequired
+});
+
 const propTypes = {
     id: PropTypes.string.isRequired,
     activePageURI: PropTypes.string,
@@ -26,9 +39,14 @@ const propTypes = {
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
     onDeletePageClick: PropTypes.func.isRequired,
+    onCancelPageDeleteClick: PropTypes.func.isRequired,
     onDeleteCollectionClick: PropTypes.func.isRequired,
     onApproveCollectionClick: PropTypes.func.isRequired,
     isLoadingDetails: PropTypes.bool,
+    isCancellingDelete: PropTypes.shape({
+        value: PropTypes.bool.isRequired,
+        uri: PropTypes.string.isRequired
+    }),
     canBeDeleted: PropTypes.bool,
     canBeApproved: PropTypes.bool,
     inProgress: PropTypes.arrayOf(PropTypes.shape(
@@ -40,6 +58,11 @@ const propTypes = {
     reviewed: PropTypes.arrayOf(PropTypes.shape(
         pagePropTypes
     )),
+    deletes: PropTypes.arrayOf(PropTypes.shape({
+        user: PropTypes.string.isRequired,
+        root: deletedPagePropTypes,
+        totalDeletes: PropTypes.number.isRequired
+    })),
     status: PropTypes.shape({
         neutral: PropTypes.bool,
         warning: PropTypes.bool
@@ -114,7 +137,9 @@ export class CollectionDetails extends Component {
             <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
                 <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
                 <div className="expandable-item-contents">
-                    <p className="colour--emperor margin-bottom--1 margin-left--2">{this.renderLastEditText(page.lastEdit)}</p>
+                    <div className="margin-bottom--1 margin-left--2">
+                        <p>{this.renderLastEditText(page.lastEdit)}</p>
+                    </div>
                     <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
                     <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">Delete</button>
                 </div>
@@ -175,6 +200,62 @@ export class CollectionDetails extends Component {
         return this.renderPagesList(pages);
     }
 
+    renderDeletetedPageChildItem(deletedChildPage) {
+        let title = deletedChildPage.description.title + (deletedChildPage.description.edition ? ": " + deletedChildPage.description.edition : "");
+        return (
+            <li key={deletedChildPage.uri} className="margin-bottom--1">
+                <Page type={deletedChildPage.type} title={<p>{title}<br/><a href={deletedChildPage.uri} target="_blank">{deletedChildPage.uri}</a></p>} />
+            </li>
+        )
+    }
+
+    renderDeletetedPageItem(deletedPage) {
+        const handlePageClick = () => {
+            this.props.onPageClick(deletedPage.root.uri);
+        };
+        const deleteIsBeingCancelled = (this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri)
+        return (
+            <li key={deletedPage.root.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}>
+                <div className="expandable-item__header">
+                    <Page 
+                        type={deletedPage.root.type} 
+                        title={deletedPage.root.description.title + (deletedPage.root.description.edition ? ": " + deletedPage.root.description.edition : "")} 
+                        isActive={this.props.activePageURI === deletedPage.root.uri} 
+                    />
+                </div>
+                <div className="expandable-item__contents">
+                    <div className="margin-left--2 margin-bottom--1">
+                        {deleteIsBeingCancelled &&
+                            <p className="font-weight--600">Cancelling delete in progress</p>
+                        }
+                        <p>Deleted by: {deletedPage.user}</p>
+                        <p>Path: <a href={deletedPage.root.uri} target="_blank">{deletedPage.root.uri}</a></p>
+                        <p className="margin-bottom--1">Total deletes: {deletedPage.totalDeletes}</p>
+                        <button disabled={deleteIsBeingCancelled} type="button" className="btn btn--warning" onClick={() => {this.props.onCancelPageDeleteClick(deletedPage.root.uri)}}>Cancel delete</button>
+                        {(deletedPage.root.children && deletedPage.root.children.length > 0) &&
+                            <div>
+                                <h4 className="margin-top--1 margin-bottom--1">Sub-pages included in this delete:</h4>
+                                <ul className="list--neutral">
+                                    {deletedPage.root.children.map(childPage => {
+                                        return this.renderDeletetedPageChildItem(childPage);
+                                    })}
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </li>
+        )
+    }
+
+    renderDeleted() {
+        return (
+            this.props.deletes.map(deletedPage => {
+                return this.renderDeletetedPageItem(deletedPage)
+            })
+        )
+    }
+
     statePageCount(state) {
         if (!this.props[state] || this.props[state].length === 0) {
             return "0";
@@ -204,6 +285,14 @@ export class CollectionDetails extends Component {
             case("reviewed"): {
                 return (
                     this.statePageCount(state) + " reviewed " + this.renderPluralisedPageText(state)
+                );
+            }
+            case("deletes"): {
+                if (!this.props.deletes || this.props.deletes.length === 0) {
+                    return;
+                }
+                return (
+                    this.statePageCount(state) + " " + (this.props.deletes.length > 1 ? "deletes" : "delete")
                 );
             }
         }
@@ -311,6 +400,8 @@ export class CollectionDetails extends Component {
                             {this.renderWaitingReview()}
                             <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
                             {this.renderReviewed()}
+                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
+                            {this.renderDeleted()}
                         </div>
                     }
                 </div>

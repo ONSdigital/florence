@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     type: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    title: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.element
+    ]).isRequired,
     isActive: PropTypes.bool
 };
 
