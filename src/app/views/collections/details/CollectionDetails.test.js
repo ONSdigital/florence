@@ -31,7 +31,8 @@ const defaultProps = {
     isLoadingDetails: null,
     inProgress: [],
     complete: [],
-    reviewed: []
+    reviewed: [],
+    deletes: []
 };
 
 const alternativePageProps = {
@@ -167,7 +168,8 @@ describe("Invalid props doesn't break the component", () => {
         ...defaultProps,
         inProgress: null,
         complete: null,
-        reviewed: null
+        reviewed: null,
+        delete: null
     }
     const component = shallow(
         <CollectionDetails {...props} />
@@ -316,5 +318,9 @@ describe("Delete collection button", () => {
         });
         expect(component.find('#delete-collection').exists()).toEqual(false);
     });
+});
+
+describe("Deleted content", () => {
+
 });
 
