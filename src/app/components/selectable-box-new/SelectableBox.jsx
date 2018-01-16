@@ -10,7 +10,10 @@ const propTypes = {
     })).isRequired,
     rows: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
-        columnValues: PropTypes.arrayOf(PropTypes.string),
+        columnValues: PropTypes.arrayOf(PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.element
+        ])),
         returnValue: PropTypes.shape.isRequired,
     })).isRequired,
     activeRowID: PropTypes.string,
