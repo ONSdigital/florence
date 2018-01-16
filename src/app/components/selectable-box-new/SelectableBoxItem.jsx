@@ -7,7 +7,10 @@ const propTypes = {
         heading: PropTypes.string.isRequired,
         width: PropTypes.string.isRequired
     })).isRequired,
-    columnValues: PropTypes.arrayOf(PropTypes.string),
+    columnValues: PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.element
+    ])),
     handleClick: PropTypes.func.isRequired,
     isSelected: PropTypes.bool,
     returnValue: PropTypes.object.isRequired,
@@ -46,7 +49,6 @@ export default class SelectableBoxItem extends Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <li
                 id={this.props.id}
