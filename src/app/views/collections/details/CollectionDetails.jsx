@@ -135,8 +135,10 @@ export class CollectionDetails extends Component {
         }
         return (
             <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
-                <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
-                <div className="expandable-item-contents">
+                <div className="expandable-item__header">
+                    <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
+                </div>
+                <div className="expandable-item__contents">
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
@@ -400,8 +402,13 @@ export class CollectionDetails extends Component {
                             {this.renderWaitingReview()}
                             <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
                             {this.renderReviewed()}
-                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
-                            {this.renderDeleted()}
+                            
+                            {(this.props.deletes && this.props.deletes.length > 0) &&
+                                <div>
+                                    <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
+                                    {this.renderDeleted()}
+                                </div>
+                            }
                         </div>
                     }
                 </div>
