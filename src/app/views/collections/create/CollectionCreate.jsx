@@ -56,8 +56,8 @@ export class CollectionCreate extends Component {
             isSubmitting: false
         };
 
-        this.minimumPublishDate = dateFormat(date.getNow(), "yyyy-mm-dd");
-        this.maximumPublishDate = dateFormat(date.addYear(10), "yyyy-mm-dd");
+        this.minimumPublishDate = date.format(date.getNow(), "yyyy-mm-dd");
+        this.maximumPublishDate = date.format(date.addYear(10), "yyyy-mm-dd");
 
         this.baseNewCollectionDetails = this.state.newCollectionDetails;
 
