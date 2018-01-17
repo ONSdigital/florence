@@ -11,6 +11,20 @@ jest.mock('../../../utilities/notifications', () => {
     }
 });
 
+jest.mock('../../../utilities/date', () => {
+    return {
+        format: jest.fn(() => {
+            return "2017-10-12" // the adding year, formatting and getNow functionality is all tested in the date class so we can just hardcode this response
+        }),
+        getNow: jest.fn(() => {
+            //
+        }),
+        addYear: jest.fn(() => {
+            //
+        })
+    }
+});
+
 jest.mock('../../../utilities/http', () => {
     return {
         resolve: function() {
@@ -75,45 +89,11 @@ const defaultProps = {
     allTeams: []
 };
 
-const expectedTodayDate = function() {
-    const dateObj = new Date;
-    const month = dateObj.getUTCMonth() + 1; //months from 1-12
-    const formattedMonth = month < 10 ? "0" + month : month;
-    const day = dateObj.getUTCDate() < 10 ? "0" + dateObj.getUTCDate() : dateObj.getUTCDate(); // add 0 to start if less then 10
-    const year = dateObj.getUTCFullYear();
-    return (year + "-" + formattedMonth + "-" + day);
-};
-
-const expectTodayInTenYears = function () {
-    const dateObj = new Date;
-    const month = dateObj.getUTCMonth() + 1; // months from 1-12
-    const formattedMonth = month < 10 ? "0" + month : month;
-    const day = dateObj.getUTCDate() < 10 ? "0" + dateObj.getUTCDate() : dateObj.getUTCDate(); // add 0 to start if less then 10
-    const year = dateObj.getUTCFullYear() + 10; // simulate date 10 years ahead
-    return (year + "-" + formattedMonth + "-" + day);
-};
-
 test("Create collection form matches stored snapshot", () => {
     const component = renderer.create(
         <CollectionCreate {...defaultProps} />
     );
     expect(component.toJSON()).toMatchSnapshot();
-});
-
-test("getTodayDate returns todays date in current format", () => {
-    const component = shallow(
-        <CollectionCreate {...defaultProps} />
-    );
-    const date = component.instance().getTodayDate();
-    expect(date).toEqual(expectedTodayDate());
-});
-
-test("getTodayDate returns correct date when passed yearsAhead argument", () => {
-    const component = shallow(
-        <CollectionCreate {...defaultProps} />
-    );
-    const date = component.instance().getTodayDate(10);
-    expect(date).toEqual(expectTodayInTenYears());
 });
 
 test("Handle collection name change updates state correctly", () => {
