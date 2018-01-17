@@ -84,7 +84,7 @@ class CollectionView extends Component {
         if (selectedCollection.type === "manual") {
             return (
                 <div className="select-details">
-                    <span className="select-details__label">Release date</span>: [manual collection]
+                    <span className="select-details__label">Release date</span>:  <span className="select-details__value">[manual collection]</span>
                 </div>
             )
         }
@@ -92,8 +92,8 @@ class CollectionView extends Component {
         if (selectedCollection.type === "scheduled") {
             return (
                 <div className="select-details">
-                    <span className="select-details__label">Release date</span>: {selectedCollection.releaseDate}<br/>
-                    <span className="select-details__label">Release time</span>: {selectedCollection.releaseTime}
+                    <span className="select-details__label">Release date</span>: <span className="select-details__value">{selectedCollection.releaseDate}</span><br/>
+                    <span className="select-details__label">Release time</span>: <span className="select-details__value">{selectedCollection.releaseTime}</span>
                 </div>
             )
         }
