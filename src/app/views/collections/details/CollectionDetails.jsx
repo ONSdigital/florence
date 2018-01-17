@@ -134,7 +134,7 @@ export class CollectionDetails extends Component {
             this.props.onDeletePageClick(page.uri, page.title, state);
         }
         return (
-            <li key={page.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
+            <li key={page.uri} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
                 <div className="expandable-item__header">
                     <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
                 </div>
@@ -215,9 +215,9 @@ export class CollectionDetails extends Component {
         const handlePageClick = () => {
             this.props.onPageClick(deletedPage.root.uri);
         };
-        const deleteIsBeingCancelled = (this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri)
+        const deleteIsBeingCancelled = this.props.isCancellingDelete ? (this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri) : false;
         return (
-            <li key={deletedPage.root.uri} onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}>
+            <li key={deletedPage.root.uri} data-page-state="deletes" onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}>
                 <div className="expandable-item__header">
                     <Page 
                         type={deletedPage.root.type} 
