@@ -1,5 +1,5 @@
 import React from 'react';
-import CollectionDetails from './CollectionDetails';
+import { CollectionDetails } from './CollectionDetails';
 import { shallow } from 'enzyme';
 
 console.error = () => {};
