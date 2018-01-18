@@ -120,8 +120,8 @@ export class RestoreContent extends Component {
     handleDoneClick() {
         this.setState({isRestoringDeletingContent: true});
         content.restoreDeleted(this.state.activeItem.id, this.props.activeCollection.id).then(() => {
-            this.props.onSuccess(this.state.activeItem);
             this.setState({isRestoringDeletingContent: false});
+            this.props.onSuccess(this.state.activeItem);
         }).catch(error => {
             switch(error.status) {
                 case(401): {
