@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import dateFormat from 'dateformat';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log';
@@ -45,13 +47,15 @@ const propTypes = {
         warning: PropTypes.bool
     }),
     type: PropTypes.string.isRequired,
-    publishDate: PropTypes.string
+    publishDate: PropTypes.string,
+    dispatch: PropTypes.func.isRequired
 };
 
 export class CollectionDetails extends Component {
     constructor(props) {
         super(props);
 
+        this.handleRestoreContentClick = this.handleRestoreContentClick.bind(this);
         this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
         this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
     }
@@ -239,9 +243,13 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__banner">
                 <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary" disabled>Create/edit page</a>
-                <button className="btn btn--margin-left" disabled>Restore page</button>
+                <button className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
             </div>
         )
+    }
+
+    handleRestoreContentClick() {
+        this.props.dispatch(push(`${location.pathname}/restore-content`));
     }
 
     renderCollectionActions() {
@@ -325,4 +333,4 @@ export class CollectionDetails extends Component {
 
 CollectionDetails.propTypes = propTypes;
 
-export default CollectionDetails;
+export default connect()(CollectionDetails);
