@@ -2,17 +2,22 @@ import React, { Component } from 'react';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import dateFormat from 'dateformat';
 
 import CollectionEdit from './CollectionEdit';
 import url from '../../../utilities/url';
 import teams from '../../../utilities/api-clients/teams';
 import log, {eventTypes} from '../../../utilities/log';
 import notifications from '../../../utilities/notifications';
-import { updateAllTeamIDsAndNames , updateAllTeams} from '../../../config/actions';
+import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection} from '../../../config/actions';
+import collectionValidation from '../validation/collectionValidation';
+import collections from '../../../utilities/api-clients/collections';
+import date from '../../../utilities/date';
 
 const propTypes = {
     name: PropTypes.string.isRequired,
-    dispatch: PropTypes.func,
+    id: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired,
     allTeams: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
@@ -20,7 +25,10 @@ const propTypes = {
     teams: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
-    }))
+    })),
+    publishType: PropTypes.string.isRequired,
+    publishDate: PropTypes.string,
+    activeCollection: PropTypes.object
 };
 
 export class CollectionEditController extends Component {
@@ -31,20 +39,46 @@ export class CollectionEditController extends Component {
             isSavingEdits: false,
             isFetchingAllTeams: false,
             name: {
-                value: this.props.name,
+                value: props.name,
                 errorMsg: ""
             },
-            teams: this.props.teams
+            teams: props.teams,
+            addedTeams: new Map, // used to lookup on save to validate whether the teams have changed
+            removedTeams: new Map, // used to lookup on save to validate whether the teams have changed
+            publishType: props.publishType,
+            publishDate: {
+                value: "",
+                errorMsg: ""
+            },
+            publishTime: {
+                value: "09:30",
+                errorMsg: ""
+            }
         }
 
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handlePublishTypeChange = this.handlePublishTypeChange.bind(this);
+        this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
+        this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleTeamSelection = this.handleTeamSelection.bind(this);
+        this.handleAddTeam = this.handleAddTeam.bind(this);
         this.handleRemoveTeam = this.handleRemoveTeam.bind(this);
     }
 
     componentWillMount() {
+        if (this.props.publishType === "scheduled" && this.props.publishDate) {
+            this.setState({
+                publishDate: {
+                    value: date.format(this.props.publishDate, "yyyy-mm-dd"),
+                    errorMsg: ""
+                },
+                publishTime: {
+                    value: date.format(this.props.publishDate, "hh:MM"),
+                    errorMsg: ""
+                }
+            });
+        }
         this.setState({
             isFetchingAllTeams: true
         });
@@ -87,18 +121,16 @@ export class CollectionEditController extends Component {
         });
     }
 
-    handleNameChange() {
-        if (this.state.name.errorMsg) {
-            this.setState(state => ({
-                name: {
-                    value: state.name.value,
-                    errorMsg: ""
-                }
-            }));
-        }
+    handleNameChange(name) {
+        this.setState({
+            name: {
+                value: name,
+                errorMsg: ""
+            }
+        });
     }
 
-    handleTeamSelection(teamID) {
+    handleAddTeam(teamID) {
         if (!teamID) {
             return;
         }
@@ -113,34 +145,119 @@ export class CollectionEditController extends Component {
         const selectedTeam = this.props.allTeams.find(team => {
             return team.id === teamID;
         });
-        this.setState(state => ({
-            teams: [...state.teams, selectedTeam]
-        }));
+        if (!selectedTeam) {
+            const notification = {
+                type: 'warning',
+                message: `Unable to add the team '${teamID}' to this collection because an unexpected error occured`,
+                autoDismiss: 4000,
+                isDismissable: true
+            };
+            notifications.add(notification);
+            console.error(`Unable to find team ID '${teamID}' in teams array in Redux`);
+            return;
+        }
+        this.setState(state => {
+            const newState = {...state};
+            if (newState.removedTeams.delete(teamID)) {
+                return {
+                    teams: [...newState.teams, selectedTeam],
+                    removedTeams: newState.removedTeams      
+                }
+            }
+
+            return {
+                teams: [...newState.teams, selectedTeam],
+                addedTeams: newState.addedTeams.set(teamID)
+            }
+    });
     }
 
-    handleRemoveTeam(removedTeam) {
-        this.setState(state => ({
-            teams: state.teams.filter(team => {
-                return team.id !== removedTeam.id
-            })
-        }));
+    handleRemoveTeam(teamID) {
+        this.setState(state => {
+            const newState = {...state};
+            if (newState.addedTeams.delete(teamID)) {
+                return {
+                    teams: newState.teams.filter(team => {
+                        return team.id !== teamID
+                    }),
+                    addedTeams: newState.addedTeams
+                }
+            }
+
+            return {
+                teams: newState.teams.filter(team => {
+                    return team.id !== teamID
+                }),
+                removedTeams: newState.removedTeams.set(teamID),
+                
+            }
+        });
+    }
+
+    handlePublishTypeChange(publishType) {
+        if (publishType !== "manual" && publishType !== "scheduled") {
+            log.add(eventTypes.runtimeWarning, {message: "Attempt to select a publish type that isn't recognised: ", publishType});
+            console.warn("Attempt to select a publish type that isn't recognised: ", publishType);
+            return;
+        }
+        this.setState({publishType});
+    }
+
+    handlePublishDateChange(date) {
+        this.setState({
+            publishDate: {
+                value: date,
+                errorMsg: ""
+            }
+        });
+    }
+    
+    handlePublishTimeChange(time) {
+        this.setState({
+            publishTime: {
+                value: time,
+                errorMsg: ""
+            }
+        });
     }
 
     handleCancel() {
         this.props.dispatch(push(url.resolve('../')));
     }
 
-    handleSave(formState) {
+    handleSave() {
         let hasError = false;
         
-        //TODO possibly share validation between here and create collection component
-        if (!formState.name) {
+        const validatedName = collectionValidation.name(this.state.name.value);
+        if (!validatedName.isValid) {
             this.setState(state => ({
                 name: {
                     ...state.name,
-                    errorMsg: "Collections must be given a name"
+                    errorMsg: validatedName.errorMsg
                 }
             }));
+            hasError = true;
+        }
+
+        const validatedDate = collectionValidation.date(this.state.publishDate.value, this.state.publishType);
+        if (!validatedDate.isValid) {
+            this.setState({
+                publishDate: {
+                    value: "",
+                    errorMsg: validatedDate.errorMsg
+                }
+            });
+            hasError = true;
+        }
+        
+        const validatedTime = collectionValidation.time(this.state.publishTime.value, this.state.publishType)
+        if (!validatedTime.isValid) {
+            this.setState({
+                publishTime: {
+                    value: "",
+                    errorMsg: validatedTime.errorMsg
+                }
+            });
             hasError = true;
         }
 
@@ -148,7 +265,137 @@ export class CollectionEditController extends Component {
             return;
         }
 
-        this.props.dispatch(push(url.resolve('../')));
+        this.setState({
+            isSavingEdits: true
+        });
+
+        collections.update(this.props.id, this.mapEditsToAPIRequestBody({...this.state})).then(response => {
+            const activeCollection = {
+                ...this.props.activeCollection,
+                name: response.name,
+                publishDate: response.publishDate,
+                type: response.type,
+                teams: this.state.teams
+            };
+            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.props.dispatch(push(url.resolve('../')));
+        }).catch(error => {
+            this.setState({
+                isSavingEdits: false
+            });
+            switch (error.status) {
+                case(400): {
+                    const notification = {
+                        type: "warning",
+                        message: `The values you provided couldn't be saved. Please check for any possible errors and try again.`,
+                        isDismissable: true,
+                        autoDismiss: 4000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(401): {
+                    // handled by request utility function
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: "neutral",
+                        message: `You don't have permission to edit the collection '${this.props.name}'`,
+                        isDismissable: true,
+                        autoDismiss: 4000
+                    }
+                    notifications.add(notification);
+                    this.props.dispatch(push(url.resolve('/collections')));
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: "neutral",
+                        message: `Collection '${this.props.name}' no longer exists, so you've been redirected to the main collections screen`,
+                        isDismissable: true,
+                        autoDismiss: 4000
+                    }
+                    notifications.add(notification);
+                    this.props.dispatch(push(url.resolve('/collections')));
+                    break;
+                }
+                case(409): {
+                    log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to rename collection to existing collection name: " + this.props.name + "->" + this.state.name.value});
+                    this.setState(state => ({
+                        name: {
+                            value: state.name.value,
+                            errorMsg: "A collection with this name already exists"
+                        }
+                    }));
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: `An unexpected error occured whilst saving the edits to collection '${this.props.name}'`,
+                        isDismissable: true,
+                        autoDismiss: 4000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            log.add(eventTypes.unexpectedRuntimeError, {message: "Error saving collection details for collection " + this.props.id + ". Error: " + JSON.stringify(error)});
+            console.error("Error saving collection details update", error);
+        });
+    }
+
+    teamsHaveChanged(state) {
+        if (state.addedTeams.size > 0 || state.removedTeams.size > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    publishDateHasChanged(state) {
+        if (state.publishType ===  "manual" && this.props.publishType === "manual") {
+            return false;
+        }
+
+        try {
+            const newPublishDate = new Date(state.publishDate.value + " " + state.publishTime.value + "Z").toISOString();
+            if (newPublishDate !== this.props.publishDate) {
+                return true;
+            }
+        } catch (error) {
+            log.add(eventTypes.unexpectedRuntimeError, {message: "Error creating new publish date from string: " + error});
+            console.error("Error creating new publish date from string: " + error);
+            return false;
+        }
+
+        return false;
+    }
+
+    mapEditsToAPIRequestBody(state) {
+        let body = {};
+        
+        if (state.name.value !== this.props.name) {
+            body.name = state.name.value;
+        }
+
+        if (this.teamsHaveChanged(state)) {
+            // Switch the teams array of objects back to an array of strings.
+            // Basically, we read from teamsDetails but write to teams, so not to 
+            // break what Zebedee is expecting but still be able to use the team IDs
+            body.teams = state.teams.map(team => (team.name));
+        }
+
+        if (state.publishType !== this.props.publishType) {
+            body.type = state.publishType;
+        }
+
+        if (this.publishDateHasChanged(state)) {
+            body.publishDate = state.publishType === "scheduled" ? new Date(state.publishDate.value + " " + state.publishTime.value + "Z").toISOString() : "";
+        }
+
+        return body;
     }
 
     render() {
@@ -158,13 +405,25 @@ export class CollectionEditController extends Component {
                 onCancel={this.handleCancel}
                 onSave={this.handleSave}
                 onNameChange={this.handleNameChange}
-                onTeamSelect={this.handleTeamSelection}
+                onTeamSelect={this.handleAddTeam}
                 onRemoveTeam={this.handleRemoveTeam}
+                onPublishTypeChange={this.handlePublishTypeChange}
+                onPublishDateChange={this.handlePublishDateChange}
+                onPublishTimeChange={this.handlePublishTimeChange}
+                originalName={this.props.name}
                 name={this.state.name.value}
                 nameErrorMsg={this.state.name.errorMsg}
+                originalPublishType={this.props.publishType}
+                publishType={this.state.publishType}
+                originalPublishDate={dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}
+                publishDate={this.state.publishDate.value}
+                publishDateErrorMsg={this.state.publishDate.errorMsg}
+                publishTime={this.state.publishTime.value}
+                publishTimeErrorMsg={this.state.publishTime.errorMsg}
                 teams={this.state.teams || []}
                 allTeams={this.state.isFetchingAllTeams ? [] : this.props.allTeams}
                 isFetchingAllTeams={this.state.isFetchingAllTeams}
+                isSavingEdits={this.state.isSavingEdits}
             />
         )
     }
@@ -172,10 +431,13 @@ export class CollectionEditController extends Component {
 
 CollectionEditController.propTypes = propTypes;
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
     return {
         allTeams: state.state.teams.allIDsAndNames,
-        teams: state.state.collections.active ? state.state.collections.active.teams : undefined
+        teams: state.state.collections.active ? state.state.collections.active.teams : undefined,
+        publishType: state.state.collections.active ? state.state.collections.active.type : undefined,
+        publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
+        activeCollection: state.state.collections.active
     }
 }
 

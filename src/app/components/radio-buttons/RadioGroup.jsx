@@ -19,8 +19,6 @@ export default class RadioGroup extends Component {
     constructor(props) {
         super(props);
 
-        //this.state = {selectedValue: ""};
-
         this.handleChange = this.handleChange.bind(this);
     }
 
