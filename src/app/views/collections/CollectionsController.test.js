@@ -180,6 +180,20 @@ const collection = {
         }
     ],
     reviewed: [],
+    deletes: [{
+        user: "foobar@email.com",
+        root: {
+            uri: "/about/surveys",
+            type: "generic_static_page",
+            description: {
+                title: "Surveys"
+            },
+            children: [],
+            deleteMarker: true,
+            contentPath: "/about/surveys"
+        },
+        totalDeletes: 1
+    }],
     datasets: [],
     datasetVersion: []
 }
@@ -330,7 +344,8 @@ describe("Deleting a page from a collection", () => {
             ...collection,
             inProgress: [collection.inProgress[0]],
             complete: [],
-            reviewed: []
+            reviewed: [],
+            deletes: []
         }
         component.setProps({activeCollection: customActiveCollection});
         await component.instance().handleCollectionPageDeleteClick(
@@ -483,7 +498,7 @@ test("Map collection to state function", () => {
     expect(result).toEqual({
         id: 'test-collection-12345',
         name: 'Test collection',
-        publishDate: '[manual collection]',
+        publishDate: undefined,
         status: {
             message: "preparing publish",
             neutral: true,
@@ -498,9 +513,10 @@ test("Map collection to state function", () => {
         inProgress: undefined,
         complete: undefined,
         reviewed: undefined,
+        deletes: undefined,
         canBeApproved: false,
         canBeDeleted: false,
-        teams: ['cpi', 'cpih']
+        teams: []
     });
 });
 
@@ -567,6 +583,16 @@ describe("Mapping GET collection API response to view state", () => {
         }
         canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
         expect(canBeDeleted).toBeFalsy();
+        
+        mockCollection = {
+            ...collection,
+            inProgress: [],
+            complete: [],
+            reviewed: [],
+            deletes: [...collection.deletes]
+        }
+        canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
+        expect(canBeDeleted).toBeFalsy();
 
         delete mockCollection.reviewed;
         canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
@@ -578,7 +604,8 @@ describe("Mapping GET collection API response to view state", () => {
             ...collection,
             inProgress: [],
             complete: [],
-            reviewed: []
+            reviewed: [],
+            deletes: []
         }
 
         let canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;

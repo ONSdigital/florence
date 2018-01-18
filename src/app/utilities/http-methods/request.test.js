@@ -18,7 +18,7 @@ console.error = jest.fn();
 beforeEach(() => {
     log.add.mockClear();
     fetch.mockClear();
-})
+});
 
 jest.useFakeTimers();
 

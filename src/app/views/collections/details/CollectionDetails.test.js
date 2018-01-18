@@ -31,7 +31,8 @@ const defaultProps = {
     isLoadingDetails: null,
     inProgress: [],
     complete: [],
-    reviewed: []
+    reviewed: [],
+    deletes: []
 };
 
 const alternativePageProps = {
@@ -74,7 +75,35 @@ const alternativePageProps = {
                 }
             }
         ],
-        reviewed: null
+        reviewed: [
+            {
+                uri: "/businessindustryandtrade/businessbirthsanddeaths",
+                type: "taxonomy_landing_page",
+                description: {
+                    title: "Business births and deaths"
+                },
+                lastEdit: {
+                    email: "foobar@email.com",
+                    date: "2017-12-14T11:36:03.402Z"
+                }
+            }
+        ],
+        deletes: [
+            {
+                user: "foobar@email.com",
+                root: {
+                    uri: "/about/surveys",
+                    type: "generic_static_page",
+                    description: {
+                        title: "Surveys"
+                    },
+                    children: [],
+                    deleteMarker: true,
+                    contentPath: "/about/surveys"
+                },
+                totalDeletes: 1
+            }
+        ]
 }
 
 describe("Collection details page edit/delete buttons only show for an active page", () => {
@@ -87,24 +116,29 @@ describe("Collection details page edit/delete buttons only show for an active pa
     );
 
     it("render the correct number of in progress pages", () => {
-        const pages = component.find('.list__item--expandable');
-        expect(pages.length).toBe(3);
+        const pages = component.find('.list__item--expandable[data-page-state="inProgress"]');
+        expect(pages.length).toBe(2);
     });
     
     it("render the correct number of awaiting review pages", () => {
-        const pages = component.find('.list__item--expandable');
-        expect(pages.length).toBe(3);
+        const pages = component.find('.list__item--expandable[data-page-state="complete"]');
+        expect(pages.length).toBe(1);
     });
     
     it("render the correct number of reviewed pages", () => {
-        const pages = component.find('.list__item--expandable');
-        expect(pages.length).toBe(3);
+        const pages = component.find('.list__item--expandable[data-page-state="reviewed"]');
+        expect(pages.length).toBe(1);
+    });
+    
+    it("render the correct number of deleted pages", () => {
+        const pages = component.find('.list__item--expandable[data-page-state="deletes"]');
+        expect(pages.length).toBe(1);
     });
 
     it("buttons will hide for inactive pages", () => {
         const activePages = component.find('.list__item--expandable.active');
         const pages = component.find('.list__item--expandable');
-        expect(pages.length).toBe(3);
+        expect(pages.length).toBe(5);
         expect(activePages.length).toBe(0);
     });
 
@@ -115,6 +149,16 @@ describe("Collection details page edit/delete buttons only show for an active pa
         const activePages = component.find('.list__item--expandable.active');
         expect(activePages.length).toBe(1);
         expect(activePages.key()).toBe("/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017");
+    });
+
+    it("buttons show for active deleted pages", () => {
+        component.setProps({
+            activePageURI: "/about/surveys"
+        });
+        const activePages = component.find('.list__item--expandable.active');
+        const activeDeletedPages = component.find('.list__item--expandable[data-page-state="deletes"].active');
+        expect(activePages.length).toBe(1);
+        expect(activeDeletedPages.length).toBe(1);
     });
 });
 
@@ -160,6 +204,11 @@ describe("Number of pages in a state are rendered correctly", () => {
         expect(component.instance().statePageCount('reviewed')).toBe("0");
         expect(component.instance().renderPluralisedPageText('reviewed')).toBe("pages");
     });
+    
+    it("for pages that have been deleted", () => {
+        expect(component.instance().statePageCount('deletes')).toBe("1");
+        expect(component.instance().renderPluralisedPageText('deletes')).toBe("page");
+    });
 });
 
 describe("Invalid props doesn't break the component", () => {
@@ -167,7 +216,8 @@ describe("Invalid props doesn't break the component", () => {
         ...defaultProps,
         inProgress: null,
         complete: null,
-        reviewed: null
+        reviewed: null,
+        delete: null
     }
     const component = shallow(
         <CollectionDetails {...props} />
@@ -179,7 +229,7 @@ describe("Invalid props doesn't break the component", () => {
     
     it("missing 'activePageID'", () => {
         component.setProps({...alternativePageProps});
-        expect(component.find('.list__item--expandable').length).toBe(3);
+        expect(component.find('.list__item--expandable').length).toBe(5);
     });
 });
 
@@ -316,5 +366,13 @@ describe("Delete collection button", () => {
         });
         expect(component.find('#delete-collection').exists()).toEqual(false);
     });
+});
+
+describe("Cancelling deleted content", () => {
+    const component = shallow(
+        <CollectionDetails  />
+    )
+
+    
 });
 
