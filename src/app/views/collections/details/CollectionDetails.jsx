@@ -17,7 +17,7 @@ export const pagePropTypes = {
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
     uri: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
+    type: PropTypes.string
 }
 
 const propTypes = {
