@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
+import dateFormat from 'dateformat';
 
 import collections from '../../../utilities/api-clients/collections';
 import teams from '../../../utilities/api-clients/teams';
@@ -12,6 +13,8 @@ import Select from '../../../components/Select';
 import SelectedItemList from '../../../components/selected-items/SelectedItemList'
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
+import collectionValidation from '../validation/collectionValidation';
+import date from '../../../utilities/date';
 
 const propTypes = {
     user: PropTypes.shape({
@@ -53,6 +56,9 @@ export class CollectionCreate extends Component {
             isSubmitting: false
         };
 
+        this.minimumPublishDate = date.format(date.getNow(), "yyyy-mm-dd");
+        this.maximumPublishDate = date.format(date.addYear(10), "yyyy-mm-dd");
+
         this.baseNewCollectionDetails = this.state.newCollectionDetails;
 
         this.handleCollectionNameChange = this.handleCollectionNameChange.bind(this);
@@ -68,13 +74,6 @@ export class CollectionCreate extends Component {
 
     componentWillMount() {
         this.getListOfTeams();
-    }
-
-    // return a date in ISO format (yyyy-mm-dd). returns todays date by default,
-    // or same date but however many years ahead
-    getTodayDate(yearsAhead) {
-        const years = typeof yearsAhead === 'number' ? yearsAhead : 0;
-        return (new Date(new Date().setFullYear(new Date().getFullYear() + years)).toISOString().split('T')[0]);
     }
 
     getListOfTeams() {
@@ -243,7 +242,7 @@ export class CollectionCreate extends Component {
         if (this.state.newCollectionDetails.type === 'scheduled') {
             const date = this.state.newCollectionDetails.publishDate.value;
             const time = this.state.newCollectionDetails.publishTime.value;
-            return (new Date(date + " " + time).toISOString());
+            return (new Date(date + " " + time + "Z").toISOString());
         } else {
             return null;
         }
@@ -271,56 +270,58 @@ export class CollectionCreate extends Component {
         event.preventDefault();
         this.setState({isSubmitting: true});
 
-        // check no required fields are empty
-        // check name has a value
-        if (!this.state.newCollectionDetails.name.value) {
+        let hasError = false;
+        let newCollectionDetails = this.state.newCollectionDetails
+
+        const validatedName = collectionValidation.name(this.state.newCollectionDetails.name.value);
+        if (!validatedName.isValid) {
             const collectionName = {
-                value: "",
-                errorMsg: "Collections must be given a name"
+                value: this.state.newCollectionDetails.name.value,
+                errorMsg: validatedName.errorMsg
             };
 
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
+            newCollectionDetails = {
+                ...newCollectionDetails,
                 name: collectionName
             };
-            this.setState({
-                newCollectionDetails: newCollectionDetails,
-                isSubmitting: false
-            });
-            return;
+            hasError = true;
         }
 
-        // check date has a value
-        if (this.state.newCollectionDetails.type === "scheduled" && !this.state.newCollectionDetails.publishDate.value) {
+        const validatedDate = collectionValidation.date(this.state.newCollectionDetails.publishDate.value, this.state.newCollectionDetails.type);
+        if (!validatedDate.isValid) {
             const collectionDate = {
-                value: "",
-                errorMsg: "Scheduled collections must be given a publish date"
+                value: this.state.newCollectionDetails.publishDate.value,
+                errorMsg: validatedDate.errorMsg
             };
 
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
+            newCollectionDetails = {
+                ...newCollectionDetails,
                 publishDate: collectionDate
             };
-            this.setState({
-                newCollectionDetails: newCollectionDetails,
-                isSubmitting: false
-            });
-            return;
+            hasError = true;
         }
 
-        // check time has a value
-        if (this.state.newCollectionDetails.type === "scheduled" && !this.state.newCollectionDetails.publishTime.value) {
+        const validatedTime = collectionValidation.time(this.state.newCollectionDetails.publishTime.value, this.state.newCollectionDetails.type);
+        if (!validatedTime.isValid) {
             const collectionTime = {
-                value: "",
-                errorMsg: "Scheduled collections must be given a publish time"
+                value: this.state.newCollectionDetails.publishTime.value,
+                errorMsg: validatedTime.errorMsg
             };
 
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
+            newCollectionDetails = {
+                ...newCollectionDetails,
                 publishTime: collectionTime
             };
             this.setState({
                 newCollectionDetails: newCollectionDetails,
+                isSubmitting: false
+            });
+            hasError = true;
+        }
+
+        if (hasError) {
+            this.setState({
+                newCollectionDetails,
                 isSubmitting: false
             });
             return;
@@ -330,6 +331,7 @@ export class CollectionCreate extends Component {
             this.setState({ newCollectionDetails: this.baseNewCollectionDetails, isSubmitting: false });
             this.props.onSuccess(response);
         }).catch(error => {
+            this.setState({isSubmitting: false});
             switch(error.status) {
                 case(400): {
                     const notification = {
@@ -341,11 +343,11 @@ export class CollectionCreate extends Component {
                     break;
                 }
                 case (409): {
+                    log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a collection with an existing collection name: " + this.state.newCollectionDetails.name.value});
                     const collectionName = {
                         value: this.state.newCollectionDetails.name.value,
                         errorMsg: "A collection with this name already exists"
                     };
-
                     const newCollectionDetails = {
                         ...this.state.newCollectionDetails,
                         name: collectionName
@@ -396,8 +398,8 @@ export class CollectionCreate extends Component {
                             onChange={this.handlePublishDateChange}
                             error={this.state.newCollectionDetails.publishDate.errorMsg}
                             value={this.state.newCollectionDetails.publishDate.value}
-                            min={this.getTodayDate()}
-                            max={this.getTodayDate(10)}
+                            min={this.minimumPublishDate}
+                            max={this.maximumPublishDate}
                         />
 
                         <Input

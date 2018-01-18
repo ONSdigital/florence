@@ -31,8 +31,17 @@ export default class collections {
         return http.delete(`/zebedee/collection/${collectionID}`);
     }
 
+    static update(collectionID, body) {
+        body.id = collectionID;
+        return http.put(`/zebedee/collection/${collectionID}`, body);
+    }
+
     static deletePage(collectionID, pageURI) {
         return http.delete(`/zebedee/content/${collectionID}?uri=${pageURI}`);
+    }
+
+    static cancelDelete(collectionID, pageURI) {
+        return http.delete(`/zebedee/DeleteContent/${collectionID}?uri=${pageURI}`);
     }
 
 }
