@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-    type: PropTypes.string.isRequired,
+    type: PropTypes.string,
     title: PropTypes.string.isRequired,
     isActive: PropTypes.bool
 };
