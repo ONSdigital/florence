@@ -566,6 +566,7 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionPageDeleteClick(uri, title, state) {
+        const collectionID = this.props.params.collectionID;
         this.setState(state => ({
             pendingDeletedPages: [...state.pendingDeletedPages, uri]
         }));
@@ -573,7 +574,8 @@ export class CollectionsController extends Component {
         this.props.dispatch(push(collectionURL));
 
         const triggerPageDelete = () => {
-            collections.deletePage(this.props.params.collectionID, uri).then(() => {
+            console.log(state);
+            collections.deletePage(collectionID, uri).then(() => {
                 const pages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
                 });
@@ -829,6 +831,10 @@ export class CollectionsController extends Component {
     }
 
     mapPagesAndPendingDeletes(state) {
+        if (!this.props.activeCollection[state]) {
+            return;
+        }
+
         if (!this.state.pendingDeletedPages || this.state.pendingDeletedPages.length === 0) {
             return this.props.activeCollection[state];
         }
