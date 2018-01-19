@@ -785,11 +785,11 @@ export class CollectionsController extends Component {
 
     readablePublishDate(collection) {
         if (collection.publishDate && collection.type === "manual") {
-            return dateformat(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT") + " [rolled back]";
+            return dateformat(collection.publishDate, "UTC:ddd, dd/mm/yyyy h:MMTT") + " [rolled back]";
         }
 
         if (collection.publishDate) {
-            return dateformat(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT");
+            return dateformat(collection.publishDate, "UTC:ddd, dd/mm/yyyy h:MMTT");
         }
 
         if (!collection.publishDate) {
