@@ -170,6 +170,9 @@ class CollectionEdit extends Component {
                                 />
                             </span>
                         }
+                        
+                        {/* Without this hidden submit input the form doesn't submit on enter consistently */}
+                        <input type="submit" hidden={true}/>
                     </form>
                 </div>
                 <div className="drawer__footer">
