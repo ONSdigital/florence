@@ -1110,7 +1110,7 @@ function isValidDate(d) {
  * @returns {boolean}
  **/
 
-function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
+function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
 
     $("#working-on").on('click', function () {
@@ -1130,7 +1130,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             currentPath = path;
             safePath = checkPathSlashes(currentPath);
         }
-        
+
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
             document.cookie = "lang=" + "en;path=/";
@@ -1142,6 +1142,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
 
+        // If we're viewing a filterable dataset then redirect the iframe to use the new path
+        if (datasetID){
+          window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
+        }
         // Store nav objects
         var $nav = $('.js-workspace-nav'),
             $navItem = $nav.find('.js-workspace-nav__item');
@@ -1207,13 +1211,19 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             menuItem.addClass('selected');
 
             if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click', collectionData);
+                loadBrowseScreen(collectionId, 'click', collectionData, datasetID);
             } else if (menuItem.is('#create')) {
                 Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPreviewUrl();
+                if(datasetID){
+                  var url = $('#browser-location').val();
+                  url = url.replace(/^.*\/\/[^\/]+/, '')
+                  Florence.globalVars.pagePath = url;
+                } else {
+                  Florence.globalVars.pagePath = getPreviewUrl();
+                }
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
@@ -1441,7 +1451,6 @@ function toggleDeleteRevertChildren($item) {
 
     $childContainer.find('.page__buttons').toggleClass('deleted');
 }
-
 function deleteTeam(name) {
   $.ajax({
     url: "/zebedee/teams/" + name,
@@ -4980,8 +4989,7 @@ var isUpdatingModal = {
         $disabledModal.remove();
     }
 }
-function loadBrowseScreen(collectionId, click, collectionData) {
-
+function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
     // Get collection data if it's undefined and re-run the function once request has returned
     if (!collectionData) {
         getCollection(collectionId, success = function(getCollectionResponse) {
@@ -5018,14 +5026,18 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             // }
 
             // Bind click event for browse tree item
-            bindBrowseTreeClick();
+            bindBrowseTreeClick(collectionId);
 
             if (click) {
-                var url = getPreviewUrl();
+                if(datasetID){
+                  var url = $('.browser-location').val();
+                } else {
+                  var url = getPreviewUrl();
+                }
                 if (url === "/blank" || response['collectionOwner'] == 'DATA_VISUALISATION') {
                     treeNodeSelect('/');
                 } else {
-                    treeNodeSelect(url);
+                    treeNodeSelect(url, datasetID);
                 }
             } else {
                 treeNodeSelect('/');
@@ -5050,32 +5062,57 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 }
 
 // Bind the actions for a click on a browse tree item
-function bindBrowseTreeClick() {
+function bindBrowseTreeClick(collectionId) {
     $('.js-browse__item-title').click(function () {
         var $this = $(this),
             $thisItem = $this.closest('.js-browse__item'),
             uri = $thisItem.attr('data-url'),
             baseURL = Florence.babbageBaseUrl,
-            isDataVis = localStorage.getItem('userType') == 'DATA_VISUALISATION';
-
-        if (uri) {
-            var newURL = baseURL + uri;
-
-            treeNodeSelect(newURL);
-
-            // Data vis browsing doesn't update iframe
-            if (isDataVis) {
-                return false
-            }
-
-            // Update iframe location which will send change event for iframe to update too
-            document.getElementById('iframe').contentWindow.location.href = newURL;
-            $('.browser-location').val(newURL);
-
+            isDataVis = localStorage.getItem('userType') == 'DATA_VISUALISATION',
+            datasetID;
+        
+        // Check if this is an api and get the dataset ID from Zebedee.
+        if($this.hasClass('page__item--api_dataset_landing_page')){
+          getPageData(collectionId, uri,
+              success = function (response) {
+                  datasetID = response.apiDatasetId;
+                  updatePreviewAndBrowseTree(datasetID);
+              },
+              error = function (response) {
+                  handleApiError(response);
+              }
+          );
         } else {
+          updatePreviewAndBrowseTree();
+        }
 
-            // Set all directories above it in the tree to be active when a directory clicked
-            selectParentDirectories($this);
+        function updatePreviewAndBrowseTree(datasetID){
+          if (uri) {
+              var newURL = baseURL + uri;
+              var iframeURL = newURL;
+
+              treeNodeSelect(newURL);
+
+              // Data vis browsing doesn't update iframe
+              if (isDataVis) {
+                  return false
+              }
+
+              // Update iframe location which will send change event for iframe to update too
+            
+              // If this is an api landing page then go to the /datasets/{datasetID} path
+              if (datasetID) {
+                iframeURL = '/datasets/' + datasetID;
+              }
+              document.getElementById('iframe').contentWindow.location.href = iframeURL;
+              
+              $('.browser-location').val(newURL);
+
+          } else {
+
+              // Set all directories above it in the tree to be active when a directory clicked
+              selectParentDirectories($this);
+          }
         }
 
         // Open active branches in browse tree
@@ -8818,20 +8855,20 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
     // Call the recipe API, get data and create elements.
     function getRecipes() {
       $.ajax({
-          url: 'http://localhost:8081/recipes',
+          url: '/recipes',
           dataType: 'json',
           crossDomain: true,
           success: function (recipeData) {
             var templateData = {};
+            var content = "";
             $.each(recipeData.items, function(i, v) {
               // Get the dataset names and id's
               var datasetName = v.alias;
                   datasetId = v.output_instances[0].dataset_id;
               // Create elements, store data in data attr to be used later
-              templateData  = {
-                  content: '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
-              };
+              content =  content + '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
             });
+            templateData.content = content;
             // Load modal and add the data
             viewRecipeModal(templateData);
           },
@@ -11565,7 +11602,7 @@ function saveContent(collectionId, uri, data, collectionData) {
     postContent(collectionId, uri, JSON.stringify(data), false, false,
         success = function (message) {
             console.log("Updating completed " + message);
-            createWorkspace(uri, collectionId, 'edit', collectionData);
+            createWorkspace(uri, collectionId, 'edit', collectionData, null, data.apiDatasetId);
         },
         error = function (response) {
             if (response.status === 409) {
@@ -15183,7 +15220,6 @@ function staticLandingPageEditor(collectionId, data) {
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
-
 function staticPageEditor(collectionId, data) {
 
   var newLinks = [], newFiles = [], newChart = [], newTable = [], newImage = [];
@@ -15673,7 +15709,7 @@ function transfer(source, destination, uri) {
 
 function treeNodeSelect(url) {
     var urlPart = url.replace(Florence.babbageBaseUrl, '');
-
+    
     // BEING REMOVED BECAUSE BABBAGE IS NOW RENDERING SAME AS NORMAL PAGE - Remove the trailing slash on visualisations so the node select works as expected (unless at root)
     // if (urlPart !== '/') {
     //     urlPart = urlPart.replace(/\/+$/, '');
@@ -16006,9 +16042,9 @@ function viewCollectionDetails(collectionId, $this) {
                 var safePath = checkPathSlashes(path);
                 Florence.globalVars.welsh = false;
             }
-            getPageDataDescription(collectionId, safePath,
-                success = function () {
-                    createWorkspace(safePath, collectionId, 'edit', collection);
+            getPageData(collectionId, safePath,
+                success = function (response) {
+                    createWorkspace(safePath, collectionId, 'edit', collection, null, response.apiDatasetId);
                 },
                 error = function (response) {
                     handleApiError(response);
@@ -17448,6 +17484,7 @@ function viewWorkspace(path, collectionId, menu) {
   if (path) {
     currentPath = path;
   }
+
   Florence.globalVars.pagePath = currentPath;
 
   if (menu === 'browse') {
@@ -17466,7 +17503,6 @@ function viewWorkspace(path, collectionId, menu) {
     loadPageDataIntoEditor(currentPath, collectionId);
   }
 }
-
 /**
  * Editor screen for uploading visualisations
  * @param collectionId
