@@ -644,21 +644,43 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
 },"18":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "                <h3 id=\"delete-uris\">Content deletions</h3>\n\n                <!--<p id=\"approval-permission-blocked\" style=\"display: none\"><strong>You will not be able to approve this collection as it contains delete requests actioned by you.</strong></p> -->\n\n                <ul class=\"page-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"each","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+  return "                <h3 id=\"\">API datasets in this collection</h3>\n                <ul class=\"page-list\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.datasets : depth0),{"name":"each","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                </ul>\n";
 },"19":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing, alias4="function";
+
+  return "                        <li class=\"page-list__item\">\n                            <span class=\"page__item \">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.dataset : depth0)) != null ? stack1.title : stack1), depth0))
+    + " - "
+    + alias2(((helper = (helper = helpers.edition || (depth0 != null ? depth0.edition : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(depth0,{"name":"edition","hash":{},"data":data}) : helper)))
+    + "</span>\n                            <div class=\"page__buttons page__buttons--list\">\n                                <button class=\"btn btn-page-edit\" data-path=\""
+    + alias2(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\" data-language=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.language : stack1), depth0))
+    + "\">Edit\n                                    file\n                                </button>\n                                <button class=\"btn btn--warning dataset-delete\" data-instanceId=\""
+    + alias2(((helper = (helper = helpers.instance_id || (depth0 != null ? depth0.instance_id : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(depth0,{"name":"instance_id","hash":{},"data":data}) : helper)))
+    + "\" data-language=\""
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.descriptions : depth0)) != null ? stack1.language : stack1), depth0))
+    + "\">Delete file\n                                </button>\n                            </div>\n                        </li>\n";
+},"21":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "                <h3 id=\"delete-uris\">Content deletions</h3>\n\n                <!--<p id=\"approval-permission-blocked\" style=\"display: none\"><strong>You will not be able to approve this collection as it contains delete requests actioned by you.</strong></p> -->\n\n                <ul class=\"page-list\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"each","hash":{},"fn":this.program(22, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "                </ul>\n";
+},"22":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=this.lambda, alias2=this.escapeExpression, alias3=helpers.helperMissing;
 
   return "                        <li class=\"page-list__item\">\n                            <span class=\"page__item page__item--"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.type : stack1), depth0))
     + "\">\n                                "
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.title : stack1), depth0))
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(20, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(23, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "  ("
     + alias2(((helper = (helper = helpers.totalDeletes || (depth0 != null ? depth0.totalDeletes : depth0)) != null ? helper : alias3),(typeof helper === "function" ? helper.call(depth0,{"name":"totalDeletes","hash":{},"data":data}) : helper)))
     + " delete"
-    + ((stack1 = (helpers.ifCond || (depth0 && depth0.ifCond) || alias3).call(depth0,(depth0 != null ? depth0.totalDeletes : depth0),">","1",{"name":"ifCond","hash":{},"fn":this.program(22, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.ifCond || (depth0 && depth0.ifCond) || alias3).call(depth0,(depth0 != null ? depth0.totalDeletes : depth0),">","1",{"name":"ifCond","hash":{},"fn":this.program(25, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + " in total)<br/>\n                                "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.uri : stack1), depth0))
     + "\n                            </span>\n                            <div class=\"page__buttons page__buttons--list\">\n                                <button class=\"btn-page-delete delete-marker-remove\" data-path=\""
@@ -666,22 +688,22 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + "\"\n                                        data-language=\""
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.language : stack1), depth0))
     + "\">\n                                    Cancel Delete\n                                </button>\n                            </div>\n                            "
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.children : stack1),{"name":"if","hash":{},"fn":this.program(24, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.children : stack1),{"name":"if","hash":{},"fn":this.program(27, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                        </li>\n";
-},"20":function(depth0,helpers,partials,data) {
+},"23":function(depth0,helpers,partials,data) {
     var stack1;
 
   return "\n                                : "
     + this.escapeExpression(this.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.edition : stack1), depth0));
-},"22":function(depth0,helpers,partials,data) {
+},"25":function(depth0,helpers,partials,data) {
     return "s";
-},"24":function(depth0,helpers,partials,data) {
+},"27":function(depth0,helpers,partials,data) {
     var stack1;
 
   return " \n                                <div class=\"page__children\">\n                                    <h4>This delete contains</h4>\n                                    "
     + ((stack1 = this.invokePartial(partials.childDeletes,depth0,{"name":"childDeletes","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + " \n                                </div>\n";
-},"26":function(depth0,helpers,partials,data) {
+},"29":function(depth0,helpers,partials,data) {
     var stack1;
 
   return "                <h3 id=\"delete-uris\">1 timeseries import</h3>\n                    <ul class=\"page-list\">\n                        <li class=\"page-list__item\">\n                            "
@@ -713,8 +735,9 @@ templates['collectionDetails'] = template({"1":function(depth0,helpers,partials,
     + " pages awaiting approval</h3>\n            <ul class=\"page-list\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.reviewed : depth0),{"name":"each","hash":{},"fn":this.program(15, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "            </ul>\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"if","hash":{},"fn":this.program(18, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.timeseriesImportFiles : depth0),{"name":"if","hash":{},"fn":this.program(26, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.datasets : depth0),{"name":"if","hash":{},"fn":this.program(18, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"if","hash":{},"fn":this.program(21, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.timeseriesImportFiles : depth0),{"name":"if","hash":{},"fn":this.program(29, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </div>\n    </div>\n\n    <nav class=\"slider__nav\">\n        <!--<button class=\"btn btn--primary btn-collection-work-on\">Work on collection</button>-->\n        <button class=\"btn btn--positive btn-collection-approve\">Approve collection</button>\n        <button id=\"collection-delete\" class=\"btn btn--warning btn-page-delete\">Delete collection</button>\n        <button class=\"btn btn-collection-cancel\">Cancel</button>\n    </nav>\n</div>\n\n";
 },"usePartial":true,"useData":true});
 templates['collectionEdit'] = template({"1":function(depth0,helpers,partials,data) {
@@ -1368,7 +1391,7 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.environment : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n\n"
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n"
+    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--datasets\" href=\"javascript:void(0)\">Datasets</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n"
     + ((stack1 = (helpers.if_ne || (depth0 && depth0.if_ne) || alias1).call(depth0,(((stack1 = (depth0 && depth0.Authentication)) && stack1.userType) || alias1).call(depth0,{"name":"this.Authentication.userType","hash":{},"data":data}),"DATA_VISUALISATION",{"name":"if_ne","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--logout\" href=\"javascript:void(0)\">Logout</a></li>\n";
 },"2":function(depth0,helpers,partials,data) {
@@ -1508,7 +1531,7 @@ templates['publishList'] = template({"1":function(depth0,helpers,partials,data) 
 templates['recipeModal'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing;
 
-  return "<div class=\"overlay\" id=\"js-modal-recipe\">\n    <div class=\"modal-recipe\">\n        <div class=\"modal-recipe__body\">\n          <ul class=\"modal-recipe-list\">"
+  return "<div class=\"overlay\" id=\"js-modal-recipe\">\n    <div class=\"modal-title col--6\">\n      <h1>Select a dataset to connect</h1>\n    </div>\n    <div class=\"modal-recipe\">\n        <div class=\"modal-recipe__header\">\n            <h2>Dataset title</h2>\n        </div>\n        <div class=\"modal-recipe__body\">\n          <ul class=\"modal-recipe-list\">"
     + ((stack1 = ((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : alias1),(typeof helper === "function" ? helper.call(depth0,{"name":"content","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "</ul>\n          <div class=\"modal-recipe__animation\">"
     + this.escapeExpression((helpers.loadingAnimation || (depth0 && depth0.loadingAnimation) || alias1).call(depth0,{"name":"loadingAnimation","hash":{"dark":true,"large":true},"data":data}))
@@ -1921,7 +1944,7 @@ templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
 templates['workCreate'] = template({"1":function(depth0,helpers,partials,data) {
     return "                    <option value=\"visualisation\" name=\"visualisation\" selected>Visualisation</option>\n";
 },"3":function(depth0,helpers,partials,data) {
-    return "                    <option value=\"bulletin\" name=\"bulletin\">Bulletin</option>\n                    <option value=\"article\" name=\"article\">Article</option>\n                    <option value=\"article_download\" name=\"article_download\">Article (PDF only)</option>\n                    <option value=\"dataset_landing_page\" name=\"dataset_landing_page\">Dataset</option>\n                    <option value=\"timeseries_landing_page\" name=\"timeseries_landing_page\">Timeseries dataset</option>\n                    <option value=\"compendium_landing_page\" name=\"compendium_landing_page\">Compendium</option>\n                    <option value=\"static_landing_page\" name=\"static_landing_page\">Static landing page</option>\n                    <option value=\"static_page\" name=\"static_page\">Generic static page</option>\n                    <option value=\"static_article\" name=\"static_article\">Static article</option>\n                    <option value=\"static_methodology\" name=\"static_methodology\">Methodology article</option>\n                    <option value=\"static_methodology_download\" name=\"static_methodology_download\">Methodology article (PDF\n                        only)\n                    </option>\n                    <option value=\"static_qmi\" name=\"static_qmi\">QMI</option>\n                    <option value=\"static_foi\" name=\"static_foi\">FOI</option>\n                    <option value=\"static_adhoc\" name=\"static_adhoc\">Ad hoc</option>\n                    <option value=\"release\" name=\"release\">Calendar entry</option>\n";
+    return "                    <option value=\"bulletin\" name=\"bulletin\">Bulletin</option>\n                    <option value=\"article\" name=\"article\">Article</option>\n                    <option value=\"article_download\" name=\"article_download\">Article (PDF only)</option>\n                    <option value=\"dataset_landing_page\" name=\"dataset_landing_page\">Dataset</option>\n                    <option value=\"api_dataset_landing_page\" name=\"api_dataset_landing_page\">API Dataset</option>\n                    <option value=\"timeseries_landing_page\" name=\"timeseries_landing_page\">Timeseries dataset</option>\n                    <option value=\"compendium_landing_page\" name=\"compendium_landing_page\">Compendium</option>\n                    <option value=\"static_landing_page\" name=\"static_landing_page\">Static landing page</option>\n                    <option value=\"static_page\" name=\"static_page\">Generic static page</option>\n                    <option value=\"static_article\" name=\"static_article\">Static article</option>\n                    <option value=\"static_methodology\" name=\"static_methodology\">Methodology article</option>\n                    <option value=\"static_methodology_download\" name=\"static_methodology_download\">Methodology article (PDF\n                        only)\n                    </option>\n                    <option value=\"static_qmi\" name=\"static_qmi\">QMI</option>\n                    <option value=\"static_foi\" name=\"static_foi\">FOI</option>\n                    <option value=\"static_adhoc\" name=\"static_adhoc\">Ad hoc</option>\n                    <option value=\"release\" name=\"release\">Calendar entry</option>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -2454,31 +2477,13 @@ templates['workEditT8'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
 templates['workEditT8ApiLandingPage'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "<section class=\"panel workspace-edit\">\n  <div class=\"edit-accordion\">\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Metadata</h1>\n        <p id=\"metadata-d\">Title | Next release | Contact | Summary | NS status | Keywords</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"metadata-list\">\n          <div>\n            <label for=\"title\">Title\n              <textarea class=\"auto-size\" type=\"text\" id=\"title\">"
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"margin-left--1 margin-bottom--1 margin-top--2\"><strong>Connected dataset ID:</strong> "
+    + alias2(alias1((depth0 != null ? depth0.apiDatasetId : depth0), depth0))
+    + "</div>\n  <div class=\"margin-left--1 margin-bottom--1\"><strong>Title:</strong> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"summary-p\">\n            <label for=\"summary\">Summary\n              <textarea class=\"auto-size\" type=\"text\" id=\"summary\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.summary : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div class=\"release-date\">\n            <label for=\"releaseDate\">Release date\n              <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\" value=\""
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
-    + "\"/>\n            </label>\n          </div>\n          <div class=\"next-p\">\n            <label for=\"nextRelease\">Next release\n              <textarea class=\"auto-size\" type=\"text\" id=\"nextRelease\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nextRelease : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactName\">Contact name\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactName\">"
-    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.name : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactEmail\">Contact email\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactEmail\">"
-    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.email : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"contactTelephone\">Contact telephone\n              <textarea class=\"auto-size\" type=\"text\" id=\"contactTelephone\">"
-    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.contact : stack1)) != null ? stack1.telephone : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"datasetId\">Dataset ID\n              <textarea class=\"auto-size\" type=\"text\" id=\"datasetId\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.datasetId : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div id=\"natStat\">\n            <label for=\"natStat-checkbox\">National statistic </label>\n            <input id=\"natStat-checkbox\" type=\"checkbox\" name=\"natStat\" value=\"false\" />\n          </div>\n          <div>\n            <label for=\"keywords\">Keywords\n              <input name=\"tags\" id=\"keywords\" value=\""
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
-    + "\" style=\"display: none;\">\n            </label>\n            <ul id=\"keywordsTag\"></ul>\n          </div>\n          <div>\n            <label for=\"metaDescription\">Meta description\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaDescription\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaCmd\">CMD meta data\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaCmd\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaCmd : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"one\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Download options</h1>\n        <p>Title</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-edition\" class=\"edit-section__sortable\">\n          <div id=\"edition\"></div>\n        </div>\n        <div class=\"text-center\">\n          <button class=\"btn btn--subtle btn-add-section\" id=\"add-edition\">Add spreadsheet</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"dataset\"></div>\n\n    <div id=\"document\"></div>\n\n    <div id=\"qmi\"></div>\n\n    <div id=\"methodology\"></div>\n\n    <div id=\"topics\"></div>\n\n    <div id=\"alert\"></div>\n\n      <div id=\"link\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + "</div>\n  <div class=\"margin-left--1\">Go to <a href=\"/florence/datasets\">Datasets</a> to add content to this page.</div>\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "  </nav>\n\n</section>\n";
+    + "  </nav>\n</section>\n";
 },"usePartial":true,"useData":true});
 templates['workEditT8Compendium'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
