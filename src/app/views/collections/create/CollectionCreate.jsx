@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
-import dateFormat from 'dateformat';
 
 import collections from '../../../utilities/api-clients/collections';
 import teams from '../../../utilities/api-clients/teams';
