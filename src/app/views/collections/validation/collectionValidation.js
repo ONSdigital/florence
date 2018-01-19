@@ -7,7 +7,7 @@
 export default class collectionValidation {
 
     static name(name) {
-        if (!name || name.length <= 0) {
+        if (!name || name.match(/^\s*$/)) {
             return {
                 isValid: false,
                 errorMsg: "Collections must be given a name"
@@ -54,6 +54,18 @@ export default class collectionValidation {
                 isValid: false,
                 errorMsg: "Collections must have a publish type"
             }
+        }
+        
+        if (publishType !== "manual" && publishType !== "scheduled") {
+            return {
+                isValid: false,
+                errorMsg: "Collections must have a publish type"
+            }
+        }
+
+        return {
+            isValid: true,
+            errorMsg: ""
         }
     }
 }
