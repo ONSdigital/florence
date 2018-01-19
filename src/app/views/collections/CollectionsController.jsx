@@ -574,7 +574,6 @@ export class CollectionsController extends Component {
         this.props.dispatch(push(collectionURL));
 
         const triggerPageDelete = () => {
-            console.log(state);
             collections.deletePage(collectionID, uri).then(() => {
                 const pages = this.props.activeCollection[state].filter(page => {
                     return page.uri !== uri;
