@@ -3,11 +3,13 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"mime"
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -16,8 +18,10 @@ import (
 	mgo "gopkg.in/mgo.v2"
 
 	"github.com/ONSdigital/florence/assets"
+	"github.com/ONSdigital/florence/healthcheck"
 	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
+	hc "github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/gorilla/pat"
@@ -25,11 +29,13 @@ import (
 )
 
 var bindAddr = ":8080"
-var babbageURL = "http://localhost:8080"
+var babbageURL = "http://localhost:20000"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
+var datasetAPIURL = "http://localhost:22000"
 var uploadBucketName = "dp-frontend-florence-file-uploads"
+var datasetAuthToken = "FD0108EA-825D-411C-9B1D-41EF7727F465"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 
@@ -59,13 +65,25 @@ func main() {
 		uploadBucketName = v
 	}
 	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
-		recipeAPIURL = v
+		importAPIURL = v
+	}
+	if v := os.Getenv("DATASET_API_URL"); len(v) > 0 {
+		datasetAPIURL = v
+	}
+	if v := os.Getenv("DATASET_API_AUTH_TOKEN"); len(v) > 0 {
+		datasetAuthToken = v
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
 	}
 
 	log.Namespace = "florence"
+
+	zc := healthcheck.New(zebedeeURL, "zebedee")
+	bc := healthcheck.New(babbageURL, "babbage")
+	dc := healthcheck.New(datasetAPIURL, "dataset-api")
+	rc := healthcheck.New(recipeAPIURL, "recipe-api")
+	ic := healthcheck.New(importAPIURL, "import-api")
 
 	/*
 		NOTE:
@@ -103,7 +121,14 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirectory)
+	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirector)
+
+	datasetAPIURL, err := url.Parse(datasetAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
 	router := pat.New()
 
@@ -119,6 +144,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	router.Path("/healthcheck").HandlerFunc(hc.Do)
+
 	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
 	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
 	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
@@ -126,6 +153,7 @@ func main() {
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
+	router.Handle("/dataset{uri:.*}", datasetAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
@@ -139,12 +167,13 @@ func main() {
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
-		"bind_addr":      bindAddr,
-		"babbage_url":    babbageURL,
-		"zebedee_url":    zebedeeURL,
-		"recipe_api_url": recipeAPIURL,
-		"import_api_url": importAPIURL,
-		"enable_new_app": enableNewApp,
+		"bind_addr":       bindAddr,
+		"babbage_url":     babbageURL,
+		"zebedee_url":     zebedeeURL,
+		"recipe_api_url":  recipeAPIURL,
+		"import_api_url":  importAPIURL,
+		"dataset_api_url": datasetAPIURL,
+		"enable_new_app":  enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)
@@ -152,6 +181,7 @@ func main() {
 	s.Server.IdleTimeout = 120 * time.Second
 	s.Server.WriteTimeout = 120 * time.Second
 	s.Server.ReadTimeout = 30 * time.Second
+	s.HandleOSSignals = false
 	s.MiddlewareOrder = []string{"RequestID", "Log"}
 
 	// FIXME temporary hack to remove timeout middleware (doesn't support hijacker interface)
@@ -164,9 +194,34 @@ func main() {
 	}
 	s.MiddlewareOrder = newMo
 
-	if err := s.ListenAndServe(); err != nil {
-		log.Error(err, nil)
-		os.Exit(2)
+	go func() {
+		if err := s.ListenAndServe(); err != nil {
+			log.Error(err, nil)
+			os.Exit(2)
+		}
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, os.Kill)
+
+	for {
+		hc.MonitorExternal(bc, zc, ic, rc, dc)
+
+		timer := time.NewTimer(time.Second * 60)
+
+		select {
+		case <-timer.C:
+			continue
+		case <-stop:
+			log.Info("shutting service down gracefully", nil)
+			timer.Stop()
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			if err := s.Server.Shutdown(ctx); err != nil {
+				log.Error(err, nil)
+			}
+			return
+		}
 	}
 }
 
@@ -226,8 +281,13 @@ func zebedeeDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
-func importAPIDirectory(req *http.Request) {
+func importAPIDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+}
+
+func datasetAPIDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
+	req.Header.Set("Internal-token", datasetAuthToken)
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
