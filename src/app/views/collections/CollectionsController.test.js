@@ -477,7 +477,7 @@ describe("readablePublishDate returns correct display date when", () => {
             type: ""
         };
         const result = component.instance().readablePublishDate(collection);
-        expect(result).toBe("Thu, 13/07/2017 2:30AM");
+        expect(result).toBe("Thu, 13/07/2017 1:30AM");
     });
 
     it("a collection has no publishDate and is set to manual", () => {
