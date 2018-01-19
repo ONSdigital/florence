@@ -250,6 +250,7 @@ class VersionCollectionController extends Component {
                 handleNextReleaseChange={this.handleNextReleaseChange}
                 handleOnBackFromSuccess={this.handleOnBackFromSuccess}
                 backLink={url.resolve("metadata")}
+                hasVersion="true"
             />
         )
     }

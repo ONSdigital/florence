@@ -1,6 +1,6 @@
 function treeNodeSelect(url) {
     var urlPart = url.replace(Florence.babbageBaseUrl, '');
-
+    
     // BEING REMOVED BECAUSE BABBAGE IS NOW RENDERING SAME AS NORMAL PAGE - Remove the trailing slash on visualisations so the node select works as expected (unless at root)
     // if (urlPart !== '/') {
     //     urlPart = urlPart.replace(/\/+$/, '');
