@@ -6,12 +6,12 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/ONSdigital/go-ns/log"
+	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/s3"
 	"github.com/gorilla/schema"
-
-	"gopkg.in/amz.v1/aws"
-	"gopkg.in/amz.v1/s3"
 )
 
 // Bucket represents an s3 bucket to upload files to
@@ -47,7 +47,7 @@ func (b S3Bucket) URL(path string) string {
 
 // Put calls the s3 bucket put method
 func (b S3Bucket) Put(path string, data []byte, contType string, perm s3.ACL) error {
-	return b.bucket.Put(path, data, contType, perm)
+	return b.bucket.Put(path, data, contType, perm, s3.Options{})
 }
 
 // Resumable represents resumable js upload query pararmeters
@@ -67,7 +67,7 @@ type Resumable struct {
 // New creates a new instance of Uploader using provided s3
 // environment authentication
 func New(bucketName string) (*Uploader, error) {
-	auth, err := aws.EnvAuth()
+	auth, err := aws.GetAuth("", "", "", time.Time{})
 	if err != nil {
 		return nil, err
 	}

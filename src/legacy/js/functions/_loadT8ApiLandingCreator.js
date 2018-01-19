@@ -8,7 +8,7 @@
 
 function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
     var releaseDate = null;             //overwrite scheduled collection date
-    var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
+    var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData, datasetId;
     var parentUrlData = parentUrl + "/data";
 
     $.ajax({
@@ -52,8 +52,8 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             pageData = pageTypeDataT8(pageType);
             pageTitle = $('#pagename').val();
             pageData.description.title = pageTitle;
-            apiDatsetID = $('#apiDatasetId span').text();
-            pageData.apiDatasetId = apiDatsetID;
+            apiDatasetID = $('#apiDatasetId span').text();
+            pageData.apiDatasetId = apiDatasetID;
             uriSection = "datasets";
             pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
             newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
@@ -80,11 +80,11 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             var templateData = {};
             $.each(recipeData.items, function(i, v) {
               // Get the dataset names and id's
-              var datasetName = v.alias,
+              var datasetName = v.alias;
                   datasetId = v.output_instances[0].dataset_id;
               // Create elements, store data in data attr to be used later
               templateData  = {
-                  content: '<li><h1>' + datasetName + '</h1><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--inverse margin-left--0 btn-import">Import</button></li>'
+                  content: '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
               };
             });
             // Load modal and add the data
@@ -104,13 +104,18 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             getDatasetName = $(this).data('datasetname');
         $('.btn-get-recipes, .dataset-list').remove();
         $('.btn-page-create').show();
+        if($('.apiDatasetBlock').length) {
+          $('.apiDatasetBlock').remove();
+        }
         $('.edition').append(
-          '<div id="apiDatasetId">Imported dataset ID: <span>'+getDatasetID+'</span></div>' +
+          '<div class="apiDatasetBlock">' +
+          '<div id="apiDatasetId">Connected dataset ID: <span>'+getDatasetID+'</span></div>' +
           '<label for="apiDatasetName">Dataset name</label>' +
           '<input id="apiDatasetName" type="text" value="'+getDatasetName+'" />'+
           // Hidden input for #pagename so it can be validated
           // Populated with #apiDatasetName value on submit
-          '<input id="pagename" type="hidden" value="" />'
+          '<input id="pagename" type="hidden" value="" />' +
+          '</div>'
         );
         $('#js-modal-recipe').remove();
         return false;
