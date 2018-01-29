@@ -31,7 +31,7 @@ function visualisationEditor(collectionId, data) {
     $selectWrapper.find('select').empty().append(selectOptions.join(''));
     $selectWrapper.show();
     $('#browser-location').hide();
-    $('.browser.disabled').removeClass('disabled');
+    // $('.browser.disabled').removeClass('disabled');
 
     // Bind to select's change and toggle preview to selected HTML file
     $('#select-vis-preview').change(function() {
