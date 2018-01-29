@@ -48,7 +48,9 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
         dataTemplate = {list: list, idField: idField, idPlural: 'methodology'};
     } else if (idField === 'link') {
         dataTemplate = {list: list, idField: idField, idPlural: 'links'};
-    } else {
+    } else if (idField === 'highlighted-content') {
+        dataTemplate = {list: list, idField: idField, idPlural: 'highlighted content'};
+    }else {
         dataTemplate = {list: list, idField: idField};
     }
     return dataTemplate;
@@ -299,6 +301,9 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     initialiseField();
                 }
                 else if (field === 'links') {
+                    initialiseField();
+                }
+                else if (field === 'highlightedContent' && (page.type === 'article' || page.type === 'timeseries' || page.type === 'bulletin')) {
                     initialiseField();
                 }
                 else {
