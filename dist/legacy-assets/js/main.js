@@ -1,4 +1,80 @@
-var CookieUtils = {
+var websocket = {
+    socket: null,
+    retrySocketDelay: 1,
+    buffer: new Map(),
+    messageCounter: 0,
+    hasConnected: false,
+    reconnectAttempts: 0,
+    open: function() {
+        console.info("Trying to open websocket...");
+
+        websocket.socket = new WebSocket(location.protocol.replace(/^http/, 'ws') + location.host + "/florence/websocket");
+        websocket.reconnectAttempts++;
+
+        websocket.socket.onopen = function() {
+            console.info("Websocket has been opened");
+            websocket.hasConnected = true;
+            websocket.retrySocketDelay = 1;
+            websocket.buffer.forEach(function(message) {
+                websocket.socket.send(message);
+            });
+            // FIXME we should be logging that the socket is open - but there's a horrible cyclical dependency on startup atm
+        }
+
+        websocket.socket.onerror = function() {
+            console.error("Error opening websocket");
+        }
+
+        websocket.socket.onmessage = function(message) {
+            message = JSON.parse(message.data);
+            if (message.type === "version") {
+                // TODO Not being used yet to check version but should replace existing implementation at some point
+                Florence.version = message.payload.version;
+                return;
+            }
+            if (message.type !== "ack") {
+                return;
+            }
+            websocket.buffer.delete(parseInt(message.payload));
+        }
+
+        websocket.socket.onclose = function() {
+            console.info("Websocket has been closed");
+            websocket.retrySocketDelay *= 2;
+            if (websocket.retrySocketDelay >= 300000) {
+                websocket.retrySocketDelay = 300000;
+            }
+
+            if (!websocket.hasConnected && websocket.reconnectAttempts >= 100) {
+                console.info("Unable to connect websocket after 100 attempts, so stop retrying websocket");
+                return;
+            }
+
+            setTimeout(() => {
+                // setTimeout sets 'this' to window wrapping 'this.open()' in a lambda function
+                // (rather than passing it inline), stops it.
+                // Ref: https://stackoverflow.com/questions/2130241/pass-correct-this-context-to-settimeout-callback
+                websocket.open();
+            }, websocket.retrySocketDelay);
+        }
+    },
+    send: function(message) {
+        websocket.messageCounter++;
+        message = websocket.messageCounter + ":" + message;
+
+        if (websocket.buffer.size >= 50) {
+            console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: \n`, message);
+            //log.add(log.eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
+            return;
+        }
+
+        websocket.buffer.set(websocket.messageCounter, message);
+        
+        if (websocket.socket.readyState === 1) {
+            websocket.socket.send(message);
+        }
+    }
+};var CookieUtils = {
   getCookieValue: function (a, b) {
     b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
     return b ? b.pop() : '';
@@ -46,6 +122,12 @@ Florence.Editor = {
     data: {}
 };
 
+// Can't use randomId function in StringUtils because it is later in the main.js (because the concatenation is done alphabetically)
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+};
+Florence.instanceID = (S4() + S4());
+
 Florence.CreateCollection = {
     selectedRelease: ""
 };
@@ -71,6 +153,20 @@ Florence.Authentication = {
     }
 };
 
+Florence.ping = {
+    get: function() {
+        return this.entries[this.latestEntryIndex-1];
+    },
+    add: function(ping) {
+        var timeStamp = new Date();
+        this.entries[this.latestEntryIndex] = {timeStamp, ping};
+        this.latestEntryIndex++;
+        if (this.latestEntryIndex >= this.entries.length) this.latestEntryIndex=0;
+    },
+    latestEntryIndex: 0,
+    entries: new Array(200)
+}
+
 Florence.Handler = function (e) {
     if (Florence.Editor.isDirty) {
         var result = confirm("You have unsaved changes. Are you sure you want to continue?");
@@ -91,6 +187,79 @@ if (typeof module !== 'undefined') {
 }
 
 
+var log = {
+    add: function(eventType, payload) {
+        var timestamp = new Date();
+        var event = {
+            type: eventType,
+            instanceID: Florence.instanceID,
+            created: timestamp.toISOString(),
+            timestamp: timestamp.getTime(),
+            payload: payload || null
+        }
+
+        // Add unrecognised log type to log event
+        if (!log.eventTypesMap[eventType]) {
+            console.log("Unrecognised log type: ", eventType, payload);
+            event.type = log.eventTypes.unrecognisedLogType;
+        }
+
+        websocket.send("log:" + JSON.stringify(event));
+    },
+    eventTypes: {
+        appInitialised: "APP_INITIALISED",
+        requestSent: "REQUEST_SENT",
+        requestReceived: "REQUEST_RECEIVED",
+        requestFailed: "REQUEST_FAILED",
+        pingSent: "PING_SENT",
+        pingReceived: "PING_RECEIVED",
+        pingFailed: "PING_FAILED",
+        socketOpen: "SOCKET_OPEN",
+        socketBufferFull: "SOCKET_BUFFER_FULL",
+        socketError: "SOCKET_ERROR",
+        unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
+        runtimeWarning: "RUNTIME_WARNING",
+        unrecognisedLogType: "UNRECOGNISED_LOG_TYPE"
+    },
+    eventTypesMap: {}
+}
+
+// Create a map for event type values to property name 
+// so that we can detect when we're logging an unrecognised event
+for (var eventType in log.eventTypes) {
+    log.eventTypesMap[log.eventTypes[eventType]] = eventType;
+}
+
+$.ajaxSetup({
+    beforeSend: function(request) {
+        var requestID = (S4() + S4());
+        request.setRequestHeader("X-Request-ID", requestID);
+        request.uniqueID = requestID;
+        log.add(
+            log.eventTypes.requestSent, {
+                requestID
+            }
+        );
+    }
+});
+
+$(document).ajaxSuccess(function(event, request, settings) {
+    log.add(
+        log.eventTypes.requestReceived, {
+            requestID: request.uniqueID,
+            status: request.statusText
+        }
+    );
+});
+
+$(document).ajaxError(function(event, request, settings) {
+    log.add(
+        log.eventTypes.requestReceived, {
+            requestID: request.uniqueID,
+            status: request.statusText
+        }
+    );
+});
 var PathUtils = {
   isJsonFile: function (uri) {
     return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1;
@@ -295,6 +464,9 @@ function getPageData(collectionId, path, success, error) {
     dataType: 'json',
     type: 'GET',
     success: function (response) {
+      var date = new Date();
+      date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+      console.log("[" + date + "] Get page content: \n", response);
       if (success)
         success(response);
     },
@@ -40002,7 +40174,7 @@ function addDataset(collectionId, data, field, idField) {
         downloadExtensions = /\.csdb$|\.csv$/;
         pageType = 'timeseries_dataset';
     } else {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
         pageType = 'dataset';
     }
 
@@ -40228,23 +40400,23 @@ function addFile(collectionId, data, field, idField) {
 
     //Add
     if (data.type === 'static_adhoc') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_qmi') {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'article_download' || (data.type === 'static_methodology_download' && field === 'pdfDownloads')) {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'static_methodology_download' && field === 'downloads') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.zip$/;
     } else if (data.type === 'static_methodology') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.pdf$|.zip$/;
     } else if (data.type === 'static_foi') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_page') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_article') {
-        downloadExtensions = /\.xls$|.pdf$|.zip$/;
+        downloadExtensions = /\.xls$|.xlsx$|.pdf$|.zip$/;
     } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'article' || data.type === 'bulletin'|| data.type === 'compendium_chapter') {
         downloadExtensions = /\.pdf$/;
     } else {
@@ -40299,81 +40471,64 @@ function addFile(collectionId, data, field, idField) {
  */
 
 function addFileWithDetails(collectionId, data, field, idField) {
-  var list = data[field];
-  var dataTemplate = {list: list, idField: idField};
-  var html = templates.editorDownloadsWithSummary(dataTemplate);
-  $('#' + idField).replaceWith(html);
-  var uriUpload;
-  var downloadExtensions;
+    var list = data[field];
+    var dataTemplate = {list: list, idField: idField,};
+    var html = templates.editorDownloadsWithSummary(dataTemplate);
+    $('#' + idField).replaceWith(html);
+    var downloadExtensions;
 
-  $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
+    $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
 
-  // Edit
-  if (!data[field] || data[field].length === 0) {
-    var lastIndex = 0;
-  } else {
-    $(data[field]).each(function (index) {
-      // Delete
-      $('#' + idField + '-delete_' + index).click(function () {
-        fileDelete(collectionId, data, field, index);
-      });
+    // Edit
+    if (!data[field] || data[field].length === 0) {
+        var lastIndex = 0;
+    } else {
+        $(data[field]).each(function (index) {
+            // Delete
+            $('#' + idField + '-delete_' + index).click(function () {
+                fileDelete(collectionId, data, field, index);
+            });
 
-      // Edit
-      $('#' + idField + '-edit_' + index).click(function () {
-        var editedSectionValue = {
-          "title": $('#' + idField + '-title_' + index).val(),
-          "markdown": $('#' + idField + '-summary_' + index).val()
-        };
+            // Edit
+            $('#' + idField + '-edit_' + index).click(function () {
+                var editedSectionValue = {
+                    "title": $('#' + idField + '-title_' + index).val(),
+                    "markdown": $('#' + idField + '-summary_' + index).val()
+                };
 
-        var saveContent = function (updatedContent) {
-          data[field][index].fileDescription = updatedContent;
-          data[field][index].title = $('#' + idField + '-title_' + index).val();
-          updateContent(collectionId, data.uri, JSON.stringify(data));
-        };
-        loadMarkdownEditor(editedSectionValue, saveContent, data);
-      });
-    });
-  }
-
-  //Add
-  if (data.type === 'compendium_data') {
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
-  } else {
-    sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
-  }
-
-  $('#add-' + idField).one('click', function () {
-    uploadFile(collectionId, data, field, idField, lastIndex, downloadExtensions, addFileWithDetails);
-  });
-
-  $(function () {
-    $('.add-tooltip').tooltip({
-      items: '.add-tooltip',
-      content: 'Type title here and click Edit to add a description',
-      show: "slideDown", // show immediately
-      open: function (event, ui) {
-        ui.tooltip.hover(
-          function () {
-            $(this).fadeTo("slow", 0.5);
-          });
-      }
-    });
-  });
-
-  function sortable() {
-    $('#sortable-' + idField).sortable({
-      stop: function () {
-        $('#' + idField + ' .edit-section__sortable-item--counter').each(function (index) {
-          $(this).empty().append(index + 1);
+                var saveContent = function (updatedContent) {
+                    data[field][index].fileDescription = updatedContent;
+                    data[field][index].title = $('#' + idField + '-title_' + index).val();
+                    updateContent(collectionId, data.uri, JSON.stringify(data));
+                };
+                loadMarkdownEditor(editedSectionValue, saveContent, data);
+            });
         });
-      }
+    }
+
+    //Add
+    if (data.type === 'compendium_data') {
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
+    } else {
+        sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
+    }
+
+    $('#add-' + idField).one('click', function () {
+        uploadFile(collectionId, data, field, idField, lastIndex, downloadExtensions, addFileWithDetails);
     });
-  }
 
-  sortable();
-}
+    function sortable() {
+        $('#sortable-' + idField).sortable({
+            stop: function () {
+                $('#' + idField + ' .edit-section__sortable-item--counter').each(function (index) {
+                    $(this).empty().append(index + 1);
+                });
+            }
+        });
+    }
 
-/**
+    sortable();
+}/**
  * Manages alerts
  * @param collectionId
  * @param data
@@ -41029,7 +41184,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
     if (data.type === 'timeseries_dataset') {
         downloadExtensions = /\.csdb$|\.csv$/;
     } else if (data.type === 'dataset') {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
     }
 
     var ajaxRequest = [];
@@ -41607,7 +41762,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
   //Add file types
   if (data.type === 'compendium_data'){
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
+    downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
   }
   else if (data.type === 'article_download'){
     downloadExtensions = /\.pdf$/;
@@ -43407,6 +43562,37 @@ function validatePageName(customSelector) {
     }
     
     return bool
+}
+var isUpdatingModal = {
+    modal: function() {
+        return (
+            "<div class='florence-disable'>" + 
+            "<p>Saving update</p>" +
+            "<div class='loader loader--large'></div>" +
+            "</div>"
+        )
+    },
+    add: function() {
+        var date = new Date();
+        date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+        console.log('[' + date + '] Disable Florence');
+        if ($('.florence-disable').length) {
+            console.warn("Attempt to add Florence's disabled modal but it already exists");
+            return;
+        }
+        $('#main').append(this.modal);
+    },
+    remove: function() {
+        var date = new Date();
+        date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+        console.log('[' + date + '] Enable Florence');
+        var $disabledModal = $('.florence-disable')
+        if ($disabledModal.length === 0) {
+            console.warn("Attempt to remove Florence's disabled modal before it's in the DOM");
+            return;
+        }
+        $disabledModal.remove();
+    }
 }
 function loadBrowseScreen(collectionId, click, collectionData) {
 
@@ -45666,6 +45852,9 @@ function loadImportScreen (collectionId) {
 
 /**
  * Manages markdown editor
+ * 
+ * Uses pagedown markdown librart - https://github.com/ujifgc/pagedown
+ * 
  * @param content
  * @param onSave
  * @param pageData
@@ -45758,6 +45947,103 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         });
     });
 
+    $("#js-editor--box").click(function() {
+        var $input = $('#wmd-input');
+        var selectionStart = $input[0].selectionStart;
+        var selectionEnd = $input[0].selectionEnd;
+        var beforeCursor = $input.val().substring(0, selectionStart);
+        var afterCursor = $input.val().substring(selectionStart);
+        var beforeCursorArray = beforeCursor.split("\n");
+        var afterCursorArray = afterCursor.split("\n");
+        var selectedLine = $input.val().split("\n")[beforeCursorArray.length-1];
+        var newInputValue = $input.val();
+        var cursorIsInsideBoxTag = false;
+        var cursorIsOnOpeningTag = false;
+        var cursorIsOnClosingTag = false;
+        var nextClosingTag = afterCursor.indexOf("</ons-box>");
+        var nextOpeningTag = afterCursor.indexOf("<ons-box");
+
+        // Detect that the cursor is inside box markdown, 
+        // so that we can choose to remove it instead of adding a new one.
+        if (nextClosingTag < nextOpeningTag || (nextClosingTag >= 0 && nextOpeningTag === -1)) {
+            cursorIsInsideBoxTag = true;
+        }
+
+        // Detect that the cursor is on a box tag so that we can
+        // choose to remove the entire tag
+        if (selectedLine.indexOf("<ons-box") >= 0) {
+            cursorIsOnOpeningTag = true;
+        }
+        if (selectedLine.indexOf("</ons-box>") >= 0) {
+            cursorIsOnClosingTag = true;
+        }
+
+        if (cursorIsOnOpeningTag) {
+            var eachLine = $input.val().split("\n");
+            var closingTagRemoved = false;
+            eachLine.splice([beforeCursorArray.length-1], 1);
+
+            var index = [beforeCursorArray.length-1];
+            while(!closingTagRemoved) {
+                if (eachLine[index].indexOf("</ons-box>") >= 0) {
+                    eachLine.splice(index, 1);
+                    closingTagRemoved = true;
+                }
+                index++;
+            }
+            newInputValue = eachLine.join("\n");
+        } else if (cursorIsOnClosingTag) {
+            var eachLine = $input.val().split("\n");
+            var closingTagRemoved = false;
+            eachLine.splice([beforeCursorArray.length-1], 1);
+
+            var index = [beforeCursorArray.length-1];
+            while(!closingTagRemoved) {
+                if (eachLine[index].indexOf("<ons-box") >= 0) {
+                    eachLine.splice(index, 1);
+                    closingTagRemoved = true;
+                }
+                index--;
+            }
+            newInputValue = eachLine.join("\n");
+        } else if (cursorIsInsideBoxTag) {
+            beforeCursorArray.reverse();
+            for (var [index, value] of beforeCursorArray.entries()) {
+                if (value.indexOf("<ons-box") >= 0) {
+                    beforeCursorArray.splice(index, 1);
+                    break;
+                }
+            }
+            beforeCursorArray.reverse();
+
+            for (var [index, value] of afterCursorArray.entries()) {
+                if (value.indexOf("</ons-box>") >= 0) {
+                    afterCursorArray.splice(index, 1);
+                    break;
+                }
+            }
+            newInputValue = beforeCursorArray.join("\n") + afterCursorArray.join("\n");
+        } else {
+            if (selectionStart === selectionEnd) {
+                var eachLine = $input.val().split("\n");
+                var selection = beforeCursorArray[beforeCursorArray.length-1] + afterCursorArray[0];
+                var wrappedSelection = '<ons-box align="full">\n' + selection + '\n</ons-box>';
+                eachLine[beforeCursorArray.length-1] = wrappedSelection;
+                newInputValue = eachLine.join("\n");
+
+            } else {
+                selection = $input.val().substring(selectionStart, selectionEnd);
+                newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
+            }
+        }
+
+        $input.val(newInputValue);
+        $('#wmd-input').trigger('input');
+        $input[0].setSelectionRange(selectionStart, selectionEnd);
+        Florence.Editor.markdownEditor.refreshPreview();
+
+    });
+
     $("#wmd-input").on('click', function () {
         markDownEditorSetLines();
     });
@@ -45820,6 +46106,7 @@ function markdownEditor() {
     // output chart tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {
         var newText = text.replace(/(<ons-chart\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+            console.log("ONS Chart tag found", match);
             var path = $(match).attr('path');
             return '[chart path="' + path + '" ]';
         });
@@ -45855,6 +46142,16 @@ function markdownEditor() {
         return newText;
     });
 
+    // output box tag as text instead of the actual tag.
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/<ons-box\salign="([a-zA-Z]*)">((?:.|\n)*?)<\/ons-box>/igm, function (match) {
+            var align = $(match).attr('align') || "";
+            var content = $(match)[0].innerHTML;
+            return '[box align="' + align + '"]' + content + '[/box]';
+        });
+        return newText;
+    });
+
     converter.hooks.chain("plainLinkText", function (link) {
         console.log("link done, innit");
         console.log(link);
@@ -45875,7 +46172,7 @@ function markdownEditor() {
     markDownEditorSetLines();
 }
 
-/**
+ /**
  * Editor data loader
  * @param path
  * @param collectionId
@@ -46378,6 +46675,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 "images": [],
                 "alerts": [],
                 "versions": [],
+                "isPrototypeArticle": false,
                 type: pageType
             };
         }
@@ -48308,12 +48606,14 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Update content
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -48327,6 +48627,7 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function (response) {
+            isUpdatingModal.remove();
             handleApiError(response);
         }
     });
@@ -48342,9 +48643,10 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
  * @param error
  */
 function postContent(collectionId, path, content, overwriteExisting, recursive, success, error) {
+      isUpdatingModal.add();
+
     // Temporary workaround for content disappearing from bulletins - store last 10 saves to local storage and update with server response later
     postToLocalStorage(collectionId, path, content);
-
 
     var safePath = checkPathSlashes(path);
     if (safePath === '/') {
@@ -48363,6 +48665,10 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
     var url = url + '&overwriteExisting=' + overwriteExisting;
     var url = url + '&recursive=' + recursive;
 
+    var date = new Date();
+    date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
+    console.log("[" + date + "] Post page content: \n", JSON.parse(content));
+
     $.ajax({
         url: url,
         dataType: 'json',
@@ -48370,10 +48676,12 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         type: 'POST',
         data: content,
         success: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             success(response);
         },
         error: function (response) {
+            isUpdatingModal.remove();
             addLocalPostResponse(response);
             if (error) {
                 error(response);
@@ -48388,9 +48696,7 @@ function postToLocalStorage(collectionId, path, content) {
     var newSaveTime = new Date();
     var newId = collectionId;
     var newPath = path;
-    var newContent = JSON.parse(content);
-
-    console.log(newContent);
+    var newContent = JSON.parse(content); 
     
     var localBackup = localStorage.getItem('localBackup');
 
@@ -48444,6 +48750,9 @@ function addLocalPostResponse(response) {
  * @returns {boolean}
  */
 function postLogin(email, password) {
+    // lowercase email address, before we login/store in local storage, so it matches zebedee
+    // allows string comparisons between zebedee responses and local storage data to work
+    email = email.toLowerCase();
     $.ajax({
         url: "/zebedee/login",
         dataType: 'json',
@@ -48540,12 +48849,14 @@ function postReview(collectionId, path, recursive, redirectToPath) {
     var url = url + '&recursive=' + recursive;
 
     // Open the file for editing
+    isUpdatingModal.add();
     $.ajax({
         url: url,
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
         success: function () {
+            isUpdatingModal.remove();
             if (redirect) {
                 createWorkspace(redirect, collectionId, 'edit');
                 return;
@@ -48559,6 +48870,7 @@ function postReview(collectionId, path, recursive, redirectToPath) {
             }
         },
         error: function () {
+            isUpdatingModal.remove();
             console.log('Error');
         }
     });
@@ -49418,7 +49730,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         addFileWithDetails(collectionId, pageData, 'downloads', 'file');
-        editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
+        editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         accordion();
         compendiumDataEditor(collectionId, pageData);
     }
@@ -49765,6 +50077,9 @@ function setShortcuts(field, callback) {
     });
   });
 }function setupFlorence() {
+    websocket.open();
+    log.add(log.eventTypes.appInitialised);
+
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
     Handlebars.registerPartial("editNav", templates.editNav);
@@ -49954,7 +50269,7 @@ function setShortcuts(field, callback) {
     var pingTimes = [];
 
     function doPing() {
-        var start = new Date().getTime();
+        var start = performance.now();
         $.ajax({
             url: "/zebedee/ping",
             dataType: 'json',
@@ -49968,31 +50283,22 @@ function setShortcuts(field, callback) {
                 // Handle session information
                 checkSessionTimeout(response);
 
-                var end = new Date().getTime();
-                var time = end - start;
+                var end = performance.now();
+                var time = Math.round(end - start);
 
                 lastPingTime = time;
-                pingTimes.push(time);
-                if (pingTimes.length > 5)
-                    pingTimes.shift();
-
-                var sum = 0;
-                for (var i = 0; i < pingTimes.length; ++i) {
-                    sum += pingTimes[i];
-                }
-
-                var averagePingTime = sum / pingTimes.length;
 
                 networkStatus(lastPingTime);
 
-                if (averagePingTime < 100) {
-                    console.log("ping time: pretty good! " + time + " average: " + averagePingTime + " " + pingTimes);
-                } else if (averagePingTime < 300) {
-                    console.log("ping time: not so good! " + time + " average: " + averagePingTime + " " + pingTimes);
-                } else {
-                    console.log("ping time: really bad! " + time);
-                }
+                Florence.ping.add(time)
 
+                pingTimer = setTimeout(function () {
+                    doPing();
+                }, 10000);
+            },
+            error: function() {
+                Florence.ping.add(0);
+                console.error("Error during POST to ping endpoint on Zebedee");
                 pingTimer = setTimeout(function () {
                     doPing();
                 }, 10000);
@@ -51146,18 +51452,12 @@ function articleEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
-   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
-  var checkBoxStatus = function () {
-    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
-      return false;
-    } else {
-      return true;
-    }
-  };
+  $("#natStat-checkbox").click(function () {
+      data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
+  });
 
-  $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+  $("#articleType-checkbox").click(function () {
+      data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
   });
 
   // Save
@@ -55509,7 +55809,7 @@ function visualisationEditor(collectionId, data) {
     $selectWrapper.find('select').empty().append(selectOptions.join(''));
     $selectWrapper.show();
     $('#browser-location').hide();
-    $('.browser.disabled').removeClass('disabled');
+    // $('.browser.disabled').removeClass('disabled');
 
     // Bind to select's change and toggle preview to selected HTML file
     $('#select-vis-preview').change(function() {

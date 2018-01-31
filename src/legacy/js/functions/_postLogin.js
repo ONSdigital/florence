@@ -5,6 +5,9 @@
  * @returns {boolean}
  */
 function postLogin(email, password) {
+    // lowercase email address, before we login/store in local storage, so it matches zebedee
+    // allows string comparisons between zebedee responses and local storage data to work
+    email = email.toLowerCase();
     $.ajax({
         url: "/zebedee/login",
         dataType: 'json',

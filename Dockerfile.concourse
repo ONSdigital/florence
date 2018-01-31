@@ -1,0 +1,7 @@
+FROM onsdigital/dp-docker-go
+
+WORKDIR /app/
+
+ADD florence .
+
+CMD ./florence
