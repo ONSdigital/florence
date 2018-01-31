@@ -31,6 +31,12 @@ Florence.Editor = {
     data: {}
 };
 
+// Can't use randomId function in StringUtils because it is later in the main.js (because the concatenation is done alphabetically)
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+};
+Florence.instanceID = (S4() + S4());
+
 Florence.CreateCollection = {
     selectedRelease: ""
 };
@@ -55,6 +61,20 @@ Florence.Authentication = {
         return localStorage.getItem("userType");
     }
 };
+
+Florence.ping = {
+    get: function() {
+        return this.entries[this.latestEntryIndex-1];
+    },
+    add: function(ping) {
+        var timeStamp = new Date();
+        this.entries[this.latestEntryIndex] = {timeStamp, ping};
+        this.latestEntryIndex++;
+        if (this.latestEntryIndex >= this.entries.length) this.latestEntryIndex=0;
+    },
+    latestEntryIndex: 0,
+    entries: new Array(200)
+}
 
 Florence.Handler = function (e) {
     if (Florence.Editor.isDirty) {
