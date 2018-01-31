@@ -21,10 +21,10 @@
 			"revisionTime": "2017-01-10T09:35:41Z"
 		},
 		{
-			"checksumSHA1": "nVbb+x6nwEFqcpNDF+aw8WHy+k4=",
+			"checksumSHA1": "AjbjbhFVAOP/1NU5HL+uy+X/yJo=",
 			"path": "github.com/ONSdigital/go-ns/log",
-			"revision": "e474198f686c1017ac5c7bfd6de682d7288d95b8",
-			"revisionTime": "2017-01-10T09:35:41Z"
+			"revision": "7a0755469020390a462ae71b83b672bc59787468",
+			"revisionTime": "2017-06-02T12:31:46Z"
 		},
 		{
 			"checksumSHA1": "7Gnowh+J328u02q/Ph03VIw2fGI=",
@@ -49,6 +49,12 @@
 			"path": "github.com/gorilla/pat",
 			"revision": "cf955c3d1f2c27ee96f93e9738085c762ff5f49d",
 			"revisionTime": "2016-04-13T04:16:32Z"
+		},
+		{
+			"checksumSHA1": "jb1pFNNVYzpY4Mz09WEWeTNng40=",
+			"path": "github.com/gorilla/websocket",
+			"revision": "3f3e394da2b801fbe732a935ef40724762a67a07",
+			"revisionTime": "2017-02-18T16:27:10Z"
 		},
 		{
 			"checksumSHA1": "tewA7jXVGCw1zb5mA0BDecWi4iQ=",

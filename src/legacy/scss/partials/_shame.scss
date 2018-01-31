@@ -2,6 +2,21 @@
 * This file is used for SCSS that you write knowing that it need refactoring - the shame file should be emptied regularly
 */
 
+.florence-disable {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    background-color: black;
+    opacity: 0.6;
+    color: $white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10000;
+}
+
 //Modal styling - probably need some refactoring but mainly needs correct location in sass files
 .modal {
     display: block;
@@ -313,6 +328,21 @@
 
     &__item {
         margin: 0 0 0 ($lineheight * 2);
+    }
+
+}
+
+.file-upload {
+
+    width: 460px;
+
+    &__title {
+        width: 100% !important;
+        margin-bottom: $lineheight / 2 !important;
+    }
+
+    &__filename {
+        margin: 10px 0;
     }
 
 }
