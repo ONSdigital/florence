@@ -39,6 +39,17 @@ export default class datasets {
              });
     }
 
+    static updateDimensionDescription(instanceID, dimension, description) {
+        const body = {
+            "description": description
+        }
+
+        return http.put(`/instances/${instanceID}/dimensions/${dimension}`, body, true)
+            .then(response => {
+                return response;
+            });
+    }
+
     static updateVersionMetadata(datasetID, edition, version, metadata) {
         if (typeof metadata !== "object") {
             return Promise.reject({status: 400});
