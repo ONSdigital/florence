@@ -392,7 +392,7 @@ export class CollectionDetails extends Component {
                             <h2>{this.props.name}</h2>
                             {this.renderPublishDate()}
                         </div>
-                        <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
+                        <Link to={`${location.pathname}/edit`} className="colour--cadet-blue disable-visited-colour font-size--16">Edit</Link>
                     </div>
                 </div>
                 {this.renderCollectionState()}
