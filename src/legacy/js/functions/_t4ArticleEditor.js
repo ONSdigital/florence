@@ -111,17 +111,26 @@ function articleEditor(collectionId, data) {
             contentType: false,
             processData: false,
             success: function () {
-                console.log('done');
                 data.imageUri = imagePath;
+                save(updateContent);
             },
-            error: function () {
-                sweetAlert("Oh crap")
+            error: function (error) {
+                sweetAlert("Error", error);
             }
         });
+    });
 
-        console.log(imagePath);
-        console.log(data);
+    $('#neutral-article-image-upload-delete').on('click', function () {
 
+        if (data.imageUri) {
+
+            deleteContent(Florence.collection.id, data.imageUri,
+                onSuccess = function () {
+                    console.log("deleted image file: " + data.imageUri);
+                    data.imageUri = "";
+                    save(updateContent);
+                });
+        }
     });
 
   // Save
@@ -202,6 +211,8 @@ function articleEditor(collectionId, data) {
       newFiles[indexF] = {title: title, file: file};
     });
     data.pdfTable = newFiles;
+
+    console.log('Save ran, data was:', data);
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
