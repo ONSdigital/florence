@@ -20,7 +20,7 @@ exports[`Input without type renders a text input 1`] = `
     name="test-input"
     onChange={undefined}
     onFocus={[Function]}
-    placeholder=""
+    placeholder={undefined}
     type="text"
     value={undefined}
   />
@@ -48,7 +48,7 @@ exports[`Password prop creates a password input 1`] = `
     name="test-password-input"
     onChange={undefined}
     onFocus={[Function]}
-    placeholder=""
+    placeholder={undefined}
     type="password"
     value={undefined}
   />
