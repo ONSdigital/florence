@@ -137,7 +137,7 @@ export class VersionPreview extends Component {
                     </div>
                 </div>
                 <Preview
-                    path={`//${location.host}/datasets/${params.datasetID}`}
+                    path={`//${location.host}/datasets/${params.datasetID}/editions/${params.edition}/versions/${params.version}`}
                 />
             </div>
         )
