@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import dateFormat from 'dateformat';
 import notifications from '../../../utilities/notifications';
 import collections from '../../../utilities/api-clients/collections';
+import datasets from '../../../utilities/api-clients/datasets';
 import CollectionView from './CollectionView';
 import url from '../../../utilities/url';
-
 
 const propTypes = {
     params: PropTypes.shape({
@@ -23,12 +23,14 @@ export class DatasetCollectionController extends Component {
         this.state = {
             hasChosen: false,
             isGettingCollections: false,
+            isGettingDataset: false,
             isSubmitting: false,
             errorMsg: "",
             collectionsSelectItems: [],
             allCollections: [],
             selectedCollection: {},
             nextRelease: "",
+            hasVersion: ""
         };
 
         this.handleCollectionChange = this.handleCollectionChange.bind(this);
@@ -38,6 +40,73 @@ export class DatasetCollectionController extends Component {
 
     componentWillMount() {
         this.getCollections();
+        this.getDataset();
+    }
+
+    getDataset() {
+        this.setState({isGettingDataset: true});
+        datasets.get(this.props.params.datasetID)
+            .then(dataset => {
+                this.setState(dataset.next.links.latest_version ? {hasVersion: "true"} : {hasVersion:"false"})
+            }).catch(error => {
+            switch (error.status) {
+                case(403):{
+                    const notification = {
+                        "type": "neutral",
+                        "message": "You do not have permission to preview this dataset.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "No API route available to get the dataset.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get the dataset.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get the dataset. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to get the dataset.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get the submitted datasets.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+        });
+        this.setState({isGettingDataset: false});
     }
 
     getCollections() {
