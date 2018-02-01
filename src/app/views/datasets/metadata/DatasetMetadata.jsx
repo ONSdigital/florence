@@ -20,41 +20,42 @@ import log, {eventTypes} from '../../../utilities/log'
 
 const propTypes = {
     params: PropTypes.shape({
-        datasetID: PropTypes.string
-    }),
+        datasetID: PropTypes.string.isRequired
+    }).isRequired,
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
-            title: PropTypes.string.isRequired
+            title: PropTypes.string
         }),
         current: PropTypes.shape({
-            title: PropTypes.string.isRequired
+            title: PropTypes.string
         })
     })),
     dataset: PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      keywords: PropTypes.array,
-      national_statistic: PropTypes.bool,
-      contacts: PropTypes.arrayOf(PropTypes.shape({
-          name: PropTypes.string,
-          email: PropTypes.string,
-          telephone: PropTypes.string,
-      })),
-      qmi: PropTypes.shape({
-          href: PropTypes.string,
-          title: PropTypes.string,
-      }),
-      related_datasets: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string,
-          title: PropTypes.string,
-      })),
-      publications: PropTypes.arrayOf(PropTypes.shape({
-          href: PropTypes.string,
-          title: PropTypes.string,
-      }))
+        title: PropTypes.string,
+        description: PropTypes.string,
+        keywords: PropTypes.array,
+        national_statistic: PropTypes.bool,
+        contacts: PropTypes.arrayOf(PropTypes.shape({
+            name: PropTypes.string,
+            email: PropTypes.string,
+            telephone: PropTypes.string,
+        })),
+        qmi: PropTypes.shape({
+            href: PropTypes.string,
+            title: PropTypes.string,
+        }),
+        related_datasets: PropTypes.arrayOf(PropTypes.shape({
+            href: PropTypes.string,
+            title: PropTypes.string,
+        })),
+        publications: PropTypes.arrayOf(PropTypes.shape({
+            href: PropTypes.string,
+            title: PropTypes.string,
+        })),
+        release_frequency: PropTypes.string
     })
 }
 
@@ -80,7 +81,7 @@ export class DatasetMetadata extends Component {
             contactName: "",
             contactEmail: "",
             contactPhone: "",
-            periodicity: "",
+            releaseFrequency: "",
             isNationalStat: false,
             titleError: "",
             urlError: ""
@@ -105,18 +106,31 @@ export class DatasetMetadata extends Component {
     componentWillMount() {
         this.setState({isFetchingDataset: true});
 
-        const APIRequests = [
-            datasets.get(this.props.params.datasetID)
-        ]
+        datasets.get(this.props.params.datasetID).then(response => {
+            this.props.dispatch(updateActiveDataset(response.next || response.current));
 
-        if (this.props.datasets.length === 0) {
-            APIRequests.push(datasets.getAll());
-        }
+            if (this.props.dataset && this.props.dataset.title) {
+                this.setState({
+                    title: this.props.dataset.title
+                });
+            }
+            
+            if (this.props.dataset && this.props.dataset.description) {
+                this.setState({
+                    description: this.props.dataset.description,
+                });
+            }
 
-        Promise.all(APIRequests).then(responses => {
-            this.props.dispatch(updateActiveDataset(responses[0].next || responses[0].current));
-            if (this.props.datasets.length === 0) {
-                this.props.dispatch(updateAllDatasets(responses[1].items));
+            if (this.props.dataset && this.props.dataset.release_frequency) {
+                this.setState({
+                    releaseFrequency: this.props.dataset.release_frequency
+                });
+            }
+            
+            if (this.props.dataset && this.props.dataset.national_statistic) {
+                this.setState({
+                    isNationalStat: this.props.dataset.national_statistic
+                });
             }
 
             if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
@@ -163,10 +177,7 @@ export class DatasetMetadata extends Component {
             }
 
             this.setState({
-                isFetchingDataset: false,
-                description: this.props.dataset.description,
-                title: this.props.dataset.title,
-                isNationalStat:this.props.dataset.national_statistic,
+                isFetchingDataset: false
             });
 
           }).catch(error => {
@@ -230,45 +241,7 @@ export class DatasetMetadata extends Component {
         }
     }
 
-    updateDatasetDetails(datasetDetailsData) {
-      datasets.updateDatasetMetadata(this.props.params.datasetID, datasetDetailsData).then(() => {
-        this.setState({isSubmittingData: false});
-        this.props.dispatch(push(`${location.pathname}/collection`));
-      }).catch(error => {
-        this.setState({isSubmittingData: false});
-        if (error) {
-            const notification = {
-                type: 'warning',
-                isDismissable: true,
-                autoDismiss: 15000
-            };
-            switch (error.status) {
-                case ('UNEXPECTED_ERR'): {
-                    console.error(errCodes.UNEXPECTED_ERR);
-                    notification.message = errCodes.UNEXPECTED_ERR;
-                    notifications.add(notification);
-                    break;
-                }
-                case ('RESPONSE_ERR'): {
-                    console.error(errCodes.RESPONSE_ERR);
-                    notification.message = errCodes.RESPONSE_ERR;
-                    notifications.add(notification);
-                    break;
-                }
-                case ('FETCH_ERR'): {
-                    console.error(errCodes.FETCH_ERR);
-                    notification.message = errCodes.FETCH_ERR;
-                    notifications.add(notification);
-                    break;
-                }
-            }
-        }
-      });
-
-    }
-
     mapReleaseFreqToSelectOptions() {
-
         const values = [
           'Weekly', 'Monthly', 'Annually'
         ];
@@ -283,7 +256,8 @@ export class DatasetMetadata extends Component {
 
     handleSelectChange(event) {
         this.setState({
-            periodicity: event.target.value
+            error: "",
+            releaseFrequency: event.target.value
         });
     }
 
@@ -448,7 +422,34 @@ export class DatasetMetadata extends Component {
         });
      }
 
-     handleFormSubmit(event) {
+    splitKeywordsString(keywords) {
+        return keywords.split(",").map(keyword => {
+            return keyword.trim()
+        });
+    }
+    
+    mapStateToAPIRequest() {
+        return {
+            contacts: [{
+                email: this.state.contactEmail,
+                name: this.state.contactName,
+                telephone: this.state.contactPhone,
+            }],
+            description: this.state.description,
+            release_frequency: this.state.releaseFrequency,
+            title: this.state.title,
+            national_statistic: this.state.isNationalStat,
+            keywords: this.splitKeywordsString(this.state.keywords),
+            qmi: {
+                title: this.state.relatedQMI.title,
+                href: this.state.relatedQMI.url,
+            },
+            publications: [...this.state.relatedBulletins],
+            related_datasets: [...this.state.relatedLinks],
+        }
+    }
+
+    handleFormSubmit(event) {
         event.preventDefault();
 
         if(this.state.titleInput == "" || this.state.urlInput == ""){
@@ -496,38 +497,43 @@ export class DatasetMetadata extends Component {
         }
      }
 
-     handlePageSubmit(event) {
-         event.preventDefault();
-
-        this.setState({isSubmittingData: true});
-
-         const datasetDetailsData = {
-           contact: {
-             email: this.state.contactEmail,
-             name: this.state.contactName,
-             telephone: this.state.contactPhone,
-           },
-           description: this.state.description,
-           release_frequency: this.state.periodicity,
-           title: this.state.title,
-           national_statistic: this.state.isNationalStat,
-           keywords: this.state.keywords.split(","),
-           qmi: {
-             title: this.state.relatedQMI.title,
-             href: this.state.relatedQMI.url,
-           },
-           publications: [...this.state.relatedBulletins],
-           related_datasets: [...this.state.relatedLinks],
-         }
-        // if (!this.state.periodicity) {
-        //     this.setState({
-        //         error: "You must select the periodicity",
-        //         isSubmittingData: false
-        //     });
-        //     return;
-        // }
-        this.updateDatasetDetails(datasetDetailsData);
-     }
+    handlePageSubmit(event) {
+        event.preventDefault();
+        this.setState({ isSubmittingData: true });
+        datasets.updateDatasetMetadata(this.props.params.datasetID, this.mapStateToAPIRequest()).then(() => {
+            this.setState({ isSubmittingData: false });
+            this.props.dispatch(push(`${location.pathname}/collection`));
+        }).catch(error => {
+            this.setState({ isSubmittingData: false });
+            if (error) {
+                const notification = {
+                    type: 'warning',
+                    isDismissable: true,
+                    autoDismiss: 15000
+                };
+                switch (error.status) {
+                    case ('UNEXPECTED_ERR'): {
+                        console.error(errCodes.UNEXPECTED_ERR);
+                        notification.message = errCodes.UNEXPECTED_ERR;
+                        notifications.add(notification);
+                        break;
+                    }
+                    case ('RESPONSE_ERR'): {
+                        console.error(errCodes.RESPONSE_ERR);
+                        notification.message = errCodes.RESPONSE_ERR;
+                        notifications.add(notification);
+                        break;
+                    }
+                    case ('FETCH_ERR'): {
+                        console.error(errCodes.FETCH_ERR);
+                        notification.message = errCodes.FETCH_ERR;
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+            }
+        });
+    }
 
     render() {
         return (
@@ -543,7 +549,7 @@ export class DatasetMetadata extends Component {
                         <div className="loader loader--dark"></div>
                     :
                         <div>
-                            <h2 className="margin-bottom--1">Dataset</h2>
+                            <h2 className="margin-top--1 margin-bottom--1">Dataset</h2>
                             <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.datasetID || "Fetching dataset ID..."}
 </span></div>
                           <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
@@ -567,24 +573,27 @@ export class DatasetMetadata extends Component {
                                   value={ this.state.keywords}
                                   id="keywords"
                                   label="Keywords"
+                                  placeholder={`e.g. housing, inflation`}
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isSubmittingData}
                               />
-                              <div className="grid__col-6 margin-top--1">
+                              <div className="grid__col-6 margin-top--2">
                                 <Checkbox
                                     isChecked={this.state.isNationalStat}
                                     onChange={this.handleToggleChange}
                                     disabled={this.state.isSubmittingData}
-                                    label="National Statistic"
+                                    label="National statistic"
                                     id="national-statistic"
                                 />
                               </div>
                               <div className="grid__col-6 margin-bottom--1">
                                   <Select
                                       contents={this.mapReleaseFreqToSelectOptions()}
+                                      selectedOption={this.state.releaseFrequency}
                                       onChange={this.handleSelectChange}
                                       error={this.state.error}
                                       label="Release frequency"
+                                      id="release-frequency"
                                       disabled={this.state.isSubmittingData}
                                   />
                               </div>
@@ -610,7 +619,7 @@ export class DatasetMetadata extends Component {
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isSubmittingData}
                               />
-                        <h2 className="margin-bottom--1">Related content</h2>
+                        <h2 className="margin-top--2 margin-bottom--1">Related content</h2>
                         <div className="margin-bottom--1">
                             <p> These are common across all editions of the dataset. Changing them will affect all previous editions.</p>
                         </div>
@@ -650,7 +659,7 @@ export class DatasetMetadata extends Component {
                                 />
                               <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
-                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" onClick={this.handlePageSubmit}>Save and Continue</button>
+                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" onClick={this.handlePageSubmit}>Save and continue</button>
                         {this.state.isSubmittingData &&
                             <div className="loader loader--centre loader--dark margin-left--1"></div>
                         }

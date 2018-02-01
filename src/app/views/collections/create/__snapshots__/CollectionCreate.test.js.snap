@@ -26,7 +26,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
         name="collection-name"
         onChange={[Function]}
         onFocus={[Function]}
-        placeholder=""
+        placeholder={undefined}
         type="text"
         value=""
       />
@@ -185,7 +185,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             name="publish-date"
             onChange={[Function]}
             onFocus={[Function]}
-            placeholder=""
+            placeholder={undefined}
             type="date"
             value=""
           />
@@ -212,7 +212,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             name="publish-time"
             onChange={[Function]}
             onFocus={[Function]}
-            placeholder=""
+            placeholder={undefined}
             type="time"
             value="09:30"
           />
