@@ -13,6 +13,8 @@ const propTypes = {
     inline: PropTypes.bool,
     accept: PropTypes.string,
     value: PropTypes.string,
+    min: PropTypes.string,
+    max: PropTypes.string,
     placeholder: PropTypes.string
 };
 
@@ -75,6 +77,8 @@ export default class Input extends Component {
                         placeholder={this.props.inline ? this.props.label : this.props.placeholder}
                         accept={this.props.accept}
                         value={this.props.value}
+                        min={this.props.min}
+                        max={this.props.max}
                     />
                 :
                     <textarea
