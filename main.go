@@ -24,6 +24,7 @@ import (
 var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
+var tableRendererURL = "http://localhost:23300"
 var enableNewApp = false
 
 var getAsset = assets.Asset
@@ -43,6 +44,9 @@ func main() {
 	}
 	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
 		zebedeeURL = v
+	}
+	if v := os.Getenv("TABLE_RENDERER_URL"); len(v) > 0 {
+		tableRendererURL = v
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
@@ -76,6 +80,14 @@ func main() {
 
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
 
+	tableURL, err := url.Parse(tableRendererURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+
+	tableProxy := reverseProxy.Create(tableURL, tableDirector)
+
 	router := pat.New()
 
 	newAppHandler := refactoredIndexFile
@@ -85,6 +97,7 @@ func main() {
 	}
 
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
+	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", newAppHandler)
 	router.HandleFunc("/florence/index.html", legacyIndexFile)
@@ -93,10 +106,11 @@ func main() {
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
-		"bind_addr":      bindAddr,
-		"babbage_url":    babbageURL,
-		"zebedee_url":    zebedeeURL,
-		"enable_new_app": enableNewApp,
+		"bind_addr":          bindAddr,
+		"babbage_url":        babbageURL,
+		"zebedee_url":        zebedeeURL,
+		"table_renderer_url": tableRendererURL,
+		"enable_new_app":     enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)
@@ -172,6 +186,10 @@ func zebedeeDirector(req *http.Request) {
 		req.Header.Set(`X-Florence-Token`, c.Value)
 	}
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
+}
+
+func tableDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
