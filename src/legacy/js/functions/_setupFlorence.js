@@ -207,7 +207,7 @@ function setupFlorence() {
             viewController('login');
         } else if (menuItem.hasClass("js-nav-item--logout")) {
             logout();
-            viewController();
+            // viewController();
         }
     }
 
