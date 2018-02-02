@@ -15,6 +15,7 @@ import CardList from '../../../components/CardList';
 import Modal from '../../../components/Modal';
 import uuid from 'uuid/v4';
 import AlertsForm from './alerts/AlertsForm';
+import ChangesForm from './changes/ChangesForm';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -48,7 +49,8 @@ const propTypes = {
       dimensions: PropTypes.arrayOf(PropTypes.object),
       release_date: PropTypes.string,
       id: PropTypes.string,
-      alerts: PropTypes.arrayOf(PropTypes.object)
+      alerts: PropTypes.arrayOf(PropTypes.object),
+      latest_changes: PropTypes.arrayOf(PropTypes.object)
     }),
     isInstance: PropTypes.string,
     btn: PropTypes.string
@@ -72,15 +74,20 @@ class VersionMetadata extends Component {
             versionID: "",
             showModal: false,
             alerts: [],
+            changes: [],
             editKey: ""
         }
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleAlertSubmit = this.handleAlertSubmit.bind(this);
+        this.handleChangesSubmit = this.handleChangesSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleReleaseDateChange = this.handleReleaseDateChange.bind(this);
         this.mapAlertsToCard = this.mapAlertsToCard.bind(this);
+        this.mapChangesToCard = this.mapChangesToCard.bind(this);
+        this.handleEditChangesClick = this.handleEditChangesClick.bind(this);
+        this.handleDeleteChangesClick = this.handleDeleteChangesClick.bind(this);
         this.handleEditAlertsClick = this.handleEditAlertsClick.bind(this);
         this.handleDeleteAlertsClick = this.handleDeleteAlertsClick.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
@@ -132,6 +139,13 @@ class VersionMetadata extends Component {
 
               alerts.push(alert);
           })
+
+          var changes = [];
+          this.props.version.latest_changes.map((change) => {
+              change.key = uuid();
+
+              changes.push(change);
+          })
         
           this.setState({
             dimensions: this.props.version.dimensions,
@@ -139,6 +153,7 @@ class VersionMetadata extends Component {
             state: this.props.version.state,
             versionID: this.props.version.id,
             alerts: alerts,
+            changes: changes,
             releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : ""
           });
         }
@@ -202,6 +217,35 @@ class VersionMetadata extends Component {
         });
     }
 
+    handleEditChangesClick(type, key) {
+        let change;
+
+        change = this.state.changes.find(change => {
+            return change.key === key
+        })
+
+        this.setState({
+            showModal: true,
+            modalType: type,
+            editKey: key,
+            nameInput: change.name,
+            descriptionInput: change.description
+        });
+    }
+
+    handleDeleteChangesClick(type, key) {
+        function remove(items, key) {
+            return items.filter(item => {
+                return item.key !== key
+            });
+        }
+
+        this.setState({
+            changes: remove(this.state.changes, key),
+            hasChanges: true
+        })
+    }
+
     handleDeleteAlertsClick(type, key) {
         function remove(items, key) {
             return items.filter(item => {
@@ -246,14 +290,16 @@ class VersionMetadata extends Component {
                         return {
                             ...item,
                             date: this.state.dateInput,
-                            description: this.state.descriptionInput
+                            description: this.state.descriptionInput,
+                            type: "correction",
+                            hasChanged: true
                         }
                     });
                 }
 
                 this.setState({alerts: edit(this.state.alerts, this.state.editKey)})
             } else {
-                const alerts = this.state.alerts.concat({date: this.state.dateInput, description: this.state.descriptionInput, key: uuid()})
+                const alerts = this.state.alerts.concat({date: this.state.dateInput, description: this.state.descriptionInput, key: uuid(), hasChanged: true, type: "correction"})
                 this.setState({alerts: alerts});
             }
 
@@ -262,7 +308,54 @@ class VersionMetadata extends Component {
                 modalType: "",
                 editKey: "",
                 dateInput: "",
-                descriptionInputhandleFormSubmit: ""
+                descriptionInput: ""
+            });
+        }
+    }
+
+    handleChangesSubmit(event) {
+        event.preventDefault();
+
+        if (this.state.nameInput == "" || this.state.descriptionInput == "") {
+            if(this.state.nameInput == ""){
+                this.setState({
+                    nameError: "You must provide a name"
+                });
+            }
+            if (this.state.descriptionInput == ""){
+                this.setState({
+                    descriptionError: "You must provide a change description"
+                });
+            }
+        } else {
+            if (this.state.editKey !== "") {
+                const edit = items => {
+                    return items.map(item => {
+                        if (item.key !== this.state.editKey) {
+                            return item;
+                        }
+                        return {
+                            ...item,
+                            name: this.state.nameInput,
+                            description: this.state.descriptionInput,
+                            type: "summary of changes",
+                            hasChanged: true
+                        }
+                    });
+                }
+
+                this.setState({changes: edit(this.state.changes, this.state.editKey)})
+            } else {
+                const changes = this.state.changes.concat({name: this.state.nameInput, description: this.state.descriptionInput, key: uuid(), hasChanged: true, type: "summary of changes"})
+                this.setState({changes: changes});
+            }
+
+            this.setState({
+                showModal: false,
+                modalType: "",
+                editKey: "",
+                nameInput: "",
+                descriptionInput: ""
             });
         }
     }
@@ -321,7 +414,6 @@ class VersionMetadata extends Component {
                             this.props.dispatch(push(url.resolve("collection")));
                         }
                     } else {
-                        console.log("previewing")
                         this.props.dispatch(push(url.resolve("collection/preview")));
                     }
                 }
@@ -384,6 +476,17 @@ class VersionMetadata extends Component {
         }
     }
 
+    mapChangesToCard(items) {
+        if (items !== undefined) {
+            return items.map(item => {
+                return {
+                    title: item.name,
+                    id: item.key
+                }
+            })
+        }
+    }
+
     mapEditionsToSelectOptions() {
       const recipe = this.props.recipes.find(recipe => {
           return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
@@ -397,7 +500,7 @@ class VersionMetadata extends Component {
         dimensions.map(dimension => {
           return (
             <div key={dimension.name}>
-              <h2>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h2>
+              <h3>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h3>
               <Input
                   value={dimension.description}                  
                   type="textarea"
@@ -427,12 +530,23 @@ class VersionMetadata extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
+
         if (name === "add-alert-date") {
             this.setState({dateInput: value});
             if(this.state.dateError != null) {
                 this.setState({dateError: null})
             }
         } else if (name === "add-alert-description") {
+            this.setState({descriptionInput: value});
+            if(this.state.descriptionError != null) {
+                this.setState({descriptionError: null})
+            }
+        } else if (name === "add-change-name") {
+            this.setState({nameInput: value});
+            if(this.state.nameError != null) {
+                this.setState({nameError: null})
+            }
+        } else if (name === "add-change-description") {
             this.setState({descriptionInput: value});
             if(this.state.descriptionError != null) {
                 this.setState({descriptionError: null})
@@ -487,10 +601,25 @@ class VersionMetadata extends Component {
                 haveError = true;
             }
 
+            let alerts = [];
+            this.state.alerts.map((alert) => {
+                if (alert.hasChanged) {
+                    alerts.push(alert);
+                }
+            })
+
+            let changes = [];
+            this.state.changes.map((change) => {
+                if (change.hasChanged) {
+                    changes.push(change);
+                }
+            })
+
             if (this.state.edition && this.state.isInstance && !haveError) {
                 const instanceMetadata = {
                     edition: this.state.edition,
-                    alerts: this.state.alerts
+                    alerts: alerts,
+                    latest_changes: changes
                 }
                 if (this.state.releaseDate) {
                     instanceMetadata.release_date = this.state.releaseDate.toISOString();
@@ -502,7 +631,8 @@ class VersionMetadata extends Component {
             if (!this.state.isInstance && !haveError) {
                 this.updateInstanceVersion({
                     release_date: this.state.releaseDate.toISOString(),
-                    alerts: this.state.alerts
+                    alerts: alerts,
+                    latest_changes: changes
                 });
             }
         });
@@ -525,6 +655,7 @@ class VersionMetadata extends Component {
                 <div className="grid__col-6">
                     <div className="margin-top--2">
                       &#9664; <Link to={url.resolve("/datasets")}>Back</Link>
+                      <p className="margin-top--1">Dataset: <strong>{this.state.title || this.props.params.datasetID + " (title not available)"}</strong></p>
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Metadata</h1>
                     <p>This information is specific to this new data and can be updated each time new data is added.</p>
@@ -557,23 +688,13 @@ class VersionMetadata extends Component {
                                     selectedOption={this.state.edition}
                               />
                             </div>
-                            <div className="grid__col-6 margin-bottom--1">
-                              <h2 className="margin-top--1">Notes and information</h2>
-                              <Select
-                                  id="release_frequency"
-                                  contents={this.mapReleaseFreqToSelectOptions()}
-                                  onChange={this.handleSelectChange}
-                                  error={this.state.releaseError}
-                                  label="Release frequency"
-                                  selectedOption={this.state.release_frequency}
-                              />
-                            </div>
+                            <h2> In this dataset </h2>
                             {this.mapDimensionsToInputs(this.state.dimensions)}
                             <div className="margin-bottom--1">
-                                <h1 className="margin-top--2 margin-bottom--1">What's changed</h1>
+                                <h2 className="margin-top--2 margin-bottom--1">What's changed</h2>
                                 <p>The information below can change with each edition/version.</p>
                                 <div className="margin-bottom--1">
-                                    <h2 className="margin-top--1 margin-bottom--1">Alerts and corrections</h2>
+                                    <h3 className="margin-top--1 margin-bottom--1">Alerts and corrections</h3>
                                     <CardList
                                         contents={this.mapAlertsToCard(this.state.alerts)}
                                         type="alerts"
@@ -581,6 +702,16 @@ class VersionMetadata extends Component {
                                         onDelete={this.handleDeleteAlertsClick}
                                     />
                                     <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddAlertsClick("alert")}}> Add an alert</button>
+                                </div>
+                                <div className="margin-bottom--1">
+                                    <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
+                                    <CardList
+                                        contents={this.mapChangesToCard(this.state.changes)}
+                                        type="changes"
+                                        onEdit={this.handleEditChangesClick}
+                                        onDelete={this.handleDeleteChangesClick}
+                                    />
+                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddAlertsClick("changes")}}> Add change</button>
                                 </div>
                             </div>
                           </div>
@@ -603,7 +734,7 @@ class VersionMetadata extends Component {
                 {this.state.showModal &&
 
                     <Modal sizeClass="grid__col-3">
-                    {this.state.modalType ?
+                    {this.state.modalType === "alert" ?
 
                         <AlertsForm
                             dateInput={this.state.dateInput}
@@ -614,21 +745,38 @@ class VersionMetadata extends Component {
                             dateError={this.state.dateError}
                             descriptionError={this.state.descriptionError}
                         />
+
                     :
-                        <div>
-                        <div className="modal__header">
-                            <h2>Warning!</h2>
-                        </div>
-                        <div className="modal__body">
-                            <p>You will lose any changes by going back without saving. </p><br/>
-                            <p>Click "Continue" to lose changes and go back to the previous page or
-                                click "Cancel" to stay on the current page.</p>
-                        </div>
-                        <div className="modal__footer">
-                        <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
-                        <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
-                        </div>
-                    </div>
+                        (
+                            this.state.modalType === "changes" ?
+
+                            <ChangesForm
+                                nameInput={this.state.nameInput}
+                                descriptionInput={this.state.descriptionInput}
+                                onCancel={this.handleCancel}
+                                onFormInput={this.handleInputChange}
+                                onFormSubmit={this.handleChangesSubmit}
+                                dateError={this.state.nameError}
+                                descriptionError={this.state.descriptionError}
+                            />
+
+                            :
+
+                            <div>
+                                <div className="modal__header">
+                                    <h2>Warning!</h2>
+                                </div>
+                                <div className="modal__body">
+                                    <p>You will lose any changes by going back without saving. </p><br/>
+                                    <p>Click "Continue" to lose changes and go back to the previous page or
+                                        click "Cancel" to stay on the current page.</p>
+                                </div>
+                                <div className="modal__footer">
+                                <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
+                                <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
+                                </div>
+                            </div>
+                        )
                     }
                     </Modal>
 
