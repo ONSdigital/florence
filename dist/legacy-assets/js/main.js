@@ -1218,7 +1218,9 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
                 if(datasetID){
-                  Florence.globalVars.pagePath = $('.js-browse__item.selected').data('url');
+                  var url = $('#browser-location').val();
+                  url = url.replace(/^.*\/\/[^\/]+/, '')
+                  Florence.globalVars.pagePath = url;
                 } else {
                   Florence.globalVars.pagePath = getPreviewUrl();
                 }
@@ -16362,7 +16364,7 @@ function viewCollectionDetails(collectionId, $this) {
             const pageURI = getQueryVariable("uri");
             window.history.replaceState({}, "Florence", "/florence/collections");
             
-            if (!pageURI || !collectionID) {
+            if (!collectionID) {
                 console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
                 viewCollections();
                 return;
@@ -16375,6 +16377,10 @@ function viewCollectionDetails(collectionId, $this) {
                     date: response.publishDate,
                     type: response.type
                 });
+                if (!pageURI) {
+                    createWorkspace("/", collectionID, "browse", response);
+                    return;
+                }
                 createWorkspace(pageURI, collectionID, "edit", response);
             }, error => {
                 console.error("Error getting collection data, redirected to collections screen", error);

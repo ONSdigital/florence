@@ -9,6 +9,7 @@ export const initialState = {
     teams: {
         active: {},
         all: [],
+        allIDsAndNames: [],
         users: []
     },
     datasets: {
@@ -17,6 +18,9 @@ export const initialState = {
         activeInstance: {},
         recipes: [],
         activeJob: {}
+    },
+    collections: {
+        active: null
     },
     notifications: []
 };
