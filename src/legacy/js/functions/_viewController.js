@@ -63,7 +63,8 @@ function viewController(view) {
     }
     else {
         // Redirect to refactored login screen
-        window.location.pathname = "/florence/login";
+        const redirect = location.pathname !== "/florence" ? "?redirect=" + location.pathname : "";
+        window.location.href = "/florence/login" + redirect;
     }
 }
 
