@@ -3,7 +3,8 @@ function viewController(view) {
     if (Florence.Authentication.isAuthenticated()) {
 
         if (view === 'collections') {
-            viewCollections();
+            // viewCollections();
+            window.location.pathname = "/florence/collections";
         }
         else if (view === 'workspace') {
             /*
@@ -17,7 +18,8 @@ function viewController(view) {
             
             if (!collectionID) {
                 console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
-                viewCollections();
+                // viewCollections();
+                window.location.pathname = "/florence/teams";
                 return;
             }
 
@@ -55,7 +57,8 @@ function viewController(view) {
             viewReports();
         }
         else {
-            viewController('collections');
+            // viewController('collections');
+            window.location.pathname = "/florence";
         }
     }
     else {
