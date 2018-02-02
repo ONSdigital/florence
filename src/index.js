@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route } from 'react-router';
+import { Router, Route, Redirect } from 'react-router';
 import { routerActions } from 'react-router-redux';
 import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 
@@ -64,6 +64,7 @@ class Index extends Component {
                 <Router history={ history }>
                     <Route component={ App }>
                         <Route component={ Layout }>
+                            <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
                             <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
                                 <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
                                     <Route path='edit' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>

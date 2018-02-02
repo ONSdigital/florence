@@ -14,12 +14,12 @@ function viewController(view) {
 
             const collectionID = getQueryVariable("collection");
             const pageURI = getQueryVariable("uri");
-            window.history.replaceState({}, "Florence", "/florence/collections");
+            window.history.replaceState({}, "Florence", "/florence/workspace");
             
             if (!collectionID) {
-                console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
+                console.warn("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
                 // viewCollections();
-                window.location.pathname = "/florence/teams";
+                window.location.pathname = "/florence/collections";
                 return;
             }
 
