@@ -134,18 +134,22 @@ class VersionMetadata extends Component {
           this.props.dispatch(updateActiveVersion(responses[1]));
 
           var alerts = [];
-          this.props.version.alerts.map((alert) => {
-              alert.key = uuid();
+          if (this.props.version.alerts) {
+            this.props.version.alerts.map((alert) => {
+                alert.key = uuid();
 
-              alerts.push(alert);
-          })
+                alerts.push(alert);
+            })
+          }
 
           var changes = [];
-          this.props.version.latest_changes.map((change) => {
-              change.key = uuid();
+          if (this.props.version.latest_changes) {
+            this.props.version.latest_changes.map((change) => {
+                change.key = uuid();
 
-              changes.push(change);
-          })
+                changes.push(change);
+            })
+          }
         
           this.setState({
             dimensions: this.props.version.dimensions,
