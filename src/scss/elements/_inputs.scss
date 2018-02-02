@@ -126,6 +126,71 @@
     }
 }
 
+.radio {
+    display: block;
+    float: none;
+    clear: left;
+    position: relative;
+
+    padding: 0 0 0 38px;
+    margin-bottom: $lineheight / 2;
+
+    &--inline {
+        display: inline-block;
+    }
+
+    &__input {
+        position: absolute;
+        cursor: pointer;
+        left: 0;
+        top: 0;
+        width: 38px;
+        height: 38px;
+        z-index: 0;
+    }
+
+    &__label {
+        cursor: pointer;
+        padding: 8px $lineheight 9px 6px;
+        display: block;
+
+        &:before {
+            content: "";
+            border: 3px solid $scarpa-flow;
+            background: white;
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            top: 4px;
+            left: 0;
+            border-radius: 50%;
+        }
+
+        &:after {
+            content: "";
+            border: 8px solid $astral;
+            width: 0;
+            height: 0;
+            position: absolute;
+            top: 10px;
+            left: 6px;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        &--selected {
+            &:after {
+                opacity: 1;
+            }
+        }
+
+        &--focused {
+            &:before {
+                box-shadow: 0 0 0 4px $focus;
+            }
+        }
+    }
+}
 .checkbox {
     position: relative;
 
