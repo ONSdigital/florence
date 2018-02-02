@@ -20,8 +20,15 @@
     &__header {
         padding: $lineheight $gutter;
         margin-bottom: $lineheight / 2;
-
     }
+
+    &__title {
+        font-size: 35px;
+        text-align: left; // override h1 styling
+        margin-top: $lineheight * 1.25;
+        margin-bottom: 0;
+    }
+
     &__body {
         padding: 0 $gutter $lineheight $gutter;
         margin-bottom: $lineheight / 2;
