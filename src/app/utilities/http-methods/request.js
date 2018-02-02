@@ -131,7 +131,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     }
 
                     console.error("Error trying to parse request body as JSON: ", error);
-                    log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse JSON response from request but unable to. Error message: ' + error);s
+                    log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse JSON response from request but unable to. Error message: ' + error);
 
                     // We're trying to get data at this point and the body can't be parsed
                     // which means this request is a failure and the promise should be rejected
