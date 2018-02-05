@@ -1638,7 +1638,8 @@ select {
   margin-bottom: 10.5px;
   border-bottom: 1px solid #D1D2D4; }
   .simple-table__row:last-child {
-    border: none; }
+    border: none;
+    margin: 0; }
 
 details {
   display: block;
