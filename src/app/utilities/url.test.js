@@ -64,3 +64,10 @@ test("Path from current location replaces the last route with the new path", () 
     expect(url.resolve("teams")).toBe("/florence/teams");
 })
 
+test("Slugged URL with leading slash produces correct slug without leading dash", () => {
+    expect(url.slug("/economy/grossdomesticproduct/bulletins/gdp/jan2017")).toBe("economy-grossdomesticproduct-bulletins-gdp-jan2017");
+});
+
+test("Slugged URL without leading slash produces correct slug", () => {
+    expect(url.slug("economy/grossdomesticproduct/bulletins/gdp/jan2017")).toBe("economy-grossdomesticproduct-bulletins-gdp-jan2017");
+});

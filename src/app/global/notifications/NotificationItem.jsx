@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     type: PropTypes.oneOf(["neutral", "warning", "positive"]).isRequired,
-    message: PropTypes.string,
+    message: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
     id: PropTypes.string.isRequired,
     buttons: PropTypes.arrayOf(PropTypes.shape({
         onClick: PropTypes.func.isRequired,
