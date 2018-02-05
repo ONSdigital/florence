@@ -7,7 +7,7 @@ exports[`Selectable box with active item renders correctly 1`] = `
   <h2
     className="selectable-box__heading"
   >
-    Name
+    Selectable box test - item selected
   </h2>
   <ul
     className="selectable-box__list"
@@ -44,7 +44,7 @@ exports[`Selectable box with items renders component with all items 1`] = `
   <h2
     className="selectable-box__heading"
   >
-    Name
+    Selectable box test
   </h2>
   <ul
     className="selectable-box__list"

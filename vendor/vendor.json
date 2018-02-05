@@ -21,16 +21,34 @@
 			"revisionTime": "2017-01-10T09:35:41Z"
 		},
 		{
+			"checksumSHA1": "hYv7uxuH7z+OaPJYMDdP2TflSvQ=",
+			"path": "github.com/ONSdigital/go-ns/healthcheck",
+			"revision": "9e8016d9f69d0acccee717a6263cecacea222b1c",
+			"revisionTime": "2017-08-30T09:15:21Z"
+		},
+		{
 			"checksumSHA1": "AjbjbhFVAOP/1NU5HL+uy+X/yJo=",
 			"path": "github.com/ONSdigital/go-ns/log",
 			"revision": "7a0755469020390a462ae71b83b672bc59787468",
 			"revisionTime": "2017-06-02T12:31:46Z"
 		},
 		{
-			"checksumSHA1": "iz7DRbcFPAK2UUXpmFs2byjTwm0=",
+			"checksumSHA1": "kfEPqmTD+a9Mo+pqCeiJb6OGrDE=",
 			"path": "github.com/ONSdigital/go-ns/server",
-			"revision": "0728a5717abea304f9fab56417680ce800d0e35e",
-			"revisionTime": "2017-07-17T12:56:40Z"
+			"revision": "c751f1b8254523fa6f18ef042d273750e70c6732",
+			"revisionTime": "2017-08-30T09:50:52Z"
+		},
+		{
+			"checksumSHA1": "wzvsJkEM5AYj7pJTsYpf/TAoVb4=",
+			"path": "github.com/goamz/goamz/aws",
+			"revision": "386f7c89320367132e0a3ad9b7fd31cdcf26abc6",
+			"revisionTime": "2017-09-06T08:45:35Z"
+		},
+		{
+			"checksumSHA1": "uWkMVxvYAvh11BtZBRZlHqmhvus=",
+			"path": "github.com/goamz/goamz/s3",
+			"revision": "386f7c89320367132e0a3ad9b7fd31cdcf26abc6",
+			"revisionTime": "2017-09-06T08:45:35Z"
 		},
 		{
 			"checksumSHA1": "ST3iiJ6vhtfZDnujuW/HGXQCtZM=",
@@ -130,16 +148,10 @@
 			"revisionTime": "2016-09-28T20:55:23Z"
 		},
 		{
-			"checksumSHA1": "Wgg12N5XhSfpwPNF6KqjaAe6UsQ=",
-			"path": "gopkg.in/amz.v1/aws",
-			"revision": "ad23e96a31d28364dc0290f44b1a922aba379e18",
-			"revisionTime": "2015-01-11T12:32:59Z"
-		},
-		{
-			"checksumSHA1": "zTaGxe6Zq98GIRDolA2kWhAk94g=",
-			"path": "gopkg.in/amz.v1/s3",
-			"revision": "ad23e96a31d28364dc0290f44b1a922aba379e18",
-			"revisionTime": "2015-01-11T12:32:59Z"
+			"checksumSHA1": "sFD8LpJPQtWLwGda3edjf5mNUbs=",
+			"path": "github.com/vaughan0/go-ini",
+			"revision": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1",
+			"revisionTime": "2013-09-23T14:52:12Z"
 		},
 		{
 			"checksumSHA1": "1D8GzeoFGUs5FZOoyC2DpQg8c5Y=",
