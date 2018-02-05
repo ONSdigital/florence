@@ -153,7 +153,6 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
     }
 
     function renderRelatedItemModal() {
-        console.log("IDFIELD", idField);
         var viewModel = {hasLatest: false}; //Set to true if 'latest' checkbox should show
         var latestCheck; //Populated with true/false later to check state of checkbox
 
