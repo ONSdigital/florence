@@ -8,7 +8,9 @@ exports[`Admin users have option to edit teams 1`] = `
     <div
       className="grid__col-4"
     >
-      <h1>
+      <h1
+        className="text-center"
+      >
         Select a team
       </h1>
       <div
@@ -52,7 +54,9 @@ exports[`Admin users have option to edit teams 1`] = `
     <div
       className="grid__col-4"
     >
-      <h1>
+      <h1
+        className="text-center"
+      >
         Create a team
       </h1>
       <form
@@ -164,7 +168,9 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
     <div
       className="grid__col-4"
     >
-      <h1>
+      <h1
+        className="text-center"
+      >
         Select a team
       </h1>
       <div
@@ -208,7 +214,9 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
     <div
       className="grid__col-4"
     >
-      <h1>
+      <h1
+        className="text-center"
+      >
         Create a team
       </h1>
       <form

@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route, Redirect } from 'react-router';
+import { Router, Route, IndexRoute, IndexRedirect, Redirect } from 'react-router';
 import { routerActions } from 'react-router-redux';
 import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 
 import App from './app/App';
-import Layout from './app/global/Layout'
+import Layout from './app/global/Layout';
 import LoginController from './app/views/login/LoginController';
 import CollectionsController from './app/views/collections/CollectionsController';
 import TeamsController from './app/views/teams/TeamsController';
-// import DatasetController from './app/views/datasets/DatasetsController';
-// import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
+import DatasetsController from './app/views/datasets/DatasetsController';
+import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
+import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
+import DatasetUploadMetadata from './app/views/uploads/dataset/upload-details/DatasetUploadMetadata'
+import DatasetMetadata from './app/views/datasets/metadata/DatasetMetadata';
+import VersionMetadata from './app/views/datasets/metadata/VersionMetadata';
+import DatasetCollectionController from './app/views/datasets/collection/DatasetCollectionController';
+import VersionCollectionController from './app/views/datasets/collection/VersionCollectionController';
+import DatasetPreview from './app/views/datasets/preview/DatasetPreview';
+import VersionPreview from './app/views/datasets/preview/VersionPreview';
 import Logs from './app/views/logs/Logs';
 
 import './scss/main.scss';
@@ -44,7 +52,9 @@ const userIsNotAuthorised = connectedReduxRedirect({
 class UnknownRoute extends Component {
     render() {
         return (
-            <h1>Sorry, this page couldn't be found</h1>
+            <div className="grid grid--justify-center">
+                <h1>Sorry, this page couldnt be found</h1>
+            </div>
         )
     }
 }
@@ -71,17 +81,52 @@ class Index extends Component {
                                     <Route path='restore-content' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
-                                <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
-                                    <Route path={`edit`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
-                                    <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
+                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(TeamsController) }>
+                                <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
+                                    <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
+                                    <Route path="delete" component={ userIsAuthenticated(TeamsController) }/>
+                                </Route>
+                            </Route>
+                            <Route path={`${rootPath}/uploads`}>
+                                <IndexRedirect to="data" />
+                                <Route path="data">
+                                    <IndexRoute component={userIsAuthenticated(DatasetUploadsController)} />
+                                    <Route path=":jobID">
+                                        <IndexRoute component={ userIsAuthenticated(DatasetUploadDetails) } />
+                                        <Route path="metadata" component={ userIsAuthenticated(DatasetUploadMetadata) } />
+                                    </Route>
+                                </Route>
+                            </Route>
+                            <Route path={`${rootPath}/datasets`} >
+                                <IndexRoute component={ userIsAuthenticated(DatasetsController) } />
+                                <Route path=":datasetID">
+                                    <IndexRedirect to={`${rootPath}/datasets`} />
+                                    <Route path="metadata">
+                                        <IndexRoute component={ userIsAuthenticated(DatasetMetadata) } />
+                                        <Route path="collection">
+                                            <IndexRoute component={ userIsAuthenticated(DatasetCollectionController) } />
+                                            <Route path="preview" component={ userIsAuthenticated(DatasetPreview) } />
+                                        </Route>
+                                    </Route>
+                                    <Route path="editions/:edition/versions/:version">
+                                        <IndexRedirect to="metadata"/>
+                                        <Route path="metadata" component={ userIsAuthenticated(VersionMetadata) }/>
+                                        <Route path="collection" >
+                                            <IndexRoute component={ userIsAuthenticated(VersionCollectionController) } />
+                                            <Route path="preview" component={ userIsAuthenticated(VersionPreview) } />
+                                        </Route>
+                                    </Route>
+                                    <Route path="instances">
+                                        <IndexRedirect to={`${rootPath}/datasets`}/>
+                                        <Route path=":instanceID/metadata" component={ userIsAuthenticated(VersionMetadata) } />
+                                    </Route>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
-                            <Route path={`*`} component={ UnknownRoute } />
+                            <Route path="*" component={ UnknownRoute } />
                         </Route>
                     </Route>
                 </Router>
@@ -91,5 +136,3 @@ class Index extends Component {
 }
 
 ReactDOM.render(<Index/>, document.getElementById('app'));
-
-

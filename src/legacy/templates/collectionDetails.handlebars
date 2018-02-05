@@ -91,6 +91,23 @@
                     </li>
                 {{/each}}
             </ul>
+            {{#if datasets}}
+                <h3 id="">API datasets in this collection</h3>
+                <ul class="page-list">
+                    {{#each datasets}}
+                        <li class="page-list__item">
+                            <span class="page__item ">{{dataset.title}} - {{edition}}</span>
+                            <div class="page__buttons page__buttons--list">
+                                <button class="btn btn-page-edit" data-path="{{uri}}" data-language="{{description.language}}">Edit
+                                    file
+                                </button>
+                                <button class="btn btn--warning dataset-delete" data-instanceId="{{instance_id}}" data-language="{{descriptions.language}}">Delete file
+                                </button>
+                            </div>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{/if}}
             {{#if pendingDeletes}}
                 <h3 id="delete-uris">Content deletions</h3>
 
