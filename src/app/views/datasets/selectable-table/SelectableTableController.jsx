@@ -21,29 +21,42 @@ const propTypes = {
     }))
 }
 
+let currentStatus = "";
+
 export default class SelectableTableController extends Component {
     constructor(props) {
         super(props);
     }
-
     renderDatasetInstances(instances) {
         return instances.map((instance, i) => {
             if (instance !== undefined) {
+                if (instance.status === "published"){
+                    currentStatus = "Published"
+                }
+                if (instance.status === "associated"){
+                    currentStatus = "Added to collection"
+                }
+                if (instance.status === "completed" || instance.status === "edition-confirmed"){
+                    currentStatus = "New"
+                }
                 return (
                     <div key={i} className="grid simple-table__row">
-                        <div className="grid__col-4">
-                            {dateFormat(instance.date, "HH:MM:ss dd/mm/yy")}
-                        </div>
-                        <div className="grid__col-2">
-                            {instance.edition}
-                        </div>
-                        <div className="grid__col-4">
-                            {instance.version}
-                        </div>
                         <div className="grid__col-2">
                             {/* Wrap in span to stop grid col from forcing link to be full width 
                             (which made focus outline much wider than the link itself) */}
                             <span><Link to={instance.url}>View</Link></span>
+                        </div>
+                        <div className="grid__col-3">
+                            {currentStatus}
+                        </div>
+                        <div className="grid__col-3">
+                            {dateFormat(instance.date, "dd/mm/yy HH:MM")}
+                        </div>
+                        <div className="grid__col-2">
+                            {instance.edition}
+                        </div>
+                        <div className="grid__col-1">
+                            {instance.version}
                         </div>
                     </div>
                 )
@@ -62,11 +75,8 @@ export default class SelectableTableController extends Component {
                             <details key={index} className="selectable-table__details">
                                 <summary className="selectable-table__summary">
                                     <div className="grid">
-                                        <div className="grid__col-6">
+                                        <div className="grid__col-10">
                                             <strong>{item.title}</strong>
-                                        </div>
-                                        <div className="grid__col-6">
-                                            {item.date}
                                         </div>
                                     </div>
                                 </summary>
@@ -74,17 +84,20 @@ export default class SelectableTableController extends Component {
                                     <Link className="inline-block margin-bottom--1" to={url.resolve(`datasets/${item.id}/metadata`)}> Edit dataset details</Link>
                                     {item.instances.length > 0 &&
                                         <div>
-                                            <p className="font-weight--400 grid__col-12">
-                                                New versions:
-                                            </p>
                                             <div className="grid simple-table__heading">
-                                                <div className="grid__col-4">
-                                                    Date
+                                                <div className="grid__col-2">
+                                                    
+                                                </div>
+                                                <div className="grid__col-3">
+                                                    Status
+                                                </div>
+                                                <div className="grid__col-3">
+                                                    Date last modified
                                                 </div>
                                                 <div className="grid__col-2">
                                                     Edition
                                                 </div>
-                                                <div className="grid__col-2">
+                                                <div className="grid__col-1">
                                                     Version
                                                 </div>
                                             </div>
