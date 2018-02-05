@@ -12,10 +12,6 @@
       "./setupJest.js"
     ],
     "collectCoverage": true,
-    "coverageFormats": [
-      "json",
-      "html"
-    ],
     "globals": {
       "window": true
     }
@@ -30,6 +26,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jest": "^20.0.0",
     "jest-fetch-mock": "^1.2.0",
+    "jest-mock-now": "^1.1.1",
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4",
     "regenerator-runtime": "^0.10.5"
