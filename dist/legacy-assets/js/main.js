@@ -16364,7 +16364,7 @@ function viewCollectionDetails(collectionId, $this) {
             const pageURI = getQueryVariable("uri");
             window.history.replaceState({}, "Florence", "/florence/collections");
             
-            if (!pageURI || !collectionID) {
+            if (!collectionID) {
                 console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
                 viewCollections();
                 return;
@@ -16377,6 +16377,10 @@ function viewCollectionDetails(collectionId, $this) {
                     date: response.publishDate,
                     type: response.type
                 });
+                if (!pageURI) {
+                    createWorkspace("/", collectionID, "browse", response);
+                    return;
+                }
                 createWorkspace(pageURI, collectionID, "edit", response);
             }, error => {
                 console.error("Error getting collection data, redirected to collections screen", error);

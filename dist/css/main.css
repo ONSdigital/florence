@@ -1149,7 +1149,7 @@ button {
 
 a {
   color: #3B7A9E; }
-  a:visited {
+  a:not(.disable-visited-colour):visited {
     color: #343B59; }
   a:focus {
     outline: 4px solid #ffbf47; }
@@ -1241,6 +1241,12 @@ select {
   padding: 21px 20px;
   margin-bottom: 10.5px; }
 
+.modal__title {
+  font-size: 35px;
+  text-align: left;
+  margin-top: 26.25px;
+  margin-bottom: 0; }
+
 .modal__body {
   padding: 0 20px 21px 20px;
   margin-bottom: 10.5px; }
@@ -1262,9 +1268,10 @@ select {
     color: #B2B6C4;
     font-family: "Open Sans", sans-serif;
     font-weight: 700;
-    padding-left: 20px;
     padding-right: 20px;
     line-height: normal; }
+    .selectable-box__heading:first-of-type {
+      padding-left: 20px; }
   .selectable-box__status {
     float: right; }
   .selectable-box__list {
@@ -1286,6 +1293,26 @@ select {
       cursor: default; }
     .selectable-box__item.select:hover {
       background-color: #337099; }
+    .selectable-box__item.warning {
+      position: relative; }
+      .selectable-box__item.warning:before {
+        position: absolute;
+        content: '';
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 7px;
+        background-color: #AA354C; }
+    .selectable-box__item.neutral {
+      position: relative; }
+      .selectable-box__item.neutral:before {
+        position: absolute;
+        content: '';
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 7px;
+        background-color: #6D6E70; }
 
 .loader {
   display: inline-block;
@@ -1375,10 +1402,15 @@ select {
     .drawer__banner--dark {
       background-color: #515151;
       color: #E7E8E9; }
+    .drawer__banner--large {
+      font-size: 17px;
+      padding-top: 31.5px;
+      padding-bottom: 31.5px; }
   .drawer__body {
     padding: 21px 160px;
     background-color: #CCCCCB;
-    flex: 1; }
+    flex: 1;
+    overflow-y: scroll; }
   .drawer__loader {
     margin-left: 0;
     margin-right: 0;
@@ -2090,6 +2122,52 @@ details {
     .select-details__label {
       font-weight: 600; }
 
+.radio {
+  display: block;
+  float: none;
+  clear: left;
+  position: relative;
+  padding: 0 0 0 38px;
+  margin-bottom: 10.5px; }
+  .radio--inline {
+    display: inline-block; }
+  .radio__input {
+    position: absolute;
+    cursor: pointer;
+    left: 0;
+    top: 0;
+    width: 38px;
+    height: 38px;
+    z-index: 0; }
+  .radio__label {
+    cursor: pointer;
+    padding: 8px 21px 9px 6px;
+    display: block; }
+    .radio__label:before {
+      content: "";
+      border: 3px solid #58585B;
+      background: white;
+      width: 28px;
+      height: 28px;
+      position: absolute;
+      top: 4px;
+      left: 0;
+      border-radius: 50%; }
+    .radio__label:after {
+      content: "";
+      border: 8px solid #337099;
+      width: 0;
+      height: 0;
+      position: absolute;
+      top: 10px;
+      left: 6px;
+      border-radius: 50%;
+      opacity: 0; }
+    .radio__label--selected:after {
+      opacity: 1; }
+    .radio__label--focused:before {
+      box-shadow: 0 0 0 4px #ffbf47; }
+
 .checkbox {
   position: relative; }
   .checkbox__input {
@@ -2165,6 +2243,10 @@ details {
   top: 6px;
   left: 16px; }
 
+.fieldset {
+  margin-bottom: 10.5px;
+  border: 0; }
+
 .list {
   margin-left: 20px; }
   .list--neutral {
@@ -2179,6 +2261,33 @@ details {
       padding-bottom: 10.5px;
       margin-bottom: 10.5px;
       border-bottom: 1px solid #D1D2D4; }
+    .list__item--expandable:hover {
+      cursor: pointer;
+      font-weight: 400; }
+    .list__item--expandable .expandable-item__contents {
+      display: none;
+      position: relative; }
+    .list__item--expandable.active {
+      position: relative;
+      margin-bottom: 42px;
+      margin-top: 42px; }
+      .list__item--expandable.active:before {
+        position: absolute;
+        background-color: #FFFFFF;
+        border: 4px solid #A1A3A5;
+        content: "";
+        height: calc(100% + 42px);
+        width: calc(100% + 40px);
+        top: -21px;
+        left: -20px; }
+      .list__item--expandable.active:hover {
+        cursor: default;
+        font-weight: 300; }
+      .list__item--expandable.active .expandable-item__contents {
+        display: block; }
+
+.expandable-item__header {
+  position: relative; }
 
 .margin--0 {
   margin: 0px 0px; }
@@ -2360,11 +2469,145 @@ details {
 .padding-left--5 {
   padding-left: 100px; }
 
+.padding-right--1 {
+  margin-right: 20px; }
+
+.padding-left--1 {
+  margin-left: 20px; }
+
+.padding-right--2 {
+  margin-right: 40px; }
+
+.padding-left--2 {
+  margin-left: 40px; }
+
+.padding-right--3 {
+  margin-right: 60px; }
+
+.padding-left--3 {
+  margin-left: 60px; }
+
+.padding-right--4 {
+  margin-right: 80px; }
+
+.padding-left--4 {
+  margin-left: 80px; }
+
+.padding-right--5 {
+  margin-right: 100px; }
+
+.padding-left--5 {
+  margin-left: 100px; }
+
+.colour--black {
+  color: #000000; }
+
+.colour--white {
+  color: #FFFFFF; }
+
+.colour--mine-shaft {
+  color: #323232; }
+
+.colour--grey-chateau {
+  color: #A1A3A5; }
+
+.colour--porcelain {
+  color: #F5F6F7; }
+
+.colour--quill-grey {
+  color: #CCCCCB; }
+
+.colour--pickled-bluewood {
+  color: #343B59; }
+
+.colour--slate-grey {
+  color: #6A7290; }
+
+.colour--iron {
+  color: #E7E8E9; }
+
+.colour--iron-dark {
+  color: #D1D2D4; }
+
+.colour--cadet-blue {
+  color: #B2B6C4; }
+
+.colour--astral {
+  color: #337099; }
+
+.colour--como {
+  color: #49725D; }
+
+.colour--concrete {
+  color: #F2F2F2; }
+
+.colour--emperor {
+  color: #515151; }
+
+.colour--scarpa-flow {
+  color: #58585B; }
+
+.colour--dusty-grey {
+  color: #989898; }
+
+.colour--mirage {
+  color: #1B2232; }
+
+.colour--nevada {
+  color: #6D6E70; }
+
+.colour--nobel {
+  color: #B3B3B3; }
+
+.colour--night-shadz {
+  color: #AA354C; }
+
+.colour--ash {
+  color: #C5C1B6; }
+
+.colour--ship-grey {
+  color: #404041; }
+
+.colour--tea {
+  color: #BBB6AA; }
+
+.colour--gurkha {
+  color: #9D9684; }
+
+.colour--olive-haze {
+  color: #8E8575; }
+
+.colour--nappa {
+  color: #AEA99C; }
+
+.colour--kabul {
+  color: #574F41; }
+
+.colour--wild-sand {
+  color: #F5F5F5; }
+
+.colour--tawny-port {
+  color: #6D272B; }
+
+.colour--silver-sand {
+  color: #BBBDC0; }
+
+.colour--focu {
+  color: #ffbf47; }
+
+.font-size--16 {
+  font-size: 16px; }
+
+.font-weight--600 {
+  font-weight: 600; }
+
+.inline {
+  display: inline; }
+  .inline-block {
+    display: inline-block; }
+
 .block {
   display: block; }
-
-.inline-block {
-  display: inline-block; }
 
 .text-center {
   text-align: center; }
