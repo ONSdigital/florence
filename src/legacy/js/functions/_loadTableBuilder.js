@@ -390,3 +390,40 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 }
 
+function loadTableBuilderV2(pageData, onSave, table) {
+    var pageUrl = pageData.uri;
+    var html = templates.tableBuilderV2(table);
+    var previewTable;
+    var path;
+    var xlsPath;
+    var htmlPath;
+    var currentTable = table;
+
+    $('body').append(html);
+
+    var tableData = {title: "A table", description: "This is a table showing tabular things."};
+
+    // temporary onSave - close the modal and prove can return values from react
+    var saveTableV2 = function(table) {
+      $('.table-builder').stop().fadeOut(200).remove();
+      let tableId = pageUrl + "/" + table.filename;
+      var tableJson = tableId + ".json";
+
+      $.ajax({
+          url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson + "&validateJson=false",
+          type: 'POST',
+          data: JSON.stringify(table),
+          processData: false,
+          contentType: 'application/json'
+      });
+      if (onSave) {
+          onSave(table.filename, '<ons-table-v2 path="' + tableId + '" />');
+      }
+
+        console.log(result);
+    };
+
+
+    startReact("table-builder-app", tableData, saveTableV2);
+
+}

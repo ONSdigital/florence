@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.gridContainer {
+  width: 1100px;
+  height: 400px;
+  border: 4px #888 solid;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.previewContainer {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.previewhtml {
+
+  border: 3px #f00 dashed;
+}
+
+.grid {
+  border: 1px dotted #fcc;
+  width: 62%;
+  max-height: 350px;
+  margin-left: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: inline-block;
+  margin: 5px;
+}
+
+
+.metaContainer {
+  border: 1px #ccc dotted;
+  width: 35%;
+  vertical-align: top;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 4px;
+  padding-left: 5px;
+}
+
+
+
+.metaContainer input {
+  width: 220px;
+
+}
+
+.metaContainer input.sml {
+  width: 70px;
+}
+
+.metaContainer textarea {
+  width: 220px;
+  height: 60px;
+}
+
+
+
+.metaContainer div {
+  margin-bottom: 10px;
+}

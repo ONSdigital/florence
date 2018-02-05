@@ -78,6 +78,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         loadTableBuilder(pageData, onInsertSave);
     });
 
+    $("#js-editor--table-v2").click(function () {
+        loadTableBuilderV2(pageData, onInsertSave);
+    });
+
     $("#js-editor--equation").click(function () {
         loadEquationBuilder(pageData, onInsertSave);
     });

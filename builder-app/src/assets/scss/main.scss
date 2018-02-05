@@ -1,0 +1,170 @@
+$color: #fff;
+
+body {
+  background-color: $color;
+  font-family: "Open Sans",Helvetica,Arial,sans-serif;
+}
+
+
+
+
+.gridContainer {
+  width: 1100px;
+  height: 400px;
+  border: 4px #888 solid;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.previewContainer {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.previewhtml {
+
+  border: 3px #f00 dashed;
+}
+
+.grid {
+  border: 1px dotted #fcc;
+  width: 62%;
+  max-height: 350px;
+  margin-left: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: inline-block;
+  margin: 5px;
+}
+
+
+.metaContainer {
+  border: 1px #ccc dotted;
+  width: 35%;
+  vertical-align: top;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 4px;
+  padding-left: 5px;
+}
+
+
+
+.metaContainer input {
+  width: 220px;
+
+}
+
+.metaContainer input.sml {
+  width: 70px;
+}
+
+.metaContainer textarea {
+  width: 220px;
+  height: 60px;
+}
+
+
+
+.metaContainer div {
+  margin-bottom: 10px;
+}
+
+
+
+
+label {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+  /* background-color: aquamarine; */
+  color: #666;
+  font-size: 90%;
+  margin-right: 10px;
+}
+
+
+
+
+
+
+
+.statusBar {
+  padding: 5px;
+  margin-top: 1px;
+  background-color: #ccc;
+}
+
+.statusBtnsGroup {
+  display: inline-block;
+
+}
+
+.statusBtnsContainer button {
+  margin-right: 5px;
+}
+
+
+.rowColStatus {
+  width: 200px;
+  display: inline-block;
+  text-align: right;
+  float: right;
+  font-size: 70%;
+  color: #666;
+  padding-top: 5px;
+  padding-right: 10px;
+}
+
+
+
+
+.align-right {
+  text-align: right
+}
+.align-left {
+  text-align: left
+}
+.align-center {
+  text-align: center
+}
+.align-top {
+  vertical-align: text-top
+}
+.align-middle {
+  vertical-align: middle
+}
+.align-bottom {
+  vertical-align: text-bottom
+}
+
+.figure__table caption {
+  font-size: 125%;
+  font-weight: bold
+}
+span.caption__subtitle {
+  font-size: 85%;
+}
+a.footnote__link {
+  vertical-align: super;
+  font-size: 70%;
+  text-decoration: none;
+}
+.visuallyhidden {
+  display: none
+}
+.figure__table footer li:target {
+  animation: pulse 5s;
+  animation-iteration-count: 1;
+}
+@keyframes pulse {
+  0% {
+    background-color: yellow;
+  }
+  100% {
+    background-color:inherit;
+  }
+}
+a.footnote__back-link {
+  font-size: 85%;
+}
