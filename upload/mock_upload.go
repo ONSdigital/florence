@@ -4,9 +4,10 @@
 package upload
 
 import (
-	gomock "github.com/golang/mock/gomock"
-	s3 "gopkg.in/amz.v1/s3"
 	io "io"
+
+	s3 "github.com/goamz/goamz/s3"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockBucket is a mock of Bucket interface
