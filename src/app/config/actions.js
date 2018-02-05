@@ -12,8 +12,13 @@ export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
 export const UPDATE_ALL_DATASETS = 'UPDATE_ALL_DATASETS';
+export const UPDATE_ACTIVE_DATASET = 'UPDATE_ACTIVE_DATASET';
+export const UPDATE_ALL_RECIPES = 'UPDATE_ALL_RECIPES';
 export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
+export const UPDATE_ACTIVE_JOB = 'UPDATE_ACTIVE_JOB';
 export const ADD_NEW_JOB = 'ADD_NEW_JOB';
+export const UPDATE_ACTIVE_INSTANCE = 'UPDATE_ACTIVE_INSTANCE';
+export const UPDATE_ACTIVE_VERSION = 'UPDATE_ACTIVE_VERSION';
 
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
@@ -62,6 +67,20 @@ export function updateAllDatasets(allDatasets) {
     }
 }
 
+export function updateActiveDataset(dataset) {
+    return {
+        type: UPDATE_ACTIVE_DATASET,
+        dataset
+    }
+}
+
+export function updateAllRecipes(allRecipes) {
+    return {
+        type: UPDATE_ALL_RECIPES,
+        allRecipes
+    }
+}
+
 export function updateAllJobs(allJobs) {
     return {
         type: UPDATE_ALL_JOBS,
@@ -69,10 +88,32 @@ export function updateAllJobs(allJobs) {
     }
 }
 
+export function updateActiveJob(job) {
+    return {
+        type: UPDATE_ACTIVE_JOB,
+        job
+    }
+}
+
 export function addNewJob(job) {
     return {
         type: ADD_NEW_JOB,
         job
+    }
+}
+
+export function updateActiveInstance(instance) {
+    return {
+        type: UPDATE_ACTIVE_INSTANCE,
+        instance
+    }
+}
+
+
+export function updateActiveVersion(version) {
+    return {
+        type: UPDATE_ACTIVE_VERSION,
+        version
     }
 }
 

@@ -44,29 +44,33 @@ class NavBar extends Component {
         const rootPath = this.props.rootPath;
         const isViewer = this.props.userType == 'VIEWER';
 
-        if (route.indexOf(`${rootPath}/collections`) >= 0 || route.indexOf(`${rootPath}/publishing-queue`) >= 0 || route.indexOf(`${rootPath}/reports`) >= 0 || route.indexOf(`${rootPath}/users-and-access`) >= 0 || route.indexOf(`${rootPath}/teams`) >= 0 || route.indexOf(`${rootPath}/not-authorised`) >= 0 ) {
+        if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) || route.includes(`${rootPath}/datasets`) || route.includes(`${rootPath}/uploads`) || route.includes(`${rootPath}/not-authorised`)) {
             return (
                 <span>
                     {!isViewer ?
                         <span>
                             <li className="global-nav__item">
-                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link disable-visited-colour">Collections</Link>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
+                                <Link to={`${rootPath}/datasets`} activeClassName="selected" className={"global-nav__link disable-visited-colour" + (route.includes(`${rootPath}/uploads/data`) ? " selected" : "")}>Datasets</Link>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/reports">Reports</a>
+                                <a className="global-nav__link disable-visited-colour" href="/florence/publishing-queue">Publishing queue</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/users-and-access">Users and access</a>
+                                <a className="global-nav__link disable-visited-colour" href="/florence/reports">Reports</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
+                                <a className="global-nav__link disable-visited-colour" href="/florence/users-and-access">Users and access</a>
+                            </li>
+
+                            <li className="global-nav__item">
+                                <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link disable-visited-colour">Teams</Link>
                             </li>
                         </span>
                     : "" }

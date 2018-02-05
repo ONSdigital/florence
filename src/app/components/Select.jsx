@@ -42,7 +42,7 @@ class Select extends Component {
             <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
                 <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
                 {this.props.error &&
-                <div className="error-msg">{this.props.error}</div>
+                    <div className="error-msg">{this.props.error}</div>
                 }
                 <div className={"select-wrap " + (this.state.isFocused ? "select-wrap--focus" : "") + (this.props.error ? "select-wrap--error" : "") + (this.props.disabled ? "select-wrap--disabled" : "")}>
                     <select
