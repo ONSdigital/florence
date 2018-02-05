@@ -212,8 +212,6 @@ function articleEditor(collectionId, data) {
     });
     data.pdfTable = newFiles;
 
-    console.log('Save ran, data was:', data);
-
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
