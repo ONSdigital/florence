@@ -112,7 +112,7 @@ export default class datasets {
     }
 
     static getNewVersionsAndCompletedInstances() {
-        return http.get(`/dataset/instances?state=completed,edition-confirmed,associated`)
+        return http.get(`/dataset/instances?state=completed,edition-confirmed,associated,published`)
             .then(response => {
                 return response;
             });
