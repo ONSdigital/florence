@@ -290,8 +290,8 @@ describe("'Last edit' information for a page in a collection", () => {
 
     it("Renders an error message if neither the email or date are available", () => {
         const event = {};
-        expect(component.instance().renderLastEditText(event)).toBe("Error getting 'last edit' details");
-        expect(component.instance().renderLastEditText()).toBe("Error getting 'last edit' details");
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: information not available");
+        expect(component.instance().renderLastEditText()).toBe("Last edit: information not available");
     })
     
     it("Renders an error message if it isn't a valid date and no email is available", () => {
@@ -299,7 +299,7 @@ describe("'Last edit' information for a page in a collection", () => {
             email: "",
             date: "not a valid date"
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Error rendering 'last edit' details");
+        expect(component.instance().renderLastEditText(event)).toBe("Error showing 'last edit' details");
     });
 
 });
