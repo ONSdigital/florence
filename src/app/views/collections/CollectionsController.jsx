@@ -924,8 +924,6 @@ export class CollectionsController extends Component {
                 });
             };
 
-            console.log(collection);
-
             const collectionWithPages = {
                 ...collection,
                 canBeApproved,
