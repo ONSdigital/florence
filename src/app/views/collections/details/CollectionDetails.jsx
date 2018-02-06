@@ -101,7 +101,7 @@ export class CollectionDetails extends Component {
     renderLastEditText(lastEdit) {
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
-                return "'last edit' information isn't available";
+                return "Last edit: information not available";
             }
 
             if (!lastEdit.date || typeof lastEdit.date !== "string") {
