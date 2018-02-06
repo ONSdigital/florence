@@ -153,7 +153,6 @@ class GridContainer extends Component {
     data["title"] = this.state.metaTitle;
     data["subtitle"] = this.state.metaSubtitle;
     data["source"] = this.state.metaSource;
-    data["units"] = this.state.metaUnits;
     data["ignore_first_row"] = ignore_first_row;
     data["ignore_first_column"] = ignore_first_column;
     data["column_width_to_ignore"] = ignore_column_width;
@@ -380,7 +379,7 @@ class GridContainer extends Component {
             setMetaData={this.setMetaDataCallbk}
             metaTitle={this.state.metaTitle}
             metaSubtitle={this.state.metaSubtitle}
-            metaUnits={this.state.metaUnits}
+            metaKeepHeadersTogether={this.state.metaKeepHeadersTogether}
             metaSource={this.state.metaSource}
             metaNotes={this.state.metaNotes}
             metaHeadercols={this.state.metaHeadercols}

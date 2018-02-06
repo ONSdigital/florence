@@ -273,6 +273,13 @@ function markdownEditor() {
         });
         return newText;
     });
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/(<ons-table-v2\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+            var path = $(match).attr('path');
+            return '[table path="' + path + '" ]';
+        });
+        return newText;
+    });
 
     // output equation tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {

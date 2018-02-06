@@ -391,39 +391,58 @@ function loadTableBuilder(pageData, onSave, table) {
 }
 
 function loadTableBuilderV2(pageData, onSave, table) {
-    var pageUrl = pageData.uri;
-    var html = templates.tableBuilderV2(table);
-    var previewTable;
-    var path;
-    var xlsPath;
-    var htmlPath;
-    var currentTable = table;
+  const pageUrl = pageData.uri;
+  const html = templates.tableBuilderV2(table);
 
-    $('body').append(html);
+  $('body').append(html);
 
-    var tableData = {title: "A table", description: "This is a table showing tabular things."};
+  let tableData = {};
+  if (table && table.filename) {
+    $.getJSON("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + table.filename + ".json", function(result){
+     tableData = result;
+    });
+  }
 
-    // temporary onSave - close the modal and prove can return values from react
-    var saveTableV2 = function(table) {
-      $('.table-builder').stop().fadeOut(200).remove();
-      let tableId = pageUrl + "/" + table.filename;
-      var tableJson = tableId + ".json";
+  // temporary onSave - close the modal and prove can return values from react
+  var saveTableV2 = function (tableJson) {
+    if (!tableJson.filename) {
+      tableJson.filename = StringUtils.randomId();
+      tableJson.uri = pageUrl + "/" + table.filename;
+    }
 
-      $.ajax({
-          url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson + "&validateJson=false",
-          type: 'POST',
-          data: JSON.stringify(table),
-          processData: false,
-          contentType: 'application/json'
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson.uri + ".json&validateJson=false",
+      type: 'POST',
+      data: JSON.stringify(tableJson),
+      processData: false,
+      contentType: 'application/json'
+    });
+    if (onSave) {
+      onSave(tableJson.filename, '<ons-table-v2 path="' + tableJson.uri + '" />');
+    }
+    addTableToPageJson(tableJson)
+    $('.table-builder').stop().fadeOut(200).remove();
+  };
+
+
+  function addTableToPageJson(tableJson) {
+    if (!pageData.tables) {
+      pageData.tables = [];
+    } else {
+
+      var existingTable = _.find(pageData.tables, function (existingTable) {
+        return existingTable.filename === tableJson.filename;
       });
-      if (onSave) {
-          onSave(table.filename, '<ons-table-v2 path="' + tableId + '" />');
+
+      if (existingTable) {
+        existingTable.title = tableJson.title;
+        return;
       }
+    }
 
-        console.log(result);
-    };
+    pageData.tables.push({title: tableJson.title, filename: tableJson.filename, uri: tableJson.uri, version: "2"});
+  }
 
-
-    startReact("table-builder-app", tableData, saveTableV2);
+  startReact("table-builder-app", tableData, saveTableV2);
 
 }

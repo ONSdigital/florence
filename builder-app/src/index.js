@@ -7,5 +7,5 @@ import GridContainer from './components/gridContainer';
 // registerServiceWorker();
 
  window.startReact = function(id, data, onSave) {
-    ReactDOM.render(<GridContainer data={data} onSave={onSave}/>, document.getElementById(id));
+    ReactDOM.render(<GridContainer data={data} onSave={onSave} rendererUri={'/table'}/>, document.getElementById(id));
 }
