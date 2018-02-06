@@ -862,9 +862,9 @@ export class CollectionsController extends Component {
         });
 
         const mapDatasets = () => {
-            let inProgress = collection.inProgress;
-            let complete = collection.complete;
-            let reviewed = collection.reviewed;
+            let inProgress = collection.inProgress || [];
+            let complete = collection.complete || [];
+            let reviewed = collection.reviewed || [];
             
             if (collection.datasetVersions) {
                 collection.datasetVersions.forEach(version => {

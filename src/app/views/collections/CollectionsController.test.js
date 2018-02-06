@@ -194,8 +194,52 @@ const collection = {
         },
         totalDeletes: 1
     }],
-    datasets: [],
-    datasetVersion: []
+    datasets: [
+        {
+            id: "98261-28374-18272",
+            title: "A test dataset",
+            state: "Reviewed",
+            uri: "http://a-valid-uri-1"
+        },
+        {
+            id: "23444-342-5666",
+            title: "A second test dataset",
+            state: "InProgress",
+            uri: "http://a-valid-uri-2"
+        },
+        {
+            id: "457453-3453452-3334544",
+            title: "A third test dataset",
+            state: "Complete",
+            uri: "http://a-valid-uri-3"
+        }
+    ],
+    datasetVersion: [
+        {
+            id: "98da8ah2-a8ah3-ajaj3",
+            title: "A test dataset version",
+            edition: "2017",
+            version: "1",
+            state: "Reviewed",
+            uri: "http://a-valid-version-uri-1"
+        },
+        {
+            id: "ks0ttt-20aoaaoa-e83829ja",
+            title: "A second test version",
+            edition: "2015",
+            version: "3",
+            state: "InProgress",
+            uri: "http://a-valid-version-uri-2"
+        },
+        {
+            id: "983hja93-asjehsd8-a92723",
+            title: "A third test version",
+            edition: "time-series",
+            state: "Complete",
+            version: "2",
+            uri: "http://a-valid-version-uri-3"
+        }
+    ]
 }
 
 describe("When the active collection parameter changes", () => {
@@ -612,7 +656,7 @@ describe("Mapping GET collection API response to view state", () => {
         expect(canBeDeleted).toBeTruthy();
     });
 
-    it("pages map and have correct structure", () => {
+    it("pages and datasets map with the correct structure", () => {
         const inProgressPages = component.instance().mapPagesToCollection(collection).inProgress;
         const expectedInProgress = [
             {
@@ -634,7 +678,8 @@ describe("Mapping GET collection API response to view state", () => {
                 edition: "July 2017",
                 uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
                 type: "bulletin"
-            }
+            },
+            {"title": "A second test dataset", "type": "dataset", "uri": "http://a-valid-uri-2"}
         ]
         expect(inProgressPages).toEqual(expectedInProgress);
         
@@ -649,12 +694,13 @@ describe("Mapping GET collection API response to view state", () => {
                 edition: "",
                 uri: "/businessindustryandtrade",
                 type: "taxonomy_landing_page"
-            }
+            },
+            {"title": "A third test dataset", "type": "dataset", "uri": "http://a-valid-uri-3"}
         ]
         expect(completePages).toEqual(expectedComplete);
         
         const reviewedPages = component.instance().mapPagesToCollection(collection).reviewed;
-        expect(reviewedPages).toEqual([]);
+        expect(reviewedPages).toEqual([{"title": "A test dataset", "type": "dataset", "uri": "http://a-valid-uri-1"}]);
     });
 });
 
