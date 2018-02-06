@@ -101,7 +101,7 @@ export class CollectionDetails extends Component {
     renderLastEditText(lastEdit) {
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
-                return "Error getting 'last edit' details";
+                return "'last edit' information isn't available";
             }
 
             if (!lastEdit.date || typeof lastEdit.date !== "string") {
@@ -123,7 +123,7 @@ export class CollectionDetails extends Component {
                 return `Last edit: ${lastEdit.email} (date not available)`;
             }
 
-            return "Error rendering 'last edit' details";
+            return "Error showing 'last edit' details";
         }
     }
 
@@ -163,7 +163,7 @@ export class CollectionDetails extends Component {
 
     renderInProgress() {
         if (!this.props.inProgress) {
-            return <p className="margin-bottom--2">Error getting in progress pages</p>
+            return <p className="margin-bottom--2">Error rendering in progress pages</p>
         }
 
         if (this.props.inProgress.length === 0) {
@@ -178,7 +178,7 @@ export class CollectionDetails extends Component {
     
     renderWaitingReview() {
         if (!this.props.complete) {
-            return <p className="margin-bottom--2">Error getting pages awaiting review</p>
+            return <p className="margin-bottom--2">Error rendering pages awaiting review</p>
         }
 
         if (this.props.complete.length === 0) {
@@ -193,7 +193,7 @@ export class CollectionDetails extends Component {
     
     renderReviewed() {
         if (!this.props.reviewed) {
-            return <p className="margin-bottom--2">Error getting reviewed pages</p>
+            return <p className="margin-bottom--2">Error rendering reviewed pages</p>
         }
 
         if (this.props.reviewed.length === 0) {

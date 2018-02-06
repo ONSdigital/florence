@@ -239,6 +239,8 @@ export class CollectionsController extends Component {
                 inProgress: collection.inProgress,
                 complete: collection.complete,
                 reviewed: collection.reviewed,
+                datasets: collection.datasets,
+                datasetVersions: collection.datasetVersions,
                 teams: collection.teamsDetails ? collection.teamsDetails.map(team => ({
                     id: team.id.toString(),
                     name: team.name
@@ -843,11 +845,67 @@ export class CollectionsController extends Component {
         });
     }
 
+    mapDatasetsToCollection(collection) {
+
+        const mapVersion = version => ({
+            title: version.title,
+            edition: version.edition,
+            version: version.version,
+            uri: version.uri,
+            type: "dataset_version"
+        });
+
+        const mapDataset = dataset => ({
+            title: dataset.title,
+            uri: dataset.uri,
+            type: "dataset"
+        });
+
+        const mapDatasets = () => {
+            let inProgress = collection.inProgress;
+            let complete = collection.complete;
+            let reviewed = collection.reviewed;
+            
+            if (collection.datasetVersions) {
+                collection.datasetVersions.forEach(version => {
+                    if (version.state === 'InProgress') {
+                        inProgress.push(mapVersion(version));
+                    }
+                    if (version.state === 'Complete') {
+                        complete.push(mapVersion(version));
+                    }
+                    if (version.state === 'Reviewed') {
+                        reviewed.push(mapVersion(version));
+                    }
+                });
+            }
+
+            if (collection.datasets) {
+                collection.datasets.forEach(dataset => {
+                    if (dataset.state === 'InProgress') {
+                        inProgress.push(mapDataset(dataset));
+                    }
+                    if (dataset.state === 'Complete') {
+                        complete.push(mapDataset(dataset));
+                    }
+                    if (dataset.state === 'Reviewed') {
+                        reviewed.push(mapDataset(dataset));
+                    }
+                });
+            }
+
+            return {inProgress, complete, reviewed};
+
+        };
+
+        return {...collection, ...mapDatasets()};
+    }
+
     mapPagesToCollection(collection) {
         try {
             const canBeApproved = this.collectionCanBeApproved(collection);
             const canBeDeleted = this.collectionCanBeDeleted(collection);
-            const mapPageToState = pagesArray => {
+            const mapPagesToState = pagesArray => {
                 if (!pagesArray) {
                     log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
                     return null;
@@ -864,15 +922,20 @@ export class CollectionsController extends Component {
                         type: page.type
                     }
                 });
-            }
-            const mappedCollection = {
+            };
+
+            console.log(collection);
+
+            const collectionWithPages = {
                 ...collection,
                 canBeApproved,
                 canBeDeleted,
-                inProgress: mapPageToState(collection.inProgress),
-                complete: mapPageToState(collection.complete),
-                reviewed: mapPageToState(collection.reviewed)
-            }
+                inProgress: mapPagesToState(collection.inProgress),
+                complete: mapPagesToState(collection.complete),
+                reviewed: mapPagesToState(collection.reviewed)
+            };
+            const mappedCollection = this.mapDatasetsToCollection(collectionWithPages);
+
             return mappedCollection;
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state" + JSON.stringify(error));
