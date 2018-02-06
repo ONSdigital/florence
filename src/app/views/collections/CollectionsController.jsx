@@ -56,7 +56,7 @@ const propTypes = {
         type: PropTypes.string.isRequired,
         teams: PropTypes.array
     }),
-    activePageURI: PropTypes.string,
+    activePageID: PropTypes.string,
     isEditingCollection: PropTypes.bool,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired
 };
@@ -535,12 +535,12 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionPageClick(uri) {
-        if (uri === this.props.activePageURI) {
+        if (uri === this.props.activePageID) {
             return;
         }
 
         let newURL = location.pathname + "#" + uri;
-        if (this.props.activePageURI) {
+        if (this.props.activePageID) {
             newURL = `${this.props.rootPath}/collections/${this.props.params.collectionID}#${uri}`;
         }
     
@@ -553,13 +553,13 @@ export class CollectionsController extends Component {
         window.location = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${uri}`;
     }
 
-    handleCollectionPageDeleteUndo(deleteTimer, uri, notificationID) {
+    handleCollectionPageDeleteUndo(deleteTimer, ID, notificationID) {
         this.setState(state => ({
-            pendingDeletedPages: [...state.pendingDeletedPages].filter(pageURI => {
-                return pageURI !== uri;
+            pendingDeletedPages: [...state.pendingDeletedPages].filter(pageID => {
+                return pageID !== ID;
             })
         }));
-        const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}#${uri}`;
+        const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}#${ID}`;
         this.props.dispatch(push(pageRoute));
         window.clearTimeout(deleteTimer);
         notifications.remove(notificationID);
@@ -567,18 +567,28 @@ export class CollectionsController extends Component {
         return pageRoute //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleCollectionPageDeleteClick(uri, title, state) {
+    handleCollectionPageDeleteClick(deletedPage, state) {
         const collectionID = this.props.params.collectionID;
         this.setState(state => ({
-            pendingDeletedPages: [...state.pendingDeletedPages, uri]
+            pendingDeletedPages: [...state.pendingDeletedPages, deletedPage.id]
         }));
-        const collectionURL = location.pathname.replace(`#${uri}`, "");
+        const collectionURL = location.pathname.replace(`#${deletedPage.id}`, "");
         this.props.dispatch(push(collectionURL));
 
+        const deletePageRequest = () => {
+            if (deletedPage.type === "dataset_details") {
+                return collections.removeDataset(collectionID, deletedPage.id);
+            }
+            if (deletedPage.type === "dataset_version") {
+                return collections.removeDatasetVersion(collectionID, deletedPage.id, deletedPage.edition, deletedPage.version);
+            }
+            return collections.deletePage(collectionID, deletedPage.id);
+        };
+
         const triggerPageDelete = () => {
-            collections.deletePage(collectionID, uri).then(() => {
+            deletePageRequest().then(() => {
                 const pages = this.props.activeCollection[state].filter(page => {
-                    return page.uri !== uri;
+                    return page.id !== deletedPage.id;
                 });
                 const updatedCollection = {
                     ...this.props.activeCollection,
@@ -597,7 +607,7 @@ export class CollectionsController extends Component {
                     case(404): {
                         const notification = {
                             type: 'warning',
-                            message: `Couldn't delete the page '${title}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
+                            message: `Couldn't delete the page '${deletedPage.title}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -606,7 +616,7 @@ export class CollectionsController extends Component {
                     case(403): {
                         const notification = {
                             type: 'neutral',
-                            message: `You don't have permission to delete the page '${title}' from this collection`,
+                            message: `You don't have permission to delete the page '${deletedPage.title}' from this collection`,
                             autoDismiss: 5000,
                             isDismissable: true
                         }
@@ -616,7 +626,7 @@ export class CollectionsController extends Component {
                     case('FETCH_ERR'): {
                         const notification = {
                             type: 'warning',
-                            message: `Couldn't delete the page '${title}' from this collection due to a network error, please check your connection and try again.`,
+                            message: `Couldn't delete the page '${deletedPage.title}' from this collection due to a network error, please check your connection and try again.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -625,28 +635,28 @@ export class CollectionsController extends Component {
                     default: {
                         const notification = {
                             type: 'warning',
-                            message: `Couldn't delete the page '${title}' from this collection due to an unexpected error`,
+                            message: `Couldn't delete the page '${deletedPage.title}' from this collection due to an unexpected error`,
                             isDismissable: true
                         };
                         notifications.add(notification);
                         break;
                     }
                 }
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting page '${title}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting page '${deletedPage.title}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
                 console.error("Error deleting page from a collection: ", error);
             });
-        }
+        };
 
         const deletePageTimer = setTimeout(triggerPageDelete, 6000);
 
         const undoPageDelete = () => {
-            this.handleCollectionPageDeleteUndo(deletePageTimer, uri, notificationID);
+            this.handleCollectionPageDeleteUndo(deletePageTimer, deletedPage.id, notificationID);
         };
 
         const handleNotificationClose = () => {
             triggerPageDelete();
             notifications.remove(notificationID);
-        }
+        };
 
         const notification = {
             buttons: [
@@ -662,11 +672,11 @@ export class CollectionsController extends Component {
             type: 'neutral',
             isDismissable: false,
             autoDismiss: 6000,
-            message: `Deleted page '${title}' from collection '${this.props.activeCollection.name}'`
-        }
+            message: `Deleted page '${deletedPage.title}' from collection '${this.props.activeCollection.name}'`
+        };
         const notificationID = notifications.add(notification);
 
-        return collectionURL //using 'return' so that we can test the correct new URL has been generated
+        return collectionURL; //using 'return' so that we can test the correct new URL has been generated
     }
 
     handleDrawerCloseClick() {
@@ -841,7 +851,7 @@ export class CollectionsController extends Component {
         }
 
         return this.props.activeCollection[state].filter(page => {
-            return !this.state.pendingDeletedPages.includes(page.uri);
+            return !this.state.pendingDeletedPages.includes(page.id);
         });
     }
 
@@ -851,14 +861,14 @@ export class CollectionsController extends Component {
             title: version.title,
             edition: version.edition,
             version: version.version,
-            uri: version.uri,
+            id: `/datasets/${version.id}/editions/${version.edition}/versions/${version.version}`,
             type: "dataset_version"
         });
 
         const mapDataset = dataset => ({
             title: dataset.title,
-            uri: dataset.uri,
-            type: "dataset"
+            type: "dataset_details",
+            id: `/datasets/${dataset.id}`
         });
 
         const mapDatasets = () => {
@@ -918,7 +928,7 @@ export class CollectionsController extends Component {
                         },
                         title: page.description.title,
                         edition: page.description.edition || "",
-                        uri: page.uri,
+                        id: page.uri,
                         type: page.type
                     }
                 });
@@ -978,7 +988,7 @@ export class CollectionsController extends Component {
         return (
             <CollectionDetails 
                 {...this.props.activeCollection}
-                activePageURI={this.props.activePageURI}
+                activePageID={this.props.activePageID}
                 inProgress={this.mapPagesAndPendingDeletes('inProgress')}
                 complete={this.mapPagesAndPendingDeletes('complete')}
                 reviewed={this.mapPagesAndPendingDeletes('reviewed')}
@@ -1044,7 +1054,7 @@ export function mapStateToProps(state) {
         user: state.state.user,
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,
-        activePageURI: state.routing.locationBeforeTransitions.hash.replace('#', '')
+        activePageID: state.routing.locationBeforeTransitions.hash.replace('#', '')
     }
 }
 
