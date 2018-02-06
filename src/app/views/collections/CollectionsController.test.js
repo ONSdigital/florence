@@ -39,7 +39,13 @@ jest.mock('../../utilities/api-clients/collections', () => {
         }),
         get: () => {
             return Promise.reject({status: 404});
-        }
+        },
+        removeDataset: () => {
+            return Promise.resolve();
+        },
+        removeDatasetVersion: () => {
+            return Promise.resolve();
+        },
     }
 });
 
@@ -198,46 +204,40 @@ const collection = {
         {
             id: "98261-28374-18272",
             title: "A test dataset",
-            state: "Reviewed",
-            uri: "http://a-valid-uri-1"
+            state: "Reviewed"
         },
         {
             id: "23444-342-5666",
             title: "A second test dataset",
-            state: "InProgress",
-            uri: "http://a-valid-uri-2"
+            state: "InProgress"
         },
         {
             id: "457453-3453452-3334544",
             title: "A third test dataset",
-            state: "Complete",
-            uri: "http://a-valid-uri-3"
+            state: "Complete"
         }
     ],
-    datasetVersion: [
+    datasetVersions: [
         {
             id: "98da8ah2-a8ah3-ajaj3",
             title: "A test dataset version",
             edition: "2017",
             version: "1",
-            state: "Reviewed",
-            uri: "http://a-valid-version-uri-1"
+            state: "Reviewed"
         },
         {
             id: "ks0ttt-20aoaaoa-e83829ja",
             title: "A second test version",
             edition: "2015",
             version: "3",
-            state: "InProgress",
-            uri: "http://a-valid-version-uri-2"
+            state: "InProgress"
         },
         {
             id: "983hja93-asjehsd8-a92723",
             title: "A third test version",
             edition: "time-series",
             state: "Complete",
-            version: "2",
-            uri: "http://a-valid-version-uri-3"
+            version: "2"
         }
     ]
 }
@@ -314,41 +314,42 @@ describe("Selecting a page in a collection", () => {
     });
 
     it("doesn't do anything if the same page is clicked", () => {
-        component.setProps({activePageURI: "test-page-2"});
+        component.setProps({activePageID: "test-page-2"});
         const newURL = component.instance().handleCollectionPageClick('test-page-2');
         expect(newURL).toBe(undefined);
     });
 });
 
 describe("Deleting a page from a collection", () => {
-    const props = {
-        ...defaultProps,
-        activeCollection: collection
-    }
     const component = shallow(
-        <CollectionsController {...props} />
+        <CollectionsController {...defaultProps} />
     )
+    let activeCollection = component.instance().mapCollectionToState(collection);
+    activeCollection = component.instance().mapPagesToCollection(activeCollection);
+    component.setProps({activeCollection});
 
-    expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(collection.inProgress);
+    expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(activeCollection.inProgress);
     
     it("removes the page from the collection details", () => {
+        const expectedArray = activeCollection.inProgress.slice(1);
         component.instance().handleCollectionPageDeleteClick(
-            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+            activeCollection.inProgress[0], 'inProgress'
         );
-        expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual([collection.inProgress[1]]);
+        expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(expectedArray);
     });
 
     it("redirects the user to the collection details", () => {
         setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection-12345#test-page-1");
+        const pageObject = {id: "test-page-1", title: "Test page one"};
         const newURL = component.instance().handleCollectionPageDeleteClick(
-            "test-page-1", "Test page 1", 'inProgress'
+            pageObject, 'inProgress'
         );
         expect(newURL).toBe('/florence/collections/test-collection-12345');
     });
 
     it("undo puts the page back into the collection details", () => {
-        component.instance().handleCollectionPageDeleteUndo(() => {}, collection.inProgress[0].uri, '12345');
-        expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(collection.inProgress);
+        component.instance().handleCollectionPageDeleteUndo(() => {}, activeCollection.inProgress[0].id, '12345');
+        expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(activeCollection.inProgress);
     });
     
     it("undo redirects the user to the undeleted page", () => {
@@ -357,26 +358,27 @@ describe("Deleting a page from a collection", () => {
     });
 
     it("a timer deletes the page from the server after the click of 'delete'", async () => {
+        const numberInProgress = activeCollection.inProgress.length;
         await component.instance().handleCollectionPageDeleteClick(
-            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+            activeCollection.inProgress[0], 'inProgress'
         );
         await jest.runOnlyPendingTimers();
-        expect(dispatchedAction.collection.inProgress.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
-        expect(dispatchedAction.collection.complete.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
-        expect(dispatchedAction.collection.reviewed.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
-        expect(dispatchedAction.collection.inProgress.length).toBe(1);
+        expect(dispatchedAction.collection.inProgress.some(page => page.id === activeCollection.inProgress[0].id)).toBe(false);
+        expect(dispatchedAction.collection.complete.some(page => page.id === activeCollection.inProgress[0].id)).toBe(false);
+        expect(dispatchedAction.collection.reviewed.some(page => page.id === activeCollection.inProgress[0].id)).toBe(false);
+        expect(dispatchedAction.collection.inProgress.length).toBe(numberInProgress-1);
     });
 
     it("updates whether the collection can be approved", async () => {
         const customActiveCollection = {
-            ...collection,
-            inProgress: [collection.inProgress[0]],
+            ...activeCollection,
+            inProgress: [activeCollection.inProgress[0]],
             complete: [],
-            reviewed: [collection.inProgress[1]]
-        }
+            reviewed: [activeCollection.inProgress[1]]
+        };
         component.setProps({activeCollection: customActiveCollection});
         await component.instance().handleCollectionPageDeleteClick(
-            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+            activeCollection.inProgress[0], 'inProgress'
         );
         await jest.runOnlyPendingTimers();
         expect(dispatchedAction.collection.canBeApproved).toEqual(true);
@@ -385,15 +387,15 @@ describe("Deleting a page from a collection", () => {
     
     it("updates whether the collection can be deleted", async () => {
         const customActiveCollection = {
-            ...collection,
-            inProgress: [collection.inProgress[0]],
+            ...activeCollection,
+            inProgress: [activeCollection.inProgress[0]],
             complete: [],
             reviewed: [],
             deletes: []
-        }
+        };
         component.setProps({activeCollection: customActiveCollection});
         await component.instance().handleCollectionPageDeleteClick(
-            collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
+            activeCollection.inProgress[0], 'inProgress'
         );
         await jest.runOnlyPendingTimers();
         expect(dispatchedAction.collection.canBeApproved).toEqual(false);
@@ -461,7 +463,7 @@ describe("Map state to props function", () => {
         user: "foobar@email.com",
         activeCollection: {...collection},
         rootPath: "/florence",
-        activePageURI: ""
+        activePageID: ""
     }
     let reduxState = {
         state: {
@@ -484,19 +486,19 @@ describe("Map state to props function", () => {
 
     it("maps routing state correctly when a bulletin page is active in the collection", () => {
         reduxState.routing.locationBeforeTransitions.hash = "#/economy/grossdomesticproduct/bulletins/gdp/july2017";
-        expectedProps.activePageURI = "/economy/grossdomesticproduct/bulletins/gdp/july2017";
+        expectedProps.activePageID = "/economy/grossdomesticproduct/bulletins/gdp/july2017";
         expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
     });
     
     it("maps routing state correctly when the home page is active in the collection", () => {
         reduxState.routing.locationBeforeTransitions.hash = "#/";
-        expectedProps.activePageURI = "/"
+        expectedProps.activePageID = "/"
         expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
     });
     
     it("maps routing state correctly when there is a trailing slash on the active page URI ", () => {
         reduxState.routing.locationBeforeTransitions.hash = "#/economy#";
-        expectedProps.activePageURI = "/economy#"
+        expectedProps.activePageID = "/economy#"
         expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
     });
 });
@@ -666,7 +668,7 @@ describe("Mapping GET collection API response to view state", () => {
                 },
                 title: "Home",
                 edition: "",
-                uri: "/",
+                id: "/",
                 type: "homepage"
             },
             {
@@ -676,10 +678,21 @@ describe("Mapping GET collection API response to view state", () => {
                 },
                 title: "Consumer Price Inflation",
                 edition: "July 2017",
-                uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+                id: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
                 type: "bulletin"
             },
-            {"title": "A second test dataset", "type": "dataset", "uri": "http://a-valid-uri-2"}
+            {
+                edition: "2015", 
+                title: "A second test version", 
+                type: "dataset_version", 
+                version: "3",
+                id: "/datasets/ks0ttt-20aoaaoa-e83829ja/editions/2015/versions/3"
+            },
+            {
+                title: "A second test dataset", 
+                type: "dataset_details",
+                id: "/datasets/23444-342-5666"
+            }
         ]
         expect(inProgressPages).toEqual(expectedInProgress);
         
@@ -692,15 +705,40 @@ describe("Mapping GET collection API response to view state", () => {
                 },
                 title: "Business industry and trade",
                 edition: "",
-                uri: "/businessindustryandtrade",
+                id: "/businessindustryandtrade",
                 type: "taxonomy_landing_page"
             },
-            {"title": "A third test dataset", "type": "dataset", "uri": "http://a-valid-uri-3"}
+            {
+                edition: "time-series", 
+                id: "/datasets/983hja93-asjehsd8-a92723/editions/time-series/versions/2", 
+                title: "A third test version", 
+                type: "dataset_version", 
+                version: "2"
+            },
+            {
+                title: "A third test dataset", 
+                type: "dataset_details", 
+                id: "/datasets/457453-3453452-3334544"
+            }
         ]
         expect(completePages).toEqual(expectedComplete);
         
         const reviewedPages = component.instance().mapPagesToCollection(collection).reviewed;
-        expect(reviewedPages).toEqual([{"title": "A test dataset", "type": "dataset", "uri": "http://a-valid-uri-1"}]);
+        const expectedReviewed = [
+            {
+                edition: "2017", 
+                id: "/datasets/98da8ah2-a8ah3-ajaj3/editions/2017/versions/1", 
+                title: "A test dataset version", 
+                type: "dataset_version", 
+                version: "1"
+            },
+            {
+                title: "A test dataset", 
+                type: "dataset_details", 
+                id: "/datasets/98261-28374-18272"
+            }
+        ]
+        expect(reviewedPages).toEqual(expectedReviewed);
     });
 });
 
