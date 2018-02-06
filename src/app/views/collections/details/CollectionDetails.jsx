@@ -14,9 +14,11 @@ export const pagePropTypes = {
         email: PropTypes.string,
         date: PropTypes.string
     }),
+    id: PropTypes.string.isRequired,
+    // uri: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
-    uri: PropTypes.string.isRequired,
+    version: PropTypes.string,
     type: PropTypes.string
 }
 
@@ -35,7 +37,7 @@ export const deletedPagePropTypes = PropTypes.shape({
 
 const propTypes = {
     id: PropTypes.string.isRequired,
-    activePageURI: PropTypes.string,
+    activePageID: PropTypes.string,
     name: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
@@ -128,26 +130,29 @@ export class CollectionDetails extends Component {
     }
 
     renderPageItem(page, state) {
+        const pageID = page.id;
+        const isActivePage = this.props.activePageID === pageID;
         const handlePageClick = () => {
-            this.props.onPageClick(page.uri);
+            this.props.onPageClick(pageID);
         }
         const handleEditClick = () => {
-            this.props.onEditPageClick(page.uri);
+            this.props.onEditPageClick(pageID);
         }
         const handleDeleteClick = () => {
-            this.props.onDeletePageClick(page.uri, page.title, state);
+            this.props.onDeletePageClick(page, state);
         }
+
         return (
-            <li key={page.uri} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
+            <li key={pageID} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (isActivePage ? " active" : "")}>
                 <div className="expandable-item__header">
-                    <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
+                    <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "") + (page.version ? " (version " + page.version + ")" : "")} isActive={isActivePage} />
                 </div>
                 <div className="expandable-item__contents">
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
                     <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
-                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">Delete</button>
+                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button" disabled={page.type === "dataset_details" || page.type === "dataset_version"}>Delete</button>
                 </div>
             </li>
         )
@@ -221,12 +226,12 @@ export class CollectionDetails extends Component {
         };
         const deleteIsBeingCancelled = this.props.isCancellingDelete ? (this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri) : false;
         return (
-            <li key={deletedPage.root.uri} data-page-state="deletes" onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}>
+            <li key={deletedPage.root.uri} data-page-state="deletes" onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === deletedPage.root.uri ? " active" : "")}>
                 <div className="expandable-item__header">
                     <Page 
                         type={deletedPage.root.type} 
                         title={deletedPage.root.description.title + (deletedPage.root.description.edition ? ": " + deletedPage.root.description.edition : "")} 
-                        isActive={this.props.activePageURI === deletedPage.root.uri} 
+                        isActive={this.props.activePageID === deletedPage.root.uri} 
                     />
                 </div>
                 <div className="expandable-item__contents">
