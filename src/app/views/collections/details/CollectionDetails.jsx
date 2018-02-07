@@ -151,7 +151,7 @@ export class CollectionDetails extends Component {
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
-                    <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
+                    <button className="btn btn--primary" onClick={handleEditClick} type="button">{state === "complete" ?  "Review" : "Edit"}</button>
                     <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button" disabled={page.type === "dataset_details" || page.type === "dataset_version"}>Delete</button>
                 </div>
             </li>

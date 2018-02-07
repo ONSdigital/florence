@@ -932,8 +932,6 @@ export class CollectionsController extends Component {
 
     mapPagesToCollection(collection) {
         try {
-            const canBeApproved = this.collectionCanBeApproved(collection);
-            const canBeDeleted = this.collectionCanBeDeleted(collection);
             const mapPagesToState = pagesArray => {
                 if (!pagesArray) {
                     log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
@@ -952,18 +950,18 @@ export class CollectionsController extends Component {
                     }
                 });
             };
-
             const collectionWithPages = {
                 ...collection,
-                canBeApproved,
-                canBeDeleted,
                 inProgress: mapPagesToState(collection.inProgress),
                 complete: mapPagesToState(collection.complete),
                 reviewed: mapPagesToState(collection.reviewed)
             };
-            const mappedCollection = this.mapDatasetsToCollection(collectionWithPages);
-
-            return mappedCollection;
+            const collectionWithDatasetsAndPages = this.mapDatasetsToCollection(collectionWithPages);
+            return {
+                ...collectionWithDatasetsAndPages,
+                canBeDeleted: this.collectionCanBeDeleted(collectionWithDatasetsAndPages),
+                canBeApproved: this.collectionCanBeApproved(collectionWithDatasetsAndPages)
+            };
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state" + JSON.stringify(error));
             console.error("Error mapping collection GET response to Redux state" + error);
