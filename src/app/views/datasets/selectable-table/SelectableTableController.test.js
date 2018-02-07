@@ -24,7 +24,8 @@ const values = [
                 url: "/florence/datasets/12345/instances/6789/metdata"
             }
         ],
-        id: "meeeeeh"
+        id: "meeeeeh",
+        status: "completed"
     }
 ]
 
