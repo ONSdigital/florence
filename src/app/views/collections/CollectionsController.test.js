@@ -651,7 +651,9 @@ describe("Mapping GET collection API response to view state", () => {
             inProgress: [],
             complete: [],
             reviewed: [],
-            deletes: []
+            deletes: [],
+            datasets: [],
+            datasetVersions: []
         }
 
         let canBeDeleted = component.instance().mapPagesToCollection(mockCollection).canBeDeleted;
