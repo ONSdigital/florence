@@ -205,7 +205,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt, os.Kill)
 
 	for {
-		hc.MonitorExternal(bc, zc, ic, rc, dc)
+		hc.MonitorExternal(rtrc, zc, ic, rc, dc)
 
 		timer := time.NewTimer(time.Second * 60)
 
