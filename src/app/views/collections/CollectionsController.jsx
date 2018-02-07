@@ -12,6 +12,7 @@ import { updateActiveCollection, emptyActiveCollection } from '../../config/acti
 import notifications from '../../utilities/notifications';
 import dateformat from 'dateformat';
 import Modal from '../../components/Modal';
+import url from '../../utilities/url';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import log, {eventTypes} from '../../utilities/log';
@@ -146,6 +147,10 @@ export class CollectionsController extends Component {
             this.props.dispatch(updateActiveCollection(activeCollection));
             this.fetchActiveCollection(nextProps.params.collectionID);
         }
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(emptyActiveCollection());
     }
 
     fetchCollections() {
@@ -549,8 +554,22 @@ export class CollectionsController extends Component {
         return newURL; //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleCollectionPageEditClick(uri) {
-        window.location = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${uri}`;
+    handleCollectionPageEditClick(page) {
+        if (page.type === "dataset_details") {
+            const newURL = url.resolve(`/datasets/${page.id}/metadata`);
+            this.props.dispatch(push(newURL));
+            return newURL;
+        }
+        if (page.type === "dataset_version") {
+            const newURL = url.resolve(`/datasets/${page.id}/metadata`);
+            this.props.dispatch(push(newURL));
+            return newURL;
+        }
+
+        const newURL = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${page.id}`;
+        window.location = newURL;
+        
+        return newURL //return the URL so that we can test that the correct route is being used
     }
 
     handleCollectionPageDeleteUndo(deleteTimer, ID, notificationID) {
@@ -861,14 +880,14 @@ export class CollectionsController extends Component {
             title: version.title,
             edition: version.edition,
             version: version.version,
-            id: `/datasets/${version.id}/editions/${version.edition}/versions/${version.version}`,
+            id: `${version.id}/editions/${version.edition}/versions/${version.version}`,
             type: "dataset_version"
         });
 
         const mapDataset = dataset => ({
             title: dataset.title,
             type: "dataset_details",
-            id: `/datasets/${dataset.id}`
+            id: dataset.id
         });
 
         const mapDatasets = () => {

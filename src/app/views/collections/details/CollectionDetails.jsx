@@ -136,7 +136,7 @@ export class CollectionDetails extends Component {
             this.props.onPageClick(pageID);
         }
         const handleEditClick = () => {
-            this.props.onEditPageClick(pageID);
+            this.props.onEditPageClick(page);
         }
         const handleDeleteClick = () => {
             this.props.onDeletePageClick(page, state);
