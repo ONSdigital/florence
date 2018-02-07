@@ -15,7 +15,6 @@ export const pagePropTypes = {
         date: PropTypes.string
     }),
     id: PropTypes.string.isRequired,
-    // uri: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
     version: PropTypes.string,
@@ -338,7 +337,7 @@ export class CollectionDetails extends Component {
 
         return (
             <div className="drawer__banner">
-                <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary" disabled>Create/edit page</a>
+                <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary">Create/edit page</a>
                 <button className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
             </div>
         )
@@ -397,7 +396,7 @@ export class CollectionDetails extends Component {
                             <h2>{this.props.name}</h2>
                             {this.renderPublishDate()}
                         </div>
-                        <Link to={`${location.pathname}/edit`} className="colour--cadet-blue disable-visited-colour font-size--16">Edit</Link>
+                        <Link to={`${location.pathname}/edit`} className="colour--cadet-blue  font-size--16">Edit</Link>
                     </div>
                 </div>
                 {this.renderCollectionState()}
