@@ -37,7 +37,7 @@ exports[`Version preview matches stored snapshot 1`] = `
   <iframe
     className="preview__iframe"
     id="iframe"
-    src="///datasets/abc123"
+    src="///datasets/abc123/editions/2017/versions/2"
   />
 </div>
 `;

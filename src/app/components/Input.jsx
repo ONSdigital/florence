@@ -12,7 +12,10 @@ const propTypes = {
     isFocused: PropTypes.bool,
     inline: PropTypes.bool,
     accept: PropTypes.string,
-    value: PropTypes.string
+    value: PropTypes.string,
+    min: PropTypes.string,
+    max: PropTypes.string,
+    placeholder: PropTypes.string
 };
 
 const defaultProps = {
@@ -71,9 +74,11 @@ export default class Input extends Component {
                         onChange={this.props.onChange}
                         autoFocus={this.props.isFocused}
                         onFocus={this.moveCaretToEnd}
-                        placeholder={this.props.inline ? this.props.label : ""}
+                        placeholder={this.props.inline ? this.props.label : this.props.placeholder}
                         accept={this.props.accept}
                         value={this.props.value}
+                        min={this.props.min}
+                        max={this.props.max}
                     />
                 :
                     <textarea

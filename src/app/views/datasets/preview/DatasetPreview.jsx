@@ -21,7 +21,8 @@ class DatasetPreview extends Component {
 
         this.state = {
             datasetTitle: null,
-            isApprovingVersion: false
+            isApprovingVersion: false,
+            latestVersion: null
         }
 
         this.handleApproveSubmit = this.handleApproveSubmit.bind(this);
@@ -29,10 +30,15 @@ class DatasetPreview extends Component {
     
     componentWillMount() {
         datasets.get(this.props.params.datasetID).then(dataset => {
-            this.setState({datasetTitle: dataset.next.title});
+            const latestVersionPath = url.resolve(dataset.current.links.latest_version.href);
+            this.setState({
+                datasetTitle: dataset.next.title,
+                latestVersion: latestVersionPath
+            });
+
         }).catch(error => {
             switch(error.status) {
-                case(403): {
+                case(403): {   
                     const notification = {
                         type: "neutral",
                         message: `You do not have permission to view dataset '${this.props.params.datasetID}'`
@@ -120,6 +126,7 @@ class DatasetPreview extends Component {
 
     render() {
         const params = this.props.params;
+        const path = this.state.latestVersion;
         return (
             <div className="preview">
                 <div className="preview__header grid grid--justify-center">
@@ -135,7 +142,7 @@ class DatasetPreview extends Component {
                     </div>
                 </div>
                 <Preview 
-                    path={`//${location.host}/datasets/${params.datasetID}`}
+                    path={`//${location.host}${path}`}
                 />
             </div>
         )
