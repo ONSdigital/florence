@@ -73,6 +73,11 @@
 
     &:hover,
     &:focus {
+        outline: 0; //reset the default focus styling (for example those set on <a> tags)
+    }
+
+    &:hover,
+    &:focus {
         &:after {
             content: '';
             width: 100%;
