@@ -6,13 +6,16 @@ import Input from '../../../../components/Input';
 const propTypes = {
     titleInput: PropTypes.string,
     urlInput: PropTypes.string,
+    descInput: PropTypes.string,
     name: PropTypes.string.isRequired,
     isPosting: PropTypes.bool,
     onCancel: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
     onFormInput: PropTypes.func.isRequired,
     titleError:PropTypes.string,
-    urlError:PropTypes.string
+    urlError:PropTypes.string,
+    descError:PropTypes.string,
+    requiresDescription:PropTypes.bool
 }
 
 class RelatedContentForm extends Component {
@@ -21,15 +24,17 @@ class RelatedContentForm extends Component {
 
         this.state = {
             titleInput: "",
-            urlInput: ""
+            urlInput: "",
+            descInput: ""
         }
     }
 
     componentWillMount() {
-        if (this.props.urlInput || this.props.titleInput) {
+        if (this.props.urlInput || this.props.titleInput || this.props.descInput) {
             this.setState({
                 titleInput: this.props.titleInput,
-                urlInput: this.props.urlInput
+                urlInput: this.props.urlInput,
+                descInput: this.props.descInput
             });
         }
     }
@@ -62,6 +67,18 @@ class RelatedContentForm extends Component {
                             onChange={this.props.onFormInput}
                             onCancel={this.props.onCancel}
                         />
+                        {this.props.requiresDescription &&
+                        <Input
+                            type="text"
+                            label="Description"
+                            error={this.props.descError}
+                            id="add-related-content-desc"
+                            name="add-related-content-desc"
+                            value={this.props.descInput}
+                            onChange={this.props.onFormInput}
+                            onCancel={this.props.onCancel}
+                        />
+                         }
                     </div>
                     <div className="modal__footer">
                     <button disabled={this.props.isPosting} className={"btn btn--primary btn--margin-right"}>Add</button>

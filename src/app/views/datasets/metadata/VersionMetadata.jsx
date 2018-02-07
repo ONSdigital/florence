@@ -211,7 +211,6 @@ class VersionMetadata extends Component {
         alert = this.state.alerts.find(alrt => {
             return alrt.key === key
         })
-
         this.setState({
             showModal: true,
             modalType: type,
@@ -656,7 +655,7 @@ class VersionMetadata extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-6">
+                <div className="grid__col-4">
                     <div className="margin-top--2">
                       &#9664; <Link to={url.resolve("/datasets")}>Back</Link>
                       <p className="margin-top--1">Dataset: <strong>{this.state.title || this.props.params.datasetID + " (title not available)"}</strong></p>
@@ -719,15 +718,11 @@ class VersionMetadata extends Component {
                                 </div>
                             </div>
                           </div>
-                          <button className="btn btn--positive" id="save-and-return" onClick={(e) => this.handleFormSubmit(e, "return")}>Save and return</button>
-                          { this.state.edition && this.state.releaseDate ?
-                            <button className="margin-left--1 btn btn--positive" id="save-and-add" onClick={(e) => this.handleFormSubmit(e, "add")}>Save and add to collection</button>
-                            :
-                            ""
-                          }
+                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handleFormSubmit(e, "return")}>Save and return</button>
+                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handleFormSubmit(e, "add")}>Save and add to collection</button>
                           {
                               this.state.state === "associated" ?
-                              <button className="margin-left--1 btn btn--positive" id="save-and-preview" onClick={(e) => this.handleFormSubmit(e, "preview")}>Save and preview</button>
+                              <button className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handleFormSubmit(e, "preview")}>Save and preview</button>
                               :
                               ""
                           }
@@ -738,7 +733,7 @@ class VersionMetadata extends Component {
                 {this.state.showModal &&
 
                     <Modal sizeClass="grid__col-3">
-                    {this.state.modalType === "alert" ?
+                    {this.state.modalType === "alerts" ?
 
                         <AlertsForm
                             dateInput={this.state.dateInput}

@@ -11,7 +11,6 @@ import Modal from '../../../components/Modal';
 import Select from '../../../components/Select';
 import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
-import Card from '../../../components/Card';
 import CardList from '../../../components/CardList';
 import RelatedContentForm from './related-content/RelatedContentForm'
 import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
@@ -37,6 +36,7 @@ const propTypes = {
         title: PropTypes.string,
         description: PropTypes.string,
         keywords: PropTypes.array,
+        license: PropTypes.string,
         national_statistic: PropTypes.bool,
         contacts: PropTypes.arrayOf(PropTypes.shape({
             name: PropTypes.string,
@@ -44,8 +44,7 @@ const propTypes = {
             telephone: PropTypes.string,
         })),
         qmi: PropTypes.shape({
-            href: PropTypes.string,
-            title: PropTypes.string,
+            href: PropTypes.string
         }),
         related_datasets: PropTypes.arrayOf(PropTypes.shape({
             href: PropTypes.string,
@@ -55,7 +54,18 @@ const propTypes = {
             href: PropTypes.string,
             title: PropTypes.string,
         })),
-        release_frequency: PropTypes.string
+        methodologies: PropTypes.arrayOf(PropTypes.shape({
+            href: PropTypes.string,
+            title: PropTypes.string,
+            description: PropTypes.string
+        })),
+        release_frequency: PropTypes.string,
+        state: PropTypes.string,
+        links: PropTypes.shape({
+            latest_version: PropTypes.shape({
+                href: PropTypes.string
+            })
+        })
     })
 }
 
@@ -74,9 +84,11 @@ export class DatasetMetadata extends Component {
             relatedBulletins: [],
             relatedQMI: "",
             relatedLinks: [],
+            relatedMethodologies: [],
             keywords: "",
             titleInput: "",
             urlInput: "",
+            descInput: "",
             editKey: "",
             contactName: "",
             contactEmail: "",
@@ -84,7 +96,12 @@ export class DatasetMetadata extends Component {
             releaseFrequency: "",
             isNationalStat: false,
             titleError: "",
-            urlError: ""
+            urlError: "",
+            descError: "",
+            btn: "",
+            latestVersion: "",
+            status: "",
+            license: ""
         };
 
         this.originalState = null;
@@ -108,6 +125,10 @@ export class DatasetMetadata extends Component {
 
         datasets.get(this.props.params.datasetID).then(response => {
             this.props.dispatch(updateActiveDataset(response.next || response.current));
+            this.setState({
+                latestVersion: this.props.dataset.links.latest_version ? this.props.dataset.links.latest_version.href : "",
+                status: this.props.dataset.state
+            });
 
             if (this.props.dataset && this.props.dataset.title) {
                 this.setState({
@@ -117,7 +138,13 @@ export class DatasetMetadata extends Component {
             
             if (this.props.dataset && this.props.dataset.description) {
                 this.setState({
-                    description: this.props.dataset.description,
+                    description: this.props.dataset.description
+                });
+            }
+
+            if (this.props.dataset && this.props.dataset.license) {
+                this.setState({
+                    license: this.props.dataset.license
                 });
             }
 
@@ -148,11 +175,15 @@ export class DatasetMetadata extends Component {
                 })
             }
 
+            if (this.props.dataset.qmi && this.props.dataset.qmi.href !== "") {
+                this.setState({relatedQMI:this.props.dataset.qmi.href })
+            }
+
             if (this.props.dataset.publications && this.props.dataset.publications.length > 0) {
                 const bulletins = this.props.dataset.publications.map(item => {
                     return {
                         title: item.title,
-                        url: item.href,
+                        href: item.href,
                         key: uuid()
                     };
                 });
@@ -163,17 +194,23 @@ export class DatasetMetadata extends Component {
                 const links = this.props.dataset.related_datasets.map(item => {
                     return {
                         title: item.title,
-                        url: item.href,
+                        href: item.href,
                         key: uuid()
                     };
                 });
                 this.setState({relatedLinks: links});
             }
 
-            if (this.props.dataset.qmi && this.props.dataset.qmi.title !== "") {
-                const item = this.props.dataset.qmi
-                const qmi = {title: item.title, url: item.href, key: uuid()}
-                this.setState({relatedQMI: qmi})
+            if (this.props.dataset.methodologies && this.props.dataset.methodologies.length > 0) {
+                const methodology_links = this.props.dataset.methodologies.map(item => {
+                    return {
+                        title: item.title,
+                        href: item.href,
+                        description: item.description,
+                        key: uuid()
+                    };
+                });
+                this.setState({relatedMethodologies: methodology_links});
             }
 
             this.setState({
@@ -285,6 +322,11 @@ export class DatasetMetadata extends Component {
             if(this.state.urlError != null) {
                 this.setState({urlError: null})
             }
+        } else if (name === "add-related-content-desc") {
+            this.setState({descInput: value});
+            if(this.state.descError != null) {
+                this.setState({descError: null})
+            }
         } else {
             this.setState({
                 [name]: value
@@ -309,6 +351,7 @@ export class DatasetMetadata extends Component {
             modalType: "",
             editKey: "",
             urlInput: "",
+            descInput: "",
             titleInput: ""
         });
     }
@@ -323,15 +366,11 @@ export class DatasetMetadata extends Component {
 
      handleEditRelatedClick(type, key) {
         let relatedItem;
-
+        
         if (type === "bulletin") {
             relatedItem = this.state.relatedBulletins.find(bulletin => {
                 return bulletin.key === key;
             });
-        }
-
-        if (type === "qmi") {
-            relatedItem = this.state.relatedQMI;
         }
 
         if (type === "link") {
@@ -340,12 +379,18 @@ export class DatasetMetadata extends Component {
             });
         }
 
+        if (type === "methodologies") {
+            relatedItem = this.state.relatedMethodologies.find(link => {
+                return link.key === key;
+            });
+        }
         this.setState({
             showModal: true,
             modalType: type,
             editKey: key,
-            urlInput: relatedItem.url,
-            titleInput: relatedItem.title
+            urlInput: relatedItem.href || "",
+            titleInput: relatedItem.title || "",
+            descInput: relatedItem.description || ""
         });
      }
 
@@ -361,13 +406,13 @@ export class DatasetMetadata extends Component {
             return;
         }
 
-        if (type === "qmi") {
-            this.setState({relatedQMI: ""});
+        if (type === "link") {
+            this.setState({relatedLinks: remove(this.state.relatedLinks, key)});
             return;
         }
 
-        if (type === "link") {
-            this.setState({relatedLinks: remove(this.state.relatedLinks, key)});
+        if (type === "methodologies") {
+            this.setState({relatedMethodologies: remove(this.state.relatedMethodologies, key)});
             return;
         }
 
@@ -384,28 +429,22 @@ export class DatasetMetadata extends Component {
                 return {
                     ...item,
                     title: this.state.titleInput,
-                    url: this.state.urlInput
+                    href: this.state.urlInput,
+                    description: this.state.descInput
                 }
             });
         }
-
         if (type === "bulletin") {
             this.setState({relatedBulletins: edit(this.state.relatedBulletins, key)});
             return;
         }
 
-        if (type === "qmi") {
-            const editedQMI = {
-                ...this.state.relatedQMI,
-                title: this.state.titleInput,
-                url: this.state.urlInput
-            }
-            this.setState({relatedQMI: editedQMI});
-            return;
+        if (type === "link") {
+            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});            return;
         }
 
-        if (type === "link") {
-            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});
+        if (type === "methodologies") {
+            this.setState({relatedMethodologies: edit(this.state.relatedMethodologies, key)});
             return;
         }
 
@@ -438,13 +477,14 @@ export class DatasetMetadata extends Component {
             description: this.state.description,
             release_frequency: this.state.releaseFrequency,
             title: this.state.title,
+            license: this.state.license,
             national_statistic: this.state.isNationalStat,
             keywords: this.splitKeywordsString(this.state.keywords),
             qmi: {
-                title: this.state.relatedQMI.title,
-                href: this.state.relatedQMI.url,
+                href: this.state.relatedQMI,
             },
             publications: [...this.state.relatedBulletins],
+            methodologies: [...this.state.relatedMethodologies],
             related_datasets: [...this.state.relatedLinks],
         }
     }
@@ -468,22 +508,22 @@ export class DatasetMetadata extends Component {
                 if (this.state.editKey != "") {
                     this.editRelatedLink("bulletin", this.state.editKey);
                 } else {
-                    const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, url: this.state.urlInput, key: uuid()});
+                    const bulletins = this.state.relatedBulletins.concat({title: this.state.titleInput, href: this.state.urlInput, key: uuid()});
                     this.setState({relatedBulletins: bulletins});
-                }
-            } else if (this.state.modalType === "qmi") {
-                if (this.state.editKey != "") {
-                    this.editRelatedLink("qmi", this.state.editKey);
-                } else {
-                    const qmi = {title: this.state.titleInput, url: this.state.urlInput, key: uuid()};
-                    this.setState({relatedQMI: qmi});
                 }
             } else if (this.state.modalType === "link") {
                 if (this.state.editKey != "") {
                     this.editRelatedLink("link", this.state.editKey);
                 } else {
-                    const links = this.state.relatedLinks.concat({title: this.state.titleInput, url: this.state.urlInput, key: uuid()});
+                    const links = this.state.relatedLinks.concat({title: this.state.titleInput, href: this.state.urlInput, key: uuid()});
                     this.setState({relatedLinks: links});
+                }
+            } else if (this.state.modalType === "methodologies") {
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("methodologies", this.state.editKey);
+                } else {
+                    const methodology_links = this.state.relatedMethodologies.concat({title: this.state.titleInput, href: this.state.urlInput, description: this.state.descInput, key: uuid()});
+                    this.setState({relatedMethodologies: methodology_links});
                 }
             }
 
@@ -492,17 +532,30 @@ export class DatasetMetadata extends Component {
                 modalType: "",
                 editKey: "",
                 titleInput: "",
-                urlInput: ""
+                urlInput: "",
+                descInput: ""
             });
         }
      }
 
-    handlePageSubmit(event) {
+    handlePageSubmit(event, btn) {
         event.preventDefault();
-        this.setState({ isSubmittingData: true });
+        this.setState({ 
+            isSubmittingData: true,
+            btn: btn
+        });
         datasets.updateDatasetMetadata(this.props.params.datasetID, this.mapStateToAPIRequest()).then(() => {
             this.setState({ isSubmittingData: false });
-            this.props.dispatch(push(`${location.pathname}/collection`));
+            if (this.state.btn === "return") {
+                this.props.dispatch(push("/florence/datasets"));
+            }
+            if (this.state.btn === "add"){
+                this.props.dispatch(push(`${location.pathname}/collection`));
+            } 
+            if (this.state.btn === "preview"){
+                const latestVersionURL = url.resolve(this.state.latestVersion);
+                this.props.dispatch(push(`/florence${latestVersionURL}/collection/preview`));
+            } 
         }).catch(error => {
             this.setState({ isSubmittingData: false });
             if (error) {
@@ -542,7 +595,8 @@ export class DatasetMetadata extends Component {
                     <div className="margin-top--2">
                         &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
-                    <h1 className="margin-top--1">Dataset details</h1>
+                      <p className="margin-top--1">Dataset: <strong>{this.state.title || this.props.params.datasetID + " (title not available)"}</strong></p>
+                    <h1 className="margin-top--1 margin-bottom--1">Dataset details</h1>
                     <p className="margin-bottom--1">This information is common across all editions of the dataset.<br/>
                         Changing it will affect all previous editions.</p>
                     {this.state.isFetchingDataset ?
@@ -624,6 +678,16 @@ export class DatasetMetadata extends Component {
                             <p> These are common across all editions of the dataset. Changing them will affect all previous editions.</p>
                         </div>
                         <div className="margin-bottom--2">
+                            <h3> Related datasets </h3>
+                                <CardList
+                                    contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
+                                    type="link"
+                                    onEdit={this.handleEditRelatedClick}
+                                    onDelete={this.handleDeleteRelatedClick}
+                                />
+                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
+                        </div>
+                        <div className="margin-bottom--2">
                             <h3> Bulletins, articles and compendia </h3>
                             <CardList
                               contents={this.mapTypeContentsToCard(this.state.relatedBulletins)}
@@ -634,32 +698,48 @@ export class DatasetMetadata extends Component {
                             <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
                         </div>
                         <div className="margin-bottom--2">
-                            <h3> QMI </h3>
-                                { this.state.relatedQMI.title != undefined ?
-                                  <ul className="list--neutral">
-                                    <Card
-                                        title={this.state.relatedQMI.title}
-                                        keyID={this.state.relatedQMI.key}
-                                        type="qmi"
-                                        onEdit={this.handleEditRelatedClick}
-                                        onDelete={this.handleDeleteRelatedClick}
-                                      />
-                                  </ul>
-                                :
-                                  <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("qmi")}}> Add QMI </button>
-                                }
+                            <h3> Quality and methodology information </h3>
+                            <span>Copy the QMI web address for the dataset and paste it here</span>
+                                <Input
+                                    value={this.state.relatedQMI}
+                                    id="relatedQMI"
+                                    label=""
+                                    onChange={this.handleInputChange}
+                                    disabled={this.state.isSubmittingData}
+                                />
+                        
                         </div>
                         <div className="margin-bottom--2">
-                            <h3> Related links </h3>
+                            <h3> Methodologies </h3>
                                 <CardList
-                                    contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
-                                    type="link"
+                                    contents={this.mapTypeContentsToCard(this.state.relatedMethodologies)}
+                                    type="methodologies"
                                     onEdit={this.handleEditRelatedClick}
                                     onDelete={this.handleDeleteRelatedClick}
                                 />
-                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
+                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("methodologies")}}> Add methodology</button>
                         </div>
-                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" onClick={this.handlePageSubmit}>Save and continue</button>
+                        <div className="margin-bottom--2">
+                            <h3> Usage information </h3>
+                            <span>State if the data is free for public use or if there are restrictions on usage.
+                                  <br />State what text the user should use to correctly cite the data.
+                            </span>
+                            <Input
+                                  value={this.state.license}
+                                  type="textarea"
+                                  id="license"
+                                  label=""
+                                  onChange={this.handleInputChange}
+                                  disabled={this.state.isSubmittingData}
+                              />
+                        </div>
+                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
+                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
+                        {this.state.latestVersion ?
+                            this.state.status === "associated" &&
+                                <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
+                            : ""
+                        }
                         {this.state.isSubmittingData &&
                             <div className="loader loader--centre loader--dark margin-left--1"></div>
                         }
@@ -676,11 +756,13 @@ export class DatasetMetadata extends Component {
                               name="related-content-modal"
                               titleInput={this.state.titleInput}
                               urlInput={this.state.urlInput}
+                              descInput={this.state.descInput}
                               onCancel={this.handleCancel}
                               onFormInput={this.handleInputChange}
                               onFormSubmit={this.handleFormSubmit}
                               titleError={this.state.titleError}
                               urlError={this.state.urlError}
+                              requiresDescription={this.state.modalType === "methodologies" ? true : false}
                           />
                         :
                           <div>
