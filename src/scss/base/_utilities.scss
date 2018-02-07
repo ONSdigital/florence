@@ -74,7 +74,8 @@
 
     @each $colour-name, $colour-value in $colours {
 
-        &--#{$colour-name} {
+        &--#{$colour-name},
+        &--#{$colour-name}:visited {
             color: $colour-value;
         }    
     }
