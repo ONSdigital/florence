@@ -686,12 +686,12 @@ describe("Mapping GET collection API response to view state", () => {
                 title: "A second test version", 
                 type: "dataset_version", 
                 version: "3",
-                id: "/datasets/ks0ttt-20aoaaoa-e83829ja/editions/2015/versions/3"
+                id: "ks0ttt-20aoaaoa-e83829ja/editions/2015/versions/3"
             },
             {
                 title: "A second test dataset", 
                 type: "dataset_details",
-                id: "/datasets/23444-342-5666"
+                id: "23444-342-5666"
             }
         ]
         expect(inProgressPages).toEqual(expectedInProgress);
@@ -710,7 +710,7 @@ describe("Mapping GET collection API response to view state", () => {
             },
             {
                 edition: "time-series", 
-                id: "/datasets/983hja93-asjehsd8-a92723/editions/time-series/versions/2", 
+                id: "983hja93-asjehsd8-a92723/editions/time-series/versions/2", 
                 title: "A third test version", 
                 type: "dataset_version", 
                 version: "2"
@@ -718,16 +718,16 @@ describe("Mapping GET collection API response to view state", () => {
             {
                 title: "A third test dataset", 
                 type: "dataset_details", 
-                id: "/datasets/457453-3453452-3334544"
+                id: "457453-3453452-3334544"
             }
-        ]
+        ];
         expect(completePages).toEqual(expectedComplete);
         
         const reviewedPages = component.instance().mapPagesToCollection(collection).reviewed;
         const expectedReviewed = [
             {
                 edition: "2017", 
-                id: "/datasets/98da8ah2-a8ah3-ajaj3/editions/2017/versions/1", 
+                id: "98da8ah2-a8ah3-ajaj3/editions/2017/versions/1", 
                 title: "A test dataset version", 
                 type: "dataset_version", 
                 version: "1"
@@ -735,7 +735,7 @@ describe("Mapping GET collection API response to view state", () => {
             {
                 title: "A test dataset", 
                 type: "dataset_details", 
-                id: "/datasets/98261-28374-18272"
+                id: "98261-28374-18272"
             }
         ]
         expect(reviewedPages).toEqual(expectedReviewed);
@@ -846,5 +846,29 @@ describe("Approving a collection", () => {
         component.instance().handleCollectionApproveClick();
         await component.update();
         expect(component.state('collections').find(collection => collection.id === 'ready-to-approve-collection-123').publishedStatus.neutral).toBe(true);
+    });
+});
+
+describe("Clicking 'edit' for a page", () => {
+    const component = shallow(
+        <CollectionsController {...defaultProps} />
+    );
+
+    it("routes to the datasets screen for dataset/versions", () => {
+        const datasetURL = component.instance().handleCollectionPageEditClick({type: "dataset_details", id:"cpi"});
+        expect(datasetURL).toBe("/florence/datasets/cpi/metadata");
+
+        const versionURL = component.instance().handleCollectionPageEditClick({type: "dataset_version", id:"cpi/editions/current/versions/2"});
+        expect(versionURL).toBe("/florence/datasets/cpi/editions/current/versions/2/metadata");
+    });
+
+    it("routes to the workspace for a non-dataset pages", () => {
+        component.setProps({
+            params: {
+                collectionID: "my-collection-123467"
+            }
+        });
+        const pageURL = component.instance().handleCollectionPageEditClick({type: "article", id:"/economy/grossdomesticproductgdp/articles/ansarticle"});
+        expect(pageURL).toBe("/florence/workspace?collection=my-collection-123467&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
     });
 });
