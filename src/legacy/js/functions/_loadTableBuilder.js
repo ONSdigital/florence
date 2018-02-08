@@ -391,6 +391,7 @@ function loadTableBuilder(pageData, onSave, table) {
 }
 
 function loadTableBuilderV2(pageData, onSave, table) {
+  console.log("loadTableBuilderV2.pageData: " + pageData)
   const pageUrl = pageData.uri;
   const html = templates.tableBuilderV2(table);
 
@@ -403,8 +404,12 @@ function loadTableBuilderV2(pageData, onSave, table) {
     });
   }
 
-  // temporary onSave - close the modal and prove can return values from react
+  // onSave function - sends content to zebedee, adds the table to the parent page and closes the modal
   var saveTableV2 = function (tableJson) {
+    if (!tableJson) {
+      sweetAlert("Empty Table", "The table is empty - please select cancel instead.");
+      return;
+    }
     if (!tableJson.filename) {
       tableJson.filename = StringUtils.randomId();
       tableJson.uri = pageUrl + "/" + table.filename;
@@ -420,11 +425,11 @@ function loadTableBuilderV2(pageData, onSave, table) {
     if (onSave) {
       onSave(tableJson.filename, '<ons-table-v2 path="' + tableJson.uri + '" />');
     }
-    addTableToPageJson(tableJson)
-    $('.table-builder').stop().fadeOut(200).remove();
+    addTableToPageJson(tableJson);
+    closeModal();
   };
 
-
+  // adds the table to the parent page
   function addTableToPageJson(tableJson) {
     if (!pageData.tables) {
       pageData.tables = [];
@@ -443,6 +448,10 @@ function loadTableBuilderV2(pageData, onSave, table) {
     pageData.tables.push({title: tableJson.title, filename: tableJson.filename, uri: tableJson.uri, version: "2"});
   }
 
-  startReact("table-builder-app", tableData, saveTableV2);
+  function closeModal() {
+      $('.table-builder').stop().fadeOut(200).remove();
+  }
+
+  startTableBuilder("table-builder-app", tableData, saveTableV2, closeModal);
 
 }

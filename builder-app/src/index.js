@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import GridContainer from './components/gridContainer';
+import GridContainer from 'dp-table-builder-ui';
+import 'dp-table-builder-ui/dist/assets/GridContainer.css';
 
-// ReactDOM.render(<App />, document.getElementById('root'));
-// registerServiceWorker();
-
- window.startReact = function(id, data, onSave) {
-    ReactDOM.render(<GridContainer data={data} onSave={onSave} rendererUri={'/table'}/>, document.getElementById(id));
+ window.startTableBuilder = function(id, data, onSave, onCancel) {
+    ReactDOM.render(<GridContainer data={data} onSave={onSave} onCancel={onCancel} rendererUri={'/table'}/>, document.getElementById(id));
 }
