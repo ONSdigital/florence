@@ -14,8 +14,8 @@ import url from '../../../utilities/url'
 import CardList from '../../../components/CardList';
 import Modal from '../../../components/Modal';
 import uuid from 'uuid/v4';
-import AlertsForm from './alerts/AlertsForm';
-import ChangesForm from './changes/ChangesForm';
+import RelatedContentForm from './related-content/RelatedContentForm';
+import log, {eventTypes} from '../../../utilities/log'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -75,21 +75,22 @@ class VersionMetadata extends Component {
             showModal: false,
             alerts: [],
             changes: [],
-            editKey: ""
+            editKey: "",
+            titleInput: "",
+            descInput: ""
         }
+
+        this.originalState = null;
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
-        this.handleAlertSubmit = this.handleAlertSubmit.bind(this);
-        this.handleChangesSubmit = this.handleChangesSubmit.bind(this);
+        this.handlePageSubmit = this.handlePageSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleReleaseDateChange = this.handleReleaseDateChange.bind(this);
-        this.mapAlertsToCard = this.mapAlertsToCard.bind(this);
-        this.mapChangesToCard = this.mapChangesToCard.bind(this);
-        this.handleEditChangesClick = this.handleEditChangesClick.bind(this);
-        this.handleDeleteChangesClick = this.handleDeleteChangesClick.bind(this);
-        this.handleEditAlertsClick = this.handleEditAlertsClick.bind(this);
-        this.handleDeleteAlertsClick = this.handleDeleteAlertsClick.bind(this);
+        this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
+        this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
+        this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
+        this.editRelatedLink = this.editRelatedLink.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
     }
 
@@ -205,170 +206,30 @@ class VersionMetadata extends Component {
         });
     }
 
-    handleEditAlertsClick(type, key) {
-        let alert;
-
-        alert = this.state.alerts.find(alrt => {
-            return alrt.key === key
-        })
-        this.setState({
-            showModal: true,
-            modalType: type,
-            editKey: key,
-            dateInput: alert.date,
-            descriptionInput: alert.description
-        });
-    }
-
-    handleEditChangesClick(type, key) {
-        let change;
-
-        change = this.state.changes.find(change => {
-            return change.key === key
-        })
-
-        this.setState({
-            showModal: true,
-            modalType: type,
-            editKey: key,
-            nameInput: change.name,
-            descriptionInput: change.description
-        });
-    }
-
-    handleDeleteChangesClick(type, key) {
-        function remove(items, key) {
-            return items.filter(item => {
-                return item.key !== key
-            });
-        }
-
-        this.setState({
-            changes: remove(this.state.changes, key),
-            hasChanges: true
-        })
-    }
-
-    handleDeleteAlertsClick(type, key) {
-        function remove(items, key) {
-            return items.filter(item => {
-                return item.key !== key
-            });
-        }
-
-        this.setState({
-            alerts: remove(this.state.alerts, key),
-            hasChanges: true
-        })
-    }
-
-    handleAddAlertsClick(type) {
-        this.setState({
-            showModal: true,
-            modalType: type
-        })
-    }
-
-    handleAlertSubmit(event) {
-        event.preventDefault();
-
-        if (this.state.dateInput == "" || this.state.descriptionInput == "") {
-            if(this.state.dateInput == ""){
-                this.setState({
-                    dateError: "You must provide a date"
-                });
-            }
-            if (this.state.descriptionInput == ""){
-                this.setState({
-                    descriptionError: "You must provide an alert description"
-                });
-            }
-        } else {
-            if (this.state.editKey !== "") {
-                const edit = items => {
-                    return items.map(item => {
-                        if (item.key !== this.state.editKey) {
-                            return item;
-                        }
-                        return {
-                            ...item,
-                            date: this.state.dateInput,
-                            description: this.state.descriptionInput,
-                            type: "correction",
-                            hasChanged: true
-                        }
-                    });
-                }
-
-                this.setState({alerts: edit(this.state.alerts, this.state.editKey)})
-            } else {
-                const alerts = this.state.alerts.concat({date: this.state.dateInput, description: this.state.descriptionInput, key: uuid(), hasChanged: true, type: "correction"})
-                this.setState({alerts: alerts});
-            }
-
-            this.setState({
-                showModal: false,
-                modalType: "",
-                editKey: "",
-                dateInput: "",
-                descriptionInput: ""
-            });
-        }
-    }
-
-    handleChangesSubmit(event) {
-        event.preventDefault();
-
-        if (this.state.nameInput == "" || this.state.descriptionInput == "") {
-            if(this.state.nameInput == ""){
-                this.setState({
-                    nameError: "You must provide a name"
-                });
-            }
-            if (this.state.descriptionInput == ""){
-                this.setState({
-                    descriptionError: "You must provide a change description"
-                });
-            }
-        } else {
-            if (this.state.editKey !== "") {
-                const edit = items => {
-                    return items.map(item => {
-                        if (item.key !== this.state.editKey) {
-                            return item;
-                        }
-                        return {
-                            ...item,
-                            name: this.state.nameInput,
-                            description: this.state.descriptionInput,
-                            type: "summary of changes",
-                            hasChanged: true
-                        }
-                    });
-                }
-
-                this.setState({changes: edit(this.state.changes, this.state.editKey)})
-            } else {
-                const changes = this.state.changes.concat({name: this.state.nameInput, description: this.state.descriptionInput, key: uuid(), hasChanged: true, type: "summary of changes"})
-                this.setState({changes: changes});
-            }
-
-            this.setState({
-                showModal: false,
-                modalType: "",
-                editKey: "",
-                nameInput: "",
-                descriptionInput: ""
-            });
-        }
-    }
-
-    shouldComponentUpdate(_, nextState) {
+    shouldComponentUpdate(nextProps, nextState) {
         // No need to re-render, this state update does not impact the view.
         if (nextState.isFetchingData) {
           return false;
         }
         return true;
+    }
+
+    componentDidUpdate(_, nextState) {
+        /*
+        We want to detect whether any changes have been made so we can show a warning if the
+        user is leaving without saving
+        */
+
+        // We've already set the state to hasChanges, so do nothing
+        if (nextState.hasChanges) {
+            return;
+        }
+
+        // Set our initial state, so that we can detect whether there have been any unsaved changes
+        if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
+            this.originalState = nextState;
+            this.setState({hasChanges: true});
+        }
     }
 
     postData(body) {
@@ -468,64 +329,163 @@ class VersionMetadata extends Component {
         }
     }
 
-    mapAlertsToCard(items) {
-        if (items !== undefined) {
-            return items.map(item => {
-                return {
-                    title: item.date,
-                    id: item.key
-                }
-            })
-        }
-    }
-
-    mapChangesToCard(items) {
-        if (items !== undefined) {
-            return items.map(item => {
-                return {
-                    title: item.name,
-                    id: item.key
-                }
-            })
-        }
+    mapTypeContentsToCard(items, type){
+        return items.map(item => {
+            return {
+                title: type === "alerts" ? item.date : item.name,
+                id: item.key,
+            }
+        });
     }
 
     mapEditionsToSelectOptions() {
-      const recipe = this.props.recipes.find(recipe => {
-          return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
-      })
-      const editions = recipe.output_instances[0].editions;
-      return editions.map(edition => edition);
-    }
-
-    mapDimensionsToInputs(dimensions){
-      return (
-        dimensions.map(dimension => {
-          return (
-            <div key={dimension.name}>
-              <h3>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h3>
-              <Input
-                  value={dimension.description}                  
-                  type="textarea"
-                  id={dimension.name}
-                  label="Learn more (optional)"
-                  onChange={this.handleInputChange}
-              />
-            </div>
-          )
+        const recipe = this.props.recipes.find(recipe => {
+            return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
         })
-      )
+        const editions = recipe.output_instances[0].editions;
+        return editions.map(edition => edition);
+      }
+  
+      mapDimensionsToInputs(dimensions){
+        return (
+          dimensions.map(dimension => {
+            return (
+              <div key={dimension.name}>
+                <h3>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h3>
+                <Input
+                    value={dimension.description}                  
+                    type="textarea"
+                    id={dimension.name}
+                    label="Learn more (optional)"
+                    onChange={this.handleInputChange}
+                />
+              </div>
+            )
+          })
+        )
+      }
+  
+      mapReleaseFreqToSelectOptions() {
+          const values = [
+            'Weekly', 'Monthly', 'Yearly'
+          ];
+          return values.map(value => {
+              return {
+                id: value.toLowerCase(),
+                name: value
+              }
+          });
+    }
+    
+    handleEditRelatedClick(type, key) {
+        let relatedItem;
+        
+        if (type === "alerts") {
+            relatedItem = this.state.alerts.find(alert => {
+                return alert.key === key;
+            });
+        }
+
+        if (type === "changes") {
+            relatedItem = this.state.changes.find(change => {
+                return change.key === key;
+            });
+        }
+
+        this.setState({
+            showModal: true,
+            modalType: type,
+            editKey: key,
+            titleInput: type === "alerts" ? relatedItem.date : relatedItem.name,
+            descInput: relatedItem.description
+        });
     }
 
-    mapReleaseFreqToSelectOptions() {
-        const values = [
-          'Weekly', 'Monthly', 'Yearly'
-        ];
-        return values.map(value => {
-            return {
-              id: value.toLowerCase(),
-              name: value
-            }
+    handleDeleteRelatedClick(type, key) {
+        function remove(items, key) {
+            return items.filter(item => {
+                return item.key !== key
+            });
+        }
+
+        if (type === "alerts") {
+            this.setState({
+                alerts: remove(this.state.alerts, key),
+                hasChanges: true
+            });
+            return;
+        }
+
+        if (type === "changes") {
+            this.setState({
+                changes: remove(this.state.changes, key),
+                hasChanges: true
+            });
+            return;
+        }
+
+        console.warn("Attempt to remove a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to remove a related content type that is not recognised: '${type}'`);
+     }
+
+
+     editRelatedLink(type, key) {
+        const edit = items => {
+            return items.map(item => {
+                if (item.key !== key) {
+                    return item;
+                }
+                if (type === "alerts") {
+                    return {
+                        ...item,
+                        date: this.state.titleInput,
+                        description: this.state.descInput,
+                        type: "correction",
+                        hasChanged: true
+                    }
+                }
+                if (type === "changes") {
+                    return {
+                        ...item,
+                        name: this.state.titleInput,
+                        description: this.state.descInput,
+                        type: "summary of changes",
+                        hasChanged: true
+                    }
+                }
+            });
+        }
+        if (type === "alerts") {
+            this.setState({
+                alerts: edit(this.state.alerts, key)
+            });
+            return;
+        }
+
+        if (type === "changes") {
+            this.setState({
+                changes: edit(this.state.changes, key)
+            });
+        }
+
+        console.warn("Attempt to edit a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
+     }
+
+     handleCancel() {
+        this.setState({
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            descInput: "",
+            titleInput: ""
+        });
+    }
+
+    handleAddRelatedClick(type) {
+        this.setState({
+            showModal: true,
+            modalType: type
         });
     }
 
@@ -533,26 +493,15 @@ class VersionMetadata extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
-
-        if (name === "add-alert-date") {
-            this.setState({dateInput: value});
-            if(this.state.dateError != null) {
-                this.setState({dateError: null})
+        if (name === "add-related-content-title") {
+            this.setState({titleInput: value});
+            if(this.state.titleError != null) {
+                this.setState({titleError: null})
             }
-        } else if (name === "add-alert-description") {
-            this.setState({descriptionInput: value});
-            if(this.state.descriptionError != null) {
-                this.setState({descriptionError: null})
-            }
-        } else if (name === "add-change-name") {
-            this.setState({nameInput: value});
-            if(this.state.nameError != null) {
-                this.setState({nameError: null})
-            }
-        } else if (name === "add-change-description") {
-            this.setState({descriptionInput: value});
-            if(this.state.descriptionError != null) {
-                this.setState({descriptionError: null})
+        } else if (name === "add-related-content-desc") {
+            this.setState({descInput: value});
+            if(this.state.descError != null) {
+                this.setState({descError: null})
             }
         } else {
             this.setState({
@@ -560,18 +509,17 @@ class VersionMetadata extends Component {
             });
         }
 
-        this.setState({hasChanges: true});
      }
 
-     handleSelectChange(event) {
+    handleSelectChange(event) {
         const target = event.target;
         const value = target.value;
         const id = target.id;
         this.setState({
-          [id]: value,
-          hasChanges: true
+            [id]: value,
+            hasChanges: true
         });
-      }
+    }
 
     handleReleaseDateChange(event) {
         const value = event.target.value;
@@ -583,9 +531,49 @@ class VersionMetadata extends Component {
         });
     }
 
-    handleFormSubmit(event, btn) {
+    handleFormSubmit(event) {
         event.preventDefault();
 
+        if(this.state.titleInput == "" || this.state.descInput == ""){
+            if(this.state.titleInput == ""){
+                this.setState({
+                    titleError: "You must provide a value"
+                });
+            }
+            if (this.state.descInput == ""){
+                this.setState({
+                    urlError: "You must provide a description"
+                });
+            }
+        } else {
+            if (this.state.modalType === "alerts") {
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("alerts", this.state.editKey);
+                } else {
+                    const alerts = this.state.alerts.concat({date: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "correction"});
+                    this.setState({alerts: alerts});
+                }
+            } else if (this.state.modalType === "changes") {
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("changes", this.state.editKey);
+                } else {
+                    const changes = this.state.changes.concat({name: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "summary of changes"});
+                    this.setState({changes: changes});
+                }
+            } 
+
+            this.setState({
+                showModal: false,
+                modalType: "",
+                editKey: "",
+                titleInput: "",
+                descInput: ""
+            });
+        }
+     }
+
+    handlePageSubmit(event, btn) {
+        event.preventDefault();
         this.setState({btn: btn}, function () {
 
             let haveError = false;
@@ -642,16 +630,6 @@ class VersionMetadata extends Component {
 
     }
 
-    handleCancel() {
-        this.setState({
-            showModal: false,
-            modalType: "",
-            editKey: "",
-            dateInput: "",
-            descriptionInput: ""
-        });
-    }
-
     render() {
         return (
             <div className="grid grid--justify-center">
@@ -699,30 +677,30 @@ class VersionMetadata extends Component {
                                 <div className="margin-bottom--1">
                                     <h3 className="margin-top--1 margin-bottom--1">Alerts and corrections</h3>
                                     <CardList
-                                        contents={this.mapAlertsToCard(this.state.alerts)}
+                                        contents={this.mapTypeContentsToCard(this.state.alerts, "alerts")}
                                         type="alerts"
-                                        onEdit={this.handleEditAlertsClick}
-                                        onDelete={this.handleDeleteAlertsClick}
+                                        onEdit={this.handleEditRelatedClick}
+                                        onDelete={this.handleDeleteRelatedClick}
                                     />
-                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddAlertsClick("alert")}}> Add an alert</button>
+                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}> Add an alert</button>
                                 </div>
                                 <div className="margin-bottom--1">
                                     <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
                                     <CardList
-                                        contents={this.mapChangesToCard(this.state.changes)}
+                                        contents={this.mapTypeContentsToCard(this.state.changes, "changes")}
                                         type="changes"
-                                        onEdit={this.handleEditChangesClick}
-                                        onDelete={this.handleDeleteChangesClick}
+                                        onEdit={this.handleEditRelatedClick}
+                                        onDelete={this.handleDeleteRelatedClick}
                                     />
-                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddAlertsClick("changes")}}> Add change</button>
+                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes")}}> Add change</button>
                                 </div>
                             </div>
                           </div>
-                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handleFormSubmit(e, "return")}>Save and return</button>
-                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handleFormSubmit(e, "add")}>Save and add to collection</button>
+                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
+                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
                           {
                               this.state.state === "associated" ?
-                              <button className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handleFormSubmit(e, "preview")}>Save and preview</button>
+                              <button className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
                               :
                               ""
                           }
@@ -732,52 +710,40 @@ class VersionMetadata extends Component {
                 </div>
                 {this.state.showModal &&
 
-                    <Modal sizeClass="grid__col-3">
-                    {this.state.modalType === "alerts" ?
+                <Modal sizeClass="grid__col-3">
+                        {this.state.modalType ?
 
-                        <AlertsForm
-                            dateInput={this.state.dateInput}
-                            descriptionInput={this.state.descriptionInput}
-                            onCancel={this.handleCancel}
-                            onFormInput={this.handleInputChange}
-                            onFormSubmit={this.handleAlertSubmit}
-                            dateError={this.state.dateError}
-                            descriptionError={this.state.descriptionError}
-                        />
-
-                    :
-                        (
-                            this.state.modalType === "changes" ?
-
-                            <ChangesForm
-                                nameInput={this.state.nameInput}
-                                descriptionInput={this.state.descriptionInput}
-                                onCancel={this.handleCancel}
-                                onFormInput={this.handleInputChange}
-                                onFormSubmit={this.handleChangesSubmit}
-                                dateError={this.state.nameError}
-                                descriptionError={this.state.descriptionError}
-                            />
-
-                            :
-
-                            <div>
-                                <div className="modal__header">
-                                    <h2>Warning!</h2>
-                                </div>
-                                <div className="modal__body">
-                                    <p>You will lose any changes by going back without saving. </p><br/>
-                                    <p>Click "Continue" to lose changes and go back to the previous page or
-                                        click "Cancel" to stay on the current page.</p>
-                                </div>
-                                <div className="modal__footer">
-                                <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
-                                <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
-                                </div>
-                            </div>
-                        )
-                    }
-                    </Modal>
+                          <RelatedContentForm
+                              name="related-content-modal"
+                              formTitle={this.state.modalType === "alerts" ? "Add an alert" : "Add latest change"}
+                              titleInput={this.state.titleInput}
+                              descInput={this.state.descInput}
+                              titleLabel={this.state.modalType === "alerts" ? "Date (e.g 01 September 2017)" : "Name"}
+                              descLabel={"Description"}
+                              onCancel={this.handleCancel}
+                              onFormInput={this.handleInputChange}
+                              onFormSubmit={this.handleFormSubmit}
+                              titleError={this.state.titleError}
+                              requiresDescription={true}
+                              requiresURL={false}
+                          />
+                        :
+                          <div>
+                          <div className="modal__header">
+                              <h2>Warning!</h2>
+                          </div>
+                          <div className="modal__body">
+                              <p>You will lose any changes by going back without saving. </p><br/>
+                              <p>Click "Continue" to lose changes and go back to the previous page or
+                                  click "Cancel" to stay on the current page.</p>
+                          </div>
+                          <div className="modal__footer">
+                          <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
+                          <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
+                          </div>
+                        </div>
+                      }
+                      </Modal>
 
                 }
             </div>
