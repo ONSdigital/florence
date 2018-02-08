@@ -71,9 +71,7 @@ const exampleDataset = {
             }
         },
         qmi: {
-            href: 'http://localhost:8080/datasets/12345',
-            title: 'An example QMI',
-            description: 'this is an example QMI for you to look at'
+            href: 'http://localhost:8080/datasets/12345'
         },
         related_datasets: [
             {
@@ -89,6 +87,12 @@ const exampleDataset = {
             {
                 href: 'http://www.localhost:8080/datasets/173849jf8j238d',
                 title: 'An example publication'
+            }
+        ],
+        methodologies: [
+            {
+                href: 'http://www.localhost:8080/datasets/173849jf8j238d',
+                title: 'An example methodology'
             }
         ],
         next_release: 'pudding',
@@ -150,18 +154,14 @@ test("Correct modal type shows when user wants to add a related bulletin", async
     expect(component.state("modalType")).toBe("bulletin");
 });
 
-test("Removing a related QMI updates state to be empty", async () => {
+test("Removing a related QMI link updates state to be empty", async () => {
     const component = shallow(
         <DatasetMetadata {...defaultProps} />
     );
     await component.instance().componentWillMount();
     await component.update();
-    expect(component.state("relatedQMI")).toMatchObject({
-        key: "12345",
-        title: exampleDataset.current.qmi.title,
-        url: exampleDataset.current.qmi.href
-    });
-    await component.instance().handleDeleteRelatedClick("qmi", "12345");
+    expect(component.state("relatedQMI")).toBe(exampleDataset.current.qmi.href);
+    component.instance().handleInputChange("");
     await component.update();
     expect(component.state("relatedQMI")).toBe("");
 });
@@ -450,12 +450,10 @@ describe("Component's state maps to API request correctly when", () => {
     it("related QMI data has been updated", () => {
         const mockQMIState = {
             relatedQMI: {
-                title: "A methodology article",
                 url: "/economy/gdp/methodology/gdpqmi"
             } 
         }
         const mockRequestQMIObject = {
-            title: mockQMIState.relatedQMI.title,
             href: mockQMIState.relatedQMI.url
         }
     
