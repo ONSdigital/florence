@@ -4,8 +4,12 @@ import PropTypes from 'prop-types';
 import Input from '../../../../components/Input';
 
 const propTypes = {
+    formTitle: PropTypes.string,
+    titleLabel: PropTypes.string,
     titleInput: PropTypes.string,
+    urlLabel: PropTypes.string,
     urlInput: PropTypes.string,
+    descLabel: PropTypes.string,
     descInput: PropTypes.string,
     name: PropTypes.string.isRequired,
     isPosting: PropTypes.bool,
@@ -15,7 +19,8 @@ const propTypes = {
     titleError:PropTypes.string,
     urlError:PropTypes.string,
     descError:PropTypes.string,
-    requiresDescription:PropTypes.bool
+    requiresDescription:PropTypes.bool,
+    requiresURL:PropTypes.bool
 }
 
 class RelatedContentForm extends Component {
@@ -23,8 +28,12 @@ class RelatedContentForm extends Component {
         super(props);
 
         this.state = {
+            formTitle: "",
+            titleLabel: "",
             titleInput: "",
+            urlLabel: "",
             urlInput: "",
+            descLabel: "",
             descInput: ""
         }
     }
@@ -34,7 +43,11 @@ class RelatedContentForm extends Component {
             this.setState({
                 titleInput: this.props.titleInput,
                 urlInput: this.props.urlInput,
-                descInput: this.props.descInput
+                descInput: this.props.descInput,
+                titleLabel: this.props.titleLabel,
+                urlLabel: this.props.urlLabel,
+                descLabel: this.props.descLabel,
+                formTitle: this.props.formTitle               
             });
         }
     }
@@ -43,12 +56,12 @@ class RelatedContentForm extends Component {
         return (
             <form className="form" onSubmit={this.props.onFormSubmit}>
                 <div className="modal__header">
-                    <h2> Add related content: </h2>
+                    <h2>{this.props.formTitle}:</h2>
                 </div>
                 <div className="modal__body">
                       <Input
                             type="text"
-                            label="Page title"
+                            label={this.props.titleLabel}
                             id="add-related-content-title"
                             name="add-related-content-title"
                             error={this.props.titleError}
@@ -57,9 +70,10 @@ class RelatedContentForm extends Component {
                             isFocused={true}
                             value={this.props.titleInput}
                         />
+                        {this.props.requiresURL &&
                         <Input
                             type="text"
-                            label="Page URL"
+                            label={this.props.urlLabel}
                             error={this.props.urlError}
                             id="add-related-content-url"
                             name="add-related-content-url"
@@ -67,10 +81,11 @@ class RelatedContentForm extends Component {
                             onChange={this.props.onFormInput}
                             onCancel={this.props.onCancel}
                         />
+                        }
                         {this.props.requiresDescription &&
                         <Input
                             type="text"
-                            label="Description"
+                            label={this.props.descLabel}
                             error={this.props.descError}
                             id="add-related-content-desc"
                             name="add-related-content-desc"
