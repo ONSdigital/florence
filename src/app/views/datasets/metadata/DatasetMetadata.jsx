@@ -278,6 +278,28 @@ export class DatasetMetadata extends Component {
         }
     }
 
+    mapStateToAPIRequest() {
+        return {
+            contacts: [{
+                email: this.state.contactEmail,
+                name: this.state.contactName,
+                telephone: this.state.contactPhone,
+            }],
+            description: this.state.description,
+            release_frequency: this.state.releaseFrequency,
+            title: this.state.title,
+            license: this.state.license,
+            national_statistic: this.state.isNationalStat,
+            keywords: this.splitKeywordsString(this.state.keywords),
+            qmi: {
+                href: this.state.relatedQMI,
+            },
+            publications: [...this.state.relatedBulletins],
+            methodologies: [...this.state.relatedMethodologies],
+            related_datasets: [...this.state.relatedLinks],
+        }
+    }
+
     mapReleaseFreqToSelectOptions() {
         const values = [
           'Weekly', 'Monthly', 'Annually'
@@ -467,28 +489,6 @@ export class DatasetMetadata extends Component {
         });
     }
     
-    mapStateToAPIRequest() {
-        return {
-            contacts: [{
-                email: this.state.contactEmail,
-                name: this.state.contactName,
-                telephone: this.state.contactPhone,
-            }],
-            description: this.state.description,
-            release_frequency: this.state.releaseFrequency,
-            title: this.state.title,
-            license: this.state.license,
-            national_statistic: this.state.isNationalStat,
-            keywords: this.splitKeywordsString(this.state.keywords),
-            qmi: {
-                href: this.state.relatedQMI,
-            },
-            publications: [...this.state.relatedBulletins],
-            methodologies: [...this.state.relatedMethodologies],
-            related_datasets: [...this.state.relatedLinks],
-        }
-    }
-
     handleFormSubmit(event) {
         event.preventDefault();
 
@@ -754,8 +754,12 @@ export class DatasetMetadata extends Component {
 
                           <RelatedContentForm
                               name="related-content-modal"
+                              formTitle="Add related content"
+                              titleLabel={"Page title"}
                               titleInput={this.state.titleInput}
+                              urlLabel={"Page URL"}
                               urlInput={this.state.urlInput}
+                              descLabel={"Description"}
                               descInput={this.state.descInput}
                               onCancel={this.handleCancel}
                               onFormInput={this.handleInputChange}
@@ -763,6 +767,7 @@ export class DatasetMetadata extends Component {
                               titleError={this.state.titleError}
                               urlError={this.state.urlError}
                               requiresDescription={this.state.modalType === "methodologies" ? true : false}
+                              requiresURL={true}
                           />
                         :
                           <div>
