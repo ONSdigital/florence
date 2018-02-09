@@ -397,13 +397,6 @@ function loadTableBuilderV2(pageData, onSave, table) {
 
   $('body').append(html);
 
-  let tableData = {};
-  if (table && table.filename) {
-    $.getJSON("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + table.filename + ".json", function(result){
-     tableData = result;
-    });
-  }
-
   // onSave function - sends content to zebedee, adds the table to the parent page and closes the modal
   var saveTableV2 = function (tableJson) {
     console.log("saveTableV2: pageUrl=" + pageUrl + ", tableJson=" + JSON.stringify(tableJson))
@@ -453,6 +446,13 @@ function loadTableBuilderV2(pageData, onSave, table) {
       $('.table-builder').stop().fadeOut(200).remove();
   }
 
-  startTableBuilder("table-builder-app", tableData, saveTableV2, closeModal);
+    if (table && table.filename) {
+        jqxhr = $.getJSON("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + table.filename + ".json");
+        jqxhr.done(function(data) {
+            startTableBuilder("table-builder-app", data, saveTableV2, closeModal);
+        });
+    } else {
+        startTableBuilder("table-builder-app", tableData, saveTableV2, closeModal);
+    }
 
 }
