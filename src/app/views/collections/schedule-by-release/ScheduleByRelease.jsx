@@ -133,7 +133,9 @@ export class ScheduleByRelease extends Component {
                     {!this.state.isFetchingReleases &&
                         <div className="grid grid--justify-space-between margin-top--1">
                             <div>
-                                <button className="btn btn--primary" type="button" onClick={this.loadMoreReleases} disabled={this.state.isFetchingExtraReleases}>Show more releases</button>
+                                {this.state.numberOfPages !== this.state.currentPage &&
+                                    <button className="btn btn--primary" type="button" onClick={this.loadMoreReleases} disabled={this.state.isFetchingExtraReleases}>Show more releases</button>
+                                }
                                 {this.state.isFetchingExtraReleases && 
                                     <div className="margin-left--1 inline-block">
                                         <div className="loader loader--dark"></div>
@@ -141,8 +143,11 @@ export class ScheduleByRelease extends Component {
                                 }
                             </div>
                             <div>
-                                <p>Showing page {this.state.currentPage} of {this.state.numberOfPages}</p>
-                                <p>Number of releases: {this.state.numberOfReleases}</p>
+                                {this.state.tableData.length > 0 ?
+                                    <p>Showing releases 1 to {this.state.tableData.length} of {this.state.numberOfReleases}</p>
+                                    :
+                                    <p>No upcoming releases to show</p>
+                                }
                             </div>
                         </div>
                     }
