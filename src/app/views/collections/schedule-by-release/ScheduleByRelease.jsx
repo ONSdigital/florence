@@ -34,14 +34,20 @@ export class ScheduleByRelease extends Component {
         this.state = {
             isFetchingReleases: false,
             isFetchingExtraReleases: false,
+            isFetchingSearchedReleases: false,
             tableData: [],
             currentPage: 0,
             numberOfPages: 0,
             numberOfReleases: 0,
-            releasesPerPage: 10
+            releasesPerPage: 10,
+            searchSubmitDelay: 300,
+            searchQuery: ""
         };
 
+        this.searchTimeout = null;
+
         this.loadMoreReleases = this.loadMoreReleases.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
     }
 
     componentWillMount() {
@@ -56,6 +62,8 @@ export class ScheduleByRelease extends Component {
                 tableData
             });
         }).catch(error => {
+            //TODO tell the user about the error
+
             this.setState({isFetchingReleases: false});
             log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching upcoming releases for 'scheduled by release' functionality: " + JSON.stringify(error)});
             console.error("Error fetching upcoming releases for 'scheduled by release' functionality", error);
@@ -81,7 +89,7 @@ export class ScheduleByRelease extends Component {
 
             return {
                 id: release.uri,
-                columnValues: [release.description.title, date.format(release.description.releaseDate, "ddd, dd/mm/yyyy h:MMTT"), status],
+                columnValues: [<div dangerouslySetInnerHTML={{__html: release.description.title}} key={release.uri}></div>, date.format(release.description.releaseDate, "ddd, dd/mm/yyyy h:MMTT"), status],
                 returnValue: {
                     uri: release.uri,
                     releaseDate: release.description.releaseDate,
@@ -94,22 +102,63 @@ export class ScheduleByRelease extends Component {
     }
 
     handleSearch(event) {
-        console.log(event.target.value);
+        const searchQuery = event.target.value;
+
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => {this.searchReleases(searchQuery)}, this.state.searchSubmitDelay);
+    }
+
+    searchReleases(query) {
+        this.setState({
+            isFetchingSearchedReleases: true,
+            searchQuery: query
+        });
+
+        releases.getUpcoming(null, query, this.state.releasesPerPage).then(searchedReleases => {
+            const tableData = this.mapReleasesToTableRows(searchedReleases.result.results);
+            this.setState({
+                isFetchingSearchedReleases: false,
+                numberOfReleases: searchedReleases.result.numberOfResults || 0,
+                numberOfPages: searchedReleases.result.paginator ? searchedReleases.result.paginator.numberOfPages : 1,
+                currentPage: 1,
+                tableData
+            });
+        }).catch(error => {
+            //TODO tell the user about the error
+
+            this.setState({isFetchingSearchedReleases: false});
+            log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching queried releases for 'schedule by release' functionality: " + JSON.stringify(error)});
+            console.error("Error fetching queried releases for 'schedule by release' functionality", error);
+        });
     }
 
     loadMoreReleases() {
         this.setState({isFetchingExtraReleases: true});
-        releases.getUpcoming(this.state.currentPage+1, null, this.state.releasesPerPage).then(upcomingReleases => {
+        releases.getUpcoming(this.state.currentPage+1, this.state.searchQuery, this.state.releasesPerPage).then(upcomingReleases => {
             this.setState(state => ({
                 isFetchingExtraReleases: false,
                 currentPage: state.currentPage + 1,
                 tableData: [...state.tableData , ...this.mapReleasesToTableRows(upcomingReleases.result.results)]
             }));
         }).catch(error => {
+            //TODO tell the user about the error
+
             this.setState({isFetchingExtraReleases: false});
             log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching extra upcoming releases for 'scheduled by release' functionality: " + JSON.stringify(error)});
             console.error("Error fetching extra upcoming releases for 'scheduled by release' functionality", error);
         });
+    }
+
+    renderQueryText() {
+        if (this.state.numberOfReleases === 0) {
+            return <p className="margin-bottom--1">No releases matching the term '<span className="font-weight--600">{this.state.searchQuery}</span>'</p>
+        }
+
+        return (
+            <p className="margin-bottom--1">
+                Showing <span className="font-weight--600">{this.state.numberOfReleases}</span> release{this.state.numberOfReleases > 1 && "s"} matching the term '<span className="font-weight--600">{this.state.searchQuery}</span>'
+            </p>
+        )
     }
 
     render() {
@@ -120,13 +169,16 @@ export class ScheduleByRelease extends Component {
                         <h1 className="modal__title margin-top--2">Select a calendar entry</h1>
                     </div>
                     <div className="grid__col-4">
-                        <Input id="search-releases" disabled={true} onChange={this.handleSearch} label="Search by release name"/>
+                        <Input id="search-releases" disabled={this.state.isFetchingReleases} onChange={this.handleSearch} label="Search by release name"/>
                     </div>
                 </div>
                 <div className="modal__body grid__col-12">
+                    {(this.state.searchQuery && !this.state.isFetchingSearchedReleases) &&
+                        this.renderQueryText()
+                    }
                     <SelectableBox
                         columns={columns}
-                        isUpdating={this.state.isFetchingReleases}
+                        isUpdating={this.state.isFetchingReleases || this.state.isFetchingSearchedReleases}
                         handleItemClick={this.props.onReleaseSelect}
                         rows={this.state.tableData}
                     />
