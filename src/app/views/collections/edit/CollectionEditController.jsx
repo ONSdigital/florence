@@ -239,7 +239,7 @@ export class CollectionEditController extends Component {
             hasError = true;
         }
 
-        const validatedDate = collectionValidation.date(this.state.publishDate.value, this.state.publishType);
+        const validatedDate = collectionValidation.date(this.state.publishDate.value, this.state.publishType, "custom-schedule");
         if (!validatedDate.isValid) {
             this.setState({
                 publishDate: {
@@ -250,7 +250,7 @@ export class CollectionEditController extends Component {
             hasError = true;
         }
         
-        const validatedTime = collectionValidation.time(this.state.publishTime.value, this.state.publishType)
+        const validatedTime = collectionValidation.time(this.state.publishTime.value, this.state.publishType, "custom-schedule")
         if (!validatedTime.isValid) {
             this.setState({
                 publishTime: {
