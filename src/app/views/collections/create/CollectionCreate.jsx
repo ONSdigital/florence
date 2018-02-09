@@ -6,7 +6,6 @@ import collections from '../../../utilities/api-clients/collections';
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
 import log, { eventTypes } from '../../../utilities/log';
-
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import SelectedItemList from '../../../components/selected-items/SelectedItemList'
@@ -14,6 +13,8 @@ import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
 import collectionValidation from '../validation/collectionValidation';
 import date from '../../../utilities/date';
+import ScheduleByRelease from '../schedule-by-release/ScheduleByRelease';
+import Modal from '../../../components/Modal';
 
 const propTypes = {
     user: PropTypes.shape({
@@ -48,11 +49,17 @@ export class CollectionCreate extends Component {
                 },
                 pendingDeletes: [],
                 teams: [],
-                releaseUri: "",
+                release: {
+                    date: "",
+                    title: "",
+                    uri: "",
+                    errorMsg: ""
+                },
                 scheduleType: "custom-schedule",
             },
             isGettingTeams: true,
-            isSubmitting: false
+            isSubmitting: false,
+            showScheduleByRelease: false
         };
 
         this.minimumPublishDate = date.format(date.getNow(), "yyyy-mm-dd");
@@ -69,6 +76,8 @@ export class CollectionCreate extends Component {
         this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
         this.handleAddRelease = this.handleAddRelease.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCloseRelease = this.handleCloseRelease.bind(this);
+        this.handleSelectRelease = this.handleSelectRelease.bind(this);
     }
 
     componentWillMount() {
@@ -192,7 +201,13 @@ export class CollectionCreate extends Component {
     handleCollectionTypeChange(event) {
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            type: event.value
+            type: event.value,
+            release: {
+                uri: "",
+                date: "",
+                title: "",
+                errorMsg: ""
+            }
         };
         this.setState({newCollectionDetails: newCollectionDetails});
     }
@@ -234,17 +249,40 @@ export class CollectionCreate extends Component {
 
     handleAddRelease(event) {
         event.preventDefault();
-        console.warn("We haven't built this feature yet")
+        this.setState({showScheduleByRelease: true});
+    }
+
+    handleSelectRelease(release) {
+        this.setState(state => ({
+            newCollectionDetails: {
+                ...state.newCollectionDetails,
+                release: {
+                    uri: release.uri,
+                    title: release.title,
+                    date: release.releaseDate,
+                    errorMsg: ""
+                }
+            },
+            showScheduleByRelease: false
+        }));
+    }
+
+    handleCloseRelease() {
+        this.setState({showScheduleByRelease: false});
     }
 
     makePublishDate() {
-        if (this.state.newCollectionDetails.type === 'scheduled') {
-            const date = this.state.newCollectionDetails.publishDate.value;
-            const time = this.state.newCollectionDetails.publishTime.value;
-            return (new Date(date + " " + time + "Z").toISOString());
-        } else {
+        if (!this.state.newCollectionDetails.type === 'scheduled') {
             return null;
         }
+
+        if (this.state.newCollectionDetails.scheduleType === "calender-entry-schedule") {
+            return this.state.releaseDateISO;
+        }
+
+        const date = this.state.newCollectionDetails.publishDate.value;
+        const time = this.state.newCollectionDetails.publishTime.value;
+        return (new Date(date + " " + time + "Z").toISOString());
     }
 
     mapStateToPostBody() {
@@ -257,7 +295,7 @@ export class CollectionCreate extends Component {
                     return team.name;
                 }),
                 collectionOwner: this.props.user.userType,
-                releaseUri: this.state.newCollectionDetails.releaseUri || null
+                releaseUri: this.state.newCollectionDetails.release.uri || null
             }
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error mapping new collection state to POST body" + JSON.stringify(error));
@@ -286,7 +324,7 @@ export class CollectionCreate extends Component {
             hasError = true;
         }
 
-        const validatedDate = collectionValidation.date(this.state.newCollectionDetails.publishDate.value, this.state.newCollectionDetails.type);
+        const validatedDate = collectionValidation.date(this.state.newCollectionDetails.publishDate.value, this.state.newCollectionDetails.type, this.state.newCollectionDetails.scheduleType);
         if (!validatedDate.isValid) {
             const collectionDate = {
                 value: this.state.newCollectionDetails.publishDate.value,
@@ -300,7 +338,7 @@ export class CollectionCreate extends Component {
             hasError = true;
         }
 
-        const validatedTime = collectionValidation.time(this.state.newCollectionDetails.publishTime.value, this.state.newCollectionDetails.type);
+        const validatedTime = collectionValidation.time(this.state.newCollectionDetails.publishTime.value, this.state.newCollectionDetails.type, this.state.newCollectionDetails.scheduleType);
         if (!validatedTime.isValid) {
             const collectionTime = {
                 value: this.state.newCollectionDetails.publishTime.value,
@@ -313,6 +351,25 @@ export class CollectionCreate extends Component {
             };
             this.setState({
                 newCollectionDetails: newCollectionDetails,
+                isSubmitting: false
+            });
+            hasError = true;
+        }
+
+        const release = this.state.newCollectionDetails.release;
+        const validatedRelease = collectionValidation.release(release.uri, release.date, release.title, this.state.newCollectionDetails.type, this.state.newCollectionDetails.scheduleType);
+        if (!validatedRelease.isValid) {
+            const collectionRelease = {
+                ...release,
+                errorMsg: validatedRelease.errorMsg
+            };
+
+            newCollectionDetails = {
+                ...newCollectionDetails,
+                release: collectionRelease
+            };
+            this.setState({
+                newCollectionDetails,
                 isSubmitting: false
             });
             hasError = true;
@@ -410,9 +467,28 @@ export class CollectionCreate extends Component {
                             error={this.state.newCollectionDetails.publishTime.errorMsg}
                         />
                     </div>
-
-                    : <button onClick={this.handleAddRelease} className="btn btn--primary margin-bottom--2 ">Select a calendar entry</button> }
-
+                    : 
+                    <div>
+                        <div className="margin-bottom--1">
+                        {this.state.newCollectionDetails.release.uri ?
+                            <div>
+                                <p>Selected release: </p>
+                                <p className="font-weight--600 colour--night-shadz">
+                                    {this.state.newCollectionDetails.release.errorMsg}
+                                </p>
+                                <p className="font-weight--600">
+                                    {this.state.newCollectionDetails.release.title}
+                                </p>
+                            </div>
+                            :
+                            <p>No release selected</p>
+                        }
+                        </div>
+                        <button type="button" onClick={this.handleAddRelease} className="btn btn--primary margin-bottom--2 ">
+                            Select {this.state.newCollectionDetails.release.uri && "different "}a calendar entry
+                        </button>
+                    </div>
+                }
             </div>
         )
     }
@@ -461,13 +537,18 @@ export class CollectionCreate extends Component {
 
                     {showScheduleOptions ? this.renderScheduleOptions() : "" }
 
-                    <button type="submit" className="btn btn--positive" disabled={isSubmitting}>
+                    <button type="submit" className="btn btn--positive margin-top--1" disabled={isSubmitting}>
                         Create collection
                     </button>
 
                     {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
 
                 </form>
+                {this.state.showScheduleByRelease &&
+                    <Modal sizeClass="grid__col-8">
+                        <ScheduleByRelease onClose={this.handleCloseRelease} onReleaseSelect={this.handleSelectRelease} />
+                    </Modal>
+                }
             </div>
         )
     }
