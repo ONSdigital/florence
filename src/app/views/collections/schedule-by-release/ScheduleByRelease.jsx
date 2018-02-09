@@ -87,13 +87,16 @@ export class ScheduleByRelease extends Component {
 
             //TODO check whether the release is already associated to a collection
 
+            const title = (release.description.title).replace(/<\/?[^>]+(>|$)/g, ""); // remove any <strong> tags added on by Babbage's response
+
             return {
                 id: release.uri,
-                columnValues: [<div dangerouslySetInnerHTML={{__html: release.description.title}} key={release.uri}></div>, date.format(release.description.releaseDate, "ddd, dd/mm/yyyy h:MMTT"), status],
+                columnValues: [title, date.format(release.description.releaseDate, "ddd, dd/mm/yyyy h:MMTT"), status],
                 returnValue: {
                     uri: release.uri,
                     releaseDate: release.description.releaseDate,
-                    title: release.description.title
+                    title,
+                    isProvisional: !release.description.finalised
                 }
             }
         });
