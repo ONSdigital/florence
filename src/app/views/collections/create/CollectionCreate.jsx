@@ -274,7 +274,7 @@ export class CollectionCreate extends Component {
     }
 
     makePublishDate() {
-        if (!this.state.newCollectionDetails.type === 'scheduled') {
+        if (this.state.newCollectionDetails.type !== 'scheduled') {
             return null;
         }
 
