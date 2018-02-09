@@ -20,14 +20,7 @@ export default class collectionValidation {
         };
     }
 
-    static date(date, publishType, scheduleType) {
-        if (publishType !== "scheduled" || scheduleType !== "custom-schedule") {
-            return {
-                isValid: true,
-                errorMsg: ""
-            };
-        }
-
+    static date(date) {
         if (!date) {
             return {
                 isValid: false,
@@ -41,14 +34,7 @@ export default class collectionValidation {
         };
     }
     
-    static time(time, publishType, scheduleType) {
-        if (publishType !== "scheduled" || scheduleType !== "custom-schedule") {
-            return {
-                isValid: true,
-                errorMsg: ""
-            };
-        }
-
+    static time(time) {
         if (!time) {
             return {
                 isValid: false,
@@ -62,14 +48,7 @@ export default class collectionValidation {
         };
     }
 
-    static release(releaseURI, releaseDateISO, releaseTitle, publishType, scheduleType) {
-        if (publishType !== "scheduled" || scheduleType !== "calender-entry-schedule") {
-            return {
-                isValid: true,
-                errorMsg: ""
-            };
-        }
-
+    static release(releaseURI, releaseDateISO, releaseTitle) {
         if (!releaseURI) {
             return {
                 isValid: false,

@@ -30,7 +30,7 @@ describe("Validating the collection name", () => {
 describe("Validating the collection publish date", () => {
 
     it("returns 'false' if the publish date is missing for a scheduled collection", () => {
-        expect(collectionValidation.date("", "scheduled", "custom-schedule").isValid).toBe(false);
+        expect(collectionValidation.date("").isValid).toBe(false);
     });
     
     it("returns 'true' if a date is given but the publish type is missing", () => {
@@ -38,34 +38,34 @@ describe("Validating the collection publish date", () => {
     });
 
     it("returns 'true' if the publish date is valid",() => {
-        expect(collectionValidation.date("2018-16-07", "scheduled", "custom-schedule").isValid).toBe(true);
+        expect(collectionValidation.date("2018-16-07").isValid).toBe(true);
     });
 
     it("returns an error message if the publish date isn't valid", () => {
-        expect(collectionValidation.date("", "scheduled", "custom-schedule").errorMsg).toBeTruthy();
+        expect(collectionValidation.date("").errorMsg).toBeTruthy();
     });
 
     it("doesn't return an error message if the publish date is valid", () => {
-        expect(collectionValidation.date("", "scheduled", "custom-schedule").errorMsg).toBeTruthy();
+        expect(collectionValidation.date("").errorMsg).toBeTruthy();
     });
 });
 
 describe("Validating the collection publish time", () => {
 
     it("returns 'false' if the publish time is missing", () => {
-        expect(collectionValidation.time("", "scheduled", "custom-schedule").isValid).toBe(false);
+        expect(collectionValidation.time("").isValid).toBe(false);
     });
 
     it("returns 'true' if the publish time is valid", () => {
-        expect(collectionValidation.time("09:30", "scheduled", "custom-schedule").isValid).toBe(true);
+        expect(collectionValidation.time("09:30").isValid).toBe(true);
     });
 
     it("returns an error message if the publish time isn't valid", () => {
-        expect(collectionValidation.time("", "scheduled", "custom-schedule").errorMsg).toBeTruthy();
+        expect(collectionValidation.time("").errorMsg).toBeTruthy();
     });
 
     it("doesn't return an error message if the publish time is valid", () => {
-        expect(collectionValidation.time("09:30", "scheduled", "custom-schedule").errorMsg).toBeFalsy();
+        expect(collectionValidation.time("09:30").errorMsg).toBeFalsy();
     });
 });
 
