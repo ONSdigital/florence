@@ -110,6 +110,7 @@ export class ScheduleByRelease extends Component {
 
     searchReleases(query) {
         this.setState({
+            isFetchingReleases: query ? false : true, // is we haven't got a query we're getting all releases so we should reflect this in state
             isFetchingSearchedReleases: true,
             searchQuery: query
         });
@@ -118,15 +119,20 @@ export class ScheduleByRelease extends Component {
             const tableData = this.mapReleasesToTableRows(searchedReleases.result.results);
             this.setState({
                 isFetchingSearchedReleases: false,
+                isFetchingReleases: false,
                 numberOfReleases: searchedReleases.result.numberOfResults || 0,
                 numberOfPages: searchedReleases.result.paginator ? searchedReleases.result.paginator.numberOfPages : 1,
                 currentPage: 1,
+                searchQuery: query, // just incase a request takes ages this means the state is true about what query is actually being shown
                 tableData
             });
         }).catch(error => {
             //TODO tell the user about the error
 
-            this.setState({isFetchingSearchedReleases: false});
+            this.setState({
+                isFetchingSearchedReleases: false, 
+                isFetchingReleases: false
+            });
             log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching queried releases for 'schedule by release' functionality: " + JSON.stringify(error)});
             console.error("Error fetching queried releases for 'schedule by release' functionality", error);
         });
@@ -150,6 +156,10 @@ export class ScheduleByRelease extends Component {
     }
 
     renderQueryText() {
+        if (this.state.isFetchingSearchedReleases) {
+            return <p className="margin-bottom--1">Getting releases matching the term '<span className="font-weight--600">{this.state.searchQuery}</span>'</p>
+        }
+
         if (this.state.numberOfReleases === 0) {
             return <p className="margin-bottom--1">No releases matching the term '<span className="font-weight--600">{this.state.searchQuery}</span>'</p>
         }
@@ -173,7 +183,10 @@ export class ScheduleByRelease extends Component {
                     </div>
                 </div>
                 <div className="modal__body grid__col-12">
-                    {(this.state.searchQuery && !this.state.isFetchingSearchedReleases) &&
+                    {this.state.isFetchingReleases &&
+                        <p className="margin-bottom--1">Getting all releases...</p>
+                    }
+                    {this.state.searchQuery &&
                         this.renderQueryText()
                     }
                     <SelectableBox
