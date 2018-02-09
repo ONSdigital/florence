@@ -53,6 +53,7 @@ export class CollectionCreate extends Component {
                     date: "",
                     title: "",
                     uri: "",
+                    isProvisional: null,
                     errorMsg: ""
                 },
                 scheduleType: "custom-schedule",
@@ -260,6 +261,7 @@ export class CollectionCreate extends Component {
                     uri: release.uri,
                     title: release.title,
                     date: release.releaseDate,
+                    isProvisional: release.isProvisional,
                     errorMsg: ""
                 }
             },
@@ -295,7 +297,7 @@ export class CollectionCreate extends Component {
                     return team.name;
                 }),
                 collectionOwner: this.props.user.userType,
-                releaseUri: this.state.newCollectionDetails.release.uri || null
+                releaseUri: this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null
             }
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error mapping new collection state to POST body" + JSON.stringify(error));
@@ -477,6 +479,7 @@ export class CollectionCreate extends Component {
                                     {this.state.newCollectionDetails.release.errorMsg}
                                 </p>
                                 <p className="font-weight--600">
+                                    {this.state.newCollectionDetails.release.isProvisional && "[Not finalised] "}
                                     {this.state.newCollectionDetails.release.title}
                                 </p>
                             </div>
