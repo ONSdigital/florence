@@ -326,55 +326,61 @@ export class CollectionCreate extends Component {
             hasError = true;
         }
 
-        const validatedDate = collectionValidation.date(this.state.newCollectionDetails.publishDate.value, this.state.newCollectionDetails.type, this.state.newCollectionDetails.scheduleType);
-        if (!validatedDate.isValid) {
-            const collectionDate = {
-                value: this.state.newCollectionDetails.publishDate.value,
-                errorMsg: validatedDate.errorMsg
-            };
-
-            newCollectionDetails = {
-                ...newCollectionDetails,
-                publishDate: collectionDate
-            };
-            hasError = true;
+        if (this.state.newCollectionDetails.type === "scheduled" && this.state.newCollectionDetails.scheduleType === "custom-schedule") {
+            const validatedDate = collectionValidation.date(this.state.newCollectionDetails.publishDate.value);
+            if (!validatedDate.isValid) {
+                const collectionDate = {
+                    value: this.state.newCollectionDetails.publishDate.value,
+                    errorMsg: validatedDate.errorMsg
+                };
+    
+                newCollectionDetails = {
+                    ...newCollectionDetails,
+                    publishDate: collectionDate
+                };
+                hasError = true;
+            }
         }
 
-        const validatedTime = collectionValidation.time(this.state.newCollectionDetails.publishTime.value, this.state.newCollectionDetails.type, this.state.newCollectionDetails.scheduleType);
-        if (!validatedTime.isValid) {
-            const collectionTime = {
-                value: this.state.newCollectionDetails.publishTime.value,
-                errorMsg: validatedTime.errorMsg
-            };
-
-            newCollectionDetails = {
-                ...newCollectionDetails,
-                publishTime: collectionTime
-            };
-            this.setState({
-                newCollectionDetails: newCollectionDetails,
-                isSubmitting: false
-            });
-            hasError = true;
+        if (this.state.newCollectionDetails.type === "scheduled" && this.state.newCollectionDetails.scheduleType === "custom-schedule") {
+            const validatedTime = collectionValidation.time(this.state.newCollectionDetails.publishTime.value);
+            if (!validatedTime.isValid) {
+                const collectionTime = {
+                    value: this.state.newCollectionDetails.publishTime.value,
+                    errorMsg: validatedTime.errorMsg
+                };
+    
+                newCollectionDetails = {
+                    ...newCollectionDetails,
+                    publishTime: collectionTime
+                };
+                this.setState({
+                    newCollectionDetails: newCollectionDetails,
+                    isSubmitting: false
+                });
+                hasError = true;
+            }
         }
 
-        const release = this.state.newCollectionDetails.release;
-        const validatedRelease = collectionValidation.release(release.uri, release.date, release.title, this.state.newCollectionDetails.type, this.state.newCollectionDetails.scheduleType);
-        if (!validatedRelease.isValid) {
-            const collectionRelease = {
-                ...release,
-                errorMsg: validatedRelease.errorMsg
-            };
-
-            newCollectionDetails = {
-                ...newCollectionDetails,
-                release: collectionRelease
-            };
-            this.setState({
-                newCollectionDetails,
-                isSubmitting: false
-            });
-            hasError = true;
+        if (this.state.newCollectionDetails.type === "scheduled" && this.state.newCollectionDetails.scheduleType === "calender-entry-schedule") {
+            const release = this.state.newCollectionDetails.release;
+            const validatedRelease = collectionValidation.release(release.uri, release.date, release.title);
+            if (!validatedRelease.isValid) {
+                const collectionRelease = {
+                    ...release,
+                    errorMsg: validatedRelease.errorMsg
+                };
+    
+                newCollectionDetails = {
+                    ...newCollectionDetails,
+                    release: collectionRelease
+                };
+                this.setState({
+                    newCollectionDetails,
+                    isSubmitting: false
+                });
+                hasError = true;
+            }
         }
 
         if (hasError) {
