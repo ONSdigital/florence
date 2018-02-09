@@ -38,34 +38,34 @@ describe("Validating the collection publish date", () => {
     });
 
     it("returns 'true' if the publish date is valid",() => {
-        expect(collectionValidation.date("2018-16-07", "scheduled").isValid).toBe(true);
+        expect(collectionValidation.date("2018-16-07", "scheduled", "custom-schedule").isValid).toBe(true);
     });
 
     it("returns an error message if the publish date isn't valid", () => {
-        expect(collectionValidation.date("", "scheduled").errorMsg).toBeTruthy();
+        expect(collectionValidation.date("", "scheduled", "custom-schedule").errorMsg).toBeTruthy();
     });
 
     it("doesn't return an error message if the publish date is valid", () => {
-        expect(collectionValidation.date("", "scheduled").errorMsg).toBeTruthy();
+        expect(collectionValidation.date("", "scheduled", "custom-schedule").errorMsg).toBeTruthy();
     });
 });
 
 describe("Validating the collection publish time", () => {
 
     it("returns 'false' if the publish time is missing", () => {
-        expect(collectionValidation.time("", "scheduled").isValid).toBe(false);
+        expect(collectionValidation.time("", "scheduled", "custom-schedule").isValid).toBe(false);
     });
 
     it("returns 'true' if the publish time is valid", () => {
-        expect(collectionValidation.time("09:30", "scheduled").isValid).toBe(true);
+        expect(collectionValidation.time("09:30", "scheduled", "custom-schedule").isValid).toBe(true);
     });
 
     it("returns an error message if the publish time isn't valid", () => {
-        expect(collectionValidation.time("", "scheduled").errorMsg).toBeTruthy();
+        expect(collectionValidation.time("", "scheduled", "custom-schedule").errorMsg).toBeTruthy();
     });
 
     it("doesn't return an error message if the publish time is valid", () => {
-        expect(collectionValidation.time("09:30", "scheduled").errorMsg).toBeFalsy();
+        expect(collectionValidation.time("09:30", "scheduled", "custom-schedule").errorMsg).toBeFalsy();
     });
 });
 

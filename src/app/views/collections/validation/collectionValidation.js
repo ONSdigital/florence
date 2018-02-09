@@ -20,8 +20,15 @@ export default class collectionValidation {
         };
     }
 
-    static date(date, publishType) {
-        if (publishType === "scheduled" && !date) {
+    static date(date, publishType, scheduleType) {
+        if (publishType !== "scheduled" || scheduleType !== "custom-schedule") {
+            return {
+                isValid: true,
+                errorMsg: ""
+            };
+        }
+
+        if (!date) {
             return {
                 isValid: false,
                 errorMsg: "Scheduled collections must be given a publish date"
@@ -34,11 +41,53 @@ export default class collectionValidation {
         };
     }
     
-    static time(time, publishType) {
-        if (publishType === "scheduled" && !time) {
+    static time(time, publishType, scheduleType) {
+        if (publishType !== "scheduled" || scheduleType !== "custom-schedule") {
+            return {
+                isValid: true,
+                errorMsg: ""
+            };
+        }
+
+        if (!time) {
             return {
                 isValid: false,
                 errorMsg: "Scheduled collections must be given a publish time"
+            };
+        }
+
+        return {
+            isValid: true,
+            errorMsg: ""
+        };
+    }
+
+    static release(releaseURI, releaseDateISO, releaseTitle, publishType, scheduleType) {
+        if (publishType !== "scheduled" || scheduleType !== "calender-entry-schedule") {
+            return {
+                isValid: true,
+                errorMsg: ""
+            };
+        }
+
+        if (!releaseURI) {
+            return {
+                isValid: false,
+                errorMsg: "Release must have a URI"
+            };
+        }
+        
+        if (!releaseDateISO) {
+            return {
+                isValid: false,
+                errorMsg: "Release must have a release date"
+            };
+        }
+        
+        if (!releaseTitle) {
+            return {
+                isValid: false,
+                errorMsg: "Release must have a title"
             };
         }
 
