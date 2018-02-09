@@ -355,7 +355,7 @@ export class CollectionEditController extends Component {
     }
 
     publishDateHasChanged(state) {
-        if (state.publishType ===  "manual" && this.props.publishType === "manual") {
+        if (state.publishType ===  "manual") {
             return false;
         }
 
