@@ -391,7 +391,7 @@ function loadTableBuilder(pageData, onSave, table) {
 }
 
 function loadTableBuilderV2(pageData, onSave, table) {
-  console.log("loadTableBuilderV2.pageData: " + pageData)
+  console.log("loadTableBuilderV2.pageData: uri=" + pageData.uri);
   const pageUrl = pageData.uri;
   const html = templates.tableBuilderV2(table);
 
@@ -406,13 +406,14 @@ function loadTableBuilderV2(pageData, onSave, table) {
 
   // onSave function - sends content to zebedee, adds the table to the parent page and closes the modal
   var saveTableV2 = function (tableJson) {
+    console.log("saveTableV2: pageUrl=" + pageUrl + ", tableJson=" + JSON.stringify(tableJson))
     if (!tableJson) {
       sweetAlert("Empty Table", "The table is empty - please select cancel instead.");
       return;
     }
     if (!tableJson.filename) {
       tableJson.filename = StringUtils.randomId();
-      tableJson.uri = pageUrl + "/" + table.filename;
+      tableJson.uri = pageUrl + "/" + tableJson.filename;
     }
 
     $.ajax({
@@ -422,10 +423,10 @@ function loadTableBuilderV2(pageData, onSave, table) {
       processData: false,
       contentType: 'application/json'
     });
+    addTableToPageJson(tableJson);
     if (onSave) {
       onSave(tableJson.filename, '<ons-table-v2 path="' + tableJson.uri + '" />');
     }
-    addTableToPageJson(tableJson);
     closeModal();
   };
 
