@@ -30,7 +30,7 @@ describe("Validating the collection name", () => {
 describe("Validating the collection publish date", () => {
 
     it("returns 'false' if the publish date is missing for a scheduled collection", () => {
-        expect(collectionValidation.date("", "scheduled").isValid).toBe(false);
+        expect(collectionValidation.date("", "scheduled", "custom-schedule").isValid).toBe(false);
     });
     
     it("returns 'true' if a date is given but the publish type is missing", () => {

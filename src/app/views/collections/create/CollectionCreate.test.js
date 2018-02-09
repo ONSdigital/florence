@@ -25,19 +25,12 @@ jest.mock('../../../utilities/date', () => {
     }
 });
 
-jest.mock('../../../utilities/http', () => {
-    return {
-        resolve: function() {
-            //
-        }
-    }
-});
-
 jest.mock('../../../utilities/log', () => {
     return {
         add: function() {
             //
-        }
+        },
+        eventTypes: {}
     }
 });
 
@@ -63,10 +56,16 @@ const newCollectionDetails = {
         value: "09:30",
         errorMsg: ""
     },
+    scheduleType: "custom-schedule",
     pendingDeletes: [],
     teams: [],
     collectionOwner: "ADMIN",
-    releaseUri: ""
+    release: {
+        uri: "",
+        date: "",
+        title: "",
+        errorMsg: ""
+    }
 };
 
 const expectedPostBody = {
