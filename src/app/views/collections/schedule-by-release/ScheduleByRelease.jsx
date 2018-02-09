@@ -20,10 +20,6 @@ const columns = [
     {
         width: "2",
         heading: "Publish date"
-    },
-    {
-        width: "2",
-        heading: "Status"
     }
 ]
 
@@ -80,18 +76,13 @@ export class ScheduleByRelease extends Component {
             }
             return true;
         }).map(release => {
-            let status = "";
-            if (!release.description.finalised) {
-                status = "Not finalised"
-            }
-
             //TODO check whether the release is already associated to a collection
 
             const title = (release.description.title).replace(/<\/?[^>]+(>|$)/g, ""); // remove any <strong> tags added on by Babbage's response
 
             return {
                 id: release.uri,
-                columnValues: [title, date.format(release.description.releaseDate, "ddd, dd/mm/yyyy h:MMTT"), status],
+                columnValues: [title, date.format(release.description.releaseDate, "ddd, dd/mm/yyyy h:MMTT")],
                 returnValue: {
                     uri: release.uri,
                     releaseDate: release.description.releaseDate,
