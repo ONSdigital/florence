@@ -23,7 +23,7 @@ function addDataset(collectionId, data, field, idField) {
         downloadExtensions = /\.csdb$|\.csv$/;
         pageType = 'timeseries_dataset';
     } else {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
         pageType = 'dataset';
     }
 

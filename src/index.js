@@ -74,6 +74,7 @@ class Index extends Component {
                 <Router history={ history }>
                     <Route component={ App }>
                         <Route component={ Layout }>
+                            <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
                             <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
                                 <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
                                     <Route path='edit' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
