@@ -452,7 +452,7 @@ function loadTableBuilderV2(pageData, onSave, table) {
             startTableBuilder("table-builder-app", data, saveTableV2, closeModal);
         });
     } else {
-        startTableBuilder("table-builder-app", tableData, saveTableV2, closeModal);
+        startTableBuilder("table-builder-app", {}, saveTableV2, closeModal);
     }
 
 }
