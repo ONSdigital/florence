@@ -14,11 +14,11 @@ const propTypes = {
 
 const columns = [
     {
-        width: "8",
+        width: "9",
         heading: "Name"
     },
     {
-        width: "2",
+        width: "3",
         heading: "Publish date"
     }
 ]
@@ -82,7 +82,7 @@ export class ScheduleByRelease extends Component {
 
             return {
                 id: release.uri,
-                columnValues: [title, date.format(release.description.releaseDate, "ddd, dd/mm/yyyy h:MMTT")],
+                columnValues: [title, date.format(release.description.releaseDate, "dddd, dd/mm/yyyy h:MMTT")],
                 returnValue: {
                     uri: release.uri,
                     releaseDate: release.description.releaseDate,
@@ -104,7 +104,6 @@ export class ScheduleByRelease extends Component {
 
     searchReleases(query) {
         this.setState({
-            isFetchingReleases: query ? false : true, // is we haven't got a query we're getting all releases so we should reflect this in state
             isFetchingSearchedReleases: true,
             searchQuery: query
         });
@@ -113,7 +112,6 @@ export class ScheduleByRelease extends Component {
             const tableData = this.mapReleasesToTableRows(searchedReleases.result.results);
             this.setState({
                 isFetchingSearchedReleases: false,
-                isFetchingReleases: false,
                 numberOfReleases: searchedReleases.result.numberOfResults || 0,
                 numberOfPages: searchedReleases.result.paginator ? searchedReleases.result.paginator.numberOfPages : 1,
                 currentPage: 1,
@@ -123,10 +121,7 @@ export class ScheduleByRelease extends Component {
         }).catch(error => {
             //TODO tell the user about the error
 
-            this.setState({
-                isFetchingSearchedReleases: false, 
-                isFetchingReleases: false
-            });
+            this.setState({isFetchingSearchedReleases: false});
             log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching queried releases for 'schedule by release' functionality: " + JSON.stringify(error)});
             console.error("Error fetching queried releases for 'schedule by release' functionality", error);
         });
@@ -177,7 +172,7 @@ export class ScheduleByRelease extends Component {
                     </div>
                 </div>
                 <div className="modal__body grid__col-12">
-                    {this.state.isFetchingReleases &&
+                    {(this.state.isFetchingSearchedReleases && !this.state.searchQuery) &&
                         <p className="margin-bottom--1">Getting all releases...</p>
                     }
                     {this.state.searchQuery &&
