@@ -39,8 +39,12 @@ const propTypes = {
     instance: PropTypes.shape({
       edition: PropTypes.string,
       version: PropTypes.number,
+      release_date: PropTypes.string,
+      state: PropTypes.string,
       id: PropTypes.string,
       dimensions: PropTypes.arrayOf(PropTypes.object),
+      alerts: PropTypes.arrayOf(PropTypes.object),
+      latest_changes: PropTypes.arrayOf(PropTypes.object)
     }),
     version: PropTypes.shape({
       edition: PropTypes.string,
@@ -56,7 +60,7 @@ const propTypes = {
     btn: PropTypes.string
 }
 
-class VersionMetadata extends Component {
+export class VersionMetadata extends Component {
     constructor(props) {
         super(props);
 
@@ -92,6 +96,7 @@ class VersionMetadata extends Component {
         this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
         this.editRelatedLink = this.editRelatedLink.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+        this.handleBackButton = this.handleBackButton.bind(this);
     }
 
     componentWillMount() {
@@ -103,10 +108,6 @@ class VersionMetadata extends Component {
           Promise.resolve()
       ];
 
-      if (this.props.recipes.length === 0) {
-          getMetadata[0] = recipes.getAll();
-      }
-
       if (this.props.params.instanceID) {
         getMetadata[1] = datasets.getInstance(this.props.params.instanceID);
         this.setState({isInstance: true});
@@ -115,6 +116,7 @@ class VersionMetadata extends Component {
         this.setState({isInstance: false});
       }
 
+      getMetadata[0] = recipes.getAll();
       getMetadata[2] = datasets.get(this.props.params.datasetID);
 
       Promise.all(getMetadata).then(responses => {
@@ -228,7 +230,7 @@ class VersionMetadata extends Component {
         // Set our initial state, so that we can detect whether there have been any unsaved changes
         if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
             this.originalState = nextState;
-            this.setState({hasChanges: true});
+            this.setState({hasChanges: false});
         }
     }
 
@@ -342,6 +344,7 @@ class VersionMetadata extends Component {
         const recipe = this.props.recipes.find(recipe => {
             return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
         })
+
         const editions = recipe.output_instances[0].editions;
         return editions.map(edition => edition);
       }
@@ -349,9 +352,9 @@ class VersionMetadata extends Component {
       mapDimensionsToInputs(dimensions){
         return (
           dimensions.map(dimension => {
-            return (
+            return (    
               <div key={dimension.name}>
-                <h3>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h3>
+                <h3 className="dimension-title">{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h3>
                 <Input
                     value={dimension.description}                  
                     type="textarea"
@@ -472,7 +475,16 @@ class VersionMetadata extends Component {
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
      }
 
-     handleCancel() {
+     handleBackButton() {
+        if (this.state.hasChanges) {
+            this.setState({showModal: true});
+            return;
+        }
+
+        this.props.dispatch(push(url.resolve("/datasets")));
+    }
+    
+    handleCancel() {
         this.setState({
             showModal: false,
             modalType: "",
@@ -508,6 +520,7 @@ class VersionMetadata extends Component {
                 [name]: value
             });
         }
+        this.setState({hasChanges: true});
 
      }
 
@@ -542,7 +555,7 @@ class VersionMetadata extends Component {
             }
             if (this.state.descInput == ""){
                 this.setState({
-                    urlError: "You must provide a description"
+                    descError: "You must provide a description"
                 });
             }
         } else {
@@ -635,8 +648,7 @@ class VersionMetadata extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
                     <div className="margin-top--2">
-                      &#9664; <Link to={url.resolve("/datasets")}>Back</Link>
-                      <p className="margin-top--1">Dataset: <strong>{this.state.title || this.props.params.datasetID + " (title not available)"}</strong></p>
+                        &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Metadata</h1>
                     <p>This information is specific to this new data and can be updated each time new data is added.</p>
@@ -724,6 +736,7 @@ class VersionMetadata extends Component {
                               onFormInput={this.handleInputChange}
                               onFormSubmit={this.handleFormSubmit}
                               titleError={this.state.titleError}
+                              descError={this.state.descError}
                               requiresDescription={true}
                               requiresURL={false}
                           />
