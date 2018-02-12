@@ -44,7 +44,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
     //Add
     if (data.type === 'compendium_data') {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
     } else {
         sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
     }
