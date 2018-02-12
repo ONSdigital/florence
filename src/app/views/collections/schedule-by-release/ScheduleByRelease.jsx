@@ -6,6 +6,7 @@ import releases from '../../../utilities/api-clients/releases';
 import log, { eventTypes } from '../../../utilities/log';
 import Input from '../../../components/Input';
 import date from '../../../utilities/date'
+import notifications from '../../../utilities/notifications'
 
 const propTypes = {
     onClose: PropTypes.func.isRequired,
@@ -58,7 +59,21 @@ export class ScheduleByRelease extends Component {
                 tableData
             });
         }).catch(error => {
-            //TODO tell the user about the error
+            if (error.status === "FETCH_ERR") {
+                const notification = {
+                    type: "warning",
+                    message: "There was a network error whilst getting upcoming releases, please check your connection and try again",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    message: "An unexpected error occured whilst trying to get upcoming releases",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+            }
 
             this.setState({isFetchingReleases: false});
             log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching upcoming releases for 'scheduled by release' functionality: " + JSON.stringify(error)});
@@ -119,7 +134,21 @@ export class ScheduleByRelease extends Component {
                 tableData
             });
         }).catch(error => {
-            //TODO tell the user about the error
+            if (error.status === "FETCH_ERR") {
+                const notification = {
+                    type: "warning",
+                    message: "There was a network error whilst getting upcoming releases, please check your connection and try again",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    message: "An unexpected error occured whilst trying to get upcoming releases",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+            }
 
             this.setState({isFetchingSearchedReleases: false});
             log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching queried releases for 'schedule by release' functionality: " + JSON.stringify(error)});
@@ -136,7 +165,21 @@ export class ScheduleByRelease extends Component {
                 tableData: [...state.tableData , ...this.mapReleasesToTableRows(upcomingReleases.result.results)]
             }));
         }).catch(error => {
-            //TODO tell the user about the error
+            if (error.status === "FETCH_ERR") {
+                const notification = {
+                    type: "warning",
+                    message: "There was a network error whilst getting more upcoming releases, please check your connection and try again",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    message: "An unexpected error occured whilst trying to get more upcoming releases",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+            }
 
             this.setState({isFetchingExtraReleases: false});
             log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching extra upcoming releases for 'scheduled by release' functionality: " + JSON.stringify(error)});
