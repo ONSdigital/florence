@@ -25,129 +25,115 @@ templates['blockNewsModal'] = template({"1":function(depth0,helpers,partials,dat
     + "</textarea>\n      </div>\n    </div>\n    <div class='modal-nav_t1'>\n      <button class='btn-uri-get'>Save</button>\n      <button class='btn-uri-cancel'>Cancel</button>\n    </div>\n  </div>\n</div>";
 },"useData":true});
 templates['browseNode'] = template({"1":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2=this.escapeExpression;
+    var stack1;
 
-  return " \n    <li class=\"js-browse__item "
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\" data-url=\""
-    + alias2(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "\">\n        <span class=\"page__container "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\">\n            <span class=\"js-browse__item-title page__item"
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(6, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "")
-    + "\">"
-    + alias2(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "</span>\n            <span class=\"page__buttons page__buttons--list\">\n\n                <span class=\"page__primary-buttons js-browse__buttons--primary "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\">\n                    <button class=\"btn btn--primary btn-browse-edit\">Edit</button>\n                    <button class=\"btn btn--positive btn-browse-create\">Create</button>\n                </span>\n\n\n                <button class=\"btn btn--primary btn-browse-delete-revert "
-    + ((stack1 = (helpers.ifCond || (depth0 && depth0.ifCond) || alias1).call(depth0,(depth0 != null ? depth0.deleteIsInCollection : depth0),"&&",(depth0 != null ? depth0.deleteMarker : depth0),{"name":"ifCond","hash":{},"fn":this.program(14, data, 0),"inverse":this.program(12, data, 0),"data":data})) != null ? stack1 : "")
-    + "\">Revert deletion</button>\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isDeletable : depth0),{"name":"if","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "            </span>\n        </span>\n        "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(24, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "    </li>\n";
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isVisualisationsDirectory : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.program(9, data, 0),"data":data})) != null ? stack1 : "");
 },"2":function(depth0,helpers,partials,data) {
-    return "js-browse__item--directory";
-},"4":function(depth0,helpers,partials,data) {
-    return "deleted";
-},"6":function(depth0,helpers,partials,data) {
-    return " page__item--directory";
-},"8":function(depth0,helpers,partials,data) {
-    var helper;
-
-  return " page__item--"
-    + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)));
-},"10":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "\n                : "
-    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1), depth0));
-},"12":function(depth0,helpers,partials,data) {
-    return "hidden";
-},"14":function(depth0,helpers,partials,data) {
-    return "";
-},"16":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return "                    "
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.deleteIsInCollection : depth0),{"name":"unless","hash":{},"fn":this.program(17, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n";
-},"17":function(depth0,helpers,partials,data) {
-    return "* this file has been delete in another collection";
-},"19":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return "                    <span class=\"js-browse__buttons--secondary "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\">\n                        <button class=\"js-browse__menu hamburger-icon hamburger-icon--page-item\">\n                            <span class=\"hamburger-icon__span\">toggle menu</span>\n                        </button>\n\n                        <span class=\"page__menu\">\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isMoveable : depth0),{"name":"if","hash":{},"fn":this.program(20, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isDeletable : depth0),{"name":"if","hash":{},"fn":this.program(22, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n                        </span>\n                    </span>\n";
-},"20":function(depth0,helpers,partials,data) {
-    return "                                <button class=\"btn btn--primary btn-browse-move\">Move</button>";
-},"22":function(depth0,helpers,partials,data) {
-    return "                                <button class=\"btn btn--warning btn-browse-delete\">Delete</button>";
-},"24":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return " \n            <ul class=\"js-browse__children\">\n                "
-    + ((stack1 = this.invokePartial(partials.browseNode,depth0,{"name":"browseNode","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + " \n            </ul>\n";
-},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
-},"usePartial":true,"useData":true});
-templates['browseNodeDataVis'] = template({"1":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return " \n    <li class=\"js-browse__item\" data-url=\""
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.program(4, data, 0),"data":data})) != null ? stack1 : "")
-    + "\" >\n        <span class=\"page__container\">\n            <span class=\"js-browse__item-title page__item"
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(6, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "")
-    + " "
-    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || helpers.helperMissing).call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1),"visualisations",{"name":"if_eq","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\">"
+  return "        <li class=\"js-browse__item\" data-is-visualisations=\"\" >\n            <span class=\"page__container\">\n                <span class=\"js-browse__item-title page__item page__item--directory datavis-directory\">\n                    "
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + "</span>\n            <div class=\"page__buttons page__buttons--list\">\n                "
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"if","hash":{},"fn":this.program(14, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "            </div>\n        </span>\n        "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "    </li>\n";
-},"2":function(depth0,helpers,partials,data) {
+    + "\n                </span>\n                <div class=\"page__buttons page__buttons--list\">\n                    <button class=\"btn btn--positive btn-browse-create-datavis\">Upload visualisation</button>\n                </div>\n            </span>\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </li>\n";
+},"3":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "                <ul class=\"js-browse__children\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"each","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "                </ul>\n";
+},"4":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=this.escapeExpression;
+
+  return "                        <li class=\"js-browse__item\" data-url=\""
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.program(7, data, 0),"data":data})) != null ? stack1 : "")
+    + "\" >\n                            <span class=\"page__container\">\n                                <span class=\"js-browse__item-title page__item page__item--"
+    + alias1(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
+    + "\">\n                                    "
+    + alias1(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "\n                                </span>\n                                <div class=\"page__buttons page__buttons--list\">\n                                    <button class=\"btn btn--primary btn-browse-edit\">Edit</button>\n                                </div>\n                            </span>\n                        </li>\n";
+},"5":function(depth0,helpers,partials,data) {
     var helper;
 
   return this.escapeExpression(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)));
-},"4":function(depth0,helpers,partials,data) {
+},"7":function(depth0,helpers,partials,data) {
     var stack1;
 
   return "/"
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0));
-},"6":function(depth0,helpers,partials,data) {
+},"9":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2=this.escapeExpression;
+
+  return "        <li class=\"js-browse__item "
+    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\" data-url=\""
+    + alias2(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">\n            <span class=\"page__container "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\">\n                <span class=\"js-browse__item-title page__item"
+    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(14, data, 0),"inverse":this.program(16, data, 0),"data":data})) != null ? stack1 : "")
+    + "\">"
+    + alias2(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(18, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</span>\n                <span class=\"page__buttons page__buttons--list\">\n\n                    <span class=\"page__primary-buttons js-browse__buttons--primary "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(20, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\">\n                        <button class=\"btn btn--primary btn-browse-edit\">Edit</button>\n                        <button class=\"btn btn--positive btn-browse-create\">Create</button>\n                    </span>\n\n\n                    <button class=\"btn btn--primary btn-browse-delete-revert "
+    + ((stack1 = (helpers.ifCond || (depth0 && depth0.ifCond) || alias1).call(depth0,(depth0 != null ? depth0.deleteIsInCollection : depth0),"&&",(depth0 != null ? depth0.deleteMarker : depth0),{"name":"ifCond","hash":{},"fn":this.program(22, data, 0),"inverse":this.program(20, data, 0),"data":data})) != null ? stack1 : "")
+    + "\">Revert deletion</button>\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(24, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isDeletable : depth0),{"name":"if","hash":{},"fn":this.program(27, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "                </span>\n            </span>\n            "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(32, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "        </li>\n";
+},"10":function(depth0,helpers,partials,data) {
+    return "js-browse__item--directory";
+},"12":function(depth0,helpers,partials,data) {
+    return "deleted";
+},"14":function(depth0,helpers,partials,data) {
     return " page__item--directory";
-},"8":function(depth0,helpers,partials,data) {
+},"16":function(depth0,helpers,partials,data) {
     var helper;
 
   return " page__item--"
     + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)));
-},"10":function(depth0,helpers,partials,data) {
-    return "datavis-directory";
-},"12":function(depth0,helpers,partials,data) {
-    return "<button class=\"btn btn--positive btn-browse-create-datavis\">Upload visualisation</button>";
-},"14":function(depth0,helpers,partials,data) {
-    return "                    <button class=\"btn btn--primary btn-browse-edit\">Edit</button>\n";
-},"16":function(depth0,helpers,partials,data) {
+},"18":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return " \n            <ul class=\"js-browse__children\">\n                "
-    + ((stack1 = this.invokePartial(partials.browseNodeDataVis,depth0,{"name":"browseNodeDataVis","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + " \n            </ul>\n";
+  return "\n                    : "
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1), depth0));
+},"20":function(depth0,helpers,partials,data) {
+    return "hidden";
+},"22":function(depth0,helpers,partials,data) {
+    return "";
+},"24":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "                        "
+    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.deleteIsInCollection : depth0),{"name":"unless","hash":{},"fn":this.program(25, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n";
+},"25":function(depth0,helpers,partials,data) {
+    return "* this file has been delete in another collection";
+},"27":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "                        <span class=\"js-browse__buttons--secondary "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.deleteMarker : depth0),{"name":"if","hash":{},"fn":this.program(20, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\">\n                            <button class=\"js-browse__menu hamburger-icon hamburger-icon--page-item\">\n                                <span class=\"hamburger-icon__span\">toggle menu</span>\n                            </button>\n\n                            <span class=\"page__menu\">\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isMoveable : depth0),{"name":"if","hash":{},"fn":this.program(28, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isDeletable : depth0),{"name":"if","hash":{},"fn":this.program(30, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n                            </span>\n                        </span>\n";
+},"28":function(depth0,helpers,partials,data) {
+    return "                                    <button class=\"btn btn--primary btn-browse-move\">Move</button>";
+},"30":function(depth0,helpers,partials,data) {
+    return "                                    <button class=\"btn btn--warning btn-browse-delete\">Delete</button>";
+},"32":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return " \n                <ul class=\"js-browse__children\">\n                    "
+    + ((stack1 = this.invokePartial(partials.browseNode,depth0,{"name":"browseNode","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + " \n                </ul>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -775,15 +761,9 @@ templates['collectionList'] = template({"1":function(depth0,helpers,partials,dat
 },"8":function(depth0,helpers,partials,data) {
     return " [error whilst preparing publish]";
 },"10":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return "        	<div class=\"select-wrap\">\n                <select id=\"team\">\n                    <option selected disabled=\"disabled\">Select the team the collection can be previewed by</option>\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.teams : depth0),{"name":"each","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "                </select>\n            </div>\n            <ul id=\"team-tag\"></ul>\n            <input type=\"text\" class=\"hidden\" id=\"team-input\">\n";
-},"11":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "                        <option value=\""
+  return "                    <option value=\""
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"name","hash":{},"data":data}) : helper)))
@@ -793,9 +773,9 @@ templates['collectionList'] = template({"1":function(depth0,helpers,partials,dat
 
   return "<section class=\"panel panel--padded col col--6\" xmlns=\"http://www.w3.org/1999/html\">\n    <h1 class=\"text-align-center\">Select a collection</h1>\n    <table class=\"table table--primary table--fixed-height-27 js-selectable-table\">\n        <thead>\n        <tr>\n            <th id=\"collection-name\" scope=\"col\">Collection name</th>\n            <th id=\"collection-date\" scope=\"col\">Collection date</th>\n        </tr>\n        </thead>\n        <tbody>\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.response : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        </tbody>\n    </table>\n</section>\n<section class=\"panel panel--padded col col--6\">\n    <h1 class=\"text-align-center\">Create a collection</h1>\n\n    <form method=\"post\" action=\"\" class=\"form form-create-collection\">\n        <label for=\"collectionname\" class=\"hidden\">Scheduled publish</label>\n        <input id=\"collectionname\" type=\"text\" placeholder=\"Collection name\"/>\n        <label for=\"team\" class=\"hidden\">Select the team the collection can be previewed by</label>\n"
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.isDataVis : depth0),{"name":"unless","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        <input type=\"radio\" id=\"scheduledpublish\" name=\"publishType\" value=\"scheduled\" checked><label\n            for=\"scheduledpublish\">Scheduled publish</label>\n        <input type=\"radio\" id=\"manualpublish\" name=\"publishType\" value=\"manual\" required><label for=\"manualpublish\">Manual\n        publish</label>\n        <br>\n\n        <div id=\"scheduledPublishOptions\" class=\"form__container overflow-hidden\">\n            <input type=\"radio\" id=\"customschedule\" name=\"scheduleType\" value=\"custom\" checked><label\n                for=\"customschedule\">Custom\n            schedule</label>\n            <input type=\"radio\" id=\"releaseschedule\" name=\"scheduleType\" value=\"release\" required><label\n                for=\"releaseschedule\">Calendar entry schedule</label>\n\n            <div id=\"customScheduleOptions\" class=\"form__container form__container--dark padding-top--1 padding-bottom--1\">\n                <div class=\"overflow-hidden\">\n                    <label for=\"date\" class=\"hidden\">Date</label>\n                    <input id=\"date\" type=\"text\" placeholder=\"dd/mm/yyyy\"/>\n                    <br>\n                    <label for=\"hour\" class=\"hidden\">Hour</label>\n                    <div class=\"select-wrap select-wrap--small\">\n                        <select id=\"hour\">\n"
+    + "        </tbody>\n    </table>\n</section>\n<section class=\"panel panel--padded col col--6\">\n    <h1 class=\"text-align-center\">Create a collection</h1>\n\n    <form method=\"post\" action=\"\" class=\"form form-create-collection\">\n        <label for=\"collectionname\" class=\"hidden\">Scheduled publish</label>\n        <input id=\"collectionname\" type=\"text\" placeholder=\"Collection name\"/>\n        <label for=\"team\" class=\"hidden\">Select the team the collection can be previewed by</label>\n        <div class=\"select-wrap\">\n            <select id=\"team\">\n                <option selected disabled=\"disabled\">Select the team the collection can be previewed by</option>\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.teams : depth0),{"name":"each","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "            </select>\n        </div>\n        <ul id=\"team-tag\"></ul>\n        <input type=\"text\" class=\"hidden\" id=\"team-input\">\n        <input type=\"radio\" id=\"scheduledpublish\" name=\"publishType\" value=\"scheduled\" checked><label\n            for=\"scheduledpublish\">Scheduled publish</label>\n        <input type=\"radio\" id=\"manualpublish\" name=\"publishType\" value=\"manual\" required><label for=\"manualpublish\">Manual\n        publish</label>\n        <br>\n\n        <div id=\"scheduledPublishOptions\" class=\"form__container overflow-hidden\">\n            <input type=\"radio\" id=\"customschedule\" name=\"scheduleType\" value=\"custom\" checked><label\n                for=\"customschedule\">Custom\n            schedule</label>\n            <input type=\"radio\" id=\"releaseschedule\" name=\"scheduleType\" value=\"release\" required><label\n                for=\"releaseschedule\">Calendar entry schedule</label>\n\n            <div id=\"customScheduleOptions\" class=\"form__container form__container--dark padding-top--1 padding-bottom--1\">\n                <div class=\"overflow-hidden\">\n                    <label for=\"date\" class=\"hidden\">Date</label>\n                    <input id=\"date\" type=\"text\" placeholder=\"dd/mm/yyyy\"/>\n                    <br>\n                    <label for=\"hour\" class=\"hidden\">Hour</label>\n                    <div class=\"select-wrap select-wrap--small\">\n                        <select id=\"hour\">\n"
     + ((stack1 = this.invokePartial(partials.selectorHour,depth0,{"name":"selectorHour","data":data,"indent":"                            ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "                        </select>\n                    </div>\n                    <label for=\"min\" class=\"hidden\">Minutes</label>\n                    <div class=\"select-wrap select-wrap--small\">\n                        <select id=\"min\">\n"
     + ((stack1 = this.invokePartial(partials.selectorMinute,depth0,{"name":"selectorMinute","data":data,"indent":"                            ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
@@ -1362,15 +1342,13 @@ templates['login'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(
     return "<div class=\"col--4 login-wrapper\">\n  <h1>Login</h1>\n\n  <form method=\"post\" action=\"\" class=\"form-login\">\n    <label for=\"email\">Email:</label>\n    <input id=\"email\" type=\"email\" class=\"fl-user-and-access__email\" name=\"email\" cols=\"40\" rows=\"1\"/>\n\n    <label for=\"password\">Password:</label>\n    <input id=\"password\" type=\"password\" class=\"fl-user-and-access__password\" name=\"password\" cols=\"40\" rows=\"1\"/>\n\n    <button type=\"submit\" id=\"login\" class=\"btn btn--primary margin-left--0 btn-florence-login fl-panel--user-and-access__login \">Log in</button>\n  </form>\n</div>";
 },"useData":true});
 templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
-    var stack1, alias1=helpers.helperMissing;
+    var stack1;
 
   return "        "
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.environment : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n\n"
     + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n"
-    + ((stack1 = (helpers.if_ne || (depth0 && depth0.if_ne) || alias1).call(depth0,(((stack1 = (depth0 && depth0.Authentication)) && stack1.userType) || alias1).call(depth0,{"name":"this.Authentication.userType","hash":{},"data":data}),"DATA_VISUALISATION",{"name":"if_ne","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--logout\" href=\"javascript:void(0)\">Logout</a></li>\n";
+    + "\n        <li class=\"nav__item\">\n            <a class=\"nav__link js-nav-item js-nav-item--collections\" href=\"javascript:void(0)\">Collections</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--publish\" href=\"javascript:void(0)\">Publishing queue</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--reports\" href=\"javascript:void(0)\">Reports</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--users\" href=\"javascript:void(0)\">Users and access</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--teams\" href=\"javascript:void(0)\">Teams</a></li>\n        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--logout\" href=\"javascript:void(0)\">Logout</a></li>\n";
 },"2":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -1384,14 +1362,12 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
     + "</a></li>\n";
 },"6":function(depth0,helpers,partials,data) {
-    return "            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--reports\" href=\"javascript:void(0)\">Reports</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--users\" href=\"javascript:void(0)\">Users and access</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--teams\" href=\"javascript:void(0)\">Teams</a></li>\n";
-},"8":function(depth0,helpers,partials,data) {
     return "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--login selected\" href=\"javascript:void(0)\">Login</a></li>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
   return "<ul class=\"nav__list\">\n    <li id=\"network-status\" class=\"icon-status\">\n        <div class=\"icon-status--very-poor\"></div>\n        <div class=\"icon-status--poor\"></div>\n        <div class=\"icon-status--ok\"></div>\n        <div class=\"icon-status--good\"></div>\n    </li>\n\n"
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.Authentication : depth0)) != null ? stack1.isAuthenticated : stack1),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(8, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.Authentication : depth0)) != null ? stack1.isAuthenticated : stack1),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(6, data, 0),"data":data})) != null ? stack1 : "")
     + "</ul>\n";
 },"useData":true});
 templates['markdownEditor'] = template({"1":function(depth0,helpers,partials,data) {
@@ -1856,7 +1832,7 @@ templates['userList'] = template({"1":function(depth0,helpers,partials,data) {
     + alias3(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"email","hash":{},"data":data}) : helper)))
     + "</td>\n            </tr>\n";
 },"3":function(depth0,helpers,partials,data) {
-    return "                <input type=\"radio\" id=\"admin-type\" name=\"type\" value=\"admin\" required><label\n                    for=\"admin-type\">Administrator</label>\n                <input type=\"radio\" id=\"publisher-type\" name=\"type\" value=\"publisher\" required><label\n                    for=\"publisher-type\">Publisher</label>\n                <input type=\"radio\" id=\"data-vis-type\" name=\"type\" value=\"dataVisPublisher\" required><label\n                    for=\"data-vis-type\">Visualisation publisher</label>\n";
+    return "                <input type=\"radio\" id=\"admin-type\" name=\"type\" value=\"admin\" required><label\n                    for=\"admin-type\">Administrator</label>\n                <input type=\"radio\" id=\"publisher-type\" name=\"type\" value=\"publisher\" required><label\n                    for=\"publisher-type\">Publisher</label>\n";
 },"5":function(depth0,helpers,partials,data) {
     return "                <input type=\"radio\" id=\"viewer-type\" name=\"type\" value=\"viewer\" checked><label\n                    for=\"viewer-type\">Viewer</label>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -1877,45 +1853,26 @@ templates['workBrowse'] = template({"1":function(depth0,helpers,partials,data) {
   return " page__item--"
     + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)));
 },"5":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return "                        <div class=\"page__buttons page__buttons--list selected\">\n                            <button class=\"btn btn--primary btn-browse-edit\">Edit</button>\n                            <button class=\"btn btn--positive btn-browse-create\">Create</button>\n                            "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isDeletable : depth0),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "\n                        </div>\n";
-},"6":function(depth0,helpers,partials,data) {
     return "<button class=\"btn btn--warning btn-browse-delete\">Delete</button>";
-},"8":function(depth0,helpers,partials,data) {
-    var stack1, alias1=helpers.helperMissing;
+},"7":function(depth0,helpers,partials,data) {
+    var stack1;
 
-  return " \n                    <ul class=\"js-browse__children\">\n"
-    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.collectionOwner : depth0),"PUBLISHING_SUPPORT",{"name":"if_eq","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.collectionOwner : depth0),"DATA_VISUALISATION",{"name":"if_eq","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+  return "                    <ul class=\"js-browse__children\">\n"
+    + ((stack1 = this.invokePartial(partials.browseNode,depth0,{"name":"browseNode","data":data,"indent":"                        ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "                    </ul>\n";
-},"9":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return "                            "
-    + ((stack1 = this.invokePartial(partials.browseNode,depth0,{"name":"browseNode","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + " \n";
-},"11":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return "                            "
-    + ((stack1 = this.invokePartial(partials.browseNodeDataVis,depth0,{"name":"browseNodeDataVis","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + " \n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing, alias2=this.escapeExpression;
+    var stack1, helper, alias1=this.escapeExpression;
 
   return "<section class=\"panel workspace-browse\">\n    <nav class=\"tree-nav-holder js-browse\">\n        <ul class=\"page-list page-list--tree\">\n            <li class=\"js-browse__item\" data-url=\""
-    + alias2(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + alias1(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">\n                <div class=\"page__container selected\">\n                    <span class=\"js-browse__item-title page__item"
     + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.uri : depth0),{"name":"unless","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "")
     + "\">"
-    + alias2(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + "</span>\n"
-    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.collectionOwner : depth0),"PUBLISHING_SUPPORT",{"name":"if_eq","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "                </div>\n                "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(8, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + alias1(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
+    + "</span>\n                    <div class=\"page__buttons page__buttons--list selected\">\n                        <button class=\"btn btn--primary btn-browse-edit\">Edit</button>\n                        <button class=\"btn btn--positive btn-browse-create\">Create</button>\n                        "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isDeletable : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n                    </div>\n                </div>\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.children : depth0),{"name":"if","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "            </li>\n        </ul>\n    </nav>\n</section>";
 },"usePartial":true,"useData":true});
 templates['workCreate'] = template({"1":function(depth0,helpers,partials,data) {
@@ -2709,10 +2666,10 @@ templates['workSpace'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":funct
 
   return "<nav class=\"panel col col--1 nav nav--workspace js-workspace-nav\">\n    <ul class=\"nav__list nav__list--workspace\">\n        <!--<div id=\"nav--workspace__welsh\" style=\"margin-top: 20px;\"></div>-->\n        <!--<br/>-->\n        <li class=\"nav__item nav__item--workspace nav__item--lang js-workspace-nav__item\" id=\"nav--workspace__welsh\"></li>\n        <li class=\"nav__item nav__item--workspace nav__item--browse js-workspace-nav__item selected\" id=\"browse\"><a class=\"nav__link\" href=\"javascript:void(0)\">Browse</a>\n        </li>\n        <li class=\"nav__item nav__item--workspace nav__item--create js-workspace-nav__item\" id=\"create\"><a class=\"nav__link\" href=\"javascript:void(0)\">Create</a>\n        </li>\n        <li class=\"nav__item nav__item--workspace nav__item--edit js-workspace-nav__item\" id=\"edit\"><a class=\"nav__link\" href=\"javascript:void(0)\">Edit</a></li>\n    </ul>\n</nav>\n<div class=\"panel col col--4 workspace-menu\" id=\"browse-tree\">\n"
     + ((stack1 = this.invokePartial(partials.loadingAnimation,depth0,{"name":"loadingAnimation","hash":{"large":true},"data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "</div>\n<section class=\"panel col col--7 workspace-browser\">\n    <div class=\"browser\">\n        <div class=\"addressbar\">\n            <button class=\"btn browser-btn-back\">&lt;</button>\n            <button class=\"btn browser-btn-forward\">&gt;</button>\n            <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label>\n            <input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n            <div class=\"browser-location__select select-wrap select-wrap--browser\" id='select-vis-wrapper'>\n                <select id='select-vis-preview'></select>\n            </div>\n            <button class=\"btn browser-btn-mobile\">Mobile</button>\n        </div>\n        <iframe id=\"iframe\" src=\""
+    + "</div>\n<section class=\"panel col col--7 workspace-browser\">\n    <div class=\"browser\">\n        <div class=\"addressbar\">\n            <button class=\"btn browser-btn-back\">&lt;</button>\n            <button class=\"btn browser-btn-forward\">&gt;</button>\n            <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label>\n            <input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n            <div class=\"browser-location__select select-wrap select-wrap--browser\" id='select-vis-wrapper'>\n                <select id='select-vis-preview'></select>\n            </div>\n            <button class=\"btn browser-btn-mobile\">Mobile</button>\n        </div>\n        <div class=\"browser__iframe\">\n            <iframe id=\"iframe\" src=\""
     + this.escapeExpression(this.lambda(depth0, depth0))
     + "\">\n"
-    + ((stack1 = this.invokePartial(partials.loadingAnimation,depth0,{"name":"loadingAnimation","hash":{"large":true},"data":data,"indent":"            ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "        </iframe>\n    </div>\n</section>\n";
+    + ((stack1 = this.invokePartial(partials.loadingAnimation,depth0,{"name":"loadingAnimation","hash":{"large":true},"data":data,"indent":"                ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
+    + "            </iframe>\n        </div>\n    </div>\n</section>\n";
 },"usePartial":true,"useData":true});
 })();
