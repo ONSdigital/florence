@@ -2588,19 +2588,23 @@ templates['workEditT8VersionList'] = template({"1":function(depth0,helpers,parti
   return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.correction : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(5, data, 0),"data":data})) != null ? stack1 : "");
 },"useData":true});
 templates['workEditTables'] = template({"1":function(depth0,helpers,partials,data) {
-    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
   return "                <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" class=\"edit-section__sortable-item\">\n                    <div class=\"edit-section__title\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</div>\n                    <input class=\"copy-markdown-target\" style=\"position:absolute;left:-99999px;\" value=\"&lt;ons-table path=&#34;"
+    + "</div>\n                    <input class=\"copy-markdown-target\" style=\"position:absolute;left:-99999px;\" value=\"&lt;ons-table"
+    + ((stack1 = (helpers.if_eq || (depth0 && depth0.if_eq) || alias1).call(depth0,(depth0 != null ? depth0.version : depth0),"2",{"name":"if_eq","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + " path=&#34;"
     + alias3(((helper = (helper = helpers.filename || (depth0 != null ? depth0.filename : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"filename","hash":{},"data":data}) : helper)))
     + "&#34; /&gt;\">\n                    <div class=\"edit-section__buttons\">\n                        <button class=\"btn btn-markdown-edit copy-markdown\">\n                            Copy\n                            <div class=\"tick-animation\">\n                                <div class=\"tick-animation-trigger\"></div>\n                                <svg version=\"1.1\" id=\"tick\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 37 37\" style=\"enable-background:new 0 0 37 37;\" xml:space=\"preserve\">\n                                    <path class=\"circ path\" style=\"fill:none;stroke:#F5F6F7;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:10;\" d=\"\n                                        M30.5,6.5L30.5,6.5c6.6,6.6,6.6,17.4,0,24l0,0c-6.6,6.6-17.4,6.6-24,0l0,0c-6.6-6.6-6.6-17.4,0-24l0,0C13.1-0.2,23.9-0.2,30.5,6.5z\"\n                                        />\n                                    <polyline class=\"tick path\" style=\"fill:none;stroke:#F5F6F7;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:10;\" points=\"\n                                        11.6,20 15.9,24.2 26.4,13.8 \"/>\n                                </svg>\n                            </div>\n                        </button>\n                        <button class=\"btn btn--primary btn-markdown-edit\" id=\"table-edit_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Edit</button>\n                        <button class=\"btn btn--warning btn-page-delete\" id=\"table-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n                    </div>\n                </div>\n";
+},"2":function(depth0,helpers,partials,data) {
+    return "-v2";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
