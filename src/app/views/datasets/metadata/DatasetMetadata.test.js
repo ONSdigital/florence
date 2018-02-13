@@ -58,6 +58,7 @@ const exampleDataset = {
     current: {
         collection_id: 'fddffdfdaadf-e8ad17766a81bf589e76ef57d854945fdf0bfe546000228837aa70701506869c',
         id: '931a8a2a-0dc8-42b6-a884-7b6054ed3b68',
+        license: 'Open Government License',
         links: {
             editions: {
                 href: 'http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions'
@@ -71,9 +72,7 @@ const exampleDataset = {
             }
         },
         qmi: {
-            href: 'http://localhost:8080/datasets/12345',
-            title: 'An example QMI',
-            description: 'this is an example QMI for you to look at'
+            href: 'http://localhost:8080/datasets/12345'
         },
         related_datasets: [
             {
@@ -89,6 +88,13 @@ const exampleDataset = {
             {
                 href: 'http://www.localhost:8080/datasets/173849jf8j238d',
                 title: 'An example publication'
+            }
+        ],
+        methodologies: [
+            {
+                href: 'http://www.localhost:8080/datasets/173849jf8j238d',
+                title: 'An example methodology',
+                description: "A description"
             }
         ],
         next_release: 'pudding',
@@ -150,18 +156,20 @@ test("Correct modal type shows when user wants to add a related bulletin", async
     expect(component.state("modalType")).toBe("bulletin");
 });
 
-test("Removing a related QMI updates state to be empty", async () => {
+test("Removing the value from related QMI input updates state to be empty", async () => {
     const component = shallow(
         <DatasetMetadata {...defaultProps} />
     );
+    const mockTitleEvent = {
+        target: {
+            value: "",
+            name: "relatedQMI"
+        }
+    }
     await component.instance().componentWillMount();
     await component.update();
-    expect(component.state("relatedQMI")).toMatchObject({
-        key: "12345",
-        title: exampleDataset.current.qmi.title,
-        url: exampleDataset.current.qmi.href
-    });
-    await component.instance().handleDeleteRelatedClick("qmi", "12345");
+    expect(component.state("relatedQMI")).toBe(exampleDataset.current.qmi.href);
+    component.instance().handleInputChange(mockTitleEvent);
     await component.update();
     expect(component.state("relatedQMI")).toBe("");
 });
@@ -177,7 +185,7 @@ test("Handler for removing a related bulletin updates state correctly", async ()
     expect(component.state("relatedBulletins")[0]).toMatchObject({
         key: "12345",
         title: exampleDataset.current.publications[0].title,
-        url: exampleDataset.current.publications[0].href
+        href: exampleDataset.current.publications[0].href
     });
     await component.instance().handleDeleteRelatedClick("bulletin", "12345");
     await component.update();
@@ -196,9 +204,19 @@ test("Related datasets are set in state correctly on mount", async () => {
         expect(relatedLink).toMatchObject({
             key: "12345",
             title: exampleDataset.current.related_datasets[index].title,
-            url: exampleDataset.current.related_datasets[index].href
+            href: exampleDataset.current.related_datasets[index].href
         });
     });
+});
+
+test("Usage information is set in state after successful fetch from dataset API on mount", async () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+
+    await component.instance().componentWillMount();
+    await component.update(); // update() appears to be async so we need to wait for it to finish before asserting
+    expect(component.state("license")).toBe("Open Government License");
 });
 
 test("Changing an input value updates the state to show a change has been made", async () => {
@@ -364,6 +382,20 @@ test("Handle for editing a related link opens modal with existing values", async
     expect(component.state("titleInput")).toBe(exampleDataset.current.publications[0].title);
 });
 
+test("Editing an existing related methodologies card display correct modal with values", async () => {
+    const component = await shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    await component.update();
+    
+    component.instance().handleEditRelatedClick("methodologies", "12345");
+    expect(component.state("showModal")).toBe(true);
+    expect(component.state("modalType")).toBe("methodologies");
+    expect(component.state("urlInput")).toBe(exampleDataset.current.methodologies[0].href);
+    expect(component.state("titleInput")).toBe(exampleDataset.current.methodologies[0].title);
+    expect(component.state("descInput")).toBe(exampleDataset.current.methodologies[0].description);
+});
+
 test("Related items map to card element correctly", async () => {
     const component = await shallow(
         <DatasetMetadata {...defaultProps} />
@@ -372,6 +404,21 @@ test("Related items map to card element correctly", async () => {
 
     const cardProps = component.instance().mapTypeContentsToCard(component.state("relatedLinks"));
     component.state("relatedLinks").forEach((dataset, index) => {
+        expect(cardProps[index]).toMatchObject({
+            title: dataset.title,
+            id: dataset.key
+        });
+    })
+});
+
+test("Methodologies items map to card element correctly", async () => {
+    const component = await shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+    await component.update();
+
+    const cardProps = component.instance().mapTypeContentsToCard(component.state("relatedMethodologies"));
+    component.state("relatedMethodologies").forEach((dataset, index) => {
         expect(cardProps[index]).toMatchObject({
             title: dataset.title,
             id: dataset.key
@@ -446,17 +493,28 @@ describe("Component's state maps to API request correctly when", () => {
         component.setState(mockLinksState);
         expect(component.instance().mapStateToAPIRequest().related_datasets[0]).toEqual(expect.objectContaining(mockLinksState.relatedLinks[0]));
     });
+        
+    it("related methodlogies data has been updated", () => {
+        const mockState = {
+            relatedMethodologies: [
+                {
+                    title: "New methodology",
+                    href: "https://ons.gov.uk",
+                    description: "A new description"
+                }
+            ]
+        }
+    
+        component.setState(mockState);
+        expect(component.instance().mapStateToAPIRequest().methodologies[0]).toEqual(expect.objectContaining(mockState.relatedMethodologies[0]));
+    });
     
     it("related QMI data has been updated", () => {
         const mockQMIState = {
-            relatedQMI: {
-                title: "A methodology article",
-                url: "/economy/gdp/methodology/gdpqmi"
-            } 
+            relatedQMI: "/economy/gdp/methodology/gdpqmi"
         }
         const mockRequestQMIObject = {
-            title: mockQMIState.relatedQMI.title,
-            href: mockQMIState.relatedQMI.url
+            href: mockQMIState.relatedQMI
         }
     
         component.setState(mockQMIState);
@@ -488,5 +546,14 @@ describe("Component's state maps to API request correctly when", () => {
     
         component.setState(mockTitleState);
         expect(component.instance().mapStateToAPIRequest().title).toBe("Foobar");
+    });
+
+    it("usage information has been updated", () => {
+        const mockTitleState = {
+            license: "Foobar"
+        }
+    
+        component.setState(mockTitleState);
+        expect(component.instance().mapStateToAPIRequest().license).toBe("Foobar");
     });
 });
