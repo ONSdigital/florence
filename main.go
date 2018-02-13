@@ -15,8 +15,6 @@ import (
 	"strings"
 	"time"
 
-	mgo "gopkg.in/mgo.v2"
-
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/healthcheck"
 	"github.com/ONSdigital/florence/upload"
@@ -41,7 +39,6 @@ var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
 var upgrader = websocket.Upgrader{}
-var session *mgo.Session
 
 // Version is set by the make target
 var Version string
@@ -151,11 +148,11 @@ func main() {
 	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
 
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/recipes{uri:(?:/.*)?}", recipeAPIProxy)
-	router.Handle("/import{uri:/.*}", importAPIProxy)
-	router.Handle("/dataset{uri:/.*}", datasetAPIProxy)
+	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
+	router.Handle("/import{uri:.*}", importAPIProxy)
+	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
+	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
 	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
@@ -163,7 +160,8 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:/.*}", newAppHandler)
+
+	router.HandleFunc("/florence{uri:.*}", newAppHandler)
 	router.Handle("/{uri:.*}", routerProxy)
 
 	log.Debug("Starting server", log.Data{
