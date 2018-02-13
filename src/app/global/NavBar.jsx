@@ -50,27 +50,27 @@ class NavBar extends Component {
                     {!isViewer ?
                         <span>
                             <li className="global-nav__item">
-                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link disable-visited-colour">Collections</Link>
+                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
                             </li>
 
                             <li className="global-nav__item">
-                                <Link to={`${rootPath}/datasets`} activeClassName="selected" className={"global-nav__link disable-visited-colour" + (route.includes(`${rootPath}/uploads/data`) ? " selected" : "")}>Datasets</Link>
+                                <Link to={`${rootPath}/datasets`} activeClassName="selected" className={"global-nav__link" + (route.includes(`${rootPath}/uploads/data`) ? " selected" : "")}>Datasets</Link>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link disable-visited-colour" href="/florence/publishing-queue">Publishing queue</a>
+                                <a className="global-nav__link " href="/florence/publishing-queue">Publishing queue</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link disable-visited-colour" href="/florence/reports">Reports</a>
+                                <a className="global-nav__link " href="/florence/reports">Reports</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link disable-visited-colour" href="/florence/users-and-access">Users and access</a>
+                                <a className="global-nav__link " href="/florence/users-and-access">Users and access</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link disable-visited-colour">Teams</Link>
+                                <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
                             </li>
                         </span>
                     : "" }
