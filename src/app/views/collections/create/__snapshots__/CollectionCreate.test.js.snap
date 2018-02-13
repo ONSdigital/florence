@@ -67,7 +67,9 @@ exports[`Create collection form matches stored snapshot 1`] = `
     <fieldset
       className="fieldset"
     >
-      <legend>
+      <legend
+        className="fieldset__legend"
+      >
         Publish type
       </legend>
       <div
@@ -117,7 +119,9 @@ exports[`Create collection form matches stored snapshot 1`] = `
       <fieldset
         className="fieldset"
       >
-        <legend>
+        <legend
+          className="fieldset__legend"
+        >
           Schedule type
         </legend>
         <div
