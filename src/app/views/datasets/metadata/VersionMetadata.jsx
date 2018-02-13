@@ -11,6 +11,11 @@ import Select from '../../../components/Select';
 import Input from '../../../components/Input';
 import {updateActiveInstance, updateActiveVersion, updateAllRecipes, updateActiveDataset} from '../../../config/actions';
 import url from '../../../utilities/url'
+import CardList from '../../../components/CardList';
+import Modal from '../../../components/Modal';
+import uuid from 'uuid/v4';
+import RelatedContentForm from './related-content/RelatedContentForm';
+import log, {eventTypes} from '../../../utilities/log'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -34,20 +39,28 @@ const propTypes = {
     instance: PropTypes.shape({
       edition: PropTypes.string,
       version: PropTypes.number,
+      release_date: PropTypes.string,
+      state: PropTypes.string,
       id: PropTypes.string,
       dimensions: PropTypes.arrayOf(PropTypes.object),
+      alerts: PropTypes.arrayOf(PropTypes.object),
+      latest_changes: PropTypes.arrayOf(PropTypes.object)
     }),
     version: PropTypes.shape({
       edition: PropTypes.string,
       state: PropTypes.string,
       version: PropTypes.number,
       dimensions: PropTypes.arrayOf(PropTypes.object),
-      release_date: PropTypes.string
+      release_date: PropTypes.string,
+      id: PropTypes.string,
+      alerts: PropTypes.arrayOf(PropTypes.object),
+      latest_changes: PropTypes.arrayOf(PropTypes.object)
     }),
-    isInstance: PropTypes.string
+    isInstance: PropTypes.string,
+    btn: PropTypes.string
 }
 
-class VersionMetadata extends Component {
+export class VersionMetadata extends Component {
     constructor(props) {
         super(props);
 
@@ -60,13 +73,30 @@ class VersionMetadata extends Component {
             release_frequency: null,
             releaseDate: "",
             releaseDateError: "",
-            dimensions: []
+            dimensions: [],
+            btn: "",
+            versionID: "",
+            showModal: false,
+            alerts: [],
+            changes: [],
+            editKey: "",
+            titleInput: "",
+            descInput: ""
         }
+
+        this.originalState = null;
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handlePageSubmit = this.handlePageSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleReleaseDateChange = this.handleReleaseDateChange.bind(this);
+        this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
+        this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
+        this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
+        this.editRelatedLink = this.editRelatedLink.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleBackButton = this.handleBackButton.bind(this);
     }
 
     componentWillMount() {
@@ -78,10 +108,6 @@ class VersionMetadata extends Component {
           Promise.resolve()
       ];
 
-      if (this.props.recipes.length === 0) {
-          getMetadata[0] = recipes.getAll();
-      }
-
       if (this.props.params.instanceID) {
         getMetadata[1] = datasets.getInstance(this.props.params.instanceID);
         this.setState({isInstance: true});
@@ -90,6 +116,7 @@ class VersionMetadata extends Component {
         this.setState({isInstance: false});
       }
 
+      getMetadata[0] = recipes.getAll();
       getMetadata[2] = datasets.get(this.props.params.datasetID);
 
       Promise.all(getMetadata).then(responses => {
@@ -108,10 +135,32 @@ class VersionMetadata extends Component {
 
         if (this.props.params.version) {
           this.props.dispatch(updateActiveVersion(responses[1]));
+
+          var alerts = [];
+          if (this.props.version.alerts) {
+            this.props.version.alerts.map((alert) => {
+                alert.key = uuid();
+
+                alerts.push(alert);
+            })
+          }
+
+          var changes = [];
+          if (this.props.version.latest_changes) {
+            this.props.version.latest_changes.map((change) => {
+                change.key = uuid();
+
+                changes.push(change);
+            })
+          }
+        
           this.setState({
             dimensions: this.props.version.dimensions,
             edition: this.props.version.edition,
             state: this.props.version.state,
+            versionID: this.props.version.id,
+            alerts: alerts,
+            changes: changes,
             releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : ""
           });
         }
@@ -159,12 +208,30 @@ class VersionMetadata extends Component {
         });
     }
 
-    shouldComponentUpdate(_, nextState) {
+    shouldComponentUpdate(nextProps, nextState) {
         // No need to re-render, this state update does not impact the view.
         if (nextState.isFetchingData) {
           return false;
         }
         return true;
+    }
+
+    componentDidUpdate(_, nextState) {
+        /*
+        We want to detect whether any changes have been made so we can show a warning if the
+        user is leaving without saving
+        */
+
+        // We've already set the state to hasChanges, so do nothing
+        if (nextState.hasChanges) {
+            return;
+        }
+
+        // Set our initial state, so that we can detect whether there have been any unsaved changes
+        if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
+            this.originalState = nextState;
+            this.setState({hasChanges: false});
+        }
     }
 
     postData(body) {
@@ -175,18 +242,46 @@ class VersionMetadata extends Component {
         // Throwing a 400 error - The dataset API has a bug at the version endpoint
         // The API validates certain fields - license & release date
         // It shouldn't at the state of "edition-confirmed".
-        return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body);
+        return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
+            .then(() => {
+                this.state.dimensions.map((dimension) => {
+                    if (this.state[dimension.name]) {
+                        var instanceID = "";
+                        if (this.state.instanceID) {
+                            instanceID = this.state.instanceID;
+                        } else {
+                            instanceID = this.state.versionID;
+                        }
+
+                        datasets.updateDimensionDescription(instanceID, dimension.name, this.state[dimension.name]);
+                    }
+                })
+            })
+            .catch(err => {
+                if (err) {
+                    return err
+                }
+            });
     }
 
     updateInstanceVersion(body) {
+
         if (this.state.hasChanges || this.state.isInstance) {
             return this.postData(body).then(() => {
-                if (this.state.isInstance) {
-                    datasets.getInstance(this.props.params.instanceID).then(response => {
-                        this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/collection`));
-                    });
+                if (this.state.btn === "return") {
+                    this.props.dispatch(push("/florence/datasets"));
                 } else {
-                    this.props.dispatch(push(url.resolve("collection")));
+                    if (this.state.btn === "add") {
+                        if (this.state.isInstance) {
+                            datasets.getInstance(this.props.params.instanceID).then(response => {
+                                this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/collection`));
+                            });
+                        } else {
+                            this.props.dispatch(push(url.resolve("collection")));
+                        }
+                    } else {
+                        this.props.dispatch(push(url.resolve("collection/preview")));
+                    }
                 }
             }).catch(error => {
                 switch (error.status) {
@@ -223,70 +318,221 @@ class VersionMetadata extends Component {
             });
         }
 
-        if (!this.state.isInstance && !this.state.hasChanges) {
-            this.props.dispatch(push(url.resolve("collection")));
+        if (this.state.btn === "return") {
+            this.props.dispatch(push("/florence/datasets"));
+        } else {
+            if (!this.state.isInstance && !this.state.hasChanges) {
+                if (this.state.btn === "add") {
+                    this.props.dispatch(push(url.resolve("collection")));
+                } else {
+                    this.props.dispatch(push(url.resolve("collection/preview")));
+                }
+            }
         }
     }
 
-    mapEditionsToSelectOptions() {
-      const recipe = this.props.recipes.find(recipe => {
-          return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
-      })
-      const editions = recipe.output_instances[0].editions;
-      return editions.map(edition => edition);
-    }
-
-    mapDimensionsToInputs(dimensions){
-      return (
-        dimensions.map(dimension => {
-          return (
-            <div key={dimension.name}>
-              <h2>{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h2>
-              <Input
-                  value=""                  
-                  type="textarea"
-                  id={dimension.name}
-                  disabled={true}
-                  label="Learn more (optional) (not supported yet)"
-                  onChange={this.handleInputChange}
-              />
-            </div>
-          )
-        })
-      )
-    }
-
-    mapReleaseFreqToSelectOptions() {
-        const values = [
-          'Weekly', 'Monthly', 'Yearly'
-        ];
-        return values.map(value => {
+    mapTypeContentsToCard(items, type){
+        return items.map(item => {
             return {
-              id: value.toLowerCase(),
-              name: value
+                title: type === "alerts" ? item.date : item.name,
+                id: item.key,
             }
         });
     }
 
-    handleInputChange(event) {
-       const target = event.target;
-       const value = target.value;
-       const name = target.name;
-       this.setState({
-         [name]: value,
-         hasChanges: true
-       });
+    mapEditionsToSelectOptions() {
+        const recipe = this.props.recipes.find(recipe => {
+            return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
+        })
+
+        const editions = recipe.output_instances[0].editions;
+        return editions.map(edition => edition);
+      }
+  
+      mapDimensionsToInputs(dimensions){
+        return (
+          dimensions.map(dimension => {
+            return (    
+              <div key={dimension.name}>
+                <h3 className="dimension-title">{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h3>
+                <Input
+                    value={dimension.description}                  
+                    type="textarea"
+                    id={dimension.name}
+                    label="Learn more (optional)"
+                    onChange={this.handleInputChange}
+                />
+              </div>
+            )
+          })
+        )
+      }
+  
+      mapReleaseFreqToSelectOptions() {
+          const values = [
+            'Weekly', 'Monthly', 'Yearly'
+          ];
+          return values.map(value => {
+              return {
+                id: value.toLowerCase(),
+                name: value
+              }
+          });
+    }
+    
+    handleEditRelatedClick(type, key) {
+        let relatedItem;
+        
+        if (type === "alerts") {
+            relatedItem = this.state.alerts.find(alert => {
+                return alert.key === key;
+            });
+        }
+
+        if (type === "changes") {
+            relatedItem = this.state.changes.find(change => {
+                return change.key === key;
+            });
+        }
+
+        this.setState({
+            showModal: true,
+            modalType: type,
+            editKey: key,
+            titleInput: type === "alerts" ? relatedItem.date : relatedItem.name,
+            descInput: relatedItem.description
+        });
+    }
+
+    handleDeleteRelatedClick(type, key) {
+        function remove(items, key) {
+            return items.filter(item => {
+                return item.key !== key
+            });
+        }
+
+        if (type === "alerts") {
+            this.setState({
+                alerts: remove(this.state.alerts, key),
+                hasChanges: true
+            });
+            return;
+        }
+
+        if (type === "changes") {
+            this.setState({
+                changes: remove(this.state.changes, key),
+                hasChanges: true
+            });
+            return;
+        }
+
+        console.warn("Attempt to remove a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to remove a related content type that is not recognised: '${type}'`);
      }
 
-     handleSelectChange(event) {
+
+     editRelatedLink(type, key) {
+        const edit = items => {
+            return items.map(item => {
+                if (item.key !== key) {
+                    return item;
+                }
+                if (type === "alerts") {
+                    return {
+                        ...item,
+                        date: this.state.titleInput,
+                        description: this.state.descInput,
+                        type: "correction",
+                        hasChanged: true
+                    }
+                }
+                if (type === "changes") {
+                    return {
+                        ...item,
+                        name: this.state.titleInput,
+                        description: this.state.descInput,
+                        type: "summary of changes",
+                        hasChanged: true
+                    }
+                }
+            });
+        }
+        if (type === "alerts") {
+            this.setState({
+                alerts: edit(this.state.alerts, key)
+            });
+            return;
+        }
+
+        if (type === "changes") {
+            this.setState({
+                changes: edit(this.state.changes, key)
+            });
+        }
+
+        console.warn("Attempt to edit a related content type that is not recognised", type);
+        log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
+     }
+
+     handleBackButton() {
+        if (this.state.hasChanges) {
+            this.setState({showModal: true});
+            return;
+        }
+
+        this.props.dispatch(push(url.resolve("/datasets")));
+    }
+    
+    handleCancel() {
+        this.setState({
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            descInput: "",
+            titleInput: ""
+        });
+    }
+
+    handleAddRelatedClick(type) {
+        this.setState({
+            showModal: true,
+            modalType: type
+        });
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        if (name === "add-related-content-title") {
+            this.setState({titleInput: value});
+            if(this.state.titleError != null) {
+                this.setState({titleError: null})
+            }
+        } else if (name === "add-related-content-desc") {
+            this.setState({descInput: value});
+            if(this.state.descError != null) {
+                this.setState({descError: null})
+            }
+        } else {
+            this.setState({
+                [name]: value
+            });
+        }
+        this.setState({hasChanges: true});
+
+     }
+
+    handleSelectChange(event) {
         const target = event.target;
         const value = target.value;
         const id = target.id;
         this.setState({
-          [id]: value,
-          hasChanges: true
+            [id]: value,
+            hasChanges: true
         });
-      }
+    }
 
     handleReleaseDateChange(event) {
         const value = event.target.value;
@@ -301,88 +547,123 @@ class VersionMetadata extends Component {
     handleFormSubmit(event) {
         event.preventDefault();
 
-        /* 
-            It's currently up in the air whether we need release frequency or not on the version screen 
-            so we shouldn't be validating on it
-        */
-        // if (!this.state.edition || !this.state.release_frequency) {
-        //     if (!this.state.edition) {
-        //         this.setState({
-        //             editionError: "You must select an edition"
-        //         });
-        //     }
-        //     if (!this.state.release_frequency) {
-        //         this.setState({
-        //             releaseError: "You must select a release frequency"
-        //         });
-        //     }
-        //   return
-        // }
-        // const metaData = {
-        //   release_frequency: this.state.release_frequency,
-        //   edition: this.state.edition
-        // }
-        // if (this.state.edition && this.state.release_frequency) {
-        //     this.updateInstanceVersion(metaData);
-        // }
-
-        let haveError = false;
-
-        if (!this.state.edition) {
-            this.setState({
-                editionError: "You must select an edition"
-            });
-            haveError = true;
-        }
-
-        if (!this.state.isInstance && !this.state.releaseDate) {
-            this.setState({
-                releaseDateError: "You must add a release date"
-            });
-            haveError = true;
-        }
-
-        if (this.state.edition && this.state.isInstance && !haveError) {
-            const instanceMetadata = {
-                edition: this.state.edition
+        if(this.state.titleInput == "" || this.state.descInput == ""){
+            if(this.state.titleInput == ""){
+                this.setState({
+                    titleError: "You must provide a value"
+                });
             }
-            if (this.state.releaseDate) {
-                instanceMetadata.release_date = this.state.releaseDate.toISOString();
+            if (this.state.descInput == ""){
+                this.setState({
+                    descError: "You must provide a description"
+                });
             }
-            this.updateInstanceVersion(instanceMetadata);
-            return;
-        }
+        } else {
+            if (this.state.modalType === "alerts") {
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("alerts", this.state.editKey);
+                } else {
+                    const alerts = this.state.alerts.concat({date: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "correction"});
+                    this.setState({alerts: alerts});
+                }
+            } else if (this.state.modalType === "changes") {
+                if (this.state.editKey != "") {
+                    this.editRelatedLink("changes", this.state.editKey);
+                } else {
+                    const changes = this.state.changes.concat({name: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "summary of changes"});
+                    this.setState({changes: changes});
+                }
+            } 
 
-        if (!this.state.isInstance && !haveError) {
-            this.updateInstanceVersion({
-                release_date: this.state.releaseDate.toISOString()
+            this.setState({
+                showModal: false,
+                modalType: "",
+                editKey: "",
+                titleInput: "",
+                descInput: ""
             });
         }
+     }
+
+    handlePageSubmit(event, btn) {
+        event.preventDefault();
+        this.setState({btn: btn}, function () {
+
+            let haveError = false;
+
+            if (!this.state.edition) {
+                this.setState({
+                    editionError: "You must select an edition"
+                });
+                haveError = true;
+            }
+
+            if (!this.state.isInstance && !this.state.releaseDate) {
+                this.setState({
+                    releaseDateError: "You must add a release date"
+                });
+                haveError = true;
+            }
+
+            let alerts = [];
+            this.state.alerts.map((alert) => {
+                if (alert.hasChanged) {
+                    alerts.push(alert);
+                }
+            })
+
+            let changes = [];
+            this.state.changes.map((change) => {
+                if (change.hasChanged) {
+                    changes.push(change);
+                }
+            })
+
+            if (this.state.edition && this.state.isInstance && !haveError) {
+                const instanceMetadata = {
+                    edition: this.state.edition,
+                    alerts: alerts,
+                    latest_changes: changes
+                }
+                if (this.state.releaseDate) {
+                    instanceMetadata.release_date = this.state.releaseDate.toISOString();
+                }
+                this.updateInstanceVersion(instanceMetadata);
+                return;
+            }
+
+            if (!this.state.isInstance && !haveError) {
+                this.updateInstanceVersion({
+                    release_date: this.state.releaseDate.toISOString(),
+                    alerts: alerts,
+                    latest_changes: changes
+                });
+            }
+        });
+
     }
-
 
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-6">
+                <div className="grid__col-4">
                     <div className="margin-top--2">
-                      &#9664; <Link to={url.resolve("/datasets")}>Back</Link>
+                        &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
-                    <h1 className="margin-top--1 margin-bottom--1">New data</h1>
+                    <h1 className="margin-top--1 margin-bottom--1">Metadata</h1>
                     <p>This information is specific to this new data and can be updated each time new data is added.</p>
                       {this.state.isFetchingData ?
                         <div className="margin-top--2">
                             <div className="loader loader--dark"></div>
                         </div>
                       :
-                      <div>
+                      <div className="padding-bottom--2">
                         <h2 className="margin-top--1">{this.state.title || this.props.params.datasetID + " (title not available)"}</h2>
 
-                        <form onSubmit={this.handleFormSubmit}>
+                        <form>
                           <div className="margin-bottom--2">
                             <div className="grid__col-6">
                               <Select
-                                  disabled={!this.state.isInstance}
                                   id="edition"
                                   label="Edition"
                                   contents={this.mapEditionsToSelectOptions()}
@@ -400,25 +681,84 @@ class VersionMetadata extends Component {
                                     selectedOption={this.state.edition}
                               />
                             </div>
-                            <div className="grid__col-6 margin-bottom--1">
-                              <h2 className="margin-top--1">Notes and information</h2>
-                              <Select
-                                  id="release_frequency"
-                                  disabled={true}
-                                  contents={this.mapReleaseFreqToSelectOptions()}
-                                  onChange={this.handleSelectChange}
-                                  error={this.state.releaseError}
-                                  label="Release frequency (not supported yet)"
-                                  selectedOption={this.state.release_frequency}
-                              />
-                            </div>
+                            <h2> In this dataset </h2>
                             {this.mapDimensionsToInputs(this.state.dimensions)}
+                            <div className="margin-bottom--1">
+                                <h2 className="margin-top--2 margin-bottom--1">What's changed</h2>
+                                <p>The information below can change with each edition/version.</p>
+                                <div className="margin-bottom--1">
+                                    <h3 className="margin-top--1 margin-bottom--1">Alerts and corrections</h3>
+                                    <CardList
+                                        contents={this.mapTypeContentsToCard(this.state.alerts, "alerts")}
+                                        type="alerts"
+                                        onEdit={this.handleEditRelatedClick}
+                                        onDelete={this.handleDeleteRelatedClick}
+                                    />
+                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}> Add an alert</button>
+                                </div>
+                                <div className="margin-bottom--1">
+                                    <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
+                                    <CardList
+                                        contents={this.mapTypeContentsToCard(this.state.changes, "changes")}
+                                        type="changes"
+                                        onEdit={this.handleEditRelatedClick}
+                                        onDelete={this.handleDeleteRelatedClick}
+                                    />
+                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes")}}> Add change</button>
+                                </div>
+                            </div>
                           </div>
-                          <button className="btn btn--positive">Save and add to collection</button>
+                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
+                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
+                          {
+                              this.state.state === "associated" ?
+                              <button className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
+                              :
+                              ""
+                          }
                         </form>
                       </div>
                     }
                 </div>
+                {this.state.showModal &&
+
+                <Modal sizeClass="grid__col-3">
+                        {this.state.modalType ?
+
+                          <RelatedContentForm
+                              name="related-content-modal"
+                              formTitle={this.state.modalType === "alerts" ? "Add an alert" : "Add latest change"}
+                              titleInput={this.state.titleInput}
+                              descInput={this.state.descInput}
+                              titleLabel={this.state.modalType === "alerts" ? "Date (e.g 01 September 2017)" : "Name"}
+                              descLabel={"Description"}
+                              onCancel={this.handleCancel}
+                              onFormInput={this.handleInputChange}
+                              onFormSubmit={this.handleFormSubmit}
+                              titleError={this.state.titleError}
+                              descError={this.state.descError}
+                              requiresDescription={true}
+                              requiresURL={false}
+                          />
+                        :
+                          <div>
+                          <div className="modal__header">
+                              <h2>Warning!</h2>
+                          </div>
+                          <div className="modal__body">
+                              <p>You will lose any changes by going back without saving. </p><br/>
+                              <p>Click "Continue" to lose changes and go back to the previous page or
+                                  click "Cancel" to stay on the current page.</p>
+                          </div>
+                          <div className="modal__footer">
+                          <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
+                          <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
+                          </div>
+                        </div>
+                      }
+                      </Modal>
+
+                }
             </div>
         )
     }
@@ -432,7 +772,8 @@ function mapStateToProps(state) {
       instance: state.state.datasets.activeInstance,
       version: state.state.datasets.activeVersion,
       recipes: state.state.datasets.recipes,
-      dataset: state.state.datasets.activeDataset
+      dataset: state.state.datasets.activeDataset,
+      btn: state.state.btn
     }
 }
 

@@ -27,7 +27,7 @@ import (
 )
 
 var bindAddr = ":8080"
-var babbageURL = "http://localhost:20000"
+var routerURL = "http://localhost:20000"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
@@ -49,8 +49,8 @@ func main() {
 	if v := os.Getenv("BIND_ADDR"); len(v) > 0 {
 		bindAddr = v
 	}
-	if v := os.Getenv("BABBAGE_URL"); len(v) > 0 {
-		babbageURL = v
+	if v := os.Getenv("ROUTER_URL"); len(v) > 0 {
+		routerURL = v
 	}
 	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
 		zebedeeURL = v
@@ -77,7 +77,7 @@ func main() {
 	log.Namespace = "florence"
 
 	zc := healthcheck.New(zebedeeURL, "zebedee")
-	bc := healthcheck.New(babbageURL, "babbage")
+	rtrc := healthcheck.New(routerURL, "router")
 	dc := healthcheck.New(datasetAPIURL, "dataset-api")
 	rc := healthcheck.New(recipeAPIURL, "recipe-api")
 	ic := healthcheck.New(importAPIURL, "import-api")
@@ -92,12 +92,12 @@ func main() {
 		because we can't see what issue it's fixing and whether it's necessary.
 	*/
 
-	babbageURL, err := url.Parse(babbageURL)
+	routerURL, err := url.Parse(routerURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	babbageProxy := reverseProxy.Create(babbageURL, nil)
+	routerProxy := reverseProxy.Create(routerURL, director)
 
 	zebedeeURL, err := url.Parse(zebedeeURL)
 	if err != nil {
@@ -148,9 +148,10 @@ func main() {
 	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
 
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/recipes{uri:(?:/.*)?}", recipeAPIProxy)
-	router.Handle("/import{uri:/.*}", importAPIProxy)
-	router.Handle("/dataset{uri:/.*}", datasetAPIProxy)
+	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
+	router.Handle("/import{uri:.*}", importAPIProxy)
+	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
+	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
@@ -159,17 +160,18 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
+
 	router.HandleFunc("/florence{uri:.*}", newAppHandler)
-	router.Handle("/{uri:.*}", babbageProxy)
+	router.Handle("/{uri:.*}", routerProxy)
 
 	log.Debug("Starting server", log.Data{
-		"bind_addr":       bindAddr,
-		"babbage_url":     babbageURL,
-		"zebedee_url":     zebedeeURL,
-		"recipe_api_url":  recipeAPIURL,
-		"import_api_url":  importAPIURL,
-		"dataset_api_url": datasetAPIURL,
-		"enable_new_app":  enableNewApp,
+		"bind_addr":           bindAddr,
+		"frontend_router_url": routerURL,
+		"zebedee_url":         zebedeeURL,
+		"recipe_api_url":      recipeAPIURL,
+		"import_api_url":      importAPIURL,
+		"dataset_api_url":     datasetAPIURL,
+		"enable_new_app":      enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)
@@ -201,7 +203,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt, os.Kill)
 
 	for {
-		hc.MonitorExternal(bc, zc, ic, rc, dc)
+		hc.MonitorExternal(rtrc, zc, ic, rc, dc)
 
 		timer := time.NewTimer(time.Second * 60)
 
@@ -275,6 +277,12 @@ func zebedeeDirector(req *http.Request) {
 		req.Header.Set(`X-Florence-Token`, c.Value)
 	}
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
+}
+
+func director(req *http.Request) {
+	if c, err := req.Cookie(`access_token`); err == nil && len(c.Value) > 0 {
+		req.Header.Set(`X-Florence-Token`, c.Value)
+	}
 }
 
 func importAPIDirector(req *http.Request) {

@@ -19,8 +19,16 @@ exports[`Dataset details page matches stored snapshot 1`] = `
         Back
       </button>
     </div>
-    <h1
+    <p
       className="margin-top--1"
+    >
+      Dataset: 
+      <strong>
+        931a8a2a-0dc8-42b6-a884-7b6054ed3b68 (title not available)
+      </strong>
+    </p>
+    <h1
+      className="margin-top--1 margin-bottom--1"
     >
       Dataset details
     </h1>
