@@ -677,7 +677,7 @@ export class DatasetMetadata extends Component {
                         <div className="margin-bottom--1">
                             <p> These are common across all editions of the dataset. Changing them will affect all previous editions.</p>
                         </div>
-                        <div className="margin-bottom--2">
+                        <div className="margin-bottom--2 related-datasets">
                             <h3> Related datasets </h3>
                                 <CardList
                                     contents={this.mapTypeContentsToCard(this.state.relatedLinks)}
@@ -687,7 +687,7 @@ export class DatasetMetadata extends Component {
                                 />
                               <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
-                        <div className="margin-bottom--2">
+                        <div className="margin-bottom--2 related-documents">
                             <h3> Bulletins, articles and compendia </h3>
                             <CardList
                               contents={this.mapTypeContentsToCard(this.state.relatedBulletins)}
@@ -709,7 +709,7 @@ export class DatasetMetadata extends Component {
                                 />
                         
                         </div>
-                        <div className="margin-bottom--2">
+                        <div className="margin-bottom--2 related-methodologies">
                             <h3> Methodologies </h3>
                                 <CardList
                                     contents={this.mapTypeContentsToCard(this.state.relatedMethodologies)}
