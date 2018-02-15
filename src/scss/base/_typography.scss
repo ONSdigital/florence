@@ -3,6 +3,7 @@ body {
     font-weight: 300;
     font-size: $magicnumber1 * 2;
     line-height: $lineheight;
+    height: 100vh;
 }
 
 h1, h2, h3, h4 {
@@ -15,15 +16,14 @@ h1 {
     font-size: $magicnumber1 * 5;
     margin-top: $lineheight * 3;
     margin-bottom: $lineheight * 2;
-    text-align: center;
 }
 
 h2 {
-    font-size: $magicnumber1 * 4;
+    font-size: $magicnumber1 * 3.5;
 }
 
 h3 {
-    font-size: $magicnumber1 * 3;
+    font-size: $magicnumber1 * 2.5;
 }
 
 h4 {
@@ -42,6 +42,17 @@ button {
     font-size: $magicnumber1 * 2;
     font-weight: 300;
     line-height: $lineheight;
+}
+
+
+a {
+    color: $primary-link;
+    &:visited {
+        color: $pickled-bluewood;
+    }
+    &:focus {
+        outline: 4px solid $focus;
+    }   
 }
 
 ::-webkit-input-placeholder {

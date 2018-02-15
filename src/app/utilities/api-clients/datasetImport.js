@@ -41,10 +41,38 @@ export default class datasetImport {
             })
     }
 
+    static getCompleted() {
+        return http.get(`/import/jobs?state=completed`, true)
+            .then(response => {
+                return response;
+            })
+    }
+
     static get(jobID) {
         return http.get(`/import/jobs/${jobID}`, true)
             .then(response => {
                 return response;
+            })
+    }
+
+
+    static getDimensions(instanceID) {
+        /* Uncomment this is you need to stub this data */
+        // return Promise.resolve([
+        //     {
+        //         dimension_id: `${instanceID}-time`,
+        //         value: "Time",
+        //         node_id: "id-thing"
+        //     },
+        //     {
+        //         dimension_id: `${instanceID}-special-aggregate`,
+        //         value: "Special aggregate",
+        //         node_id: "id-thing-2"
+        //     }
+        // ])
+        return http.get(`/dataset/instances/${instanceID}`, true)
+            .then(response => {
+                return response.dimensions;
             })
     }
 }
