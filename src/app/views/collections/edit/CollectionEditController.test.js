@@ -321,7 +321,7 @@ describe("Data sent as request body on save", () => {
             publishType: "manual"
         });
         const request = scheduledComponent.instance().mapEditsToAPIRequestBody(scheduledComponent.state());
-        expect(request.publishDate).toEqual("");
+        expect(request.publishDate).toBeFalsy();
     });
 
     it("publish type matches the property the API expects", () => {
