@@ -191,6 +191,9 @@ function setupFlorence() {
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
             $(".js-nav-item--collections").addClass('selected');
+        } else if (menuItem.hasClass("js-nav-item--datasets")) {
+            window.history.pushState({}, "", "/florence/datasets");
+            viewController('datasets');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
             viewController('users');
