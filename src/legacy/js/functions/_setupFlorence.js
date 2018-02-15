@@ -129,6 +129,7 @@ function setupFlorence() {
     };
     const handleTableCancel = () => {
         console.log("Cancel table builder");
+        window.closeTableBuilder('table-builder', error => console.log(error));
     }
     const handleTableError = error => {
         console.log("Table builder error", error);
