@@ -6,16 +6,17 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     context: path.resolve(__dirname),
     entry: {
-        app: './index.js'
+        app: './index.js',
+        tablebuilder: './tablebuilder/tablebuilder.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'js/florence.bundle.js',
+        filename: 'js/[name].bundle.js',
     },
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test:  /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
@@ -23,7 +24,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.jsx$/,
+                test:  /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {

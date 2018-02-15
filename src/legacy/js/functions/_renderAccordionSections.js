@@ -1,4 +1,4 @@
-x/**
+/**
  * Manages the editor menus
  * @param collectionId
  * @param pageData
