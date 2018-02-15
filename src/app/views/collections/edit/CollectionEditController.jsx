@@ -239,26 +239,30 @@ export class CollectionEditController extends Component {
             hasError = true;
         }
 
-        const validatedDate = collectionValidation.date(this.state.publishDate.value, this.state.publishType);
-        if (!validatedDate.isValid) {
-            this.setState({
-                publishDate: {
-                    value: "",
-                    errorMsg: validatedDate.errorMsg
-                }
-            });
-            hasError = true;
+        if (this.state.publishType === "scheduled") {
+            const validatedDate = collectionValidation.date(this.state.publishDate.value);
+            if (!validatedDate.isValid) {
+                this.setState({
+                    publishDate: {
+                        value: "",
+                        errorMsg: validatedDate.errorMsg
+                    }
+                });
+                hasError = true;
+            }
         }
         
-        const validatedTime = collectionValidation.time(this.state.publishTime.value, this.state.publishType)
-        if (!validatedTime.isValid) {
-            this.setState({
-                publishTime: {
-                    value: "",
-                    errorMsg: validatedTime.errorMsg
-                }
-            });
-            hasError = true;
+        if (this.state.publishType === "scheduled") {
+            const validatedTime = collectionValidation.time(this.state.publishTime.value);
+            if (!validatedTime.isValid) {
+                this.setState({
+                    publishTime: {
+                        value: "",
+                        errorMsg: validatedTime.errorMsg
+                    }
+                });
+                hasError = true;
+            }
         }
 
         if (hasError) {
@@ -355,7 +359,7 @@ export class CollectionEditController extends Component {
     }
 
     publishDateHasChanged(state) {
-        if (state.publishType ===  "manual" && this.props.publishType === "manual") {
+        if (state.publishType ===  "manual") {
             return false;
         }
 
