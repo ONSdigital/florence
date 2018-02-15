@@ -1,5 +1,8 @@
 
 
+#table-builder-app .hideBtn {display: none;}
+#table-builder-app .showBtn {display: inline}
+
 .gridContainer .grid {
   border: 1px #ccc dotted;
   width: 62%;
@@ -71,15 +74,17 @@
   padding-right: 10px;
 }
 
-.previewContainer {
-    margin-left: 1em;
-    margin-right: 1em;
+.gridContainer .previewhtml {
+  height: 42em;
+  margin-left: 0.5%;
+  margin-right: 0.5%;
+  margin-top: 5px;
+  margin-bottom: 11px;
+  border: 1px #ccc dotted;
 }
+
 .previewhtml .figure {
     text-align: left;
-}
-.previewContainer h1 {
-    margin-top: 0;
 }
 .previewhtml ol {
     margin-left: 2.5em;
