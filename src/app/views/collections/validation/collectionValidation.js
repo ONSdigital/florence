@@ -20,8 +20,8 @@ export default class collectionValidation {
         };
     }
 
-    static date(date, publishType) {
-        if (publishType === "scheduled" && !date) {
+    static date(date) {
+        if (!date) {
             return {
                 isValid: false,
                 errorMsg: "Scheduled collections must be given a publish date"
@@ -34,11 +34,39 @@ export default class collectionValidation {
         };
     }
     
-    static time(time, publishType) {
-        if (publishType === "scheduled" && !time) {
+    static time(time) {
+        if (!time) {
             return {
                 isValid: false,
                 errorMsg: "Scheduled collections must be given a publish time"
+            };
+        }
+
+        return {
+            isValid: true,
+            errorMsg: ""
+        };
+    }
+
+    static release(releaseURI, releaseDateISO, releaseTitle) {
+        if (!releaseURI) {
+            return {
+                isValid: false,
+                errorMsg: "Release must have a URI"
+            };
+        }
+        
+        if (!releaseDateISO) {
+            return {
+                isValid: false,
+                errorMsg: "Release must have a release date"
+            };
+        }
+        
+        if (!releaseTitle) {
+            return {
+                isValid: false,
+                errorMsg: "Release must have a title"
             };
         }
 

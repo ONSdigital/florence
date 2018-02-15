@@ -78,7 +78,7 @@ export class CollectionsController extends Component {
             drawerIsAnimatable: false,
             drawerIsVisible: false,
             isEditingCollection: false,
-            showRestoreContent: false,
+            showRestoreContent: false
         };
 
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
@@ -1047,17 +1047,14 @@ export class CollectionsController extends Component {
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
-                        <CollectionCreate user={this.props.user} onSuccess={this.handleCollectionCreateSuccess} />
+                        <CollectionCreate user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
                         {this.renderDrawer()}
                     </div>
                 </div>
-                {
-                    this.state.showRestoreContent ?
-                        <Modal sizeClass="grid__col-8">
-                            <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
-                        </Modal>
-                        :
-                        ""
+                {this.state.showRestoreContent &&
+                    <Modal sizeClass="grid__col-8">
+                        <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
+                    </Modal>
                 }
             </div>
         )
