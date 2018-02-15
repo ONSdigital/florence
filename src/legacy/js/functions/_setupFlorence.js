@@ -120,6 +120,24 @@ function setupFlorence() {
     $('body').append(florence);
     Florence.refreshAdminMenu();
 
+    /* 
+    * DELETE ME!!! 
+    * This code is a proof of concept for the table builder integration
+    */
+    const handleTableSave = data => {
+        console.log("Table builder saved", data);
+    };
+    const handleTableCancel = () => {
+        console.log("Cancel table builder");
+    }
+    const handleTableError = error => {
+        console.log("Table builder error", error);
+    }
+    $('#load-table-builder').click(() => {
+        window.startTableBuilder('table-builder', {}, handleTableSave, handleTableCancel, handleTableError, '/florence/index.html')
+    });
+    /* End of deletable code */
+
     var adminMenu = $('.js-nav');
     // dirty checks on admin menu
     adminMenu.on('click', '.js-nav-item', function () {
