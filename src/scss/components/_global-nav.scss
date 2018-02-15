@@ -1,10 +1,9 @@
 .global-nav {
     &__list {
-        overflow: hidden;
         background: $mine-shaft;
         padding: 0 20px;
         color: $grey-chateau;
-        height: $lineheight * 3;
+        height: $navbar-height;
         text-align: right;
         list-style: none;
     }
@@ -20,6 +19,10 @@
         display: block;
         position: relative;
 
+        &:visited {
+            color: inherit;
+        }
+
         &.selected {
             color: $white;
             &:before {
@@ -32,6 +35,11 @@
                 top: 0;
                 background-color: $white;
             }
+        }
+
+        &:focus {
+            outline: 0 solid;
+            text-decoration: underline !important;
         }
     }
 }
