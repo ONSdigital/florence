@@ -55,6 +55,6 @@ module.exports = {
             // { from: 'legacy/assets', to: 'legacy-assets' },
             // { from: 'legacy/index.html', to: 'legacy-assets/index.html'}
         ]),
-        new ExtractTextPlugin("css/main.css")
+        new ExtractTextPlugin("css/[name].css")
     ]
 };
