@@ -1,0 +1,120 @@
+
+.gridContainer {
+    width: 1100px;
+    height: 400px;
+    border: 4px #888 solid;
+    margin: auto;
+    margin-top: 50px;
+  }
+  
+.gridContainer .previewhtml {
+
+  /* border: 5px #0fc dashed; */
+  overflow-y: auto;
+  height:95%;
+}
+
+.gridContainer .grid {
+  border: 1px #ccc dotted;
+  width: 62%;
+  height: 97%;
+  margin-left: 20px;
+  overflow: hidden;
+  display: inline-block;
+  margin: 5px;
+}
+
+.gridContainer .metaContainer {
+  border: 1px #ccc dotted;
+  width: 35%;
+  vertical-align: top;
+  display: inline-block;
+  margin: 5px;
+  padding-left: 5px;
+}
+
+.gridContainer .metaContainer .select-wrap {
+  display:inline-block;
+}
+  
+.gridContainer .metaContainer input {
+  width: 220px;
+
+}
+
+.gridContainer .metaContainer input.sml {
+  width: 70px;
+}
+
+.gridContainer .metaContainer textarea {
+  width: 220px;
+  height: 60px;
+}
+
+.gridContainer .metaContainer div {
+  margin-bottom: 10px;
+}
+
+.gridContainer label {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+  /* background-color: aquamarine; */
+  color: #666;
+  font-size: 90%;
+  margin-right: 10px;
+}
+
+.gridContainer .statusBar {
+  padding: 5px;
+  margin-top: 1px;
+  background-color: #ccc;
+}
+
+.gridContainer .statusBtnsGroup {
+  display: inline-block;
+
+}
+
+.gridContainer .statusBtnsContainer button {
+  margin-right: 5px;
+}
+
+.gridContainer .rowColStatus {
+  text-align: right;
+  float: right;
+  font-size: 70%;
+  color: #666;
+  padding-top: 5px;
+  padding-right: 10px;
+}
+
+
+.hideBtn {display: none;}
+.showBtn {display: inline}
+
+.gridContainer .previewhtml {
+  overflow: auto;
+}
+
+.previewhtml .figure .align-right {
+  text-align: right
+}
+.previewhtml .figure .align-left {
+  text-align: left
+}
+.previewhtml .figure .align-center {
+  text-align: center
+}
+.previewhtml .figure .align-justify {
+  text-align: justify
+}
+.previewhtml .figure .align-top {
+  vertical-align: top
+}
+.previewhtml .figure .align-middle {
+  vertical-align: middle
+}
+.previewhtml .figure .align-bottom {
+  vertical-align: bottom
+}
