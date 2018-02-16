@@ -31,6 +31,7 @@ var routerURL = "http://localhost:20000"
 var zebedeeURL = "http://localhost:8082"
 var recipeAPIURL = "http://localhost:22300"
 var importAPIURL = "http://localhost:21800"
+var importAPIAuthToken = "0C30662F-6CF6-43B0-A96A-954772267FF5"
 var datasetAPIURL = "http://localhost:22000"
 var uploadBucketName = "dp-frontend-florence-file-uploads"
 var datasetAuthToken = "FD0108EA-825D-411C-9B1D-41EF7727F465"
@@ -69,6 +70,9 @@ func main() {
 	}
 	if v := os.Getenv("DATASET_API_AUTH_TOKEN"); len(v) > 0 {
 		datasetAuthToken = v
+	}
+	if v := os.Getenv("IMPORT_API_AUTH_TOKEN"); len(v) > 0 {
+		importAPIAuthToken = v
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
@@ -287,6 +291,7 @@ func director(req *http.Request) {
 
 func importAPIDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+	req.Header.Set("Internal-token", importAPIAuthToken)
 }
 
 func datasetAPIDirector(req *http.Request) {
