@@ -155,7 +155,7 @@ class DatasetsController extends Component {
                         <li className="list__item grid grid--justify-space-between">
                             <h1>Select a dataset</h1>
                             <div className="margin-top--3">
-                                <Link className="btn btn--primary disable-visited-colour" to={url.resolve("uploads/data")}>Upload a dataset</Link>
+                                <Link className="btn btn--primary " to={url.resolve("uploads/data")}>Upload a dataset</Link>
                             </div>
                         </li>
                     </ul>
