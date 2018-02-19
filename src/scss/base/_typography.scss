@@ -47,8 +47,7 @@ button {
 
 a {
     color: $primary-link;
-
-    &:not(.disable-visited-colour):visited {
+    &:visited {
         color: $pickled-bluewood;
     }
     &:focus {
