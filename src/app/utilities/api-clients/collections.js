@@ -66,10 +66,11 @@ export default class collections {
     }
 
     static removeDataset(collectionID, datasetID) {
-        return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, true)
-            .then(response => {
-                return response;
-            });
+        console.log(`/zebedee/collections/${collectionID}/datasets/${datasetID}`);
+        // return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, true)
+        //     .then(response => {
+        //         return response;
+        //     });
     }
 
     static addDatasetVersion(collectionID, datasetID, editionID, versionID) {
@@ -97,10 +98,11 @@ export default class collections {
     }
 
     static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
-        return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true)
-            .then(response => {
-                return response;
-            });
+        console.log(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`);
+        // return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true)
+        //     .then(response => {
+        //         return response;
+        //     });
     }
 
 }
