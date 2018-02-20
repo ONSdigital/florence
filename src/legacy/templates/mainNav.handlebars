@@ -6,16 +6,6 @@
         <div class="icon-status--good"></div>
     </li>
 
-    
-    {{!-- 
-        DELETE ME!!! 
-        This code is a proof of concept for the table builder integration 
-    --}}
-    <li>
-        <button id="load-table-builder" type="button">Load table builder</button>
-    </li>
-    {{!-- End of deletable code --}}
-
     {{#if this.Authentication.isAuthenticated}}
         {{!-- display envirnoment if develop or sandpit --}}
         {{#if environment.name}}<li class="environment-notification">You're on {{environment.name}} environment</li>{{/if}}
