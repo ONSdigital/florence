@@ -153,7 +153,7 @@ export class VersionMetadata extends Component {
                 changes.push(change);
             })
           }
-        
+
           this.setState({
             dimensions: this.props.version.dimensions,
             edition: this.props.version.edition,
@@ -245,7 +245,7 @@ export class VersionMetadata extends Component {
         return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
             .then(() => {
                 this.state.dimensions.map((dimension) => {
-                    if (this.state[dimension.name]) {
+                    if (this.state[dimension.name] || this.state[dimension.description]) {
                         var instanceID = "";
                         if (this.state.instanceID) {
                             instanceID = this.state.instanceID;
@@ -253,7 +253,7 @@ export class VersionMetadata extends Component {
                             instanceID = this.state.versionID;
                         }
 
-                        datasets.updateDimensionDescription(instanceID, dimension.name, this.state[dimension.name]);
+                        datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, this.state[dimension.name], this.state[dimension.description]);
                     }
                 })
             })
@@ -354,15 +354,20 @@ export class VersionMetadata extends Component {
           dimensions.map(dimension => {
             return (    
               <div key={dimension.name}>
-                <h3 className="dimension-title">{dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}</h3>
+                <Input
+                    value={dimension.label ? dimension.label : dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}                  
+                    id={dimension.name}
+                    label=""
+                    onChange={this.handleInputChange}
+                />
                 <Input
                     value={dimension.description}                  
                     type="textarea"
-                    id={dimension.name}
+                    id={dimension.description}
                     label="Learn more (optional)"
                     onChange={this.handleInputChange}
                 />
-              </div>
+            </div>
             )
           })
         )

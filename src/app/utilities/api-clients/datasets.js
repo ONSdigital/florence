@@ -39,8 +39,9 @@ export default class datasets {
              });
     }
 
-    static updateDimensionDescription(instanceID, dimension, description) {
+    static updateDimensionLabelAndDescription(instanceID, dimension, name, description) {
         const body = {
+            "label": name,
             "description": description
         }
 
