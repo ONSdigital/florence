@@ -45930,6 +45930,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         loadTableBuilder(pageData, onInsertSave);
     });
 
+    $("#js-editor--table-v2").click(function () {
+        loadTableBuilderV2(pageData, onInsertSave);
+    });
+
     $("#js-editor--equation").click(function () {
         loadEquationBuilder(pageData, onInsertSave);
     });
@@ -46116,6 +46120,13 @@ function markdownEditor() {
     // output table tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {
         var newText = text.replace(/(<ons-table\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+            var path = $(match).attr('path');
+            return '[table path="' + path + '" ]';
+        });
+        return newText;
+    });
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/(<ons-table-v2\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
             var path = $(match).attr('path');
             return '[table path="' + path + '" ]';
         });
@@ -47937,7 +47948,74 @@ function loadTableBuilder(pageData, onSave, table) {
   }
 }
 
-function loadTablesList(collectionId, data) {
+function loadTableBuilderV2(pageData, onSave, table) {
+  const pageUrl = pageData.uri;
+  const html = templates.tableBuilderV2(table);
+
+  $('body').append(html);
+
+  // onSave function - sends content to zebedee, adds the table to the parent page and closes the modal
+  var saveTableV2 = function (tableJson) {
+    if (!tableJson) {
+      sweetAlert("Empty Table", "The table is empty - please select cancel instead.");
+      return;
+    }
+    if (!tableJson.filename) {
+      tableJson.filename = StringUtils.randomId();
+      tableJson.uri = pageUrl + "/" + tableJson.filename;
+    }
+
+    $.ajax({
+      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson.uri + ".json&validateJson=false",
+      type: 'POST',
+      data: JSON.stringify(tableJson),
+      processData: false,
+      contentType: 'application/json'
+    });
+    addTableToPageJson(tableJson);
+    if (onSave) {
+      onSave(tableJson.filename, '<ons-table-v2 path="' + tableJson.uri + '" />');
+    }
+    closeModal();
+  };
+
+  // adds the table to the parent page
+  function addTableToPageJson(tableJson) {
+    if (!pageData.tables) {
+      pageData.tables = [];
+    } else {
+
+      var existingTable = _.find(pageData.tables, function (existingTable) {
+        return existingTable.filename === tableJson.filename;
+      });
+
+      if (existingTable) {
+        existingTable.title = tableJson.title;
+        return;
+      }
+    }
+
+    pageData.tables.push({title: tableJson.title, filename: tableJson.filename, uri: tableJson.uri, version: "2"});
+  }
+
+  function onError(message) {
+    sweetAlert(message);
+  }
+
+  function closeModal() {
+    closeTableBuilder("table-builder-app", onError)
+  }
+
+  if (table && table.filename) {
+    jqxhr = $.getJSON("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + table.filename + ".json");
+    jqxhr.done(function(data) {
+        startTableBuilder("table-builder-app", data, saveTableV2, closeModal, onError, '/table');
+    });
+  } else {
+      startTableBuilder("table-builder-app", {}, saveTableV2, closeModal, onError, '/table');
+  }
+
+}function loadTablesList(collectionId, data) {
     var html = templates.workEditTables(data);
     $('#tables').replaceWith(html);
     initialiseTablesList(collectionId, data);
@@ -47961,6 +48039,14 @@ function initialiseTablesList(collectionId, data) {
         });
     });
 
+    $('#add-table-v2').click(function () {
+        loadTableBuilderV2(data, function () {
+            Florence.Editor.isDirty = false;
+            refreshPreview();
+            refreshTablesList(collectionId, data);
+        });
+    });
+
     $(data.tables).each(function (index, table) {
         var basePath = data.uri;
         var tablePath = basePath + '/' + table.filename;
@@ -47969,11 +48055,16 @@ function initialiseTablesList(collectionId, data) {
         $("#table-edit_" + index).click(function () {
             getPageData(collectionId, tableJson,
                 onSuccess = function (tableData) {
-                    loadTableBuilder(data, function () {
+                    let onSave = function () {
                         Florence.Editor.isDirty = false;
                         refreshPreview();
                         refreshTablesList(collectionId, data);
-                    }, tableData);
+                    };
+                    if (table.version == "2") {
+                        loadTableBuilderV2(data, onSave, tableData);
+                    } else {
+                        loadTableBuilder(data, onSave, tableData);
+                    }
                 })
         });
 
@@ -49149,7 +49240,9 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
         dataTemplate = {list: list, idField: idField, idPlural: 'methodology'};
     } else if (idField === 'link') {
         dataTemplate = {list: list, idField: idField, idPlural: 'links'};
-    } else {
+    } else if (idField === 'highlighted-content') {
+        dataTemplate = {list: list, idField: idField, idPlural: 'highlighted content'};
+    }else {
         dataTemplate = {list: list, idField: idField};
     }
     return dataTemplate;
@@ -49252,7 +49345,6 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
     }
 
     function renderRelatedItemModal() {
-
         var viewModel = {hasLatest: false}; //Set to true if 'latest' checkbox should show
         var latestCheck; //Populated with true/false later to check state of checkbox
 
@@ -49402,8 +49494,11 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                 else if (field === 'links') {
                     initialiseField();
                 }
+                else if (field === 'highlightedContent' && (page.type === 'article' || page.type === 'timeseries' || page.type === 'bulletin')) {
+                    initialiseField();
+                }
                 else {
-                    sweetAlert("This is not a valid document");
+                    sweetAlert("This type of page ("+ (page.type) +") cannot be added here.");
                     return;
                 }
 
@@ -49575,6 +49670,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'datasets', 'datasets');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'highlightedContent', 'highlighted-content');
         accordion();
         t3Editor(collectionId, pageData);
     }
@@ -51337,8 +51433,9 @@ function ArticleDownloadEditor(collectionId, data) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
       var filename = data.tables[parseInt(nameTable)].filename;
+      var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
     });
     data.tables = newTable;
     // images
@@ -51460,6 +51557,55 @@ function articleEditor(collectionId, data) {
       data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
   });
 
+    $("#articleType-checkbox").click(function () {
+        data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
+    });
+
+    $('#neutral-article-image-upload-submit').click(function() {
+        var file = document.getElementById("neutral-article-image-upload").files[0];
+
+        if (!file) {
+            sweetAlert('Please select a file to upload.');
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("file", file);
+        var fileExtension = file.name.split('.').pop();
+        var filename = file.filename ? file.filename : StringUtils.randomId();
+        var imagePath = data.uri + "/" + filename + '.' + fileExtension;
+
+        $.ajax({
+            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imagePath,
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function () {
+                data.imageUri = imagePath;
+                save(updateContent);
+            },
+            error: function (error) {
+                sweetAlert("Error", error);
+            }
+        });
+    });
+
+    $('#neutral-article-image-upload-delete').on('click', function () {
+
+        if (data.imageUri) {
+
+            deleteContent(Florence.collection.id, data.imageUri,
+                onSuccess = function () {
+                    console.log("deleted image file: " + data.imageUri);
+                    data.imageUri = "";
+                    save(updateContent);
+                });
+        }
+    });
+
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -51498,8 +51644,9 @@ function articleEditor(collectionId, data) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
       var filename = data.tables[parseInt(nameTable)].filename;
+      var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
     });
     data.tables = newTable;
     // equations
@@ -51684,8 +51831,9 @@ function bulletinEditor(collectionId, data) {
             var uri = data.tables[parseInt(nameTable)].uri;
             var title = data.tables[parseInt(nameTable)].title;
             var filename = data.tables[parseInt(nameTable)].filename;
+            var version = data.tables[parseInt(nameTable)].version;
             var safeUri = checkPathSlashes(uri);
-            newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+            newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
         });
         data.tables = newTable;
         // equations
@@ -51993,8 +52141,9 @@ function compendiumChapterEditor(collectionId, data) {
             var uri = data.tables[parseInt(nameTable)].uri;
             var title = data.tables[parseInt(nameTable)].title;
             var filename = data.tables[parseInt(nameTable)].filename;
+            var version = data.tables[parseInt(nameTable)].version;
             var safeUri = checkPathSlashes(uri);
-            newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+            newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
         });
         data.tables = newTable;
         var orderEquation = $("#sortable-equation").sortable('toArray');
@@ -53040,8 +53189,9 @@ function methodologyEditor(collectionId, data) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
       var filename = data.tables[parseInt(nameTable)].filename;
+      var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
     });
     data.tables = newTable;
     // equations
@@ -53314,8 +53464,9 @@ function staticArticleEditor(collectionId, data) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
       var filename = data.tables[parseInt(nameTable)].filename;
+      var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
     });
     data.tables = newTable;
     // equations
@@ -53706,8 +53857,9 @@ function staticPageEditor(collectionId, data) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
       var filename = data.tables[parseInt(nameTable)].filename;
+      var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
     });
     data.tables = newTable;
     // images

@@ -5,16 +5,19 @@
     "type": "git",
     "url": "https://github.com/ONSdigital/florence"
   },
+  "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build script are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "devDependencies": {
     "cat": "latest",
     "onchange": "latest",
     "handlebars": "~3.0.1",
-    "node-sass": "latest"
+    "handsontable": "^0.36",
+    "node-sass": "latest",
+    "replace-in-file": "^3.1.1"
   },
   "scripts": {
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
     "watch-refactored": "node ./node_modules/webpack/bin/webpack.js -d --watch",
-    "build": "cd legacy && npm run build && cd ../ && npm run build-refactored",
+    "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
     "postinstall": "npm run build-refactored"
