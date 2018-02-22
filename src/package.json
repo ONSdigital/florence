@@ -10,7 +10,7 @@
     "cat": "latest",
     "onchange": "latest",
     "handlebars": "~3.0.1",
-    "handsontable": "^0.36",
+    "handsontable": "^0.35.1",
     "node-sass": "latest",
     "replace-in-file": "^3.1.1"
   },

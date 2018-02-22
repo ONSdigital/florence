@@ -48004,6 +48004,7 @@ function loadTableBuilderV2(pageData, onSave, table) {
 
   function closeModal() {
     closeTableBuilder("table-builder-app", onError)
+    $('.table-builder').stop().fadeOut(200).remove();
   }
 
   if (table && table.filename) {
