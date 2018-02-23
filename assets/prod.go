@@ -97,7 +97,7 @@ func DistCssMainCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/css/main.css", size: 100669, mode: os.FileMode(420), modTime: time.Unix(1519300305, 0)}
+	info := bindataFileInfo{name: "../dist/css/main.css", size: 100669, mode: os.FileMode(420), modTime: time.Unix(1519382648, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -177,7 +177,7 @@ func DistJsFlorenceBundleJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/js/florence.bundle.js", size: 798132, mode: os.FileMode(420), modTime: time.Unix(1519300305, 0)}
+	info := bindataFileInfo{name: "../dist/js/florence.bundle.js", size: 798132, mode: os.FileMode(420), modTime: time.Unix(1519382648, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -257,7 +257,7 @@ func DistLegacyAssetsJsMainJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/legacy-assets/js/main.js", size: 647541, mode: os.FileMode(420), modTime: time.Unix(1518511726, 0)}
+	info := bindataFileInfo{name: "../dist/legacy-assets/js/main.js", size: 647541, mode: os.FileMode(420), modTime: time.Unix(1519382648, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -277,7 +277,7 @@ func DistLegacyAssetsJsTemplatesJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/legacy-assets/js/templates.js", size: 374520, mode: os.FileMode(420), modTime: time.Unix(1518511726, 0)}
+	info := bindataFileInfo{name: "../dist/legacy-assets/js/templates.js", size: 374520, mode: os.FileMode(420), modTime: time.Unix(1519382648, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -337,7 +337,7 @@ func DistRefactoredHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../dist/refactored.html", size: 663, mode: os.FileMode(420), modTime: time.Unix(1517923687, 0)}
+	info := bindataFileInfo{name: "../dist/refactored.html", size: 663, mode: os.FileMode(420), modTime: time.Unix(1519382648, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
