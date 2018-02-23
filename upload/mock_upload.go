@@ -3,7 +3,7 @@
 
 package upload
 
-import (
+/*import (
 	io "io"
 
 	s3 "github.com/goamz/goamz/s3"
@@ -142,3 +142,4 @@ func (_m *MockMulti) Abort() error {
 func (_mr *MockMultiMockRecorder) Abort() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Abort")
 }
+*/
