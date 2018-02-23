@@ -124,7 +124,8 @@ class DatasetsController extends Component {
                             isInstance: !(instance.edition && instance.version),
                             edition: instance.edition || "-",
                             version: instance.version || "-",
-                            url: instance.state === "completed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`)
+                            url: instance.state === "completed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`),
+                            status: instance.state
                         });
                     }
                 });
@@ -149,12 +150,12 @@ class DatasetsController extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-7">
+                <div className="grid__col-9">
                     <ul className="list list--neutral">
                         <li className="list__item grid grid--justify-space-between">
                             <h1>Select a dataset</h1>
                             <div className="margin-top--3">
-                                <Link className="btn btn--primary" to={url.resolve("uploads/data")}>Upload a dataset</Link>
+                                <Link className="btn btn--primary " to={url.resolve("uploads/data")}>Upload a dataset</Link>
                             </div>
                         </li>
                     </ul>

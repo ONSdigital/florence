@@ -1401,10 +1401,12 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.environment : depth0)) != null ? stack1.name : stack1), depth0))
     + " environment</li>";
 },"4":function(depth0,helpers,partials,data) {
-    var stack1;
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "            <li id=\"working-on\" class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--collection selected\" href=\"javascript:void(0)\">Working\n                on: "
-    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
+  return "            <li id=\"working-on\" class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--collection selected\" href=\"/florence/collections/"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.id : stack1), depth0))
+    + "\">Working\n                on: "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
     + "</a></li>\n";
 },"6":function(depth0,helpers,partials,data) {
     return "            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--reports\" href=\"javascript:void(0)\">Reports</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--users\" href=\"javascript:void(0)\">Users and access</a></li>\n            <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--teams\" href=\"javascript:void(0)\">Teams</a></li>\n";
@@ -2477,7 +2479,7 @@ templates['workEditT8'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
 templates['workEditT8ApiLandingPage'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "<section class=\"panel workspace-edit\">\n  <div class=\"margin-left--1 margin-bottom--1 margin-top--2\"><strong>Connected dataset ID:</strong> "
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"margin-left--1 margin-bottom--1 margin-top--2\"><strong>Connected dataset ID:</strong>"
     + alias2(alias1((depth0 != null ? depth0.apiDatasetId : depth0), depth0))
     + "</div>\n  <div class=\"margin-left--1 margin-bottom--1\"><strong>Title:</strong> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
@@ -2714,7 +2716,7 @@ templates['workSpace'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":funct
 
   return "<nav class=\"panel col col--1 nav nav--workspace js-workspace-nav\">\n    <ul class=\"nav__list nav__list--workspace\">\n        <!--<div id=\"nav--workspace__welsh\" style=\"margin-top: 20px;\"></div>-->\n        <!--<br/>-->\n        <li class=\"nav__item nav__item--workspace nav__item--lang js-workspace-nav__item\" id=\"nav--workspace__welsh\"></li>\n        <li class=\"nav__item nav__item--workspace nav__item--browse js-workspace-nav__item selected\" id=\"browse\"><a class=\"nav__link\" href=\"javascript:void(0)\">Browse</a>\n        </li>\n        <li class=\"nav__item nav__item--workspace nav__item--create js-workspace-nav__item\" id=\"create\"><a class=\"nav__link\" href=\"javascript:void(0)\">Create</a>\n        </li>\n        <li class=\"nav__item nav__item--workspace nav__item--edit js-workspace-nav__item\" id=\"edit\"><a class=\"nav__link\" href=\"javascript:void(0)\">Edit</a></li>\n    </ul>\n</nav>\n<div class=\"panel col col--4 workspace-menu\" id=\"browse-tree\">\n"
     + ((stack1 = this.invokePartial(partials.loadingAnimation,depth0,{"name":"loadingAnimation","hash":{"large":true},"data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
-    + "</div>\n<section class=\"panel col col--7 workspace-browser\">\n    <div class=\"browser\">\n        <div class=\"addressbar\">\n            <button class=\"btn browser-btn-back\">&lt;</button>\n            <button class=\"btn browser-btn-forward\">&gt;</button>\n            <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label>\n            <input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n            <div class=\"browser-location__select select-wrap select-wrap--browser\" id='select-vis-wrapper'>\n                <select id='select-vis-preview'></select>\n            </div>\n            <button class=\"btn browser-btn-mobile\">Mobile</button>\n        </div>\n        <iframe id=\"iframe\" src=\""
+    + "</div>\n<section class=\"panel col col--7 workspace-browser\">\n    <div class=\"browser\">\n        <div class=\"addressbar\">\n            <button class=\"btn browser-btn-back\">&lt;</button>\n            <button class=\"btn browser-btn-forward\">&gt;</button>\n            <label for=\"browser-location\" class=\"browser-location-label\">Preview URL</label>\n            <input id=\"browser-location\" class=\"browser-location\" type=\"text\" value=\"\">\n            <div class=\"browser-location__select select-wrap select-wrap--browser\" id='select-vis-wrapper'>\n                <select id='select-vis-preview'></select>\n            </div>\n            <button class=\"btn browser-btn-mobile\">Mobile</button>\n        </div>\n        <iframe id=\"iframe\" name=\"preview\" src=\""
     + this.escapeExpression(this.lambda(depth0, depth0))
     + "\">\n"
     + ((stack1 = this.invokePartial(partials.loadingAnimation,depth0,{"name":"loadingAnimation","hash":{"large":true},"data":data,"indent":"            ","helpers":helpers,"partials":partials})) != null ? stack1 : "")

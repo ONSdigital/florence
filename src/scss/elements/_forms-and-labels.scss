@@ -33,3 +33,14 @@
     }
 
 }
+
+.fieldset {
+    margin-bottom: $lineheight / 2;
+    border: 0;
+
+    &__legend {
+        display: block;
+        margin-bottom: $lineheight / 3;
+        font-weight: 600;
+    }
+}

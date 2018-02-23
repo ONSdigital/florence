@@ -1,4 +1,80 @@
-var CookieUtils = {
+var websocket = {
+    socket: null,
+    retrySocketDelay: 1,
+    buffer: new Map(),
+    messageCounter: 0,
+    hasConnected: false,
+    reconnectAttempts: 0,
+    open: function() {
+        console.info("Trying to open websocket...");
+
+        websocket.socket = new WebSocket(location.protocol.replace(/^http/, 'ws') + location.host + "/florence/websocket");
+        websocket.reconnectAttempts++;
+
+        websocket.socket.onopen = function() {
+            console.info("Websocket has been opened");
+            websocket.hasConnected = true;
+            websocket.retrySocketDelay = 1;
+            websocket.buffer.forEach(function(message) {
+                websocket.socket.send(message);
+            });
+            // FIXME we should be logging that the socket is open - but there's a horrible cyclical dependency on startup atm
+        }
+
+        websocket.socket.onerror = function() {
+            console.error("Error opening websocket");
+        }
+
+        websocket.socket.onmessage = function(message) {
+            message = JSON.parse(message.data);
+            if (message.type === "version") {
+                // TODO Not being used yet to check version but should replace existing implementation at some point
+                Florence.version = message.payload.version;
+                return;
+            }
+            if (message.type !== "ack") {
+                return;
+            }
+            websocket.buffer.delete(parseInt(message.payload));
+        }
+
+        websocket.socket.onclose = function() {
+            console.info("Websocket has been closed");
+            websocket.retrySocketDelay *= 2;
+            if (websocket.retrySocketDelay >= 300000) {
+                websocket.retrySocketDelay = 300000;
+            }
+
+            if (!websocket.hasConnected && websocket.reconnectAttempts >= 100) {
+                console.info("Unable to connect websocket after 100 attempts, so stop retrying websocket");
+                return;
+            }
+
+            setTimeout(() => {
+                // setTimeout sets 'this' to window wrapping 'this.open()' in a lambda function
+                // (rather than passing it inline), stops it.
+                // Ref: https://stackoverflow.com/questions/2130241/pass-correct-this-context-to-settimeout-callback
+                websocket.open();
+            }, websocket.retrySocketDelay);
+        }
+    },
+    send: function(message) {
+        websocket.messageCounter++;
+        message = websocket.messageCounter + ":" + message;
+
+        if (websocket.buffer.size >= 50) {
+            console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: \n`, message);
+            //log.add(log.eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
+            return;
+        }
+
+        websocket.buffer.set(websocket.messageCounter, message);
+        
+        if (websocket.socket.readyState === 1) {
+            websocket.socket.send(message);
+        }
+    }
+};var CookieUtils = {
   getCookieValue: function (a, b) {
     b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
     return b ? b.pop() : '';
@@ -45,6 +121,12 @@ Florence.Editor = {
     isDirty: false,
     data: {}
 };
+
+// Can't use randomId function in StringUtils because it is later in the main.js (because the concatenation is done alphabetically)
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+};
+Florence.instanceID = (S4() + S4());
 
 Florence.CreateCollection = {
     selectedRelease: ""
@@ -105,6 +187,79 @@ if (typeof module !== 'undefined') {
 }
 
 
+var log = {
+    add: function(eventType, payload) {
+        var timestamp = new Date();
+        var event = {
+            type: eventType,
+            instanceID: Florence.instanceID,
+            created: timestamp.toISOString(),
+            timestamp: timestamp.getTime(),
+            payload: payload || null
+        }
+
+        // Add unrecognised log type to log event
+        if (!log.eventTypesMap[eventType]) {
+            console.log("Unrecognised log type: ", eventType, payload);
+            event.type = log.eventTypes.unrecognisedLogType;
+        }
+
+        websocket.send("log:" + JSON.stringify(event));
+    },
+    eventTypes: {
+        appInitialised: "APP_INITIALISED",
+        requestSent: "REQUEST_SENT",
+        requestReceived: "REQUEST_RECEIVED",
+        requestFailed: "REQUEST_FAILED",
+        pingSent: "PING_SENT",
+        pingReceived: "PING_RECEIVED",
+        pingFailed: "PING_FAILED",
+        socketOpen: "SOCKET_OPEN",
+        socketBufferFull: "SOCKET_BUFFER_FULL",
+        socketError: "SOCKET_ERROR",
+        unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
+        runtimeWarning: "RUNTIME_WARNING",
+        unrecognisedLogType: "UNRECOGNISED_LOG_TYPE"
+    },
+    eventTypesMap: {}
+}
+
+// Create a map for event type values to property name 
+// so that we can detect when we're logging an unrecognised event
+for (var eventType in log.eventTypes) {
+    log.eventTypesMap[log.eventTypes[eventType]] = eventType;
+}
+
+$.ajaxSetup({
+    beforeSend: function(request) {
+        var requestID = (S4() + S4());
+        request.setRequestHeader("X-Request-ID", requestID);
+        request.uniqueID = requestID;
+        log.add(
+            log.eventTypes.requestSent, {
+                requestID
+            }
+        );
+    }
+});
+
+$(document).ajaxSuccess(function(event, request, settings) {
+    log.add(
+        log.eventTypes.requestReceived, {
+            requestID: request.uniqueID,
+            status: request.statusText
+        }
+    );
+});
+
+$(document).ajaxError(function(event, request, settings) {
+    log.add(
+        log.eventTypes.requestReceived, {
+            requestID: request.uniqueID,
+            status: request.statusText
+        }
+    );
+});
 var PathUtils = {
   isJsonFile: function (uri) {
     return uri.indexOf('data.json', uri.length - 'data.json'.length) !== -1;
@@ -1110,11 +1265,8 @@ function isValidDate(d) {
  * @returns {boolean}
  **/
 
-function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
+function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
-
-    $("#working-on").on('click', function () {
-    }); // add event listener to mainNav
 
     if (stopEventListener) {
         document.getElementById('iframe').onload = function () {
@@ -1130,7 +1282,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             currentPath = path;
             safePath = checkPathSlashes(currentPath);
         }
-        
+
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
             document.cookie = "lang=" + "en;path=/";
@@ -1142,6 +1294,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
 
+        // If we're viewing a filterable dataset then redirect the iframe to use the new path
+        if (datasetID){
+          window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
+        }
         // Store nav objects
         var $nav = $('.js-workspace-nav'),
             $navItem = $nav.find('.js-workspace-nav__item');
@@ -1207,13 +1363,19 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             menuItem.addClass('selected');
 
             if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click', collectionData);
+                loadBrowseScreen(collectionId, 'click', collectionData, datasetID);
             } else if (menuItem.is('#create')) {
                 Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPreviewUrl();
+                if(datasetID){
+                  var url = $('#browser-location').val();
+                  url = url.replace(/^.*\/\/[^\/]+/, '')
+                  Florence.globalVars.pagePath = url;
+                } else {
+                  Florence.globalVars.pagePath = getPreviewUrl();
+                }
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
@@ -1441,7 +1603,6 @@ function toggleDeleteRevertChildren($item) {
 
     $childContainer.find('.page__buttons').toggleClass('deleted');
 }
-
 function deleteTeam(name) {
   $.ajax({
     url: "/zebedee/teams/" + name,
@@ -1560,7 +1721,7 @@ function addDataset(collectionId, data, field, idField) {
         downloadExtensions = /\.csdb$|\.csv$/;
         pageType = 'timeseries_dataset';
     } else {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
         pageType = 'dataset';
     }
 
@@ -1786,23 +1947,23 @@ function addFile(collectionId, data, field, idField) {
 
     //Add
     if (data.type === 'static_adhoc') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_qmi') {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'article_download' || (data.type === 'static_methodology_download' && field === 'pdfDownloads')) {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'static_methodology_download' && field === 'downloads') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.zip$/;
     } else if (data.type === 'static_methodology') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.pdf$|.zip$/;
     } else if (data.type === 'static_foi') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_page') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_article') {
-        downloadExtensions = /\.xls$|.pdf$|.zip$/;
+        downloadExtensions = /\.xls$|.xlsx$|.pdf$|.zip$/;
     } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'article' || data.type === 'bulletin'|| data.type === 'compendium_chapter') {
         downloadExtensions = /\.pdf$/;
     } else {
@@ -1894,7 +2055,7 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
     //Add
     if (data.type === 'compendium_data') {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
     } else {
         sweetAlert("This file type is not valid", "Contact an administrator if you need to add this type of file in this document", "info");
     }
@@ -2570,7 +2731,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
     if (data.type === 'timeseries_dataset') {
         downloadExtensions = /\.csdb$|\.csv$/;
     } else if (data.type === 'dataset') {
-        downloadExtensions = /\.csv$|.xls$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
     }
 
     var ajaxRequest = [];
@@ -3148,7 +3309,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
   //Add file types
   if (data.type === 'compendium_data'){
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
+    downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
   }
   else if (data.type === 'article_download'){
     downloadExtensions = /\.pdf$/;
@@ -4980,8 +5141,7 @@ var isUpdatingModal = {
         $disabledModal.remove();
     }
 }
-function loadBrowseScreen(collectionId, click, collectionData) {
-
+function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
     // Get collection data if it's undefined and re-run the function once request has returned
     if (!collectionData) {
         getCollection(collectionId, success = function(getCollectionResponse) {
@@ -5018,14 +5178,18 @@ function loadBrowseScreen(collectionId, click, collectionData) {
             // }
 
             // Bind click event for browse tree item
-            bindBrowseTreeClick();
+            bindBrowseTreeClick(collectionId);
 
             if (click) {
-                var url = getPreviewUrl();
+                if(datasetID){
+                  var url = $('.browser-location').val();
+                } else {
+                  var url = getPreviewUrl();
+                }
                 if (url === "/blank" || response['collectionOwner'] == 'DATA_VISUALISATION') {
                     treeNodeSelect('/');
                 } else {
-                    treeNodeSelect(url);
+                    treeNodeSelect(url, datasetID);
                 }
             } else {
                 treeNodeSelect('/');
@@ -5050,32 +5214,57 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 }
 
 // Bind the actions for a click on a browse tree item
-function bindBrowseTreeClick() {
+function bindBrowseTreeClick(collectionId) {
     $('.js-browse__item-title').click(function () {
         var $this = $(this),
             $thisItem = $this.closest('.js-browse__item'),
             uri = $thisItem.attr('data-url'),
             baseURL = Florence.babbageBaseUrl,
-            isDataVis = localStorage.getItem('userType') == 'DATA_VISUALISATION';
-
-        if (uri) {
-            var newURL = baseURL + uri;
-
-            treeNodeSelect(newURL);
-
-            // Data vis browsing doesn't update iframe
-            if (isDataVis) {
-                return false
-            }
-
-            // Update iframe location which will send change event for iframe to update too
-            document.getElementById('iframe').contentWindow.location.href = newURL;
-            $('.browser-location').val(newURL);
-
+            isDataVis = localStorage.getItem('userType') == 'DATA_VISUALISATION',
+            datasetID;
+        
+        // Check if this is an api and get the dataset ID from Zebedee.
+        if($this.hasClass('page__item--api_dataset_landing_page')){
+          getPageData(collectionId, uri,
+              success = function (response) {
+                  datasetID = response.apiDatasetId;
+                  updatePreviewAndBrowseTree(datasetID);
+              },
+              error = function (response) {
+                  handleApiError(response);
+              }
+          );
         } else {
+          updatePreviewAndBrowseTree();
+        }
 
-            // Set all directories above it in the tree to be active when a directory clicked
-            selectParentDirectories($this);
+        function updatePreviewAndBrowseTree(datasetID){
+          if (uri) {
+              var newURL = baseURL + uri;
+              var iframeURL = newURL;
+
+              treeNodeSelect(newURL);
+
+              // Data vis browsing doesn't update iframe
+              if (isDataVis) {
+                  return false
+              }
+
+              // Update iframe location which will send change event for iframe to update too
+            
+              // If this is an api landing page then go to the /datasets/{datasetID} path
+              if (datasetID) {
+                iframeURL = '/datasets/' + datasetID;
+              }
+              document.getElementById('iframe').contentWindow.location.href = iframeURL;
+              
+              $('.browser-location').val(newURL);
+
+          } else {
+
+              // Set all directories above it in the tree to be active when a directory clicked
+              selectParentDirectories($this);
+          }
         }
 
         // Open active branches in browse tree
@@ -8818,20 +9007,20 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
     // Call the recipe API, get data and create elements.
     function getRecipes() {
       $.ajax({
-          url: 'http://localhost:8081/recipes',
+          url: '/recipes',
           dataType: 'json',
           crossDomain: true,
           success: function (recipeData) {
             var templateData = {};
+            var content = "";
             $.each(recipeData.items, function(i, v) {
               // Get the dataset names and id's
               var datasetName = v.alias;
                   datasetId = v.output_instances[0].dataset_id;
               // Create elements, store data in data attr to be used later
-              templateData  = {
-                  content: '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
-              };
+              content =  content + '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
             });
+            templateData.content = content;
             // Load modal and add the data
             viewRecipeModal(templateData);
           },
@@ -9670,7 +9859,7 @@ function logout() {
   localStorage.setItem("userType", "");
   
   // Redirect to refactored login page
-  window.location.pathname = "/florence";
+  window.location.pathname = "/florence/login";
 }
 
 function delete_cookie(name) {
@@ -11565,7 +11754,7 @@ function saveContent(collectionId, uri, data, collectionData) {
     postContent(collectionId, uri, JSON.stringify(data), false, false,
         success = function (message) {
             console.log("Updating completed " + message);
-            createWorkspace(uri, collectionId, 'edit', collectionData);
+            createWorkspace(uri, collectionId, 'edit', collectionData, null, data.apiDatasetId);
         },
         error = function (response) {
             if (response.status === 409) {
@@ -11631,6 +11820,9 @@ function setShortcuts(field, callback) {
     });
   });
 }function setupFlorence() {
+    websocket.open();
+    log.add(log.eventTypes.appInitialised);
+
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
     Handlebars.registerPartial("browseNodeDataVis", templates.browseNodeDataVis);
@@ -11819,9 +12011,6 @@ function setShortcuts(field, callback) {
             window.history.pushState({}, "", "/florence/collections")
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
-            var thisCollection = CookieUtils.getCookieValue("collection");
-            window.history.pushState({}, "", "/florence/collections")
-            viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
         } else if (menuItem.hasClass("js-nav-item--datasets")) {
             window.history.pushState({}, "", "/florence/datasets");
@@ -11842,7 +12031,7 @@ function setShortcuts(field, callback) {
             viewController('login');
         } else if (menuItem.hasClass("js-nav-item--logout")) {
             logout();
-            viewController();
+            // viewController();
         }
     }
 
@@ -15183,7 +15372,6 @@ function staticLandingPageEditor(collectionId, data) {
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
-
 function staticPageEditor(collectionId, data) {
 
   var newLinks = [], newFiles = [], newChart = [], newTable = [], newImage = [];
@@ -15673,7 +15861,7 @@ function transfer(source, destination, uri) {
 
 function treeNodeSelect(url) {
     var urlPart = url.replace(Florence.babbageBaseUrl, '');
-
+    
     // BEING REMOVED BECAUSE BABBAGE IS NOW RENDERING SAME AS NORMAL PAGE - Remove the trailing slash on visualisations so the node select works as expected (unless at root)
     // if (urlPart !== '/') {
     //     urlPart = urlPart.replace(/\/+$/, '');
@@ -16006,9 +16194,9 @@ function viewCollectionDetails(collectionId, $this) {
                 var safePath = checkPathSlashes(path);
                 Florence.globalVars.welsh = false;
             }
-            getPageDataDescription(collectionId, safePath,
-                success = function () {
-                    createWorkspace(safePath, collectionId, 'edit', collection);
+            getPageData(collectionId, safePath,
+                success = function (response) {
+                    createWorkspace(safePath, collectionId, 'edit', collection, null, response.apiDatasetId);
                 },
                 error = function (response) {
                     handleApiError(response);
@@ -16313,7 +16501,8 @@ function viewCollectionDetails(collectionId, $this) {
     if (Florence.Authentication.isAuthenticated()) {
 
         if (view === 'collections') {
-            viewCollections();
+            // viewCollections();
+            window.location.pathname = "/florence/collections";
         }
         else if (view === 'datasets') {
             window.location.pathname = "/florence/datasets";
@@ -16326,11 +16515,12 @@ function viewCollectionDetails(collectionId, $this) {
 
             const collectionID = getQueryVariable("collection");
             const pageURI = getQueryVariable("uri");
-            window.history.replaceState({}, "Florence", "/florence/collections");
+            window.history.replaceState({}, "Florence", "/florence/workspace");
             
-            if (!pageURI || !collectionID) {
-                console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
-                viewCollections();
+            if (!collectionID) {
+                console.warn("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
+                // viewCollections();
+                window.location.pathname = "/florence/collections";
                 return;
             }
 
@@ -16341,6 +16531,10 @@ function viewCollectionDetails(collectionId, $this) {
                     date: response.publishDate,
                     type: response.type
                 });
+                if (!pageURI) {
+                    createWorkspace("/", collectionID, "browse", response);
+                    return;
+                }
                 createWorkspace(pageURI, collectionID, "edit", response);
             }, error => {
                 console.error("Error getting collection data, redirected to collections screen", error);
@@ -16364,12 +16558,14 @@ function viewCollectionDetails(collectionId, $this) {
             viewReports();
         }
         else {
-            viewController('collections');
+            // viewController('collections');
+            window.location.pathname = "/florence";
         }
     }
     else {
         // Redirect to refactored login screen
-        window.location.pathname = "/florence/login";
+        const redirect = location.pathname !== "/florence" ? "?redirect=" + location.pathname : "";
+        window.location.href = "/florence/login" + redirect;
     }
 }
 
@@ -17444,6 +17640,7 @@ function viewWorkspace(path, collectionId, menu) {
   if (path) {
     currentPath = path;
   }
+
   Florence.globalVars.pagePath = currentPath;
 
   if (menu === 'browse') {
@@ -17462,7 +17659,6 @@ function viewWorkspace(path, collectionId, menu) {
     loadPageDataIntoEditor(currentPath, collectionId);
   }
 }
-
 /**
  * Editor screen for uploading visualisations
  * @param collectionId

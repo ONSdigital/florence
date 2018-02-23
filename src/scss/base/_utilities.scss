@@ -1,4 +1,3 @@
-
 .margin {
 
     @for $i from 0 through 5 {
@@ -56,15 +55,55 @@
         }
 
     }
+    
+    @for $i from 1 through 5 {
+        $margin: $gutter * $i;
 
+        &-right--#{$i} {
+            margin-right: $margin;
+        }
+        
+        &-left--#{$i} {
+            margin-left: $margin;
+        }
+    }
+
+}
+
+.colour {
+
+    @each $colour-name, $colour-value in $colours {
+
+        &--#{$colour-name},
+        &--#{$colour-name}:visited {
+            color: $colour-value;
+        }    
+    }
+
+}
+
+.font-size {
+    &--16 {
+        font-size: 16px;
+    }
+}
+
+.font-weight {
+    &--600 {
+        font-weight: 600;
+    }
+}
+
+.inline {
+    display: inline;
+
+    &-block {
+        display: inline-block;
+    }
 }
 
 .block {
   display: block;
-}
-
-.inline-block {
-  display: inline-block;
 }
 
 .text-center {

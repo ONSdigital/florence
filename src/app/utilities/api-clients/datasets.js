@@ -39,6 +39,17 @@ export default class datasets {
              });
     }
 
+    static updateDimensionDescription(instanceID, dimension, description) {
+        const body = {
+            "description": description
+        }
+
+        return http.put(`/instances/${instanceID}/dimensions/${dimension}`, body, true)
+            .then(response => {
+                return response;
+            });
+    }
+
     static updateVersionMetadata(datasetID, edition, version, metadata) {
         if (typeof metadata !== "object") {
             return Promise.reject({status: 400});
@@ -84,17 +95,10 @@ export default class datasets {
     }
 
     static updateDatasetMetadata(datasetID, metadata) {
-        // TODO unstub once dataset API handles putting metadata to a dataset ID
-        return new Promise(resolve => {
-            setTimeout(resolve, 1000);
-        });
-        // const body = {
-        //     metadata
-        // }
-        // return http.put(`/dataset/datasets/${datasetID}`, body, true)
-        //     .then(response => {
-        //         return response;
-        //     })
+        return http.put(`/dataset/datasets/${datasetID}`, metadata, true)
+            .then(response => {
+                return response;
+            })
     }
 
     static approveDatasetMetadata(datasetID) {
@@ -119,7 +123,7 @@ export default class datasets {
     }
 
     static getNewVersionsAndCompletedInstances() {
-        return http.get(`/dataset/instances?state=completed,edition-confirmed,associated`)
+        return http.get(`/dataset/instances?state=completed,edition-confirmed,associated,published`)
             .then(response => {
                 return response;
             });

@@ -17,10 +17,12 @@ exports[`Input without type renders a text input 1`] = `
     className="input input__text"
     disabled={false}
     id="test-input"
+    max={undefined}
+    min={undefined}
     name="test-input"
     onChange={undefined}
     onFocus={[Function]}
-    placeholder=""
+    placeholder={undefined}
     type="text"
     value={undefined}
   />
@@ -45,10 +47,12 @@ exports[`Password prop creates a password input 1`] = `
     className="input input__text"
     disabled={false}
     id="test-password-input"
+    max={undefined}
+    min={undefined}
     name="test-password-input"
     onChange={undefined}
     onFocus={[Function]}
-    placeholder=""
+    placeholder={undefined}
     type="password"
     value={undefined}
   />

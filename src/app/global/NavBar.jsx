@@ -50,7 +50,7 @@ class NavBar extends Component {
                     {!isViewer ?
                         <span>
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/collections">Collections</a>
+                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
                             </li>
 
                             <li className="global-nav__item">
@@ -58,15 +58,15 @@ class NavBar extends Component {
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
+                                <a className="global-nav__link " href="/florence/publishing-queue">Publishing queue</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/reports">Reports</a>
+                                <a className="global-nav__link " href="/florence/reports">Reports</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/users-and-access">Users and access</a>
+                                <a className="global-nav__link " href="/florence/users-and-access">Users and access</a>
                             </li>
 
                             <li className="global-nav__item">
