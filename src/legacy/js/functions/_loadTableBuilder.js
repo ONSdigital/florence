@@ -404,6 +404,8 @@ function loadTableBuilderV2(pageData, onSave, table) {
     }
     if (!tableJson.filename) {
       tableJson.filename = StringUtils.randomId();
+    }
+    if (!tableJson.uri) {
       tableJson.uri = pageUrl + "/" + tableJson.filename;
     }
 
