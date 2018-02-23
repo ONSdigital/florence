@@ -139,7 +139,7 @@ func main() {
 		newAppHandler = legacyIndexFile
 	}
 
-	uploader, err := upload.New(uploadBucketName)
+	uploader, err := upload.New(uploadBucketName, nil)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
