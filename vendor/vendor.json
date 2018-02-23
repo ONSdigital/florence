@@ -45,6 +45,36 @@
 			"revisionTime": "2018-02-22T11:11:31Z"
 		},
 		{
+			"checksumSHA1": "NQu/L+9CIJLpgrZt3UMlbma9Pk0=",
+			"path": "github.com/aws/aws-sdk-go/aws",
+			"revision": "f36920a0f7a246abe598d73b37b245199aabd3ad",
+			"revisionTime": "2018-02-06T00:49:27Z"
+		},
+		{
+			"checksumSHA1": "657ICMok3uC5dm5e9bKcVF2HaxE=",
+			"path": "github.com/aws/aws-sdk-go/aws/request",
+			"revision": "f36920a0f7a246abe598d73b37b245199aabd3ad",
+			"revisionTime": "2018-02-06T00:49:27Z"
+		},
+		{
+			"checksumSHA1": "DIn7B+oP++/nw603OB95fmupzu8=",
+			"path": "github.com/aws/aws-sdk-go/aws/session",
+			"revision": "f36920a0f7a246abe598d73b37b245199aabd3ad",
+			"revisionTime": "2018-02-06T00:49:27Z"
+		},
+		{
+			"checksumSHA1": "fXQn3V0ZRBZpTXUEHl4/yOjR4mQ=",
+			"path": "github.com/aws/aws-sdk-go/service/s3",
+			"revision": "f36920a0f7a246abe598d73b37b245199aabd3ad",
+			"revisionTime": "2018-02-06T00:49:27Z"
+		},
+		{
+			"checksumSHA1": "ZP6QI0X9BNKk8o1p3AyLfjabS20=",
+			"path": "github.com/aws/aws-sdk-go/service/s3/s3iface",
+			"revision": "f36920a0f7a246abe598d73b37b245199aabd3ad",
+			"revisionTime": "2018-02-06T00:49:27Z"
+		},
+		{
 			"checksumSHA1": "wzvsJkEM5AYj7pJTsYpf/TAoVb4=",
 			"path": "github.com/goamz/goamz/aws",
 			"revision": "386f7c89320367132e0a3ad9b7fd31cdcf26abc6",
@@ -158,6 +188,12 @@
 			"path": "github.com/vaughan0/go-ini",
 			"revision": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1",
 			"revisionTime": "2013-09-23T14:52:12Z"
+		},
+		{
+			"checksumSHA1": "GtamqiJoL7PGHsN454AoffBFMa8=",
+			"path": "golang.org/x/net/context",
+			"revision": "a8b9294777976932365dabb6640cf1468d95c70f",
+			"revisionTime": "2017-11-29T19:21:16Z"
 		},
 		{
 			"checksumSHA1": "1D8GzeoFGUs5FZOoyC2DpQg8c5Y=",
