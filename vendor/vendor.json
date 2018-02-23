@@ -39,6 +39,12 @@
 			"revisionTime": "2017-08-30T09:50:52Z"
 		},
 		{
+			"checksumSHA1": "8MjlMEGyrrHqO/jQpx6ASUCK3RU=",
+			"path": "github.com/ONSdigital/s3crypto",
+			"revision": "470806720e60b381f1d1d94ab3b0c23095c0e57f",
+			"revisionTime": "2018-02-22T11:11:31Z"
+		},
+		{
 			"checksumSHA1": "wzvsJkEM5AYj7pJTsYpf/TAoVb4=",
 			"path": "github.com/goamz/goamz/aws",
 			"revision": "386f7c89320367132e0a3ad9b7fd31cdcf26abc6",
