@@ -2,7 +2,7 @@
 // Source: github.com/aws/aws-sdk-go/service/s3/s3iface (interfaces: S3API)
 
 // Package mock_s3iface is a generated GoMock package.
-package upload
+package mocks
 
 import (
 	reflect "reflect"
