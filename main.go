@@ -4,7 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/rsa"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
+	"errors"
 	"mime"
 	"net/http"
 	"net/url"
@@ -36,6 +40,8 @@ var datasetAPIURL = "http://localhost:22000"
 var uploadBucketName = "dp-frontend-florence-file-uploads"
 var datasetAuthToken = "FD0108EA-825D-411C-9B1D-41EF7727F465"
 var enableNewApp = false
+var encryptionDisabled = false
+var privateKeyString = ""
 var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
@@ -76,6 +82,12 @@ func main() {
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
+	}
+	if v := os.Getenv("ENCRYPTION_DISABLED"); len(v) > 0 {
+		encryptionDisabled, _ = strconv.ParseBool(v)
+	}
+	if v := os.Getenv("RSA_PRIVATE_KEY"); len(v) > 0 {
+		privateKeyString = v
 	}
 
 	log.Namespace = "florence"
@@ -139,7 +151,17 @@ func main() {
 		newAppHandler = legacyIndexFile
 	}
 
-	uploader, err := upload.New(uploadBucketName, nil)
+	privateKey := new(rsa.PrivateKey)
+	if !encryptionDisabled {
+		privateKey, err = getPrivateKey([]byte(privateKeyString))
+		if err != nil {
+			log.Error(err, nil)
+			log.Info("you must provide a valid RSA private key for file upload encryption or set the environment variable ENCRYPTION_DISABLED to be true", nil)
+			os.Exit(1)
+		}
+	}
+
+	uploader, err := upload.New(uploadBucketName, privateKey)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
@@ -297,6 +319,15 @@ func importAPIDirector(req *http.Request) {
 func datasetAPIDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
 	req.Header.Set("Internal-token", datasetAuthToken)
+}
+
+func getPrivateKey(keyBytes []byte) (*rsa.PrivateKey, error) {
+	block, _ := pem.Decode(keyBytes)
+	if block == nil || block.Type != "RSA PRIVATE KEY" {
+		return nil, errors.New("invalid RSA PRIVATE KEY provided")
+	}
+
+	return x509.ParsePKCS1PrivateKey(block.Bytes)
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
