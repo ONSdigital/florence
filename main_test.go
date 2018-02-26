@@ -86,6 +86,13 @@ func TestMain(t *testing.T) {
 		So(recorder.Code, ShouldEqual, 404)
 	})
 
+	Convey("Table renderer proxy director function trims '/table' from the request URL", t, func() {
+		request, err := http.NewRequest("GET", "/table/parse", nil)
+		So(err, ShouldBeNil)
+		tableDirector(request)
+		So(request.URL.String(), ShouldEqual, "/parse")
+	})
+
 	Convey("Zebedee proxy director function trims '/zebedee' from the request URL", t, func() {
 		request, err := http.NewRequest("GET", "/zebedee/test", nil)
 		So(err, ShouldBeNil)
