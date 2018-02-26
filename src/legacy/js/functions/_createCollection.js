@@ -56,7 +56,6 @@ function createCollection(teams) {
                 publishDate: collectionDate,
                 pendingDeletes: [],
                 teams: teams,
-                collectionOwner: Florence.Authentication.userType(),
                 releaseUri: releaseUri
             }),
             success: function (collection) {
