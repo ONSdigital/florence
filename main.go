@@ -151,7 +151,7 @@ func main() {
 		newAppHandler = legacyIndexFile
 	}
 
-	privateKey := new(rsa.PrivateKey)
+	var privateKey *rsa.PrivateKey
 	if !encryptionDisabled {
 		privateKey, err = getPrivateKey([]byte(privateKeyString))
 		if err != nil {
