@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/ONSdigital/florence"
   },
-  "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build script are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
+  "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "devDependencies": {
     "cat": "latest",
     "onchange": "latest",
@@ -20,7 +20,7 @@
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
-    "postinstall": "npm run build-refactored"
+    "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored"
   },
   "dependencies": {
     "babel-cli": "^6.18.0",
@@ -30,7 +30,7 @@
     "babel-preset-react": "^6.16.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
-    "dp-table-builder-ui": "^1.0.9",
+    "dp-table-builder-ui": "^1.0.16",
     "extract-text-webpack-plugin": "^2.0.0-beta",
     "file-loader": "^0.10.0",
     "install": "^0.8.7",
