@@ -8,6 +8,7 @@ function viewCollections(collectionId) {
             type: "get",
             success: function (data) {
                 result.data = data;
+                // result.data = mock.collections;
             },
             error: function (jqxhr) {
                 handleApiError(jqxhr);
@@ -70,11 +71,7 @@ function viewCollections(collectionId) {
             }
         });
 
-        var isDataVis = false;
-        if (Florence.Authentication.userType() === "DATA_VISUALISATION") {
-            isDataVis = true;
-        }
-        var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams, isDataVis: isDataVis});
+        var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams});
         $('.section').html(collectionsHtml);
 
         if (collectionId) {
