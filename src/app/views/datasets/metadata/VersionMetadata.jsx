@@ -244,16 +244,15 @@ export class VersionMetadata extends Component {
         // It shouldn't at the state of "edition-confirmed".
         return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
             .then(() => {
+                var instanceID = "";
+                if (this.state.instanceID) {
+                    instanceID = this.state.instanceID;
+                } else {
+                    instanceID = this.state.versionID;
+                }
                 this.state.dimensions.map((dimension) => {
-                    if (this.state[dimension.name] || this.state[dimension.description]) {
-                        var instanceID = "";
-                        if (this.state.instanceID) {
-                            instanceID = this.state.instanceID;
-                        } else {
-                            instanceID = this.state.versionID;
-                        }
-
-                        datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, this.state[dimension.name], this.state[dimension.description]);
+                    if (dimension.hasChanged === true) {
+                        datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, dimension.label, dimension.description);
                     }
                 })
             })
@@ -353,17 +352,19 @@ export class VersionMetadata extends Component {
         return (
           dimensions.map(dimension => {
             return (    
-              <div key={dimension.name}>
+              <div key={dimension.id}>
                 <Input
                     value={dimension.label ? dimension.label : dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}                  
                     id={dimension.name}
+                    name="dimension-name"
                     label=""
                     onChange={this.handleInputChange}
                 />
                 <Input
                     value={dimension.description}                  
                     type="textarea"
-                    id={dimension.description}
+                    id={dimension.description} 
+                    name="dimension-description"
                     label="Learn more (optional)"
                     onChange={this.handleInputChange}
                 />
@@ -510,6 +511,7 @@ export class VersionMetadata extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
+        const id = target.id;
         if (name === "add-related-content-title") {
             this.setState({titleInput: value});
             if(this.state.titleError != null) {
@@ -520,10 +522,43 @@ export class VersionMetadata extends Component {
             if(this.state.descError != null) {
                 this.setState({descError: null})
             }
+        } else if (name === "dimension-name") {
+            let dimensionLabel;
+            dimensionLabel = this.state.dimensions.map(dimension => {
+                if (dimension.name === id){
+                    return {
+                        ...dimension,
+                        label: value,
+                        hasChanged: true
+                    }
+                }
+
+                return dimension
+            });
+            this.setState({
+                dimensions: dimensionLabel
+            });
+        } else if (name === "dimension-description") {
+            let dimensionDesc;
+            dimensionDesc = this.state.dimensions.map(dimension => {
+                if (dimension.description === id){
+                    return {
+                        ...dimension,
+                        description: value,
+                        hasChanged: true
+                    }
+                }
+
+                return dimension
+            });
+            this.setState({
+                dimensions: dimensionDesc
+            });
         } else {
             this.setState({
                 [name]: value
             });
+
         }
         this.setState({hasChanges: true});
 
