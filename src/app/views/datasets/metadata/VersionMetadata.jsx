@@ -363,7 +363,7 @@ export class VersionMetadata extends Component {
                 <Input
                     value={dimension.description}                  
                     type="textarea"
-                    id={dimension.description} 
+                    id={dimension.name} 
                     name="dimension-description"
                     label="Learn more (optional)"
                     onChange={this.handleInputChange}
@@ -541,7 +541,7 @@ export class VersionMetadata extends Component {
         } else if (name === "dimension-description") {
             let dimensionDesc;
             dimensionDesc = this.state.dimensions.map(dimension => {
-                if (dimension.description === id){
+                if (dimension.name === id){
                     return {
                         ...dimension,
                         description: value,
