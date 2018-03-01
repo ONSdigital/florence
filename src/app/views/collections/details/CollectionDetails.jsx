@@ -4,6 +4,7 @@ import dateFormat from 'dateformat';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import { updateActiveCollection } from '../../../config/actions';
 
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log';
@@ -82,6 +83,7 @@ export class CollectionDetails extends Component {
         this.handleRestoreContentClick = this.handleRestoreContentClick.bind(this);
         this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
         this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
+        this.handleAddDatasetClick = this.handleAddDatasetClick.bind(this);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -338,9 +340,15 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__banner">
                 <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary">Create/edit page</a>
+                <button className="btn btn--primary btn--margin-left" onClick={this.handleAddDatasetClick}>Add dataset</button>
                 <button className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
             </div>
         )
+    }
+
+    handleAddDatasetClick() {
+        this.props.dispatch(updateActiveCollection(this.props.id));
+        this.props.dispatch(push(url.resolve("/datasets")));
     }
 
     handleRestoreContentClick() {
