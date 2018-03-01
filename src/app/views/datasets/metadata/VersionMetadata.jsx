@@ -357,7 +357,7 @@ export class VersionMetadata extends Component {
                     value={dimension.label ? dimension.label : dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}                  
                     id={dimension.name}
                     name="dimension-name"
-                    label=""
+                    label="Dimension title"
                     onChange={this.handleInputChange}
                 />
                 <Input
