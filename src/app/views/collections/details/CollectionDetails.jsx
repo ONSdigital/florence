@@ -338,7 +338,7 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__banner">
                 <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary">Create/edit page</a>
-                <a href={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add dataset</a>
+                <Link to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add dataset</Link>
                 <button className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
             </div>
         )
