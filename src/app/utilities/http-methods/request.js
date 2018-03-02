@@ -56,8 +56,13 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             logEventPayload.message = response.message;
             log.add(eventTypes.requestReceived, logEventPayload);
 
-            const responseIsJSON = response.headers.get('content-type').match(/application\/json/);
-            const responseIsText = response.headers.get('content-type').match(/text\/plain/);
+            let responseIsJSON = false;
+            let responseIsText = false;
+
+            if (response.headers.get('content-type') !== null) {
+                responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+                responseIsText = response.headers.get('content-type').match(/text\/plain/);
+            }
 
             if (response.status >= 500) {
                 throw new HttpError(response);
