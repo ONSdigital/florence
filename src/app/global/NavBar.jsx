@@ -54,7 +54,7 @@ class NavBar extends Component {
                             </li>
 
                             <li className="global-nav__item">
-                                <Link to={`${rootPath}/datasets`} activeClassName="selected" className={"global-nav__link" + (route.includes(`${rootPath}/uploads/data`) ? " selected" : "")}>Datasets</Link>
+                                <Link to={`${rootPath}/uploads/data`} activeClassName="selected" className={"global-nav__link" + (route.includes(`${rootPath}/uploads/data`) ? " selected" : "")}>Datasets</Link>
                             </li>
 
                             <li className="global-nav__item">
