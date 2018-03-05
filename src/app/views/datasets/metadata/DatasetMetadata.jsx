@@ -13,7 +13,7 @@ import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
 import CardList from '../../../components/CardList';
 import RelatedContentForm from './related-content/RelatedContentForm'
-import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
+import {updateAllDatasets, updateActiveDataset, emptyActiveDataset} from '../../../config/actions';
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
 
@@ -276,6 +276,10 @@ export class DatasetMetadata extends Component {
             this.originalState = nextState;
             this.setState({hasChanges: true});
         }
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(emptyActiveDataset());
     }
 
     mapStateToAPIRequest() {
