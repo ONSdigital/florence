@@ -1,12 +1,18 @@
 import { initialState } from './initialState';
 
 import {
+    UPDATE_ACTIVE_DATASET,
     UPDATE_ACTIVE_INSTANCE,
     UPDATE_ACTIVE_VERSION,
     UPDATE_ACTIVE_JOB,
     UPDATE_ACTIVE_COLLECTION, 
     EMPTY_ACTIVE_COLLECTION, 
-    UPDATE_ALL_TEAM_IDS_AND_NAMES
+    UPDATE_ALL_TEAM_IDS_AND_NAMES,
+    UPDATE_ACTIVE_DATASET_REVIEW_STATE, 
+    UPDATE_ACTIVE_VERSION_REVIEW_STATE, 
+    EMPTY_ACTIVE_DATASET, 
+    EMPTY_ACTIVE_VERSION, 
+    EMPTY_ACTIVE_INSTANCE
 } from './actions'
 
 export default function reducer(state = initialState, action) {
@@ -93,11 +99,42 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
+        case (EMPTY_ACTIVE_INSTANCE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeInstance: null
+                }
+            });
+        }
         case (UPDATE_ACTIVE_VERSION): {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
-                    activeVersion: action.version
+                    activeVersion: {
+                        ...state.datasets.activeVersion,
+                        ...action.version
+                    }
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_VERSION_REVIEW_STATE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeVersion: {
+                        ...state.datasets.activeVersion,
+                        lastEditedBy: action.lastEditedBy,
+                        reviewState: action.reviewState
+                    }
+                }
+            });
+        }
+        case (EMPTY_ACTIVE_VERSION): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeVersion: null
                 }
             });
         }
@@ -109,11 +146,34 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case ('UPDATE_ACTIVE_DATASET'): {
+        case (EMPTY_ACTIVE_DATASET): {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
-                    activeDataset: action.dataset
+                    activeDataset: null
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_DATASET): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: {
+                        ...state.datasets.activeDataset,
+                        ...action.dataset
+                    }
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_DATASET_REVIEW_STATE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: {
+                        ...state.datasets.activeDataset,
+                        lastEditedBy: action.lastEditedBy,
+                        reviewState: action.reviewState
+                    }
                 }
             });
         }

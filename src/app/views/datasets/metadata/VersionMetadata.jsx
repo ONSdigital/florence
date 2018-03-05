@@ -9,7 +9,7 @@ import recipes from '../../../utilities/api-clients/recipes';
 import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
 import Input from '../../../components/Input';
-import {updateActiveInstance, updateActiveVersion, updateAllRecipes, updateActiveDataset} from '../../../config/actions';
+import {updateActiveInstance, updateActiveVersion, updateAllRecipes, updateActiveDataset, emptyActiveVersion, emptyActiveInstance} from '../../../config/actions';
 import url from '../../../utilities/url'
 import CardList from '../../../components/CardList';
 import Modal from '../../../components/Modal';
@@ -231,6 +231,14 @@ export class VersionMetadata extends Component {
         if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
             this.originalState = nextState;
             this.setState({hasChanges: false});
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.state.isInstance) {
+            this.props.dispatch(emptyActiveInstance());
+        } else {
+            this.props.dispatch(emptyActiveVersion());
         }
     }
 
@@ -643,6 +651,23 @@ export class VersionMetadata extends Component {
 
     }
 
+    renderMetadataActions() {
+        
+
+        return (
+            <div>
+                <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
+                <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
+                {
+                    this.state.state === "associated" ?
+                    <button className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
+                    :
+                    ""
+                }
+            </div>
+        )
+    }
+
     render() {
         return (
             <div className="grid grid--justify-center">
@@ -708,14 +733,7 @@ export class VersionMetadata extends Component {
                                 </div>
                             </div>
                           </div>
-                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
-                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
-                          {
-                              this.state.state === "associated" ?
-                              <button className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
-                              :
-                              ""
-                          }
+                          {this.renderMetadataActions()}
                         </form>
                       </div>
                     }
