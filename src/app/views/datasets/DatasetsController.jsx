@@ -154,9 +154,6 @@ class DatasetsController extends Component {
                     <ul className="list list--neutral">
                         <li className="list__item grid grid--justify-space-between">
                             <h1>Select a dataset</h1>
-                            <div className="margin-top--3">
-                                <Link className="btn btn--primary " to={url.resolve("uploads/data")}>Upload a dataset</Link>
-                            </div>
                         </li>
                     </ul>
                     <SelectableTableController
