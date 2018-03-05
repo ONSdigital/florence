@@ -58,10 +58,12 @@ export default class url {
             // not ending in '/' to still be within that directory
             // e.g. url.resolve("../") from location "/florence/teams" = "/florence";
             if (path.indexOf('../') === 0) {
-                return new URL(path, location.href + "/").pathname.replace(/\/+$/, "");
+                const URLObject = new URL(path, location.href + "/");
+                return URLObject.pathname.replace(/\/+$/, "") + URLObject.search;
             }
 
-            let newURL = new URL(path, location.href).pathname;
+            const URLObject = new URL(path, location.href);
+            const newURL = URLObject.pathname + URLObject.search;
 
             return newURL;
         } catch (error) {
