@@ -5,9 +5,11 @@ import PropTypes from 'prop-types';
 
 import SelectableTableController from './selectable-table/SelectableTableController';
 import datasets from '../../utilities/api-clients/datasets';
+import collections from '../../utilities/api-clients/collections';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
-import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
+import {updateAllRecipes, updateAllDatasets, updateActiveCollection} from '../../config/actions'
+
 import url from '../../utilities/url'
 
 const propTypes = {
@@ -20,6 +22,7 @@ class DatasetsController extends Component {
 
         this.state = {
             tableValues: [],
+            collections: [],
             isFetchingDatasets: false
         };
 
@@ -28,6 +31,8 @@ class DatasetsController extends Component {
 
     componentWillMount() {
         this.setState({isFetchingDatasets: true});
+        const params = new URLSearchParams(this.props.location.search);
+        const collectionID = params.get('collection');
         const fetches = [
             datasets.getNewVersionsAndCompletedInstances(),
             datasets.getAll()
@@ -36,7 +41,7 @@ class DatasetsController extends Component {
             this.setState({
                 isFetchingDatasets: false,
                 tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items)
-            });
+            }); 
             this.props.dispatch(updateAllDatasets(responses[1].items));
         }).catch(error => {
             switch (error.status) {
@@ -109,6 +114,21 @@ class DatasetsController extends Component {
             notifications.add(notification);
             console.error("Error getting dataset recipes:\n", error);
         });
+        if (collectionID){
+            collections.getAll().then(collections => {
+                const activeCollection = collections.find(collection => {
+                    return collection.id === collectionID;
+                });
+                this.props.dispatch(updateActiveCollection(activeCollection));
+                this.setState({
+                    collections:collections,
+                    activeCollection: {
+                        name: activeCollection.name,
+                        id: activeCollection.id
+                    }
+                });
+            });
+        }
     }
 
     mapResponseToTableData(datasets, instances) {
@@ -118,6 +138,13 @@ class DatasetsController extends Component {
                 const datasetInstances = [];
                 instances.forEach(instance => {
                     const datasetID = instance.links.dataset.id;
+                    let currentStatus = "";
+                    if (instance.state === "associated"){
+                        currentStatus = "Added to collection"
+                    }
+                    if (instance.state === "completed" || instance.state === "edition-confirmed"){
+                        currentStatus = "New"
+                    }
                     if (datasetID === dataset.id) {
                         datasetInstances.push({
                             date: instance.last_updated,
@@ -125,7 +152,7 @@ class DatasetsController extends Component {
                             edition: instance.edition || "-",
                             version: instance.version || "-",
                             url: instance.state === "completed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`),
-                            status: instance.state
+                            status: currentStatus
                         });
                     }
                 });
