@@ -40,7 +40,8 @@ jest.mock('../../../utilities/log', () => {
     return {
         add: function() {
             //
-        }
+        },
+        eventTypes: {}
     }
 });
 
@@ -174,6 +175,9 @@ const defaultProps = {
         datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
         version: "1",
         edition: "time-series"
+    },
+    location: {
+        query: {collection: "a-collection-id"}
     }
 }
 
