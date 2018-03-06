@@ -65,8 +65,7 @@ const propTypes = {
       lastEditedBy: PropTypes.string,
       reviewState: PropTypes.string
     }),
-    isInstance: PropTypes.string,
-    btn: PropTypes.string
+    isInstance: PropTypes.string
 }
 
 export class VersionMetadata extends Component {
@@ -86,7 +85,6 @@ export class VersionMetadata extends Component {
             releaseDate: "",
             releaseDateError: "",
             dimensions: [],
-            btn: "",
             versionID: "",
             showModal: false,
             alerts: [],
@@ -265,6 +263,7 @@ export class VersionMetadata extends Component {
         this.setState({isFetchingCollectionData: true});
         const collectionID = this.props.collectionID;
         const params = this.props.params;
+        
         try {
             const collection = await collections.get(collectionID);
             const version = collection.datasetVersions.find(datasetVersion => {
@@ -276,15 +275,15 @@ export class VersionMetadata extends Component {
             });
             if (!version) {
                 notifications.add({
-                    type: 'warning',
-                    message: `Dataset version could not be found in collection '${collectionID}'`,
-                    isDismissable: true,
-                    autoDismiss: 10000
+                    type: 'neutral',
+                    message: `Unable to allow saving or reviewing because dataset version was not found in collection '${collection.name}'`,
+                    isDismissable: true
                 });
                 this.setState({
                     isFetchingCollectionData: false,
                     isReadOnly: true
                 });
+                log.add(eventTypes.runtimeWarning, {message: `Unable to allow saving or reviewing because dataset '${params.datasetID}: ${params.edition} (version ${params.version})' was not found in collection '${collectionID}'`});
                 return;
             }
             const lastEditedBy = version.lastEditedBy;
@@ -777,63 +776,6 @@ export class VersionMetadata extends Component {
         }
      }
 
-    handlePageSubmit(event, btn) {
-        // event.preventDefault();
-        
-        // this.setState({btn: btn}, function () {
-        //     let haveError = false;
-
-        //     if (!this.state.edition) {
-        //         this.setState({
-        //             editionError: "You must select an edition"
-        //         });
-        //         haveError = true;
-        //     }
-
-        //     if (!this.state.isInstance && !this.state.releaseDate) {
-        //         this.setState({
-        //             releaseDateError: "You must add a release date"
-        //         });
-        //         haveError = true;
-        //     }
-
-        //     let alerts = [];
-        //     this.state.alerts.map((alert) => {
-        //         if (alert.hasChanged) {
-        //             alerts.push(alert);
-        //         }
-        //     })
-
-        //     let changes = [];
-        //     this.state.changes.map((change) => {
-        //         if (change.hasChanged) {
-        //             changes.push(change);
-        //         }
-        //     })
-
-        //     if (this.state.edition && this.state.isInstance && !haveError) {
-        //         const instanceMetadata = {
-        //             edition: this.state.edition,
-        //             alerts: alerts,
-        //             latest_changes: changes
-        //         }
-        //         if (this.state.releaseDate) {
-        //             instanceMetadata.release_date = this.state.releaseDate.toISOString();
-        //         }
-        //         this.updateInstanceVersion(instanceMetadata);
-        //         return;
-        //     }
-
-        //     if (!this.state.isInstance && !haveError) {
-        //         this.updateInstanceVersion({
-        //             release_date: this.state.releaseDate.toISOString(),
-        //             alerts: alerts,
-        //             latest_changes: changes
-        //         });
-        //     }
-        // });
-    }
-
     handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         event.preventDefault();
         
@@ -902,13 +844,13 @@ export class VersionMetadata extends Component {
 
         if (this.props.userEmail === this.props.version.lastEditedBy && this.props.version.reviewState === "inProgress") {
             return (
-                <button className="btn btn--positive" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
+                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )
         }
         
         if (this.props.userEmail !== this.props.version.lastEditedBy && this.props.version.reviewState === "complete") {
             return (
-                <button className="btn btn--positive" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
+                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
             )
         }
 
@@ -968,7 +910,7 @@ export class VersionMetadata extends Component {
                                         onEdit={this.handleEditRelatedClick}
                                         onDelete={this.handleDeleteRelatedClick}
                                     />
-                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}> Add an alert</button>
+                                    <button disabled={this.state.isSavingData || this.state.isReadOnly} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}> Add an alert</button>
                                 </div>
                                 <div className="margin-bottom--1">
                                     <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
@@ -979,12 +921,13 @@ export class VersionMetadata extends Component {
                                         onDelete={this.handleDeleteRelatedClick}
 
                                     />
-                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes")}}> Add change</button>
+                                    <button disabled={this.state.isSavingData || this.state.isReadOnly} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes")}}> Add change</button>
                                 </div>
                             </div>
                           </div>
-                          <button type="submit" className="btn btn--positive margin-right--1 margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
+                          <button type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
                           {this.renderReviewActions()}
+                          {/* TODO render a 'preview' call to action */}
                           {this.state.isSavingData &&
                             <div className="loader loader--dark loader--inline margin-left--1"></div>
                           }
@@ -1046,8 +989,7 @@ function mapStateToProps(state) {
       instance: state.state.datasets.activeInstance,
       version: state.state.datasets.activeVersion,
       recipes: state.state.datasets.recipes,
-      dataset: state.state.datasets.activeDataset,
-      btn: state.state.btn
+      dataset: state.state.datasets.activeDataset
     }
 }
 
