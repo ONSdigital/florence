@@ -81,4 +81,9 @@ describe("Resolved URLs include query parameters", () => {
         setLocation('http://publishing.onsdigital.co.uk/florence/datasets/my-dataset-id');
         expect(url.resolve("../?collection=my-collection")).toBe("/florence/datasets?collection=my-collection");
     });
+
+    it("excludes queries when the caller passes in the correct argument", () => {
+        setLocation('http://publishing.onsdigital.co.uk/florence/datasets/my-dataset-id?collection=my-collection-id');
+        expect(url.resolve("/collections")).toBe("/florence/collections");
+    });
 });
