@@ -108,6 +108,8 @@ export class VersionMetadata extends Component {
         this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
         this.editRelatedLink = this.editRelatedLink.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
+        this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
     }
@@ -337,9 +339,6 @@ export class VersionMetadata extends Component {
             return datasets.confirmEditionAndCreateVersion(this.props.params.instanceID, this.state.selectedEdition, body);
         }
 
-        // Throwing a 400 error - The dataset API has a bug at the version endpoint
-        // The API validates certain fields - license & release date
-        // It shouldn't at the state of "edition-confirmed".
         return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
             .then(() => {
                 var instanceID = "";
@@ -361,7 +360,71 @@ export class VersionMetadata extends Component {
             });
     }
 
-    updateInstanceVersion(body) {
+    updateVersionReviewState(dataset, edition, version, isSubmittingForReview, isMarkingAsReviewed) {
+        let request = Promise.resolve();
+
+        this.setState({isSavingData: true});
+
+        if (isSubmittingForReview) {
+            request = collections.setDatasetVersionStatusToComplete;
+        }
+        
+        if (isMarkingAsReviewed) {
+            request = collections.setDatasetVersionStatusToReviewed;
+        }
+
+        request(this.props.collectionID, dataset, edition, version).then(() => {
+            this.setState({isSavingData: false});
+            this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
+        }).catch(error => {
+            this.setState({isSavingData: false});
+
+            switch (error.status) {
+                case(401): {
+                    // Handled by request utility function
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: 'neutral',
+                        message: `You do not have permission to set this version to 'Awaiting review' in the collection '${this.props.collectionID}'`,
+                        isDismissable: true,
+                        autoDismiss: 6000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Could not find collection '${this.props.collectionID}'`,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: 'warning',
+                        message: `An unexpected error's occurred whilst trying to set this version to 'Awaiting review' in the collection '${this.props.collectionID}'`,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for version ${dataset}/editions/${edition}/versions/${version} to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+
+            console.error(`Error updating review state for version ${dataset}/editions/${edition}/versions/${version} to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
+        })
+    }
+
+    updateInstanceVersion(body, isSubmittingForReview, isMarkingAsReviewed) {
+        if ((isSubmittingForReview || isMarkingAsReviewed) && !this.state.isInstance) {
+            this.updateVersionReviewState(this.props.params.datasetID, this.props.params.edition, this.props.params.version, isSubmittingForReview, isMarkingAsReviewed);
+        }
+
         if (this.state.hasChanges || this.state.isInstance) {
             this.setState({isSavingData: true});
             return this.postData(body).then(() => {
@@ -369,25 +432,13 @@ export class VersionMetadata extends Component {
                     datasets.getInstance(this.props.params.instanceID).then(response => {
                         this.setState({isSavingData: false});
                         this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/metadata?collection=${this.props.collectionID}`));
+                        if (isSubmittingForReview || isMarkingAsReviewed) {
+                            this.updateVersionReviewState(this.props.params.datasetID, response.edition, response.version, isSubmittingForReview, isMarkingAsReviewed);
+                        }
                     });
-                } else {
-                    this.setState({isSavingData: false});
+                    return;
                 }
-                // if (this.state.btn === "return") {
-                //     this.props.dispatch(push("/florence/datasets"));
-                // } else {
-                //     if (this.state.btn === "add") {
-                //         if (this.state.isInstance) {
-                //             datasets.getInstance(this.props.params.instanceID).then(response => {
-                //                 this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/collection`));
-                //             });
-                //         } else {
-                //             this.props.dispatch(push(url.resolve("collection")));
-                //         }
-                //     } else {
-                //         this.props.dispatch(push(url.resolve("collection/preview")));
-                //     }
-                // }
+                this.setState({isSavingData: false});
             }).catch(error => {
                 this.setState({isSavingData: false});
                 switch (error.status) {
@@ -427,18 +478,6 @@ export class VersionMetadata extends Component {
                 console.error("Error has occurred:\n", error);
             });
         }
-
-        // if (this.state.btn === "return") {
-        //     this.props.dispatch(push("/florence/datasets"));
-        // } else {
-        //     if (!this.state.isInstance && !this.state.hasChanges) {
-        //         if (this.state.btn === "add") {
-        //             this.props.dispatch(push(url.resolve("collection")));
-        //         } else {
-        //             this.props.dispatch(push(url.resolve("collection/preview")));
-        //         }
-        //     }
-        // }
     }
 
     mapTypeContentsToCard(items, type){
@@ -795,7 +834,7 @@ export class VersionMetadata extends Component {
         // });
     }
 
-    handleSave(event) {
+    handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         event.preventDefault();
         
         let haveError = false;
@@ -831,7 +870,7 @@ export class VersionMetadata extends Component {
             if (this.state.releaseDate) {
                 instanceMetadata.release_date = this.state.releaseDate.toISOString();
             }
-            this.updateInstanceVersion(instanceMetadata);
+            this.updateInstanceVersion(instanceMetadata, isSubmittingForReview, isMarkingAsReviewed);
             return;
         }
 
@@ -840,8 +879,16 @@ export class VersionMetadata extends Component {
                 release_date: this.state.releaseDate.toISOString(),
                 alerts: alerts,
                 latest_changes: changes
-            });
+            }, isSubmittingForReview, isMarkingAsReviewed);
         }
+    }
+
+    handleSaveAndSubmitForReview(event) {
+        this.handleSave(event, true, false);
+    }
+
+    handleSaveAndMarkAsReviewed(event) {
+        this.handleSave(event, false, true);
     }
 
     renderReviewActions() {
@@ -855,13 +902,13 @@ export class VersionMetadata extends Component {
 
         if (this.props.userEmail === this.props.version.lastEditedBy && this.props.version.reviewState === "inProgress") {
             return (
-                <button className="btn btn--positive" type="button" disabled={this.state.isSavingData}>Save and submit for review</button>
+                <button className="btn btn--positive" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )
         }
         
         if (this.props.userEmail !== this.props.version.lastEditedBy && this.props.version.reviewState === "complete") {
             return (
-                <button className="btn btn--positive" type="button" disabled={this.state.isSavingData}>Save and submit for approval</button>
+                <button className="btn btn--positive" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
             )
         }
 
