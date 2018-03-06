@@ -34,7 +34,7 @@ export default class url {
      * @param {string} path - Path that we want to resolve 
      * @returns {string} - An absolute pathname (excluding host)
      */
-    static resolve(path) {
+    static resolve(path, excludeParameters) {
 
         if (typeof path !== "string") {
             console.error("Unable to parse relative URL path because non-string type given");
@@ -59,11 +59,11 @@ export default class url {
             // e.g. url.resolve("../") from location "/florence/teams" = "/florence";
             if (path.indexOf('../') === 0) {
                 const URLObject = new URL(path, location.href + "/");
-                return URLObject.pathname.replace(/\/+$/, "") + URLObject.search;
+                return URLObject.pathname.replace(/\/+$/, "") + (excludeParameters ? "" : URLObject.search);
             }
 
             const URLObject = new URL(path, location.href);
-            const newURL = URLObject.pathname + URLObject.search;
+            const newURL = URLObject.pathname + (excludeParameters ? "" : URLObject.search);
 
             return newURL;
         } catch (error) {
