@@ -13,9 +13,10 @@ import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
 import CardList from '../../../components/CardList';
 import RelatedContentForm from './related-content/RelatedContentForm'
-import {updateAllDatasets, updateActiveDataset, emptyActiveDataset} from '../../../config/actions';
+import {updateActiveDataset, emptyActiveDataset, updateActiveDatasetReviewState} from '../../../config/actions';
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
+import collections from '../../../utilities/api-clients/collections'
 
 const propTypes = {
     params: PropTypes.shape({
@@ -23,6 +24,8 @@ const propTypes = {
     }).isRequired,
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
+    userEmail: PropTypes.string.isRequired,
+    collectionID: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
@@ -65,7 +68,9 @@ const propTypes = {
             latest_version: PropTypes.shape({
                 href: PropTypes.string
             })
-        })
+        }),
+        reviewState: PropTypes.string,
+        lastEditedBy: PropTypes.string
     })
 }
 
@@ -74,7 +79,9 @@ export class DatasetMetadata extends Component {
         super(props);
         this.state = {
             isFetchingDataset: false,
-            isSubmittingData: false,
+            isFetchingCollectionData: false,
+            isReadOnly: false,
+            isSavingData: false,
             hasChanges: false,
             error: null,
             showModal: false,
@@ -113,7 +120,10 @@ export class DatasetMetadata extends Component {
         this.handleBackButton = this.handleBackButton.bind(this);
         this.handleModalSubmit = this.handleModalSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        // this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
+        this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
         this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
         this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
         this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
@@ -122,6 +132,10 @@ export class DatasetMetadata extends Component {
 
     componentWillMount() {
         this.setState({isFetchingDataset: true});
+
+        if (!this.props.dataset || !this.props.dataset.reviewState || !this.props.dataset.reviewState) {
+            this.updateReviewStateData();
+        }
 
         datasets.get(this.props.params.datasetID).then(response => {
             this.props.dispatch(updateActiveDataset(response.next || response.current));
@@ -280,6 +294,76 @@ export class DatasetMetadata extends Component {
 
     componentWillUnmount() {
         this.props.dispatch(emptyActiveDataset());
+    }
+
+    async updateReviewStateData() {
+        this.setState({isFetchingCollectionData: true});
+        const collectionID = this.props.collectionID;
+        const datasetID = this.props.params.datasetID;
+        
+        try {
+            const collection = await collections.get(collectionID);
+            const dataset = collection.datasets.find(dataset => {
+                return dataset.id === datasetID;
+            });
+            if (!dataset) {
+                notifications.add({
+                    type: 'neutral',
+                    message: `Unable to allow saving or reviewing because dataset was not found in collection '${collection.name}'`,
+                    isDismissable: true
+                });
+                this.setState({
+                    isFetchingCollectionData: false,
+                    isReadOnly: true
+                });
+                log.add(eventTypes.runtimeWarning, {message: `Unable to allow saving or reviewing because dataset '${datasetID}' was not found in collection '${collectionID}'`});
+                return;
+            }
+            const lastEditedBy = dataset.lastEditedBy;
+            const reviewState = dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
+            this.props.dispatch(updateActiveDatasetReviewState(lastEditedBy, reviewState));
+            this.setState({isFetchingCollectionData: false});
+        } catch (error) {
+            this.setState({
+                isFetchingCollectionData: false,
+                isReadOnly: true
+            });
+            switch (error.status) {
+                case (401): {
+                    // handled by request utility function
+                    break;
+                }
+                case (403): {
+                    const notification = {
+                        "type": "neutral",
+                        "message": `You do not permission to get details for collection '${collectionID}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case (404): {
+                    const notification = {
+                        "type": "warning",
+                        "message": `Could not find collection '${collectionID}'`,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: `An unexpected error's occurred whilst trying to get the collection '${collectionID}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            log.add(eventTypes.unexpectedRuntimeError, {message: "Unable to update metadata screen with version's review/edit status in collection " + collectionID + ". Error: " + JSON.stringify(error)});
+            console.error("Unable to update metadata screen with version's review/edit status in collection " + collectionID, error);
+        }
     }
 
     mapStateToAPIRequest() {
@@ -543,53 +627,90 @@ export class DatasetMetadata extends Component {
      }
 
     handlePageSubmit(event, btn) {
+        // event.preventDefault();
+        // this.setState({ 
+        //     isSavingData: true,
+        //     btn: btn
+        // });
+        // datasets.updateDatasetMetadata(this.props.params.datasetID, this.mapStateToAPIRequest()).then(() => {
+        //     this.setState({ isSavingData: false });
+        //     if (this.state.btn === "return") {
+        //         this.props.dispatch(push("/florence/datasets"));
+        //     }
+        //     if (this.state.btn === "add"){
+        //         this.props.dispatch(push(`${location.pathname}/collection`));
+        //     } 
+        //     if (this.state.btn === "preview"){
+        //         const latestVersionURL = url.resolve(this.state.latestVersion);
+        //         this.props.dispatch(push(`/florence${latestVersionURL}/collection/preview`));
+        //     } 
+        // }).catch(error => {
+        //     this.setState({ isSavingData: false });
+        //     if (error) {
+        //         const notification = {
+        //             type: 'warning',
+        //             isDismissable: true,
+        //             autoDismiss: 15000
+        //         };
+        //         switch (error.status) {
+        //             case ('UNEXPECTED_ERR'): {
+        //                 console.error(errCodes.UNEXPECTED_ERR);
+        //                 notification.message = errCodes.UNEXPECTED_ERR;
+        //                 notifications.add(notification);
+        //                 break;
+        //             }
+        //             case ('RESPONSE_ERR'): {
+        //                 console.error(errCodes.RESPONSE_ERR);
+        //                 notification.message = errCodes.RESPONSE_ERR;
+        //                 notifications.add(notification);
+        //                 break;
+        //             }
+        //             case ('FETCH_ERR'): {
+        //                 console.error(errCodes.FETCH_ERR);
+        //                 notification.message = errCodes.FETCH_ERR;
+        //                 notifications.add(notification);
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // });
+    }
+
+    handleSave(event) {
         event.preventDefault();
-        this.setState({ 
-            isSubmittingData: true,
-            btn: btn
-        });
-        datasets.updateDatasetMetadata(this.props.params.datasetID, this.mapStateToAPIRequest()).then(() => {
-            this.setState({ isSubmittingData: false });
-            if (this.state.btn === "return") {
-                this.props.dispatch(push("/florence/datasets"));
-            }
-            if (this.state.btn === "add"){
-                this.props.dispatch(push(`${location.pathname}/collection`));
-            } 
-            if (this.state.btn === "preview"){
-                const latestVersionURL = url.resolve(this.state.latestVersion);
-                this.props.dispatch(push(`/florence${latestVersionURL}/collection/preview`));
-            } 
-        }).catch(error => {
-            this.setState({ isSubmittingData: false });
-            if (error) {
-                const notification = {
-                    type: 'warning',
-                    isDismissable: true,
-                    autoDismiss: 15000
-                };
-                switch (error.status) {
-                    case ('UNEXPECTED_ERR'): {
-                        console.error(errCodes.UNEXPECTED_ERR);
-                        notification.message = errCodes.UNEXPECTED_ERR;
-                        notifications.add(notification);
-                        break;
-                    }
-                    case ('RESPONSE_ERR'): {
-                        console.error(errCodes.RESPONSE_ERR);
-                        notification.message = errCodes.RESPONSE_ERR;
-                        notifications.add(notification);
-                        break;
-                    }
-                    case ('FETCH_ERR'): {
-                        console.error(errCodes.FETCH_ERR);
-                        notification.message = errCodes.FETCH_ERR;
-                        notifications.add(notification);
-                        break;
-                    }
-                }
-            }
-        });
+        console.log('Save');
+    }
+
+    handleSaveAndSubmitForReview() {
+        console.log("Save and submit for review");
+    }
+
+    handleSaveAndMarkAsReviewed() {
+        console.log("Save and mark as reviewed");
+    }
+
+    renderReviewActions() {
+        if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
+            return;
+        }
+
+        if (this.props.dataset.reviewState === "reviewed") {
+            return;
+        }
+
+        if (this.props.userEmail === this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "inProgress") {
+            return (
+                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
+            )
+        }
+        
+        if (this.props.userEmail !== this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
+            return (
+                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
+            )
+        }
+
+        return;
     }
 
     render() {
@@ -610,14 +731,14 @@ export class DatasetMetadata extends Component {
                             <h2 className="margin-top--1 margin-bottom--1">Dataset</h2>
                             <div className="margin-bottom--1"><strong>ID</strong><span className="inline-block margin-left--1">{this.props.params.datasetID || "Fetching dataset ID..."}
 </span></div>
-                          <form className="margin-bottom--4" onSubmit={this.handlePageSubmit}>
+                          <form className="margin-bottom--4" onSubmit={this.handleSave}>
 
                               <Input
                                   value={this.state.title}
                                   id="title"
                                   label="Title"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isSavingData}
                               />
                               <Input
                                   value={this.state.description}
@@ -625,7 +746,7 @@ export class DatasetMetadata extends Component {
                                   id="description"
                                   label="About this dataset"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isSavingData}
                               />
                               <Input
                                   value={ this.state.keywords}
@@ -633,13 +754,13 @@ export class DatasetMetadata extends Component {
                                   label="Keywords"
                                   placeholder={`e.g. housing, inflation`}
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isSavingData}
                               />
                               <div className="grid__col-6 margin-top--2">
                                 <Checkbox
                                     isChecked={this.state.isNationalStat}
                                     onChange={this.handleToggleChange}
-                                    disabled={this.state.isSubmittingData}
+                                    disabled={this.state.isSavingData}
                                     label="National statistic"
                                     id="national-statistic"
                                 />
@@ -652,7 +773,7 @@ export class DatasetMetadata extends Component {
                                       error={this.state.error}
                                       label="Release frequency"
                                       id="release-frequency"
-                                      disabled={this.state.isSubmittingData}
+                                      disabled={this.state.isSavingData}
                                   />
                               </div>
                               <h3 className="margin-bottom--1">Contact</h3>
@@ -661,21 +782,21 @@ export class DatasetMetadata extends Component {
                                   id="contactName"
                                   label="Contact name"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isSavingData}
                               />
                               <Input
                                   value={this.state.contactEmail}
                                   id="contactEmail"
                                   label="Contact email"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isSavingData}
                               />
                               <Input
                                   value={this.state.contactPhone}
                                   id="contactPhone"
                                   label="Contact telephone"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isSavingData}
                               />
                         <h2 className="margin-top--2 margin-bottom--1">Related content</h2>
                         <div className="margin-bottom--1">
@@ -689,7 +810,7 @@ export class DatasetMetadata extends Component {
                                     onEdit={this.handleEditRelatedClick}
                                     onDelete={this.handleDeleteRelatedClick}
                                 />
-                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
+                              <button disabled={this.state.isSavingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
                         <div className="margin-bottom--2 related-documents">
                             <h3> Bulletins, articles and compendia </h3>
@@ -699,7 +820,7 @@ export class DatasetMetadata extends Component {
                               onEdit={this.handleEditRelatedClick}
                               onDelete={this.handleDeleteRelatedClick}
                               />
-                            <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
+                            <button disabled={this.state.isSavingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Quality and methodology information </h3>
@@ -709,7 +830,7 @@ export class DatasetMetadata extends Component {
                                     id="relatedQMI"
                                     label=""
                                     onChange={this.handleInputChange}
-                                    disabled={this.state.isSubmittingData}
+                                    disabled={this.state.isSavingData}
                                 />
                         
                         </div>
@@ -721,7 +842,7 @@ export class DatasetMetadata extends Component {
                                     onEdit={this.handleEditRelatedClick}
                                     onDelete={this.handleDeleteRelatedClick}
                                 />
-                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("methodologies")}}> Add methodology</button>
+                              <button disabled={this.state.isSavingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("methodologies")}}> Add methodology</button>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Usage information </h3>
@@ -734,18 +855,21 @@ export class DatasetMetadata extends Component {
                                   id="license"
                                   label=""
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isSavingData}
                               />
                         </div>
-                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
-                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
+                        {/* <button type="submit" disabled={this.state.isSavingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
+                        <button type="submit" disabled={this.state.isSavingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
                         {this.state.latestVersion ?
                             this.state.status === "associated" &&
-                                <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
+                                <button type="submit" disabled={this.state.isSavingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
                             : ""
-                        }
-                        {this.state.isSubmittingData &&
-                            <div className="loader loader--centre loader--dark margin-left--1"></div>
+                        } */}
+                        <button type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
+                        {this.renderReviewActions()}
+                        {/* TODO render preview CTA with `this.state.latestVersion` check */}
+                        {this.state.isSavingData &&
+                            <div className="loader loader--inline loader--dark margin-left--1"></div>
                         }
                         </form>
                     </div>
@@ -803,6 +927,8 @@ DatasetMetadata.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
+        userEmail: state.state.user.email,
+        collectionID: state.routing.locationBeforeTransitions.query.collection,
         datasets: state.state.datasets.all,
         dataset: state.state.datasets.activeDataset
     }
