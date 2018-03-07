@@ -504,13 +504,17 @@ export class VersionMetadata extends Component {
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
      }
 
-     handleBackButton() {
+    handleBackButton() {
         if (this.state.hasChanges) {
             this.setState({showModal: true});
             return;
         }
-
-        this.props.dispatch(push(url.resolve("/datasets")));
+        if (this.state.activeCollectionID){
+            this.props.dispatch(push(url.resolve("/datasets") + "?collection=" + this.state.activeCollectionID));
+        } else {
+            this.props.dispatch(push(url.resolve("/datasets")));
+        }
+        
     }
     
     handleCancel() {
