@@ -592,97 +592,15 @@ export class DatasetMetadata extends Component {
             request = collections.setDatasetStatusToReviewed;
         }
 
-        return new Promise((resolve, reject) => {
-            request(this.props.collectionID, dataset).then(() => {
-                // this.setState({isSavingData: false});
-                // this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
-                resolve();
-            }).catch(error => {
-                // this.setState({isSavingData: false});
-                // switch (error.status) {
-                //     case(401): {
-                //         // Handled by request utility function
-                //         break;
-                //     }
-                //     case(403): {
-                //         const notification = {
-                //             type: 'neutral',
-                //             message: `You do not have permission to set this dataset to 'Awaiting review' in the collection '${this.props.collectionID}'`,
-                //             isDismissable: true,
-                //             autoDismiss: 6000
-                //         };
-                //         notifications.add(notification);
-                //         break;
-                //     }
-                //     case(404): {
-                //         const notification = {
-                //             type: 'warning',
-                //             message: `Could not find collection '${this.props.collectionID}'`,
-                //             isDismissable: true
-                //         };
-                //         notifications.add(notification);
-                //         break;
-                //     }
-                //     default: {
-                //         const notification = {
-                //             type: 'warning',
-                //             message: `An unexpected error's occurred whilst trying to set this dataset to 'Awaiting review' in the collection '${this.props.collectionID}'`,
-                //             isDismissable: true
-                //         };
-                //         notifications.add(notification);
-                //         break;
-                //     }
-                // }
-    
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
-    
-                console.error(`Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
-
-                reject(error);
-            })
-        }).catch((error) => {
+        return request(this.props.collectionID, dataset).catch(error => {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
             return error;
         });
     }
 
     updateDatasetMetadata(datasetID) {
-        return new Promise((resolve, reject) => {
-            datasets.updateDatasetMetadata(datasetID, this.mapStateToAPIRequest()).then(() => {
-                resolve();
-            }).catch(error => {
-                // this.setState({ isSavingData: false });
-                // if (error) {
-                //     const notification = {
-                //         type: 'warning',
-                //         isDismissable: true,
-                //         autoDismiss: 15000
-                //     };
-                //     switch (error.status) {
-                //         case ('UNEXPECTED_ERR'): {
-                //             console.error(errCodes.UNEXPECTED_ERR);
-                //             notification.message = errCodes.UNEXPECTED_ERR;
-                //             notifications.add(notification);
-                //             break;
-                //         }
-                //         case ('RESPONSE_ERR'): {
-                //             console.error(errCodes.RESPONSE_ERR);
-                //             notification.message = errCodes.RESPONSE_ERR;
-                //             notifications.add(notification);
-                //             break;
-                //         }
-                //         case ('FETCH_ERR'): {
-                //             console.error(errCodes.FETCH_ERR);
-                //             notification.message = errCodes.FETCH_ERR;
-                //             notifications.add(notification);
-                //             break;
-                //         }
-                //     }
-                // }
-                reject(error);
-            })
-        }).catch(error => {
-            return error;
-        });
+        return datasets.updateDatasetMetadata(datasetID, this.mapStateToAPIRequest()).catch(error => error);
     }
     
     handleRelatedContentSubmit(event) {
@@ -784,30 +702,23 @@ export class DatasetMetadata extends Component {
         // });
     }
 
-    handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
-        event.preventDefault();
-        this.setState({isSavingData: true});
-        
-        const requests = [];
+    async handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
         
-        requests.push(this.updateDatasetMetadata(this.props.params.datasetID));
+        event.preventDefault();
+        this.setState({isSavingData: true});
 
-        if (isUpdatingReviewState) {
-            requests.push(this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed));
+        let metadataUpdateError = this.updateDatasetMetadata(this.props.params.datasetID);
+        let reviewStateUpdatesError = isUpdatingReviewState ? this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed) : Promise.resolve();
+        
+        [metadataUpdateError, reviewStateUpdatesError] = [await metadataUpdateError, await reviewStateUpdatesError];
+
+        this.setState({isSavingData: false});
+        
+        const hasErrors = handleMetadataSaveErrors(metadataUpdateError, reviewStateUpdatesError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
+        if (!hasErrors && isUpdatingReviewState) {
+            this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
         }
-
-        Promise.all(requests).then(responses => {
-            // Any rejects in PUTs to Zebedee and Dataset API will fall into here. If the PUT has been successful then we don't need to do anything
-            // otherwise it is handled by handleMetadataSaveErrors.
-            // For an example of the approach we've used for sending two async requests at the same time but handling the errors invidividually it's worth looking at:
-            // http://adampaxton.com/handling-multiple-javascript-promises-even-if-some-fail/
-            this.setState({isSavingData: false});
-            const hasErrors = handleMetadataSaveErrors(responses, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
-            if (!hasErrors && isUpdatingReviewState) {
-                this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
-            }
-        });
     }
 
     handleSaveAndSubmitForReview() {

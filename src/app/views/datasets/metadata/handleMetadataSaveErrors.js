@@ -2,16 +2,16 @@ import notifications from '../../../utilities/notifications';
 
 /**
  * 
- * @param {[datasetAPIError, collectionAPIError]} responses - Any error responses returned by the requests.
+ * @param {Error} metadataUpdateFailure - Any error responses returned by the metadata update request.
+ * @param {Error} reviewStateUpdateFailure - Any error responses returned by the metadata update request.
  * @param {boolean} isSubmittingForReview - Whether the request was submitting the dataset/version for review.
  * @param {boolean} isMarkingAsReviewed - Whether the request was marking the dataset/version as reviewed.
+ * @param {string} collection - Collection name that the user is updating the dataset/version in.
  * 
  * @returns {boolean} - Whether there were errors or not;
  */
 
-export default function handleMetadataSaveErrors(responses, isSubmittingForReview, isMarkingAsReviewed, collection){
-    const metadataUpdateFailure = responses[0] || {};
-    const reviewStateUpdateFailure = responses[1] || {};
+export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, reviewStateUpdateFailure = {}, isSubmittingForReview, isMarkingAsReviewed, collection) {
 
     if (reviewStateUpdateFailure.status === 401 || metadataUpdateFailure.status === 401) {
         // Handled by utility request function
@@ -55,7 +55,7 @@ function getErrorMessage(reviewStateUpdateFailure, metadataUpdateFailure, isSubm
     }
     
     if (reviewStateUpdateFailure.status === 404) {
-        return `Unable to ${isSubmittingForReview ? 'submit for review' : ''}${isMarkingAsReviewed ? 'submit for approval' : ''} because collection '${this.props.collection}' couldn't be found`;
+        return `Unable to ${isSubmittingForReview ? 'submit for review' : ''}${isMarkingAsReviewed ? 'submit for approval' : ''} because collection '${collection}' couldn't be found`;
     }
     
     if (metadataUpdateFailure.status === 404) {
