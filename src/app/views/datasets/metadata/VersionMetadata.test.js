@@ -409,3 +409,5 @@ test("Changing the dimension title value updates the dimension label in state", 
     component.instance().handleInputChange(mockLabelEvent);
     expect(component.state("dimensions")[0].label).toBe(mockLabelEvent.target.value);
 });
+
+// TODO test that the saving responses are passed to the error handler in the correct order
