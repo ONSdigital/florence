@@ -428,7 +428,7 @@ export class VersionMetadata extends Component {
             return this.postData(body).then(() => {
                 if (this.state.isInstance) {
                     datasets.getInstance(this.props.params.instanceID).then(response => {
-                        this.setState({isSavingData: false});
+                        this.setState({isSavingData: false, hasChanges: false});
                         this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/metadata?collection=${this.props.collectionID}`));
                         if (isSubmittingForReview || isMarkingAsReviewed) {
                             this.updateVersionReviewState(this.props.params.datasetID, response.edition, response.version, isSubmittingForReview, isMarkingAsReviewed);
@@ -436,9 +436,9 @@ export class VersionMetadata extends Component {
                     });
                     return;
                 }
-                this.setState({isSavingData: false});
+                this.setState({isSavingData: false, hasChanges: false});
             }).catch(error => {
-                this.setState({isSavingData: false});
+                this.setState({isSavingData: false, hasChanges: false});
                 switch (error.status) {
                     case (401): {
                         // handled by request utility function

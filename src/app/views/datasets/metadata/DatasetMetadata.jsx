@@ -116,7 +116,6 @@ export class DatasetMetadata extends Component {
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handlePageSubmit = this.handlePageSubmit.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
         this.handleModalSubmit = this.handleModalSubmit.bind(this);
@@ -666,7 +665,7 @@ export class DatasetMetadata extends Component {
         
         [metadataUpdateError, reviewStateUpdatesError] = [await metadataUpdateError, await reviewStateUpdatesError];
 
-        this.setState({isSavingData: false});
+        this.setState({isSavingData: false, hasChanges: false});
         
         const hasErrors = handleMetadataSaveErrors(metadataUpdateError, reviewStateUpdatesError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
         if (!hasErrors && isUpdatingReviewState) {
