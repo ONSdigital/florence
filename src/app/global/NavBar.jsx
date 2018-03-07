@@ -46,10 +46,6 @@ class NavBar extends Component {
         const workingOn = this.props.workingOn || {};
         const showWorkingOnCollection = workingOn.id && (route.includes(`${rootPath}/datasets`) || route.includes(`${rootPath}/workspace`));
 
-        console.log('SHOULD SHOW:', showWorkingOnCollection);
-        console.log('WORKING ON:', this.props.workingOn);
-        console.log('---------');
-
         if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) || route.includes(`${rootPath}/datasets`) || route.includes(`${rootPath}/uploads`) || route.includes(`${rootPath}/not-authorised`)) {
             return (
                 <span>
