@@ -121,7 +121,6 @@ export class DatasetMetadata extends Component {
         this.handleBackButton = this.handleBackButton.bind(this);
         this.handleModalSubmit = this.handleModalSubmit.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
-        // this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
@@ -579,7 +578,7 @@ export class DatasetMetadata extends Component {
         });
     }
 
-    updateDatasetReviewState(dataset, isSubmittingForReview, isMarkingAsReviewed) {
+    updateDatasetReviewState(datasetID, isSubmittingForReview, isMarkingAsReviewed) {
         let request = Promise.resolve;
 
         this.setState({isSavingData: true});
@@ -592,15 +591,19 @@ export class DatasetMetadata extends Component {
             request = collections.setDatasetStatusToReviewed;
         }
 
-        return request(this.props.collectionID, dataset).catch(error => {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
-            console.error(`Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
+        return request(this.props.collectionID, datasetID).catch(error => {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
             return error;
         });
     }
 
     updateDatasetMetadata(datasetID) {
-        return datasets.updateDatasetMetadata(datasetID, this.mapStateToAPIRequest()).catch(error => error);
+        return datasets.updateDatasetMetadata(datasetID, this.mapStateToAPIRequest()).catch(error => {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating metadata for dataset '${datasetID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error updating metadata for dataset '${datasetID}'`, error);
+            return error;
+        });
     }
     
     handleRelatedContentSubmit(event) {
@@ -652,56 +655,6 @@ export class DatasetMetadata extends Component {
         }
      }
 
-    handlePageSubmit(event, btn) {
-        // event.preventDefault();
-        // this.setState({ 
-        //     isSavingData: true,
-        //     btn: btn
-        // });
-        // datasets.updateDatasetMetadata(this.props.params.datasetID, this.mapStateToAPIRequest()).then(() => {
-        //     this.setState({ isSavingData: false });
-        //     if (this.state.btn === "return") {
-        //         this.props.dispatch(push("/florence/datasets"));
-        //     }
-        //     if (this.state.btn === "add"){
-        //         this.props.dispatch(push(`${location.pathname}/collection`));
-        //     } 
-        //     if (this.state.btn === "preview"){
-        //         const latestVersionURL = url.resolve(this.state.latestVersion);
-        //         this.props.dispatch(push(`/florence${latestVersionURL}/collection/preview`));
-        //     } 
-        // }).catch(error => {
-        //     this.setState({ isSavingData: false });
-        //     if (error) {
-        //         const notification = {
-        //             type: 'warning',
-        //             isDismissable: true,
-        //             autoDismiss: 15000
-        //         };
-        //         switch (error.status) {
-        //             case ('UNEXPECTED_ERR'): {
-        //                 console.error(errCodes.UNEXPECTED_ERR);
-        //                 notification.message = errCodes.UNEXPECTED_ERR;
-        //                 notifications.add(notification);
-        //                 break;
-        //             }
-        //             case ('RESPONSE_ERR'): {
-        //                 console.error(errCodes.RESPONSE_ERR);
-        //                 notification.message = errCodes.RESPONSE_ERR;
-        //                 notifications.add(notification);
-        //                 break;
-        //             }
-        //             case ('FETCH_ERR'): {
-        //                 console.error(errCodes.FETCH_ERR);
-        //                 notification.message = errCodes.FETCH_ERR;
-        //                 notifications.add(notification);
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // });
-    }
-
     async handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
         
@@ -738,7 +691,7 @@ export class DatasetMetadata extends Component {
             return;
         }
 
-        if (this.props.userEmail === this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "inProgress") {
+        if (this.props.dataset.reviewState === "inProgress") {
             return (
                 <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )

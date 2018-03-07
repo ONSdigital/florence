@@ -99,7 +99,6 @@ export class VersionMetadata extends Component {
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handlePageSubmit = this.handlePageSubmit.bind(this);
         this.handleReleaseDateChange = this.handleReleaseDateChange.bind(this);
         this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
         this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
@@ -842,7 +841,7 @@ export class VersionMetadata extends Component {
             return;
         }
 
-        if (this.props.userEmail === this.props.version.lastEditedBy && this.props.version.reviewState === "inProgress") {
+        if (this.props.version.reviewState === "inProgress") {
             return (
                 <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )
