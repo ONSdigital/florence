@@ -17,6 +17,7 @@ import {updateActiveDataset, emptyActiveDataset, updateActiveDatasetReviewState}
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
 import collections from '../../../utilities/api-clients/collections'
+import handleMetadataSaveErrors from './handleMetadataSaveErrors';
 
 const propTypes = {
     params: PropTypes.shape({
@@ -119,8 +120,8 @@ export class DatasetMetadata extends Component {
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
         this.handleModalSubmit = this.handleModalSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        // this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
+        // this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
@@ -262,6 +263,7 @@ export class DatasetMetadata extends Component {
                       break;
                   }
               }
+              log.add(eventTypes.unexpectedRuntimeError, {message: "Error getting dataset " + this.props.params.datasetID + ". Error: " + JSON.stringify(error)});
               console.error("Error has occurred:\n", error);
             });
 
@@ -455,7 +457,7 @@ export class DatasetMetadata extends Component {
         this.props.dispatch(push(url.resolve("/datasets")));
     }
 
-    handleCancel() {
+    handleRelatedContentCancel() {
         this.setState({
             showModal: false,
             modalType: "",
@@ -576,8 +578,114 @@ export class DatasetMetadata extends Component {
             return keyword.trim()
         });
     }
+
+    updateDatasetReviewState(dataset, isSubmittingForReview, isMarkingAsReviewed) {
+        let request = Promise.resolve;
+
+        this.setState({isSavingData: true});
+
+        if (isSubmittingForReview) {
+            request = collections.setDatasetStatusToComplete;
+        }
+        
+        if (isMarkingAsReviewed) {
+            request = collections.setDatasetStatusToReviewed;
+        }
+
+        return new Promise((resolve, reject) => {
+            request(this.props.collectionID, dataset).then(() => {
+                // this.setState({isSavingData: false});
+                // this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
+                resolve();
+            }).catch(error => {
+                // this.setState({isSavingData: false});
+                // switch (error.status) {
+                //     case(401): {
+                //         // Handled by request utility function
+                //         break;
+                //     }
+                //     case(403): {
+                //         const notification = {
+                //             type: 'neutral',
+                //             message: `You do not have permission to set this dataset to 'Awaiting review' in the collection '${this.props.collectionID}'`,
+                //             isDismissable: true,
+                //             autoDismiss: 6000
+                //         };
+                //         notifications.add(notification);
+                //         break;
+                //     }
+                //     case(404): {
+                //         const notification = {
+                //             type: 'warning',
+                //             message: `Could not find collection '${this.props.collectionID}'`,
+                //             isDismissable: true
+                //         };
+                //         notifications.add(notification);
+                //         break;
+                //     }
+                //     default: {
+                //         const notification = {
+                //             type: 'warning',
+                //             message: `An unexpected error's occurred whilst trying to set this dataset to 'Awaiting review' in the collection '${this.props.collectionID}'`,
+                //             isDismissable: true
+                //         };
+                //         notifications.add(notification);
+                //         break;
+                //     }
+                // }
     
-    handleFormSubmit(event) {
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+    
+                console.error(`Error updating review state for dataset '${dataset}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
+
+                reject(error);
+            })
+        }).catch((error) => {
+            return error;
+        });
+    }
+
+    updateDatasetMetadata(datasetID) {
+        return new Promise((resolve, reject) => {
+            datasets.updateDatasetMetadata(datasetID, this.mapStateToAPIRequest()).then(() => {
+                resolve();
+            }).catch(error => {
+                // this.setState({ isSavingData: false });
+                // if (error) {
+                //     const notification = {
+                //         type: 'warning',
+                //         isDismissable: true,
+                //         autoDismiss: 15000
+                //     };
+                //     switch (error.status) {
+                //         case ('UNEXPECTED_ERR'): {
+                //             console.error(errCodes.UNEXPECTED_ERR);
+                //             notification.message = errCodes.UNEXPECTED_ERR;
+                //             notifications.add(notification);
+                //             break;
+                //         }
+                //         case ('RESPONSE_ERR'): {
+                //             console.error(errCodes.RESPONSE_ERR);
+                //             notification.message = errCodes.RESPONSE_ERR;
+                //             notifications.add(notification);
+                //             break;
+                //         }
+                //         case ('FETCH_ERR'): {
+                //             console.error(errCodes.FETCH_ERR);
+                //             notification.message = errCodes.FETCH_ERR;
+                //             notifications.add(notification);
+                //             break;
+                //         }
+                //     }
+                // }
+                reject(error);
+            })
+        }).catch(error => {
+            return error;
+        });
+    }
+    
+    handleRelatedContentSubmit(event) {
         event.preventDefault();
 
         if(this.state.titleInput == "" || this.state.urlInput == ""){
@@ -676,17 +784,38 @@ export class DatasetMetadata extends Component {
         // });
     }
 
-    handleSave(event) {
+    handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         event.preventDefault();
-        console.log('Save');
+        this.setState({isSavingData: true});
+        
+        const requests = [];
+        const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
+        
+        requests.push(this.updateDatasetMetadata(this.props.params.datasetID));
+
+        if (isUpdatingReviewState) {
+            requests.push(this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed));
+        }
+
+        Promise.all(requests).then(responses => {
+            // Any rejects in PUTs to Zebedee and Dataset API will fall into here. If the PUT has been successful then we don't need to do anything
+            // otherwise it is handled by handleMetadataSaveErrors.
+            // For an example of the approach we've used for sending two async requests at the same time but handling the errors invidividually it's worth looking at:
+            // http://adampaxton.com/handling-multiple-javascript-promises-even-if-some-fail/
+            this.setState({isSavingData: false});
+            const hasErrors = handleMetadataSaveErrors(responses, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
+            if (!hasErrors && isUpdatingReviewState) {
+                this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
+            }
+        });
     }
 
     handleSaveAndSubmitForReview() {
-        console.log("Save and submit for review");
+        this.handleSave(event, true, false);
     }
 
     handleSaveAndMarkAsReviewed() {
-        console.log("Save and mark as reviewed");
+        this.handleSave(event, false, true);
     }
 
     renderReviewActions() {
@@ -889,9 +1018,9 @@ export class DatasetMetadata extends Component {
                               urlInput={this.state.urlInput}
                               descLabel={"Description"}
                               descInput={this.state.descInput}
-                              onCancel={this.handleCancel}
+                              onCancel={this.handleRelatedContentCancel}
                               onFormInput={this.handleInputChange}
-                              onFormSubmit={this.handleFormSubmit}
+                              onFormSubmit={this.handleRelatedContentSubmit}
                               titleError={this.state.titleError}
                               urlError={this.state.urlError}
                               requiresDescription={this.state.modalType === "methodologies" ? true : false}
@@ -909,7 +1038,7 @@ export class DatasetMetadata extends Component {
                           </div>
                           <div className="modal__footer">
                           <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
-                          <button type="button" className="btn" onClick={this.handleCancel}>Cancel</button>
+                          <button type="button" className="btn" onClick={this.handleRelatedContentCancel}>Cancel</button>
                           </div>
                         </div>
                       }
