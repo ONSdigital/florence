@@ -72,7 +72,7 @@ export default class SelectableTableController extends Component {
                                     </div>
                                 </summary>
                                 <div>
-                                    <Link className="inline-block margin-bottom--1" to={url.resolve(`datasets/${item.id}/metadata`)}> Edit dataset details</Link>
+                                    <Link className="inline-block margin-bottom--1" to={item.datasetURL}> Edit dataset details</Link>
                                     {item.instances.length > 0 &&
                                         <div>
                                             <div className="grid simple-table__heading">

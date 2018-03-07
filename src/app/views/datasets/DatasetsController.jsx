@@ -25,24 +25,31 @@ class DatasetsController extends Component {
             collections: [],
             isFetchingDatasets: false
         };
-
         this.mapResponseToTableData = this.mapResponseToTableData.bind(this);
+        this.handleInstanceURL = this.handleInstanceURL.bind(this);
     }
 
     componentWillMount() {
         this.setState({isFetchingDatasets: true});
-        const params = new URLSearchParams(this.props.location.search);
-        const collectionID = params.get('collection');
+        const queryParam = new URLSearchParams(this.props.location.search);
+        const collectionID = queryParam.get('collection');
+ 
         const fetches = [
             datasets.getNewVersionsAndCompletedInstances(),
-            datasets.getAll()
+            datasets.getAll(),
+            collections.getAll()
         ]
         Promise.all(fetches).then(responses => {
+            const activeCollection = responses[2].find(collection => {
+                return collection.id === collectionID;
+            });
             this.setState({
                 isFetchingDatasets: false,
-                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items)
+                collections: responses[2],
+                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], collectionID)
             }); 
             this.props.dispatch(updateAllDatasets(responses[1].items));
+            this.props.dispatch(updateActiveCollection(activeCollection));
         }).catch(error => {
             switch (error.status) {
                 case(403):{
@@ -114,24 +121,10 @@ class DatasetsController extends Component {
             notifications.add(notification);
             console.error("Error getting dataset recipes:\n", error);
         });
-        if (collectionID){
-            collections.getAll().then(collections => {
-                const activeCollection = collections.find(collection => {
-                    return collection.id === collectionID;
-                });
-                this.props.dispatch(updateActiveCollection(activeCollection));
-                this.setState({
-                    collections:collections,
-                    activeCollection: {
-                        name: activeCollection.name,
-                        id: activeCollection.id
-                    }
-                });
-            });
-        }
+
     }
 
-    mapResponseToTableData(datasets, instances) {
+    mapResponseToTableData(datasets, instances, collections, activeCollectionID) {
         try {
             const values = datasets.map(dataset => {
                 dataset = dataset.current || dataset.next || dataset;
@@ -140,18 +133,31 @@ class DatasetsController extends Component {
                     const datasetID = instance.links.dataset.id;
                     let currentStatus = "";
                     if (instance.state === "associated"){
-                        currentStatus = "Added to collection"
+                        const activeCollection = collections.find(collection => {
+                            return activeCollectionID === instance.collection_id;
+                        }); 
+
+                        if(!activeCollection && activeCollectionID){
+                            const collectionName = collections.find(collection => {
+                                return collection.id === instance.collection_id;
+                            }); 
+                            currentStatus = "In another collection - " + collectionName.name;
+                        } else if(activeCollection){
+                            currentStatus = "In this collection - " + activeCollection.name;
+                        } else {
+                            currentStatus = "Added to collection";
+                        }
                     }
                     if (instance.state === "completed" || instance.state === "edition-confirmed"){
                         currentStatus = "New"
-                    }
+                    }   
                     if (datasetID === dataset.id) {
                         datasetInstances.push({
                             date: instance.last_updated,
                             isInstance: !(instance.edition && instance.version),
                             edition: instance.edition || "-",
                             version: instance.version || "-",
-                            url: instance.state === "completed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`),
+                            url: this.handleInstanceURL(instance.state, activeCollectionID, datasetID,instance.id, instance.edition, instance.version),
                             status: currentStatus
                         });
                     }
@@ -159,7 +165,8 @@ class DatasetsController extends Component {
                 return {
                     title: dataset.title || dataset.id,
                     id: dataset.id,
-                    instances: datasetInstances
+                    instances: datasetInstances,
+                    datasetURL: url.resolve(`datasets/${dataset.id}/metadata`) + `?collection=${activeCollectionID}`
                 }
             });
             return values;
@@ -172,6 +179,19 @@ class DatasetsController extends Component {
             console.error("Error mapping dataset API responses to view", error);
             return [];
         }
+    }
+
+    handleInstanceURL(state, collection, dataset, instance, edition, version){
+        let urlPath = "";
+        if(state === "completed"){
+            urlPath = url.resolve(`datasets/${dataset}/instances/${instance}/metadata`)
+        } else {
+            urlPath = url.resolve(`datasets/${dataset}/editions/${edition}/versions/${version}/metadata`)
+        }
+        if(collection){
+            urlPath = urlPath + "?collection=" + collection;
+        }
+        return urlPath;
     }
 
     render() {
