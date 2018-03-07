@@ -557,3 +557,5 @@ describe("Component's state maps to API request correctly when", () => {
         expect(component.instance().mapStateToAPIRequest().license).toBe("Foobar");
     });
 });
+
+// TODO test that the saving responses are passed to the error handler in the correct order
