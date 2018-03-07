@@ -43,12 +43,23 @@ class NavBar extends Component {
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
         const isViewer = this.props.userType == 'VIEWER';
+        const workingOn = this.props.workingOn || {};
+        const showWorkingOnCollection = workingOn.id && (route.includes(`${rootPath}/datasets`) || route.includes(`${rootPath}/workspace`));
+
+        console.log('SHOULD SHOW:', showWorkingOnCollection);
+        console.log('WORKING ON:', this.props.workingOn);
+        console.log('---------');
 
         if (route.includes(`${rootPath}/collections`) || route.includes(`${rootPath}/publishing-queue`) || route.includes(`${rootPath}/reports`) || route.includes(`${rootPath}/users-and-access`) || route.includes(`${rootPath}/teams`) || route.includes(`${rootPath}/datasets`) || route.includes(`${rootPath}/uploads`) || route.includes(`${rootPath}/not-authorised`)) {
             return (
                 <span>
                     {!isViewer ?
                         <span>
+                            {showWorkingOnCollection ?
+                                <li className="global-nav__item">
+                                    <Link className="global-nav__link selected" to={`/florence/collections/${this.props.workingOn.id}`}>Working on: {this.props.workingOn.name}</Link>
+                                </li>
+                                : ""}
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
                             </li>
@@ -58,15 +69,15 @@ class NavBar extends Component {
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link " href="/florence/publishing-queue">Publishing queue</a>
+                                <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link " href="/florence/reports">Reports</a>
+                                <a className="global-nav__link" href="/florence/reports">Reports</a>
                             </li>
 
                             <li className="global-nav__item">
-                                <a className="global-nav__link " href="/florence/users-and-access">Users and access</a>
+                                <a className="global-nav__link" href="/florence/users-and-access">Users and access</a>
                             </li>
 
                             <li className="global-nav__item">
@@ -97,11 +108,13 @@ function mapStateToProps(state) {
     const isAuthenticated = state.state.user.isAuthenticated;
     const userType = state.state.user.userType;
     const rootPath = state.state.rootPath;
+    const workingOn = state.state.global.workingOn;
 
     return {
         isAuthenticated,
         userType,
-        rootPath
+        rootPath,
+        workingOn
     }
 }
 
