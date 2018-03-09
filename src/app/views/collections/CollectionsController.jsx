@@ -120,13 +120,12 @@ export class CollectionsController extends Component {
         if (this.props.routes[this.props.routes.length-1].path === "restore-content" && nextProps.routes[nextProps.routes.length-1].path !== "restore-content") {
             this.setState({showRestoreContent: false});
         }
-
+        
         if (!this.props.params.collectionID && nextProps.params.collectionID) {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            this.props.dispatch(updateActiveCollection(activeCollection));
-            this.props.dispatch(updateWorkingOn(activeCollection));
+            this.updateActiveAndGlobalCollection(activeCollection);
             this.setState({
                 drawerIsAnimatable: true,
                 drawerIsVisible: true,
@@ -145,9 +144,7 @@ export class CollectionsController extends Component {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            //this.props.dispatch(updateActiveCollection(activeCollection));
-            //this.props.dispatch(updateWorkingOn(activeCollection));
-            this.updateActiveAndGlobalCollection(activeCollection)
+            this.updateActiveAndGlobalCollection(activeCollection);
             this.fetchActiveCollection(nextProps.params.collectionID);
         }
     }
