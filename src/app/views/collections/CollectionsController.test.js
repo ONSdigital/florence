@@ -123,7 +123,7 @@ const mockAllCollections = [
         "isEncrypted": false,
         "collectionOwner": "PUBLISHING_SUPPORT",
         "timeseriesImportFiles": [ ],
-        "id": "test-2210949c5454fc9c914c74558e78b4b0cb0536cf46757707ae66b7a64086709a",
+        "id": "different-collection-12345",
         "name": "Test",
         "type": "manual",
         "teams": [
@@ -242,6 +242,14 @@ const collection = {
     ]
 }
 
+const differentCollection = {
+    id: 'different-collection-12345',
+    name: 'Different test collection',
+    type: 'manual',
+    teams: ['cpi', 'cpih'],
+
+}
+
 describe("When the active collection parameter changes", () => {
     const props = {
         ...defaultProps
@@ -262,7 +270,7 @@ describe("When the active collection parameter changes", () => {
     
     it("from one collection ID to another, it keeps the collection details to showing without animating", () => {
         component.setProps({
-            params: {collectionID: "a-different-id-12435"}
+            params: {collectionID: "different-collection-12345"}
         });
         expect(component.state('drawerIsVisible')).toBe(true);
         expect(component.state('drawerIsAnimatable')).toBe(false);
@@ -867,10 +875,10 @@ describe("Clicking 'edit' for a page", () => {
     it("routes to the workspace for a non-dataset pages", () => {
         component.setProps({
             params: {
-                collectionID: "my-collection-123467"
+                collectionID: "different-collection-12345"
             }
         });
         const pageURL = component.instance().handleCollectionPageEditClick({type: "article", id:"/economy/grossdomesticproductgdp/articles/ansarticle"});
-        expect(pageURL).toBe("/florence/workspace?collection=my-collection-123467&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
+        expect(pageURL).toBe("/florence/workspace?collection=different-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
     });
 });
