@@ -14,7 +14,7 @@ const propTypes = {
             PropTypes.string,
             PropTypes.element
         ])),
-        returnValue: PropTypes.shape.isRequired,
+        returnValue: PropTypes.object.isRequired,
     })).isRequired,
     activeRowID: PropTypes.string,
     handleItemClick: PropTypes.func.isRequired,
