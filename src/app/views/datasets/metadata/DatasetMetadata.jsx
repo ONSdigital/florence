@@ -660,10 +660,12 @@ export class DatasetMetadata extends Component {
         event.preventDefault();
         this.setState({isSavingData: true});
 
-        let metadataUpdateError = this.updateDatasetMetadata(this.props.params.datasetID);
-        let reviewStateUpdatesError = isUpdatingReviewState ? this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed) : Promise.resolve();
+        const metadataUpdateRequest = this.updateDatasetMetadata(this.props.params.datasetID);
+        let metadataUpdateError;
+        const reviewStateUpdatesRequest = isUpdatingReviewState ? this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed) : Promise.resolve();
+        let reviewStateUpdatesError;
         
-        [metadataUpdateError, reviewStateUpdatesError] = [await metadataUpdateError, await reviewStateUpdatesError];
+        [metadataUpdateError, reviewStateUpdatesError] = [await metadataUpdateRequest, await reviewStateUpdatesRequest];
 
         this.setState({isSavingData: false, hasChanges: false});
         
