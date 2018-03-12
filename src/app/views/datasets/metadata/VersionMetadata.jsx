@@ -128,7 +128,8 @@ export class VersionMetadata extends Component {
         this.setState({isInstance: false});
       }
 
-      if (!this.props.version || !this.props.version.reviewState || !this.props.version.lastEditedBy) {
+      
+      if (!this.props.params.instanceID && (!this.props.version || !this.props.version.reviewState || !this.props.version.lastEditedBy)) {
         this.updateReviewStateData();
       }
 
@@ -332,33 +333,66 @@ export class VersionMetadata extends Component {
         }
     }
 
-    postData(body) {
-        if(this.state.isInstance) {
-            return datasets.confirmEditionAndCreateVersion(this.props.params.instanceID, this.state.selectedEdition, body);
+    handleRequestError(attemptedAction, status) {
+        switch (status) {
+            case(401): {
+                // handled by request utility function
+                break;
+            }
+            case(400): {
+                const notification = {
+                    type: 'warning',
+                    message: `Unable to ${attemptedAction} due to invalid values being submitted. Please check your updates for any issues and try again`,
+                    isDismissable: true,
+                    autoDismiss: 10000
+                }
+                notifications.add(notification);
+                break;
+            }
+            case(403): {
+                const notification = {
+                    type: 'neutral',
+                    message: `Unable to ${attemptedAction} because you do not have the correct permissions`,
+                    isDismissable: true,
+                    autoDismiss: 10000
+                }
+                notifications.add(notification);
+                break;
+            }
+            case(404): {
+                const notification = {
+                    type: 'warning',
+                    message: `Unable to ${attemptedAction} because this version couldn't be found`,
+                    isDismissable: true,
+                    autoDismiss: 10000
+                }
+                notifications.add(notification);
+                break;
+            }
+            case('FETCH_ERR'): {
+                const notification = {
+                    type: 'warning',
+                    message: `Unable to ${attemptedAction} due to a network issue. Please check your internet connection and try again`,
+                    isDismissable: true,
+                    autoDismiss: 10000
+                }
+                notifications.add(notification);
+                break;
+            }
+            default: {
+                const notification = {
+                    type: 'warning',
+                    message: `Unable to ${attemptedAction} due to an unexpected error`,
+                    isDismissable: true,
+                    autoDismiss: 10000
+                }
+                notifications.add(notification);
+                break;
+            }
         }
-
-        return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
-            .then(() => {
-                var instanceID = "";
-                if (this.state.instanceID) {
-                    instanceID = this.state.instanceID;
-                } else {
-                    instanceID = this.state.versionID;
-                }
-                this.state.dimensions.map((dimension) => {
-                    if (dimension.hasChanged === true) {
-                        datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, dimension.label, dimension.description);
-                    }
-                })
-            })
-            .catch(err => {
-                if (err) {
-                    return err
-                }
-            });
     }
 
-    updateVersionReviewState(dataset, edition, version, isSubmittingForReview, isMarkingAsReviewed) {
+    updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed) {
         let request = Promise.resolve();
 
         this.setState({isSavingData: true});
@@ -371,110 +405,143 @@ export class VersionMetadata extends Component {
             request = collections.setDatasetVersionStatusToReviewed;
         }
 
-        request(this.props.collectionID, dataset, edition, version).then(() => {
-            this.setState({isSavingData: false});
-            this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
-        }).catch(error => {
-            this.setState({isSavingData: false});
+        return request(this.props.collectionID, datasetID, edition, version).catch(error => {
+            this.handleRequestError(`submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`, error.status);
 
-            switch (error.status) {
-                case(401): {
-                    // Handled by request utility function
-                    break;
-                }
-                case(403): {
-                    const notification = {
-                        type: 'neutral',
-                        message: `You do not have permission to set this version to 'Awaiting review' in the collection '${this.props.collectionID}'`,
-                        isDismissable: true,
-                        autoDismiss: 6000
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Could not find collection '${this.props.collectionID}'`,
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: 'warning',
-                        message: `An unexpected error's occurred whilst trying to set this version to 'Awaiting review' in the collection '${this.props.collectionID}'`,
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-            }
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${isSubmittingForReview ? "Complete": ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
 
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for version ${dataset}/editions/${edition}/versions/${version} to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${isSubmittingForReview ? "Complete": ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`, error);
 
-            console.error(`Error updating review state for version ${dataset}/editions/${edition}/versions/${version} to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
-        })
+            return error;
+        });
     }
 
-    updateInstanceVersion(body, isSubmittingForReview, isMarkingAsReviewed) {
-        if ((isSubmittingForReview || isMarkingAsReviewed) && !this.state.isInstance) {
-            this.updateVersionReviewState(this.props.params.datasetID, this.props.params.edition, this.props.params.version, isSubmittingForReview, isMarkingAsReviewed);
+    updateVersionMetadata(datasetID, edition, version, body) {
+        console.log(body);
+        return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
+            .catch(error => {
+                this.handleRequestError('save version metadata updates', error.status);
+                
+                console.error(`Unable to save version metadata updates for '${this.state.versionID}'`, error);
+                
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version metadata updates for '${this.state.versionID}'. Error: ${JSON.stringify(error)}`});
+                
+                return error;
+            });
+
+    }
+
+    updateDimensions(instanceID) {
+        const requests = [];
+        this.state.dimensions.forEach(dimension => {
+            if (dimension.hasChanged) {
+                requests.push(datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, dimension.label, dimension.description).catch(error => {
+                    this.handleRequestError(`save updates to the '${dimension.name}' dimension`, error.status);
+
+                    console.error(`Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'`, error);
+                    
+                    log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'. Error: ${JSON.stringify(error)}`});
+                    
+                    return error;
+                }));
+            }
+        });
+        Promise.all(requests).catch(error => error);
+    }
+
+    confirmEditionAndCreateVersion(instanceID, selectedEdition, body) {
+        return datasets.confirmEditionAndCreateVersion(instanceID, selectedEdition, body)
+            .catch(error => {
+                this.handleRequestError('save version metadata updates', error.status);
+                
+                console.error(`Unable to confirm instance edition for '${instanceID}'`, error);
+                
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to confirm instance edition for '${instanceID}'. Error: ${JSON.stringify(error)}`});
+                
+                return error;
+            });
+    }
+
+    getNewVersion(instanceID) {
+        return datasets.getInstance(instanceID)
+            .then(response => [null, response])
+            .catch(error => {
+                this.handleRequestError('get details for this version', error.status);
+                console.error(`Unable to get version '${this.state.versionID}'`, error);
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to get version '${this.state.versionID}'. Error: ${JSON.stringify(error)}`});
+                [error, null]
+            });
+    }
+
+    async updateInstanceVersion(body, isSubmittingForReview, isMarkingAsReviewed) {
+        const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
+        const datasetID = this.props.params.datasetID;
+
+        this.setState({isSavingData: true});
+
+        if (this.state.isInstance) {
+            const [createVersionErr, updateDimensionsErr] = [
+                await this.confirmEditionAndCreateVersion(this.props.params.instanceID, this.state.selectedEdition, body),
+                await this.updateDimensions(this.props.params.instanceID)
+            ];
+            if (isUpdatingReviewState && createVersionErr) {
+                this.handleRequestError(`submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`, undefined);
+            }
+            if (updateDimensionsErr && createVersionErr) {
+                this.setState({isSavingData: false});
+                return;
+            }
+            if (createVersionErr) {
+                this.setState({isSavingData: false});
+                return;
+            }
+
+            const [newVersionError, newVersion] = await this.getNewVersion(this.props.params.instanceID);
+            if (newVersionError) {
+                this.setState({isSavingData: false});
+                return;
+            }
+
+            if (!isUpdatingReviewState) {
+                this.setState({isSavingData: false});
+                return;
+            }
+
+            const edition = newVersion.edition;
+            const version = newVersion.version;
+            const [updateReviewStateErr] = await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed);
+            if (updateReviewStateErr) {
+                console.log("updateReviewStateErr: " + updateReviewStateErr);
+                this.setState({isSavingData: false});
+                return;
+            }
+
+            this.setState({isSavingData: false});
+            this.props.dispatch(push(`/collections/${this.props.collectionID}`));
+            return;
+        }
+        
+        const edition = this.props.params.edition;
+        const version = this.props.params.version;
+        const [updateVersionErr, updateReviewStateErr] = [
+            await this.updateVersionMetadata(datasetID, edition, version, body),
+            isUpdatingReviewState ? await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed) : await Promise.resolve(),
+            await this.updateDimensions(this.state.versionID)
+        ];
+        
+        if (updateVersionErr) {
+            this.setState({isSavingData: false});
+            return;
+        }
+        if (updateReviewStateErr) {
+            this.setState({isSavingData: false});
+            return;
         }
 
-        if (this.state.hasChanges || this.state.isInstance) {
-            this.setState({isSavingData: true});
-            return this.postData(body).then(() => {
-                if (this.state.isInstance) {
-                    datasets.getInstance(this.props.params.instanceID).then(response => {
-                        this.setState({isSavingData: false, hasChanges: false});
-                        this.props.dispatch(push(`${this.props.rootPath}/datasets/${this.props.params.datasetID}/editions/${response.edition}/versions/${response.version}/metadata?collection=${this.props.collectionID}`));
-                        if (isSubmittingForReview || isMarkingAsReviewed) {
-                            this.updateVersionReviewState(this.props.params.datasetID, response.edition, response.version, isSubmittingForReview, isMarkingAsReviewed);
-                        }
-                    });
-                    return;
-                }
-                this.setState({isSavingData: false, hasChanges: false});
-            }).catch(error => {
-                this.setState({isSavingData: false, hasChanges: false});
-                switch (error.status) {
-                    case (401): {
-                        // handled by request utility function
-                        break;
-                    }
-                    case (403): {
-                        const notification = {
-                            "type": "neutral",
-                            "message": "You do not permission to view the edition metadata for this dataset",
-                            isDismissable: true
-                        }
-                        notifications.add(notification);
-                        break;
-                    }
-                    case (404): {
-                        const notification = {
-                            "type": "neutral",
-                            "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
-                            isDismissable: true
-                        };
-                        notifications.add(notification);
-                        this.props.dispatch(push(url.parent(url.parent())));
-                        break;
-                    }
-                    default: {
-                        const notification = {
-                            type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get this dataset",
-                            isDismissable: true
-                        }
-                        notifications.add(notification);
-                        break;
-                    }
-                }
-                console.error("Error has occurred:\n", error);
-            });
+        this.setState({isSavingData: false});
+
+        if (isUpdatingReviewState) {
+            this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
         }
     }
 
@@ -833,21 +900,30 @@ export class VersionMetadata extends Component {
     }
 
     renderReviewActions() {
+        const instanceOrVersionData = this.state.isInstance ? this.props.instance : this.props.version;
+
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
             return;
         }
 
-        if (this.props.version.reviewState === "reviewed") {
+        
+        if (instanceOrVersionData.reviewState === "reviewed") {
             return;
         }
+        
+        if (this.state.isInstance) {
+            return (
+                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
+            )
+        }
 
-        if (this.props.version.reviewState === "inProgress") {
+        if (instanceOrVersionData.reviewState === "inProgress") {
             return (
                 <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )
         }
         
-        if (this.props.userEmail !== this.props.version.lastEditedBy && this.props.version.reviewState === "complete") {
+        if (this.props.userEmail !== instanceOrVersionData.lastEditedBy && instanceOrVersionData.reviewState === "complete") {
             return (
                 <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
             )
