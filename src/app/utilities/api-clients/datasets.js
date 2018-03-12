@@ -82,10 +82,7 @@ export default class datasets {
                 ...metadata
             }
         }
-        return http.put(`/dataset/instances/${instanceID}`, body, true)
-            .then(response => {
-                return response;
-            });
+        return http.put(`/dataset/instances/${instanceID}`, body, true);
     }
 
     static approveInstance(instanceID) {
