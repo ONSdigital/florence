@@ -8,7 +8,7 @@ import RestoreContent from './restore-content/RestoreContent'
 import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections';
-import { updateActiveCollection, emptyActiveCollection , updateActiveVersion, updateActiveDatasetReviewState, updateActiveVersionReviewState} from '../../config/actions';
+import { updateActiveCollection, emptyActiveCollection , updateActiveDatasetReviewState, updateActiveVersionReviewState} from '../../config/actions';
 import notifications from '../../utilities/notifications';
 import dateformat from 'dateformat';
 import Modal from '../../components/Modal';
