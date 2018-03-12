@@ -31,7 +31,8 @@ jest.mock('../../../utilities/log', () => {
     return {
         add: function() {
             //
-        }
+        },
+        eventTypes: {}
     }
 });
 
@@ -341,7 +342,7 @@ test("Input errors are added on submit and then removed on change of that input"
     expect(component.update().state("titleError")).toBe("");
     expect(component.update().state("urlError")).toBe("");
 
-    component.instance().handleFormSubmit({preventDefault: ()=>{}});
+    component.instance().handleRelatedContentSubmit({preventDefault: ()=>{}});
     expect(component.update().state("titleError")).not.toBe("");
     expect(component.update().state("urlError")).not.toBe("");
 
