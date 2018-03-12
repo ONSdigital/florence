@@ -22,11 +22,12 @@ class NavBar extends Component {
     }
 
     handleLogoutClick() {
-        const cookieRemoved = cookies.remove('access_token');
-        if (!cookieRemoved) {
+        const accessTokenCookieRemoved = cookies.remove('access_token');
+        if (!accessTokenCookieRemoved) {
             console.warn(`Error trying to remove 'access_token' cookie`);
             return
         }
+        cookies.remove('collection');
         localStorage.removeItem("loggedInAs");
         this.props.dispatch(userLoggedOut());
     }
