@@ -43,7 +43,7 @@ const propTypes = {
             title: PropTypes.string.isRequired,
             uri: PropTypes.string.isRequired,
             state: PropTypes.string.isRequired,
-            lastEditedBy: PropTypes.string.isRequired
+            lastEditedBy: PropTypes.string
         })),
         datasetVersions: PropTypes.arrayOf(PropTypes.shape({
             id: PropTypes.string.isRequired,
@@ -52,7 +52,7 @@ const propTypes = {
             version: PropTypes.string.isRequired,
             uri: PropTypes.string.isRequired,
             state: PropTypes.string.isRequired,
-            lastEditedBy: PropTypes.string.isRequired
+            lastEditedBy: PropTypes.string
         })),
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
