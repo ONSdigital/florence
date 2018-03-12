@@ -15,6 +15,7 @@ import Modal from '../../components/Modal';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import log, {eventTypes} from '../../utilities/log';
+import cookies from '../../utilities/cookies';
 import CollectionEditController from './edit/CollectionEditController';
 
 const propTypes = {
@@ -124,7 +125,7 @@ export class CollectionsController extends Component {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.setState({
                 drawerIsAnimatable: true,
                 drawerIsVisible: true,
@@ -143,7 +144,7 @@ export class CollectionsController extends Component {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.fetchActiveCollection(nextProps.params.collectionID);
         }
     }
@@ -297,7 +298,7 @@ export class CollectionsController extends Component {
         collections.get(collectionID).then(collection => {
             const mappedCollection = this.mapCollectionToState(collection);
             const activeCollection = this.mapPagesToCollection(mappedCollection);
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             switch(error.status) {
@@ -781,6 +782,11 @@ export class CollectionsController extends Component {
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error removing pending delete of page '${uri}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
             console.error(`Error removing pending delete of page '${uri}' from collection '${this.props.params.collectionID}'`, error);
         });
+    }
+
+    updateActiveCollectionGlobally(collection) {
+        this.props.dispatch(updateActiveCollection(collection));
+        cookies.add("collection", collection.id, null);
     }
 
     readablePublishDate(collection) {
