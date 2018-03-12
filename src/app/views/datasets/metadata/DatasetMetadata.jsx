@@ -16,7 +16,7 @@ import {updateActiveDataset, emptyActiveDataset, updateActiveDatasetReviewState}
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
 import collections from '../../../utilities/api-clients/collections'
-import handleMetadataSaveErrors from './handleMetadataSaveErrors';
+import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
 
 const propTypes = {
     params: PropTypes.shape({
@@ -666,7 +666,11 @@ export class DatasetMetadata extends Component {
         
         [metadataUpdateError, reviewStateUpdatesError] = [await metadataUpdateRequest, await reviewStateUpdatesRequest];
 
-        this.setState({isSavingData: false, hasChanges: false});
+        const newState = {isSavingData: false}
+        if (!metadataUpdateError) {
+            newState.hasChanges = false;
+        }
+        this.setState(newState);
         
         const hasErrors = handleMetadataSaveErrors(metadataUpdateError, reviewStateUpdatesError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
         if (!hasErrors && isUpdatingReviewState) {

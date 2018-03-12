@@ -1,9 +1,11 @@
 import React from 'react';
 import {DatasetMetadata} from './DatasetMetadata.jsx';
-import notifications from '../../../utilities/notifications';
 import uuid from 'uuid/v4';
 import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
+import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
+import collections from '../../../utilities/api-clients/collections'
+import datasets from '../../../utilities/api-clients/datasets'
 
 console.error = jest.fn();
 
@@ -47,7 +49,26 @@ jest.mock('../../../utilities/api-clients/datasets', () => (
             return Promise.resolve({
                 items: []
             })
-        })
+        }),
+        updateDatasetMetadata: jest.fn(() => Promise.resolve())
+    }
+));
+
+jest.mock('../../../utilities/api-clients/collections', () => (
+    {
+        get: jest.fn(() => Promise.resolve([])),
+        setDatasetStatusToComplete: jest.fn(() => Promise.resolve()),
+        setDatasetStatusToReviewed: jest.fn(() => Promise.resolve())
+    }
+));
+
+jest.mock('./datasetHandleMetadataSaveErrors.js', () => {
+    return jest.fn(() => false);
+});
+
+jest.mock('../../../utilities/url.js', () => (
+    {
+        resolve: jest.fn(() => '/florence/collections/my-collection-12345')
     }
 ));
 
@@ -115,8 +136,10 @@ const exampleDataset = {
     }
 }
 
+let dispatchedAction = null;
+
 const defaultProps = {
-    dispatch: function(){},
+    dispatch: action => {dispatchedAction = action},
     datasets: [{
         next: {
             title: "Dataset 1"
@@ -362,7 +385,6 @@ test("Handler to edit a related item updates the state with new values", async (
     await component.update();
     
     expect(component.state("relatedBulletins").length).toBe(1);
-    const initialRelatedBulletins = component.state("relatedBulletins");
     component.setState({titleInput: "Some new words"});
     component.instance().editRelatedLink("bulletin", "12345");
     expect(component.state("relatedBulletins").length).toBe(1);
@@ -559,4 +581,58 @@ describe("Component's state maps to API request correctly when", () => {
     });
 });
 
-// TODO test that the saving responses are passed to the error handler in the correct order
+describe("Saving changes and submitting for review/approval", () => {
+    const component = shallow(
+        <DatasetMetadata {...defaultProps} />
+    );
+
+    it("passes any errors from updating review state to the error handler", async () => {
+        collections.setDatasetStatusToComplete.mockImplementationOnce(() => (
+            Promise.reject({status: 500, statusText: "Server error"})
+        ));
+        await component.instance().handleSave(mockEvent, true, false);
+        const handlerArguments = handleMetadataSaveErrors.mock.calls[handleMetadataSaveErrors.mock.calls.length-1];
+        expect(handlerArguments[1]).toBeTruthy();
+        expect(handlerArguments[1]).toEqual({status: 500, statusText: "Server error"});
+        expect(handlerArguments[0]).toBeFalsy();
+    });
+    
+    it("passes any errors from metadata updates to the error handler", async () => {
+        datasets.updateDatasetMetadata.mockImplementationOnce(() => (
+            Promise.reject({status: 500, statusText: "Server error"})
+        ));
+        await component.instance().handleSave(mockEvent, true, false);
+        const handlerArguments = handleMetadataSaveErrors.mock.calls[handleMetadataSaveErrors.mock.calls.length-1];
+        expect(handlerArguments[0]).toBeTruthy();
+        expect(handlerArguments[0]).toEqual({status: 500, statusText: "Server error"});
+        expect(handlerArguments[1]).toBeFalsy();
+    });
+
+    it("doesn't reset 'hasChanges' in state after error saving metadata updates", async () => {
+        datasets.updateDatasetMetadata.mockImplementationOnce(() => (
+            Promise.reject({status: 500, statusText: "Server error"})
+        ));
+        component.setState({hasChanges: true});
+        await component.instance().handleSave(mockEvent, false, false);
+        expect(component.state('hasChanges')).toBe(true);
+    });
+
+    it("reset 'hasChanges' in state after successfully saving metadata updates", async () => {
+        component.setState({hasChanges: true});
+        await component.instance().handleSave(mockEvent, false, false);
+        expect(component.state('hasChanges')).toBe(false);
+    });
+
+    it("re-routes to the current collection when there are no errors and review state has been updated", async () => {
+        await component.instance().handleSave(mockEvent, false, true);
+        expect(dispatchedAction.payload.args[0]).toBe('/florence/collections/my-collection-12345');
+        dispatchedAction = null;
+    });
+
+    it("doesn't route to the current collection if there are errors", async () => {
+        handleMetadataSaveErrors.mockImplementationOnce(() => true);
+        dispatchedAction = null;
+        await component.instance().handleSave(mockEvent, false, true); 
+        expect(dispatchedAction).toBeFalsy();
+    });
+});
