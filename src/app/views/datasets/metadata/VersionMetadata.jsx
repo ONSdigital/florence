@@ -26,6 +26,7 @@ const propTypes = {
         edition: PropTypes.string,
         version: PropTypes.string
     }).isRequired,
+    collectionID: PropTypes.string.isRequired,
     recipes: PropTypes.arrayOf(PropTypes.shape({
       output_instances: PropTypes.arrayOf(PropTypes.shape({
         editions: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -103,12 +104,10 @@ export class VersionMetadata extends Component {
     }
 
     componentWillMount() {
-        const queryParam = new URLSearchParams(this.props.location.search);
-        const collectionID = queryParam.get('collection');  
   
         this.setState({
             isFetchingData: true,
-            activeCollectionID: collectionID
+            activeCollectionID: this.props.collectionID
         });
 
       const getMetadata = [
@@ -844,7 +843,8 @@ function mapStateToProps(state) {
       version: state.state.datasets.activeVersion,
       recipes: state.state.datasets.recipes,
       dataset: state.state.datasets.activeDataset,
-      btn: state.state.btn
+      btn: state.state.btn,
+      collectionID: state.routing.locationBeforeTransitions.query.collection
     }
 }
 
