@@ -3,7 +3,8 @@ function viewController(view) {
     if (Florence.Authentication.isAuthenticated()) {
 
         if (view === 'collections') {
-            viewCollections();
+            // viewCollections();
+            window.location.pathname = "/florence/collections";
         }
         else if (view === 'workspace') {
             /*
@@ -13,11 +14,12 @@ function viewController(view) {
 
             const collectionID = getQueryVariable("collection");
             const pageURI = getQueryVariable("uri");
-            window.history.replaceState({}, "Florence", "/florence/collections");
+            window.history.replaceState({}, "Florence", "/florence/workspace");
             
             if (!collectionID) {
-                console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
-                viewCollections();
+                console.warn("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
+                // viewCollections();
+                window.location.pathname = "/florence/collections";
                 return;
             }
 
@@ -55,12 +57,14 @@ function viewController(view) {
             viewReports();
         }
         else {
-            viewController('collections');
+            // viewController('collections');
+            window.location.pathname = "/florence";
         }
     }
     else {
         // Redirect to refactored login screen
-        window.location.pathname = "/florence/login";
+        const redirect = location.pathname !== "/florence" ? "?redirect=" + location.pathname : "";
+        window.location.href = "/florence/login" + redirect;
     }
 }
 
