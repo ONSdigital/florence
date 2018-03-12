@@ -124,7 +124,6 @@ func main() {
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
 	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
@@ -132,7 +131,7 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:/.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:.*}", newAppHandler)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
