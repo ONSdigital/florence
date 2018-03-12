@@ -317,7 +317,7 @@ test("Input errors are added on submit and then removed on change of that input"
     expect(component.update().state("titleError")).toBe(undefined);
     expect(component.update().state("descError")).toBe(undefined);
 
-    component.instance().handleFormSubmit({preventDefault: ()=>{}});
+    component.instance().handleRelatedContentSubmit({preventDefault: ()=>{}});
     expect(component.update().state("titleError")).not.toBe("");
     expect(component.update().state("descError")).not.toBe("");
 
