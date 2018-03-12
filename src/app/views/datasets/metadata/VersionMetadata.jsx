@@ -704,7 +704,8 @@ export class VersionMetadata extends Component {
             return;
         }
 
-        this.props.dispatch(push(url.resolve("/datasets")));
+        const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
+        this.props.dispatch(push(URL));
     }
     
     handleRelatedContentCancel() {

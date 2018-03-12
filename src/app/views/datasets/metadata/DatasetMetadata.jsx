@@ -4,7 +4,6 @@ import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
 
-import { errCodes } from '../../../utilities/errorCodes'
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
 import Modal from '../../../components/Modal';
