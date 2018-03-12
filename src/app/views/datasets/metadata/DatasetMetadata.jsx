@@ -25,6 +25,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    collectionID: PropTypes.string.isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
             title: PropTypes.string
@@ -125,12 +126,10 @@ export class DatasetMetadata extends Component {
     }
 
     componentWillMount() {
-        const queryParam = new URLSearchParams(this.props.location.search);
-        const collectionID = queryParam.get('collection');  
 
         this.setState({
             isFetchingDataset: true,
-            activeCollectionID: collectionID
+            activeCollectionID: this.props.collectionID
         });   
         
         datasets.get(this.props.params.datasetID).then(response => {
@@ -830,7 +829,8 @@ function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
         datasets: state.state.datasets.all,
-        dataset: state.state.datasets.activeDataset
+        dataset: state.state.datasets.activeDataset,
+        collectionID: state.routing.locationBeforeTransitions.query.collection
     }
 }
 

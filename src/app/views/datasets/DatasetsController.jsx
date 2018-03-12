@@ -13,7 +13,9 @@ import {updateAllRecipes, updateAllDatasets, updateActiveCollection} from '../..
 import url from '../../utilities/url'
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    rootPath: PropTypes.string.isRequired,
+    collectionID: PropTypes.string.isRequired,
 }
 
 class DatasetsController extends Component {
@@ -31,8 +33,6 @@ class DatasetsController extends Component {
 
     componentWillMount() {
         this.setState({isFetchingDatasets: true});
-        const queryParam = new URLSearchParams(this.props.location.search);
-        const collectionID = queryParam.get('collection');
  
         const fetches = [
             datasets.getNewVersionsAndCompletedInstances(),
@@ -41,12 +41,12 @@ class DatasetsController extends Component {
         ]
         Promise.all(fetches).then(responses => {
             const activeCollection = responses[2].find(collection => {
-                return collection.id === collectionID;
+                return collection.id === this.props.collectionID;
             });
             this.setState({
                 isFetchingDatasets: false,
                 collections: responses[2],
-                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], collectionID)
+                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], this.props.collectionID)
             }); 
             this.props.dispatch(updateAllDatasets(responses[1].items));
             this.props.dispatch(updateActiveCollection(activeCollection));
@@ -214,4 +214,11 @@ class DatasetsController extends Component {
 
 DatasetsController.propTypes = propTypes;
 
-export default connect()(DatasetsController);
+function mapStateToProps(state) {
+    return {
+        rootPath: state.state.rootPath,
+        collectionID: state.routing.locationBeforeTransitions.query.collection
+    }
+}
+export default connect(mapStateToProps)(DatasetsController);
+
