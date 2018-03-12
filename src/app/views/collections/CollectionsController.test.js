@@ -117,7 +117,7 @@ const mockAllCollections = [
         "isEncrypted": false,
         "collectionOwner": "PUBLISHING_SUPPORT",
         "timeseriesImportFiles": [ ],
-        "id": "test-2210949c5454fc9c914c74558e78b4b0cb0536cf46757707ae66b7a64086709a",
+        "id": "different-collection-12345",
         "name": "Test",
         "type": "manual",
         "teams": [
@@ -198,6 +198,13 @@ const collection = {
     datasetVersion: []
 }
 
+const differentCollection = {
+    id: 'different-collection-12345',
+    name: 'Different test collection',
+    type: 'manual',
+    teams: ['cpi', 'cpih']
+}
+
 describe("When the active collection parameter changes", () => {
     const props = {
         ...defaultProps
@@ -218,7 +225,7 @@ describe("When the active collection parameter changes", () => {
     
     it("from one collection ID to another, it keeps the collection details to showing without animating", () => {
         component.setProps({
-            params: {collectionID: "a-different-id-12435"}
+            params: {collectionID: "different-collection-12345"}
         });
         expect(component.state('drawerIsVisible')).toBe(true);
         expect(component.state('drawerIsAnimatable')).toBe(false);
