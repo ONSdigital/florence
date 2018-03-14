@@ -26,6 +26,7 @@ const propTypes = {
         edition: PropTypes.string,
         version: PropTypes.string
     }).isRequired,
+    collectionID: PropTypes.string.isRequired,
     recipes: PropTypes.arrayOf(PropTypes.shape({
       output_instances: PropTypes.arrayOf(PropTypes.shape({
         editions: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -35,6 +36,7 @@ const propTypes = {
     dataset: PropTypes.shape({
       title: PropTypes.string,
       release_frequency: PropTypes.string,
+      collection_id: PropTypes.string
     }),
     instance: PropTypes.shape({
       edition: PropTypes.string,
@@ -81,7 +83,9 @@ export class VersionMetadata extends Component {
             changes: [],
             editKey: "",
             titleInput: "",
-            descInput: ""
+            descInput: "",
+            isReadOnly: false,
+            activeCollectionID: "",
         }
 
         this.originalState = null;
@@ -100,7 +104,11 @@ export class VersionMetadata extends Component {
     }
 
     componentWillMount() {
-      this.setState({isFetchingData: true});
+  
+        this.setState({
+            isFetchingData: true,
+            activeCollectionID: this.props.collectionID
+        });
 
       const getMetadata = [
           Promise.resolve(),
@@ -120,7 +128,7 @@ export class VersionMetadata extends Component {
       getMetadata[2] = datasets.get(this.props.params.datasetID);
 
       Promise.all(getMetadata).then(responses => {
-
+    
         if (this.props.recipes.length === 0) {
             this.props.dispatch(updateAllRecipes(responses[0].items));
         }
@@ -166,6 +174,18 @@ export class VersionMetadata extends Component {
         }
 
         this.props.dispatch(updateActiveDataset(responses[2].current || responses[2].next));
+        
+        if(this.state.activeCollectionID && this.state.activeCollectionID != this.props.dataset.collection_id) {
+            this.setState({
+                isReadOnly: true
+            });
+            const notification = {
+                type: "warning",
+                message: "This dataset is not in the current active collection and cannot be edited at this time.",
+                isDismissable: true
+            }
+            notifications.add(notification);
+        } 
 
         this.setState({
           title: this.props.dataset.title,
@@ -359,6 +379,7 @@ export class VersionMetadata extends Component {
                     name="dimension-name"
                     label="Dimension title"
                     onChange={this.handleInputChange}
+                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
                 />
                 <Input
                     value={dimension.description}                  
@@ -367,6 +388,7 @@ export class VersionMetadata extends Component {
                     name="dimension-description"
                     label="Learn more (optional)"
                     onChange={this.handleInputChange}
+                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
                 />
             </div>
             )
@@ -481,13 +503,17 @@ export class VersionMetadata extends Component {
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
      }
 
-     handleBackButton() {
+    handleBackButton() {
         if (this.state.hasChanges) {
             this.setState({showModal: true});
             return;
         }
-
-        this.props.dispatch(push(url.resolve("/datasets")));
+        if (this.state.activeCollectionID){
+            this.props.dispatch(push(url.resolve("/datasets") + "?collection=" + this.state.activeCollectionID));
+        } else {
+            this.props.dispatch(push(url.resolve("/datasets")));
+        }
+        
     }
     
     handleCancel() {
@@ -710,6 +736,7 @@ export class VersionMetadata extends Component {
                                   onChange={this.handleSelectChange}
                                   error={this.state.editionError}
                                   selectedOption={this.state.edition}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                               <Input
                                     id="release_date"
@@ -719,6 +746,7 @@ export class VersionMetadata extends Component {
                                     onChange={this.handleReleaseDateChange}
                                     error={this.state.releaseDateError}
                                     selectedOption={this.state.edition}
+                                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                             </div>
                             <h2> In this dataset </h2>
@@ -733,8 +761,9 @@ export class VersionMetadata extends Component {
                                         type="alerts"
                                         onEdit={this.handleEditRelatedClick}
                                         onDelete={this.handleDeleteRelatedClick}
+                                        disabled={this.state.isReadOnly || this.state.isSubmittingData}
                                     />
-                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}> Add an alert</button>
+                                    <button disabled={this.state.isReadOnly || this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}> Add an alert</button>
                                 </div>
                                 <div className="margin-bottom--1">
                                     <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
@@ -743,16 +772,17 @@ export class VersionMetadata extends Component {
                                         type="changes"
                                         onEdit={this.handleEditRelatedClick}
                                         onDelete={this.handleDeleteRelatedClick}
+                                        disabled={this.state.isReadOnly || this.state.isSubmittingData}
                                     />
-                                    <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes")}}> Add change</button>
+                                    <button disabled={this.state.isReadOnly || this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes")}}> Add change</button>
                                 </div>
                             </div>
                           </div>
-                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
-                          <button className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
+                          <button  disabled={this.state.isReadOnly || this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
+                          <button  disabled={this.state.isReadOnly || this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
                           {
                               this.state.state === "associated" ?
-                              <button className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
+                              <button  disabled={this.state.isReadOnly || this.state.isSubmittingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
                               :
                               ""
                           }
@@ -813,7 +843,8 @@ function mapStateToProps(state) {
       version: state.state.datasets.activeVersion,
       recipes: state.state.datasets.recipes,
       dataset: state.state.datasets.activeDataset,
-      btn: state.state.btn
+      btn: state.state.btn,
+      collectionID: state.routing.locationBeforeTransitions.query.collection
     }
 }
 
