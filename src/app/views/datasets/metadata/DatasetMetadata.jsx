@@ -687,25 +687,40 @@ export class DatasetMetadata extends Component {
     }
 
     renderReviewActions() {
+        // console.log('Begin rendering buttons...');
+
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
+            // console.log("Read only or fetching collection data:", this.state.isReadOnly, this.state.isFetchingCollectionData);
             return;
         }
 
         if (this.props.dataset.reviewState === "reviewed") {
+            // console.log("Already reviewed");
             return;
         }
 
         if (this.props.dataset.reviewState === "inProgress") {
+            // console.log("In progress");
             return (
-                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
+                <button id="btn-submit-for-review" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )
         }
         
-        if (this.props.userEmail !== this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
+        if (this.props.userEmail === this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
+            // console.log("Complete but same user, show submit for review");
             return (
-                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
+                <button id="btn-submit-for-review" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )
         }
+
+        if (this.props.userEmail !== this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
+            // console.log("Can be reviewed");
+            return (
+                <button id="btn-mark-as-reviewed" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
+            )
+        }
+
+        // console.log("Nooooothing");
 
         return;
     }
@@ -862,7 +877,7 @@ export class DatasetMetadata extends Component {
                                 <button type="submit" disabled={this.state.isSavingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
                             : ""
                         } */}
-                        <button type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
+                        <button id="btn-save" type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
                         {this.renderReviewActions()}
                         {/* TODO render preview CTA with `this.state.latestVersion` check */}
                         {this.state.isSavingData &&
