@@ -151,7 +151,8 @@ const defaultProps = {
     dataset: {...exampleDataset.current},
     params: {
         datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-    }
+    },
+    userEmail: "user@email.com"
 }
 
 const defaultComponent = shallow(
@@ -592,18 +593,128 @@ describe("Saving changes and submitting for review/approval", () => {
     });
 });
 
+describe("Updating the review state on mount", () => {
+    it("loads read-only mode if the fetch for a collection fails");
+
+    it("loads read-only mode if the dataset cannot be found in the current collection");
+
+    it("updates the 'last edited by' data in state", async () => {
+        collections.get.mockImplementationOnce(() => {
+            return {
+                datasets: [{
+                    state: "Complete",
+                    lastEditedBy: "user@email.com",
+                    id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
+                }]
+            }
+        });
+        await defaultComponent.instance().componentWillMount();
+        await defaultComponent.update();
+    });
+    
+    it("updates the 'review state' data in state");
+});
+
 describe("Renders the correct buttons", () => {
-
-
-    it("always shows a 'save' button", () => {
-
+    const completeProps = {
+        ...defaultProps,
+        dataset: {
+            ...exampleDataset.current,
+            reviewState: "complete",
+            lastEditedBy: "user-2@email.com"
+        }
+    }
+    const completeComponent = shallow(
+        <DatasetMetadata {...completeProps} />
+    )
+    
+    const inProgressProps = {
+        ...defaultProps,
+        dataset: {
+            ...exampleDataset.current,
+            reviewState: "inProgress",
+            lastEditedBy: "user-2@email.com"
+        }
+    }
+    const inProgressComponent = shallow(
+        <DatasetMetadata {...inProgressProps} />
+    )
+    
+    const reviewedProps = {
+        ...defaultProps,
+        dataset: {
+            ...exampleDataset.current,
+            reviewState: "reviewed",
+            lastEditedBy: "user-2@email.com"
+        }
+    }
+    const reviewedComponent = shallow(
+        <DatasetMetadata {...reviewedProps} />
+    )
+    
+    it("disables the 'save' button loading data", () => {
+        expect(defaultComponent.state('isFetchingDataset')).toBeFalsy();
+        expect(defaultComponent.state('isFetchingCollectionData')).toBeFalsy();
+        defaultComponent.instance().componentWillMount();
+        expect(defaultComponent.state('isFetchingDataset')).toBe(true);
+        expect(defaultComponent.state('isFetchingCollectionData')).toBe(true);
+        expect(defaultComponent.find('#btn-save[disabled=true]').exists()).toBe(true);
     });
 
-    it("disables the 'save' button loading data")
-    it("disables all save/review buttons when saving data")
-    it("disables the 'save' button/s when a dataset is read-only")
-    it("allows the correct user to submit a dataset for review")
-    it("allows the correct user to review a dataset")
-    it("doesn't allow a user to review their own changes")
-    it("doesn't allow the user to change the review state once reviewed")
+    it("disables all save and review/approve buttons when saving data", () => {
+        expect(inProgressComponent.find('#btn-submit-for-review[disabled=false]').exists()).toBe(true);
+
+        inProgressComponent.instance().handleSave(mockEvent, false, false);
+        expect(inProgressComponent.find('#btn-submit-for-review[disabled=true]').exists()).toBe(true);
+    });
+
+    it("disables the 'save' button/s when a dataset is read-only", () => {
+        defaultComponent.setState({isReadOnly: false});
+        expect(defaultComponent.find('#btn-save[disabled=false]').exists()).toBe(true);
+        defaultComponent.setState({isReadOnly: true});
+        expect(defaultComponent.find('#btn-save[disabled=true]').exists()).toBe(true);
+    });
+
+    it("allows the correct user to submit a dataset for review", () => {
+        expect(inProgressComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
+        inProgressComponent.setProps({userEmail: "user-2@email.com"});
+
+        expect(inProgressComponent.find('#btn-submit-for-review').exists()).toBe(true);
+        expect(inProgressComponent.find('#btn-submit-for-review[disabled=false]').exists()).toBe(true);
+    });
+
+    it("allows the correct user to review a dataset", () => {
+        expect(completeComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
+        completeComponent.setProps({userEmail: "user@email.com"});
+        
+        const reviewButtons = completeComponent.instance().renderReviewActions();
+        expect(reviewButtons.props.id).toBe("btn-mark-as-reviewed");
+        expect(reviewButtons.props.disabled).toBe(false);
+    });
+
+    it("doesn't allow a user to review their own changes", () => {
+        expect(completeComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
+        completeComponent.setProps({userEmail: "user-2@email.com"});
+        expect(completeComponent.find("#btn-mark-as-reviewed").exists()).toBe(false);
+    });
+
+    it("allow the same user to 'submit for review' again if already submitted and not reviewed", () => {
+        expect(completeComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
+        completeComponent.setProps({userEmail: "user-2@email.com"});
+        expect(completeComponent.find("#btn-submit-for-review").exists()).toBe(true);
+    });
+
+    it("doesn't allow a user to change the review state once reviewed", () => {
+        expect(reviewedComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
+        
+        reviewedComponent.setProps({userEmail: "user-2@email.com"});
+        expect(reviewedComponent.find("#btn-submit-for-review").exists()).toBe(false);
+        expect(reviewedComponent.find("#btn-mark-as-reviewed").exists()).toBe(false);
+        expect(reviewedComponent.find("#btn-save").exists()).toBe(true);
+
+        reviewedComponent.setProps({userEmail: "user@email.com"});
+        expect(reviewedComponent.find("#btn-submit-for-review").exists()).toBe(false);
+        expect(reviewedComponent.find("#btn-mark-as-reviewed").exists()).toBe(false);
+        expect(reviewedComponent.find("#btn-save").exists()).toBe(true);
+    });
 });
