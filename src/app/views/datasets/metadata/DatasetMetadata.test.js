@@ -7,7 +7,7 @@ import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
 import collections from '../../../utilities/api-clients/collections'
 import datasets from '../../../utilities/api-clients/datasets'
 
-console.error = jest.fn();
+// console.error = jest.fn();
 
 jest.mock('uuid/v4', () => () => {
     return "12345";
@@ -56,7 +56,7 @@ jest.mock('../../../utilities/api-clients/datasets', () => (
 
 jest.mock('../../../utilities/api-clients/collections', () => (
     {
-        get: jest.fn(() => Promise.resolve([null, {
+        get: jest.fn(() => Promise.resolve({
             id: "test-collection-12345",
             datasets: [{
                 id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
@@ -64,7 +64,7 @@ jest.mock('../../../utilities/api-clients/collections', () => (
                 lastEditedBy: 'user@email.com'
             }],
             datasetVersions: []
-        }])),
+        })),
         setDatasetStatusToComplete: jest.fn(() => Promise.resolve()),
         setDatasetStatusToReviewed: jest.fn(() => Promise.resolve())
     }
@@ -607,9 +607,10 @@ describe("Saving changes and submitting for review/approval", () => {
 describe("Updating the review state on mount", () => {
 
     it("loads read-only mode if the fetch for a collection fails", async () => {
-        collections.get.mockImplementationOnce(() => Promise.reject([{status: 500, statusText: "Mocked error"}, null]));
+        collections.get.mockImplementationOnce(() => Promise.reject({status: 500, statusText: "Mocked error"}));
         defaultComponent.setState({isReadOnly: false});
-        await defaultComponent.instance().componentWillMount();
+        await defaultComponent.instance().updateReviewStateData();
+        await defaultComponent.update();
         expect(defaultComponent.instance().state.isReadOnly).toBe(true);
     });
 
@@ -624,13 +625,13 @@ describe("Updating the review state on mount", () => {
     it("updates the 'last edited by' data in state", async () => {
         dispatchedAction = {};
 
-        collections.get.mockImplementationOnce(() => Promise.resolve([null, {
+        collections.get.mockImplementationOnce(() => Promise.resolve({
             datasets: [{
                 state: "Complete",
                 lastEditedBy: "user-2@email.com",
                 id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
             }]
-        }]));
+        }));
 
         await defaultComponent.instance().updateReviewStateData();
         expect(dispatchedAction.lastEditedBy).toBe('user-2@email.com');
@@ -639,13 +640,13 @@ describe("Updating the review state on mount", () => {
     it("updates the 'review state' data in state", async () => {
         dispatchedAction = {};
 
-        collections.get.mockImplementationOnce(() => Promise.resolve([null, {
+        collections.get.mockImplementationOnce(() => Promise.resolve({
             datasets: [{
                 state: "Complete",
                 lastEditedBy: "user@email.com",
                 id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
             }]
-        }]));
+        }));
 
         await defaultComponent.instance().updateReviewStateData();
         expect(dispatchedAction.reviewState).toBe('complete');
