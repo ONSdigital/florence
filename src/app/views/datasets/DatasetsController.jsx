@@ -124,6 +124,20 @@ class DatasetsController extends Component {
 
     }
 
+    handleInstanceStatusMessage(state, collectionID, collections) {
+        if (state === "completed" || state === "edition-confirmed"){
+            return "New"
+        }
+
+        if (state === "associated") {
+            const collection = collections.find(collection => {
+                return collection.id === collectionID;
+            });
+            return "In collection: " + collection.name
+        }
+
+    }
+
     mapResponseToTableData(datasets, instances, collections, activeCollectionID) {
         try {
             const values = datasets.map(dataset => {
@@ -131,26 +145,7 @@ class DatasetsController extends Component {
                 const datasetInstances = [];
                 instances.forEach(instance => {
                     const datasetID = instance.links.dataset.id;
-                    let currentStatus = "";
-                    if (instance.state === "associated"){
-                        const activeCollection = collections.find(collection => {
-                            return activeCollectionID === instance.collection_id;
-                        }); 
 
-                        if(!activeCollection && activeCollectionID){
-                            const collectionName = collections.find(collection => {
-                                return collection.id === instance.collection_id;
-                            }); 
-                            currentStatus = "In another collection - " + collectionName.name;
-                        } else if(activeCollection){
-                            currentStatus = "In this collection - " + activeCollection.name;
-                        } else {
-                            currentStatus = "Added to collection";
-                        }
-                    }
-                    if (instance.state === "completed" || instance.state === "edition-confirmed"){
-                        currentStatus = "New"
-                    }   
                     if (datasetID === dataset.id) {
                         datasetInstances.push({
                             date: instance.last_updated,
@@ -158,7 +153,7 @@ class DatasetsController extends Component {
                             edition: instance.edition || "-",
                             version: instance.version || "-",
                             url: this.handleInstanceURL(instance.state, activeCollectionID, datasetID,instance.id, instance.edition, instance.version),
-                            status: currentStatus
+                            status: this.handleInstanceStatusMessage(instance.state, instance.collection_id, collections)
                         });
                     }
                 });
