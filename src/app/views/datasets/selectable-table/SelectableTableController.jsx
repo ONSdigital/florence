@@ -16,12 +16,11 @@ const propTypes = {
             version: PropTypes.oneOfType([
                 PropTypes.string.isRequired,
                 PropTypes.number.isRequired
-            ])
+            ]),
+            status: PropTypes.string
         }))
     }))
 }
-
-let currentStatus = "";
 
 export default class SelectableTableController extends Component {
     constructor(props) {
@@ -30,15 +29,7 @@ export default class SelectableTableController extends Component {
     renderDatasetInstances(instances) {
         return instances.map((instance, i) => {
             if (instance !== undefined) {
-                if (instance.status === "published"){
-                    currentStatus = "Published"
-                }
-                if (instance.status === "associated"){
-                    currentStatus = "Added to collection"
-                }
-                if (instance.status === "completed" || instance.status === "edition-confirmed"){
-                    currentStatus = "New"
-                }
+
                 return (
                     <div key={i} className="grid simple-table__row">
                         <div className="grid__col-2">
@@ -47,7 +38,7 @@ export default class SelectableTableController extends Component {
                             <span><Link to={instance.url}>View</Link></span>
                         </div>
                         <div className="grid__col-3">
-                            {currentStatus}
+                            {instance.status}
                         </div>
                         <div className="grid__col-3">
                             {dateFormat(instance.date, "dd/mm/yy HH:MM")}
@@ -81,7 +72,7 @@ export default class SelectableTableController extends Component {
                                     </div>
                                 </summary>
                                 <div>
-                                    <Link className="inline-block margin-bottom--1" to={url.resolve(`datasets/${item.id}/metadata`)}> Edit dataset details</Link>
+                                    <Link className="inline-block margin-bottom--1" to={item.datasetURL}> Edit dataset details</Link>
                                     {item.instances.length > 0 &&
                                         <div>
                                             <div className="grid simple-table__heading">
