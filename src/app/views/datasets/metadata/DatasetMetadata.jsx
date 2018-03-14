@@ -339,16 +339,7 @@ export class DatasetMetadata extends Component {
                 return dataset.id === datasetID;
             });
             if (!dataset) {
-                notifications.add({
-                    type: 'neutral',
-                    message: `Unable to allow saving or reviewing because dataset was not found in collection '${collection.name}'`,
-                    isDismissable: true
-                });
-                this.setState({
-                    isFetchingCollectionData: false,
-                    isReadOnly: true
-                });
-                log.add(eventTypes.runtimeWarning, {message: `Unable to allow saving or reviewing because dataset '${datasetID}' was not found in collection '${collectionID}'`});
+                this.setState({isFetchingCollectionData: false});
                 return;
             }
             const lastEditedBy = dataset.lastEditedBy;
