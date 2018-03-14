@@ -1,8 +1,8 @@
 import React from 'react';
 import {DatasetMetadata} from './DatasetMetadata.jsx';
-import uuid from 'uuid/v4';
+// import uuid from 'uuid/v4';
 import renderer from 'react-test-renderer';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
 import collections from '../../../utilities/api-clients/collections'
 import datasets from '../../../utilities/api-clients/datasets'
@@ -56,7 +56,15 @@ jest.mock('../../../utilities/api-clients/datasets', () => (
 
 jest.mock('../../../utilities/api-clients/collections', () => (
     {
-        get: jest.fn(() => Promise.resolve([])),
+        get: jest.fn(() => Promise.resolve([null, {
+            id: "test-collection-12345",
+            datasets: [{
+                id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
+                state: 'InProgress',
+                lastEditedBy: 'user@email.com'
+            }],
+            datasetVersions: []
+        }])),
         setDatasetStatusToComplete: jest.fn(() => Promise.resolve()),
         setDatasetStatusToReviewed: jest.fn(() => Promise.resolve())
     }
@@ -78,7 +86,7 @@ const mockEvent = {
 
 const exampleDataset = {
     current: {
-        collection_id: 'fddffdfdaadf-e8ad17766a81bf589e76ef57d854945fdf0bfe546000228837aa70701506869c',
+        collection_id: 'test-collection-12345',
         id: '931a8a2a-0dc8-42b6-a884-7b6054ed3b68',
         license: 'Open Government License',
         links: {
@@ -139,6 +147,8 @@ const exampleDataset = {
 let dispatchedAction = null;
 
 const defaultProps = {
+    rootPath: "/florence",
+    collectionID: "test-collection-12345",
     dispatch: action => {dispatchedAction = action},
     datasets: [{
         next: {
@@ -152,7 +162,8 @@ const defaultProps = {
     params: {
         datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
     },
-    userEmail: "user@email.com"
+    userEmail: "user@email.com",
+    routes: [{}]
 }
 
 const defaultComponent = shallow(
@@ -544,29 +555,29 @@ describe("Saving changes and submitting for review/approval", () => {
 
     it("passes any errors from updating review state to the error handler", async () => {
         collections.setDatasetStatusToComplete.mockImplementationOnce(() => (
-            Promise.reject({status: 500, statusText: "Server error"})
+            Promise.reject({status: 500, statusText: "Mocked error"})
         ));
         await defaultComponent.instance().handleSave(mockEvent, true, false);
         const handlerArguments = handleMetadataSaveErrors.mock.calls[handleMetadataSaveErrors.mock.calls.length-1];
         expect(handlerArguments[1]).toBeTruthy();
-        expect(handlerArguments[1]).toEqual({status: 500, statusText: "Server error"});
+        expect(handlerArguments[1]).toEqual({status: 500, statusText: "Mocked error"});
         expect(handlerArguments[0]).toBeFalsy();
     });
     
     it("passes any errors from metadata updates to the error handler", async () => {
         datasets.updateDatasetMetadata.mockImplementationOnce(() => (
-            Promise.reject({status: 500, statusText: "Server error"})
+            Promise.reject({status: 500, statusText: "Mocked error"})
         ));
         await defaultComponent.instance().handleSave(mockEvent, true, false);
         const handlerArguments = handleMetadataSaveErrors.mock.calls[handleMetadataSaveErrors.mock.calls.length-1];
         expect(handlerArguments[0]).toBeTruthy();
-        expect(handlerArguments[0]).toEqual({status: 500, statusText: "Server error"});
+        expect(handlerArguments[0]).toEqual({status: 500, statusText: "Mocked error"});
         expect(handlerArguments[1]).toBeFalsy();
     });
 
     it("doesn't reset 'hasChanges' in state after error saving metadata updates", async () => {
         datasets.updateDatasetMetadata.mockImplementationOnce(() => (
-            Promise.reject({status: 500, statusText: "Server error"})
+            Promise.reject({status: 500, statusText: "Mocked error"})
         ));
         defaultComponent.setState({hasChanges: true});
         await defaultComponent.instance().handleSave(mockEvent, false, false);
@@ -594,25 +605,51 @@ describe("Saving changes and submitting for review/approval", () => {
 });
 
 describe("Updating the review state on mount", () => {
-    it("loads read-only mode if the fetch for a collection fails");
 
-    it("loads read-only mode if the dataset cannot be found in the current collection");
+    it("loads read-only mode if the fetch for a collection fails", async () => {
+        collections.get.mockImplementationOnce(() => Promise.reject([{status: 500, statusText: "Mocked error"}, null]));
+        defaultComponent.setState({isReadOnly: false});
+        await defaultComponent.instance().componentWillMount();
+        expect(defaultComponent.instance().state.isReadOnly).toBe(true);
+    });
 
-    it("updates the 'last edited by' data in state", async () => {
-        collections.get.mockImplementationOnce(() => {
-            return {
-                datasets: [{
-                    state: "Complete",
-                    lastEditedBy: "user@email.com",
-                    id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-                }]
-            }
-        });
+    it("loads read-only mode if the dataset cannot be found in the current collection", async () => {
+        datasets.get.mockImplementationOnce(() => Promise.reject({status: 500, statusText: "Mocked error"}));
+        defaultComponent.setState({isReadOnly: false});
         await defaultComponent.instance().componentWillMount();
         await defaultComponent.update();
+        expect(defaultComponent.instance().state.isReadOnly).toBe(true);
+    });
+
+    it("updates the 'last edited by' data in state", async () => {
+        dispatchedAction = {};
+
+        collections.get.mockImplementationOnce(() => Promise.resolve([null, {
+            datasets: [{
+                state: "Complete",
+                lastEditedBy: "user-2@email.com",
+                id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
+            }]
+        }]));
+
+        await defaultComponent.instance().updateReviewStateData();
+        expect(dispatchedAction.lastEditedBy).toBe('user-2@email.com');
     });
     
-    it("updates the 'review state' data in state");
+    it("updates the 'review state' data in state", async () => {
+        dispatchedAction = {};
+
+        collections.get.mockImplementationOnce(() => Promise.resolve([null, {
+            datasets: [{
+                state: "Complete",
+                lastEditedBy: "user@email.com",
+                id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
+            }]
+        }]));
+
+        await defaultComponent.instance().updateReviewStateData();
+        expect(dispatchedAction.reviewState).toBe('complete');
+    });
 });
 
 describe("Renders the correct buttons", () => {

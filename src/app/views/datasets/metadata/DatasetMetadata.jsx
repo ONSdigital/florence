@@ -149,7 +149,7 @@ export class DatasetMetadata extends Component {
                     isReadOnly: true
                 });
                 const notification = {
-                    type: "warning",
+                    type: "neutral",
                     message: "This dataset is not in the current active collection and cannot be edited at this time.",
                     isDismissable: true
                 }
@@ -249,39 +249,43 @@ export class DatasetMetadata extends Component {
             });
 
           }).catch(error => {
-              switch (error.status) {
-                  case(403):{
-                      const notification = {
-                          "type": "info",
-                          "message": "You do not permission to view this dataset",
-                          isDismissable: true
-                      }
-                      notifications.add(notification);
-                      break;
-                  }
-                  case (404): {
-                      const notification = {
-                          "type": "info",
-                          "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
-                          isDismissable: true
-                      };
-                      notifications.add(notification);
-                      this.props.dispatch(push(`${this.props.rootPath}/datasets`));
-                      break;
-                  }
-                  default: {
-                      const notification = {
-                          type: "warning",
-                          message: "An unexpected error's occurred whilst trying to get this dataset",
-                          isDismissable: true
-                      }
-                      notifications.add(notification);
-                      break;
-                  }
-              }
-              log.add(eventTypes.unexpectedRuntimeError, {message: "Error getting dataset " + this.props.params.datasetID + ". Error: " + JSON.stringify(error)});
-              console.error("Error has occurred:\n", error);
+            this.setState({
+                isFetchingDataset: false,
+                isReadOnly: true
             });
+            switch (error.status) {
+                case(403):{
+                    const notification = {
+                        "type": "info",
+                        "message": "You do not permission to view this dataset",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case (404): {
+                    const notification = {
+                        "type": "info",
+                        "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get this dataset",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            log.add(eventTypes.unexpectedRuntimeError, {message: "Error getting dataset " + this.props.params.datasetID + ". Error: " + JSON.stringify(error)});
+            console.error("Error has occurred:\n", error);
+        });
 
     }
 
@@ -314,13 +318,23 @@ export class DatasetMetadata extends Component {
         this.props.dispatch(emptyActiveDataset());
     }
 
+    getCollection(collectionID) {
+        return collections.get(collectionID)
+            .then(response => [null, response])
+            .catch(error => [error, null]);
+    }
+
     async updateReviewStateData() {
         this.setState({isFetchingCollectionData: true});
         const collectionID = this.props.collectionID;
         const datasetID = this.props.params.datasetID;
         
         try {
-            const collection = await collections.get(collectionID);
+            const [error, collection] = await collections.get(collectionID);
+            if (error) {
+                throw error;
+            }
+
             const dataset = collection.datasets.find(dataset => {
                 return dataset.id === datasetID;
             });
@@ -380,7 +394,7 @@ export class DatasetMetadata extends Component {
                 }
             }
             log.add(eventTypes.unexpectedRuntimeError, {message: "Unable to update metadata screen with version's review/edit status in collection " + collectionID + ". Error: " + JSON.stringify(error)});
-            console.error("Unable to update metadata screen with version's review/edit status in collection " + collectionID, error);
+            console.error("Unable to update metadata screen with version's review/edit status in collection '" + collectionID + "'", error);
         }
     }
 
@@ -613,8 +627,8 @@ export class DatasetMetadata extends Component {
         }
 
         return request(this.props.collectionID, datasetID).catch(error => {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
-            console.error(`Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview && "Complete"}${isMarkingAsReviewed && "Reviewed"}' in collection '${this.props.collectionID}'`, error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`, error);
             return error;
         });
     }
