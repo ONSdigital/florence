@@ -150,7 +150,7 @@ export class DatasetMetadata extends Component {
                 });
                 const notification = {
                     type: "neutral",
-                    message: "This dataset is not in the current active collection and cannot be edited at this time.",
+                    message: "This dataset is not in the current active collection so cannot be edited at this time.",
                     isDismissable: true
                 }
                 notifications.add(notification);
@@ -330,7 +330,7 @@ export class DatasetMetadata extends Component {
         const datasetID = this.props.params.datasetID;
         
         try {
-            const [error, collection] = await collections.get(collectionID);
+            const [error, collection] = await this.getCollection(collectionID);
             if (error) {
                 throw error;
             }
@@ -470,7 +470,7 @@ export class DatasetMetadata extends Component {
      }
 
     handleBackButton() {
-        if (this.state.hasChanges) {
+        if (!this.state.isReadOnly && this.state.hasChanges) {
             this.setState({showModal: true});
             return;
         }
@@ -901,13 +901,6 @@ export class DatasetMetadata extends Component {
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                         </div>
-                        <button type="submit" disabled={this.state.isReadOnly || this.state.isSavingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
-                        <button type="submit" disabled={this.state.isReadOnly || this.state.isSavingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
-                        {this.state.latestVersion ?
-                            this.state.status === "associated" &&
-                                <button type="submit" disabled={this.state.isReadOnly || this.state.isSavingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
-                            : ""
-                        } */}
                         <button id="btn-save" type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
                         {this.renderReviewActions()}
                         {/* TODO render preview CTA with `this.state.latestVersion` check */}
