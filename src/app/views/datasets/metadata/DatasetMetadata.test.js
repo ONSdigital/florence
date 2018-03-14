@@ -154,6 +154,10 @@ const defaultProps = {
     }
 }
 
+const defaultComponent = shallow(
+    <DatasetMetadata {...defaultProps} />
+);
+
 test("Dataset details page matches stored snapshot", () => {
     const component = renderer.create(
       <DatasetMetadata {...defaultProps} />
@@ -162,69 +166,60 @@ test("Dataset details page matches stored snapshot", () => {
 });
 
 test("Dataset title updates after successful fetch from dataset API on mount", async () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
 
-    await component.instance().componentWillMount();
-    await component.update(); // update() appears to be async so we need to wait for it to finish before asserting
-    expect(component.state("title")).toBe("CPI");
+    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.update(); // update() appears to be async so we need to wait for it to finish before asserting
+    expect(defaultComponent.state("title")).toBe("CPI");
 });
 
-test("Correct modal type shows when user wants to add a related bulletin", async () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-    expect(component.state("modalType")).toBe("");
-    await component.instance().handleAddRelatedClick("bulletin");
-    expect(component.state("modalType")).toBe("bulletin");
+test("Correct modal type shows when user wants to add a related bulletin", () => {
+    expect(defaultComponent.state("modalType")).toBe("");
+    expect(defaultComponent.state("showModal")).toBe(false);
+    defaultComponent.instance().handleAddRelatedClick("bulletin");
+    expect(defaultComponent.state("modalType")).toBe("bulletin");
+    expect(defaultComponent.state("showModal")).toBe(true);
+
+    // Reset state for future tests
+    defaultComponent.setState({
+        modalType: "",
+        showModal: false
+    })
 });
 
 test("Removing the value from related QMI input updates state to be empty", async () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
     const mockTitleEvent = {
         target: {
             value: "",
             name: "relatedQMI"
         }
     }
-    await component.instance().componentWillMount();
-    await component.update();
-    expect(component.state("relatedQMI")).toBe(exampleDataset.current.qmi.href);
-    component.instance().handleInputChange(mockTitleEvent);
-    await component.update();
-    expect(component.state("relatedQMI")).toBe("");
+    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.update();
+    expect(defaultComponent.state("relatedQMI")).toBe(exampleDataset.current.qmi.href);
+    defaultComponent.instance().handleInputChange(mockTitleEvent);
+    await defaultComponent.update();
+    expect(defaultComponent.state("relatedQMI")).toBe("");
 });
 
 test("Handler for removing a related bulletin updates state correctly", async () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-
-    await component.instance().componentWillMount();
-    await component.update();
-    expect(component.state("relatedBulletins").length).toEqual(1);
-    expect(component.state("relatedBulletins")[0]).toMatchObject({
+    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.update();
+    expect(defaultComponent.state("relatedBulletins").length).toEqual(1);
+    expect(defaultComponent.state("relatedBulletins")[0]).toMatchObject({
         key: "12345",
         title: exampleDataset.current.publications[0].title,
         href: exampleDataset.current.publications[0].href
     });
-    await component.instance().handleDeleteRelatedClick("bulletin", "12345");
-    await component.update();
-    expect(component.state("relatedBulletins").length).toBe(0);
+    await defaultComponent.instance().handleDeleteRelatedClick("bulletin", "12345");
+    await defaultComponent.update();
+    expect(defaultComponent.state("relatedBulletins").length).toBe(0);
 });
 
 test("Related datasets are set in state correctly on mount", async () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-
-    await component.instance().componentWillMount();
-    await component.update();
-    expect(component.state("relatedLinks").length).toEqual(2);
-    component.state("relatedLinks").forEach((relatedLink, index) => {
+    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.update();
+    expect(defaultComponent.state("relatedLinks").length).toEqual(2);
+    defaultComponent.state("relatedLinks").forEach((relatedLink, index) => {
         expect(relatedLink).toMatchObject({
             key: "12345",
             title: exampleDataset.current.related_datasets[index].title,
@@ -233,48 +228,42 @@ test("Related datasets are set in state correctly on mount", async () => {
     });
 });
 
-test("Usage information is set in state after successful fetch from dataset API on mount", async () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-
-    await component.instance().componentWillMount();
-    await component.update(); // update() appears to be async so we need to wait for it to finish before asserting
-    expect(component.state("license")).toBe("Open Government License");
+test("Usage information is set in state after successful fetch from dataset API on mount", () => {
+    expect(defaultComponent.state("license")).toBe("Open Government License");
 });
 
 test("Changing an input value updates the state to show a change has been made", async () => {
-    const component = await shallow(
+    const asyncComponent = await shallow(
         <DatasetMetadata {...defaultProps} />
     );
 
-    await component.update();
-    expect(component.state("hasChanges")).toBe(false);
-    component.setState({description: "A new description"});
-    expect(component.state("description")).toBe("A new description");
-    expect(component.state("hasChanges")).toBe(true);
+    await asyncComponent.update();
+    expect(asyncComponent.state("hasChanges")).toBe(false);
+    asyncComponent.setState({description: "A new description"});
+    await asyncComponent.update();
+    expect(asyncComponent.state("description")).toBe("A new description");
+    expect(asyncComponent.state("hasChanges")).toBe(true);
 });
 
 test("Warning modal shown when unsaved changes have been made", async () => {
-    const component = await shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
+    expect(defaultComponent.find(".modal__header h2").exists()).toBe(false);
+    expect(defaultComponent.state("showModal")).toBe(false);
 
-    await component.update();
-    expect(component.find(".modal__header h2").exists()).toBe(false);
-    expect(component.state("showModal")).toBe(false);
-    component.setState({description: "A new description"});
-    component.instance().handleBackButton();
-    expect(component.state("showModal")).toBe(true);
-    expect(component.state("modalType")).toBe("");
-    expect(component.find(".modal__header h2").exists()).toBe(true);
+    const inputChangeEvent = {
+        ...mockEvent,
+        target: {
+            value: "test-value",
+            name: "test-name"
+        }
+    }
+    defaultComponent.instance().handleInputChange(inputChangeEvent);
+    defaultComponent.instance().handleBackButton();
+    expect(defaultComponent.state("showModal")).toBe(true);
+    expect(defaultComponent.state("modalType")).toBe("");
+    expect(defaultComponent.find(".modal__header h2").exists()).toBe(true);
 });
 
 test("Available release frequencies maps correctly to select element", () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-
     const validSelectContents = [
         {
             id: "weekly",
@@ -290,36 +279,27 @@ test("Available release frequencies maps correctly to select element", () => {
         }
     ]
 
-    const createdSelectContents = component.instance().mapReleaseFreqToSelectOptions();
+    const createdSelectContents = defaultComponent.instance().mapReleaseFreqToSelectOptions();
     expect(createdSelectContents).toEqual(expect.arrayContaining(validSelectContents));
 });
 
 test("Handle select change event updates state correctly", () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
 
-    expect(component.update().state("releaseFrequency")).toBe("");
-    component.instance().handleSelectChange({preventDefault: ()=>{}, target: {value: "Weekly"}});
-    expect(component.update().state("releaseFrequency")).toBe("Weekly");
+    expect(defaultComponent.update().state("releaseFrequency")).toBe("");
+    defaultComponent.instance().handleSelectChange({preventDefault: ()=>{}, target: {value: "Weekly"}});
+    expect(defaultComponent.update().state("releaseFrequency")).toBe("Weekly");
 });
 
 test("Handle checkbox tick updates 'national statistic' state correctly", () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
 
-    expect(component.state("isNationalStat")).toBe(false);
-    component.instance().handleToggleChange(true);
-    expect(component.state("isNationalStat")).toBe(true);
-    component.instance().handleToggleChange(false);
-    expect(component.state("isNationalStat")).toBe(false);
+    expect(defaultComponent.state("isNationalStat")).toBe(false);
+    defaultComponent.instance().handleToggleChange(true);
+    expect(defaultComponent.state("isNationalStat")).toBe(true);
+    defaultComponent.instance().handleToggleChange(false);
+    expect(defaultComponent.state("isNationalStat")).toBe(false);
 });
 
 test("Handle input change updates relevant state correctly", () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
     const mockTitleEvent = {
         target: {
             value: "Some free text",
@@ -333,20 +313,24 @@ test("Handle input change updates relevant state correctly", () => {
         }
     }
 
-    expect(component.state("titleInput")).toBe("");
-    expect(component.state("urlInput")).toBe("");
+    expect(defaultComponent.state("titleInput")).toBe("");
+    expect(defaultComponent.state("urlInput")).toBe("");
 
-    component.instance().handleInputChange(mockTitleEvent);
-    expect(component.state("titleInput")).toBe(mockTitleEvent.target.value);
+    defaultComponent.instance().handleInputChange(mockTitleEvent);
+    expect(defaultComponent.state("titleInput")).toBe(mockTitleEvent.target.value);
 
-    component.instance().handleInputChange(mockURLEvent);
-    expect(component.state("urlInput")).toBe(mockURLEvent.target.value);
+    defaultComponent.instance().handleInputChange(mockURLEvent);
+    expect(defaultComponent.state("urlInput")).toBe(mockURLEvent.target.value);
+
+    defaultComponent.setState({
+        urlInput: "",
+        urlError: "",
+        titleInput: "",
+        titleError: ""
+    });
 });
 
 test("Input errors are added on submit and then removed on change of that input", () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
     const mockTitleEvent = {
         target: {
             value: "Some free text",
@@ -360,73 +344,56 @@ test("Input errors are added on submit and then removed on change of that input"
         }
     }
 
-    expect(component.state("titleInput")).toBe("");
-    expect(component.state("urlInput")).toBe("");
-    expect(component.update().state("titleError")).toBe("");
-    expect(component.update().state("urlError")).toBe("");
+    expect(defaultComponent.state("titleInput")).toBe("");
+    expect(defaultComponent.state("urlInput")).toBe("");
+    expect(defaultComponent.update().state("titleError")).toBe("");
+    expect(defaultComponent.update().state("urlError")).toBe("");
 
-    component.instance().handleRelatedContentSubmit({preventDefault: ()=>{}});
-    expect(component.update().state("titleError")).not.toBe("");
-    expect(component.update().state("urlError")).not.toBe("");
+    defaultComponent.instance().handleRelatedContentSubmit({preventDefault: ()=>{}});
+    expect(defaultComponent.update().state("titleError")).not.toBe("");
+    expect(defaultComponent.update().state("urlError")).not.toBe("");
 
-    component.instance().handleInputChange(mockTitleEvent);
-    expect(component.state("titleInput")).toBe(mockTitleEvent.target.value);
-    expect(component.update().state("titleError")).toBe(null);
+    defaultComponent.instance().handleInputChange(mockTitleEvent);
+    expect(defaultComponent.state("titleInput")).toBe(mockTitleEvent.target.value);
+    expect(defaultComponent.update().state("titleError")).toBe(null);
 
-    component.instance().handleInputChange(mockURLEvent);
-    expect(component.state("urlInput")).toBe(mockURLEvent.target.value);
-    expect(component.update().state("urlError")).toBe(null);
+    defaultComponent.instance().handleInputChange(mockURLEvent);
+    expect(defaultComponent.state("urlInput")).toBe(mockURLEvent.target.value);
+    expect(defaultComponent.update().state("urlError")).toBe(null);
 });
 
-test("Handler to edit a related item updates the state with new values", async () => {
-    const component = await shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-    await component.update();
-    
-    expect(component.state("relatedBulletins").length).toBe(1);
-    component.setState({titleInput: "Some new words"});
-    component.instance().editRelatedLink("bulletin", "12345");
-    expect(component.state("relatedBulletins").length).toBe(1);
-    const editedRelatedBulletins = component.update().state("relatedBulletins");
+test("Handler to edit a related item updates the state with new values", () => {    
+    expect(defaultComponent.state("relatedBulletins").length).toBe(1);
+    defaultComponent.setState({titleInput: "Some new words"});
+    defaultComponent.instance().editRelatedLink("bulletin", "12345");
+    expect(defaultComponent.state("relatedBulletins").length).toBe(1);
+    const editedRelatedBulletins = defaultComponent.update().state("relatedBulletins");
     expect(editedRelatedBulletins[0].title).toBe("Some new words");
-});
-
-test("Handle for editing a related link opens modal with existing values", async () => {
-    const component = await shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-    await component.update();
     
-    component.instance().handleEditRelatedClick("bulletin", "12345");
-    expect(component.state("showModal")).toBe(true);
-    expect(component.state("modalType")).toBe("bulletin");
-    expect(component.state("urlInput")).toBe(exampleDataset.current.publications[0].href);
-    expect(component.state("titleInput")).toBe(exampleDataset.current.publications[0].title);
+    // Force a remount to reset the component to original props for future tests
+    defaultComponent.instance().componentWillMount();
 });
 
-test("Editing an existing related methodologies card display correct modal with values", async () => {
-    const component = await shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-    await component.update();
-    
-    component.instance().handleEditRelatedClick("methodologies", "12345");
-    expect(component.state("showModal")).toBe(true);
-    expect(component.state("modalType")).toBe("methodologies");
-    expect(component.state("urlInput")).toBe(exampleDataset.current.methodologies[0].href);
-    expect(component.state("titleInput")).toBe(exampleDataset.current.methodologies[0].title);
-    expect(component.state("descInput")).toBe(exampleDataset.current.methodologies[0].description);
+test("Handle for editing a related link opens modal with existing values", () => {    
+    defaultComponent.instance().handleEditRelatedClick("bulletin", "12345");
+    expect(defaultComponent.state("showModal")).toBe(true);
+    expect(defaultComponent.state("modalType")).toBe("bulletin");
+    expect(defaultComponent.state("urlInput")).toBe(exampleDataset.current.publications[0].href);
+    expect(defaultComponent.state("titleInput")).toBe(exampleDataset.current.publications[0].title);
 });
 
-test("Related items map to card element correctly", async () => {
-    const component = await shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-    await component.update();
+test("Editing an existing related methodologies card display correct modal with values", () => {
+    defaultComponent.instance().handleEditRelatedClick("methodologies", "12345");
+    expect(defaultComponent.state("showModal")).toBe(true);
+    expect(defaultComponent.state("modalType")).toBe("methodologies");
+    expect(defaultComponent.state("urlInput")).toBe(exampleDataset.current.methodologies[0].href);
+    expect(defaultComponent.state("titleInput")).toBe(exampleDataset.current.methodologies[0].title);
+    expect(defaultComponent.state("descInput")).toBe(exampleDataset.current.methodologies[0].description);
+});
 
-    const cardProps = component.instance().mapTypeContentsToCard(component.state("relatedLinks"));
-    component.state("relatedLinks").forEach((dataset, index) => {
+test("Related items map to card element correctly", () => {
+    const cardProps = defaultComponent.instance().mapTypeContentsToCard(defaultComponent.state("relatedLinks"));
+    defaultComponent.state("relatedLinks").forEach((dataset, index) => {
         expect(cardProps[index]).toMatchObject({
             title: dataset.title,
             id: dataset.key
@@ -434,14 +401,9 @@ test("Related items map to card element correctly", async () => {
     })
 });
 
-test("Methodologies items map to card element correctly", async () => {
-    const component = await shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-    await component.update();
-
-    const cardProps = component.instance().mapTypeContentsToCard(component.state("relatedMethodologies"));
-    component.state("relatedMethodologies").forEach((dataset, index) => {
+test("Methodologies items map to card element correctly", () => {
+    const cardProps = defaultComponent.instance().mapTypeContentsToCard(defaultComponent.state("relatedMethodologies"));
+    defaultComponent.state("relatedMethodologies").forEach((dataset, index) => {
         expect(cardProps[index]).toMatchObject({
             title: dataset.title,
             id: dataset.key
@@ -450,10 +412,6 @@ test("Methodologies items map to card element correctly", async () => {
 });
 
 describe("Component's state maps to API request correctly when", () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
-    
     it("contact details data has been updated", () => {
         const mockState = {
             contactEmail: "foobar@email.com",
@@ -466,8 +424,8 @@ describe("Component's state maps to API request correctly when", () => {
             name: "Bob Jones"
         }
     
-        component.setState(mockState);
-        const componentInstance = component.instance();
+        defaultComponent.setState(mockState);
+        const componentInstance = defaultComponent.instance();
         expect(componentInstance.mapStateToAPIRequest().contacts.length).toBe(1);
         expect(componentInstance.mapStateToAPIRequest().contacts[0]).toEqual(expect.objectContaining(mockRequestContactsObject));
     });
@@ -477,8 +435,8 @@ describe("Component's state maps to API request correctly when", () => {
             description: "This is a stubbed description"
         }
     
-        component.setState(mockState);
-        expect(component.instance().mapStateToAPIRequest().description).toBe(mockState.description);
+        defaultComponent.setState(mockState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().description).toBe(mockState.description);
     });
     
     it("related publications data has been updated", () => {
@@ -496,8 +454,8 @@ describe("Component's state maps to API request correctly when", () => {
             ]
         }
     
-        component.setState(mockPublicationsState);
-        const componentInstance = component.instance();
+        defaultComponent.setState(mockPublicationsState);
+        const componentInstance = defaultComponent.instance();
         expect(componentInstance.mapStateToAPIRequest().publications.length).toBe(2);
         expect(componentInstance.mapStateToAPIRequest().publications[0]).toEqual(expect.objectContaining(mockPublicationsState.relatedBulletins[0]));
         expect(componentInstance.mapStateToAPIRequest().publications[1]).toEqual(expect.objectContaining(mockPublicationsState.relatedBulletins[1]));
@@ -513,8 +471,8 @@ describe("Component's state maps to API request correctly when", () => {
             ]
         }
     
-        component.setState(mockLinksState);
-        expect(component.instance().mapStateToAPIRequest().related_datasets[0]).toEqual(expect.objectContaining(mockLinksState.relatedLinks[0]));
+        defaultComponent.setState(mockLinksState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().related_datasets[0]).toEqual(expect.objectContaining(mockLinksState.relatedLinks[0]));
     });
         
     it("related methodlogies data has been updated", () => {
@@ -528,8 +486,8 @@ describe("Component's state maps to API request correctly when", () => {
             ]
         }
     
-        component.setState(mockState);
-        expect(component.instance().mapStateToAPIRequest().methodologies[0]).toEqual(expect.objectContaining(mockState.relatedMethodologies[0]));
+        defaultComponent.setState(mockState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().methodologies[0]).toEqual(expect.objectContaining(mockState.relatedMethodologies[0]));
     });
     
     it("related QMI data has been updated", () => {
@@ -540,8 +498,8 @@ describe("Component's state maps to API request correctly when", () => {
             href: mockQMIState.relatedQMI
         }
     
-        component.setState(mockQMIState);
-        expect(component.instance().mapStateToAPIRequest().qmi).toEqual(expect.objectContaining(mockRequestQMIObject));
+        defaultComponent.setState(mockQMIState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().qmi).toEqual(expect.objectContaining(mockRequestQMIObject));
     });
     
     it("national statistic data has been updated", () => {
@@ -549,8 +507,8 @@ describe("Component's state maps to API request correctly when", () => {
             isNationalStat: false
         }
     
-        component.setState(mockNationalStatState);
-        expect(component.instance().mapStateToAPIRequest().national_statistic).toBe(false);
+        defaultComponent.setState(mockNationalStatState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().national_statistic).toBe(false);
     });
     
     it("keywords data has been updated", () => {
@@ -558,8 +516,8 @@ describe("Component's state maps to API request correctly when", () => {
             keywords: "foo , bar,more, two words, another"
         }
     
-        component.setState(mockKeywordsState);
-        expect(component.instance().mapStateToAPIRequest().keywords).toEqual(expect.arrayContaining(["foo", "bar", "more", "two words", "another"]));
+        defaultComponent.setState(mockKeywordsState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().keywords).toEqual(expect.arrayContaining(["foo", "bar", "more", "two words", "another"]));
     });
     
     it("title data has been updated", () => {
@@ -567,8 +525,8 @@ describe("Component's state maps to API request correctly when", () => {
             title: "Foobar"
         }
     
-        component.setState(mockTitleState);
-        expect(component.instance().mapStateToAPIRequest().title).toBe("Foobar");
+        defaultComponent.setState(mockTitleState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().title).toBe("Foobar");
     });
 
     it("usage information has been updated", () => {
@@ -576,21 +534,18 @@ describe("Component's state maps to API request correctly when", () => {
             license: "Foobar"
         }
     
-        component.setState(mockTitleState);
-        expect(component.instance().mapStateToAPIRequest().license).toBe("Foobar");
+        defaultComponent.setState(mockTitleState);
+        expect(defaultComponent.instance().mapStateToAPIRequest().license).toBe("Foobar");
     });
 });
 
 describe("Saving changes and submitting for review/approval", () => {
-    const component = shallow(
-        <DatasetMetadata {...defaultProps} />
-    );
 
     it("passes any errors from updating review state to the error handler", async () => {
         collections.setDatasetStatusToComplete.mockImplementationOnce(() => (
             Promise.reject({status: 500, statusText: "Server error"})
         ));
-        await component.instance().handleSave(mockEvent, true, false);
+        await defaultComponent.instance().handleSave(mockEvent, true, false);
         const handlerArguments = handleMetadataSaveErrors.mock.calls[handleMetadataSaveErrors.mock.calls.length-1];
         expect(handlerArguments[1]).toBeTruthy();
         expect(handlerArguments[1]).toEqual({status: 500, statusText: "Server error"});
@@ -601,7 +556,7 @@ describe("Saving changes and submitting for review/approval", () => {
         datasets.updateDatasetMetadata.mockImplementationOnce(() => (
             Promise.reject({status: 500, statusText: "Server error"})
         ));
-        await component.instance().handleSave(mockEvent, true, false);
+        await defaultComponent.instance().handleSave(mockEvent, true, false);
         const handlerArguments = handleMetadataSaveErrors.mock.calls[handleMetadataSaveErrors.mock.calls.length-1];
         expect(handlerArguments[0]).toBeTruthy();
         expect(handlerArguments[0]).toEqual({status: 500, statusText: "Server error"});
@@ -612,27 +567,43 @@ describe("Saving changes and submitting for review/approval", () => {
         datasets.updateDatasetMetadata.mockImplementationOnce(() => (
             Promise.reject({status: 500, statusText: "Server error"})
         ));
-        component.setState({hasChanges: true});
-        await component.instance().handleSave(mockEvent, false, false);
-        expect(component.state('hasChanges')).toBe(true);
+        defaultComponent.setState({hasChanges: true});
+        await defaultComponent.instance().handleSave(mockEvent, false, false);
+        expect(defaultComponent.state('hasChanges')).toBe(true);
     });
 
     it("reset 'hasChanges' in state after successfully saving metadata updates", async () => {
-        component.setState({hasChanges: true});
-        await component.instance().handleSave(mockEvent, false, false);
-        expect(component.state('hasChanges')).toBe(false);
+        defaultComponent.setState({hasChanges: true});
+        await defaultComponent.instance().handleSave(mockEvent, false, false);
+        expect(defaultComponent.state('hasChanges')).toBe(false);
     });
 
     it("re-routes to the current collection when there are no errors and review state has been updated", async () => {
-        await component.instance().handleSave(mockEvent, false, true);
-        expect(dispatchedAction.payload.args[0]).toBe('/florence/collections/my-collection-12345');
+        defaultComponent.instance().handleSave(mockEvent, false, true);
+        await expect(dispatchedAction.payload.args[0]).toBe('/florence/collections/my-collection-12345');
         dispatchedAction = null;
     });
 
     it("doesn't route to the current collection if there are errors", async () => {
         handleMetadataSaveErrors.mockImplementationOnce(() => true);
         dispatchedAction = null;
-        await component.instance().handleSave(mockEvent, false, true); 
+        await defaultComponent.instance().handleSave(mockEvent, false, true); 
         expect(dispatchedAction).toBeFalsy();
     });
+});
+
+describe("Renders the correct buttons", () => {
+
+
+    it("always shows a 'save' button", () => {
+
+    });
+
+    it("disables the 'save' button loading data")
+    it("disables all save/review buttons when saving data")
+    it("disables the 'save' button/s when a dataset is read-only")
+    it("allows the correct user to submit a dataset for review")
+    it("allows the correct user to review a dataset")
+    it("doesn't allow a user to review their own changes")
+    it("doesn't allow the user to change the review state once reviewed")
 });
