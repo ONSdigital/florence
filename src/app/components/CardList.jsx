@@ -9,7 +9,8 @@ const propTypes = {
     })),
     type: PropTypes.string.isRequired,
     onEdit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired
+    onDelete: PropTypes.func.isRequired,
+    disabled: PropTypes.bool
 }
 
 class CardList extends Component {
@@ -30,6 +31,7 @@ class CardList extends Component {
                           type={this.props.type}
                           onEdit={this.props.onEdit}
                           onDelete={this.props.onDelete}
+                          disabled={this.props.disabled}
                         />
                     )
                 })

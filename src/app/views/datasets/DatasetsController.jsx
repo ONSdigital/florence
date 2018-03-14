@@ -5,13 +5,17 @@ import PropTypes from 'prop-types';
 
 import SelectableTableController from './selectable-table/SelectableTableController';
 import datasets from '../../utilities/api-clients/datasets';
+import collections from '../../utilities/api-clients/collections';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
-import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
+import {updateAllRecipes, updateAllDatasets, updateActiveCollection} from '../../config/actions'
+
 import url from '../../utilities/url'
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    rootPath: PropTypes.string.isRequired,
+    collectionID: PropTypes.string.isRequired,
 }
 
 class DatasetsController extends Component {
@@ -20,24 +24,32 @@ class DatasetsController extends Component {
 
         this.state = {
             tableValues: [],
+            collections: [],
             isFetchingDatasets: false
         };
-
         this.mapResponseToTableData = this.mapResponseToTableData.bind(this);
+        this.handleInstanceURL = this.handleInstanceURL.bind(this);
     }
 
     componentWillMount() {
         this.setState({isFetchingDatasets: true});
+ 
         const fetches = [
             datasets.getNewVersionsAndCompletedInstances(),
-            datasets.getAll()
+            datasets.getAll(),
+            collections.getAll()
         ]
         Promise.all(fetches).then(responses => {
+            const activeCollection = responses[2].find(collection => {
+                return collection.id === this.props.collectionID;
+            });
             this.setState({
                 isFetchingDatasets: false,
-                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items)
-            });
+                collections: responses[2],
+                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], this.props.collectionID)
+            }); 
             this.props.dispatch(updateAllDatasets(responses[1].items));
+            this.props.dispatch(updateActiveCollection(activeCollection));
         }).catch(error => {
             switch (error.status) {
                 case(403):{
@@ -109,30 +121,47 @@ class DatasetsController extends Component {
             notifications.add(notification);
             console.error("Error getting dataset recipes:\n", error);
         });
+
     }
 
-    mapResponseToTableData(datasets, instances) {
+    handleInstanceStatusMessage(state, collectionID, collections) {
+        if (state === "completed" || state === "edition-confirmed"){
+            return "New"
+        }
+
+        if (state === "associated") {
+            const collection = collections.find(collection => {
+                return collection.id === collectionID;
+            });
+            return "In collection: " + collection.name
+        }
+
+    }
+
+    mapResponseToTableData(datasets, instances, collections, activeCollectionID) {
         try {
             const values = datasets.map(dataset => {
                 dataset = dataset.current || dataset.next || dataset;
                 const datasetInstances = [];
                 instances.forEach(instance => {
                     const datasetID = instance.links.dataset.id;
+
                     if (datasetID === dataset.id) {
                         datasetInstances.push({
                             date: instance.last_updated,
                             isInstance: !(instance.edition && instance.version),
                             edition: instance.edition || "-",
                             version: instance.version || "-",
-                            url: instance.state === "completed" ? url.resolve(`datasets/${datasetID}/instances/${instance.id}/metadata`) : url.resolve(`datasets/${datasetID}/editions/${instance.edition}/versions/${instance.version}/metadata`),
-                            status: instance.state
+                            url: this.handleInstanceURL(instance.state, activeCollectionID, datasetID,instance.id, instance.edition, instance.version),
+                            status: this.handleInstanceStatusMessage(instance.state, instance.collection_id, collections)
                         });
                     }
                 });
                 return {
                     title: dataset.title || dataset.id,
                     id: dataset.id,
-                    instances: datasetInstances
+                    instances: datasetInstances,
+                    datasetURL: url.resolve(`datasets/${dataset.id}/metadata`) + `?collection=${activeCollectionID}`
                 }
             });
             return values;
@@ -145,6 +174,19 @@ class DatasetsController extends Component {
             console.error("Error mapping dataset API responses to view", error);
             return [];
         }
+    }
+
+    handleInstanceURL(state, collection, dataset, instance, edition, version){
+        let urlPath = "";
+        if(state === "completed"){
+            urlPath = url.resolve(`datasets/${dataset}/instances/${instance}/metadata`)
+        } else {
+            urlPath = url.resolve(`datasets/${dataset}/editions/${edition}/versions/${version}/metadata`)
+        }
+        if(collection){
+            urlPath = urlPath + "?collection=" + collection;
+        }
+        return urlPath;
     }
 
     render() {
@@ -167,4 +209,11 @@ class DatasetsController extends Component {
 
 DatasetsController.propTypes = propTypes;
 
-export default connect()(DatasetsController);
+function mapStateToProps(state) {
+    return {
+        rootPath: state.state.rootPath,
+        collectionID: state.routing.locationBeforeTransitions.query.collection
+    }
+}
+export default connect(mapStateToProps)(DatasetsController);
+
