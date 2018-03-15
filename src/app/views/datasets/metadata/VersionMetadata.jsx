@@ -134,7 +134,6 @@ export class VersionMetadata extends Component {
         this.setState({isInstance: false});
       }
 
-      
       if (!this.props.params.instanceID && (!this.props.version || !this.props.version.reviewState || !this.props.version.lastEditedBy)) {
         this.updateReviewStateData();
       }
@@ -292,16 +291,7 @@ export class VersionMetadata extends Component {
                 )
             });
             if (!version) {
-                notifications.add({
-                    type: 'neutral',
-                    message: `Unable to allow saving or reviewing because dataset version was not found in collection '${collection.name}'`,
-                    isDismissable: true
-                });
-                this.setState({
-                    isFetchingCollectionData: false,
-                    isReadOnly: true
-                });
-                log.add(eventTypes.runtimeWarning, {message: `Unable to allow saving or reviewing because dataset '${params.datasetID}: ${params.edition} (version ${params.version})' was not found in collection '${collectionID}'`});
+                this.setState({isFetchingCollectionData: false});
                 return;
             }
             const lastEditedBy = version.lastEditedBy;
@@ -435,7 +425,6 @@ export class VersionMetadata extends Component {
     }
 
     updateVersionMetadata(datasetID, edition, version, body) {
-        console.log(body);
         return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
             .catch(error => {
                 this.handleRequestError('save version metadata updates', error.status);

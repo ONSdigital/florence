@@ -25,7 +25,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
-    collectionID: PropTypes.string.isRequired,
+    collectionID: PropTypes.string,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
@@ -474,12 +474,9 @@ export class DatasetMetadata extends Component {
             this.setState({showModal: true});
             return;
         }
-        if (this.state.activeCollectionID){
-            this.props.dispatch(push(url.resolve("/datasets") + "?collection=" + this.state.activeCollectionID));
-        } else {
-            this.props.dispatch(push(url.resolve("/datasets")));
-        }
         
+        const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
+        this.props.dispatch(push(URL));
     }
 
     handleRelatedContentCancel() {
