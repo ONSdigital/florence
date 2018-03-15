@@ -6,23 +6,45 @@ import notifications from '../../../utilities/notifications';
  * @param {Error} reviewStateUpdateFailure - Any error responses returned by the metadata update request.
  * @param {boolean} isSubmittingForReview - Whether the request was submitting the dataset/version for review.
  * @param {boolean} isMarkingAsReviewed - Whether the request was marking the dataset/version as reviewed.
- * @param {string} collection - Collection name that the user is updating the dataset/version in.
+ * @param {string} collectionID - Collection name that the user is updating the dataset/version in.
  * 
  * @returns {boolean} - Whether there were errors or not;
  */
 
-export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, reviewStateUpdateFailure = {}, isSubmittingForReview, isMarkingAsReviewed, collection) {
+export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, reviewStateUpdateFailure = {}, isSubmittingForReview, isMarkingAsReviewed, collectionID) {
 
     if (reviewStateUpdateFailure.status === 401 || metadataUpdateFailure.status === 401) {
         // Handled by utility request function
         return true;
     }
 
-    if (reviewStateUpdateFailure.status || metadataUpdateFailure.status) {
+    // Both requests have failed but for different reasons so we need to give two seperate notifications to give enough detail.
+    if ((reviewStateUpdateFailure.status && metadataUpdateFailure.status) && reviewStateUpdateFailure.status !== metadataUpdateFailure.status) {
+        const metadataUpdateNotification = {
+            type: 'warning',
+            message: getErrorMessage(metadataUpdateFailure, {}, isSubmittingForReview, isMarkingAsReviewed, collectionID),
+            isDismissable: true,
+            autoDismiss: 8000
+        };
+        const reviewStateUpdateNotification = {
+            type: 'warning',
+            message: getErrorMessage({}, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
+            isDismissable: true,
+            autoDismiss: 8000
+        };
+
+        notifications.add(metadataUpdateNotification);
+        notifications.add(reviewStateUpdateNotification);
+        return;
+    }
+
+    // One or both requests have failed (for the same reason) so show a single custom notification
+    if (metadataUpdateFailure.status || reviewStateUpdateFailure.status) {
         const notification = {
             type: 'warning',
-            message: getErrorMessage(reviewStateUpdateFailure, metadataUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collection),
-            isDismissable: true
+            message: getErrorMessage(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
+            isDismissable: true,
+            autoDismiss: 8000
         };
         notifications.add(notification);
         return true;
@@ -31,48 +53,51 @@ export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, rev
     return false;
 }
 
+function getErroredActions(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed) {
+    const metadataError = metadataUpdateFailure.status;
+    const reviewStateError = reviewStateUpdateFailure.status;
+    let newReviewState = "the next state";
 
-function getErrorMessage(reviewStateUpdateFailure, metadataUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collection) {
-
-    if (reviewStateUpdateFailure.status === 'FETCH_ERR' && !metadataUpdateFailure.status) {
-        return `Unable to ${isSubmittingForReview ? 'submit for review' : ''}${isMarkingAsReviewed ? 'submit for approval' : ''} due to a network issue. Please check your internet connection and try again`;
+    if (reviewStateError && isSubmittingForReview) {
+        newReviewState = "review";
     }
-    
-    if (metadataUpdateFailure.status === 'FETCH_ERR' && !reviewStateUpdateFailure.status) {
-        return `Unable to save metadata updates due to a network issue. Please check your internet connection and try again`;
-    }
-    
-    if (metadataUpdateFailure.status === 400) {
-        return "Unable to save metadata updates due to a invalid values being submitted. Please check your updates for any issues and try again";
-    }
-    
-    if (metadataUpdateFailure.status === 403) {
-        return "Unable to save metadata updates because you do not have permission to edit this dataset's metadata";
+    if (reviewStateError && isMarkingAsReviewed) {
+        newReviewState = "approval";
     }
 
-    if (reviewStateUpdateFailure.status === 403) {
-        return `Unable to ${isSubmittingForReview ? 'submit for review' : ''}${isMarkingAsReviewed ? 'submit for approval' : ''} because you do not have the correct permissions`;
+    if (reviewStateError && metadataError) {
+        return `submit for ${newReviewState} and save your metadata updates`;
     }
     
-    if (reviewStateUpdateFailure.status === 404) {
-        return `Unable to ${isSubmittingForReview ? 'submit for review' : ''}${isMarkingAsReviewed ? 'submit for approval' : ''} because collection '${collection}' couldn't be found`;
-    }
-    
-    if (metadataUpdateFailure.status === 404) {
-        return `Unable to save metadata updates because this dataset couldn't be found`;
+    if (reviewStateError && !metadataError) {
+        return `submit for ${newReviewState}`;
     }
 
-    if (reviewStateUpdateFailure.status && !metadataUpdateFailure.status) {
-        return `Unable to ${isSubmittingForReview ? 'submit for review' : ''}${isMarkingAsReviewed ? 'submit for approval' : ''} due to an unexpected error`;
+    if (!reviewStateError && metadataError) {
+        return "save your metadata updates";
     }
-    
-    if (reviewStateUpdateFailure.status && !metadataUpdateFailure.status) {
-        return `Unable to save metadata changes due to an unexpected error`;
-    }
+}
 
-    if (reviewStateUpdateFailure.status && metadataUpdateFailure.status) {
-        return `Unable to save metadata changes and ${isSubmittingForReview ? 'submit for review' : ''}${isMarkingAsReviewed ? 'submit for approval' : ''} due to an unexpected error`;
-    }
 
-    return 'An unexpected error occured, some or all of your updates may not have been processed'
+function getErrorMessage(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID) {
+    const attemptedActions = getErroredActions(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed);
+    const status = reviewStateUpdateFailure.status || metadataUpdateFailure.status;
+
+    switch (status) {
+        case(400): {
+            return `Unable to ${attemptedActions} due to invalid values being submitted. Please check your updates for any issues and try again`;
+        }
+        case(403): {
+            return `Unable to ${attemptedActions} because you do not have the correct permissions`;
+        }
+        case(404): {
+            return `Unable to ${attemptedActions} because this ${reviewStateUpdateFailure.status ? "collection (" + collectionID + ")" : ""}${reviewStateUpdateFailure.status && metadataUpdateFailure.status ? " and " : ""}${metadataUpdateFailure.status ? "dataset" : ""} couldn't be found`;
+        }
+        case('FETCH_ERR'): {
+            return `Unable to ${attemptedActions} due to a network issue. Please check your internet connection and try again`;
+        }
+        default: {
+            return `Unable to ${attemptedActions} due to an unexpected error`;
+        }
+    }
 }
