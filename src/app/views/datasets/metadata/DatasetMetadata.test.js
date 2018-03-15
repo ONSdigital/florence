@@ -7,7 +7,7 @@ import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
 import collections from '../../../utilities/api-clients/collections'
 import datasets from '../../../utilities/api-clients/datasets'
 
-// console.error = jest.fn();
+console.error = jest.fn();
 
 jest.mock('uuid/v4', () => () => {
     return "12345";
