@@ -15,6 +15,7 @@ export const UPDATE_ALL_DATASETS = 'UPDATE_ALL_DATASETS';
 export const UPDATE_ACTIVE_DATASET = 'UPDATE_ACTIVE_DATASET';
 export const EMPTY_ACTIVE_DATASET = 'EMPTY_ACTIVE_DATASET';
 export const UPDATE_ACTIVE_DATASET_REVIEW_STATE = 'UPDATE_ACTIVE_DATASET_REVIEW_STATE';
+export const UPDATE_ACTIVE_DATASET_COLLECTION_ID = 'UPDATE_ACTIVE_DATASET_COLLECTION_ID';
 export const UPDATE_ALL_RECIPES = 'UPDATE_ALL_RECIPES';
 export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
 export const UPDATE_ACTIVE_JOB = 'UPDATE_ACTIVE_JOB';
@@ -82,6 +83,13 @@ export function updateActiveDataset(dataset) {
 export function emptyActiveDataset() {
     return {
         type: EMPTY_ACTIVE_DATASET
+    }
+}
+
+export function updateActiveDatasetCollectionID(collectionID) {
+    return {
+        type: UPDATE_ACTIVE_DATASET_COLLECTION_ID,
+        collectionID
     }
 }
 
