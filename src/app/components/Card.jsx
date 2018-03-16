@@ -6,7 +6,8 @@ const propTypes = {
     type: PropTypes.string,
     id: PropTypes.string,
     onEdit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired
+    onDelete: PropTypes.func.isRequired,
+    disabled: PropTypes.bool
 }
 
 class Card extends Component {
@@ -31,8 +32,8 @@ class Card extends Component {
                   <div className="card__title">{this.props.title}</div>
               </div>
               <div className="card__actions">
-                  <button type="button" className="btn btn--link" onClick={this.handleEditClick}>Edit</button>
-                  <button type="button" className="margin-left--1 btn btn--link" onClick={this.handleDeleteClick}>Delete</button>
+                  <button disabled={this.props.disabled} type="button" className="btn btn--link" onClick={this.handleEditClick}>Edit</button>
+                  <button disabled={this.props.disabled} type="button" className="margin-left--1 btn btn--link" onClick={this.handleDeleteClick}>Delete</button>
               </div>
           </li>
         )

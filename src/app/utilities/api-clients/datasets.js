@@ -39,8 +39,9 @@ export default class datasets {
              });
     }
 
-    static updateDimensionDescription(instanceID, dimension, description) {
+    static updateDimensionLabelAndDescription(instanceID, dimension, name, description) {
         const body = {
+            "label": name,
             "description": description
         }
 
@@ -123,7 +124,7 @@ export default class datasets {
     }
 
     static getNewVersionsAndCompletedInstances() {
-        return http.get(`/dataset/instances?state=completed,edition-confirmed,associated,published`)
+        return http.get(`/dataset/instances?state=completed,edition-confirmed,associated`)
             .then(response => {
                 return response;
             });
