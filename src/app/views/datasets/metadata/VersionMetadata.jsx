@@ -96,8 +96,6 @@ export class VersionMetadata extends Component {
             activeCollectionID: ""
         }
 
-        this.originalState = null;
-
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -248,24 +246,6 @@ export class VersionMetadata extends Component {
           return false;
         }
         return true;
-    }
-
-    componentDidUpdate(_, nextState) {
-        /*
-        We want to detect whether any changes have been made so we can show a warning if the
-        user is leaving without saving
-        */
-
-        // We've already set the state to hasChanges, so do nothing
-        if (nextState.hasChanges) {
-            return;
-        }
-
-        // Set our initial state, so that we can detect whether there have been any unsaved changes
-        if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
-            this.originalState = nextState;
-            this.setState({hasChanges: false});
-        }
     }
 
     componentWillUnmount() {
@@ -630,7 +610,8 @@ export class VersionMetadata extends Component {
             modalType: type,
             editKey: key,
             titleInput: type === "alerts" ? relatedItem.date : relatedItem.name,
-            descInput: relatedItem.description
+            descInput: relatedItem.description,
+            hasChanges: true
         });
     }
 
@@ -690,14 +671,16 @@ export class VersionMetadata extends Component {
         }
         if (type === "alerts") {
             this.setState({
-                alerts: edit(this.state.alerts, key)
+                alerts: edit(this.state.alerts, key),
+                hasChanges: true
             });
             return;
         }
 
         if (type === "changes") {
             this.setState({
-                changes: edit(this.state.changes, key)
+                changes: edit(this.state.changes, key),
+                hasChanges: true
             });
         }
 
@@ -737,6 +720,7 @@ export class VersionMetadata extends Component {
         const value = target.value;
         const name = target.name;
         const id = target.id;
+
         if (name === "add-related-content-title") {
             this.setState({titleInput: value});
             if(this.state.titleError != null) {
@@ -785,8 +769,10 @@ export class VersionMetadata extends Component {
             });
 
         }
-        this.setState({hasChanges: true});
 
+        if (!this.state.hasChanges) {
+            this.setState({hasChanges: true});
+        }
      }
 
     handleSelectChange(event) {
@@ -845,7 +831,8 @@ export class VersionMetadata extends Component {
                 modalType: "",
                 editKey: "",
                 titleInput: "",
-                descInput: ""
+                descInput: "",
+                hasChanges: true
             });
         }
      }
