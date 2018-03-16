@@ -377,14 +377,31 @@ test("Dimensions map correctly to input elements", async () => {
     const dimensions = component.instance().mapDimensionsToInputs(component.state("dimensions"));
     let dimensionNames = [];
     dimensions.forEach((dimension, index) => {
-        dimensionNames.push({name:dimension.key});
+        dimensionNames.push({id:dimension.key});
     });
 
     component.state("dimensions").forEach((dimension, index) => {
         expect(dimensionNames[index]).toMatchObject({
-            name: dimension.name
+            id: dimension.id
         });
     });
+});
 
 
+test("Changing the dimension title value updates the dimension label in state", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+    const mockLabelEvent = {
+        target: {
+            value: "New label",
+            name: "dimension-name",
+            id: "time"
+        }
+    }
+    const dimensions = component.instance().mapDimensionsToInputs(component.state("dimensions"));
+    expect(component.state("dimensions")[0].label).toBe("");
+    component.instance().handleInputChange(mockLabelEvent);
+    expect(component.state("dimensions")[0].label).toBe(mockLabelEvent.target.value);
 });

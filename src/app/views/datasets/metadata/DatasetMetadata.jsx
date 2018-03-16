@@ -6,14 +6,15 @@ import uuid from 'uuid/v4';
 
 import { errCodes } from '../../../utilities/errorCodes'
 import datasets from '../../../utilities/api-clients/datasets';
+import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
 import Modal from '../../../components/Modal';
 import Select from '../../../components/Select';
 import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
 import CardList from '../../../components/CardList';
-import RelatedContentForm from './related-content/RelatedContentForm'
-import {updateAllDatasets, updateActiveDataset} from '../../../config/actions';
+import RelatedContentForm from './related-content/RelatedContentForm';
+import {updateAllDatasets, updateActiveDataset, updateActiveCollection} from '../../../config/actions';
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
 
@@ -24,6 +25,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    collectionID: PropTypes.string.isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
             title: PropTypes.string
@@ -38,6 +40,7 @@ const propTypes = {
         keywords: PropTypes.array,
         license: PropTypes.string,
         national_statistic: PropTypes.bool,
+        collection_id: PropTypes.string,
         contacts: PropTypes.arrayOf(PropTypes.shape({
             name: PropTypes.string,
             email: PropTypes.string,
@@ -101,7 +104,9 @@ export class DatasetMetadata extends Component {
             btn: "",
             latestVersion: "",
             status: "",
-            license: ""
+            license: "",
+            activeCollectionID: "",
+            isReadOnly: false
         };
 
         this.originalState = null;
@@ -121,10 +126,27 @@ export class DatasetMetadata extends Component {
     }
 
     componentWillMount() {
-        this.setState({isFetchingDataset: true});
 
+        this.setState({
+            isFetchingDataset: true,
+            activeCollectionID: this.props.collectionID
+        });   
+        
         datasets.get(this.props.params.datasetID).then(response => {
             this.props.dispatch(updateActiveDataset(response.next || response.current));
+
+            if(this.state.activeCollectionID && this.state.activeCollectionID != this.props.dataset.collection_id) {
+                this.setState({
+                    isReadOnly: true
+                });
+                const notification = {
+                    type: "warning",
+                    message: "This dataset is not in the current active collection and cannot be edited at this time.",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+            } 
+
             this.setState({
                 latestVersion: this.props.dataset.links.latest_version ? this.props.dataset.links.latest_version.href : "",
                 status: this.props.dataset.state
@@ -363,8 +385,12 @@ export class DatasetMetadata extends Component {
             this.setState({showModal: true});
             return;
         }
-
-        this.props.dispatch(push(url.resolve("/datasets")));
+        if (this.state.activeCollectionID){
+            this.props.dispatch(push(url.resolve("/datasets") + "?collection=" + this.state.activeCollectionID));
+        } else {
+            this.props.dispatch(push(url.resolve("/datasets")));
+        }
+        
     }
 
     handleCancel() {
@@ -613,7 +639,7 @@ export class DatasetMetadata extends Component {
                                   id="title"
                                   label="Title"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.description}
@@ -621,7 +647,7 @@ export class DatasetMetadata extends Component {
                                   id="description"
                                   label="About this dataset"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                               <Input
                                   value={ this.state.keywords}
@@ -629,27 +655,27 @@ export class DatasetMetadata extends Component {
                                   label="Keywords"
                                   placeholder={`e.g. housing, inflation`}
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                               <div className="grid__col-6 margin-top--2">
                                 <Checkbox
                                     isChecked={this.state.isNationalStat}
                                     onChange={this.handleToggleChange}
-                                    disabled={this.state.isSubmittingData}
+                                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
                                     label="National statistic"
                                     id="national-statistic"
                                 />
                               </div>
                               <div className="grid__col-6 margin-bottom--1">
-                                  <Select
-                                      contents={this.mapReleaseFreqToSelectOptions()}
-                                      selectedOption={this.state.releaseFrequency}
-                                      onChange={this.handleSelectChange}
-                                      error={this.state.error}
-                                      label="Release frequency"
-                                      id="release-frequency"
-                                      disabled={this.state.isSubmittingData}
-                                  />
+                                <Select
+                                    contents={this.mapReleaseFreqToSelectOptions()}
+                                    selectedOption={this.state.releaseFrequency}
+                                    onChange={this.handleSelectChange}
+                                    error={this.state.error}
+                                    label="Release frequency"
+                                    id="release-frequency"
+                                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
+                                />
                               </div>
                               <h3 className="margin-bottom--1">Contact</h3>
                               <Input
@@ -657,21 +683,21 @@ export class DatasetMetadata extends Component {
                                   id="contactName"
                                   label="Contact name"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.contactEmail}
                                   id="contactEmail"
                                   label="Contact email"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                               <Input
                                   value={this.state.contactPhone}
                                   id="contactPhone"
                                   label="Contact telephone"
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                         <h2 className="margin-top--2 margin-bottom--1">Related content</h2>
                         <div className="margin-bottom--1">
@@ -684,8 +710,9 @@ export class DatasetMetadata extends Component {
                                     type="link"
                                     onEdit={this.handleEditRelatedClick}
                                     onDelete={this.handleDeleteRelatedClick}
+                                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
                                 />
-                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
+                              <button disabled={this.state.isReadOnly || this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("link")}}> Add related link</button>
                         </div>
                         <div className="margin-bottom--2 related-documents">
                             <h3> Bulletins, articles and compendia </h3>
@@ -694,8 +721,9 @@ export class DatasetMetadata extends Component {
                               type="bulletin"
                               onEdit={this.handleEditRelatedClick}
                               onDelete={this.handleDeleteRelatedClick}
+                              disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
-                            <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
+                            <button disabled={this.state.isReadOnly || this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("bulletin")}}> Add document</button>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Quality and methodology information </h3>
@@ -705,7 +733,7 @@ export class DatasetMetadata extends Component {
                                     id="relatedQMI"
                                     label=""
                                     onChange={this.handleInputChange}
-                                    disabled={this.state.isSubmittingData}
+                                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
                                 />
                         
                         </div>
@@ -716,8 +744,9 @@ export class DatasetMetadata extends Component {
                                     type="methodologies"
                                     onEdit={this.handleEditRelatedClick}
                                     onDelete={this.handleDeleteRelatedClick}
+                                    disabled={this.state.isReadOnly || this.state.isSubmittingData}
                                 />
-                              <button disabled={this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("methodologies")}}> Add methodology</button>
+                              <button disabled={this.state.isReadOnly || this.state.isSubmittingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("methodologies")}}> Add methodology</button>
                         </div>
                         <div className="margin-bottom--2">
                             <h3> Usage information </h3>
@@ -730,14 +759,14 @@ export class DatasetMetadata extends Component {
                                   id="license"
                                   label=""
                                   onChange={this.handleInputChange}
-                                  disabled={this.state.isSubmittingData}
+                                  disabled={this.state.isReadOnly || this.state.isSubmittingData}
                               />
                         </div>
-                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
-                        <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
+                        <button type="submit" disabled={this.state.isReadOnly || this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-return" onClick={(e) => this.handlePageSubmit(e, "return")}>Save and return</button>
+                        <button type="submit" disabled={this.state.isReadOnly || this.state.isSubmittingData} className="btn btn--positive margin-right--1 margin-bottom--1" id="save-and-add" onClick={(e) => this.handlePageSubmit(e, "add")}>Save and add to collection</button>
                         {this.state.latestVersion ?
                             this.state.status === "associated" &&
-                                <button type="submit" disabled={this.state.isSubmittingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
+                                <button type="submit" disabled={this.state.isReadOnly || this.state.isSubmittingData} className="btn btn--positive" id="save-and-preview" onClick={(e) => this.handlePageSubmit(e, "preview")}>Save and preview</button>
                             : ""
                         }
                         {this.state.isSubmittingData &&
@@ -800,7 +829,8 @@ function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
         datasets: state.state.datasets.all,
-        dataset: state.state.datasets.activeDataset
+        dataset: state.state.datasets.activeDataset,
+        collectionID: state.routing.locationBeforeTransitions.query.collection
     }
 }
 
