@@ -3,7 +3,7 @@ import notifications from '../../../utilities/notifications';
 /**
  * 
  * @param {Error} metadataUpdateFailure - Any error responses returned by the metadata update request.
- * @param {Error} reviewStateUpdateFailure - Any error responses returned by the metadata update request.
+ * @param {Error} collectionUpdateFailure - Any error responses returned by the collection update request.
  * @param {boolean} isSubmittingForReview - Whether the request was submitting the dataset/version for review.
  * @param {boolean} isMarkingAsReviewed - Whether the request was marking the dataset/version as reviewed.
  * @param {string} collectionID - Collection name that the user is updating the dataset/version in.
@@ -11,15 +11,15 @@ import notifications from '../../../utilities/notifications';
  * @returns {boolean} - Whether there were errors or not;
  */
 
-export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, reviewStateUpdateFailure = {}, isSubmittingForReview, isMarkingAsReviewed, collectionID) {
+export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, collectionUpdateFailure = {}, isSubmittingForReview, isMarkingAsReviewed, collectionID) {
 
-    if (reviewStateUpdateFailure.status === 401 || metadataUpdateFailure.status === 401) {
+    if (collectionUpdateFailure.status === 401 || metadataUpdateFailure.status === 401) {
         // Handled by utility request function
         return true;
     }
 
     // Both requests have failed but for different reasons so we need to give two seperate notifications to give enough detail.
-    if ((reviewStateUpdateFailure.status && metadataUpdateFailure.status) && reviewStateUpdateFailure.status !== metadataUpdateFailure.status) {
+    if ((collectionUpdateFailure.status && metadataUpdateFailure.status) && collectionUpdateFailure.status !== metadataUpdateFailure.status) {
         const metadataUpdateNotification = {
             type: 'warning',
             message: getErrorMessage(metadataUpdateFailure, {}, isSubmittingForReview, isMarkingAsReviewed, collectionID),
@@ -28,7 +28,7 @@ export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, rev
         };
         const reviewStateUpdateNotification = {
             type: 'warning',
-            message: getErrorMessage({}, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
+            message: getErrorMessage({}, collectionUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
             isDismissable: true,
             autoDismiss: 8000
         };
@@ -39,10 +39,10 @@ export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, rev
     }
 
     // One or both requests have failed (for the same reason) so show a single custom notification
-    if (metadataUpdateFailure.status || reviewStateUpdateFailure.status) {
+    if (metadataUpdateFailure.status || collectionUpdateFailure.status) {
         const notification = {
             type: 'warning',
-            message: getErrorMessage(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
+            message: getErrorMessage(metadataUpdateFailure, collectionUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
             isDismissable: true,
             autoDismiss: 8000
         };
@@ -53,9 +53,9 @@ export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, rev
     return false;
 }
 
-function getErroredActions(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed) {
+function getErroredActions(metadataUpdateFailure, collectionUpdateFailure, isSubmittingForReview, isMarkingAsReviewed) {
     const metadataError = metadataUpdateFailure.status;
-    const reviewStateError = reviewStateUpdateFailure.status;
+    const reviewStateError = collectionUpdateFailure.status;
     let newReviewState = "the next state";
 
     if (reviewStateError && isSubmittingForReview) {
@@ -79,9 +79,9 @@ function getErroredActions(metadataUpdateFailure, reviewStateUpdateFailure, isSu
 }
 
 
-function getErrorMessage(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID) {
-    const attemptedActions = getErroredActions(metadataUpdateFailure, reviewStateUpdateFailure, isSubmittingForReview, isMarkingAsReviewed);
-    const status = reviewStateUpdateFailure.status || metadataUpdateFailure.status;
+function getErrorMessage(metadataUpdateFailure, collectionUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID) {
+    const attemptedActions = getErroredActions(metadataUpdateFailure, collectionUpdateFailure, isSubmittingForReview, isMarkingAsReviewed);
+    const status = collectionUpdateFailure.status || metadataUpdateFailure.status;
 
     switch (status) {
         case(400): {
@@ -91,7 +91,7 @@ function getErrorMessage(metadataUpdateFailure, reviewStateUpdateFailure, isSubm
             return `Unable to ${attemptedActions} because you do not have the correct permissions`;
         }
         case(404): {
-            return `Unable to ${attemptedActions} because this ${reviewStateUpdateFailure.status ? "collection (" + collectionID + ")" : ""}${reviewStateUpdateFailure.status && metadataUpdateFailure.status ? " and " : ""}${metadataUpdateFailure.status ? "dataset" : ""} couldn't be found`;
+            return `Unable to ${attemptedActions} because this ${collectionUpdateFailure.status ? "collection (" + collectionID + ")" : ""}${collectionUpdateFailure.status && metadataUpdateFailure.status ? " and " : ""}${metadataUpdateFailure.status ? "dataset" : ""} couldn't be found`;
         }
         case('FETCH_ERR'): {
             return `Unable to ${attemptedActions} due to a network issue. Please check your internet connection and try again`;
