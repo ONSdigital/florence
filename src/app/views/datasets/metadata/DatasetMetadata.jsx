@@ -13,7 +13,7 @@ import Checkbox from '../../../components/Checkbox';
 import Input from '../../../components/Input';
 import CardList from '../../../components/CardList';
 import RelatedContentForm from './related-content/RelatedContentForm'
-import {updateActiveDataset, emptyActiveDataset, updateActiveDatasetReviewState} from '../../../config/actions';
+import {updateActiveDataset, emptyActiveDataset, updateActiveDatasetReviewState, updateActiveDatasetCollectionID} from '../../../config/actions';
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
 import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
@@ -109,8 +109,7 @@ export class DatasetMetadata extends Component {
             btn: "",
             latestVersion: "",
             status: "",
-            license: "",
-            activeCollectionID: ""
+            license: ""
         };
 
         this.originalState = null;
@@ -132,29 +131,24 @@ export class DatasetMetadata extends Component {
 
     componentWillMount() {
 
-        if (!this.props.dataset || !this.props.dataset.reviewState || !this.props.dataset.reviewState) {
-            this.updateReviewStateData();
-        }
-
-        this.setState({
-            isFetchingDataset: true,
-            activeCollectionID: this.props.collectionID
-        });   
+        this.setState({isFetchingDataset: true});
         
         datasets.get(this.props.params.datasetID).then(response => {
             this.props.dispatch(updateActiveDataset(response.next || response.current));
 
-            if(this.state.activeCollectionID && this.state.activeCollectionID != this.props.dataset.collection_id) {
-                this.setState({
-                    isReadOnly: true
-                });
+            if(this.props.collectionID && this.props.dataset.collection_id && this.props.collectionID !== this.props.dataset.collection_id) {
+                this.setState({isReadOnly: true});
                 const notification = {
                     type: "neutral",
                     message: "This dataset is not in the current active collection so cannot be edited at this time.",
                     isDismissable: true
                 }
                 notifications.add(notification);
-            } 
+            }
+
+            if (this.props.dataset.collection_id) {
+                this.updateReviewStateData();
+            }
 
             this.setState({
                 latestVersion: this.props.dataset.links.latest_version ? this.props.dataset.links.latest_version.href : "",
@@ -270,7 +264,8 @@ export class DatasetMetadata extends Component {
                         isDismissable: true
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/datasets`));
+                    const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
+                    this.props.dispatch(push(URL));
                     break;
                 }
                 default: {
@@ -309,6 +304,7 @@ export class DatasetMetadata extends Component {
 
         // Set our initial state, so that we can detect whether there have been any unsaved changes
         if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
+            debugger;
             this.originalState = nextState;
             this.setState({hasChanges: true});
         }
@@ -434,7 +430,8 @@ export class DatasetMetadata extends Component {
     handleModalSubmit(event){
         event.preventDefault();
         this.setState({showModal: false});
-        this.props.dispatch(push(url.resolve("/datasets")));
+        const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
+        this.props.dispatch(push(URL));
     }
 
     handleToggleChange(isChecked) {
@@ -601,6 +598,15 @@ export class DatasetMetadata extends Component {
         });
     }
 
+    addDatasetToCollection(datasetID) {
+        return collections.addDataset(this.props.collectionID, datasetID)
+            .catch(error => {
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error adding dataset '${datasetID}' to collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+                console.error(`Error adding dataset '${datasetID}' to collection '${this.props.collectionID}'`, error);
+                return error
+            });
+    }
+
     updateDatasetReviewState(datasetID, isSubmittingForReview, isMarkingAsReviewed) {
         let request = Promise.resolve;
 
@@ -680,16 +686,21 @@ export class DatasetMetadata extends Component {
 
     async handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
+        const isAddingToCollection = !this.props.dataset.collection_id && !isUpdatingReviewState;
         
         event.preventDefault();
         this.setState({isSavingData: true});
 
         const metadataUpdateRequest = this.updateDatasetMetadata(this.props.params.datasetID);
         let metadataUpdateError;
+
         const reviewStateUpdatesRequest = isUpdatingReviewState ? this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed) : Promise.resolve();
         let reviewStateUpdatesError;
+
+        const addToCollectionRequest = isAddingToCollection ? this.addDatasetToCollection(this.props.params.datasetID) : Promise.resolve();
+        let addToCollectionError;
         
-        [metadataUpdateError, reviewStateUpdatesError] = [await metadataUpdateRequest, await reviewStateUpdatesRequest];
+        [metadataUpdateError, reviewStateUpdatesError, addToCollectionError] = [await metadataUpdateRequest, await reviewStateUpdatesRequest, await addToCollectionRequest];
 
         const newState = {isSavingData: false}
         if (!metadataUpdateError) {
@@ -697,9 +708,16 @@ export class DatasetMetadata extends Component {
         }
         this.setState(newState);
         
-        const hasErrors = handleMetadataSaveErrors(metadataUpdateError, reviewStateUpdatesError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
-        if (!hasErrors && isUpdatingReviewState) {
+        handleMetadataSaveErrors(metadataUpdateError, reviewStateUpdatesError || addToCollectionError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
+        
+        if (!addToCollectionError && isAddingToCollection) {
+            this.props.dispatch(updateActiveDatasetCollectionID(this.props.collectionID));
+            this.props.dispatch(updateActiveDatasetReviewState(this.props.userEmail, "inProgress"));
+            return;
+        }
+        if (!reviewStateUpdatesError && isUpdatingReviewState) {
             this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
+            return;
         }
     }
 
@@ -721,7 +739,7 @@ export class DatasetMetadata extends Component {
             return;
         }
 
-        if (this.props.dataset.reviewState === "inProgress") {
+        if (!this.props.dataset.collection_id || this.props.dataset.reviewState === "inProgress") {
             return (
                 <button id="btn-submit-for-review" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
             )
