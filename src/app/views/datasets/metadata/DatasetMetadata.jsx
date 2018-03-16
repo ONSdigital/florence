@@ -112,14 +112,13 @@ export class DatasetMetadata extends Component {
             license: ""
         };
 
-        this.originalState = null;
-
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
         this.handleModalSubmit = this.handleModalSubmit.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
+        this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
@@ -291,25 +290,6 @@ export class DatasetMetadata extends Component {
         return true;
     }
 
-    componentDidUpdate(_, nextState) {
-        /*
-        We want to detect whether any changes have been made so we can show a warning if the
-        user is leaving without saving
-        */
-
-        // We've already set the state to hasChanges, so do nothing
-        if (nextState.hasChanges) {
-            return;
-        }
-
-        // Set our initial state, so that we can detect whether there have been any unsaved changes
-        if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
-            debugger;
-            this.originalState = nextState;
-            this.setState({hasChanges: true});
-        }
-    }
-
     componentWillUnmount() {
         this.props.dispatch(emptyActiveDataset());
     }
@@ -423,7 +403,8 @@ export class DatasetMetadata extends Component {
     handleSelectChange(event) {
         this.setState({
             error: "",
-            releaseFrequency: event.target.value
+            releaseFrequency: event.target.value,
+            hasChanges: true
         });
     }
 
@@ -435,13 +416,21 @@ export class DatasetMetadata extends Component {
     }
 
     handleToggleChange(isChecked) {
-      this.setState({isNationalStat: isChecked});
+        this.setState({
+            isNationalStat: isChecked,
+            hasChanges: true
+        });
     }
 
     handleInputChange(event) {
         const target = event.target;
         const value = target.value;
         const name = target.name;
+        
+        if (!this.state.hasChanges) {
+            this.setState({hasChanges:true});
+        }
+
         if (name === "add-related-content-title") {
             this.setState({titleInput: value});
             if(this.state.titleError != null) {
