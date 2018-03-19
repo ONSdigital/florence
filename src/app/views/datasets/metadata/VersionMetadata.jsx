@@ -132,7 +132,7 @@ export class VersionMetadata extends Component {
         this.setState({isInstance: false});
       }
 
-      if (!this.props.params.instanceID && (!this.props.version || !this.props.version.reviewState || !this.props.version.lastEditedBy)) {
+      if (!this.props.params.instanceID) {
         this.updateReviewStateData();
       }
 
@@ -243,7 +243,7 @@ export class VersionMetadata extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         // No need to re-render, this state update does not impact the view.
         if (nextState.isFetchingData) {
-          return false;
+            return false;
         }
         return true;
     }
@@ -460,6 +460,15 @@ export class VersionMetadata extends Component {
             });
     }
 
+    addVersionToCollection(datasetID, edition, version) {
+        return collections.addDatasetVersion(this.props.collectionID, datasetID, edition, version).catch(error => {
+            this.handleRequestError('add version to this collection', error.status);
+            console.error(`Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'`, error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            return error;
+        });
+    }
+
     async updateInstanceVersion(body, isSubmittingForReview, isMarkingAsReviewed) {
         const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
         const datasetID = this.props.params.datasetID;
@@ -489,13 +498,25 @@ export class VersionMetadata extends Component {
                 return;
             }
 
+            const edition = newVersion.edition;
+            const version = newVersion.version;
+
+            if (this.state.isInstance && !isUpdatingReviewState) {
+                const addToCollectionErr = await this.addVersionToCollection(datasetID, edition, version);
+                if (!addToCollectionErr) {
+                    this.props.dispatch(push(url.resolve(`/datasets/${datasetID}/editions/${edition}/versions/${version}/metadata?collection=${this.props.collectionID}`)));
+                    return;
+                }
+
+                this.setState({isSavingData: false});
+                return;
+            }
+
             if (!isUpdatingReviewState) {
                 this.setState({isSavingData: false});
                 return;
             }
 
-            const edition = newVersion.edition;
-            const version = newVersion.version;
             const [updateReviewStateErr] = await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed);
             if (updateReviewStateErr) {
                 console.log("updateReviewStateErr: " + updateReviewStateErr);
@@ -503,7 +524,6 @@ export class VersionMetadata extends Component {
                 return;
             }
 
-            this.setState({isSavingData: false});
             this.props.dispatch(push(`/collections/${this.props.collectionID}`));
             return;
         }
@@ -849,7 +869,7 @@ export class VersionMetadata extends Component {
             haveError = true;
         }
 
-        if (!this.state.isInstance && !this.state.releaseDate) {
+        if (!this.state.releaseDate) {
             this.setState({
                 releaseDateError: "You must add a release date"
             });
@@ -900,7 +920,6 @@ export class VersionMetadata extends Component {
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
             return;
         }
-
         
         if (instanceOrVersionData.reviewState === "reviewed") {
             return;
