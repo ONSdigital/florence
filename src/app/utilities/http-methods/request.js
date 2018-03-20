@@ -56,8 +56,9 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             logEventPayload.message = response.message;
             log.add(eventTypes.requestReceived, logEventPayload);
 
-            const responseIsJSON = response.headers.get('content-type').match(/application\/json/);
-            const responseIsText = response.headers.get('content-type').match(/text\/plain/);
+            const responseType = response.headers.get('content-type');
+            const responseIsJSON = responseType ? responseType.match(/application\/json/) : false;
+            const responseIsText = responseType ? responseType.match(/text\/plain/) : false;
 
             if (response.status >= 500) {
                 throw new HttpError(response);
@@ -90,6 +91,12 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             }
 
             logEventPayload.status = 200;
+
+            if (!responseType && response.ok) {
+                console.log("IN THIS THING!");
+                resolve();
+                return;
+            }
             
             if (!responseIsJSON && method !== "POST" && method !== "PUT") {
                 log.add(eventTypes.runtimeWarning, `Received request response for method '${method}' that didn't have the 'application/json' header`)
@@ -137,8 +144,9 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     // which means this request is a failure and the promise should be rejected
                     reject({status: response.status, message: "JSON response body couldn't be parsed"});
                 }
-            })()
+            })();
         }).catch((fetchError = {message: "No error message given"}) => {
+            console.log(fetchError);
             logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
 
