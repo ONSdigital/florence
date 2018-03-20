@@ -90,13 +90,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 return;
             }
 
-            logEventPayload.status = 200;
-
-            if (!responseType && response.ok) {
-                console.log("IN THIS THING!");
-                resolve();
-                return;
-            }
+            logEventPayload.status = response.status;
             
             if (!responseIsJSON && method !== "POST" && method !== "PUT") {
                 log.add(eventTypes.runtimeWarning, `Received request response for method '${method}' that didn't have the 'application/json' header`)
@@ -123,6 +117,11 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 return
             }
 
+            if (!responseType && response.status === 204) {
+                resolve();
+                return;
+            }
+
             // We're wrapping this try/catch in an async function because we're using 'await' 
             // which requires being executed inside an async function (which the 'fetch' can't be set as)
             (async () => {
@@ -146,7 +145,6 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 }
             })();
         }).catch((fetchError = {message: "No error message given"}) => {
-            console.log(fetchError);
             logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
 
