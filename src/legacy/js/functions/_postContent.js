@@ -19,17 +19,26 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         safePath = '';          // edge case for home
     }
 
+    var url = "";
+    var isDataset = JSON.parse(content).type === "api_dataset_landing_page";
+
+    if (isDataset) {
+        url = "/zebedee/page/"
+    } else {
+        url = "/zebedee/content/"
+    }
+
     if (Florence.globalVars.welsh) {
-        var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+        url = url + collectionId + "?uri=" + safePath + "/data_cy.json";
         var toAddLang = JSON.parse(content);
         toAddLang.description.language = 'cy';
         content = JSON.stringify(toAddLang);
     } else {
-        var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json";
+        url = url + collectionId + "?uri=" + safePath + "/data.json";
     }
 
-    var url = url + '&overwriteExisting=' + overwriteExisting;
-    var url = url + '&recursive=' + recursive;
+    url = url + '&overwriteExisting=' + overwriteExisting;
+    url = url + '&recursive=' + recursive;
 
     var date = new Date();
     date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();
