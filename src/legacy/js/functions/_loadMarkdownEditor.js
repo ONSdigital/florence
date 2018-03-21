@@ -82,6 +82,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         loadTableBuilderV2(pageData, onInsertSave);
     });
 
+    $("#js-editor--map").click(function () {
+        loadMapBuilder(pageData, onInsertSave);
+    });
+
     $("#js-editor--equation").click(function () {
         loadEquationBuilder(pageData, onInsertSave);
     });

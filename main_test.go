@@ -93,6 +93,13 @@ func TestMain(t *testing.T) {
 		So(request.URL.String(), ShouldEqual, "/parse")
 	})
 
+	Convey("Map renderer proxy director function trims '/map' from the request URL", t, func() {
+		request, err := http.NewRequest("GET", "/map/render", nil)
+		So(err, ShouldBeNil)
+		mapDirector(request)
+		So(request.URL.String(), ShouldEqual, "/render")
+	})
+
 	Convey("Zebedee proxy director function trims '/zebedee' from the request URL", t, func() {
 		request, err := http.NewRequest("GET", "/zebedee/test", nil)
 		So(err, ShouldBeNil)

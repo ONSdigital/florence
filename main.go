@@ -25,6 +25,7 @@ var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var tableRendererURL = "http://localhost:23300"
+var mapRendererURL = "http://localhost:23500"
 var enableNewApp = false
 
 var getAsset = assets.Asset
@@ -47,6 +48,9 @@ func main() {
 	}
 	if v := os.Getenv("TABLE_RENDERER_URL"); len(v) > 0 {
 		tableRendererURL = v
+	}
+	if v := os.Getenv("MAP_RENDERER_URL"); len(v) > 0 {
+		mapRendererURL = v
 	}
 	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
 		enableNewApp, _ = strconv.ParseBool(v)
@@ -88,6 +92,14 @@ func main() {
 
 	tableProxy := reverseProxy.Create(tableURL, tableDirector)
 
+	mapURL, err := url.Parse(mapRendererURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+
+	mapProxy := reverseProxy.Create(mapURL, mapDirector)
+
 	router := pat.New()
 
 	newAppHandler := refactoredIndexFile
@@ -98,6 +110,7 @@ func main() {
 
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
+	router.Handle("/map/{uri:.*}", mapProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence", newAppHandler)
 	router.HandleFunc("/florence/index.html", legacyIndexFile)
@@ -110,6 +123,7 @@ func main() {
 		"babbage_url":        babbageURL,
 		"zebedee_url":        zebedeeURL,
 		"table_renderer_url": tableRendererURL,
+		"map_renderer_url": mapRendererURL,
 		"enable_new_app":     enableNewApp,
 	})
 
@@ -190,6 +204,10 @@ func zebedeeDirector(req *http.Request) {
 
 func tableDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
+}
+
+func mapDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/map")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {

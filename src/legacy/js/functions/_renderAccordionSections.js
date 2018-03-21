@@ -94,6 +94,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        if (pageData.maps) {
+            loadMapsList(collectionId, pageData);
+        }
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -124,6 +127,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        if (pageData.maps) {
+            loadMapsList(collectionId, pageData);
+        }
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -150,6 +156,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         }
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
+        }
+        if (pageData.maps) {
+            loadMapsList(collectionId, pageData);
         }
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -208,6 +217,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         }
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
+        }
+        if (pageData.maps) {
+            loadMapsList(collectionId, pageData);
         }
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
@@ -272,6 +284,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        if (pageData.maps) {
+            loadMapsList(collectionId, pageData);
+        }
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
         addFile(collectionId, pageData, 'downloads', 'file');
@@ -324,6 +339,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         }
         if (pageData.equations) {
             loadEquationsList(collectionId, pageData);
+        }
+        if (pageData.maps) {
+            loadMapsList(collectionId, pageData);
         }
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
