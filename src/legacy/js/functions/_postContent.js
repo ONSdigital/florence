@@ -20,9 +20,9 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
     }
 
     var url = "";
-    var isDataset = JSON.parse(content).type === "api_dataset_landing_page";
+    var isAPIDataset = JSON.parse(content).type === "api_dataset_landing_page";
 
-    if (isDataset) {
+    if (isAPIDataset) {
         url = "/zebedee/page/"
     } else {
         url = "/zebedee/content/"
