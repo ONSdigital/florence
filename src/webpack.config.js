@@ -7,7 +7,8 @@ module.exports = {
     context: path.resolve(__dirname),
     entry: {
         app: './index.js',
-        tablebuilder: './tablebuilder/tablebuilder.js'
+        tablebuilder: './tablebuilder/tablebuilder.js',
+        mapbuilder: './mapbuilder/mapbuilder.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
