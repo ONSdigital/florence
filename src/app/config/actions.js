@@ -16,12 +16,18 @@ export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
 export const UPDATE_ALL_DATASETS = 'UPDATE_ALL_DATASETS';
 export const UPDATE_ACTIVE_DATASET = 'UPDATE_ACTIVE_DATASET';
+export const EMPTY_ACTIVE_DATASET = 'EMPTY_ACTIVE_DATASET';
+export const UPDATE_ACTIVE_DATASET_REVIEW_STATE = 'UPDATE_ACTIVE_DATASET_REVIEW_STATE';
+export const UPDATE_ACTIVE_DATASET_COLLECTION_ID = 'UPDATE_ACTIVE_DATASET_COLLECTION_ID';
 export const UPDATE_ALL_RECIPES = 'UPDATE_ALL_RECIPES';
 export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
 export const UPDATE_ACTIVE_JOB = 'UPDATE_ACTIVE_JOB';
 export const ADD_NEW_JOB = 'ADD_NEW_JOB';
 export const UPDATE_ACTIVE_INSTANCE = 'UPDATE_ACTIVE_INSTANCE';
+export const UPDATE_ACTIVE_VERSION_REVIEW_STATE = 'UPDATE_ACTIVE_VERSION_REVIEW_STATE';
+export const EMPTY_ACTIVE_INSTANCE = 'EMPTY_ACTIVE_INSTANCE';
 export const UPDATE_ACTIVE_VERSION = 'UPDATE_ACTIVE_VERSION';
+export const EMPTY_ACTIVE_VERSION = 'EMPTY_ACTIVE_VERSION';
 
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
@@ -90,6 +96,27 @@ export function updateActiveDataset(dataset) {
     }
 }
 
+export function emptyActiveDataset() {
+    return {
+        type: EMPTY_ACTIVE_DATASET
+    }
+}
+
+export function updateActiveDatasetCollectionID(collectionID) {
+    return {
+        type: UPDATE_ACTIVE_DATASET_COLLECTION_ID,
+        collectionID
+    }
+}
+
+export function updateActiveDatasetReviewState(lastEditedBy, reviewState) {
+    return {
+        type: UPDATE_ACTIVE_DATASET_REVIEW_STATE,
+        lastEditedBy,
+        reviewState
+    }
+}
+
 export function updateAllRecipes(allRecipes) {
     return {
         type: UPDATE_ALL_RECIPES,
@@ -125,11 +152,31 @@ export function updateActiveInstance(instance) {
     }
 }
 
+export function emptyActiveInstance() {
+    return {
+        type: EMPTY_ACTIVE_INSTANCE
+    }
+}
+
 
 export function updateActiveVersion(version) {
     return {
         type: UPDATE_ACTIVE_VERSION,
         version
+    }
+}
+
+export function updateActiveVersionReviewState(lastEditedBy, reviewState) {
+    return {
+        type: UPDATE_ACTIVE_VERSION_REVIEW_STATE,
+        lastEditedBy,
+        reviewState
+    }
+}
+
+export function emptyActiveVersion() {
+    return {
+        type: EMPTY_ACTIVE_VERSION
     }
 }
 
