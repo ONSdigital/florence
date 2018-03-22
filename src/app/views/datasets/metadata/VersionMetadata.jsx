@@ -90,11 +90,8 @@ export class VersionMetadata extends Component {
             changes: [],
             editKey: "",
             titleInput: "",
-            descInput: "",
-            activeCollectionID: ""
+            descInput: ""
         }
-
-        this.originalState = null;
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
@@ -124,6 +121,10 @@ export class VersionMetadata extends Component {
             Promise.resolve()
         ];
 
+        if (!this.props.params.instanceID) {
+            this.updateReviewStateData();
+        }
+
         if (this.props.params.instanceID) {
             getMetadata[1] = datasets.getInstance(this.props.params.instanceID);
             this.setState({isInstance: true});
@@ -132,14 +133,10 @@ export class VersionMetadata extends Component {
             this.setState({isInstance: false});
         }
 
-        if (!this.props.params.instanceID && (!this.props.version || !this.props.version.reviewState || !this.props.version.lastEditedBy)) {
-            this.updateReviewStateData();
-        }
+        getMetadata[0] = recipes.getAll();
+        getMetadata[2] = datasets.get(this.props.params.datasetID);
 
-      getMetadata[0] = recipes.getAll();
-      getMetadata[2] = datasets.get(this.props.params.datasetID);
-
-      Promise.all(getMetadata).then(responses => {
+        Promise.all(getMetadata).then(responses => {
             const dataset = responses[2].next || responses[2].current;
             const version = responses[1];
     
@@ -185,18 +182,18 @@ export class VersionMetadata extends Component {
                 });
             }
             
-            if((this.state.activeCollectionID && version.collection_id) && this.state.activeCollectionID !== version.collection_id) {
+            if((this.props.collectionID && version.collection_id) && this.props.collectionID !== version.collection_id) {
                 this.setState({
                     isReadOnly: true
                 });
                 const notification = {
                     type: "neutral",
-                    message: "This dataset is not in the current active collection and cannot be edited at this time.",
+                    message: "This dataset is already in a different collection, so can't be edited.",
                     isDismissable: true
                 }
                 notifications.add(notification);
-                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset version that is already in collection 'dataset.collection_id' but current collection is '${this.state.activeCollectionID}'`});
-                console.warn(`Dataset version is already in collection '${dataset.collection_id}' but current collection is '${this.state.activeCollectionID}'`);
+                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset version that is already in collection 'dataset.collection_id' but current collection is '${this.props.collectionID}'`});
+                console.warn(`Dataset version is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`);
             } 
 
             this.setState({
@@ -242,27 +239,9 @@ export class VersionMetadata extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         // No need to re-render, this state update does not impact the view.
         if (nextState.isFetchingData) {
-          return false;
+            return false;
         }
         return true;
-    }
-
-    componentDidUpdate(_, nextState) {
-        /*
-        We want to detect whether any changes have been made so we can show a warning if the
-        user is leaving without saving
-        */
-
-        // We've already set the state to hasChanges, so do nothing
-        if (nextState.hasChanges) {
-            return;
-        }
-
-        // Set our initial state, so that we can detect whether there have been any unsaved changes
-        if (!nextState.isFetchingDataset && !this.originalState && !nextState.hasChanges) {
-            this.originalState = nextState;
-            this.setState({hasChanges: false});
-        }
     }
 
     componentWillUnmount() {
@@ -477,6 +456,15 @@ export class VersionMetadata extends Component {
             });
     }
 
+    addVersionToCollection(datasetID, edition, version) {
+        return collections.addDatasetVersion(this.props.collectionID, datasetID, edition, version).catch(error => {
+            this.handleRequestError('add version to this collection', error.status);
+            console.error(`Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'`, error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            return error;
+        });
+    }
+
     async updateInstanceVersion(body, isSubmittingForReview, isMarkingAsReviewed) {
         const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
         const datasetID = this.props.params.datasetID;
@@ -506,13 +494,25 @@ export class VersionMetadata extends Component {
                 return;
             }
 
+            const edition = newVersion.edition;
+            const version = newVersion.version;
+
+            if (this.state.isInstance && !isUpdatingReviewState) {
+                const addToCollectionErr = await this.addVersionToCollection(datasetID, edition, version);
+                if (!addToCollectionErr) {
+                    this.props.dispatch(push(url.resolve(`/datasets/${datasetID}/editions/${edition}/versions/${version}/metadata?collection=${this.props.collectionID}`)));
+                    return;
+                }
+
+                this.setState({isSavingData: false});
+                return;
+            }
+
             if (!isUpdatingReviewState) {
                 this.setState({isSavingData: false});
                 return;
             }
 
-            const edition = newVersion.edition;
-            const version = newVersion.version;
             const [updateReviewStateErr] = await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed);
             if (updateReviewStateErr) {
                 console.log("updateReviewStateErr: " + updateReviewStateErr);
@@ -615,7 +615,8 @@ export class VersionMetadata extends Component {
             modalType: type,
             editKey: key,
             titleInput: type === "alerts" ? relatedItem.date : relatedItem.name,
-            descInput: relatedItem.description
+            descInput: relatedItem.description,
+            hasChanges: true
         });
     }
 
@@ -675,14 +676,16 @@ export class VersionMetadata extends Component {
         }
         if (type === "alerts") {
             this.setState({
-                alerts: edit(this.state.alerts, key)
+                alerts: edit(this.state.alerts, key),
+                hasChanges: true
             });
             return;
         }
 
         if (type === "changes") {
             this.setState({
-                changes: edit(this.state.changes, key)
+                changes: edit(this.state.changes, key),
+                hasChanges: true
             });
         }
 
@@ -722,6 +725,7 @@ export class VersionMetadata extends Component {
         const value = target.value;
         const name = target.name;
         const id = target.id;
+
         if (name === "add-related-content-title") {
             this.setState({titleInput: value});
             if(this.state.titleError != null) {
@@ -770,8 +774,10 @@ export class VersionMetadata extends Component {
             });
 
         }
-        this.setState({hasChanges: true});
 
+        if (!this.state.hasChanges) {
+            this.setState({hasChanges: true});
+        }
      }
 
     handleSelectChange(event) {
@@ -830,7 +836,8 @@ export class VersionMetadata extends Component {
                 modalType: "",
                 editKey: "",
                 titleInput: "",
-                descInput: ""
+                descInput: "",
+                hasChanges: true
             });
         }
      }
@@ -847,7 +854,7 @@ export class VersionMetadata extends Component {
             haveError = true;
         }
 
-        if (!this.state.isInstance && !this.state.releaseDate) {
+        if (!this.state.releaseDate) {
             this.setState({
                 releaseDateError: "You must add a release date"
             });
@@ -898,7 +905,6 @@ export class VersionMetadata extends Component {
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
             return;
         }
-
         
         if (instanceOrVersionData.reviewState === "reviewed") {
             return;
