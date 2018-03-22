@@ -302,6 +302,11 @@ export class CollectionsController extends Component {
     fetchActiveCollection(collectionID) {
         this.setState({isFetchingCollectionDetails: true});
         collections.get(collectionID).then(collection => {
+            if (collection.approvalStatus === "COMPLETE") {
+                // This collection is now in the publishing queue, redirect user
+                location.pathname = this.props.rootPath + "/publishing-queue";
+                return;
+            }
             const mappedCollection = this.mapCollectionToState(collection);
             const activeCollection = this.mapPagesToCollection(mappedCollection);
             this.updateActiveCollectionGlobally(activeCollection);
