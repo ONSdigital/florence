@@ -12,7 +12,8 @@ import {
     UPDATE_ACTIVE_VERSION_REVIEW_STATE, 
     EMPTY_ACTIVE_DATASET, 
     EMPTY_ACTIVE_VERSION, 
-    EMPTY_ACTIVE_INSTANCE
+    EMPTY_ACTIVE_INSTANCE,
+    UPDATE_ACTIVE_DATASET_COLLECTION_ID
 } from './actions'
 
 export default function reducer(state = initialState, action) {
@@ -173,6 +174,17 @@ export default function reducer(state = initialState, action) {
                         ...state.datasets.activeDataset,
                         lastEditedBy: action.lastEditedBy,
                         reviewState: action.reviewState
+                    }
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_DATASET_COLLECTION_ID): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: {
+                        ...state.datasets.activeDataset,
+                        collection_id: action.collectionID
                     }
                 }
             });
