@@ -1,6 +1,8 @@
 import { initialState } from './initialState';
 
 import {
+    UPDATE_WORKING_ON,
+    EMPTY_WORKING_ON,
     UPDATE_ACTIVE_DATASET,
     UPDATE_ACTIVE_INSTANCE,
     UPDATE_ACTIVE_VERSION,
@@ -50,6 +52,24 @@ export default function reducer(state = initialState, action) {
                 collections: {
                     ...state.collections,
                     active: null
+                }
+            }
+        }
+        case(UPDATE_WORKING_ON): {
+            return {
+                ...state,
+                global: {
+                    ...state.global,
+                    workingOn: action.workingOn
+                }
+            }
+        }
+        case(EMPTY_WORKING_ON): {
+            return {
+            ...state,
+            global: {
+                ...state.global,
+                workingOn: null
                 }
             }
         }

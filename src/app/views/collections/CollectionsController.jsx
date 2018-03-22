@@ -8,11 +8,12 @@ import RestoreContent from './restore-content/RestoreContent'
 import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections';
-import { updateActiveCollection, emptyActiveCollection , updateActiveDatasetReviewState, updateActiveVersionReviewState} from '../../config/actions';
+import {updateActiveCollection, emptyActiveCollection , updateActiveDatasetReviewState, updateActiveVersionReviewState, updateWorkingOn, emptyWorkingOn} from '../../config/actions';
 import notifications from '../../utilities/notifications';
 import dateformat from 'dateformat';
 import Modal from '../../components/Modal';
 import url from '../../utilities/url';
+import cookies from '../../utilities/cookies';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import log, {eventTypes} from '../../utilities/log';
@@ -127,7 +128,7 @@ export class CollectionsController extends Component {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.setState({
                 drawerIsAnimatable: true,
                 drawerIsVisible: true,
@@ -146,7 +147,7 @@ export class CollectionsController extends Component {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.fetchActiveCollection(nextProps.params.collectionID);
         }
     }
@@ -306,7 +307,9 @@ export class CollectionsController extends Component {
         collections.get(collectionID).then(collection => {
             const mappedCollection = this.mapCollectionToState(collection);
             const activeCollection = this.mapPagesToCollection(mappedCollection);
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            //this.props.dispatch(updateActiveCollection(activeCollection));
+            //this.props.dispatch(updateWorkingOn(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             switch(error.status) {
@@ -537,6 +540,7 @@ export class CollectionsController extends Component {
         // close the drawer is finished (which looks ugly).
         if (!this.state.drawerIsVisible) {
             this.props.dispatch(emptyActiveCollection());
+            this.props.dispatch(emptyWorkingOn());
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }
     }
@@ -826,6 +830,16 @@ export class CollectionsController extends Component {
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error removing pending delete of page '${uri}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
             console.error(`Error removing pending delete of page '${uri}' from collection '${this.props.params.collectionID}'`, error);
         });
+    }
+
+    updateActiveCollectionGlobally(collection) {
+        this.props.dispatch(updateActiveCollection(collection));
+        const workingOn = {
+            id: collection.id,
+            name: collection.name
+        };
+        this.props.dispatch(updateWorkingOn(workingOn));
+        cookies.add("collection", collection.id, null);
     }
 
     readablePublishDate(collection) {
