@@ -305,10 +305,17 @@ test("Changing an input value updates the state to show a change has been made",
     const asyncComponent = await shallow(
         <DatasetMetadata {...defaultProps} />
     );
+    const event = {
+        ...mockEvent,
+        target: {
+            value: "A new description",
+            name: "description"
+        }
+    }
 
     await asyncComponent.update();
     expect(asyncComponent.state("hasChanges")).toBe(false);
-    asyncComponent.setState({description: "A new description"});
+    asyncComponent.instance().handleInputChange(event);
     await asyncComponent.update();
     expect(asyncComponent.state("description")).toBe("A new description");
     expect(asyncComponent.state("hasChanges")).toBe(true);
@@ -660,7 +667,7 @@ describe("Saving changes and submitting for review/approval", () => {
     });
 
     it("doesn't route to the current collection if there are errors", async () => {
-        handleMetadataSaveErrors.mockImplementationOnce(() => true);
+        collections.setDatasetStatusToReviewed.mockImplementationOnce(() => Promise.reject({status: 500}));
         dispatchedAction = null;
         await defaultComponent.instance().handleSave(mockEvent, false, true); 
         expect(dispatchedAction).toBeFalsy();
@@ -753,11 +760,14 @@ describe("Renders the correct buttons", () => {
         <DatasetMetadata {...reviewedProps} />
     )
     
-    it("disables the 'save' button loading data", () => {
+    it("disables the 'save' button loading data", async () => {
         expect(defaultComponent.state('isFetchingDataset')).toBeFalsy();
         expect(defaultComponent.state('isFetchingCollectionData')).toBeFalsy();
         defaultComponent.instance().componentWillMount();
         expect(defaultComponent.state('isFetchingDataset')).toBe(true);
+        expect(defaultComponent.find('#btn-save[disabled=true]').exists()).toBe(true);
+
+        await defaultComponent.update();
         expect(defaultComponent.state('isFetchingCollectionData')).toBe(true);
         expect(defaultComponent.find('#btn-save[disabled=true]').exists()).toBe(true);
     });
