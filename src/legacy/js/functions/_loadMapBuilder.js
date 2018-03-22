@@ -14,6 +14,9 @@ function loadMapBuilder(pageData, onSave, map) {
         if (!mapJson.filename) {
             mapJson.filename = StringUtils.randomId();
         }
+        if (!mapJson.type) {
+            mapJson.type = "map";
+        }
         if (!mapJson.uri) {
             mapJson.uri = pageUrl + "/" + mapJson.filename;
         }
@@ -72,9 +75,24 @@ function loadMapBuilder(pageData, onSave, map) {
     }
 
     if (map && map.filename) {
-        jqxhr = $.getJSON("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + map.filename + ".json");
-        jqxhr.done(function(data) {
-            startMapBuilder("map-builder-app", data, saveMap, closeModal, onError, '/map');
+        // we need to load both the json and the csv before we start the map builder
+        var data = {}
+        var counter = 2;
+        function invokeMapBuilder(name, value) {
+            data[name] = value;
+            if (--counter == 0) {
+                startMapBuilder("map-builder-app", data, saveMap, closeModal, onError, '/map');
+            }
+        }
+        $.getJSON("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + map.filename + ".json")
+            .done(function(jsonData) {
+            invokeMapBuilder("requestJson", jsonData);
+        });
+        $.get("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + map.filename + ".csv")
+            .done(function(csv) {
+            invokeMapBuilder("csv", csv);
+        }).fail(function() {
+            invokeMapBuilder("csv", null);
         });
     } else {
         startMapBuilder("map-builder-app", {}, saveMap, closeModal, onError, '/map');

@@ -5,6 +5,7 @@ import 'dp-map-builder-ui/dist/assets/scss/main.scss';
 
 window.startMapBuilder = (domID, data, onSave, onCancel, onError, path) => {
     console.log("startMapBuilder")
+    console.log(data)
     const node = document.getElementById(domID);
 
     if (!node) {
