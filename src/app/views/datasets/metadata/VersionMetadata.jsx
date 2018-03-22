@@ -41,7 +41,6 @@ const propTypes = {
     })),
     dataset: PropTypes.shape({
       title: PropTypes.string,
-      release_frequency: PropTypes.string,
       collection_id: PropTypes.string
     }),
     instance: PropTypes.shape({
@@ -82,7 +81,6 @@ export class VersionMetadata extends Component {
             hasChanges: false,
             edition: null,
             title: null,
-            release_frequency: null,
             releaseDate: "",
             releaseDateError: "",
             dimensions: [],
@@ -120,99 +118,98 @@ export class VersionMetadata extends Component {
             activeCollectionID: this.props.collectionID
         });
 
-      const getMetadata = [
-          Promise.resolve(),
-          Promise.resolve(),
-          Promise.resolve()
-      ];
+        const getMetadata = [
+            Promise.resolve(),
+            Promise.resolve(),
+            Promise.resolve()
+        ];
 
-      if (this.props.params.instanceID) {
-        getMetadata[1] = datasets.getInstance(this.props.params.instanceID);
-        this.setState({isInstance: true});
-      } else {
-        getMetadata[1] = datasets.getVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version);
-        this.setState({isInstance: false});
-      }
+        if (this.props.params.instanceID) {
+            getMetadata[1] = datasets.getInstance(this.props.params.instanceID);
+            this.setState({isInstance: true});
+        } else {
+            getMetadata[1] = datasets.getVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version);
+            this.setState({isInstance: false});
+        }
 
-      if (!this.props.params.instanceID && (!this.props.version || !this.props.version.reviewState || !this.props.version.lastEditedBy)) {
-        this.updateReviewStateData();
-      }
+        if (!this.props.params.instanceID && (!this.props.version || !this.props.version.reviewState || !this.props.version.lastEditedBy)) {
+            this.updateReviewStateData();
+        }
 
       getMetadata[0] = recipes.getAll();
       getMetadata[2] = datasets.get(this.props.params.datasetID);
 
       Promise.all(getMetadata).then(responses => {
+            const dataset = responses[2].next || responses[2].current;
+            const version = responses[1];
     
-        if (this.props.recipes.length === 0) {
-            this.props.dispatch(updateAllRecipes(responses[0].items));
-        }
-
-        if (this.props.params.instanceID) {
-          this.props.dispatch(updateActiveInstance(responses[1]));
-          this.setState({
-            dimensions: this.props.instance.dimensions,
-            edition: this.props.instance.edition,
-          });
-        }
-
-        if (this.props.params.version) {
-          this.props.dispatch(updateActiveVersion(responses[1]));
-
-          var alerts = [];
-          if (this.props.version.alerts) {
-            this.props.version.alerts.map((alert) => {
-                alert.key = uuid();
-
-                alerts.push(alert);
-            })
-          }
-
-          var changes = [];
-          if (this.props.version.latest_changes) {
-            this.props.version.latest_changes.map((change) => {
-                change.key = uuid();
-
-                changes.push(change);
-            })
-          }
-
-          this.setState({
-            dimensions: this.props.version.dimensions,
-            edition: this.props.version.edition,
-            state: this.props.version.state,
-            versionID: this.props.version.id,
-            alerts: alerts,
-            changes: changes,
-            releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : ""
-          });
-        }
-
-        this.props.dispatch(updateActiveDataset(responses[2].current || responses[2].next));
-        
-        if(this.state.activeCollectionID && this.state.activeCollectionID != this.props.dataset.collection_id) {
-            this.setState({
-                isReadOnly: true
-            });
-            const notification = {
-                type: "warning",
-                message: "This dataset is not in the current active collection and cannot be edited at this time.",
-                isDismissable: true
+            if (this.props.recipes.length === 0) {
+                this.props.dispatch(updateAllRecipes(responses[0].items));
             }
-            notifications.add(notification);
-        } 
 
-        this.setState({
-          title: this.props.dataset.title,
-          release_frequency: this.props.dataset.release_frequency,
-          isFetchingData: false
-        });
+            if (this.props.params.instanceID) {
+                this.props.dispatch(updateActiveInstance(responses[1]));
+                this.setState({
+                    dimensions: this.props.instance.dimensions,
+                    edition: this.props.instance.edition,
+                });
+            }
+
+            if (this.props.params.version) {
+                this.props.dispatch(updateActiveVersion(responses[1]));
+
+                var alerts = [];
+                if (this.props.version.alerts) {
+                    this.props.version.alerts.map((alert) => {
+                        alert.key = uuid();
+                        alerts.push(alert);
+                    })
+                }
+
+                var changes = [];
+                if (this.props.version.latest_changes) {
+                    this.props.version.latest_changes.map((change) => {
+                        change.key = uuid();
+                        changes.push(change);
+                    })
+                }
+
+                this.setState({
+                    dimensions: this.props.version.dimensions,
+                    edition: this.props.version.edition,
+                    state: this.props.version.state,
+                    versionID: this.props.version.id,
+                    alerts: alerts,
+                    changes: changes,
+                    releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : ""
+                });
+            }
+            
+            if((this.state.activeCollectionID && version.collection_id) && this.state.activeCollectionID !== version.collection_id) {
+                this.setState({
+                    isReadOnly: true
+                });
+                const notification = {
+                    type: "neutral",
+                    message: "This dataset is not in the current active collection and cannot be edited at this time.",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset version that is already in collection 'dataset.collection_id' but current collection is '${this.state.activeCollectionID}'`});
+                console.warn(`Dataset version is already in collection '${dataset.collection_id}' but current collection is '${this.state.activeCollectionID}'`);
+            } 
+
+            this.setState({
+                title: dataset.title,
+                isFetchingData: false
+            });
 
         }).catch(error => {
             switch (error.status) {
                 case(403):{
                     const notification = {
                         "type": "neutral",
-                        "message": "You do not permission to view the edition metadata for this dataset",
+                        "message": "You do not permission to access the metadata for this dataset",
                         isDismissable: true
                     }
                     notifications.add(notification);
@@ -524,7 +521,7 @@ export class VersionMetadata extends Component {
             }
 
             this.setState({isSavingData: false});
-            this.props.dispatch(push(`/collections/${this.props.collectionID}`));
+            this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
             return;
         }
         
@@ -597,18 +594,6 @@ export class VersionMetadata extends Component {
           })
         )
       }
-  
-      mapReleaseFreqToSelectOptions() {
-          const values = [
-            'Weekly', 'Monthly', 'Yearly'
-          ];
-          return values.map(value => {
-              return {
-                id: value.toLowerCase(),
-                name: value
-              }
-          });
-    }
     
     handleEditRelatedClick(type, key) {
         let relatedItem;
