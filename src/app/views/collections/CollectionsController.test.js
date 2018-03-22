@@ -852,25 +852,40 @@ describe("Approving a collection", () => {
 });
 
 describe("Clicking 'edit' for a page", () => {
+    const props = {
+        ...defaultProps,
+        params: {
+            collectionID: "my-collection-12345"
+        },
+        activeCollection: {
+            datasets: [{
+                id: "cpi",
+                lastEditedBy: "test.user@email.com",
+                state: "InProgress"
+            }],
+            datasetVersions: [{
+                id: "cpi",
+                edition: "current",
+                version: "2",
+                lastEditedBy: "test.user@email.com",
+                state: "InProgress"
+            }]
+        }
+    }
     const component = shallow(
-        <CollectionsController {...defaultProps} />
+        <CollectionsController {...props} />
     );
 
     it("routes to the datasets screen for dataset/versions", () => {
         const datasetURL = component.instance().handleCollectionPageEditClick({type: "dataset_details", id:"cpi"});
-        expect(datasetURL).toBe("/florence/datasets/cpi/metadata");
+        expect(datasetURL).toBe("/florence/datasets/cpi/metadata?collection=my-collection-12345");
 
         const versionURL = component.instance().handleCollectionPageEditClick({type: "dataset_version", id:"cpi/editions/current/versions/2"});
-        expect(versionURL).toBe("/florence/datasets/cpi/editions/current/versions/2/metadata");
+        expect(versionURL).toBe("/florence/datasets/cpi/editions/current/versions/2/metadata?collection=my-collection-12345");
     });
 
     it("routes to the workspace for a non-dataset pages", () => {
-        component.setProps({
-            params: {
-                collectionID: "my-collection-123467"
-            }
-        });
         const pageURL = component.instance().handleCollectionPageEditClick({type: "article", id:"/economy/grossdomesticproductgdp/articles/ansarticle"});
-        expect(pageURL).toBe("/florence/workspace?collection=my-collection-123467&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
+        expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
     });
 });
