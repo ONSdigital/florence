@@ -1,6 +1,7 @@
 import React from 'react';
 import {VersionMetadata} from './VersionMetadata.jsx';
 import notifications from '../../../utilities/notifications';
+import datasets from '../../../utilities/api-clients/datasets';
 import uuid from 'uuid/v4';
 import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
@@ -192,6 +193,10 @@ test("Dataset title updates after successful fetch from dataset API on mount", a
     const component = shallow(
         <VersionMetadata {...defaultProps} />
     );
+
+    datasets.get.mockImplementationOnce(() => (
+        Promise.resolve({current: exampleDataset.current}
+    )));
 
     await component.instance().componentWillMount();
     await component.update(); // update() appears to be async so we need to wait for it to finish before asserting
