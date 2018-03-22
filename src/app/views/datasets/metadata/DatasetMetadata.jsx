@@ -142,9 +142,11 @@ export class DatasetMetadata extends Component {
         });   
         
         datasets.get(this.props.params.datasetID).then(response => {
-            this.props.dispatch(updateActiveDataset(response.next || response.current));
+            const dataset = response.next || response.current;
 
-            if(this.state.activeCollectionID && this.state.activeCollectionID != this.props.dataset.collection_id) {
+            this.props.dispatch(updateActiveDataset(dataset));
+
+            if((this.state.activeCollectionID && dataset.collection_id) && this.state.activeCollectionID !== dataset.collection_id) {
                 this.setState({
                     isReadOnly: true
                 });
@@ -154,51 +156,53 @@ export class DatasetMetadata extends Component {
                     isDismissable: true
                 }
                 notifications.add(notification);
+                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset that is already in collection 'dataset.collection_id' but current collection is '${this.state.activeCollectionID}'`});
+                console.warn("Dataset is already in collection '" + dataset.collection_id + "'");
             } 
 
             this.setState({
-                latestVersion: this.props.dataset.links.latest_version ? this.props.dataset.links.latest_version.href : "",
-                status: this.props.dataset.state
+                latestVersion: dataset.links.latest_version ? dataset.links.latest_version.href : "",
+                status: dataset.state
             });
 
-            if (this.props.dataset && this.props.dataset.title) {
+            if (dataset && dataset.title) {
                 this.setState({
-                    title: this.props.dataset.title
+                    title: dataset.title
                 });
             }
             
-            if (this.props.dataset && this.props.dataset.description) {
+            if (dataset && dataset.description) {
                 this.setState({
-                    description: this.props.dataset.description
+                    description: dataset.description
                 });
             }
 
-            if (this.props.dataset && this.props.dataset.license) {
+            if (dataset && dataset.license) {
                 this.setState({
-                    license: this.props.dataset.license
+                    license: dataset.license
                 });
             }
 
-            if (this.props.dataset && this.props.dataset.release_frequency) {
+            if (dataset && dataset.release_frequency) {
                 this.setState({
-                    releaseFrequency: this.props.dataset.release_frequency
+                    releaseFrequency: dataset.release_frequency
                 });
             }
             
-            if (this.props.dataset && this.props.dataset.national_statistic) {
+            if (dataset && dataset.national_statistic) {
                 this.setState({
-                    isNationalStat: this.props.dataset.national_statistic
+                    isNationalStat: dataset.national_statistic
                 });
             }
 
-            if (this.props.dataset.keywords && this.props.dataset.keywords.length > 0) {
+            if (dataset.keywords && dataset.keywords.length > 0) {
                 this.setState({
-                    keywords: this.props.dataset.keywords.join(", ")
+                    keywords: dataset.keywords.join(", ")
                 });
             }
 
-            if (this.props.dataset.contacts && this.props.dataset.contacts.length > 0) {
-                const contact = this.props.dataset.contacts[0];
+            if (dataset.contacts && dataset.contacts.length > 0) {
+                const contact = dataset.contacts[0];
                 this.setState({
                     contactName: contact.name,
                     contactEmail: contact.email,
@@ -206,12 +210,12 @@ export class DatasetMetadata extends Component {
                 })
             }
 
-            if (this.props.dataset.qmi && this.props.dataset.qmi.href !== "") {
-                this.setState({relatedQMI:this.props.dataset.qmi.href })
+            if (dataset.qmi && dataset.qmi.href !== "") {
+                this.setState({relatedQMI:dataset.qmi.href })
             }
 
-            if (this.props.dataset.publications && this.props.dataset.publications.length > 0) {
-                const bulletins = this.props.dataset.publications.map(item => {
+            if (dataset.publications && dataset.publications.length > 0) {
+                const bulletins = dataset.publications.map(item => {
                     return {
                         title: item.title,
                         href: item.href,
@@ -221,8 +225,8 @@ export class DatasetMetadata extends Component {
                 this.setState({relatedBulletins: bulletins});
             }
 
-            if (this.props.dataset.related_datasets && this.props.dataset.related_datasets.length > 0) {
-                const links = this.props.dataset.related_datasets.map(item => {
+            if (dataset.related_datasets && dataset.related_datasets.length > 0) {
+                const links = dataset.related_datasets.map(item => {
                     return {
                         title: item.title,
                         href: item.href,
@@ -232,8 +236,8 @@ export class DatasetMetadata extends Component {
                 this.setState({relatedLinks: links});
             }
 
-            if (this.props.dataset.methodologies && this.props.dataset.methodologies.length > 0) {
-                const methodology_links = this.props.dataset.methodologies.map(item => {
+            if (dataset.methodologies && dataset.methodologies.length > 0) {
+                const methodology_links = dataset.methodologies.map(item => {
                     return {
                         title: item.title,
                         href: item.href,
