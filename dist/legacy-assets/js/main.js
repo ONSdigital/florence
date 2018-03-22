@@ -45885,10 +45885,12 @@ function loadMapBuilder(pageData, onSave, map) {
                 processData: false,
                 contentType: 'text/csv'
             });
+        } else {
+            console.log("saveMap: No csv provided - not saving csv for map " + mapJson.filename);
         }
         addMapToPageJson(mapJson);
         if (onSave) {
-            onSave(mapJson.filename, '<ons-map- path="' + mapJson.uri + '" />');
+            onSave(mapJson.filename, '<ons-map path="' + mapJson.uri + '" />');
         }
         closeModal();
     };
@@ -45909,7 +45911,7 @@ function loadMapBuilder(pageData, onSave, map) {
             }
         }
 
-        pageData.maps.push({title: mapJson.title, filename: mapJson.filename, uri: mapJson.uri, version: "2"});
+        pageData.maps.push({title: mapJson.title, filename: mapJson.filename, uri: mapJson.uri});
     }
 
     function onError(message) {
