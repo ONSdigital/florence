@@ -41,7 +41,63 @@ jest.mock('../../../utilities/api-clients/datasets', () => (
     {
         get: jest.fn(() => {
             return Promise.resolve({
-                next: {}
+                next: {
+                    collection_id: 'test-collection-12345',
+                    id: '931a8a2a-0dc8-42b6-a884-7b6054ed3b68',
+                    license: 'Open Government License',
+                    links: {
+                        editions: {
+                            href: 'http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions'
+                        },
+                        latest_version: {
+                            id: 'efcc4581-30b1-463b-b85b-2e2d85c4918b',
+                            href: 'http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions/2016/versions/1'
+                        },
+                        self: {
+                            href: 'http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68'
+                        }
+                    },
+                    qmi: {
+                        href: 'http://localhost:8080/datasets/12345'
+                    },
+                    related_datasets: [
+                        {
+                            href: 'http://localhost:8080/datasets/6789910',
+                            title: 'Crime in the UK'
+                        },
+                        {
+                            href: 'http://localhost:8080/datasets/6789910',
+                            title: 'More Crime in the UK'
+                        }
+                    ],
+                    publications: [
+                        {
+                            href: 'http://www.localhost:8080/datasets/173849jf8j238d',
+                            title: 'An example publication'
+                        }
+                    ],
+                    methodologies: [
+                        {
+                            href: 'http://www.localhost:8080/datasets/173849jf8j238d',
+                            title: 'An example methodology',
+                            description: "A description"
+                        }
+                    ],
+                    next_release: 'pudding',
+                    keywords: [
+                        'keyword1',
+                        'keyword2'
+                    ],
+                    publisher: {},
+                    contacts: [{
+                        email: "test@email.com",
+                        name: "foo bar",
+                        telephone: "01633 123456"
+                    }],
+                    state: 'published',
+                    title: 'CPI',
+                    uri: '/economy/inflationandpricesindices/datasets/consumerpriceindices'
+                }
             });
         }),
         getAll: jest.fn(() => {
@@ -177,7 +233,9 @@ test("Dataset details page matches stored snapshot", () => {
 });
 
 test("Dataset title updates after successful fetch from dataset API on mount", async () => {
-
+    datasets.get.mockImplementationOnce(() => (
+        Promise.resolve({current: exampleDataset.current})
+    ))
     await defaultComponent.instance().componentWillMount();
     await defaultComponent.update(); // update() appears to be async so we need to wait for it to finish before asserting
     expect(defaultComponent.state("title")).toBe("CPI");
@@ -264,6 +322,8 @@ test("Changing an input value updates the state to show a change has been made",
 });
 
 test("Warning modal shown when unsaved changes have been made", async () => {
+    defaultComponent.setState({isReadOnly: false});
+
     expect(defaultComponent.find(".modal__header h2").exists()).toBe(false);
     expect(defaultComponent.state("showModal")).toBe(false);
 
@@ -380,19 +440,23 @@ test("Input errors are added on submit and then removed on change of that input"
     expect(defaultComponent.update().state("urlError")).toBe(null);
 });
 
-test("Handler to edit a related item updates the state with new values", () => {    
-    expect(defaultComponent.state("relatedBulletins").length).toBe(1);
+test("Handler to edit a related item updates the state with new values", () => {
+    defaultComponent.setState({relatedBulletins: [{
+        key: "12345"
+    }]});
     defaultComponent.setState({titleInput: "Some new words"});
     defaultComponent.instance().editRelatedLink("bulletin", "12345");
     expect(defaultComponent.state("relatedBulletins").length).toBe(1);
     const editedRelatedBulletins = defaultComponent.update().state("relatedBulletins");
-    expect(editedRelatedBulletins[0].title).toBe("Some new words");
-    
-    // Force a remount to reset the component to original props for future tests
-    defaultComponent.instance().componentWillMount();
+    expect(editedRelatedBulletins[0].title).toBe("Some new words"); 
 });
 
-test("Handle for editing a related link opens modal with existing values", () => {    
+test("Handler for editing a related link opens modal with existing values", () => { 
+    defaultComponent.setState({relatedBulletins: [{
+        key: "12345",
+        href: exampleDataset.current.publications[0].href,
+        title: exampleDataset.current.publications[0].title
+    }]})   
     defaultComponent.instance().handleEditRelatedClick("bulletin", "12345");
     expect(defaultComponent.state("showModal")).toBe(true);
     expect(defaultComponent.state("modalType")).toBe("bulletin");
@@ -709,9 +773,13 @@ describe("Renders the correct buttons", () => {
     });
 
     it("disables all save and review/approve buttons when saving data", () => {
+        // inProgressComponent.setState({isReadOnly: false});
+        // console.log(inProgressComponent.instance().state);
+        // console.log(inProgressComponent.find('#btn-submit-for-review'));
         expect(inProgressComponent.find('#btn-submit-for-review[disabled=false]').exists()).toBe(true);
 
         inProgressComponent.instance().handleSave(mockEvent, false, false);
+        // console.log(inProgressComponent.instance().state);
         expect(inProgressComponent.find('#btn-submit-for-review[disabled=true]').exists()).toBe(true);
     });
 
