@@ -128,7 +128,7 @@ class DatasetsController extends Component {
             const collection = collections.find(collection => {
                 return collection.id === collectionID;
             });
-            return "In collection: " + collection.name
+            return collection ? "In collection: " + collection.name : "In an unrecognised collection"
         }
 
     }

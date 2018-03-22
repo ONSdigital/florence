@@ -5,6 +5,9 @@ export const UPDATE_ALL_COLLECTIONS = 'UPDATE_ALL_COLLECTIONS';
 export const UPDATE_ACTIVE_COLLECTION = 'UPDATE_ACTIVE_COLLECTION';
 export const EMPTY_ACTIVE_COLLECTION = 'EMPTY_ACTIVE_COLLECTION';
 
+export const UPDATE_WORKING_ON = 'UPDATE_WORKING_ON';
+export const EMPTY_WORKING_ON = 'EMPTY_WORKING_ON'
+
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
 export const UPDATE_ALL_TEAM_IDS_AND_NAMES = 'UPDATE_ALL_TEAM_IDS_AND_NAMES';
 export const UPDATE_USERS = 'UPDATE_USERS';
@@ -49,6 +52,19 @@ export function updateActiveCollection(collection) {
     return {
         type: UPDATE_ACTIVE_COLLECTION,
         collection
+    }
+}
+
+export function updateWorkingOn(workingOn) {
+    return {
+        type: UPDATE_WORKING_ON,
+        workingOn
+    }
+}
+
+export function emptyWorkingOn() {
+    return {
+        type: EMPTY_WORKING_ON
     }
 }
 
