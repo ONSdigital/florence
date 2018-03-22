@@ -49,6 +49,7 @@ const propTypes = {
         value: PropTypes.bool.isRequired,
         uri: PropTypes.string.isRequired
     }),
+    isApprovingCollection: PropTypes.bool,
     canBeDeleted: PropTypes.bool,
     canBeApproved: PropTypes.bool,
     inProgress: PropTypes.arrayOf(PropTypes.shape(
@@ -356,7 +357,14 @@ export class CollectionDetails extends Component {
         
         if (this.props.canBeApproved) {
             return (
-                <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
+                <span>
+                    <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
+                    {this.props.isApprovingCollection &&
+                        <div className="inline-block margin-left--1">
+                            <div className="loader loader--inline"></div>
+                        </div>
+                    }
+                </span>
             )   
         }
     }

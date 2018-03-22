@@ -74,6 +74,7 @@ export class CollectionsController extends Component {
                 uri: ""
             },
             isFetchingCollectionDetails: false,
+            isApprovingCollection: false,
             drawerIsAnimatable: false,
             drawerIsVisible: false,
             isEditingCollection: false,
@@ -148,10 +149,16 @@ export class CollectionsController extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.props.dispatch(emptyActiveCollection());
+    }
+
     fetchCollections() {
         this.setState({isFetchingCollections: true});
         collections.getAll().then(collections => {
-            const allCollections = collections.map(collection => {
+            const allCollections = collections.filter(collection => {
+                return collection.approvalStatus !== "COMPLETE";
+            }).map(collection => {
                 return this.mapCollectionToState(collection)
             });
             this.setState({
@@ -467,10 +474,17 @@ export class CollectionsController extends Component {
                 })
             }
         }
-        collections.approve(collectionID).then(() => {   
-            this.setState(updatePublishStatusToNeutral);
+
+        this.setState({isApprovingCollection: true});
+        collections.approve(collectionID).then(() => {
+            const newState = {
+                ...updatePublishStatusToNeutral,
+                isApprovingCollection: false
+            };
+            this.setState(newState);
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }).catch(error => {
+            this.setState({isApprovingCollection: false});
             switch (error.status) {
                 case(401): {
                     // Handled by request function
@@ -935,6 +949,7 @@ export class CollectionsController extends Component {
                 onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
+                isApprovingCollection={this.state.isApprovingCollection}
             />
         )
     }
