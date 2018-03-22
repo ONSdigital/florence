@@ -106,7 +106,6 @@ export class DatasetMetadata extends Component {
             titleError: "",
             urlError: "",
             descError: "",
-            btn: "",
             latestVersion: "",
             status: "",
             license: ""
@@ -137,17 +136,17 @@ export class DatasetMetadata extends Component {
 
             this.props.dispatch(updateActiveDataset(dataset));
 
-            if((this.state.activeCollectionID && dataset.collection_id) && this.state.activeCollectionID !== dataset.collection_id) {
+            if((this.props.collectionID && dataset.collection_id) && this.props.collectionID !== dataset.collection_id) {
                 this.setState({
                     isReadOnly: true
                 });
                 const notification = {
                     type: "neutral",
-                    message: "This dataset is not in the current active collection so cannot be edited at this time.",
+                    message: "This dataset is already in a different collection, so can't be edited.",
                     isDismissable: true
                 }
                 notifications.add(notification);
-                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset that is already in collection 'dataset.collection_id' but current collection is '${this.state.activeCollectionID}'`});
+                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset that is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`});
                 console.warn("Dataset is already in collection '" + dataset.collection_id + "'");
             }
 
