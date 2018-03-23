@@ -45927,7 +45927,8 @@ function loadMapBuilder(pageData, onSave, map) {
     }
 
     if (map && map.filename) {
-        var data = {counter: 2}
+        // we need to load both the json and the csv before we start the map builder
+        var data = {}
         var counter = 2;
         function invokeMapBuilder(name, value) {
             data[name] = value;

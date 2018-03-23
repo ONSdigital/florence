@@ -31,7 +31,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
     "dp-table-builder-ui": "^1.0.20",
-    "dp-map-builder-ui": "^1.0.4",
+    "dp-map-builder-ui": "^1.0.8",
     "extract-text-webpack-plugin": "^2.0.0-beta",
     "file-loader": "^0.10.0",
     "install": "^0.8.7",
