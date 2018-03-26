@@ -40,6 +40,7 @@ const propTypes = {
     })),
     dataset: PropTypes.shape({
         title: PropTypes.string,
+        id: PropTypes.string,
         description: PropTypes.string,
         keywords: PropTypes.array,
         license: PropTypes.string,
@@ -134,7 +135,7 @@ export class DatasetMetadata extends Component {
 
         this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
 
-        this.setState({isFetchingDataset: true});
+        this.setState({isFetchingDataset: true});        
         
         datasets.get(this.props.params.datasetID).then(response => {
             const dataset = response.next || response.current;

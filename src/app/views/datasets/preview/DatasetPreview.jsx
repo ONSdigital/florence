@@ -10,9 +10,11 @@ import notifications from '../../../utilities/notifications'
 import collections from '../../../utilities/api-clients/collections'
 import {updateActiveDataset, updateActiveDatasetReviewState} from '../../../config/actions'
 import log, {eventTypes} from '../../../utilities/log'
+import DatasetReviewActions from '../DatasetReviewActions'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
+    userEmail: PropTypes.string.isRequired,
     params: PropTypes.shape({
         datasetID: PropTypes.string.isRequired
     }).isRequired,
@@ -36,7 +38,6 @@ class DatasetPreview extends Component {
         super(props);
 
         this.state = {
-            datasetTitle: null,
             isSavingData: false,
             isReadOnly: false,
             isLoadingPreview: false,
@@ -44,7 +45,8 @@ class DatasetPreview extends Component {
             latestVersion: null
         }
 
-        this.handleApproveSubmit = this.handleApproveSubmit.bind(this);
+        this.handleSubmitForReview = this.handleSubmitForReview.bind(this);
+        this.handleMarkAsReviewed = this.handleMarkAsReviewed.bind(this);
         this.handlePreviewLoad = this.handlePreviewLoad.bind(this);
     }
     
@@ -60,9 +62,7 @@ class DatasetPreview extends Component {
         if (this.props.dataset.links) {
             const latestVersionURL = url.resolve(this.props.dataset.links.latest_version.href);
             this.setState({
-                latestVersion: latestVersionURL || "",
-                title: this.props.dataset.title || "",
-                isLoadingPreview: false
+                latestVersion: latestVersionURL || ""
             })
             return;
         }
@@ -74,7 +74,6 @@ class DatasetPreview extends Component {
             this.props.dispatch(updateActiveDataset(dataset));
             this.setState({
                 latestVersion: latestVersionURL || "",
-                datasetTitle: dataset.title || "",
                 isLoadingPreview: false
             });
         }).catch(error => {
@@ -116,7 +115,11 @@ class DatasetPreview extends Component {
         });
     }
 
-    handleApproveSubmit(event) {
+    handleSubmitForReview() {
+        //TODO make request to submit dataset for review
+    }
+
+    handleMarkAsReviewed(event) {
         event.preventDefault();
         this.setState({isApprovingVersion: true});
         datasets.approveDatasetMetadata(this.props.params.datasetID).then(() => {
@@ -243,9 +246,22 @@ class DatasetPreview extends Component {
     }
 
     renderReviewActions() {
-        // if () {
+        if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
+            return;
+        }
 
-        // }
+        return (
+            <DatasetReviewActions
+                areDisabled={this.state.isApprovingVersion || this.state.isReadOnly}
+                includeSaveLabels={false}
+                reviewState={this.props.dataset.reviewState}
+                userEmail={this.props.userEmail}
+                lastEditedBy={this.props.dataset.lastEditedBy}
+                onSubmit={this.handleSubmitForReview}
+                onApprove={this.handleMarkAsReviewed}
+                notInCollectionYet={!this.props.dataset.collection_id}     
+            />
+        )
     }
 
     render() {
@@ -253,10 +269,10 @@ class DatasetPreview extends Component {
             <div className="preview">
                 <div className="preview__header grid grid--justify-center">
                     <div className="grid__col-6 margin-top--1 margin-bottom--1">
-                        <form onSubmit={this.handleApproveSubmit}>
-                            &#9664; <Link to={`${url.resolve("../")}`}>Back</Link>
-                            <h2 className="inline-block margin-left--1">{this.state.datasetTitle || "Loading dataset title..."}</h2>
-                            <button disabled={this.state.isApprovingVersion || this.state.isReadOnly} className="btn btn--positive btn--block margin-left--1">Approve</button>
+                        <form onSubmit={this.handleMarkAsReviewed}>
+                            &#9664; <Link to={`${url.resolve("metadata?collection="+this.props.collectionID, !this.props.collectionID)}`}>Back</Link>
+                            <h2 className="inline-block margin-left--1">{this.props.dataset.title || "Loading dataset title..."}</h2>
+                            {this.renderReviewActions()}
                             {this.state.isApprovingVersion &&
                                 <div className="loader loader--dark loader--centre margin-left--1"></div>
                             }
@@ -284,6 +300,7 @@ function mapStateToProps(state) {
         dataset: state.state.datasets.activeDataset || {},
         latestVersion: (state.state.datasets.activeDataset && state.state.datasets.activeDataset.latest_version) ? state.state.datasets.activeDataset.latest_version.href : null,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
+        userEmail: state.state.user.email
     }
 }
 
