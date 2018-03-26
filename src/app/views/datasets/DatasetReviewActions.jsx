@@ -44,7 +44,7 @@ class DatasetReviewActions extends Component {
 
     render() {
         if (this.props.reviewState === "reviewed") {
-            return;
+            return <span></span>;
         }
 
         if (this.props.notInCollectionYet || this.props.reviewState === "inProgress") {
@@ -59,7 +59,7 @@ class DatasetReviewActions extends Component {
             return this.renderApprove();
         }
 
-        return;
+        return <span></span>;
         
     }
 }

@@ -47,7 +47,6 @@ export default class Preview extends Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <iframe style={{display: this.returnHiddenValue()}} id="iframe" className="preview__iframe" src={this.props.path} onLoad={this.props.onLoad}></iframe>
         )
