@@ -1,0 +1,69 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+const propTypes = {
+    areDisabled: PropTypes.bool,
+    includeSaveLabels: PropTypes.bool,
+    reviewState: PropTypes.string.isRequired,
+    userEmail: PropTypes.string.isRequired,
+    lastEditedBy: PropTypes.string,
+    onSubmit: PropTypes.func,
+    onApprove: PropTypes.func,
+    notInCollectionYet: PropTypes.bool,
+
+};
+
+class DatasetReviewActions extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    renderSubmit() {
+        return (
+            <button type="button" onClick={this.props.onSubmit} disabled={this.props.areDisabled} className="btn btn--positive margin-left--1">
+                {this.props.includeSaveLabels ? 
+                    "Save and submit for review"
+                :
+                    "Submit for review"
+                }
+            </button>
+        )
+    }
+
+    renderApprove() {
+        return (
+            <button type="button" onClick={this.props.onApprove} disabled={this.props.areDisabled} className="btn btn--positive margin-left--1">
+                {this.props.includeSaveLabels ? 
+                    "Save and submit for approval"
+                :
+                    "Submit for approval"
+                }
+            </button>
+        )
+    }
+
+    render() {
+        if (this.props.reviewState === "reviewed") {
+            return;
+        }
+
+        if (this.props.notInCollectionYet || this.props.reviewState === "inProgress") {
+            return this.renderSubmit();
+        }
+        
+        if (this.props.userEmail === this.props.lastEditedBy && this.props.reviewState === "complete") {
+            return this.renderSubmit();
+        }
+
+        if (this.props.userEmail !== this.props.lastEditedBy && this.props.reviewState === "complete") {
+            return this.renderApprove();
+        }
+
+        return;
+        
+    }
+}
+
+DatasetReviewActions.propTypes = propTypes;
+
+export default DatasetReviewActions;
