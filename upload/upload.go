@@ -2,53 +2,20 @@ package upload
 
 import (
 	"bytes"
+	"crypto/rsa"
 	"encoding/json"
-	"io"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/ONSdigital/go-ns/log"
+	"github.com/ONSdigital/s3crypto"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 	"github.com/gorilla/schema"
-
-	"gopkg.in/amz.v1/aws"
-	"gopkg.in/amz.v1/s3"
 )
-
-// Bucket represents an s3 bucket to upload files to
-type Bucket interface {
-	Multi(key, contType string, perm s3.ACL) (Multi, error)
-	Put(path string, data []byte, contType string, perm s3.ACL) error
-	URL(path string) string
-}
-
-// Multi represents a multi part upload to s3
-type Multi interface {
-	ListParts() ([]s3.Part, error)
-	PutPart(n int, r io.ReadSeeker) (s3.Part, error)
-	Complete([]s3.Part) error
-	Abort() error
-}
-
-// S3Bucket implements the bucket interface
-type S3Bucket struct {
-	bucket *s3.Bucket
-}
-
-// Multi calls the s3 bucket multi method
-func (b S3Bucket) Multi(key, contType string, perm s3.ACL) (Multi, error) {
-	m, err := b.bucket.Multi(key, contType, perm)
-	return Multi(m), err
-}
-
-// URL calls the s3 bucket url method
-func (b S3Bucket) URL(path string) string {
-	return b.bucket.URL(path)
-}
-
-// Put calls the s3 bucket put method
-func (b S3Bucket) Put(path string, data []byte, contType string, perm s3.ACL) error {
-	return b.bucket.Put(path, data, contType, perm)
-}
 
 // Resumable represents resumable js upload query pararmeters
 type Resumable struct {
@@ -66,20 +33,32 @@ type Resumable struct {
 
 // New creates a new instance of Uploader using provided s3
 // environment authentication
-func New(bucketName string) (*Uploader, error) {
-	auth, err := aws.EnvAuth()
+func New(bucketName string, key *rsa.PrivateKey) (*Uploader, error) {
+	region := "eu-west-1"
+
+	sess, err := session.NewSession(&aws.Config{Region: &region})
 	if err != nil {
 		return nil, err
 	}
 
-	conn := s3.New(auth, aws.EUWest)
+	cryptoConfig := &s3crypto.Config{PrivateKey: key}
 
-	return &Uploader{S3Bucket{conn.Bucket(bucketName)}}, nil
+	var client s3iface.S3API
+
+	if key == nil {
+		client = s3.New(sess)
+	} else {
+		client = s3crypto.New(sess, cryptoConfig)
+	}
+
+	return &Uploader{client, bucketName}, nil
 }
 
 // Uploader represents the necessary configuration for uploading a file
 type Uploader struct {
-	bucket Bucket
+	client s3iface.S3API
+
+	bucketName string
 }
 
 // CheckUploaded checks to see if a chunk has been uploaded
@@ -98,28 +77,52 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	m, err := u.bucket.Multi(resum.Identifier, resum.Type, "public-read")
+	listMultiInput := &s3.ListMultipartUploadsInput{
+		Bucket: &u.bucketName,
+	}
+
+	listMultiOutput, err := u.client.ListMultipartUploads(listMultiInput)
 	if err != nil {
 		log.ErrorR(req, err, nil)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	parts, err := m.ListParts()
+	var uploadID string
+	for _, upload := range listMultiOutput.Uploads {
+		if *upload.Key == resum.Identifier {
+			uploadID = *upload.UploadId
+		}
+	}
+
+	if len(uploadID) == 0 {
+		log.Debug("chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	input := &s3.ListPartsInput{
+		Key:      &resum.Identifier,
+		Bucket:   &u.bucketName,
+		UploadId: &uploadID,
+	}
+
+	output, err := u.client.ListParts(input)
 	if err != nil {
-		log.ErrorR(req, err, nil)
-		w.WriteHeader(http.StatusInternalServerError)
+		log.Debug("chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	parts := output.Parts
+	if len(parts) == resum.TotalChunks {
+		u.completeUpload(w, req, resum, uploadID, parts)
 		return
 	}
 
 	for _, part := range parts {
-		if part.N == resum.ChunkNumber {
+		if *part.PartNumber == int64(resum.ChunkNumber) {
 			log.Debug("chunk number already uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName, "identifier": resum.Identifier})
-
-			if len(parts) == resum.TotalChunks {
-				completeS3MultiUpload(w, req, resum, parts, m)
-			}
-
 			w.WriteHeader(http.StatusOK)
 			return
 		}
@@ -127,6 +130,39 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 
 	log.Debug("chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
 	w.WriteHeader(http.StatusNotFound)
+}
+
+func (u *Uploader) completeUpload(w http.ResponseWriter, req *http.Request, resum *Resumable, uploadID string, parts []*s3.Part) {
+	var completedParts []*s3.CompletedPart
+
+	for _, part := range parts {
+		completedParts = append(completedParts, &s3.CompletedPart{
+			PartNumber: part.PartNumber,
+			ETag:       part.ETag,
+		})
+	}
+
+	if len(completedParts) == resum.TotalChunks {
+		completeInput := &s3.CompleteMultipartUploadInput{
+			Key:      &resum.Identifier,
+			UploadId: &uploadID,
+			MultipartUpload: &s3.CompletedMultipartUpload{
+				Parts: completedParts,
+			},
+			Bucket: &u.bucketName,
+		}
+
+		log.Debug("going to attempt to complete", log.Data{"complete": completeInput})
+
+		_, err := u.client.CompleteMultipartUpload(completeInput)
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		log.Trace("uploaded file successfully", log.Data{"file-name": resum.FileName, "uid": resum.Identifier, "size": resum.TotalSize})
+	}
 }
 
 // Upload handles the uploading a file to AWS s3
@@ -161,28 +197,59 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// If there is only one chunk to upload there is no point creating a multi part upload to s3
-	if resum.TotalChunks == 1 {
-		if err = u.bucket.Put(resum.Identifier, b, resum.Type, "public-read"); err != nil {
-			log.ErrorR(req, err, nil)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		log.Trace("uploaded file successfully", log.Data{"file-name": resum.FileName, "uid": resum.Identifier, "size": resum.TotalSize})
-		return
+	listMultiInput := &s3.ListMultipartUploadsInput{
+		Bucket: &u.bucketName,
 	}
 
-	m, err := u.bucket.Multi(resum.Identifier, resum.Type, "public-read")
+	listMultiOutput, err := u.client.ListMultipartUploads(listMultiInput)
 	if err != nil {
 		log.ErrorR(req, err, nil)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	var uploadID string
+
+	for _, upload := range listMultiOutput.Uploads {
+		if *upload.Key == resum.Identifier {
+			uploadID = *upload.UploadId
+		}
+	}
+
+	if len(uploadID) == 0 {
+		acl := "public-read"
+
+		createMultiInput := &s3.CreateMultipartUploadInput{
+			Bucket:      &u.bucketName,
+			Key:         &resum.Identifier,
+			ACL:         &acl,
+			ContentType: &resum.Type,
+		}
+
+		createMultiOutput, err := u.client.CreateMultipartUpload(createMultiInput)
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		uploadID = *createMultiOutput.UploadId
+	}
+
 	rs := bytes.NewReader(b)
 
-	if _, err = m.PutPart(resum.ChunkNumber, rs); err != nil {
+	n := int64(resum.ChunkNumber)
+
+	uploadPartInput := &s3.UploadPartInput{
+		UploadId:   &uploadID,
+		Bucket:     &u.bucketName,
+		Key:        &resum.Identifier,
+		Body:       rs,
+		PartNumber: &n,
+	}
+
+	_, err = u.client.UploadPart(uploadPartInput)
+	if err != nil {
 		log.ErrorR(req, err, nil)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -194,15 +261,22 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		"file_name":    resum.FileName,
 	})
 
-	parts, err := m.ListParts()
+	input := &s3.ListPartsInput{
+		Key:      &resum.Identifier,
+		Bucket:   &u.bucketName,
+		UploadId: &uploadID,
+	}
+
+	output, err := u.client.ListParts(input)
 	if err != nil {
 		log.ErrorR(req, err, nil)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	parts := output.Parts
 	if len(parts) == resum.TotalChunks {
-		completeS3MultiUpload(w, req, resum, parts, m)
+		u.completeUpload(w, req, resum, uploadID, parts)
 	}
 }
 
@@ -210,7 +284,8 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":id")
 
-	url := u.bucket.URL(path)
+	url := "https://s3-%s.amazonaws.com/%s/%s"
+	url = fmt.Sprintf(url, "eu-west-1", u.bucketName, path)
 
 	body := struct {
 		URL string `json:"url"`
@@ -228,18 +303,4 @@ func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
-}
-
-func completeS3MultiUpload(w http.ResponseWriter, req *http.Request, resum *Resumable, parts []s3.Part, m Multi) {
-
-	if err := m.Complete(parts); err != nil {
-		log.ErrorR(req, err, nil)
-		if err := m.Abort(); err != nil {
-			log.ErrorR(req, err, nil)
-		}
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	log.Trace("uploaded file successfully", log.Data{"file-name": resum.FileName, "uid": resum.Identifier, "size": resum.TotalSize})
 }

@@ -1,14 +1,12 @@
 
-/* 
-* Required legacy SCSS - to be refactored 
+/*
+* Required legacy SCSS - to be refactored
 */
 @import "../legacy/scss/partials/reset";
-// @import "../legacy/scss/utilities/grid";
 
 
-
-/* 
-* Refactored SCSS 
+/*
+* Refactored SCSS
 */
 
 //Base styling
@@ -16,7 +14,6 @@
 @import "base/grid";
 @import "base/fonts";
 @import "base/typography";
-@import "base/utilities";
 
 // Components
 @import "components/global-nav";
@@ -32,9 +29,18 @@
 @import "components/selected-item-list";
 @import "components/page";
 
+@import "components/card";
+@import "components/table";
+@import "components/details";
+@import "components/selectable-table";
+@import "components/icon";
+@import "components/preview";
 
 // Elements
 @import "elements/buttons";
 @import "elements/inputs";
 @import "elements/forms-and-labels";
 @import "elements/lists";
+
+// High priority - should be last in cascade
+@import "base/utilities";
