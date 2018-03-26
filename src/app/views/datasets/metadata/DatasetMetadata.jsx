@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
@@ -26,7 +27,9 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
     collectionID: PropTypes.string,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    router: PropTypes.shape({
+        listenBefore: PropTypes.func.isRequired
+    }).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
             title: PropTypes.string
@@ -128,6 +131,8 @@ export class DatasetMetadata extends Component {
     }
 
     componentWillMount() {
+
+        this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
 
         this.setState({isFetchingDataset: true});
         
@@ -295,8 +300,15 @@ export class DatasetMetadata extends Component {
         return true;
     }
 
-    componentWillUnmount() {
+    handleRouteChange(nextLocation, action) {
+        // Do not empty the active dataset data if we're going to the preview page, to save us GETting it again when we already have it in state.
+        if (nextLocation.pathname === url.resolve("preview")) {
+            action();
+            return;    
+        }
+
         this.props.dispatch(emptyActiveDataset());
+        action();
     }
 
     getCollection(collectionID) {
@@ -565,7 +577,8 @@ export class DatasetMetadata extends Component {
         }
 
         if (type === "link") {
-            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});            return;
+            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});
+            return;
         }
 
         if (type === "methodologies") {
@@ -902,11 +915,13 @@ export class DatasetMetadata extends Component {
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                         </div>
-                        <button id="btn-save" type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
+                        <button id="btn-save" type="submit" className="btn btn--primary margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
                         {this.renderReviewActions()}
-                        {/* TODO render preview CTA with `this.state.latestVersion` check */}
                         {this.state.isSavingData &&
                             <div className="loader loader--inline loader--dark margin-left--1"></div>
+                        }
+                        {this.state.latestVersion &&
+                            <Link className="margin-left--1" to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}>Preview</Link>
                         }
                         </form>
                     </div>
@@ -916,24 +931,23 @@ export class DatasetMetadata extends Component {
 
                       <Modal sizeClass="grid__col-3">
                         {this.state.modalType ?
-
-                          <RelatedContentForm
-                              name="related-content-modal"
-                              formTitle="Add related content"
-                              titleLabel={"Page title"}
-                              titleInput={this.state.titleInput}
-                              urlLabel={"Page URL"}
-                              urlInput={this.state.urlInput}
-                              descLabel={"Description"}
-                              descInput={this.state.descInput}
-                              onCancel={this.handleRelatedContentCancel}
-                              onFormInput={this.handleInputChange}
-                              onFormSubmit={this.handleRelatedContentSubmit}
-                              titleError={this.state.titleError}
-                              urlError={this.state.urlError}
-                              requiresDescription={this.state.modalType === "methodologies" ? true : false}
-                              requiresURL={true}
-                          />
+                            <RelatedContentForm
+                                name="related-content-modal"
+                                formTitle="Add related content"
+                                titleLabel={"Page title"}
+                                titleInput={this.state.titleInput}
+                                urlLabel={"Page URL"}
+                                urlInput={this.state.urlInput}
+                                descLabel={"Description"}
+                                descInput={this.state.descInput}
+                                onCancel={this.handleRelatedContentCancel}
+                                onFormInput={this.handleInputChange}
+                                onFormSubmit={this.handleRelatedContentSubmit}
+                                titleError={this.state.titleError}
+                                urlError={this.state.urlError}
+                                requiresDescription={this.state.modalType === "methodologies" ? true : false}
+                                requiresURL={true}
+                            />
                         :
                           <div>
                           <div className="modal__header">
