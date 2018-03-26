@@ -71,3 +71,19 @@ test("Slugged URL with leading slash produces correct slug without leading dash"
 test("Slugged URL without leading slash produces correct slug", () => {
     expect(url.slug("economy/grossdomesticproduct/bulletins/gdp/jan2017")).toBe("economy-grossdomesticproduct-bulletins-gdp-jan2017");
 });
+
+describe("Resolved URLs include query parameters", () => {
+    it("includes queries on routes from the root path", () => {
+        expect(url.resolve("/datasets/my-dataset/editions/current/versions/1?collection=my-collection")).toBe("/florence/datasets/my-dataset/editions/current/versions/1?collection=my-collection");
+    });
+    
+    it("includes queries on relative routes", () => {
+        setLocation('http://publishing.onsdigital.co.uk/florence/datasets/my-dataset-id');
+        expect(url.resolve("../?collection=my-collection")).toBe("/florence/datasets?collection=my-collection");
+    });
+
+    it("excludes queries when the caller passes in the correct argument", () => {
+        setLocation('http://publishing.onsdigital.co.uk/florence/datasets/my-dataset-id?collection=my-collection-id');
+        expect(url.resolve("/collections")).toBe("/florence/collections");
+    });
+});

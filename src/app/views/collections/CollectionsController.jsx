@@ -8,13 +8,15 @@ import RestoreContent from './restore-content/RestoreContent'
 import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections';
-import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
+import {updateActiveCollection, emptyActiveCollection , updateActiveDatasetReviewState, updateActiveVersionReviewState, updateWorkingOn, emptyWorkingOn} from '../../config/actions';
 import notifications from '../../utilities/notifications';
 import dateformat from 'dateformat';
 import Modal from '../../components/Modal';
+import url from '../../utilities/url';
+import cookies from '../../utilities/cookies';
+
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import log, {eventTypes} from '../../utilities/log';
-import cookies from '../../utilities/cookies';
 import CollectionEditController from './edit/CollectionEditController';
 
 const propTypes = {
@@ -41,22 +43,24 @@ const propTypes = {
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
             uri: PropTypes.string.isRequired,
-            state: PropTypes.string.isRequired
+            state: PropTypes.string.isRequired,
+            lastEditedBy: PropTypes.string
         })),
-        datasetVersion: PropTypes.arrayOf(PropTypes.shape({
+        datasetVersions: PropTypes.arrayOf(PropTypes.shape({
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
             edition: PropTypes.string.isRequired,
             version: PropTypes.string.isRequired,
             uri: PropTypes.string.isRequired,
-            state: PropTypes.string.isRequired
+            state: PropTypes.string.isRequired,
+            lastEditedBy: PropTypes.string
         })),
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
         teams: PropTypes.array
     }),
-    activePageURI: PropTypes.string,
+    activePageID: PropTypes.string,
     isEditingCollection: PropTypes.bool,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired
 };
@@ -246,6 +250,8 @@ export class CollectionsController extends Component {
                 inProgress: collection.inProgress,
                 complete: collection.complete,
                 reviewed: collection.reviewed,
+                datasets: collection.datasets,
+                datasetVersions: collection.datasetVersions,
                 teams: collection.teamsDetails ? collection.teamsDetails.map(team => ({
                     id: team.id.toString(),
                     name: team.name
@@ -545,17 +551,18 @@ export class CollectionsController extends Component {
         // close the drawer is finished (which looks ugly).
         if (!this.state.drawerIsVisible) {
             this.props.dispatch(emptyActiveCollection());
+            this.props.dispatch(emptyWorkingOn());
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }
     }
 
     handleCollectionPageClick(uri) {
-        if (uri === this.props.activePageURI) {
+        if (uri === this.props.activePageID) {
             return;
         }
 
         let newURL = location.pathname + "#" + uri;
-        if (this.props.activePageURI) {
+        if (this.props.activePageID) {
             newURL = `${this.props.rootPath}/collections/${this.props.params.collectionID}#${uri}`;
         }
     
@@ -564,17 +571,43 @@ export class CollectionsController extends Component {
         return newURL; //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleCollectionPageEditClick(uri) {
-        window.location = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${uri}`;
+    handleCollectionPageEditClick(page) {
+        if (page.type === "dataset_details") {
+            const newURL = url.resolve(`/datasets/${page.id}/metadata?collection=${this.props.params.collectionID}`);
+            const dataset = this.props.activeCollection.datasets.find(dataset => {
+                return dataset.id === page.id;
+            });
+            const lastEditedBy = dataset.lastEditedBy;
+            const reviewState = dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
+            this.props.dispatch(updateActiveDatasetReviewState(lastEditedBy, reviewState));
+            this.props.dispatch(push(newURL));
+            return newURL;
+        }
+        if (page.type === "dataset_version") {
+            const newURL = url.resolve(`/datasets/${page.id}/metadata?collection=${this.props.params.collectionID}`);
+            const version = this.props.activeCollection.datasetVersions.find(version => {
+                return `${version.id}/editions/${version.edition}/versions/${version.version}` === page.id;
+            });
+            const lastEditedBy = version.lastEditedBy;
+            const reviewState = version.state.charAt(0).toLowerCase() + version.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
+            this.props.dispatch(updateActiveVersionReviewState(lastEditedBy, reviewState));
+            this.props.dispatch(push(newURL));
+            return newURL;
+        }
+
+        const newURL = `${this.props.rootPath}/workspace?collection=${this.props.params.collectionID}&uri=${page.id}`;
+        window.location = newURL;
+        
+        return newURL //return the URL so that we can test that the correct route is being used
     }
 
-    handleCollectionPageDeleteUndo(deleteTimer, uri, notificationID) {
+    handleCollectionPageDeleteUndo(deleteTimer, ID, notificationID) {
         this.setState(state => ({
-            pendingDeletedPages: [...state.pendingDeletedPages].filter(pageURI => {
-                return pageURI !== uri;
+            pendingDeletedPages: [...state.pendingDeletedPages].filter(pageID => {
+                return pageID !== ID;
             })
         }));
-        const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}#${uri}`;
+        const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}#${ID}`;
         this.props.dispatch(push(pageRoute));
         window.clearTimeout(deleteTimer);
         notifications.remove(notificationID);
@@ -582,18 +615,28 @@ export class CollectionsController extends Component {
         return pageRoute //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleCollectionPageDeleteClick(uri, title, state) {
+    handleCollectionPageDeleteClick(deletedPage, state) {
         const collectionID = this.props.params.collectionID;
         this.setState(state => ({
-            pendingDeletedPages: [...state.pendingDeletedPages, uri]
+            pendingDeletedPages: [...state.pendingDeletedPages, deletedPage.id]
         }));
-        const collectionURL = location.pathname.replace(`#${uri}`, "");
+        const collectionURL = location.pathname.replace(`#${deletedPage.id}`, "");
         this.props.dispatch(push(collectionURL));
 
+        const deletePageRequest = () => {
+            if (deletedPage.type === "dataset_details") {
+                return collections.removeDataset(collectionID, deletedPage.id);
+            }
+            if (deletedPage.type === "dataset_version") {
+                return collections.removeDatasetVersion(collectionID, deletedPage.id, deletedPage.edition, deletedPage.version);
+            }
+            return collections.deletePage(collectionID, deletedPage.id);
+        };
+
         const triggerPageDelete = () => {
-            collections.deletePage(collectionID, uri).then(() => {
+            deletePageRequest().then(() => {
                 const pages = this.props.activeCollection[state].filter(page => {
-                    return page.uri !== uri;
+                    return page.id !== deletedPage.id;
                 });
                 const updatedCollection = {
                     ...this.props.activeCollection,
@@ -612,7 +655,7 @@ export class CollectionsController extends Component {
                     case(404): {
                         const notification = {
                             type: 'warning',
-                            message: `Couldn't delete the page '${title}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
+                            message: `Couldn't delete the page '${deletedPage.title}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -621,7 +664,7 @@ export class CollectionsController extends Component {
                     case(403): {
                         const notification = {
                             type: 'neutral',
-                            message: `You don't have permission to delete the page '${title}' from this collection`,
+                            message: `You don't have permission to delete the page '${deletedPage.title}' from this collection`,
                             autoDismiss: 5000,
                             isDismissable: true
                         }
@@ -631,7 +674,7 @@ export class CollectionsController extends Component {
                     case('FETCH_ERR'): {
                         const notification = {
                             type: 'warning',
-                            message: `Couldn't delete the page '${title}' from this collection due to a network error, please check your connection and try again.`,
+                            message: `Couldn't delete the page '${deletedPage.title}' from this collection due to a network error, please check your connection and try again.`,
                             isDismissable: true
                         }
                         notifications.add(notification);
@@ -640,28 +683,28 @@ export class CollectionsController extends Component {
                     default: {
                         const notification = {
                             type: 'warning',
-                            message: `Couldn't delete the page '${title}' from this collection due to an unexpected error`,
+                            message: `Couldn't delete the page '${deletedPage.title}' from this collection due to an unexpected error`,
                             isDismissable: true
                         };
                         notifications.add(notification);
                         break;
                     }
                 }
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting page '${title}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting page '${deletedPage.title}' from collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
                 console.error("Error deleting page from a collection: ", error);
             });
-        }
+        };
 
         const deletePageTimer = setTimeout(triggerPageDelete, 6000);
 
         const undoPageDelete = () => {
-            this.handleCollectionPageDeleteUndo(deletePageTimer, uri, notificationID);
+            this.handleCollectionPageDeleteUndo(deletePageTimer, deletedPage.id, notificationID);
         };
 
         const handleNotificationClose = () => {
             triggerPageDelete();
             notifications.remove(notificationID);
-        }
+        };
 
         const notification = {
             buttons: [
@@ -677,11 +720,11 @@ export class CollectionsController extends Component {
             type: 'neutral',
             isDismissable: false,
             autoDismiss: 6000,
-            message: `Deleted page '${title}' from collection '${this.props.activeCollection.name}'`
-        }
+            message: `Deleted page '${deletedPage.title}' from collection '${this.props.activeCollection.name}'`
+        };
         const notificationID = notifications.add(notification);
 
-        return collectionURL //using 'return' so that we can test the correct new URL has been generated
+        return collectionURL; //using 'return' so that we can test the correct new URL has been generated
     }
 
     handleDrawerCloseClick() {
@@ -802,16 +845,21 @@ export class CollectionsController extends Component {
 
     updateActiveCollectionGlobally(collection) {
         this.props.dispatch(updateActiveCollection(collection));
+        const workingOn = {
+            id: collection.id,
+            name: collection.name
+        };
+        this.props.dispatch(updateWorkingOn(workingOn));
         cookies.add("collection", collection.id, null);
     }
 
     readablePublishDate(collection) {
         if (collection.publishDate && collection.type === "manual") {
-            return dateformat(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT") + " [rolled back]";
+            return dateformat(collection.publishDate, "UTC:ddd, dd/mm/yyyy h:MMTT") + " [rolled back]";
         }
 
         if (collection.publishDate) {
-            return dateformat(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT");
+            return dateformat(collection.publishDate, "UTC:ddd, dd/mm/yyyy h:MMTT");
         }
 
         if (!collection.publishDate) {
@@ -861,15 +909,69 @@ export class CollectionsController extends Component {
         }
 
         return this.props.activeCollection[state].filter(page => {
-            return !this.state.pendingDeletedPages.includes(page.uri);
+            return !this.state.pendingDeletedPages.includes(page.id);
         });
+    }
+
+    mapDatasetsToCollection(collection) {
+
+        const mapVersion = version => ({
+            title: version.title,
+            edition: version.edition,
+            version: version.version,
+            id: `${version.id}/editions/${version.edition}/versions/${version.version}`,
+            type: "dataset_version"
+        });
+
+        const mapDataset = dataset => ({
+            title: dataset.title,
+            type: "dataset_details",
+            id: dataset.id
+        });
+
+        const mapDatasets = () => {
+            let inProgress = collection.inProgress || [];
+            let complete = collection.complete || [];
+            let reviewed = collection.reviewed || [];
+            
+            if (collection.datasetVersions) {
+                collection.datasetVersions.forEach(version => {
+                    if (version.state === 'InProgress') {
+                        inProgress.push(mapVersion(version));
+                    }
+                    if (version.state === 'Complete') {
+                        complete.push(mapVersion(version));
+                    }
+                    if (version.state === 'Reviewed') {
+                        reviewed.push(mapVersion(version));
+                    }
+                });
+            }
+
+            if (collection.datasets) {
+                collection.datasets.forEach(dataset => {
+                    if (dataset.state === 'InProgress') {
+                        inProgress.push(mapDataset(dataset));
+                    }
+                    if (dataset.state === 'Complete') {
+                        complete.push(mapDataset(dataset));
+                    }
+                    if (dataset.state === 'Reviewed') {
+                        reviewed.push(mapDataset(dataset));
+                    }
+                });
+            }
+
+            return {inProgress, complete, reviewed};
+
+        };
+
+        return {...collection, ...mapDatasets()};
     }
 
     mapPagesToCollection(collection) {
         try {
-            const canBeApproved = this.collectionCanBeApproved(collection);
-            const canBeDeleted = this.collectionCanBeDeleted(collection);
-            const mapPageToState = pagesArray => {
+            const mapPagesToState = pagesArray => {
                 if (!pagesArray) {
                     log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
                     return null;
@@ -882,20 +984,23 @@ export class CollectionsController extends Component {
                         },
                         title: page.description.title,
                         edition: page.description.edition || "",
-                        uri: page.uri,
+                        id: page.uri,
                         type: page.type
                     }
                 });
-            }
-            const mappedCollection = {
+            };
+            const collectionWithPages = {
                 ...collection,
-                canBeApproved,
-                canBeDeleted,
-                inProgress: mapPageToState(collection.inProgress),
-                complete: mapPageToState(collection.complete),
-                reviewed: mapPageToState(collection.reviewed)
-            }
-            return mappedCollection;
+                inProgress: mapPagesToState(collection.inProgress),
+                complete: mapPagesToState(collection.complete),
+                reviewed: mapPagesToState(collection.reviewed)
+            };
+            const collectionWithDatasetsAndPages = this.mapDatasetsToCollection(collectionWithPages);
+            return {
+                ...collectionWithDatasetsAndPages,
+                canBeDeleted: this.collectionCanBeDeleted(collectionWithDatasetsAndPages),
+                canBeApproved: this.collectionCanBeApproved(collectionWithDatasetsAndPages)
+            };
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state" + JSON.stringify(error));
             console.error("Error mapping collection GET response to Redux state" + error);
@@ -939,7 +1044,7 @@ export class CollectionsController extends Component {
         return (
             <CollectionDetails 
                 {...this.props.activeCollection}
-                activePageURI={this.props.activePageURI}
+                activePageID={this.props.activePageID}
                 inProgress={this.mapPagesAndPendingDeletes('inProgress')}
                 complete={this.mapPagesAndPendingDeletes('complete')}
                 reviewed={this.mapPagesAndPendingDeletes('reviewed')}
@@ -1003,7 +1108,7 @@ export function mapStateToProps(state) {
         user: state.state.user,
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,
-        activePageURI: state.routing.locationBeforeTransitions.hash.replace('#', '')
+        activePageID: state.routing.locationBeforeTransitions.hash.replace('#', '')
     }
 }
 
