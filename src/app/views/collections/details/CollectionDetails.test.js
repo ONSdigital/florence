@@ -38,7 +38,7 @@ const defaultProps = {
 const alternativePageProps = {
     inProgress: [
             {
-                uri: "/",
+                id: "/",
                 type: "homepage",
                 description: {
                     title: "Home"
@@ -50,7 +50,7 @@ const alternativePageProps = {
                 
             },
             {
-                uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+                id: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
                 type: "bulletin",
                 description: {
                     title: "Consumer Price Inflation",
@@ -64,7 +64,7 @@ const alternativePageProps = {
         ],
         complete: [
             {
-                uri: "/businessindustryandtrade",
+                id: "/businessindustryandtrade",
                 type: "taxonomy_landing_page",
                 description: {
                     title: "Business industry and trade"
@@ -77,7 +77,7 @@ const alternativePageProps = {
         ],
         reviewed: [
             {
-                uri: "/businessindustryandtrade/businessbirthsanddeaths",
+                id: "/businessindustryandtrade/businessbirthsanddeaths",
                 type: "taxonomy_landing_page",
                 description: {
                     title: "Business births and deaths"
@@ -144,7 +144,7 @@ describe("Collection details page edit/delete buttons only show for an active pa
 
     it("buttons will show for active pages", () => {
         component.setProps({
-            activePageURI: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
+            activePageID: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
         });
         const activePages = component.find('.list__item--expandable.active');
         expect(activePages.length).toBe(1);
@@ -153,7 +153,7 @@ describe("Collection details page edit/delete buttons only show for an active pa
 
     it("buttons show for active deleted pages", () => {
         component.setProps({
-            activePageURI: "/about/surveys"
+            activePageID: "/about/surveys"
         });
         const activePages = component.find('.list__item--expandable.active');
         const activeDeletedPages = component.find('.list__item--expandable[data-page-state="deletes"].active');
@@ -290,8 +290,8 @@ describe("'Last edit' information for a page in a collection", () => {
 
     it("Renders an error message if neither the email or date are available", () => {
         const event = {};
-        expect(component.instance().renderLastEditText(event)).toBe("Error getting 'last edit' details");
-        expect(component.instance().renderLastEditText()).toBe("Error getting 'last edit' details");
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: information not available");
+        expect(component.instance().renderLastEditText()).toBe("Last edit: information not available");
     })
     
     it("Renders an error message if it isn't a valid date and no email is available", () => {
@@ -299,7 +299,7 @@ describe("'Last edit' information for a page in a collection", () => {
             email: "",
             date: "not a valid date"
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Error rendering 'last edit' details");
+        expect(component.instance().renderLastEditText(event)).toBe("Error showing 'last edit' details");
     });
 
 });
