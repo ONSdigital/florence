@@ -11,6 +11,7 @@ import collections from '../../../utilities/api-clients/collections'
 import {updateActiveDataset, updateActiveDatasetReviewState} from '../../../config/actions'
 import log, {eventTypes} from '../../../utilities/log'
 import DatasetReviewActions from '../DatasetReviewActions'
+import datasetHandleMetadataSaveErrors from '../metadata/datasetHandleMetadataSaveErrors'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -115,57 +116,45 @@ class DatasetPreview extends Component {
         });
     }
 
-    handleSubmitForReview() {
-        //TODO make request to submit dataset for review
+    updateDatasetReviewState(datasetID, isSubmittingForReview, isMarkingAsReviewed) {
+        let request = Promise.resolve;
+
+        this.setState({isSavingData: true});
+
+        if (isSubmittingForReview) {
+            request = collections.setDatasetStatusToComplete;
+        }
+        
+        if (isMarkingAsReviewed) {
+            request = collections.setDatasetStatusToReviewed;
+        }
+
+        return request(this.props.collectionID, datasetID).catch(error => {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`, error);
+            return error;
+        });
     }
 
-    handleMarkAsReviewed(event) {
-        event.preventDefault();
-        this.setState({isApprovingVersion: true});
-        datasets.approveDatasetMetadata(this.props.params.datasetID).then(() => {
-            this.setState({isApprovingVersion: false});
-            this.props.dispatch(push(url.resolve('/collection/' + this.props.collectionID)));
-        }).catch(error => {
-            switch(error.status) {
-                case(403): {
-                    const notification = {
-                        type: "warning",
-                        message: `You do not have permission to approve this dataset`,
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: "warning",
-                        message: `The dataset '${this.props.params.datasetID}' was not recognised`,
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: `There was a network error whilst trying to approve this dataset. Please check your connection and try again`,
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error occurred whilst approving this dataset",
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                }
-            }
-            this.setState({isApprovingVersion: false});
-            console.error("Error whilst approving dataset", error);
-        });
+    async handleUpdateReviewState(isSubmittingForReview, isMarkingAsReviewed) {
+        this.setState({isSavingData: true});
+
+        const updateError = await this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed);
+        if (updateError) {
+            datasetHandleMetadataSaveErrors(updateError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
+            this.setState({isSavingData: false});
+            return;
+        }
+
+        this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
+    }
+
+    handleSubmitForReview() {
+        this.handleUpdateReviewState(true, false);
+    }
+
+    handleMarkAsReviewed() {
+        this.handleUpdateReviewState(false, true);
     }
 
     getCollection(collectionID) {
