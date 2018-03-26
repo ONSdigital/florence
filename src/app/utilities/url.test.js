@@ -1,6 +1,7 @@
 import url from './url';
 
 function setLocation(href) {
+    console.log(href.indexOf("?"));
     Object.defineProperty(window.location, 'href', {
         writable: true,
         value: href,
@@ -8,6 +9,10 @@ function setLocation(href) {
     Object.defineProperty(window.location, 'pathname', {
         writable: true,
         value: href.substring(href.indexOf("/florence")),
+    });
+    Object.defineProperty(window.location, 'search', {
+        writable: true,
+        value: href.substring(href.indexOf("?") >= 0 ? href.indexOf("?") : href.length),
     });
 }
 setLocation('http://publishing.onsdigital.co.uk/florence/datasets');
@@ -84,6 +89,6 @@ describe("Resolved URLs include query parameters", () => {
 
     it("excludes queries when the caller passes in the correct argument", () => {
         setLocation('http://publishing.onsdigital.co.uk/florence/datasets/my-dataset-id?collection=my-collection-id');
-        expect(url.resolve("/collections")).toBe("/florence/collections");
+        expect(url.resolve("/collections?collection=my-collection-id", true)).toBe("/florence/collections");
     });
 });
