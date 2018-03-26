@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     path: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    onLoad: PropTypes.func,
+    hidden: PropTypes.bool
 };
 
 const defaultProps = {
@@ -36,9 +38,18 @@ export default class Preview extends Component {
         this.props.onChange(document.getElementById("iframe").contentWindow.document.location.pathname);
     }
 
+    returnHiddenValue() {
+        if (this.props.hidden) {
+            return "none";
+        }
+
+        return "block";
+    }
+
     render() {
+        console.log(this.props);
         return (
-            <iframe id="iframe" className="preview__iframe" src={this.props.path}></iframe>
+            <iframe style={{display: this.returnHiddenValue()}} id="iframe" className="preview__iframe" src={this.props.path} onLoad={this.props.onLoad}></iframe>
         )
     }
 }
