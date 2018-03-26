@@ -468,11 +468,10 @@ export class CollectionsController extends Component {
                     if (collection.id !== collectionID) {
                         return collection;
                     }
-
                     return {
                         ...collection,
-                        publishedStatus: {
-                            ...collection.publishStatus,
+                        status: {
+                            ...collection.status,
                             neutral: true
                         }
                     }
@@ -480,13 +479,12 @@ export class CollectionsController extends Component {
             }
         }
 
-        this.setState({isApprovingCollection: true});
+        this.setState({
+            isApprovingCollection: true,
+            ...updatePublishStatusToNeutral(this.state),
+        });
         collections.approve(collectionID).then(() => {
-            const newState = {
-                ...updatePublishStatusToNeutral,
-                isApprovingCollection: false
-            };
-            this.setState(newState);
+            this.setState({isApprovingCollection: false});
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }).catch(error => {
             this.setState({isApprovingCollection: false});

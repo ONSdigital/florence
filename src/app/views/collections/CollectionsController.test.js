@@ -123,6 +123,19 @@ const mockAllCollections = [
         "teams": [
             "Team 2"
         ]
+    },
+    {
+        "approvalStatus": "COMPLETE",
+        "publishComplete": false,
+        "isEncrypted": false,
+        "collectionOwner": "PUBLISHING_SUPPORT",
+        "timeseriesImportFiles": [ ],
+        "id": "test-sau39393uyqha8aw8y3n3",
+        "name": "Complete collection",
+        "type": "manual",
+        "teams": [
+            "Team 2"
+        ]
     }
 ];
 
@@ -768,6 +781,6 @@ describe("Approving a collection", () => {
         component.setProps(props);
         component.instance().handleCollectionApproveClick();
         await component.update();
-        expect(component.state('collections').find(collection => collection.id === 'ready-to-approve-collection-123').publishedStatus.neutral).toBe(true);
+        expect(component.state('collections').find(collection => collection.id === 'ready-to-approve-collection-123').status.neutral).toBe(true);
     });
 });
