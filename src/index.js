@@ -16,7 +16,6 @@ import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/Dat
 import DatasetUploadMetadata from './app/views/uploads/dataset/upload-details/DatasetUploadMetadata'
 import DatasetMetadata from './app/views/datasets/metadata/DatasetMetadata';
 import VersionMetadata from './app/views/datasets/metadata/VersionMetadata';
-import DatasetCollectionController from './app/views/datasets/collection/DatasetCollectionController';
 import VersionCollectionController from './app/views/datasets/collection/VersionCollectionController';
 import DatasetPreview from './app/views/datasets/preview/DatasetPreview';
 import VersionPreview from './app/views/datasets/preview/VersionPreview';
@@ -101,13 +100,8 @@ class Index extends Component {
                                 <IndexRoute component={ userIsAuthenticated(DatasetsController) } />
                                 <Route path=":datasetID">
                                     <IndexRedirect to={`${rootPath}/datasets`} />
-                                    <Route path="metadata">
-                                        <IndexRoute component={ userIsAuthenticated(DatasetMetadata) } />
-                                        <Route path="collection">
-                                            <IndexRoute component={ userIsAuthenticated(DatasetCollectionController) } />
-                                            <Route path="preview" component={ userIsAuthenticated(DatasetPreview) } />
-                                        </Route>
-                                    </Route>
+                                    <Route path="preview" component={ userIsAuthenticated(DatasetPreview) } />
+                                    <Route path="metadata" component={ userIsAuthenticated(DatasetMetadata) } />
                                     <Route path="editions/:edition/versions/:version">
                                         <IndexRedirect to="metadata"/>
                                         <Route path="metadata" component={ userIsAuthenticated(VersionMetadata) }/>

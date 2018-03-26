@@ -1000,7 +1000,7 @@ export class VersionMetadata extends Component {
                                 </div>
                             </div>
                           </div>
-                          <button type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
+                          <button type="submit" className="btn btn--primary margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
                           {this.renderReviewActions()}
                           {/* TODO render a 'preview' call to action */}
                           {this.state.isSavingData &&
