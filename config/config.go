@@ -11,14 +11,14 @@ type Config struct {
 	ZebedeeURL         string `envconfig:"ZEBEDEE_URL"`
 	RecipeAPIURL       string `envconfig:"RECIPE_API_URL"`
 	ImportAPIURL       string `envconfig:"IMPORT_API_URL"`
-	ImportAPIAuthToken string `envconfig:"IMPORT_API_AUTH_TOKEN"`
+	ImportAPIAuthToken string `envconfig:"IMPORT_API_AUTH_TOKEN"      json:"-"`
 	DatasetAPIURL      string `envconfig:"DATASET_API_URL"`
-	DatasetAuthToken   string `envconfig:"DATASET_API_AUTH_TOKEN"`
+	DatasetAuthToken   string `envconfig:"DATASET_API_AUTH_TOKEN"     json:"-"`
 	UploadBucketName   string `envconfig:"UPLOAD_BUCKET_NAME"`
 	EnableNewApp       bool   `envconfig:"ENABLE_NEW_APP"`
 	EncryptionDisabled bool   `envconfig:"ENCRYPTION_DISABLED"`
 	VaultAddr          string `envconfig:"VAULT_ADDR"`
-	VaultToken         string `envconfig:"VAULT_TOKEN"`
+	VaultToken         string `envconfig:"VAULT_TOKEN"                json:"-"`
 	VaultPath          string `envconfig:"VAULT_PATH"`
 }
 
