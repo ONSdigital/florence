@@ -141,16 +141,7 @@ func main() {
 	router.HandleFunc("/florence{uri:.*}", newAppHandler)
 	router.Handle("/{uri:.*}", routerProxy)
 
-	log.Debug("Starting server", log.Data{
-		"bind_addr":           cfg.BindAddr,
-		"frontend_router_url": cfg.RouterURL,
-		"zebedee_url":         cfg.ZebedeeURL,
-		"recipe_api_url":      cfg.RecipeAPIURL,
-		"import_api_url":      cfg.ImportAPIURL,
-		"dataset_api_url":     cfg.DatasetAPIURL,
-		"enable_new_app":      cfg.EnableNewApp,
-		"encryption_disabled": cfg.EncryptionDisabled,
-	})
+	log.Debug("Starting server", log.Data{"config": cfg})
 
 	s := server.New(cfg.BindAddr, router)
 	// TODO need to reconsider default go-ns server timeouts
