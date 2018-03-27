@@ -220,18 +220,6 @@
 			"revisionTime": "2017-11-19T05:34:21Z"
 		},
 		{
-			"checksumSHA1": "wzvsJkEM5AYj7pJTsYpf/TAoVb4=",
-			"path": "github.com/goamz/goamz/aws",
-			"revision": "386f7c89320367132e0a3ad9b7fd31cdcf26abc6",
-			"revisionTime": "2017-09-06T08:45:35Z"
-		},
-		{
-			"checksumSHA1": "uWkMVxvYAvh11BtZBRZlHqmhvus=",
-			"path": "github.com/goamz/goamz/s3",
-			"revision": "386f7c89320367132e0a3ad9b7fd31cdcf26abc6",
-			"revisionTime": "2017-09-06T08:45:35Z"
-		},
-		{
 			"checksumSHA1": "/5JpULDw51Em+1+OJHcfDkbw/e0=",
 			"path": "github.com/golang/mock/gomock",
 			"revision": "f67f7081ddcd0f92a20c1d58e7cd8b23253d15c7",
@@ -502,12 +490,6 @@
 			"revisionTime": "2016-09-28T20:55:23Z"
 		},
 		{
-			"checksumSHA1": "sFD8LpJPQtWLwGda3edjf5mNUbs=",
-			"path": "github.com/vaughan0/go-ini",
-			"revision": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1",
-			"revisionTime": "2013-09-23T14:52:12Z"
-		},
-		{
 			"checksumSHA1": "GtamqiJoL7PGHsN454AoffBFMa8=",
 			"path": "golang.org/x/net/context",
 			"revision": "a8b9294777976932365dabb6640cf1468d95c70f",
@@ -568,36 +550,6 @@
 			"path": "golang.org/x/text/unicode/norm",
 			"revision": "eaba996247f653ef275b4e28b3f61333730ba5c1",
 			"revisionTime": "2018-03-20T11:15:25Z"
-		},
-		{
-			"checksumSHA1": "1D8GzeoFGUs5FZOoyC2DpQg8c5Y=",
-			"path": "gopkg.in/mgo.v2",
-			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
-			"revisionTime": "2016-08-18T02:01:20Z"
-		},
-		{
-			"checksumSHA1": "YsB2DChSV9HxdzHaKATllAUKWSI=",
-			"path": "gopkg.in/mgo.v2/bson",
-			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
-			"revisionTime": "2016-08-18T02:01:20Z"
-		},
-		{
-			"checksumSHA1": "XQsrqoNT1U0KzLxOFcAZVvqhLfk=",
-			"path": "gopkg.in/mgo.v2/internal/json",
-			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
-			"revisionTime": "2016-08-18T02:01:20Z"
-		},
-		{
-			"checksumSHA1": "LEvMCnprte47qdAxWvQ/zRxVF1U=",
-			"path": "gopkg.in/mgo.v2/internal/sasl",
-			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
-			"revisionTime": "2016-08-18T02:01:20Z"
-		},
-		{
-			"checksumSHA1": "+1WDRPaOphSCmRMxVPIPBV4aubc=",
-			"path": "gopkg.in/mgo.v2/internal/scram",
-			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
-			"revisionTime": "2016-08-18T02:01:20Z"
 		}
 	],
 	"rootPath": "github.com/ONSdigital/florence"
