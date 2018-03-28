@@ -16,9 +16,6 @@ import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/Dat
 import DatasetUploadMetadata from './app/views/uploads/dataset/upload-details/DatasetUploadMetadata'
 import DatasetMetadata from './app/views/datasets/metadata/DatasetMetadata';
 import VersionMetadata from './app/views/datasets/metadata/VersionMetadata';
-import VersionCollectionController from './app/views/datasets/collection/VersionCollectionController';
-import DatasetPreview from './app/views/datasets/preview/DatasetPreview';
-import VersionPreview from './app/views/datasets/preview/VersionPreview';
 import Logs from './app/views/logs/Logs';
 
 import './scss/main.scss';
@@ -26,6 +23,7 @@ import './scss/main.scss';
 import { store, history } from './app/config/store';
 
 import SelectableTest from './SelectableTest';
+import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 
 const rootPath = store.getState().state.rootPath;
 
@@ -100,15 +98,12 @@ class Index extends Component {
                                 <IndexRoute component={ userIsAuthenticated(DatasetsController) } />
                                 <Route path=":datasetID">
                                     <IndexRedirect to={`${rootPath}/datasets`} />
-                                    <Route path="preview" component={ userIsAuthenticated(DatasetPreview) } />
+                                    <Route path="preview" component={ userIsAuthenticated(DatasetPreviewController) } />
                                     <Route path="metadata" component={ userIsAuthenticated(DatasetMetadata) } />
                                     <Route path="editions/:edition/versions/:version">
                                         <IndexRedirect to="metadata"/>
                                         <Route path="metadata" component={ userIsAuthenticated(VersionMetadata) }/>
-                                        <Route path="collection" >
-                                            <IndexRoute component={ userIsAuthenticated(VersionCollectionController) } />
-                                            <Route path="preview" component={ userIsAuthenticated(VersionPreview) } />
-                                        </Route>
+                                        <Route path="preview" component={ userIsAuthenticated(DatasetPreviewController) } />
                                     </Route>
                                     <Route path="instances">
                                         <IndexRedirect to={`${rootPath}/datasets`}/>
