@@ -34,7 +34,7 @@ export default class collections {
     }
 
     static deletePage(collectionID, pageURI) {
-        return http.delete(`/zebedee/content/${collectionID}?uri=${pageURI}`);
+        return http.delete(`/zebedee/page/${collectionID}?uri=${pageURI}`);
     }
 
     static cancelDelete(collectionID, pageURI) {
