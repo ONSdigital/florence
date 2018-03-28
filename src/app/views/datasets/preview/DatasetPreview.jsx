@@ -1,247 +1,39 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import Preview from '../../../components/preview/Preview'
-import url from '../../../utilities/url'
-import datasets from '../../../utilities/api-clients/datasets'
-import notifications from '../../../utilities/notifications'
-import collections from '../../../utilities/api-clients/collections'
-import {updateActiveDataset, updateActiveDatasetReviewState} from '../../../config/actions'
-import log, {eventTypes} from '../../../utilities/log'
-import DatasetReviewActions from '../DatasetReviewActions'
-import datasetHandleMetadataSaveErrors from '../metadata/datasetHandleMetadataSaveErrors'
+import Preview from '../../../components/preview/Preview';
+import DatasetReviewActions from '../DatasetReviewActions';
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    userEmail: PropTypes.string.isRequired,
-    params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
-    }).isRequired,
-    latestVersion: PropTypes.string,
+    isReadOnly: PropTypes.bool,
+    isFetchingCollectionData: PropTypes.bool,
+    isSavingData: PropTypes.bool,
+    isLoadingPreview: PropTypes.bool,
     collectionID: PropTypes.string,
+    previewURL: PropTypes.string,
+    userEmail: PropTypes.string.isRequired,
     dataset: PropTypes.shape({
-        title: PropTypes.string,
         collection_id: PropTypes.string,
-        links: PropTypes.shape({
-            latest_version: PropTypes.shape({
-                href: PropTypes.string
-            })
-        }),
+        lastEditedBy: PropTypes.string,
         reviewState: PropTypes.string,
-        lastEditedBy: PropTypes.string
-    })
+        title: PropTypes.string
+    }),
+    backLinkPath: PropTypes.string.isRequired
 }
 
 class DatasetPreview extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            isSavingData: false,
-            isReadOnly: false,
-            isLoadingPreview: false,
-            isFetchingCollectionData: false,
-            latestVersion: null
-        }
-
-        this.handleSubmitForReview = this.handleSubmitForReview.bind(this);
-        this.handleMarkAsReviewed = this.handleMarkAsReviewed.bind(this);
-        this.handlePreviewLoad = this.handlePreviewLoad.bind(this);
-    }
-    
-    componentWillMount() {
-        if (!this.props.collectionID) {
-            this.setState({isReadOnly: true});
-        }
-
-        if (!this.props.dataset.reviewState) {
-            this.updateReviewStateData();
-        }
-
-        if (this.props.dataset.links) {
-            const latestVersionURL = url.resolve(this.props.dataset.links.latest_version.href);
-            this.setState({
-                latestVersion: latestVersionURL || ""
-            })
-            return;
-        }
-
-        this.setState({isLoadingPreview: true});
-        datasets.get(this.props.params.datasetID).then(response => {
-            const dataset = response.next || response.current;
-            const latestVersionURL = url.resolve(dataset.links.latest_version.href);
-            this.props.dispatch(updateActiveDataset(dataset));
-            this.setState({
-                latestVersion: latestVersionURL || "",
-                isLoadingPreview: false
-            });
-        }).catch(error => {
-            switch(error.status) {
-                case(403): {   
-                    const notification = {
-                        type: "neutral",
-                        message: `You do not have permission to view dataset '${this.props.params.datasetID}'`
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: "warning",
-                        message: `Dataset ID '${this.props.params.datasetID}' can't be found`
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case('FETCH_ERR'): {
-                    const notification = {
-                        type: "warning",
-                        message: `There was a network error whilst getting dataset '${this.props.params.datasetID}'. Please check your connection and try again`
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: `An unexpected error occurred whilst getting dataset '${this.props.params.datasetID}'`
-                    }
-                    notifications.add(notification);
-                }
-            }
-            this.setState({isLoadingPreview: false});
-            console.error(`Error fetching dataset ID '${this.props.params.datasetID}'`, error);
-        });
-    }
-
-    updateDatasetReviewState(datasetID, isSubmittingForReview, isMarkingAsReviewed) {
-        let request = Promise.resolve;
-
-        this.setState({isSavingData: true});
-
-        if (isSubmittingForReview) {
-            request = collections.setDatasetStatusToComplete;
-        }
-        
-        if (isMarkingAsReviewed) {
-            request = collections.setDatasetStatusToReviewed;
-        }
-
-        return request(this.props.collectionID, datasetID).catch(error => {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
-            console.error(`Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`, error);
-            return error;
-        });
-    }
-
-    async handleUpdateReviewState(isSubmittingForReview, isMarkingAsReviewed) {
-        this.setState({isSavingData: true});
-
-        const updateError = await this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed);
-        if (updateError) {
-            datasetHandleMetadataSaveErrors(updateError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
-            this.setState({isSavingData: false});
-            return;
-        }
-
-        this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
-    }
-
-    handleSubmitForReview() {
-        this.handleUpdateReviewState(true, false);
-    }
-
-    handleMarkAsReviewed() {
-        this.handleUpdateReviewState(false, true);
-    }
-
-    getCollection(collectionID) {
-        return collections.get(collectionID)
-            .then(response => [null, response])
-            .catch(error => [error, null]);
-    }
-
-    async updateReviewStateData() {
-        this.setState({isFetchingCollectionData: true});
-        const collectionID = this.props.collectionID;
-        const datasetID = this.props.params.datasetID;
-        
-        try {
-            const [error, collection] = await this.getCollection(collectionID);
-            if (error) {
-                throw error;
-            }
-
-            const dataset = collection.datasets.find(dataset => {
-                return dataset.id === datasetID;
-            });
-            if (!dataset) {
-                this.setState({isFetchingCollectionData: false});
-                return;
-            }
-            const lastEditedBy = dataset.lastEditedBy;
-            const reviewState = dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
-            this.props.dispatch(updateActiveDatasetReviewState(lastEditedBy, reviewState));
-            this.setState({isFetchingCollectionData: false});
-        } catch (error) {
-            this.setState({
-                isFetchingCollectionData: false,
-                isReadOnly: true
-            });
-            switch (error.status) {
-                case (401): {
-                    // handled by request utility function
-                    break;
-                }
-                case (403): {
-                    const notification = {
-                        "type": "neutral",
-                        "message": `You do not permission to get details for collection '${collectionID}'`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case (404): {
-                    const notification = {
-                        "type": "warning",
-                        "message": `Could not find collection '${collectionID}'`,
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: `An unexpected error's occurred whilst trying to get the collection '${collectionID}'`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Unable to update metadata screen with version's review/edit status in collection " + collectionID + ". Error: " + JSON.stringify(error)});
-            console.error("Unable to update metadata screen with version's review/edit status in collection '" + collectionID + "'", error);
-        }
-    }
-
-    handlePreviewLoad() {
-        //TODO Preview should wait until it's fully loaded before hiding the loader - this currently breaks because React is detecting this final state change 
-        // on render for some reason. So 'hidden' property on the Preview component is hardcoded to true for now.
-        this.setState({isLoadingPreview: false});
     }
 
     renderReviewActions() {
-        if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
+        if (this.props.isReadOnly || this.props.isFetchingCollectionData) {
             return;
         }
 
         return (
             <DatasetReviewActions
-                areDisabled={this.state.isApprovingVersion || this.state.isReadOnly}
+                areDisabled={this.props.isSavingData || this.props.isReadOnly}
                 includeSaveLabels={false}
                 reviewState={this.props.dataset.reviewState}
                 userEmail={this.props.userEmail}
@@ -258,24 +50,24 @@ class DatasetPreview extends Component {
             <div className="preview">
                 <div className="preview__header grid grid--justify-center">
                     <div className="grid__col-6 margin-top--1 margin-bottom--1">
-                        <form onSubmit={this.handleMarkAsReviewed}>
-                            &#9664; <Link to={`${url.resolve("metadata?collection="+this.props.collectionID, !this.props.collectionID)}`}>Back</Link>
-                            <h2 className="inline-block margin-left--1">{this.props.dataset.title || "Loading dataset title..."}</h2>
+                        <form>
+                            &#9664; <Link to={this.props.backLinkPath}>Back</Link>
+                            <h2 className="inline-block margin-left--1">{this.props.dataset.title}</h2>
                             {this.renderReviewActions()}
-                            {this.state.isApprovingVersion &&
+                            {this.props.isSavingData &&
                                 <div className="loader loader--dark loader--centre margin-left--1"></div>
                             }
                         </form>
                     </div>
                 </div>
-                {this.state.isLoadingPreview && 
+                {this.props.isLoadingPreview && 
                     <div className="grid grid--align-content-center grid--full-height grid--direction-column grid--justify-center grid--align-center">
                         <p className="font-size--16 font-weight--600 margin-bottom--1">Loading preview</p>
                         <div className="loader loader--dark loader--centre loader--large"></div>
                     </div>
                 }
-                {this.state.latestVersion &&
-                    <Preview hidden={false} onLoad={this.handlePreviewLoad} path={`//${location.host}${this.state.latestVersion}`}/>
+                {this.props.previewURL &&
+                    <Preview hidden={false} onLoad={this.handlePreviewLoad} path={this.props.previewURL}/>
                 }
             </div>
         )
@@ -284,13 +76,4 @@ class DatasetPreview extends Component {
 
 DatasetPreview.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        dataset: state.state.datasets.activeDataset || {},
-        latestVersion: (state.state.datasets.activeDataset && state.state.datasets.activeDataset.latest_version) ? state.state.datasets.activeDataset.latest_version.href : null,
-        collectionID: state.routing.locationBeforeTransitions.query.collection,
-        userEmail: state.state.user.email
-    }
-}
-
-export default connect(mapStateToProps)(DatasetPreview);
+export default DatasetPreview;
