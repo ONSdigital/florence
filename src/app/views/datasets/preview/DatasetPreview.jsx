@@ -18,7 +18,9 @@ const propTypes = {
         reviewState: PropTypes.string
     }),
     title: PropTypes.string.isRequired,
-    backLinkPath: PropTypes.string.isRequired
+    backLinkPath: PropTypes.string.isRequired,
+    onSubmitForReview: PropTypes.func,
+    onMarkAsReviewed: PropTypes.func,
 }
 
 class DatasetPreview extends Component {
@@ -38,8 +40,8 @@ class DatasetPreview extends Component {
                 reviewState={this.props.dataset.reviewState}
                 userEmail={this.props.userEmail}
                 lastEditedBy={this.props.dataset.lastEditedBy}
-                onSubmit={this.handleSubmitForReview}
-                onApprove={this.handleMarkAsReviewed}
+                onSubmit={this.props.onSubmitForReview}
+                onApprove={this.props.onMarkAsReviewed}
                 notInCollectionYet={!this.props.dataset.collection_id}     
             />
         )
