@@ -137,47 +137,6 @@ class VersionPreviewController extends Component {
         });
     }
 
-    updateDatasetReviewState(datasetID, isSubmittingForReview, isMarkingAsReviewed) {
-        let request = Promise.resolve;
-
-        this.setState({isSavingData: true});
-
-        if (isSubmittingForReview) {
-            request = collections.setDatasetStatusToComplete;
-        }
-        
-        if (isMarkingAsReviewed) {
-            request = collections.setDatasetStatusToReviewed;
-        }
-
-        return request(this.props.collectionID, datasetID).catch(error => {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
-            console.error(`Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`, error);
-            return error;
-        });
-    }
-
-    async handleUpdateReviewState(isSubmittingForReview, isMarkingAsReviewed) {
-        this.setState({isSavingData: true});
-
-        const updateError = await this.updateDatasetReviewState(this.props.params.datasetID, isSubmittingForReview, isMarkingAsReviewed);
-        if (updateError) {
-            datasetHandleMetadataSaveErrors(updateError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
-            this.setState({isSavingData: false});
-            return;
-        }
-
-        this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
-    }
-
-    handleSubmitForReview() {
-        this.handleUpdateReviewState(true, false);
-    }
-
-    handleMarkAsReviewed() {
-        this.handleUpdateReviewState(false, true);
-    }
-
     getCollection(collectionID) {
         return collections.get(collectionID)
             .then(response => [null, response])
@@ -255,6 +214,45 @@ class VersionPreviewController extends Component {
         }
     }
 
+    updateDatasetReviewState(isSubmittingForReview, isMarkingAsReviewed) {
+        let request = Promise.resolve;
+
+        if (isSubmittingForReview) {
+            request = collections.setDatasetVersionStatusToComplete;
+        }
+        
+        if (isMarkingAsReviewed) {
+            request = collections.setDatasetVersionStatusToReviewed;
+        }
+
+        return request(this.props.collectionID, this.props.params.datasetID, this.props.params.edition, this.props.params.version).catch(error => {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for dataset version '${this.props.versionURL}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            console.error(`Error updating review state for dataset '${this.props.versionURL}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`, error);
+            return error;
+        });
+    }
+
+    async handleUpdateReviewState(isSubmittingForReview, isMarkingAsReviewed) {
+        this.setState({isSavingData: true});
+
+        const updateError = await this.updateDatasetReviewState(isSubmittingForReview, isMarkingAsReviewed);
+        if (updateError) {
+            datasetHandleMetadataSaveErrors(undefined, updateError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
+            this.setState({isSavingData: false});
+            return;
+        }
+
+        this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
+    }
+
+    handleSubmitForReview() {
+        this.handleUpdateReviewState(true, false);
+    }
+
+    handleMarkAsReviewed() {
+        this.handleUpdateReviewState(false, true);
+    }
+
     handlePreviewLoad() {
         //TODO Preview should wait until it's fully loaded before hiding the loader - this currently breaks because React is detecting this final state change 
         // on render for some reason. So 'hidden' property on the Preview component is hardcoded to true for now.
@@ -275,7 +273,9 @@ class VersionPreviewController extends Component {
 
     render() {
         return (
-            <DatasetPreview 
+            <DatasetPreview
+                onSubmitForReview={this.handleSubmitForReview}
+                onMarkAsReviewed={this.handleMarkAsReviewed}
                 isReadOnly={this.state.isReadOnly}
                 isFetchingCollectionData={this.state.isFetchingCollectionData}
                 isSavingData={this.state.isSavingData}
