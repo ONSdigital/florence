@@ -24,6 +24,7 @@ import { store, history } from './app/config/store';
 
 import SelectableTest from './SelectableTest';
 import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
+import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 
 const rootPath = store.getState().state.rootPath;
 
@@ -103,7 +104,7 @@ class Index extends Component {
                                     <Route path="editions/:edition/versions/:version">
                                         <IndexRedirect to="metadata"/>
                                         <Route path="metadata" component={ userIsAuthenticated(VersionMetadata) }/>
-                                        <Route path="preview" component={ userIsAuthenticated(DatasetPreviewController) } />
+                                        <Route path="preview" component={ userIsAuthenticated(VersionPreviewController) } />
                                     </Route>
                                     <Route path="instances">
                                         <IndexRedirect to={`${rootPath}/datasets`}/>
