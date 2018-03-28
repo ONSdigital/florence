@@ -15,9 +15,9 @@ const propTypes = {
     dataset: PropTypes.shape({
         collection_id: PropTypes.string,
         lastEditedBy: PropTypes.string,
-        reviewState: PropTypes.string,
-        title: PropTypes.string
+        reviewState: PropTypes.string
     }),
+    title: PropTypes.string.isRequired,
     backLinkPath: PropTypes.string.isRequired
 }
 
@@ -52,8 +52,10 @@ class DatasetPreview extends Component {
                     <div className="grid__col-6 margin-top--1 margin-bottom--1">
                         <form>
                             &#9664; <Link to={this.props.backLinkPath}>Back</Link>
-                            <h2 className="inline-block margin-left--1">{this.props.dataset.title}</h2>
-                            {this.renderReviewActions()}
+                            <h2 className="inline-block margin-left--1">{this.props.title}</h2>
+                            <div>
+                                {this.renderReviewActions()}
+                            </div>
                             {this.props.isSavingData &&
                                 <div className="loader loader--dark loader--centre margin-left--1"></div>
                             }
