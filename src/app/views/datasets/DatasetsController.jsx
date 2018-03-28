@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 
 import SelectableTableController from './selectable-table/SelectableTableController';
@@ -8,7 +7,7 @@ import datasets from '../../utilities/api-clients/datasets';
 import collections from '../../utilities/api-clients/collections';
 import notifications from '../../utilities/notifications';
 import recipes from '../../utilities/api-clients/recipes';
-import {updateAllRecipes, updateAllDatasets, updateActiveCollection} from '../../config/actions'
+import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
 
 import url from '../../utilities/url'
 
@@ -40,16 +39,12 @@ class DatasetsController extends Component {
             collections.getAll()
         ]
         Promise.all(fetches).then(responses => {
-            const activeCollection = responses[2].find(collection => {
-                return collection.id === this.props.collectionID;
-            });
             this.setState({
                 isFetchingDatasets: false,
                 collections: responses[2],
                 tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], this.props.collectionID)
             }); 
             this.props.dispatch(updateAllDatasets(responses[1].items));
-            this.props.dispatch(updateActiveCollection(activeCollection));
         }).catch(error => {
             switch (error.status) {
                 case(403):{
@@ -133,7 +128,7 @@ class DatasetsController extends Component {
             const collection = collections.find(collection => {
                 return collection.id === collectionID;
             });
-            return "In collection: " + collection.name
+            return collection ? "In collection: " + collection.name : "In an unrecognised collection"
         }
 
     }
