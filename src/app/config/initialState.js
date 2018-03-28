@@ -5,6 +5,9 @@ export const initialState = {
         userType: '',
         isAdmin: false
     },
+    global: {
+        workingOn: {}
+    },
     rootPath: "/florence",
     teams: {
         active: {},

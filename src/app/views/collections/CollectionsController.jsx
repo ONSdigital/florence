@@ -8,11 +8,12 @@ import RestoreContent from './restore-content/RestoreContent'
 import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './details/CollectionDetails';
 import Drawer from '../../components/drawer/Drawer';
 import collections from '../../utilities/api-clients/collections';
-import { updateActiveCollection, emptyActiveCollection } from '../../config/actions';
+import {updateActiveCollection, emptyActiveCollection , updateActiveDatasetReviewState, updateActiveVersionReviewState, updateWorkingOn, emptyWorkingOn} from '../../config/actions';
 import notifications from '../../utilities/notifications';
 import dateformat from 'dateformat';
 import Modal from '../../components/Modal';
 import url from '../../utilities/url';
+import cookies from '../../utilities/cookies';
 
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import log, {eventTypes} from '../../utilities/log';
@@ -42,15 +43,17 @@ const propTypes = {
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
             uri: PropTypes.string.isRequired,
-            state: PropTypes.string.isRequired
+            state: PropTypes.string.isRequired,
+            lastEditedBy: PropTypes.string
         })),
-        datasetVersion: PropTypes.arrayOf(PropTypes.shape({
+        datasetVersions: PropTypes.arrayOf(PropTypes.shape({
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
             edition: PropTypes.string.isRequired,
             version: PropTypes.string.isRequired,
             uri: PropTypes.string.isRequired,
-            state: PropTypes.string.isRequired
+            state: PropTypes.string.isRequired,
+            lastEditedBy: PropTypes.string
         })),
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
@@ -75,6 +78,7 @@ export class CollectionsController extends Component {
                 uri: ""
             },
             isFetchingCollectionDetails: false,
+            isApprovingCollection: false,
             drawerIsAnimatable: false,
             drawerIsVisible: false,
             isEditingCollection: false,
@@ -125,7 +129,7 @@ export class CollectionsController extends Component {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.setState({
                 drawerIsAnimatable: true,
                 drawerIsVisible: true,
@@ -144,7 +148,7 @@ export class CollectionsController extends Component {
             const activeCollection = this.state.collections.find(collection => {
                 return collection.id === nextProps.params.collectionID;
             });
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.fetchActiveCollection(nextProps.params.collectionID);
         }
     }
@@ -156,7 +160,9 @@ export class CollectionsController extends Component {
     fetchCollections() {
         this.setState({isFetchingCollections: true});
         collections.getAll().then(collections => {
-            const allCollections = collections.map(collection => {
+            const allCollections = collections.filter(collection => {
+                return collection.approvalStatus !== "COMPLETE";
+            }).map(collection => {
                 return this.mapCollectionToState(collection)
             });
             this.setState({
@@ -302,9 +308,14 @@ export class CollectionsController extends Component {
     fetchActiveCollection(collectionID) {
         this.setState({isFetchingCollectionDetails: true});
         collections.get(collectionID).then(collection => {
+            if (collection.approvalStatus === "COMPLETE") {
+                // This collection is now in the publishing queue, redirect user
+                location.pathname = this.props.rootPath + "/publishing-queue";
+                return;
+            }
             const mappedCollection = this.mapCollectionToState(collection);
             const activeCollection = this.mapPagesToCollection(mappedCollection);
-            this.props.dispatch(updateActiveCollection(activeCollection));
+            this.updateActiveCollectionGlobally(activeCollection);
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             switch(error.status) {
@@ -463,21 +474,26 @@ export class CollectionsController extends Component {
                     if (collection.id !== collectionID) {
                         return collection;
                     }
-
                     return {
                         ...collection,
-                        publishedStatus: {
-                            ...collection.publishStatus,
+                        status: {
+                            ...collection.status,
                             neutral: true
                         }
                     }
                 })
             }
         }
-        collections.approve(collectionID).then(() => {   
-            this.setState(updatePublishStatusToNeutral);
+
+        this.setState({
+            isApprovingCollection: true,
+            ...updatePublishStatusToNeutral(this.state),
+        });
+        collections.approve(collectionID).then(() => {
+            this.setState({isApprovingCollection: false});
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }).catch(error => {
+            this.setState({isApprovingCollection: false});
             switch (error.status) {
                 case(401): {
                     // Handled by request function
@@ -535,6 +551,7 @@ export class CollectionsController extends Component {
         // close the drawer is finished (which looks ugly).
         if (!this.state.drawerIsVisible) {
             this.props.dispatch(emptyActiveCollection());
+            this.props.dispatch(emptyWorkingOn());
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }
     }
@@ -556,12 +573,24 @@ export class CollectionsController extends Component {
 
     handleCollectionPageEditClick(page) {
         if (page.type === "dataset_details") {
-            const newURL = url.resolve(`/datasets/${page.id}/metadata`);
+            const newURL = url.resolve(`/datasets/${page.id}/metadata?collection=${this.props.params.collectionID}`);
+            const dataset = this.props.activeCollection.datasets.find(dataset => {
+                return dataset.id === page.id;
+            });
+            const lastEditedBy = dataset.lastEditedBy;
+            const reviewState = dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
+            this.props.dispatch(updateActiveDatasetReviewState(lastEditedBy, reviewState));
             this.props.dispatch(push(newURL));
             return newURL;
         }
         if (page.type === "dataset_version") {
-            const newURL = url.resolve(`/datasets/${page.id}/metadata`);
+            const newURL = url.resolve(`/datasets/${page.id}/metadata?collection=${this.props.params.collectionID}`);
+            const version = this.props.activeCollection.datasetVersions.find(version => {
+                return `${version.id}/editions/${version.edition}/versions/${version.version}` === page.id;
+            });
+            const lastEditedBy = version.lastEditedBy;
+            const reviewState = version.state.charAt(0).toLowerCase() + version.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
+            this.props.dispatch(updateActiveVersionReviewState(lastEditedBy, reviewState));
             this.props.dispatch(push(newURL));
             return newURL;
         }
@@ -814,6 +843,16 @@ export class CollectionsController extends Component {
         });
     }
 
+    updateActiveCollectionGlobally(collection) {
+        this.props.dispatch(updateActiveCollection(collection));
+        const workingOn = {
+            id: collection.id,
+            name: collection.name
+        };
+        this.props.dispatch(updateWorkingOn(workingOn));
+        cookies.add("collection", collection.id, null);
+    }
+
     readablePublishDate(collection) {
         if (collection.publishDate && collection.type === "manual") {
             return dateformat(collection.publishDate, "UTC:ddd, dd/mm/yyyy h:MMTT") + " [rolled back]";
@@ -1018,6 +1057,7 @@ export class CollectionsController extends Component {
                 onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
+                isApprovingCollection={this.state.isApprovingCollection}
             />
         )
     }
