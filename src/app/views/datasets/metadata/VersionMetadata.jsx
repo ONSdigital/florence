@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
@@ -1006,6 +1007,9 @@ export class VersionMetadata extends Component {
                           {this.state.isSavingData &&
                             <div className="loader loader--dark loader--inline margin-left--1"></div>
                           }
+                          {!this.state.isInstance &&
+                            <Link className="margin-left--1" to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}>Preview</Link>
+                            }
                         </form>
                       </div>
                     }
