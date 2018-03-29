@@ -179,6 +179,9 @@ const defaultProps = {
     },
     location: {
         query: {collection: "a-collection-id"}
+    },
+    router: {
+        listenBefore: () => {}
     }
 }
 

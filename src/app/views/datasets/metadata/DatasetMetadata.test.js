@@ -218,7 +218,10 @@ const defaultProps = {
         datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
     },
     userEmail: "user@email.com",
-    routes: [{}]
+    routes: [{}],
+    router: {
+        listenBefore: () => {}
+    }
 }
 
 const defaultComponent = shallow(
@@ -772,15 +775,11 @@ describe("Renders the correct buttons", () => {
         expect(defaultComponent.find('#btn-save[disabled=true]').exists()).toBe(true);
     });
 
-    it("disables all save and review/approve buttons when saving data", () => {
-        // inProgressComponent.setState({isReadOnly: false});
-        // console.log(inProgressComponent.instance().state);
-        // console.log(inProgressComponent.find('#btn-submit-for-review'));
-        expect(inProgressComponent.find('#btn-submit-for-review[disabled=false]').exists()).toBe(true);
+    it("disables save button when saving data", () => {
+        expect(inProgressComponent.find('#btn-save[disabled=false]').exists()).toBe(true);
 
         inProgressComponent.instance().handleSave(mockEvent, false, false);
-        // console.log(inProgressComponent.instance().state);
-        expect(inProgressComponent.find('#btn-submit-for-review[disabled=true]').exists()).toBe(true);
+        expect(inProgressComponent.find('#btn-save[disabled=true]').exists()).toBe(true);
     });
 
     it("disables the 'save' button/s when a dataset is read-only", () => {
@@ -788,48 +787,5 @@ describe("Renders the correct buttons", () => {
         expect(defaultComponent.find('#btn-save[disabled=false]').exists()).toBe(true);
         defaultComponent.setState({isReadOnly: true});
         expect(defaultComponent.find('#btn-save[disabled=true]').exists()).toBe(true);
-    });
-
-    it("allows the correct user to submit a dataset for review", () => {
-        expect(inProgressComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
-        inProgressComponent.setProps({userEmail: "user-2@email.com"});
-
-        expect(inProgressComponent.find('#btn-submit-for-review').exists()).toBe(true);
-        expect(inProgressComponent.find('#btn-submit-for-review[disabled=false]').exists()).toBe(true);
-    });
-
-    it("allows the correct user to review a dataset", () => {
-        expect(completeComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
-        completeComponent.setProps({userEmail: "user@email.com"});
-        
-        const reviewButtons = completeComponent.instance().renderReviewActions();
-        expect(reviewButtons.props.id).toBe("btn-mark-as-reviewed");
-        expect(reviewButtons.props.disabled).toBe(false);
-    });
-
-    it("doesn't allow a user to review their own changes", () => {
-        expect(completeComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
-        completeComponent.setProps({userEmail: "user-2@email.com"});
-        expect(completeComponent.find("#btn-mark-as-reviewed").exists()).toBe(false);
-    });
-
-    it("allow the same user to 'submit for review' again if already submitted and not reviewed", () => {
-        expect(completeComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
-        completeComponent.setProps({userEmail: "user-2@email.com"});
-        expect(completeComponent.find("#btn-submit-for-review").exists()).toBe(true);
-    });
-
-    it("doesn't allow a user to change the review state once reviewed", () => {
-        expect(reviewedComponent.instance().props.dataset.lastEditedBy).toBe("user-2@email.com");
-        
-        reviewedComponent.setProps({userEmail: "user-2@email.com"});
-        expect(reviewedComponent.find("#btn-submit-for-review").exists()).toBe(false);
-        expect(reviewedComponent.find("#btn-mark-as-reviewed").exists()).toBe(false);
-        expect(reviewedComponent.find("#btn-save").exists()).toBe(true);
-
-        reviewedComponent.setProps({userEmail: "user@email.com"});
-        expect(reviewedComponent.find("#btn-submit-for-review").exists()).toBe(false);
-        expect(reviewedComponent.find("#btn-mark-as-reviewed").exists()).toBe(false);
-        expect(reviewedComponent.find("#btn-save").exists()).toBe(true);
     });
 });
