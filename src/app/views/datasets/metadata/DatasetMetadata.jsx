@@ -18,6 +18,7 @@ import {updateActiveDataset, emptyActiveDataset, updateActiveDatasetReviewState,
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
 import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
+import DatasetReviewActions from '../DatasetReviewActions'
 
 const propTypes = {
     params: PropTypes.shape({
@@ -133,7 +134,7 @@ export class DatasetMetadata extends Component {
 
     componentWillMount() {
 
-        this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
+        this.removeRouteListener = this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
 
         this.setState({isFetchingDataset: true});        
         
@@ -298,7 +299,14 @@ export class DatasetMetadata extends Component {
         if (nextState.isFetchingDataset) {
             return false;
         }
+        if (this.props.dataset && nextProps.dataset === null) {
+            return false;
+        }
         return true;
+    }
+
+    componentWillUnmount() {
+        this.removeRouteListener();
     }
 
     handleRouteChange(nextLocation, action) {
@@ -738,34 +746,22 @@ export class DatasetMetadata extends Component {
     }
 
     renderReviewActions() {
-
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
             return;
         }
 
-        if (this.props.dataset.reviewState === "reviewed") {
-            return;
-        }
-
-        if (!this.props.dataset.collection_id || this.props.dataset.reviewState === "inProgress") {
-            return (
-                <button id="btn-submit-for-review" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
-            )
-        }
-        
-        if (this.props.userEmail === this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
-            return (
-                <button id="btn-submit-for-review" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
-            )
-        }
-
-        if (this.props.userEmail !== this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
-            return (
-                <button id="btn-mark-as-reviewed" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
-            )
-        }
-
-        return;
+        return (
+            <DatasetReviewActions
+                areDisabled={this.state.isSavingData || this.state.isReadOnly}
+                includeSaveLabels={true}
+                reviewState={this.props.dataset.reviewState}
+                userEmail={this.props.userEmail}
+                lastEditedBy={this.props.dataset.lastEditedBy}
+                onSubmit={this.handleSaveAndSubmitForReview}
+                onApprove={this.handleSaveAndMarkAsReviewed}
+                notInCollectionYet={!this.props.dataset.collection_id}     
+            />
+        )
     }
 
     render() {
@@ -917,7 +913,9 @@ export class DatasetMetadata extends Component {
                               />
                         </div>
                         <button id="btn-save" type="submit" className="btn btn--primary margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
-                        {this.renderReviewActions()}
+                        <span className="margin-left--1">
+                            {this.renderReviewActions()}
+                        </span>
                         {this.state.isSavingData &&
                             <div className="loader loader--inline loader--dark margin-left--1"></div>
                         }
