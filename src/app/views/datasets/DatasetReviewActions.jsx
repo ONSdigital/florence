@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const propTypes = {
     areDisabled: PropTypes.bool,
     includeSaveLabels: PropTypes.bool,
-    reviewState: PropTypes.string.isRequired,
+    reviewState: PropTypes.string,
     userEmail: PropTypes.string.isRequired,
     lastEditedBy: PropTypes.string,
     onSubmit: PropTypes.func,
