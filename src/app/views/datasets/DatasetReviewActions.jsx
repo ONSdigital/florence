@@ -9,8 +9,7 @@ const propTypes = {
     lastEditedBy: PropTypes.string,
     onSubmit: PropTypes.func,
     onApprove: PropTypes.func,
-    notInCollectionYet: PropTypes.bool,
-
+    notInCollectionYet: PropTypes.bool
 };
 
 class DatasetReviewActions extends Component {
@@ -20,7 +19,7 @@ class DatasetReviewActions extends Component {
 
     renderSubmit() {
         return (
-            <button type="button" onClick={this.props.onSubmit} disabled={this.props.areDisabled} className="btn btn--positive">
+            <button id="submit-for-review" type="button" onClick={this.props.onSubmit} disabled={this.props.areDisabled} className="btn btn--positive">
                 {this.props.includeSaveLabels ? 
                     "Save and submit for review"
                 :
@@ -32,7 +31,7 @@ class DatasetReviewActions extends Component {
 
     renderApprove() {
         return (
-            <button type="button" onClick={this.props.onApprove} disabled={this.props.areDisabled} className="btn btn--positive">
+            <button id="mark-as-reviewed" type="button" onClick={this.props.onApprove} disabled={this.props.areDisabled} className="btn btn--positive">
                 {this.props.includeSaveLabels ? 
                     "Save and submit for approval"
                 :
