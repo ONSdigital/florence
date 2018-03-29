@@ -1,7 +1,6 @@
 import url from './url';
 
 function setLocation(href) {
-    console.log(href.indexOf("?"));
     Object.defineProperty(window.location, 'href', {
         writable: true,
         value: href,
