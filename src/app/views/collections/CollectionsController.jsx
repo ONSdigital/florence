@@ -78,6 +78,7 @@ export class CollectionsController extends Component {
                 uri: ""
             },
             isFetchingCollectionDetails: false,
+            isApprovingCollection: false,
             drawerIsAnimatable: false,
             drawerIsVisible: false,
             isEditingCollection: false,
@@ -159,7 +160,9 @@ export class CollectionsController extends Component {
     fetchCollections() {
         this.setState({isFetchingCollections: true});
         collections.getAll().then(collections => {
-            const allCollections = collections.map(collection => {
+            const allCollections = collections.filter(collection => {
+                return collection.approvalStatus !== "COMPLETE";
+            }).map(collection => {
                 return this.mapCollectionToState(collection)
             });
             this.setState({
@@ -305,10 +308,13 @@ export class CollectionsController extends Component {
     fetchActiveCollection(collectionID) {
         this.setState({isFetchingCollectionDetails: true});
         collections.get(collectionID).then(collection => {
+            if (collection.approvalStatus === "COMPLETE") {
+                // This collection is now in the publishing queue, redirect user
+                location.pathname = this.props.rootPath + "/publishing-queue";
+                return;
+            }
             const mappedCollection = this.mapCollectionToState(collection);
             const activeCollection = this.mapPagesToCollection(mappedCollection);
-            //this.props.dispatch(updateActiveCollection(activeCollection));
-            //this.props.dispatch(updateWorkingOn(activeCollection));
             this.updateActiveCollectionGlobally(activeCollection);
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
@@ -468,21 +474,26 @@ export class CollectionsController extends Component {
                     if (collection.id !== collectionID) {
                         return collection;
                     }
-
                     return {
                         ...collection,
-                        publishedStatus: {
-                            ...collection.publishStatus,
+                        status: {
+                            ...collection.status,
                             neutral: true
                         }
                     }
                 })
             }
         }
-        collections.approve(collectionID).then(() => {   
-            this.setState(updatePublishStatusToNeutral);
+
+        this.setState({
+            isApprovingCollection: true,
+            ...updatePublishStatusToNeutral(this.state),
+        });
+        collections.approve(collectionID).then(() => {
+            this.setState({isApprovingCollection: false});
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }).catch(error => {
+            this.setState({isApprovingCollection: false});
             switch (error.status) {
                 case(401): {
                     // Handled by request function
@@ -1046,6 +1057,7 @@ export class CollectionsController extends Component {
                 onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
+                isApprovingCollection={this.state.isApprovingCollection}
             />
         )
     }
