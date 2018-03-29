@@ -15,7 +15,10 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testBucketName = "test-bucket"
+var (
+	testBucketName = "test-bucket"
+	testVaultPath  = "secret/path"
+)
 
 func TestUnitUpload(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
@@ -29,10 +32,10 @@ func TestUnitUpload(t *testing.T) {
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3API(mockCtrl)
+			client := mocks.NewMockS3Client(mockCtrl)
 			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
 
-			up := Uploader{client: client, bucketName: testBucketName}
+			up := Uploader{client: client, bucketName: testBucketName, vaultPath: testVaultPath}
 
 			up.CheckUploaded(w, req)
 
@@ -49,7 +52,7 @@ func TestUnitUpload(t *testing.T) {
 			key := "12345"
 			id := "test-id"
 
-			client := mocks.NewMockS3API(mockCtrl)
+			client := mocks.NewMockS3Client(mockCtrl)
 			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{
 				Uploads: []*s3.MultipartUpload{
 					{
@@ -81,7 +84,7 @@ func TestUnitUpload(t *testing.T) {
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3API(mockCtrl)
+			client := mocks.NewMockS3Client(mockCtrl)
 			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(nil, errors.New("could not list uploads"))
 
 			up := Uploader{client: client, bucketName: testBucketName}
@@ -93,7 +96,7 @@ func TestUnitUpload(t *testing.T) {
 	})
 
 	Convey("test Upload", t, func() {
-		Convey("test upload successfully uploads with only one chunk", func() {
+		Convey("test upload successfully uploads with only one chunk and no vault client", func() {
 			w := httptest.NewRecorder()
 
 			req, err := createTestFileUploadPart()
@@ -101,7 +104,7 @@ func TestUnitUpload(t *testing.T) {
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3API(mockCtrl)
+			client := mocks.NewMockS3Client(mockCtrl)
 			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
 
 			key := "12345"
@@ -163,6 +166,82 @@ func TestUnitUpload(t *testing.T) {
 
 		})
 
+		Convey("test upload successfully uploads with only one chunk and a valid vault client", func() {
+			w := httptest.NewRecorder()
+
+			req, err := createTestFileUploadPart()
+			So(err, ShouldBeNil)
+
+			addQueryParams(req, "1", "1")
+
+			key := "12345"
+			id := "test-id"
+			acl := "public-read"
+			contentType := "text/plain"
+			encodedPSK := "48656C6C6F20576F726C64"
+			psk := []byte("Hello World")
+
+			client := mocks.NewMockS3Client(mockCtrl)
+			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
+
+			vault := mocks.NewMockVaultClient(mockCtrl)
+			vault.EXPECT().WriteKey(testVaultPath, key, gomock.Any()).Return(nil)
+			vault.EXPECT().ReadKey(testVaultPath, key).Return(encodedPSK, nil)
+
+			client.EXPECT().CreateMultipartUpload(&s3.CreateMultipartUploadInput{
+				Bucket:      &testBucketName,
+				Key:         &key,
+				ACL:         &acl,
+				ContentType: &contentType,
+			}).Return(&s3.CreateMultipartUploadOutput{UploadId: &id}, nil)
+
+			n := int64(1)
+
+			client.EXPECT().UploadPartWithPSK(&s3.UploadPartInput{
+				UploadId:   &id,
+				Bucket:     &testBucketName,
+				Key:        &key,
+				Body:       bytes.NewReader([]byte(`some test file bytes to be uploaded`)),
+				PartNumber: &n,
+			}, psk).Return(nil, nil)
+
+			etag := "abcdefg"
+
+			client.EXPECT().ListParts(&s3.ListPartsInput{
+				Key:      &key,
+				Bucket:   &testBucketName,
+				UploadId: &id,
+			}).Return(&s3.ListPartsOutput{
+				Parts: []*s3.Part{
+					{
+						ETag:       &etag,
+						PartNumber: &n,
+					},
+				},
+			}, nil)
+
+			client.EXPECT().CompleteMultipartUpload(&s3.CompleteMultipartUploadInput{
+				Key:      &key,
+				UploadId: &id,
+				MultipartUpload: &s3.CompletedMultipartUpload{
+					Parts: []*s3.CompletedPart{
+						{
+							ETag:       &etag,
+							PartNumber: &n,
+						},
+					},
+				},
+				Bucket: &testBucketName,
+			}).Return(nil, nil)
+
+			up := Uploader{client: client, vaultClient: vault, bucketName: testBucketName, vaultPath: testVaultPath}
+
+			up.Upload(w, req)
+
+			So(w.Code, ShouldEqual, 200)
+
+		})
+
 		Convey("test 500 status returned if client throws an error", func() {
 			w := httptest.NewRecorder()
 
@@ -171,7 +250,7 @@ func TestUnitUpload(t *testing.T) {
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3API(mockCtrl)
+			client := mocks.NewMockS3Client(mockCtrl)
 			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(nil, errors.New("could not list uploads"))
 
 			up := Uploader{client: client, bucketName: testBucketName}
