@@ -1,148 +1,78 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import Preview from '../../../components/preview/Preview'
-import url from '../../../utilities/url'
-import datasets from '../../../utilities/api-clients/datasets'
-import notifications from '../../../utilities/notifications'
+import Preview from '../../../components/preview/Preview';
+import DatasetReviewActions from '../DatasetReviewActions';
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
-    }).isRequired
+    isReadOnly: PropTypes.bool,
+    isFetchingCollectionData: PropTypes.bool,
+    isSavingData: PropTypes.bool,
+    isLoadingPreview: PropTypes.bool,
+    collectionID: PropTypes.string,
+    previewURL: PropTypes.string,
+    userEmail: PropTypes.string.isRequired,
+    dataset: PropTypes.shape({
+        collection_id: PropTypes.string,
+        lastEditedBy: PropTypes.string,
+        reviewState: PropTypes.string
+    }),
+    title: PropTypes.string.isRequired,
+    backLinkPath: PropTypes.string.isRequired,
+    onSubmitForReview: PropTypes.func,
+    onMarkAsReviewed: PropTypes.func,
 }
 
 class DatasetPreview extends Component {
     constructor(props) {
         super(props);
+    }
 
-        this.state = {
-            datasetTitle: null,
-            isApprovingVersion: false,
-            latestVersion: null
+    renderReviewActions() {
+        if (this.props.isReadOnly || this.props.isFetchingCollectionData) {
+            return;
         }
 
-        this.handleApproveSubmit = this.handleApproveSubmit.bind(this);
-    }
-    
-    componentWillMount() {
-        datasets.get(this.props.params.datasetID).then(dataset => {
-            const latestVersionPath = url.resolve(dataset.current.links.latest_version.href);
-            this.setState({
-                datasetTitle: dataset.next.title,
-                latestVersion: latestVersionPath
-            });
-
-        }).catch(error => {
-            switch(error.status) {
-                case(403): {   
-                    const notification = {
-                        type: "neutral",
-                        message: `You do not have permission to view dataset '${this.props.params.datasetID}'`
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: "warning",
-                        message: `Dataset ID '${this.props.params.datasetID}' can't be found`
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case('FETCH_ERR'): {
-                    const notification = {
-                        type: "warning",
-                        message: `There was a network error whilst getting dataset '${this.props.params.datasetID}'. Please check your connection and try again`
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: `An unexpected error occurred whilst getting dataset '${this.props.params.datasetID}'`
-                    }
-                    notifications.add(notification);
-                }
-            }
-            console.error(`Error fetching dataset ID '${this.props.params.datasetID}'`, error);
-        });
-    }
-
-    handleApproveSubmit(event) {
-        event.preventDefault();
-        this.setState({isApprovingVersion: true});
-        
-        const params = this.props.params;
-        datasets.approveDatasetMetadata(params.datasetID).then(() => {
-            this.props.dispatch(push(url.resolve('/datasets')));
-        }).catch(error => {
-            switch(error.status) {
-                case(403): {
-                    const notification = {
-                        type: "warning",
-                        message: `You do not have permission to approve this dataset`,
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: "warning",
-                        message: `The dataset '${params.datasetID}' was not recognised`,
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: `There was a network error whilst trying to approve this dataset. Please check your connection and try again`,
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error occurred whilst approving this dataset",
-                        autoDismiss: 5000
-                    }
-                    notifications.add(notification);
-                }
-            }
-            this.setState({isApprovingVersion: false});
-            console.error("Error whilst approving dataset", error);
-        });
+        return (
+            <DatasetReviewActions
+                areDisabled={this.props.isSavingData || this.props.isReadOnly}
+                includeSaveLabels={false}
+                reviewState={this.props.dataset.reviewState}
+                userEmail={this.props.userEmail}
+                lastEditedBy={this.props.dataset.lastEditedBy}
+                onSubmit={this.props.onSubmitForReview}
+                onApprove={this.props.onMarkAsReviewed}
+                notInCollectionYet={!this.props.dataset.collection_id}     
+            />
+        )
     }
 
     render() {
-        const path = this.state.latestVersion;
         return (
             <div className="preview">
                 <div className="preview__header grid grid--justify-center">
                     <div className="grid__col-6 margin-top--1 margin-bottom--1">
-                        <form onSubmit={this.handleApproveSubmit}>
-                            &#9664; <Link to={`${url.resolve("../")}`}>Back</Link>
-                            <h2 className="inline-block margin-left--1">{this.state.datasetTitle || ""}</h2>
-                            <button disabled={this.state.isApprovingVersion} className="btn btn--primary btn--block margin-left--1">Approve</button>
-                            {this.state.isApprovingVersion &&
+                        <form>
+                            &#9664; <Link to={this.props.backLinkPath}>Back</Link>
+                            <h2 className="inline-block margin-left--1">{this.props.title}</h2>
+                            <div>
+                                {this.renderReviewActions()}
+                            </div>
+                            {this.props.isSavingData &&
                                 <div className="loader loader--dark loader--centre margin-left--1"></div>
                             }
                         </form>
                     </div>
                 </div>
-                <Preview 
-                    path={`//${location.host}${path}`}
-                />
+                {this.props.isLoadingPreview && 
+                    <div className="grid grid--align-content-center grid--full-height grid--direction-column grid--justify-center grid--align-center">
+                        <p className="font-size--16 font-weight--600 margin-bottom--1">Loading preview</p>
+                        <div className="loader loader--dark loader--centre loader--large"></div>
+                    </div>
+                }
+                {this.props.previewURL &&
+                    <Preview hidden={false} onLoad={this.handlePreviewLoad} path={this.props.previewURL}/>
+                }
             </div>
         )
     }
@@ -150,4 +80,4 @@ class DatasetPreview extends Component {
 
 DatasetPreview.propTypes = propTypes;
 
-export default connect()(DatasetPreview);
+export default DatasetPreview;
