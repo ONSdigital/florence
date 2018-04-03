@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
@@ -16,12 +17,16 @@ import uuid from 'uuid/v4';
 import RelatedContentForm from './related-content/RelatedContentForm';
 import log, {eventTypes} from '../../../utilities/log'
 import collections from '../../../utilities/api-clients/collections'
+import DatasetReviewActions from '../DatasetReviewActions'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
     collectionID: PropTypes.string.isRequired,
+    router: PropTypes.shape({
+        listenBefore: PropTypes.func.isRequired
+    }).isRequired,
     location: PropTypes.shape({
         query: PropTypes.shape({
             collection: PropTypes.string
@@ -109,6 +114,8 @@ export class VersionMetadata extends Component {
     }
 
     componentWillMount() {
+
+        this.removeRouteListener = this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
   
         this.setState({
             isFetchingData: true,
@@ -241,15 +248,29 @@ export class VersionMetadata extends Component {
         if (nextState.isFetchingData) {
             return false;
         }
+        if (this.props.version && nextProps.version === null) {
+            return false;
+        }
         return true;
     }
 
     componentWillUnmount() {
+        this.removeRouteListener();
+    }
+
+    handleRouteChange(nextLocation, action) {
+        // Do not empty the active dataset data if we're going to the preview page, to save us GETting it again when we already have it in state.
+        if (nextLocation.pathname === url.resolve("preview")) {
+            action();
+            return;    
+        }
+
         if (this.state.isInstance) {
             this.props.dispatch(emptyActiveInstance());
         } else {
             this.props.dispatch(emptyActiveVersion());
         }
+        action();
     }
 
     async updateReviewStateData() {
@@ -905,30 +926,19 @@ export class VersionMetadata extends Component {
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
             return;
         }
-        
-        if (instanceOrVersionData.reviewState === "reviewed") {
-            return;
-        }
-        
-        if (this.state.isInstance) {
-            return (
-                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
-            )
-        }
 
-        if (instanceOrVersionData.reviewState === "inProgress") {
-            return (
-                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
-            )
-        }
-        
-        if (this.props.userEmail !== instanceOrVersionData.lastEditedBy && instanceOrVersionData.reviewState === "complete") {
-            return (
-                <button className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
-            )
-        }
-
-        return;
+        return (
+            <DatasetReviewActions
+                areDisabled={this.state.isSavingData || this.state.isReadOnly}
+                includeSaveLabels={true}
+                reviewState={instanceOrVersionData.reviewState}
+                userEmail={this.props.userEmail}
+                lastEditedBy={instanceOrVersionData.lastEditedBy}
+                onSubmit={this.handleSaveAndSubmitForReview}
+                onApprove={this.handleSaveAndMarkAsReviewed}
+                notInCollectionYet={!instanceOrVersionData.collection_id}     
+            />
+        )
     }
 
     render() {
@@ -1000,12 +1010,16 @@ export class VersionMetadata extends Component {
                                 </div>
                             </div>
                           </div>
-                          <button type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
-                          {this.renderReviewActions()}
-                          {/* TODO render a 'preview' call to action */}
+                          <button type="submit" className="btn btn--primary margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
+                          <span className="margin-left--1">
+                            {this.renderReviewActions()}
+                          </span>
                           {this.state.isSavingData &&
                             <div className="loader loader--dark loader--inline margin-left--1"></div>
                           }
+                          {!this.state.isInstance &&
+                            <Link className="margin-left--1" to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}>Preview</Link>
+                            }
                         </form>
                       </div>
                     }
