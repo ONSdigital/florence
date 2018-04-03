@@ -86,14 +86,14 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirector(cfg.ImportAPIAuthToken))
+	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirector)
 
 	datasetAPIURL, err := url.Parse(cfg.DatasetAPIURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector(cfg.DatasetAuthToken))
+	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
 	router := pat.New()
 
@@ -254,18 +254,14 @@ func director(req *http.Request) {
 	}
 }
 
-func importAPIDirector(importAPIAuthToken string) func(req *http.Request) {
-	return func(req *http.Request) {
-		req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
-		req.Header.Set("Internal-token", importAPIAuthToken)
-	}
+func importAPIDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
 }
 
-func datasetAPIDirector(datasetAuthToken string) func(req *http.Request) {
-	return func(req *http.Request) {
-		req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
-		req.Header.Set("Internal-token", datasetAuthToken)
-	}
+func datasetAPIDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
