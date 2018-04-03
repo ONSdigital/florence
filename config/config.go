@@ -11,9 +11,7 @@ type Config struct {
 	ZebedeeURL         string `envconfig:"ZEBEDEE_URL"`
 	RecipeAPIURL       string `envconfig:"RECIPE_API_URL"`
 	ImportAPIURL       string `envconfig:"IMPORT_API_URL"`
-	ImportAPIAuthToken string `envconfig:"IMPORT_API_AUTH_TOKEN"      json:"-"`
 	DatasetAPIURL      string `envconfig:"DATASET_API_URL"`
-	DatasetAuthToken   string `envconfig:"DATASET_API_AUTH_TOKEN"     json:"-"`
 	UploadBucketName   string `envconfig:"UPLOAD_BUCKET_NAME"`
 	EnableNewApp       bool   `envconfig:"ENABLE_NEW_APP"`
 	EncryptionDisabled bool   `envconfig:"ENCRYPTION_DISABLED"`
@@ -36,9 +34,7 @@ func Get() (*Config, error) {
 		ZebedeeURL:         "http://localhost:8082",
 		RecipeAPIURL:       "http://localhost:22300",
 		ImportAPIURL:       "http://localhost:21800",
-		ImportAPIAuthToken: "0C30662F-6CF6-43B0-A96A-954772267FF5",
 		DatasetAPIURL:      "http://localhost:22000",
-		DatasetAuthToken:   "FD0108EA-825D-411C-9B1D-41EF7727F465",
 		UploadBucketName:   "dp-frontend-florence-file-uploads",
 		EnableNewApp:       false,
 		EncryptionDisabled: false,
