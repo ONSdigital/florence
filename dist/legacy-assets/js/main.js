@@ -8998,7 +8998,29 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
                 return true;
             }
             else {
-                saveContent(collectionId, safeNewUri, pageData);
+                isUpdatingModal.add();
+
+                // on creation use /page end point instead of content.
+                // the /page end point will create the dataset entry
+                // in the database
+
+                $.ajax({
+                    url: "/zebedee/page/" + collectionId + "?uri=" + safeNewUri + "/data.json",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'POST',
+                    data: JSON.stringify(pageData),
+                    success: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        createWorkspace(safeNewUri, collectionId, 'edit', null, null, pageData.apiDatasetId);
+                    },
+                    error: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        handleApiError(response);
+                    }
+                });
             }
             e.preventDefault();
         });

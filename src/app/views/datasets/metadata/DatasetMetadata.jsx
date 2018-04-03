@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
@@ -17,6 +18,7 @@ import {updateActiveDataset, emptyActiveDataset, updateActiveDatasetReviewState,
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log'
 import handleMetadataSaveErrors from './datasetHandleMetadataSaveErrors';
+import DatasetReviewActions from '../DatasetReviewActions'
 
 const propTypes = {
     params: PropTypes.shape({
@@ -26,7 +28,9 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
     collectionID: PropTypes.string,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    router: PropTypes.shape({
+        listenBefore: PropTypes.func.isRequired
+    }).isRequired,
     datasets: PropTypes.arrayOf(PropTypes.shape({
         next: PropTypes.shape({
             title: PropTypes.string
@@ -37,6 +41,7 @@ const propTypes = {
     })),
     dataset: PropTypes.shape({
         title: PropTypes.string,
+        id: PropTypes.string,
         description: PropTypes.string,
         keywords: PropTypes.array,
         license: PropTypes.string,
@@ -129,7 +134,9 @@ export class DatasetMetadata extends Component {
 
     componentWillMount() {
 
-        this.setState({isFetchingDataset: true});
+        this.removeRouteListener = this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
+
+        this.setState({isFetchingDataset: true});        
         
         datasets.get(this.props.params.datasetID).then(response => {
             const dataset = response.next || response.current;
@@ -292,11 +299,25 @@ export class DatasetMetadata extends Component {
         if (nextState.isFetchingDataset) {
             return false;
         }
+        if (this.props.dataset && nextProps.dataset === null) {
+            return false;
+        }
         return true;
     }
 
     componentWillUnmount() {
+        this.removeRouteListener();
+    }
+
+    handleRouteChange(nextLocation, action) {
+        // Do not empty the active dataset data if we're going to the preview page, to save us GETting it again when we already have it in state.
+        if (nextLocation.pathname === url.resolve("preview")) {
+            action();
+            return;    
+        }
+
         this.props.dispatch(emptyActiveDataset());
+        action();
     }
 
     getCollection(collectionID) {
@@ -565,7 +586,8 @@ export class DatasetMetadata extends Component {
         }
 
         if (type === "link") {
-            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});            return;
+            this.setState({relatedLinks: edit(this.state.relatedLinks, key)});
+            return;
         }
 
         if (type === "methodologies") {
@@ -724,34 +746,22 @@ export class DatasetMetadata extends Component {
     }
 
     renderReviewActions() {
-
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
             return;
         }
 
-        if (this.props.dataset.reviewState === "reviewed") {
-            return;
-        }
-
-        if (!this.props.dataset.collection_id || this.props.dataset.reviewState === "inProgress") {
-            return (
-                <button id="btn-submit-for-review" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
-            )
-        }
-        
-        if (this.props.userEmail === this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
-            return (
-                <button id="btn-submit-for-review" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndSubmitForReview}>Save and submit for review</button>
-            )
-        }
-
-        if (this.props.userEmail !== this.props.dataset.lastEditedBy && this.props.dataset.reviewState === "complete") {
-            return (
-                <button id="btn-mark-as-reviewed" className="btn btn--positive margin-left--1" type="button" disabled={this.state.isSavingData} onClick={this.handleSaveAndMarkAsReviewed}>Save and submit for approval</button>
-            )
-        }
-
-        return;
+        return (
+            <DatasetReviewActions
+                areDisabled={this.state.isSavingData || this.state.isReadOnly}
+                includeSaveLabels={true}
+                reviewState={this.props.dataset.reviewState}
+                userEmail={this.props.userEmail}
+                lastEditedBy={this.props.dataset.lastEditedBy}
+                onSubmit={this.handleSaveAndSubmitForReview}
+                onApprove={this.handleSaveAndMarkAsReviewed}
+                notInCollectionYet={!this.props.dataset.collection_id}     
+            />
+        )
     }
 
     render() {
@@ -902,11 +912,15 @@ export class DatasetMetadata extends Component {
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                         </div>
-                        <button id="btn-save" type="submit" className="btn btn--positive margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
-                        {this.renderReviewActions()}
-                        {/* TODO render preview CTA with `this.state.latestVersion` check */}
+                        <button id="btn-save" type="submit" className="btn btn--primary margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
+                        <span className="margin-left--1">
+                            {this.renderReviewActions()}
+                        </span>
                         {this.state.isSavingData &&
                             <div className="loader loader--inline loader--dark margin-left--1"></div>
+                        }
+                        {this.state.latestVersion &&
+                            <Link className="margin-left--1" to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}>Preview</Link>
                         }
                         </form>
                     </div>
@@ -916,24 +930,23 @@ export class DatasetMetadata extends Component {
 
                       <Modal sizeClass="grid__col-3">
                         {this.state.modalType ?
-
-                          <RelatedContentForm
-                              name="related-content-modal"
-                              formTitle="Add related content"
-                              titleLabel={"Page title"}
-                              titleInput={this.state.titleInput}
-                              urlLabel={"Page URL"}
-                              urlInput={this.state.urlInput}
-                              descLabel={"Description"}
-                              descInput={this.state.descInput}
-                              onCancel={this.handleRelatedContentCancel}
-                              onFormInput={this.handleInputChange}
-                              onFormSubmit={this.handleRelatedContentSubmit}
-                              titleError={this.state.titleError}
-                              urlError={this.state.urlError}
-                              requiresDescription={this.state.modalType === "methodologies" ? true : false}
-                              requiresURL={true}
-                          />
+                            <RelatedContentForm
+                                name="related-content-modal"
+                                formTitle="Add related content"
+                                titleLabel={"Page title"}
+                                titleInput={this.state.titleInput}
+                                urlLabel={"Page URL"}
+                                urlInput={this.state.urlInput}
+                                descLabel={"Description"}
+                                descInput={this.state.descInput}
+                                onCancel={this.handleRelatedContentCancel}
+                                onFormInput={this.handleInputChange}
+                                onFormSubmit={this.handleRelatedContentSubmit}
+                                titleError={this.state.titleError}
+                                urlError={this.state.urlError}
+                                requiresDescription={this.state.modalType === "methodologies" ? true : false}
+                                requiresURL={true}
+                            />
                         :
                           <div>
                           <div className="modal__header">
