@@ -152,11 +152,12 @@ class DatasetsController extends Component {
                         });
                     }
                 });
+                const collectionParameter = activeCollectionID ? `?collection=${activeCollectionID}` : "";
                 return {
                     title: dataset.title || dataset.id,
                     id: dataset.id,
                     instances: datasetInstances,
-                    datasetURL: url.resolve(`datasets/${dataset.id}/metadata`) + `?collection=${activeCollectionID}`
+                    datasetURL: url.resolve(`datasets/${dataset.id}/metadata`) + collectionParameter
                 }
             });
             return values;
