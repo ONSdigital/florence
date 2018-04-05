@@ -921,6 +921,9 @@ export class VersionMetadata extends Component {
     }
 
     renderReviewActions() {
+        if (!this.props.instance && !this.props.version) {
+            return;
+        }
         const instanceOrVersionData = this.state.isInstance ? this.props.instance : this.props.version;
 
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
