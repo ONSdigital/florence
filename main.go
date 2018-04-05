@@ -95,6 +95,13 @@ func main() {
 	}
 	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
+	downloadServiceURL, err := url.Parse(cfg.DownloadServiceURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	downloadServiceProxy := reverseProxy.Create(downloadServiceURL, director)
+
 	router := pat.New()
 
 	newAppHandler := refactoredIndexFile
@@ -129,6 +136,7 @@ func main() {
 	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
+	router.Handle("/downloads/{uri:.*}", downloadServiceProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
