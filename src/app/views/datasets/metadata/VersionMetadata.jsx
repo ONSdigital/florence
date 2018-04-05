@@ -128,7 +128,23 @@ export class VersionMetadata extends Component {
             Promise.resolve()
         ];
 
-        if (!this.props.params.instanceID) {
+        if (!this.props.collectionID) {
+            this.setState({
+                isReadOnly: true
+            });
+
+            const notification = {
+                type: "neutral",
+                message: "You are not in a collection, so cannot edit this version.",
+                isDismissable: true
+            }
+            notifications.add(notification);
+            log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view version (${this.props.params.datasetID}) without being in collection.`});
+            console.warn(`Attempt to edit/view version (${this.props.params.datasetID}) without being in collection.`);
+
+        }
+
+        if (!this.props.params.instanceID && this.props.collectionID) {
             this.updateReviewStateData();
         }
 
@@ -921,6 +937,9 @@ export class VersionMetadata extends Component {
     }
 
     renderReviewActions() {
+        if (!this.props.instance && !this.props.version) {
+            return;
+        }
         const instanceOrVersionData = this.state.isInstance ? this.props.instance : this.props.version;
 
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {
