@@ -2479,11 +2479,11 @@ templates['workEditT8'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":func
 templates['workEditT8ApiLandingPage'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "<section class=\"panel workspace-edit\">\n  <div class=\"margin-left--1 margin-bottom--1 margin-top--2\"><strong>Connected dataset ID:</strong>"
+  return "<section class=\"panel workspace-edit\">\n  <div class=\"margin-left--1 margin-bottom--1 margin-top--2\"><strong>Connected dataset ID: </strong>"
     + alias2(alias1((depth0 != null ? depth0.apiDatasetId : depth0), depth0))
-    + "</div>\n  <div class=\"margin-left--1 margin-bottom--1\"><strong>Title:</strong> "
+    + "</div>\n  <div class=\"margin-left--1 margin-bottom--1\"><strong>Title: </strong>"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + "</div>\n  <div class=\"margin-left--1\">Go to <a href=\"/florence/datasets\">Datasets</a> to add content to this page.</div>\n  <nav class=\"edit-nav\">\n"
+    + "</div>\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n</section>\n";
 },"usePartial":true,"useData":true});
