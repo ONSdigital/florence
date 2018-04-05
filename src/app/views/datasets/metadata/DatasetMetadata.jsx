@@ -143,6 +143,20 @@ export class DatasetMetadata extends Component {
 
             this.props.dispatch(updateActiveDataset(dataset));
 
+            if (!this.props.collectionID) {
+                this.setState({
+                    isReadOnly: true
+                });
+                const notification = {
+                    type: "neutral",
+                    message: "You are not in a collection, so cannot edit this dataset.",
+                    isDismissable: true
+                }
+                notifications.add(notification);
+                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset (${this.props.params.datasetID}) without being in collection.`});
+                console.warn(`Attempt to edit/view dataset (${this.props.params.datasetID}) without being in collection.`);
+            }
+
             if((this.props.collectionID && dataset.collection_id) && this.props.collectionID !== dataset.collection_id) {
                 this.setState({
                     isReadOnly: true
@@ -157,7 +171,8 @@ export class DatasetMetadata extends Component {
                 console.warn("Dataset is already in collection '" + dataset.collection_id + "'");
             }
 
-            if (this.props.dataset.collection_id) {
+
+            if (this.props.dataset.collection_id && this.props.collectionID) {
                 this.updateReviewStateData();
             }
 
