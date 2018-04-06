@@ -15,11 +15,14 @@ function viewPublishDetails(collections) {
         pageDataRequests.push(
             getCollectionDetails(collectionId,
                 success = function (response) {
+                    console.log(response);
                     if (result.date === manual) {
                         result.collectionDetails.push({
                             id: response.id,
                             name: response.name,
                             pageDetails: response.reviewed,
+                            datasets: response.datasets,
+                            datasetVersions: response.datasetVersions,
                             pageType: 'manual',
                             pendingDeletes: response.pendingDeletes
                         });
