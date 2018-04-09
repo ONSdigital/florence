@@ -9,12 +9,10 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/ONSdigital/florence/assets"
-	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
@@ -25,9 +23,7 @@ import (
 var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
-var recipeAPIURL = "http://localhost:22300"
-var importAPIURL = "http://localhost:21800"
-var uploadBucketName = "dp-frontend-florence-file-uploads"
+var tableRendererURL = "http://localhost:23300"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 
@@ -49,17 +45,8 @@ func main() {
 	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
 		zebedeeURL = v
 	}
-	if v := os.Getenv("RECIPE_API_URL"); len(v) > 0 {
-		recipeAPIURL = v
-	}
-	if v := os.Getenv("UPLOAD_BUCKET_NAME"); len(v) > 0 {
-		uploadBucketName = v
-	}
-	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
-		recipeAPIURL = v
-	}
-	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
-		enableNewApp, _ = strconv.ParseBool(v)
+	if v := os.Getenv("TABLE_RENDERER_URL"); len(v) > 0 {
+		tableRendererURL = v
 	}
 
 	log.Namespace = "florence"
@@ -88,41 +75,18 @@ func main() {
 	}
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
 
-	recipeAPIURL, err := url.Parse(recipeAPIURL)
+	tableURL, err := url.Parse(tableRendererURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, nil)
 
-	importAPIURL, err := url.Parse(importAPIURL)
-	if err != nil {
-		log.Error(err, nil)
-		os.Exit(1)
-	}
-	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirectory)
+	tableProxy := reverseProxy.Create(tableURL, tableDirector)
 
 	router := pat.New()
 
-	newAppHandler := refactoredIndexFile
-
-	if !enableNewApp {
-		newAppHandler = legacyIndexFile
-	}
-
-	uploader, err := upload.New(uploadBucketName)
-	if err != nil {
-		log.Error(err, nil)
-		os.Exit(1)
-	}
-
-	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
-	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
-	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
-
-	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
-	router.Handle("/import{uri:.*}", importAPIProxy)
+	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
+	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
@@ -131,16 +95,15 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:/.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
-		"bind_addr":      bindAddr,
-		"babbage_url":    babbageURL,
-		"zebedee_url":    zebedeeURL,
-		"recipe_api_url": recipeAPIURL,
-		"import_api_url": importAPIURL,
-		"enable_new_app": enableNewApp,
+		"bind_addr":          bindAddr,
+		"babbage_url":        babbageURL,
+		"zebedee_url":        zebedeeURL,
+		"table_renderer_url": tableRendererURL,
+		"enable_new_app":     enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)
@@ -222,8 +185,8 @@ func zebedeeDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
-func importAPIDirectory(req *http.Request) {
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+func tableDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
