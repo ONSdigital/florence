@@ -38,13 +38,17 @@ class DatasetPreview extends Component {
         var iframe = document.getElementById('iframe');
         var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-        var xlsDownload = innerDoc.getElementById('xls-download');
-        var xlsHref = xlsDownload.getAttribute("href").replace(/^.*\/\/[^\/]+/, '');
-        xlsDownload.setAttribute("href", xlsHref);
-
         var csvDownload = innerDoc.getElementById('csv-download');
-        var csvHref = csvDownload.getAttribute("href").replace(/^.*\/\/[^\/]+/, '');
-        csvDownload.setAttribute("href", csvHref);
+        if (csvDownload != null) {
+            var csvHref = csvDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
+            csvDownload.setAttribute("href", csvHref);
+        }
+
+        var xlsDownload = innerDoc.getElementById('xls-download');
+        if (xlsDownload != null) {
+            var xlsHref = xlsDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
+            xlsDownload.setAttribute("href", xlsHref);
+        }
     }
 
     renderReviewActions() {
