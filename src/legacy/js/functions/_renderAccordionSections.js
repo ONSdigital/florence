@@ -74,6 +74,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'datasets', 'datasets');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'highlightedContent', 'highlighted-content');
         accordion();
         t3Editor(collectionId, pageData);
     }
