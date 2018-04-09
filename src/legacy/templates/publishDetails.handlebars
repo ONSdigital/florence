@@ -28,18 +28,18 @@
                                 </li>
                             {{/each}}
                             {{#each datasets}}
-                                <li class="page-list__item"><span class="page__item page__item--{{type}}"
+                                <li class="page-list__item"><span class="page__item page__item--dataset"
                                                                   data-path="{{uri}}">{{title}}</span>
                                     <div class="page__buttons page__buttons--list">
-                                        <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
+                                        <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
                                     </div>
                                 </li>
                             {{/each}}
                             {{#each datasetVersions}}
-                                <li class="page-list__item"><span class="page__item page__item--{{type}}"
+                                <li class="page-list__item"><span class="page__item page__item--dataset_version"
                                                                   data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})</span>
                                     <div class="page__buttons page__buttons--list">
-                                        <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
+                                        <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
                                     </div>
                                 </li>
                             {{/each}}
