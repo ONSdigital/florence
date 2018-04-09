@@ -15,7 +15,6 @@ function viewPublishDetails(collections) {
         pageDataRequests.push(
             getCollectionDetails(collectionId,
                 success = function (response) {
-                    console.log(response);
                     if (result.date === manual) {
                         result.collectionDetails.push({
                             id: response.id,
