@@ -4,22 +4,15 @@
             <li class="js-browse__item" data-url="{{uri}}">
                 <div class="page__container selected">
                     <span class="js-browse__item-title page__item{{#unless uri}} page__item--directory{{else}} page__item--{{type}}{{/unless}}">{{description.title}}</span>
-                    {{#if_eq collectionOwner "PUBLISHING_SUPPORT"}}
-                        <div class="page__buttons page__buttons--list selected">
-                            <button class="btn btn--primary btn-browse-edit">Edit</button>
-                            <button class="btn btn--positive btn-browse-create">Create</button>
-                            {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
-                        </div>
-                    {{/if_eq}}
+                    <div class="page__buttons page__buttons--list selected">
+                        <button class="btn btn--primary btn-browse-edit">Edit</button>
+                        <button class="btn btn--positive btn-browse-create">Create</button>
+                        {{#if isDeletable}}<button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
+                    </div>
                 </div>
-                {{#if children}} {{! Within the context of the current item }}
+                {{#if children}}
                     <ul class="js-browse__children">
-                        {{#if_eq collectionOwner "PUBLISHING_SUPPORT"}}
-                            {{> browseNode}} {{! Recursively render the partial }}
-                        {{/if_eq}}
-                        {{#if_eq collectionOwner "DATA_VISUALISATION"}}
-                            {{> browseNodeDataVis}} {{! Recursively render the partial }}
-                        {{/if_eq}}
+                        {{> browseNode}}
                     </ul>
                 {{/if}}
             </li>
