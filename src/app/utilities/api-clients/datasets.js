@@ -82,17 +82,7 @@ export default class datasets {
                 ...metadata
             }
         }
-        return http.put(`/dataset/instances/${instanceID}`, body, true)
-            .then(response => {
-                return response;
-            });
-    }
-
-    static approveInstance(instanceID) {
-        // TODO unstub this once a version/instance can be reviewed and approved in the API
-        return new Promise(resolve => {
-            setTimeout(resolve, 2000);
-        })
+        return http.put(`/dataset/instances/${instanceID}`, body, true);
     }
 
     static updateDatasetMetadata(datasetID, metadata) {
@@ -100,13 +90,6 @@ export default class datasets {
             .then(response => {
                 return response;
             })
-    }
-
-    static approveDatasetMetadata(datasetID) {
-        // TODO unstub this once dataset metadata can be reviewed and approved in the API
-        return new Promise(resolve => {
-            setTimeout(resolve, 2000);
-        })
     }
 
     static getAllInstances() {
