@@ -2,7 +2,8 @@ package upload
 
 import (
 	"bytes"
-	"crypto/rsa"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,7 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 	"github.com/gorilla/schema"
 )
 
@@ -31,9 +31,41 @@ type Resumable struct {
 	AliasName        string `schema:"aliasName"`
 }
 
+// S3Client wraps the SDK Client and the CryptoClients
+type S3Client interface {
+	S3SDKClient
+	S3CryptoClient
+}
+
+// S3Client implements the S3Client interface
+type s3Client struct {
+	S3SDKClient
+	S3CryptoClient
+}
+
+// S3SDKClient represents the client with methods required to upload a multipart upload to s3
+type S3SDKClient interface {
+	ListMultipartUploads(*s3.ListMultipartUploadsInput) (*s3.ListMultipartUploadsOutput, error)
+	ListParts(*s3.ListPartsInput) (*s3.ListPartsOutput, error)
+	CompleteMultipartUpload(input *s3.CompleteMultipartUploadInput) (*s3.CompleteMultipartUploadOutput, error)
+	CreateMultipartUpload(*s3.CreateMultipartUploadInput) (*s3.CreateMultipartUploadOutput, error)
+	UploadPart(*s3.UploadPartInput) (*s3.UploadPartOutput, error)
+}
+
+// S3CryptoClient represents the cryptoclient with methods required to upload parts with encryption
+type S3CryptoClient interface {
+	UploadPartWithPSK(*s3.UploadPartInput, []byte) (*s3.UploadPartOutput, error)
+}
+
+// VaultClient is an interface to represent methods called to action upon vault
+type VaultClient interface {
+	ReadKey(path, key string) (string, error)
+	WriteKey(path, key, value string) error
+}
+
 // New creates a new instance of Uploader using provided s3
 // environment authentication
-func New(bucketName string, key *rsa.PrivateKey) (*Uploader, error) {
+func New(bucketName, vaultPath string, vc VaultClient) (*Uploader, error) {
 	region := "eu-west-1"
 
 	sess, err := session.NewSession(&aws.Config{Region: &region})
@@ -41,24 +73,29 @@ func New(bucketName string, key *rsa.PrivateKey) (*Uploader, error) {
 		return nil, err
 	}
 
-	cryptoConfig := &s3crypto.Config{PrivateKey: key}
+	s3cli := s3.New(sess)
 
-	var client s3iface.S3API
-
-	if key == nil {
-		client = s3.New(sess)
-	} else {
-		client = s3crypto.New(sess, cryptoConfig)
+	client := s3Client{
+		S3SDKClient: s3cli,
 	}
 
-	return &Uploader{client, bucketName}, nil
+	if vc != nil {
+		cryptoConfig := &s3crypto.Config{HasUserDefinedPSK: true}
+		s3cryptoClient := s3crypto.New(sess, cryptoConfig)
+
+		client.S3CryptoClient = s3cryptoClient
+	}
+
+	return &Uploader{client, vc, bucketName, vaultPath}, nil
 }
 
 // Uploader represents the necessary configuration for uploading a file
 type Uploader struct {
-	client s3iface.S3API
+	client      S3Client
+	vaultClient VaultClient
 
 	bucketName string
+	vaultPath  string
 }
 
 // CheckUploaded checks to see if a chunk has been uploaded
@@ -219,6 +256,15 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	if len(uploadID) == 0 {
 		acl := "public-read"
 
+		if u.vaultClient != nil {
+			psk := createPSK()
+			if err := u.vaultClient.WriteKey(u.vaultPath, resum.Identifier, hex.EncodeToString(psk)); err != nil {
+				log.ErrorR(req, err, nil)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		}
+
 		createMultiInput := &s3.CreateMultipartUploadInput{
 			Bucket:      &u.bucketName,
 			Key:         &resum.Identifier,
@@ -248,11 +294,33 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		PartNumber: &n,
 	}
 
-	_, err = u.client.UploadPart(uploadPartInput)
-	if err != nil {
-		log.ErrorR(req, err, nil)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	if u.vaultClient != nil {
+		pskStr, err := u.vaultClient.ReadKey(u.vaultPath, resum.Identifier)
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		psk, err := hex.DecodeString(pskStr)
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		_, err = u.client.UploadPartWithPSK(uploadPartInput, psk)
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	} else {
+		_, err = u.client.UploadPart(uploadPartInput)
+		if err != nil {
+			log.ErrorR(req, err, nil)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	log.Info("chunk accepted", log.Data{
@@ -303,4 +371,11 @@ func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
+}
+
+func createPSK() []byte {
+	key := make([]byte, 16)
+	rand.Read(key)
+
+	return key
 }
