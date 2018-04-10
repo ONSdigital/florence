@@ -1,6 +1,7 @@
 import React from 'react';
 import {VersionMetadata} from './VersionMetadata.jsx';
 import notifications from '../../../utilities/notifications';
+import datasets from '../../../utilities/api-clients/datasets';
 import uuid from 'uuid/v4';
 import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
@@ -40,7 +41,8 @@ jest.mock('../../../utilities/log', () => {
     return {
         add: function() {
             //
-        }
+        },
+        eventTypes: {}
     }
 });
 
@@ -174,6 +176,12 @@ const defaultProps = {
         datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
         version: "1",
         edition: "time-series"
+    },
+    location: {
+        query: {collection: "a-collection-id"}
+    },
+    router: {
+        listenBefore: () => {}
     }
 }
 
@@ -188,6 +196,10 @@ test("Dataset title updates after successful fetch from dataset API on mount", a
     const component = shallow(
         <VersionMetadata {...defaultProps} />
     );
+
+    datasets.get.mockImplementationOnce(() => (
+        Promise.resolve({current: exampleDataset.current}
+    )));
 
     await component.instance().componentWillMount();
     await component.update(); // update() appears to be async so we need to wait for it to finish before asserting
@@ -313,7 +325,7 @@ test("Input errors are added on submit and then removed on change of that input"
     expect(component.update().state("titleError")).toBe(undefined);
     expect(component.update().state("descError")).toBe(undefined);
 
-    component.instance().handleFormSubmit({preventDefault: ()=>{}});
+    component.instance().handleRelatedContentSubmit({preventDefault: ()=>{}});
     expect(component.update().state("titleError")).not.toBe("");
     expect(component.update().state("descError")).not.toBe("");
 
@@ -405,3 +417,5 @@ test("Changing the dimension title value updates the dimension label in state", 
     component.instance().handleInputChange(mockLabelEvent);
     expect(component.state("dimensions")[0].label).toBe(mockLabelEvent.target.value);
 });
+
+// TODO test that the saving responses are passed to the error handler in the correct order
