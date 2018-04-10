@@ -139,7 +139,7 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:/.*}", refactoredIndexFile)
+	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", routerProxy)
 
 	log.Debug("Starting server", log.Data{"config": cfg})
