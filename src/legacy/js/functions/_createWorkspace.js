@@ -51,22 +51,14 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
 
         /* Setup preview */
-        if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-            // Disable preview for data vis
-            $('#browser-location').show();
-            $('.browser').addClass('disabled');
-            updateBrowserURL("/");
-            $('#iframe').attr('src', Florence.babbageBaseUrl);
-        } else {
-            // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
-            detectPreviewClick();
+        // Detect click on preview, stopping browsing around preview from getting rid of unsaved data accidentally
+        detectPreviewClick();
 
-            // Detect changes to preview and handle accordingly
-            processPreviewLoad(collectionId, collectionData);
+        // Detect changes to preview and handle accordingly
+        processPreviewLoad(collectionId, collectionData);
 
-            // Update preview URL on initial load of workspace
-            updateBrowserURL(path);
-        }
+        // Update preview URL on initial load of workspace
+        updateBrowserURL(path);
 
         if (Florence.globalVars.welsh !== true) {
             $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
@@ -192,6 +184,8 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var dest = '/visualisations';
             var type = 'visualisation';
             Florence.globalVars.pagePath = dest;
+            $navItem.removeClass('selected');
+            $("#create").addClass('selected');
             loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
         });
 
@@ -247,11 +241,6 @@ function detectPreviewClick() {
 }
 
 function processPreviewLoad(collectionId, collectionData) {
-    if (collectionData && collectionData.collectionOwner == "DATA_VISUALISATION") {
-        // iframe is blacked out on browse for data vis content
-        $('#iframe').empty();
-
-    } else {
         // Collection of functions to run on iframe load
         onIframeLoad(function (event) {
             var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
@@ -264,8 +253,13 @@ function processPreviewLoad(collectionId, collectionData) {
                     var safeUrl = checkPathSlashes(newUrl),
                         selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
 
+
                     Florence.globalVars.pagePath = safeUrl;
 
+                    if (safeUrl.split('/')[1] === "visualisations") {
+                        return;
+                    }
+                    
                     if ($('.workspace-edit').length || $('.workspace-create').length) {
 
                         // Switch to browse screen if navigating around preview whilst on create or edit tab
@@ -283,7 +277,7 @@ function processPreviewLoad(collectionId, collectionData) {
                 }
             }
         });
-    }
+    // }
 }
 
 // Reusable iframe startload event - uses message sent up form babbage on window.load
@@ -320,6 +314,18 @@ function updateBrowserURL(url) {
         url = Florence.globalVars.pagePath;
     }
     $('.browser-location').val(Florence.babbageBaseUrl + url);
+
+    // Disable preview for visualisations
+    var isVisualisation = url.split('/')[1] === "visualisations";
+    if (isVisualisation && $('#browse.selected').length > 0) {
+        $('.browser').addClass('disabled');
+        return;
+    }
+
+    // Enable the preview if we're viewing a normal page and the preview is currently disabled
+    if ($('.browser.disabled').length > 0) {
+        $('.browser.disabled').removeClass('disabled');
+    }
 }
 
 // toggle delete button from 'delete' to 'revert' for content marked as to be deleted and remove/show other buttons in item

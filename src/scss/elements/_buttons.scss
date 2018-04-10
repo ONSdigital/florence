@@ -7,6 +7,25 @@
     background-color: $concrete;
     display: inline-block;
 
+    &:hover,
+    &:focus {
+        outline: 0; //reset the default focus styling (for example those set on <a> tags)
+    }
+
+    &:hover,
+    &:focus {
+        &:after {
+            content: '';
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: rgba(0,0,0,0.2);
+            top: 0;
+            left: 0;
+            border-radius: 4px;
+        }
+    }
+
     /* Colours */
     &--primary,
     &--primary:visited {
@@ -68,25 +87,6 @@
         &:hover:after,
         :focus:after {
             display: none;
-        }
-    }
-
-    &:hover,
-    &:focus {
-        outline: 0; //reset the default focus styling (for example those set on <a> tags)
-    }
-
-    &:hover,
-    &:focus {
-        &:after {
-            content: '';
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background-color: rgba(0,0,0,0.2);
-            top: 0;
-            left: 0;
-            border-radius: 4px;
         }
     }
 

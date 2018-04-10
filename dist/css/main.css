@@ -1356,6 +1356,10 @@ select {
   border-right-color: rgba(52, 59, 89, 0.2);
   border-bottom-color: rgba(52, 59, 89, 0.2); }
 
+.loader--inline {
+  position: relative;
+  top: 5px; }
+
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -2071,6 +2075,17 @@ details {
   /* Colours */
   /* Margin */
   /* Display */ }
+  .btn:hover, .btn:focus {
+    outline: 0; }
+  .btn:hover:after, .btn:focus:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.2);
+    top: 0;
+    left: 0;
+    border-radius: 4px; }
   .btn--primary, .btn--primary:visited {
     color: #F2F2F2;
     background-color: #337099; }
@@ -2107,17 +2122,6 @@ details {
     .btn--disabled :focus:after, .btn:disabled:hover:after,
     .btn:disabled :focus:after {
       display: none; }
-  .btn:hover, .btn:focus {
-    outline: 0; }
-  .btn:hover:after, .btn:focus:after {
-    content: '';
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.2);
-    top: 0;
-    left: 0;
-    border-radius: 4px; }
   .btn--password {
     background: none;
     font-size: 12.5px;
@@ -2143,7 +2147,7 @@ details {
   display: inline-block;
   width: 100%;
   height: 42px;
-  padding: 7px 20px;
+  padding: 10.5px 10px;
   background-color: #FFFFFF; }
   .input:focus {
     border: 3px solid #ffbf47; }
@@ -2163,7 +2167,7 @@ details {
   border-radius: 0;
   width: 100%;
   min-width: 100%;
-  padding: 7px 62px 7px 20px;
+  padding: 7px 10px;
   background-color: transparent;
   position: relative;
   cursor: pointer; }
