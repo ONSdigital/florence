@@ -34,7 +34,7 @@ export default class collections {
     }
 
     static deletePage(collectionID, pageURI) {
-        return http.delete(`/zebedee/content/${collectionID}?uri=${pageURI}`);
+        return http.delete(`/zebedee/page/${collectionID}?uri=${pageURI}`);
     }
 
     static cancelDelete(collectionID, pageURI) {
@@ -83,18 +83,12 @@ export default class collections {
 
     static setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID) {
         const body = {state: "Complete"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
-            .then(response => {
-                return response;
-            });
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
     }
 
     static setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID) {
         const body = {state: "Reviewed"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
-            .then(response => {
-                return response;
-            });
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
     }
 
     static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
