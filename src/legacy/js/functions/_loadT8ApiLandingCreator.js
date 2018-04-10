@@ -64,7 +64,29 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
                 return true;
             }
             else {
-                saveContent(collectionId, safeNewUri, pageData);
+                isUpdatingModal.add();
+
+                // on creation use /page end point instead of content.
+                // the /page end point will create the dataset entry
+                // in the database
+
+                $.ajax({
+                    url: "/zebedee/page/" + collectionId + "?uri=" + safeNewUri + "/data.json",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'POST',
+                    data: JSON.stringify(pageData),
+                    success: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        createWorkspace(safeNewUri, collectionId, 'edit', null, null, pageData.apiDatasetId);
+                    },
+                    error: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        handleApiError(response);
+                    }
+                });
             }
             e.preventDefault();
         });
@@ -81,10 +103,11 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             var content = "";
             $.each(recipeData.items, function(i, v) {
               // Get the dataset names and id's
-              var datasetName = v.alias;
-                  datasetId = v.output_instances[0].dataset_id;
+              var datasetAlias = v.alias;
+              var datasetName = v.output_instances[0].title;
+              var datasetId = v.output_instances[0].dataset_id;
               // Create elements, store data in data attr to be used later
-              content =  content + '<li><div class="float-left col--8"><h3>' + datasetName + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
+              content =  content + '<li><div class="float-left col--8"><h3>' + datasetAlias + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
             });
             templateData.content = content;
             // Load modal and add the data
