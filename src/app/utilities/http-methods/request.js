@@ -58,8 +58,9 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
             let responseIsJSON = false;
             let responseIsText = false;
+            const responseType = response.headers.get('content-type');
 
-            if (response.headers.get('content-type') !== null) {
+            if (responseType !== null) {
                 responseIsJSON = response.headers.get('content-type').match(/application\/json/);
                 responseIsText = response.headers.get('content-type').match(/text\/plain/);
             }
