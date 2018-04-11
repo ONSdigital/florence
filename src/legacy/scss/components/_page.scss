@@ -128,7 +128,12 @@
                 content: 'DA';
             }
         }
-        &--dataset {
+        &--dataset, &--dataset_version, &--dataset_details {
+            &:after {
+                content: 'DS';
+            }
+        }
+        &--api_dataset_landing_page {
             &:after {
                 content: 'DS';
             }
