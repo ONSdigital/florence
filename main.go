@@ -81,6 +81,13 @@ func main() {
 	}
 	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, nil)
 
+	tableURL, err := url.Parse(cfg.TableRendererURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	tableProxy := reverseProxy.Create(tableURL, tableDirector)
+
 	importAPIURL, err := url.Parse(cfg.ImportAPIURL)
 	if err != nil {
 		log.Error(err, nil)
@@ -96,12 +103,6 @@ func main() {
 	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
 	router := pat.New()
-
-	newAppHandler := refactoredIndexFile
-
-	if !cfg.EnableNewApp {
-		newAppHandler = legacyIndexFile
-	}
 
 	var vc upload.VaultClient
 	if !cfg.EncryptionDisabled {
@@ -129,6 +130,7 @@ func main() {
 	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
+	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
@@ -137,8 +139,7 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-
-	router.HandleFunc("/florence{uri:.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", routerProxy)
 
 	log.Debug("Starting server", log.Data{"config": cfg})
@@ -257,6 +258,10 @@ func director(req *http.Request) {
 func importAPIDirector(req *http.Request) {
 	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+}
+
+func tableDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
 }
 
 func datasetAPIDirector(req *http.Request) {

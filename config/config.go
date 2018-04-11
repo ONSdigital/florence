@@ -13,11 +13,11 @@ type Config struct {
 	ImportAPIURL       string `envconfig:"IMPORT_API_URL"`
 	DatasetAPIURL      string `envconfig:"DATASET_API_URL"`
 	UploadBucketName   string `envconfig:"UPLOAD_BUCKET_NAME"`
-	EnableNewApp       bool   `envconfig:"ENABLE_NEW_APP"`
 	EncryptionDisabled bool   `envconfig:"ENCRYPTION_DISABLED"`
 	VaultAddr          string `envconfig:"VAULT_ADDR"`
 	VaultToken         string `envconfig:"VAULT_TOKEN"                json:"-"`
 	VaultPath          string `envconfig:"VAULT_PATH"`
+	TableRendererURL   string `envconfig:"TABLE_RENDERER_URL"`
 }
 
 var cfg *Config
@@ -36,8 +36,8 @@ func Get() (*Config, error) {
 		ImportAPIURL:       "http://localhost:21800",
 		DatasetAPIURL:      "http://localhost:22000",
 		UploadBucketName:   "dp-frontend-florence-file-uploads",
-		EnableNewApp:       false,
 		EncryptionDisabled: false,
+		TableRendererURL:   "http://localhost:23300",
 		VaultAddr:          "http://localhost:8200",
 		VaultToken:         "",
 		VaultPath:          "secret/shared/psk",
