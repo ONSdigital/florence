@@ -1,0 +1,1 @@
+window.fetch = require('jest-fetch-mock');
