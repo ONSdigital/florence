@@ -18,6 +18,7 @@
 .sass-cache/
 node_modules
 npm-debug.log*
+src/package-lock.json
 
 #Golang
 assets/debug.go
