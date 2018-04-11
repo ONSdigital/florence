@@ -15,42 +15,37 @@ function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
         dataType: 'json',
         type: 'GET',
         success: function (response) {
+            
+            var browseData = response;
+            browseData.children = response.children.map(item => {
+                if (!item.uri && item.contentPath === "/visualisations") {
+                    item.isVisualisationsDirectory = true;
+                }
+                return item;
+            });
 
-            checkAndAddDeleteFlag(response, collectionData);
+            checkAndAddDeleteFlag(browseData, collectionData);
 
-            // var collectionOwner = localStorage.getItem('userType');
-            response['collectionOwner'] = localStorage.getItem('userType');
-
-            // var browserContent = $('#iframe')[0].contentWindow;
-            var html = templates.workBrowse(response);
+            var html = templates.workBrowse(browseData);
             var browseTree = document.getElementById('browse-tree');
             browseTree.innerHTML = html;
 
             $('.workspace-browse').css("overflow", "scroll");
 
-            // Send visualisations back to visualisations folder by default on browse tree load
-            // if (collectionOwner == "DATA_VISUALISATION") {
-            //     var visDirectory = "/visualisations";
-            //     treeNodeSelect(visDirectory);
-            // }
-
-            // Bind click event for browse tree item
-            bindBrowseTreeClick(collectionId);
+            bindBrowseTreeClick();
 
             if (click) {
-                if(datasetID){
-                  var url = $('.browser-location').val();
-                } else {
-                  var url = getPreviewUrl();
+                var url = getPreviewUrl();
+                var urlParts = url.split('/');
+
+                if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
+                // It's attempting to find a page but this is a visualisation HTML file.
+                // So, remove the HTML page from the end of the URL and just look at the JSON page.
+                    url = "/" + urlParts[1] + "/" + urlParts[2];
                 }
-                if (url === "/blank" || response['collectionOwner'] == 'DATA_VISUALISATION') {
-                    treeNodeSelect('/');
-                } else {
-                    treeNodeSelect(url, datasetID);
-                }
+                treeNodeSelect(url === "/blank" ? "/" : url);
             } else {
                 treeNodeSelect('/');
-
             }
 
             // Switch to browse tab (if not already)
@@ -59,8 +54,6 @@ function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
                 $('.js-workspace-nav .js-workspace-nav__item').removeClass('selected');
                 $browseTab.addClass('selected');
             }
-
-            openVisDirectoryOnLoad();
 
         },
         error: function (response) {
@@ -77,7 +70,7 @@ function bindBrowseTreeClick(collectionId) {
             $thisItem = $this.closest('.js-browse__item'),
             uri = $thisItem.attr('data-url'),
             baseURL = Florence.babbageBaseUrl,
-            isDataVis = localStorage.getItem('userType') == 'DATA_VISUALISATION',
+            isVisualisationsDirectory = $thisItem[0].hasAttribute('data-is-visualisations'),
             datasetID;
         
         // Check if this is an api and get the dataset ID from Zebedee.
@@ -102,22 +95,20 @@ function bindBrowseTreeClick(collectionId) {
 
               treeNodeSelect(newURL);
 
-              // Data vis browsing doesn't update iframe
-              if (isDataVis) {
-                  return false
-              }
-
-              // Update iframe location which will send change event for iframe to update too
-            
+              
               // If this is an api landing page then go to the /datasets/{datasetID} path
               if (datasetID) {
-                iframeURL = '/datasets/' + datasetID;
-              }
+                  iframeURL = '/datasets/' + datasetID;
+                }
+
+                // Update iframe location which will send change event for iframe to update too
               document.getElementById('iframe').contentWindow.location.href = iframeURL;
-              
               $('.browser-location').val(newURL);
 
-          } else {
+            } else if (!uri && isVisualisationsDirectory) {
+                // This is the data vis directory - handle differently
+                openVisDirectory();
+            } else {
 
               // Set all directories above it in the tree to be active when a directory clicked
               selectParentDirectories($this);
@@ -135,17 +126,13 @@ function openBrowseBranch($this) {
     $this.closest('li').children('ul').addClass('active');
 }
 
-function openVisDirectoryOnLoad() {
-    var userType = Florence.Authentication.userType();
-
-    if (userType == 'DATA_VISUALISATION') {
-        $('.js-browse__item .page__container').removeClass('selected');
-        $('.page__buttons--list.selected').removeClass('selected');
-        var $this = $('.datavis-directory');
-        $this.next('.page__buttons--list').addClass('selected')
-            .closest('.page__container').addClass('selected')
-            .next('.js-browse__children').addClass('active');
-    }
+function openVisDirectory() {
+    $('.js-browse__item .page__container').removeClass('selected');
+    $('.page__buttons--list.selected').removeClass('selected');
+    var $this = $('.datavis-directory');
+    $this.next('.page__buttons--list').addClass('selected')
+        .closest('.page__container').addClass('selected')
+        .next('.js-browse__children').addClass('active');
 }
 
 // recursively add isDeletable and deleteIsInCollection flags to all browse tree nodes

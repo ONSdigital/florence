@@ -550,7 +550,7 @@ export class VersionMetadata extends Component {
                 return;
             }
 
-            const [updateReviewStateErr] = await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed);
+            const updateReviewStateErr = await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed);
             if (updateReviewStateErr) {
                 console.log("updateReviewStateErr: " + updateReviewStateErr);
                 this.setState({isSavingData: false});

@@ -169,6 +169,19 @@
             }
         }
 
+        &--table-v2 {
+            float: left;
+            width: 40px;
+            height: 42px;
+            background: $pickled-bluewood url(../../img/sprite.png) no-repeat 0px -828px;
+            background-size: 30px auto;
+            margin: 10.5px 0 0 20px;
+
+            &:hover:after {
+                background-color: transparent;
+            }
+        }
+
         &--image {
             float: left;
             width: 40px;
