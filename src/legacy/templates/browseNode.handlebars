@@ -1,41 +1,70 @@
-{{#each children}} {{! Each item is an "li" }}
-    <li class="js-browse__item {{#unless uri}}js-browse__item--directory{{/unless}}" data-url="{{uri}}">
-        <span class="page__container {{#if deleteMarker}}deleted{{/if}}">
-            <span class="js-browse__item-title page__item{{#unless uri}} page__item--directory{{else}} page__item--{{type}}{{/unless}}">{{description.title}}{{#if description.edition}}
-                : {{description.edition}}{{/if}}</span>
-            <span class="page__buttons page__buttons--list">
-
-                <span class="page__primary-buttons js-browse__buttons--primary {{#if deleteMarker}}hidden{{/if}}">
-                    <button class="btn btn--primary btn-browse-edit">Edit</button>
-                    <button class="btn btn--positive btn-browse-create">Create</button>
+{{#each children}}
+    {{#if isVisualisationsDirectory}}
+        <li class="js-browse__item" data-is-visualisations="" >
+            <span class="page__container">
+                <span class="js-browse__item-title page__item page__item--directory datavis-directory">
+                    {{description.title}}
                 </span>
-
-
-                <button class="btn btn--primary btn-browse-delete-revert {{#ifCond deleteIsInCollection '&&' deleteMarker}}{{else}}hidden{{/ifCond}}">Revert deletion</button>
-                {{#if deleteMarker}}
-                    {{#unless deleteIsInCollection}}* this file has been delete in another collection{{/unless}}
-                {{/if}}
-
-                {{#if isDeletable}}
-                    <span class="js-browse__buttons--secondary {{#if deleteMarker}}hidden{{/if}}">
-                        <button class="js-browse__menu hamburger-icon hamburger-icon--page-item">
-                            <span class="hamburger-icon__span">toggle menu</span>
-                        </button>
-
-                        <span class="page__menu">
-                            {{#if isMoveable}}
-                                <button class="btn btn--primary btn-browse-move">Move</button>{{/if}}
-                            {{#if isDeletable}}
-                                <button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
-                        </span>
-                    </span>
-                {{/if}}
+                <div class="page__buttons page__buttons--list">
+                    <button class="btn btn--positive btn-browse-create-datavis">Upload visualisation</button>
+                </div>
             </span>
-        </span>
-        {{#if children}} {{! Within the context of the current item }}
-            <ul class="js-browse__children">
-                {{> browseNode}} {{! Recursively render the partial }}
-            </ul>
-        {{/if}}
-    </li>
+            {{#if children}}
+                <ul class="js-browse__children">
+                    {{#each children}}
+                        <li class="js-browse__item" data-url="{{#if uri}}{{uri}}{{else}}/{{description.title}}{{/if}}" >
+                            <span class="page__container">
+                                <span class="js-browse__item-title page__item page__item--{{type}}">
+                                    {{description.title}}
+                                </span>
+                                <div class="page__buttons page__buttons--list">
+                                    <button class="btn btn--primary btn-browse-edit">Edit</button>
+                                </div>
+                            </span>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+        </li>
+    {{else}}
+        <li class="js-browse__item {{#unless uri}}js-browse__item--directory{{/unless}}" data-url="{{uri}}">
+            <span class="page__container {{#if deleteMarker}}deleted{{/if}}">
+                <span class="js-browse__item-title page__item{{#unless uri}} page__item--directory{{else}} page__item--{{type}}{{/unless}}">{{description.title}}{{#if description.edition}}
+                    : {{description.edition}}{{/if}}</span>
+                <span class="page__buttons page__buttons--list">
+
+                    <span class="page__primary-buttons js-browse__buttons--primary {{#if deleteMarker}}hidden{{/if}}">
+                        <button class="btn btn--primary btn-browse-edit">Edit</button>
+                        <button class="btn btn--positive btn-browse-create">Create</button>
+                    </span>
+
+
+                    <button class="btn btn--primary btn-browse-delete-revert {{#ifCond deleteIsInCollection '&&' deleteMarker}}{{else}}hidden{{/ifCond}}">Revert deletion</button>
+                    {{#if deleteMarker}}
+                        {{#unless deleteIsInCollection}}* this file has been delete in another collection{{/unless}}
+                    {{/if}}
+
+                    {{#if isDeletable}}
+                        <span class="js-browse__buttons--secondary {{#if deleteMarker}}hidden{{/if}}">
+                            <button class="js-browse__menu hamburger-icon hamburger-icon--page-item">
+                                <span class="hamburger-icon__span">toggle menu</span>
+                            </button>
+
+                            <span class="page__menu">
+                                {{#if isMoveable}}
+                                    <button class="btn btn--primary btn-browse-move">Move</button>{{/if}}
+                                {{#if isDeletable}}
+                                    <button class="btn btn--warning btn-browse-delete">Delete</button>{{/if}}
+                            </span>
+                        </span>
+                    {{/if}}
+                </span>
+            </span>
+            {{#if children}} {{! Within the context of the current item }}
+                <ul class="js-browse__children">
+                    {{> browseNode}} {{! Recursively render the partial }}
+                </ul>
+            {{/if}}
+        </li>
+    {{/if}}
 {{/each}}
