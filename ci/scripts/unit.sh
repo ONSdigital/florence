@@ -1,5 +1,7 @@
 #!/bin/bash -eux
 
-pushd florence
-  mvn clean surefire:test
+export GOPATH=$(pwd)/go
+
+pushd $GOPATH/src/github.com/ONSdigital/florence
+  make test-go
 popd

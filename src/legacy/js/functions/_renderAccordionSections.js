@@ -74,6 +74,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'datasets', 'datasets');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'highlightedContent', 'highlighted-content');
         accordion();
         t3Editor(collectionId, pageData);
     }
@@ -229,7 +230,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
         addFileWithDetails(collectionId, pageData, 'downloads', 'file');
-        editDocWithFilesCorrection(collectionId, pageData, 'versions', 'correction');
+        editDocumentCorrection(collectionId, pageData, templateData, 'versions', 'correction');
         accordion();
         compendiumDataEditor(collectionId, pageData);
     }
@@ -352,6 +353,22 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     }
 
     else if (pageData.type === 'dataset_landing_page') {
+        var html = templates.workEditT8LandingPage(templateData);
+        $('.workspace-menu').html(html);
+        editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
+        addDataset(collectionId, pageData, 'datasets', 'edition');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
+        editTopics(collectionId, pageData, templateData, 'topics', 'topics');
+        editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
+        accordion();
+        datasetLandingEditor(collectionId, pageData);
+    }
+
+    else if (pageData.type === 'api_dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');

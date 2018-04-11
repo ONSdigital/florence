@@ -1,0 +1,18 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: onsdigital/dp-concourse-tools-node-go
+
+inputs:
+  - name: florence
+    path: go/src/github.com/ONSdigital/florence
+
+outputs:
+  - name: build
+
+run:
+  path: go/src/github.com/ONSdigital/florence/ci/scripts/build.sh

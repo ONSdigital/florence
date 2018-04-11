@@ -5,6 +5,9 @@
  * @returns {boolean}
  */
 function postLogin(email, password) {
+    // lowercase email address, before we login/store in local storage, so it matches zebedee
+    // allows string comparisons between zebedee responses and local storage data to work
+    email = email.toLowerCase();
     $.ajax({
         url: "/zebedee/login",
         dataType: 'json',
@@ -63,11 +66,9 @@ function getPublisherType(permission) {
     // Store in localStorage publisher type
     if (permission.admin) {
         localStorage.setItem("userType", "PUBLISHING_SUPPORT");
-    } else if (permission.editor && !permission.dataVisPublisher) {
+    } else if (permission.editor) {
         localStorage.setItem("userType", "PUBLISHING_SUPPORT");
-    } else if (permission.editor && permission.dataVisPublisher) {
-        localStorage.setItem("userType", "DATA_VISUALISATION");
-    } else if (!permission.admin && !permission.editor && !permission.dataVisPublisher) {
+    } else if (!permission.admin && !permission.editor) {
         localStorage.setItem("userType", "VIEWER");
     }
 }

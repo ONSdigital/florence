@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input without type renders a text input 1`] = `
+<div
+  className="form__input"
+>
+  <label
+    className="form__label"
+    htmlFor="test-input"
+  >
+    Test input
+  </label>
+  
+  <input
+    accept={undefined}
+    autoFocus={false}
+    className="input input__text"
+    disabled={false}
+    id="test-input"
+    name="test-input"
+    onChange={undefined}
+    placeholder=""
+    type="text"
+  />
+  
+</div>
+`;
+
+exports[`Password prop creates a password input 1`] = `
+<div
+  className="form__input"
+>
+  <label
+    className="form__label"
+    htmlFor="test-password-input"
+  >
+    Password
+  </label>
+  
+  <input
+    accept={undefined}
+    autoFocus={false}
+    className="input input__text"
+    disabled={false}
+    id="test-password-input"
+    name="test-password-input"
+    onChange={undefined}
+    placeholder=""
+    type="password"
+  />
+  <span
+    className="btn btn--password"
+    onClick={[Function]}
+    onKeyPress={[Function]}
+    role="button"
+    tabIndex="0"
+  >
+    Show
+  </span>
+</div>
+`;
