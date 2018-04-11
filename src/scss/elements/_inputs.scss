@@ -1,48 +1,32 @@
-/** INPUTS **/
-
-// Only used for file inputs at the moment but should have rest of inputs migrated over too
 .input {
-
     box-sizing: border-box;
     border: 3px solid $scarpa-flow;
     border-radius: 4px;
     display: inline-block;
     width: 100%;
     height: $lineheight * 2;
-    margin: $lineheight 0;
     padding: 7px $gutter;
-    background: $white;
+    background-color: $white;
 
-    // Class has JS bound to it to handle the change event to simulate a native file input behaviour
-    &__file {
-
-        display: block;
-
-        &:hover {
-            cursor: pointer;
-        }
-
-        &:after {
-            content: attr(data-file-title);
-            //margin: 0;
-            //float: none;
-            padding: ($lineheight / 2) $gutter;
-            color: $mine-shaft;
-            display: block;
-            margin-bottom: $lineheight / 2;
-            background-color: $white;
-            line-height: $lineheight;
-            border: 3px solid $scarpa-flow;
-            border-radius: 3px;
-        }
-
-        & input {
-            position: absolute;
-            left: -10000px;
-        }
-
-        &.focus:after {
-            border-color: $focus;
-        }
+    &:focus {
+        border: 3px solid $focus;
     }
+
+    &:disabled {
+        border: 3px solid $nappa;
+        color: $nappa;
+        background-color: $quill-grey;
+        position: relative;
+
+        &:-webkit-autofill {
+            -webkit-text-fill-color: $nappa;
+        }
+
+    }
+
+    &__textarea {
+        height: auto;
+        min-height: ($lineheight * 5);
+    }
+
 }

@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -26,6 +25,7 @@ var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var tableRendererURL = "http://localhost:23300"
 var enableNewApp = false
+var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
 var upgrader = websocket.Upgrader{}
@@ -48,9 +48,6 @@ func main() {
 	if v := os.Getenv("TABLE_RENDERER_URL"); len(v) > 0 {
 		tableRendererURL = v
 	}
-	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
-		enableNewApp, _ = strconv.ParseBool(v)
-	}
 
 	log.Namespace = "florence"
 
@@ -69,7 +66,6 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-
 	babbageProxy := reverseProxy.Create(babbageURL, nil)
 
 	zebedeeURL, err := url.Parse(zebedeeURL)
@@ -77,7 +73,6 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
 
 	tableURL, err := url.Parse(tableRendererURL)
@@ -90,19 +85,19 @@ func main() {
 
 	router := pat.New()
 
-	newAppHandler := refactoredIndexFile
-
-	if !enableNewApp {
-		newAppHandler = legacyIndexFile
-	}
-
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", newAppHandler)
-	router.HandleFunc("/florence/index.html", legacyIndexFile)
+	router.HandleFunc("/florence", legacyIndexFile)
+	router.HandleFunc("/florence/", redirectToFlorence)
+	router.HandleFunc("/florence/index.html", redirectToFlorence)
+	router.HandleFunc("/florence/collections", legacyIndexFile)
+	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
+	router.HandleFunc("/florence/reports", legacyIndexFile)
+	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
+	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:/.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
@@ -134,6 +129,10 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(2)
 	}
+}
+
+func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
+	http.Redirect(w, req, "/florence", 301)
 }
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
