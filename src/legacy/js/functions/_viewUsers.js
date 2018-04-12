@@ -73,11 +73,11 @@ function viewUsers(view) {
                 return;
             }
 
-            if (password.length < 1) {
+            if (ownerEmail.length < 1) {
                 sweetAlert("Please enter a password.");
                 return;
             }
-            postUser(username, email, ownerEmail, password, isAdmin, isEditor, isDataVisPublisher);
+            postUser(username, email, ownerEmail, isAdmin, isEditor, isDataVisPublisher);
             viewUsers();
         });
     }
