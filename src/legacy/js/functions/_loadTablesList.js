@@ -22,6 +22,14 @@ function initialiseTablesList(collectionId, data) {
         });
     });
 
+    $('#add-table-v2').click(function () {
+        loadTableBuilderV2(data, function () {
+            Florence.Editor.isDirty = false;
+            refreshPreview();
+            refreshTablesList(collectionId, data);
+        });
+    });
+
     $(data.tables).each(function (index, table) {
         var basePath = data.uri;
         var tablePath = basePath + '/' + table.filename;
@@ -30,11 +38,16 @@ function initialiseTablesList(collectionId, data) {
         $("#table-edit_" + index).click(function () {
             getPageData(collectionId, tableJson,
                 onSuccess = function (tableData) {
-                    loadTableBuilder(data, function () {
+                    let onSave = function () {
                         Florence.Editor.isDirty = false;
                         refreshPreview();
                         refreshTablesList(collectionId, data);
-                    }, tableData);
+                    };
+                    if (table.version == "2") {
+                        loadTableBuilderV2(data, onSave, tableData);
+                    } else {
+                        loadTableBuilder(data, onSave, tableData);
+                    }
                 })
         });
 
