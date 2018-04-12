@@ -50517,6 +50517,20 @@ function setShortcuts(field, callback) {
         return "";
     });
 
+    Handlebars.registerHelper('if_any', function () {
+        var len = arguments.length - 1;
+        var options = arguments[len];
+        var val = false;
+
+        for (var i = 0; i < len; i++) {
+            if (arguments[i]) {
+                val = true;
+                return options.fn(this);
+            }
+        }
+        return;
+    });
+
 
     Florence.globalVars.activeTab = false;
 
