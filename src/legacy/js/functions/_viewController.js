@@ -7,7 +7,7 @@ function viewController(view) {
             window.location.pathname = "/florence/collections";
         }
         else if (view === 'datasets') {
-            window.location.pathname = "/florence/datasets";
+            window.location.pathname = "/florence/uploads/data";
         } 
         else if (view === 'workspace') {
             /*
